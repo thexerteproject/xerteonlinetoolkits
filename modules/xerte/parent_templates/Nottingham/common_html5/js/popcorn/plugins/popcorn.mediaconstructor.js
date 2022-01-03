@@ -187,7 +187,7 @@ this.addSegment = function(videoState) {
     {
         // Pushing copy of segment
         var csegment = $.extend(true, {}, segment);
-        vidFullWatched.segments.push(csegment);
+        videoState.segments.push(csegment);
     }
 }
 
@@ -198,6 +198,7 @@ this.addTrackingOnTimeUpdate = function(popcornInstance, videoState){
         videoState.prevTime = videoState.lastTime;
         videoState.lastTime = videoState.time;
     }
+    return videoState;
 }
 
 this.addTrackingOnPlay = function(popcornInstance, videoState){

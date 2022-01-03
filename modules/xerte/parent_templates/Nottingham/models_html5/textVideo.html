@@ -21,6 +21,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textVideo = new function() {
+		var videoState;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			if ($("#pageVideo").hasClass('iframe') != true) {
@@ -67,13 +68,22 @@
 			}
 		}
 		this.initTracking = function(){
+			videoState = {
+				time: 0,
+				lastTime: 0,
+				prevTime: 0,
+				duration: this.popcornInstance.duration() || 0,
+				synchName: "video",
+				watched: [],
+				segments: [],
+				segment: {start: 0, end: -1}
+			}
 			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
 			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
                 trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
             }
 			XTVideo(x_currentPage, trackinglabel, "", "initialized", 35, x_currentPageXML.getAttribute("grouping"));
-			debugger;
 		}
 		
 		this.init = function() 
@@ -201,7 +211,8 @@
 					audioImageTip: ""
 				}, true);
 
-				addEvents(this.popcornInstance);
+				this.initTracking();
+				this.addEvents(this.popcornInstance);	
 				
 				//controls toggle
 				$(".panel.inline.x_floatRight")
@@ -221,8 +232,25 @@
 			x_pageLoaded();
 		}
 
+		this.addEvents = function(popcornInstance) {
+			popcornInstance.on( "timeupdate", function() {
+				videoState = addTrackingOnTimeUpdate(textVideo.popcornInstance, videoState);
+			});
+			popcornInstance.on( "play", function() {
+				videoState = addTrackingOnPlay(textVideo.popcornInstance, videoState);
+			});
+			popcornInstance.on( "pause", function() {
+				videoState = addTrackingOnPause(textVideo.popcornInstance, videoState);
+			});
+			popcornInstance.on( "seek", function() {
+				videoState = addTrackingOnSeek(textVideo.popcornInstance, videoState);
+			});
+		}
+
 		this.leavePage = function() {
-			XTVideo(x_currentPage, "trackinglabel", "", "exit", 35, x_currentPageXML.getAttribute("grouping"));
+			//XTVideo(x_currentPage, "trackinglabel", "", "exit", 35, x_currentPageXML.getAttribute("grouping"));
+			var progress = XThelperDetermineProgress(videoState) * 100.0;
+			XTSetPageScore(x_currentPage, progress);
 			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
 			XTSetPageType(x_currentPage, 'numeric', 0 , 1);
 			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
