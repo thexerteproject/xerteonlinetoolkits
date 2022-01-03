@@ -243,8 +243,7 @@
             $(".embed").each(function() {
                 $(this).data("popcornInstance").pause();
             });
-			if (this.popcornInstance != null)
-			{
+			if (this.popcornInstance != null) {
 				this.removeEvents();
 				this.popcornInstance.destroy();
 			}
@@ -285,8 +284,7 @@
 				
 				if (loadFiles == true ) {
 					this.loadPopcorn();
-				}
-				else {
+				} else {
 					this.setUp();
 				}
 
@@ -353,19 +351,6 @@
 					});
 			});
 		}
-
-
-		this.addSegment = function(segment)
-        {
-            // console.log("Considering segment: (" + segment.start + ", " + segment.end +")");
-            if (segment.start != -1 && segment.end != -1 && segment.start < segment.end && segment.end - segment.start > 0.5)
-            {
-                // Pushing copy of segment
-                var csegment = $.extend(true, {}, segment);
-                // console.log("Adding segment: (" + csegment.start + ", " + csegment.end +")");
-                vidFullWatched.segments.push(csegment);
-            }
-        }
 
 		// function called when popcorn.js & plugin files have all loaded
 		this.setUp = function() {
@@ -1000,7 +985,7 @@
 
 				// disable media controls
 				if (synchData.getAttribute("disable") == "true") {
-					mediaLesson.enableControls(this.media, false, true, true);
+					mediaLesson.enableControls(this.media, false);
 				}
 				
 				// skip media
