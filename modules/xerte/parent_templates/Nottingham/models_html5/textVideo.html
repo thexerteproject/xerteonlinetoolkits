@@ -242,10 +242,23 @@
 			popcornInstance.on( "pause", function() {
 				videoState = addTrackingOnPause(textVideo.popcornInstance, videoState);
 			});
-			popcornInstance.on( "seek", function() {
-				videoState = addTrackingOnSeek(textVideo.popcornInstance, videoState);
+			popcornInstance.on( "seeked", function() {
+				videoState = addTrackingOnSeeked(textVideo.popcornInstance, videoState);
+			});
+			popcornInstance.on( "ended", function() {
+				videoState = addTrackingOnEnded(textVideo.popcornInstance, videoState);
 			});
 		}
+
+		this.removeEvents = function() {
+			if (this.popcornInstance) {
+				this.popcornInstance.off("timeupdate");
+				this.popcornInstance.off("play");
+				this.popcornInstance.off("pause");
+				this.popcornInstance.off("seeked");
+				this.popcornInstance.off("ended");
+			}
+        };
 
 		this.leavePage = function() {
 			//XTVideo(x_currentPage, "trackinglabel", "", "exit", 35, x_currentPageXML.getAttribute("grouping"));
@@ -257,6 +270,12 @@
             {
                 trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
             }
+
+			if (this.popcornInstance != null)
+			{
+				this.removeEvents();
+				this.popcornInstance.destroy();
+			}
 		}
 		
 		this.loadVideo = function() {

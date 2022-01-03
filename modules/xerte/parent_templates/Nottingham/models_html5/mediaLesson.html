@@ -25,10 +25,7 @@
 			plugins = ["mediaconstructor", "textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
 			css = ["subtitleplus", "mcq", "overlaygeneric", "slides"], // list of popcorn plugin css to load
 		    vidFullWatched,
-            currSegment,
-			trackinglabel = "",
-			prevTime = -1,
-            lastTime = -1;
+			trackinglabel = "";
 
 		
 		// function called every time the page is viewed after it has initially loaded
@@ -241,8 +238,8 @@
         };
 
 		this.leavePage = function () {
-		    currSegment.end = lastTime;
-		    this.addSegment(currSegment);
+		    vidFullWatched.segment.end = vidFullWatched.lastTime || -1;
+		    addSegment(vidFullWatched);
             $(".embed").each(function() {
                 $(this).data("popcornInstance").pause();
             });
@@ -254,7 +251,6 @@
             if (vidFullWatched == undefined)
 			{
                 vidFullWatched = {
-                    synchStart: 0,
                     duration: this.popcornInstance.duration() || 0,
                     synchName: "video",
                     watched: [],
@@ -328,10 +324,6 @@
             window.correctQuestions = 0;
             XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
             XTVideo(x_currentPage, trackinglabel, "", "initialized", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
-            currSegment = {
-                start: 0,
-                end: -1
-            };
 		};
 				
 		// function loads the popcorn files
@@ -373,7 +365,7 @@
                 // console.log("Adding segment: (" + csegment.start + ", " + csegment.end +")");
                 vidFullWatched.segments.push(csegment);
             }
-        };
+        }
 
 		// function called when popcorn.js & plugin files have all loaded
 		this.setUp = function() {
@@ -641,11 +633,13 @@
                 if (vidFullWatched == null || vidFullWatched == undefined) {
                     vidFullWatched = {
                         time: 0,
-                        synchStart: 0,
+						prevTime: 0,
+						lastTime: 0,
                         duration: this.popcornInstance.duration(),
                         synchName: "video",
                         watched: [],
-                        segments: []
+                        segments: [],
+						segment: {start: 0, end: -1}
                     }
                 }
 
@@ -662,63 +656,24 @@
 		this.addEvents = function() {
             this.popcornInstance.on( "timeupdate", function() {
 				$("#overlayGray").hide();
-				var popTime = mediaLesson.popcornInstance.currentTime();
-                if (lastTime != popTime && popTime > 0) {
-                    prevTime = lastTime;
-                    lastTime = popTime;
-				}
+				vidFullWatched = addTrackingOnTimeUpdate(mediaLesson.popcornInstance, vidFullWatched);
             });
             this.popcornInstance.on( "play", function() {
 				$("#overlayGray").hide();
-                var popTime = mediaLesson.popcornInstance.currentTime();
-                console.log("Play    : " + popTime);
-                currSegment = {
-                    start: popTime,
-                    end: -1
-                };
-                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-                vidFullWatched.time = popTime;
-                XTVideo(x_currentPage, trackinglabel, "", "played", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+				vidFullWatched = addTrackingOnPlay(mediaLesson.popcornInstance, vidFullWatched);
+                console.log("Play    : " + mediaLesson.popcornInstance.currentTime());
             });
 			this.popcornInstance.on( "pause", function() {
-                var popTime = mediaLesson.popcornInstance.currentTime();
-				vidFullWatched.time = popTime;
-                console.log("Pause   : " + popTime);
-                currSegment.end = popTime;
-                mediaLesson.addSegment(currSegment);
-                currSegment = {
-                    start: popTime,
-                    end: -1
-                };
-                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-                XTVideo(x_currentPage, trackinglabel, "", "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+				vidFullWatched = addTrackingOnPause(mediaLesson.popcornInstance, vidFullWatched);
+                console.log("Pause   : " + mediaLesson.popcornInstance.currentTime());
             });
             this.popcornInstance.on( "seeked", function() {
-                var popTime = mediaLesson.popcornInstance.currentTime();
-                vidFullWatched.time = popTime;
-                vidFullWatched.prevTime = prevTime;
-                console.log("Seeked  : " + popTime + ", prevTime=" + prevTime);
-                currSegment.end = prevTime;
-                mediaLesson.addSegment(currSegment);
-                currSegment = {
-                    start: popTime,
-                    end: -1
-                };
-                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-                XTVideo(x_currentPage, trackinglabel, "", "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+                vidFullWatched = addTrackingOnSeeked(mediaLesson.popcornInstance, vidFullWatched);
+                console.log("Seeked  : " + mediaLesson.popcornInstance.currentTime() + ", prevTime=" + vidFullWatched.prevTime);
             });
             this.popcornInstance.on("ended", function() {
-                var popTime = mediaLesson.popcornInstance.duration();
-                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-                vidFullWatched.time = popTime;
-                console.log("End     : " + popTime);
-                currSegment.end = popTime;
-                mediaLesson.addSegment(currSegment);
-                currSegment = {
-                    start: popTime,
-                    end: -1
-                };
-                XTVideo(x_currentPage, trackinglabel, "", "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+				vidFullWatched = addTrackingOnEnded(mediaLesson.popcornInstance, vidFullWatched);
+                console.log("End     : " + mediaLesson.popcornInstance.duration());
             });
         };
 
