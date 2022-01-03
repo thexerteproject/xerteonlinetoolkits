@@ -24,13 +24,10 @@
 		var	$panelHolder,
 			plugins = ["mediaconstructor", "textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
 			css = ["subtitleplus", "mcq", "overlaygeneric", "slides"], // list of popcorn plugin css to load
-			duration = 0,
-            blocks = new Array (),
 		    vidFullWatched,
             currSegment,
 			trackinglabel = "",
 			prevTime = -1,
-			isPlaying = false;
             lastTime = -1;
 
 		
@@ -258,13 +255,14 @@
 			{
                 vidFullWatched = {
                     synchStart: 0,
-                    duration: duration,
+                    duration: this.popcornInstance.duration() || 0,
                     synchName: "video",
                     watched: [],
                     segments:[]
                 };
 			}
 			var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
+			XTSetPageScore(x_currentPage, progress);
 			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 		};
 
@@ -672,7 +670,6 @@
             });
             this.popcornInstance.on( "play", function() {
 				$("#overlayGray").hide();
-				isPlaying = true;
                 var popTime = mediaLesson.popcornInstance.currentTime();
                 console.log("Play    : " + popTime);
                 currSegment = {
@@ -681,15 +678,12 @@
                 };
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 vidFullWatched.time = popTime;
-                duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, "", "played", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
 			this.popcornInstance.on( "pause", function() {
                 var popTime = mediaLesson.popcornInstance.currentTime();
 				vidFullWatched.time = popTime;
                 console.log("Pause   : " + popTime);
-				isPlaying = false;
-				
                 currSegment.end = popTime;
                 mediaLesson.addSegment(currSegment);
                 currSegment = {
@@ -697,7 +691,6 @@
                     end: -1
                 };
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-                duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, "", "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
             this.popcornInstance.on( "seeked", function() {
@@ -712,13 +705,11 @@
                     end: -1
                 };
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-                duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, "", "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
             this.popcornInstance.on("ended", function() {
                 var popTime = mediaLesson.popcornInstance.duration();
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-                duration = mediaLesson.popcornInstance.duration();
                 vidFullWatched.time = popTime;
                 console.log("End     : " + popTime);
                 currSegment.end = popTime;
