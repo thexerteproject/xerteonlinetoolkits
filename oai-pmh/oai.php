@@ -217,13 +217,13 @@ function getTemplates($metadataPrefix,$from,$until) {
         $templates = db_query($q);
     }
 
-    $response = new stdClass();
-    $response->site_url = $xerte_toolkits_site->site_url;
-    $response->site_name = $xerte_toolkits_site->site_name;
+    //$response = new stdClass();
+    //$response->site_url = $xerte_toolkits_site->site_url;
+    //$response->site_name = $xerte_toolkits_site->site_name;
 
 
     //To make sure the response templates are the same as the filled in metadata number
-    $tmpTemplates = array();
+    //$tmpTemplates = array();
 
     $tmpRecords = array();
     for($i=0;$i<count($templates);$i++)
@@ -231,18 +231,18 @@ function getTemplates($metadataPrefix,$from,$until) {
         $currentTemplate = $templates[$i];
         $tempMetaData = call_user_func(get_meta_data,$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"]);
         if($tempMetaData->domain == 'unknown' or $tempMetaData->level == "unknown"){
-            echo "Public record without metadata specified.";
+            //echo "Public record without metadata specified.";
         }
         else
         {
             $currentRecord = call_user_func(makeRecordFromTemplate,$metadataPrefix,$currentTemplate, $tempMetaData);
             $tmpRecords[] = $currentRecord;
-            $tmpTemplates[] = $currentTemplate;
+            //$tmpTemplates[] = $currentTemplate;
         }
     }
 
-    $response->templates = $tmpTemplates;
-    $response->count = count($tmpTemplates);
+    //$response->templates = $tmpTemplates;
+    //$response->count = count($tmpTemplates);
 
 
     return $tmpRecords;

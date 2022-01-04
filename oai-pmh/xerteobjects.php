@@ -68,10 +68,18 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->author = (string)$xml['metaAuthor'];
     else
         $xerteMetaObj->author = $config['institute'];
-    if (isset($xml['category'])) {
+    if (isset($xml['category']) || isset($xml['metaCategory'])) {
+        if (isset($xml['metaCategory']))
+        {
+            $cat = (string)$xml['metaCategory'];
+        }
+        else
+        {
+            $cat = (string)$xml['category'];
+        }
         // query oai_categories
         $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}oai_categories where label=?";
-        $params = array((string)$xml["category"]);
+        $params = array($cat);
         $cat = db_query_one($q, $params);
         if ($cat !== false) {
             $xerteMetaObj->domain = $cat["label"];

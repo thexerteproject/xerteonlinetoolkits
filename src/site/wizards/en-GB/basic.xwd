@@ -68,7 +68,19 @@
 			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
 			<wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true" />
 		</wcagGroup>
-		
+
+		<meta type="group" label="Meta data" optional="true">
+			<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+			<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+			<metaCategory label="Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object (i.e. Maths), stored in xAPI events, to be used for categorising in xAPI reports"/>
+			<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" />
+			<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
+			<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
+			<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optonal="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
+			<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the eduction."/>
+			<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optionl="true" tooltip="The thumbnail to publish with the metadata" />
+		</meta>
+
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
