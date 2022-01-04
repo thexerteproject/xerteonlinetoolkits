@@ -33,6 +33,22 @@
 		};
 
 		this.init = function() {
+			var popLocation = "common_html5/js/popcorn/"
+			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
+			var i = 0;
+			scriptsToLoad.forEach(function(file){
+				$.getScript(x_templateLocation + popLocation + file + ".js")
+					.done(function(){
+							if (++i >= scriptsToLoad.length)
+								youtube.setUp();
+						})
+					.fail(function( jqxhr, settings, exception ) {
+							console.log("Failed to load plugin:" + exception);
+						});
+			});
+		}
+
+		this.setUp = function() {
 			var $textHolder = $("#textHolder"),
 				$panel = $("#pageContents .panel");
 
@@ -101,11 +117,65 @@
 				}
 			}
 
-			$("#pageVideo").html(this.buildIframe(iframe));
+			this.popcornInstance = loadMedia($("#pageVideo"), "video",
+				{	tip: "", //Not set in editor
+					width: iframe.width,
+					height: iframe.height,
+					media: "https://www.youtube.com/embed/" + iframe.code,
+					autoplay: iframe.autoplay,
+					aspect: iframe.width / iframe.height,
+					transcript: undefined,
+					transcriptBtnTxt: "",
+					audioImage: undefined,
+					audioImageTip: ""
+				}, true);
+
+				this.initTracking();
+				this.addEvents(this.popcornInstance);	
+				resizeEmbededMedia($(".popcornMedia.embed"), {width: iframe.width, height: iframe.height})
+
+			//$("#pageVideo").html(this.buildIframe(iframe));
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		};
+
+		this.initTracking = function(){
+			videoState = {
+				time: 0,
+				lastTime: 0,
+				prevTime: 0,
+				duration: this.popcornInstance.duration() || 0,
+				synchName: "video",
+				watched: [],
+				segments: [],
+				segment: {start: 0, end: -1}
+			}
+			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+            }
+			XTVideo(x_currentPage, trackinglabel, "", "initialized", 35, x_currentPageXML.getAttribute("grouping"));
+		}
+
+		this.addEvents = function(popcornInstance) {
+			popcornInstance.on( "timeupdate", function() {
+				videoState = addTrackingOnTimeUpdate(youtube.popcornInstance, videoState);
+			});
+			popcornInstance.on( "play", function() {
+				videoState = addTrackingOnPlay(youtube.popcornInstance, videoState);
+			});
+			popcornInstance.on( "pause", function() {
+				videoState = addTrackingOnPause(youtube.popcornInstance, videoState);
+			});
+			popcornInstance.on( "seeked", function() {
+				videoState = addTrackingOnSeeked(youtube.popcornInstance, videoState);
+			});
+			popcornInstance.on( "ended", function() {
+				videoState = addTrackingOnEnded(youtube.popcornInstance, videoState);
+			});
+		}
 
 		this.buildIframe = function(iframe) {
 			if (iframe.code.length > 0) {
