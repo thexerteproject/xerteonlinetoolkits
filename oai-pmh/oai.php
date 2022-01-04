@@ -221,17 +221,29 @@ function getTemplates($metadataPrefix,$from,$until) {
     $response->site_url = $xerte_toolkits_site->site_url;
     $response->site_name = $xerte_toolkits_site->site_name;
 
-    $response->count = count($templates);
-    $response->templates = $templates;
+
+    //To make sure the response templates are the same as the filled in metadata number
+    $tmpTemplates = array();
 
     $tmpRecords = array();
     for($i=0;$i<count($templates);$i++)
     {
         $currentTemplate = $templates[$i];
         $tempMetaData = call_user_func(get_meta_data,$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"]);
-        $currentRecord = call_user_func(makeRecordFromTemplate,$metadataPrefix,$currentTemplate, $tempMetaData);
-        $tmpRecords[] = $currentRecord;
+        if($tempMetaData->domain == 'unknown' or $tempMetaData->level == "unknown"){
+            echo "Public record without metadata specified.";
+        }
+        else
+        {
+            $currentRecord = call_user_func(makeRecordFromTemplate,$metadataPrefix,$currentTemplate, $tempMetaData);
+            $tmpRecords[] = $currentRecord;
+            $tmpTemplates[] = $currentTemplate;
+        }
     }
+
+    $response->templates = $tmpTemplates;
+    $response->count = count($tmpTemplates);
+
 
     return $tmpRecords;
 };
