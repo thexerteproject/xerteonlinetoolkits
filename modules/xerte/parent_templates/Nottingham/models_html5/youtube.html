@@ -134,8 +134,6 @@
 				this.addEvents(this.popcornInstance);	
 				resizeEmbededMedia($(".popcornMedia.embed"), {width: iframe.width, height: iframe.height})
 
-			//$("#pageVideo").html(this.buildIframe(iframe));
-
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		};
@@ -176,44 +174,6 @@
 				videoState = addTrackingOnEnded(youtube.popcornInstance, videoState);
 			});
 		}
-
-		this.buildIframe = function(iframe) {
-			if (iframe.code.length > 0) {
-				var html = "<iframe";
-				html += " width=\"" + iframe.width + "\"";
-				html += " height=\"" + iframe.height + "\"";
-				
-				if (xot_offline == true) {
-					html += " src=\"https://www.youtube.com/embed/" + iframe.code;
-				} else {
-					html += " src=\"//www.youtube.com/embed/" + iframe.code;
-				}
-				
-				var params = "?wmode=opaque";
-				if (iframe.time > 0) {
-					params += "&start=" + iframe.time;
-				}
-				if (iframe.related == 0) {
-					params += "&rel=0";
-				}
-				if (iframe.autoplay == 1) {
-					params += "&autoplay=1";
-				}
-				if (params.length > 1) {
-					html += params;
-				}
-				html += "\"";
-				html += " frameborder=\"0\"";
-				//if (iframe.allowfullscreen != false) {
-				html += " allowfullscreen";
-				//}
-				html += "></iframe>";
-				return html;
-			}
-			else {
-				return "<p>" + x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + "</p>";
-			}
-		};
 
 		this.parseIframeCode = function(code, params) {
 			var parts = code.split(' ');

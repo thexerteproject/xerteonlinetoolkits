@@ -52,8 +52,25 @@
 				$infoHolder.children("div:visible").last()[0].scrollIntoView(true);
 			}
 		}
+		// Loads popcorn, then calls setup.
+		this.init = function() 
+		{
+			var popLocation = "common_html5/js/popcorn/"
+			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
+			var i = 0;
+			scriptsToLoad.forEach(function(file){
+				$.getScript(x_templateLocation + popLocation + file + ".js")
+					.done(function(){
+							if (++i >= scriptsToLoad.length)
+								videoSynch.setUp();
+						})
+					.fail(function( jqxhr, settings, exception ) {
+							console.log("Failed to load plugin:" + exception);
+						});
+			});
+		}
 
-		this.init = function() {
+		this.setup = function() {
 			$infoHolder = $("#infoHolder");
 			$pageContents = $("#pageContents");
 
@@ -62,7 +79,7 @@
 			var	captionInfo = new Array();
 
 			// uses data from timedText file if there is one - otherwise use nested page info
-			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
+			if (x_currentPageXML.getAttribute("timedText")) {
 				$.ajax({
 					type: "GET",
 					url: x_evalURL(x_currentPageXML.getAttribute("timedText")),
@@ -97,6 +114,25 @@
 				
 				videoSynch.createCaptions(captionInfo);
 			}
+		}
+
+		this.initTracking = function(){
+			videoState = {
+				time: 0,
+				lastTime: 0,
+				prevTime: 0,
+				duration: this.popcornInstance.duration() || 0,
+				synchName: "video",
+				watched: [],
+				segments: [],
+				segment: {start: 0, end: -1}
+			}
+			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+            }
+			//XTVideo(x_currentPage, trackinglabel, "", "initialized", 35, x_currentPageXML.getAttribute("grouping"));
 		}
 		
 		this.createCaptions = function(captionInfo) {
@@ -156,7 +192,22 @@
 				"dimensions"	:videoDimensions
 			});
 			
-			this.loadVideo();
+			this.popcornInstance = loadMedia($("#pageVideo"), "video",
+			{	tip: "", //Not set in editor
+				width: videoDimensions[0],
+				height: videoDimensions[1],
+				media: videoSrc,
+				autoplay: false,
+				aspect: undefined,
+				transcript: undefined,
+				transcriptBtnTxt: "",
+				audioImage: undefined,
+				audioImageTip: ""
+			}, true);
+
+			this.initTracking();
+			this.addEvents(this.popcornInstance);	
+			resizeEmbededMedia($(".popcornMedia.embed"), {width: videoDimensions[0], height: videoDimensions[1]})
 			
 			if (x_browserInfo.mobile == false) {
 				$pageContents.css("padding-left", Number($pageVideo.data("dimensions")[0]) + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
@@ -167,15 +218,22 @@
 			
 			x_pageLoaded();
 		}
-		
-		this.loadVideo = function() {
-			var $video = $("#pageVideo");
-			$video.mediaPlayer({
-				type			:"video",
-				source			:$video.data("src"),
-				width			:$video.data("dimensions")[0],
-				height			:$video.data("dimensions")[1],
-				pageName		:"videoSynch"
+
+		this.addEvents = function(popcornInstance) {
+			popcornInstance.on( "timeupdate", function() {
+				videoState = addTrackingOnTimeUpdate(videoSynch.popcornInstance, videoState);
+			});
+			popcornInstance.on( "play", function() {
+				videoState = addTrackingOnPlay(videoSynch.popcornInstance, videoState);
+			});
+			popcornInstance.on( "pause", function() {
+				videoState = addTrackingOnPause(videoSynch.popcornInstance, videoState);
+			});
+			popcornInstance.on( "seeked", function() {
+				videoState = addTrackingOnSeeked(videoSynch.popcornInstance, videoState);
+			});
+			popcornInstance.on( "ended", function() {
+				videoState = addTrackingOnEnded(videoSynch.popcornInstance, videoState);
 			});
 		}
 		
@@ -201,60 +259,8 @@
 			}
 		}
 
-		//This stores the pieces of the video which have been watched.
-		this.AttendanceUpdate = function (duration, time) {
-            //this shouldn't happen, but it might on the first frame of the video.
-            if (duration == null || duration == undefined || duration == 0) {
-                return;
-            }
-            if (duration < 30) {
-                var i = Math.round(time / duration * 20) * 5;
-            }
-            else {
-                var i = Math.round(time / duration * 100);
-            }
-            blocks[i] = 1;
-            if (i == 100)
-            {
-                this.sentXAPI();
-            }
-        };
-
-		//This calculates the percentage of the video that has been watched.
-        this.AttendanceCalculate = function (duration) {
-            var playedTime = 0;
-            if (duration == undefined || duration == null)
-            {
-                return 0;
-            }
-            if (duration >= 30)
-            {
-                for (var i = 1; i < 100; i++)
-                {
-                    if (blocks[i] == 1) {
-                        playedTime++;
-                    }
-                }
-                playedTime++;
-            }
-            else {
-                for (var i = 1; i < 100; i++)
-                {
-                    if (blocks[i] == 1) {
-                        playedTime += 5;
-                    }
-                }
-                playedTime += 5;
-            }
-            return playedTime;
-        };
-
-        this.sentXAPI = function () {
-			//XTSetViewed(x_currentPage, "video", viewed);
-        };
-
         this.leavePage = function () {
-			this.sentXAPI();
+
         };
 
 		this.timeUpdate = function(mediaElement, currentTime) {
@@ -262,19 +268,6 @@
 				pause 		= x_currentPageXML.getAttribute("pause"),
 				erase    	= x_currentPageXML.getAttribute("erase"),
 				duration    = mediaElement.duration;
-
-			this.AttendanceUpdate(duration, currentTime);
-			viewed = this.AttendanceCalculate(duration);
-
-			if (viewed % 10 === 0 && viewed > lastMileStone) {
-                lastMileStone = viewed;
-                this.sentXAPI();
-            }
-
-            //if (pause && attendance !== 0)
-			//{
-			//    console.log("paused")
-			//}
 
             $captions.each(function(){
 				var $thisCaption = $(this);

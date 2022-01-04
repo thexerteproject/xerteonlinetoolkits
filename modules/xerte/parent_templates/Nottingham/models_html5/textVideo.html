@@ -120,37 +120,6 @@
 				$panel.addClass("x_floatRight");
 			}
 			
-			// transcript stuff
-			var transcriptTxt = x_currentPageXML.getAttribute("transcript");
-			if (transcriptTxt != undefined && transcriptTxt != "") {
-				$("#transcript")
-					.hide()
-					.html(x_addLineBreaks(transcriptTxt));
-				
-				$("#transcriptBtn")
-					.button({
-						icons:	{secondary:"fa fa-x-btn-hide"},
-						label:	(x_currentPageXML.getAttribute("transcriptTabTxt") != undefined ? x_currentPageXML.getAttribute("transcriptTabTxt") : "Transcript")
-					})
-					.attr("aria-expanded", false)
-					.click(function() {
-						$this = $(this);
-						if ($this.attr("aria-expanded") == "false") {
-							$("#transcript").slideDown();
-							$this
-								.attr("aria-expanded", true)
-								.button({icons: {secondary:"fa fa-x-btn-show"}});
-						} else {
-							$("#transcript").slideUp();
-							$this
-								.attr("aria-expanded", false)
-								.button({icons: {secondary:"fa fa-x-btn-hide"}});
-						}
-					});
-			} else {
-				$("#transcriptHolder").remove();
-			}
-			
 			var $pageVideo = $("#pageVideo"),
 				videoSrc = x_currentPageXML.getAttribute("url"),
 				ratio = x_currentPageXML.getAttribute("iframeRatio"),
