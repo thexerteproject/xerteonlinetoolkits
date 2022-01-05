@@ -23,9 +23,7 @@
 	var videoSynch = new function() {
 		var $infoHolder,
 			$pageContents,
-			viewed = 0,
-			lastMileStone = 0,
-			blocks = new Array();
+			videoState;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -279,7 +277,27 @@
 		}
 		
         this.leavePage = function () {
-
+			videoState.segment.end = videoState.lastTime || -1;
+		    addSegment(videoState);
+            $(".embed").each(function() {
+                $(this).data("popcornInstance").pause();
+            });
+			if (this.popcornInstance != null) {
+				this.removeEvents();
+				this.popcornInstance.destroy();
+			}
+            if (videoState == undefined)
+			{
+                videoState = {
+                    duration: this.popcornInstance.duration() || 0,
+                    synchName: "video",
+                    watched: [],
+                    segments:[]
+                };
+			}
+			var progress = XThelperDetermineProgress(videoState) * 100.0;
+			XTSetPageScore(x_currentPage, progress);
+			XTVideo(x_currentPage, trackinglabel, "", "exit", videoState, x_currentPageXML.getAttribute("grouping"));
         };
 	}
 	

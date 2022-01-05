@@ -24,9 +24,7 @@
 		var videoState;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			if ($("#pageVideo").hasClass('iframe') != true) {
-				this.loadVideo();
-			}
+			
 		}
 		
 		// function called every time the size of the LO is changed
@@ -245,18 +243,6 @@
 				this.removeEvents();
 				this.popcornInstance.destroy();
 			}
-		}
-		
-		this.loadVideo = function() {
-			var $video = $("#pageVideo");
-			$video.mediaPlayer({
-				type			:"video",
-				source			:$video.data("src"),
-				width			:Number($video.data("dimensions")[0]),
-				height			:Number($video.data("dimensions")[1]),
-				startEndFrame	:$video.data("startEndFrame"),
-				title			:x_currentPageXML.getAttribute("tip")
-			});
 		}
 	}
 	
