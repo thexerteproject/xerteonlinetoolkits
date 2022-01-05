@@ -687,7 +687,6 @@
                 }
                 $trackBarSlider.offset({left: e.pageX});
                 mp.currentTime(mp.duration() * (e.offsetX / $trackBarRail.width()));
-                mp.pause();
             });
             $playButton.on('click', function(e){
                 if(isPlaying) {
