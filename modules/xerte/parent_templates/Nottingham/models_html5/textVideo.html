@@ -22,9 +22,10 @@
 	// other functions for model should also be in here to avoid conflicts
 	var textVideo = new function() {
 		var videoState;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
+			this.setUp();
 		}
 		
 		// function called every time the size of the LO is changed
