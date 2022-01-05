@@ -22,9 +22,11 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var youtube = new function() {
+		var videoState;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-
+			this.setUp();
 		};
 
 		// function called every time the size of the LO is changed
@@ -154,6 +156,7 @@
             {
                 trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
             }
+			XTSetPageType(x_currentPage, 'numeric', 0 , 1);
 			XTVideo(x_currentPage, trackinglabel, "", "initialized", 35, x_currentPageXML.getAttribute("grouping"));
 		}
 
@@ -174,6 +177,16 @@
 				videoState = addTrackingOnEnded(youtube.popcornInstance, videoState);
 			});
 		}
+
+		this.removeEvents = function() {
+			if (this.popcornInstance) {
+				this.popcornInstance.off("timeupdate");
+				this.popcornInstance.off("play");
+				this.popcornInstance.off("pause");
+				this.popcornInstance.off("seeked");
+				this.popcornInstance.off("ended");
+			}
+        };
 
 		this.parseIframeCode = function(code, params) {
 			var parts = code.split(' ');
@@ -202,6 +215,32 @@
 			}
 			return params;
 		};
+	};
+
+	this.leavePage = function () {
+		debugger;
+		videoState.segment.end = videoState.lastTime || -1;
+		addSegment(videoState);
+		$(".embed").each(function() {
+			$(this).data("popcornInstance").pause();
+		});
+		if (this.popcornInstance != null) {
+			this.removeEvents();
+			this.popcornInstance.destroy();
+		}
+		if (videoState == undefined)
+		{
+			videoState = {
+				duration: this.popcornInstance.duration() || 0,
+				synchName: "video",
+				watched: [],
+				segments:[]
+			};
+		}
+		debugger;
+		var progress = XThelperDetermineProgress(videoState) * 100.0;
+		XTSetPageScore(x_currentPage, progress);
+		XTVideo(x_currentPage, trackinglabel, "", "exit", videoState, x_currentPageXML.getAttribute("grouping"));
 	};
 
 	youtube.init();
