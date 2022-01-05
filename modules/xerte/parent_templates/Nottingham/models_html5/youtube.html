@@ -157,7 +157,7 @@
                 trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
             }
 			XTSetPageType(x_currentPage, 'numeric', 0 , 1);
-			XTVideo(x_currentPage, trackinglabel, "", "initialized", 35, x_currentPageXML.getAttribute("grouping"));
+			XTVideo(x_currentPage, trackinglabel, "", "initialized", videoState, x_currentPageXML.getAttribute("grouping"));
 		}
 
 		this.addEvents = function(popcornInstance) {
