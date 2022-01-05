@@ -39,7 +39,7 @@
 				$captionAtStart.show();
 			}
 
-			this.loadVideo();
+			this.setUp();
 		}
 
 		// function called every time the size of the LO is changed
@@ -275,6 +275,16 @@
 				videoState = addTrackingOnEnded(videoSynch.popcornInstance, videoState);
 			});
 		}
+
+		this.removeEvents = function() {
+			if (this.popcornInstance) {
+				this.popcornInstance.off("timeupdate");
+				this.popcornInstance.off("play");
+				this.popcornInstance.off("pause");
+				this.popcornInstance.off("seeked");
+				this.popcornInstance.off("ended");
+			}
+        };
 		
         this.leavePage = function () {
 			videoState.segment.end = videoState.lastTime || -1;
