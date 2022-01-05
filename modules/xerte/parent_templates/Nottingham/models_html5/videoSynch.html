@@ -227,9 +227,42 @@
 
 		this.addEvents = function(popcornInstance) {
 			popcornInstance.on( "timeupdate", function() {
-				videoState = addTrackingOnTimeUpdate(videoSynch.popcornInstance, videoState);
-				videoSynch.timeUpdate(popcornInstance, popcornInstance.currentTime());
-				
+				var $captions 	= $($pageContents.data("captions")),
+				pause 		= x_currentPageXML.getAttribute("pause"),
+				erase    	= x_currentPageXML.getAttribute("erase"),
+				pop 		= videoSynch.popcornInstance;
+
+				videoState = addTrackingOnTimeUpdate(pop, videoState);
+
+				$captions.each(function(){
+					var $thisCaption = $(this);
+					if (erase == "False") {
+						if (pop.currentTime() > $thisCaption.data("synch")) {
+							if ($thisCaption.is(":hidden") == true) {
+								$thisCaption.show();
+								$thisCaption[0].scrollIntoView(true);
+
+								if (pause == "True") {
+									pop.pause();
+								}
+							}
+						} else {
+							$thisCaption.hide();
+						}
+					} else {
+						if (pop.currentTime() > $thisCaption.data("synch") && (pop.currentTime() < $thisCaption.next().data("synch") || $thisCaption.data("synch") && this == $captions.last()[0])) {
+							if ($thisCaption.is(":hidden") == true) {
+								$thisCaption.show();
+								
+								if (pause == "True") {
+									pop.pause();
+								}
+							}
+						} else {
+							$thisCaption.hide();
+						}
+					}
+				});
 			});
 			popcornInstance.on( "play", function() {
 				videoState = addTrackingOnPlay(videoSynch.popcornInstance, videoState);
@@ -245,59 +278,9 @@
 			});
 		}
 		
-		// function called from mediaPlayer.js when video player has been set up
-		this.mediaFunct = function(mediaElement, mediaSrc, eventType, data) {
-			if (mediaSrc != "vimeo") {
-				$pageContents.data("mediaElement", mediaElement);
-				
-			} else {
-				// VIMEO
-				if (eventType == "playProgress") {
-					videoSynch.timeUpdate(mediaElement, data, mediaSrc);
-				}
-			}
-		}
-
         this.leavePage = function () {
 
         };
-
-		this.timeUpdate = function(mediaElement, currentTime) {
-			var $captions 	= $($pageContents.data("captions")),
-				pause 		= x_currentPageXML.getAttribute("pause"),
-				erase    	= x_currentPageXML.getAttribute("erase"),
-				duration    = mediaElement.duration;
-
-            $captions.each(function(){
-				var $thisCaption = $(this);
-				if (erase == "False") {
-					if (currentTime > $thisCaption.data("synch")) {
-						if ($thisCaption.is(":hidden") == true) {
-							$thisCaption.show();
-							$thisCaption[0].scrollIntoView(true);
-
-							if (pause == "True") {
-								mediaElement.pause();
-							}
-						}
-					} else {
-						$thisCaption.hide();
-					}
-				} else {
-					if (currentTime > $thisCaption.data("synch") && (currentTime < $thisCaption.next().data("synch") || $thisCaption.data("synch") && this == $captions.last()[0])) {
-						if ($thisCaption.is(":hidden") == true) {
-							$thisCaption.show();
-							
-							if (pause == "True") {
-								mediaElement.pause();
-							}
-						}
-					} else {
-						$thisCaption.hide();
-					}
-				}
-			});
-		}
 	}
 	
 	videoSynch.init();
