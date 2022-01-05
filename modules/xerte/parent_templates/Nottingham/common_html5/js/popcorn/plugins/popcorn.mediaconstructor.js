@@ -196,7 +196,7 @@ this.addTrackingOnTimeUpdate = function(popcornInstance, videoState){
     var time = popcornInstance.currentTime();
     if (videoState.lastTime != time && time > 0) {
         videoState.prevTime = videoState.lastTime;
-        videoState.lastTime = videoState.time;
+        videoState.lastTime = time;
     }
     return videoState;
 }
