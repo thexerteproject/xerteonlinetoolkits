@@ -230,15 +230,11 @@ function getTemplates($metadataPrefix,$from,$until) {
     {
         $currentTemplate = $templates[$i];
         $tempMetaData = call_user_func(get_meta_data,$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"]);
-        if($tempMetaData->domain == 'unknown' or $tempMetaData->level == "unknown"){
-            //echo "Public record without metadata specified.";
-        }
-        else
-        {
+        if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown"){
             $currentRecord = call_user_func(makeRecordFromTemplate,$metadataPrefix,$currentTemplate, $tempMetaData);
             $tmpRecords[] = $currentRecord;
-            //$tmpTemplates[] = $currentTemplate;
         }
+        
     }
 
     //$response->templates = $tmpTemplates;
