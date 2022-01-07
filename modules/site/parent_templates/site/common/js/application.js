@@ -498,6 +498,10 @@ function setup() {
 				name.find('[style*="font-size"]').css('font-size', '');
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
 			}
+			
+			if ($(this).attr('pageLink') != undefined && $(this).attr('pageLink') != '') {
+				name = $(this).attr('pageLink');
+			}
 
 			var $link = $('<li class=""><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
 			$link.find('a').append(name);
