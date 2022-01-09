@@ -32,7 +32,7 @@ include "../screen_size_library.php";
 include "../template_status.php";
 
 if(is_numeric($_POST['tutorial_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
+    if(isset($_SESSION['toolkits_logon_id'])) {
         $database_id = database_connect("screen size database connect success", "screen size database connect failed");
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
