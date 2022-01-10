@@ -424,6 +424,7 @@ class OAIServer
             // TECHNICAL - location
 
             $technical_node = $this->response->addChild($schema_node, 'technical');
+            $this->response->addChild($technical_node,'format','text/html');
             $location = $record['metadata']['misc']['location'];
             $this->response->addChild($technical_node, 'location', $location);
 
