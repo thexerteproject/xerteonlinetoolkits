@@ -29,6 +29,7 @@
 		this.pageChanged = function() {
 			// refresh media if the current info showing is audio/video
 			if ($("#mainInfoHolder #pageVideo:not('.iframe')").length > 0) {
+				$("#mainInfoHolder #pageVideo:not('.iframe')").html("");
 				this.loadVideo($("#mainInfoHolder #pageVideo"));
 			} else if ($("#mainInfoHolder #pageAudio").length > 0) {
 				this.loadAudio($("#mainInfoHolder #pageAudio"));

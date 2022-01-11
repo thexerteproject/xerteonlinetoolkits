@@ -54,6 +54,8 @@
 			var $textHolder = $("#textHolder"),
 				$panel = $("#pageContents .panel");
 
+			$("#pageVideo").html("");
+
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			$panel.addClass("x_floatRight");
 
@@ -132,9 +134,9 @@
 					audioImageTip: ""
 				}, true);
 
-				this.initTracking();
-				this.addEvents(this.popcornInstance);	
-				resizeEmbededMedia($(".popcornMedia.embed"), {width: iframe.width, height: iframe.height})
+			this.initTracking();
+			this.addEvents(this.popcornInstance);	
+			resizeEmbededMedia($(".popcornMedia.embed"), {width: iframe.width, height: iframe.height})
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
