@@ -22,8 +22,8 @@
 	// other functions for model should also be in here to avoid conflicts
 	
 	var perspectives = new function() {
-		var popcornInstance,
-			videoState;
+		var videoState;
+			
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -720,25 +720,8 @@
 				$this.height($this.prev().height());
 			});
 		}
-	}
-	
-	//tweak for outscaled thumbnails when returned from video-full-screen for mp4
-	MediaElementPlayer.prototype.exitFullScreen_org = MediaElementPlayer.prototype.exitFullScreen;
-	MediaElementPlayer.prototype.exitFullScreen = function() {
-		$("#thumbHolder .thumbVideo video").each(function() {
-			var tmp_width = $(this.parentElement.parentElement.parentElement.parentElement).width();
-			var tmp_height = $(this.parentElement.parentElement.parentElement.parentElement).height();
-			var tmp_elem = this;
-			for (var i = 0; i < 5; i++) {
-				$(tmp_elem).width(tmp_width);
-				$(tmp_elem).height(tmp_height);
-				tmp_elem = tmp_elem.parentElement;
-			}
-		});
-		this.exitFullScreen_org();
-	}
 
-	this.leavePage = function () {
+		this.leavePage = function () {
 			videoState.segment.end = videoState.lastTime || -1;
 			addSegment(videoState);
 			$(".embed").each(function() {
@@ -761,6 +744,23 @@
 			XTSetPageScore(x_currentPage, progress);
 			XTVideo(x_currentPage, trackinglabel, "", "exit", videoState, x_currentPageXML.getAttribute("grouping"));
 		};
+	}
+	
+	//tweak for outscaled thumbnails when returned from video-full-screen for mp4
+	MediaElementPlayer.prototype.exitFullScreen_org = MediaElementPlayer.prototype.exitFullScreen;
+	MediaElementPlayer.prototype.exitFullScreen = function() {
+		$("#thumbHolder .thumbVideo video").each(function() {
+			var tmp_width = $(this.parentElement.parentElement.parentElement.parentElement).width();
+			var tmp_height = $(this.parentElement.parentElement.parentElement.parentElement).height();
+			var tmp_elem = this;
+			for (var i = 0; i < 5; i++) {
+				$(tmp_elem).width(tmp_width);
+				$(tmp_elem).height(tmp_height);
+				tmp_elem = tmp_elem.parentElement;
+			}
+		});
+		this.exitFullScreen_org();
+	}
 	
 	perspectives.init();
 	
