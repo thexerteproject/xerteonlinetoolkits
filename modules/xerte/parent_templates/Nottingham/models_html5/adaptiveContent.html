@@ -3196,27 +3196,34 @@
           //$(printableItems).find(".panel").css("box-shadow", "none !important");
           $("#adaptiveContent .panel").addClass("panel-print");
           $("#adaptiveContent .panel").removeClass("panel");
-          $(".panel-print").css("width", "1150px");
+          $(".panel-print").css("width", "794px");
+          $(".panel-print").css("height", "210px");
           $(".summary-container").css("display", "block");
           $(".graph-container").css("float", "unset");
           $(".graph-container").css("width", "100%");
           $("canvas").css("width", "100%");
           $("canvas").css("height", "100%");
+          $("p").css("font-size", "16px");
+          $("ul").css("font-size", "16px");
           let opt = {
               filename: 'xerte-adaptive-content.pdf',
               jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
-          html2pdf().set(opt).from($("#adaptiveContent")[0]).save();
+          html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
+            $("#adaptiveContent .panel-print").addClass("panel");
+            $("#adaptiveContent .panel").removeClass("panel-print");
+            $(".panel").css("width", "100%");
+            $(".panel").css("height", "fit-content");
+            $(".summary-container").css("display", "flex");
+            $(".graph-container").css("float", "graph");
+            $(".graph-container").css("width", "45%");
+            $("canvas").css("width", "100%");
+            $("canvas").css("height", "100%");
+            $("p").css("font-size", "2.5vmin");
+            $("ul").css("font-size", "2.5vmin");
+          }).save();
           // Wait 10 seconds before placing the class back. This should be refactored at some point.
-          await new Promise(resolve => setTimeout(resolve, 10000));
-          $("#adaptiveContent .panel-print").addClass("panel");
-          $("#adaptiveContent .panel").removeClass("panel-print");
-          $(".panel").css("width", "100%");
-          $(".summary-container").css("display", "flex");
-          $(".graph-container").css("float", "graph");
-          $(".graph-container").css("width", "45%");
-          $("canvas").css("width", "100%");
-          $("canvas").css("height", "100%");
+          //await new Promise(resolve => setTimeout(resolve, 10000));
       });
       $("#adaptiveContentMain").addClass("unlisted");
       $("#introductionText").html(
