@@ -2529,7 +2529,7 @@
       );
 
       div.append(
-        "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>"
+        "<div class='graph'><canvas aria-live='polite'></canvas></div>"
       );
       if (showExplanation == "true" && Explanation != "") {
         div.append(
@@ -3196,6 +3196,9 @@
           //$(printableItems).find(".panel").css("box-shadow", "none !important");
           $("#adaptiveContent .panel").addClass("panel-print");
           $("#adaptiveContent .panel").removeClass("panel");
+          $(".panel-print").css("width", "1070px");
+          $("canvas").css("width", "100%");
+          $("canvas").css("height", "100%");
           let opt = {
               filename: 'xerte-adaptive-content.pdf',
               jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
@@ -3205,6 +3208,9 @@
           await new Promise(resolve => setTimeout(resolve, 10000));
           $("#adaptiveContent .panel-print").addClass("panel");
           $("#adaptiveContent .panel").removeClass("panel-print");
+          $(".panel").css("width", "100%");
+          $("canvas").css("width", "100%");
+          $("canvas").css("height", "100%");
       });
       $("#adaptiveContentMain").addClass("unlisted");
       $("#introductionText").html(
