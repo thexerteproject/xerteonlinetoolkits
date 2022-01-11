@@ -22,6 +22,9 @@
 	// other functions for model should also be in here to avoid conflicts
 	
 	var perspectives = new function() {
+		var popcornInstance,
+			videoState;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			// refresh media if the current info showing is audio/video
@@ -70,8 +73,25 @@
 				}
 			});
 		}
+
+		this.init = function() 
+		{
+			var popLocation = "common_html5/js/popcorn/"
+			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
+			var i = 0;
+			scriptsToLoad.forEach(function(file){
+				$.getScript(x_templateLocation + popLocation + file + ".js")
+					.done(function(){
+							if (++i >= scriptsToLoad.length)
+								perspectives.setUp();
+						})
+					.fail(function( jqxhr, settings, exception ) {
+							console.log("Failed to load plugin:" + exception);
+						});
+			});
+		}
 		
-		this.init = function() {
+		this.setUp = function() {
 			var $thumbBar = $("#thumbBar"),
 				$thumbHolder = $("#thumbHolder"),
 				$mainInfoHolder = $("#mainInfoHolder"),
@@ -236,8 +256,8 @@
 										"dimensions": [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5]
 									})
 									.attr("disabled", "disabled");
-								
-								perspectives.loadVideo($thisVideo);
+
+								//perspectives.loadVideo($thisVideo);
 								
 							} else {
 								imgSrc = x_templateLocation + "common_html5/video.jpg";
@@ -345,8 +365,8 @@
 									});
 								
 							} else { // movie
+								// if movie
 								var videoTip = $this.find(".thumbMedia").data("videoTip");
-								
 								if (thisData.getAttribute("src").substr(0,7) == "<iframe") {
 									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '" class="iframe">' + thisData.getAttribute("src") + '</div>');
 									
@@ -371,7 +391,7 @@
 										"src": thisData.getAttribute("src"),
 										"dimensions": videoDimensions
 									});
-									
+
 									perspectives.loadVideo($thisVideo, playAll);
 								}
 							}
@@ -516,6 +536,61 @@
 			x_pageLoaded();
 		}
 		
+		this.initTracking = function(){
+			videoState = {
+				time: 0,
+				lastTime: 0,
+				prevTime: 0,
+				duration: this.popcornInstance.duration() || 0,
+				synchName: "video",
+				watched: [],
+				segments: [],
+				segment: {start: 0, end: -1}
+			}
+			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+            }
+			XTSetPageType(x_currentPage, 'numeric', 0 , 1);
+			XTVideo(x_currentPage, trackinglabel, "", "initialized", videoState, x_currentPageXML.getAttribute("grouping"));
+		}
+
+		this.addEvents = function(popcornInstance) {
+			popcornInstance.on( "timeupdate", function() {
+				videoState = addTrackingOnTimeUpdate(perspectives.popcornInstance, videoState);
+			});
+			popcornInstance.on( "play", function() {
+				videoState = addTrackingOnPlay(perspectives.popcornInstance, videoState);
+			});
+			popcornInstance.on( "pause", function() {
+				videoState = addTrackingOnPause(perspectives.popcornInstance, videoState);
+			});
+			popcornInstance.on( "seeked", function() {
+				videoState = addTrackingOnSeeked(perspectives.popcornInstance, videoState);
+			});
+			popcornInstance.on( "ended", function() {
+				videoState = addTrackingOnEnded(perspectives.popcornInstance, videoState);
+				if ($("#pageContents").data("playAll") == true) {
+					if ($("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").length > 0) {
+						$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+					} else {
+						$("#pageContents").data("playAll", false);
+					}
+				}
+			});
+		}
+
+		this.removeEvents = function() {
+			if (this.popcornInstance) {
+				this.popcornInstance.off("timeupdate");
+				this.popcornInstance.off("play");
+				this.popcornInstance.off("pause");
+				this.popcornInstance.off("seeked");
+				this.popcornInstance.off("ended");
+			}
+        };
+
 		this.loadImage = function($img, maxDimensions, src, playAll, audioFunc) {
 			$img
 				.css({ // stops flicker on 1st load of image
@@ -565,18 +640,37 @@
 		}
 		
 		this.loadVideo = function($video, playAll) {
-			$video.mediaPlayer({
-				type: "video",
-				source: $video.data("src"),
-				width: ($video.data("width") != "fixed" ? $video.data("dimensions")[0] : Number($video.data("dimensions")[0])),
-				height: ($video.data("width") != "fixed" ? $video.data("dimensions")[1] : Number($video.data("dimensions")[1])),
-				pageName: "perspectives"
-			});
+			this.popcornInstance = loadMedia($("#pageVideo"), "video",
+				{	tip: x_currentPageXML.getAttribute("tip"),
+					width: ($video.data("width") != "fixed" ? $video.data("dimensions")[0] : Number($video.data("dimensions")[0])),
+					height: ($video.data("width") != "fixed" ? $video.data("dimensions")[1] : Number($video.data("dimensions")[1])),
+					media: $video.data("src"),
+					autoplay: "false",
+					aspect: "",
+					transcript: undefined,
+					transcriptBtnTxt: "",
+					audioImage: undefined,
+					audioImageTip: ""
+				}, true);
+
+			this.initTracking();
+			this.addEvents(this.popcornInstance);	
+			resizeEmbededMedia($(".popcornMedia.embed"), {width: $video.data("dimensions")[0], height: $video.data("dimensions")[1]})
+
+			// $video.mediaPlayer({
+			// 	type: "video",
+			// 	source: $video.data("src"),
+			// 	width: ($video.data("width") != "fixed" ? $video.data("dimensions")[0] : Number($video.data("dimensions")[0])),
+			// 	height: ($video.data("width") != "fixed" ? $video.data("dimensions")[1] : Number($video.data("dimensions")[1])),
+			// 	pageName: "perspectives"
+			// });
 			
 			this.thumbsCovers();
 			
 			if (playAll) perspectives.playAll($video);
 		}
+
+		
 		
 		this.playAll = function($media) {
 			$(".playAll").addClass("playing");
@@ -589,19 +683,6 @@
 			} else {
 				setTimeout(function(){$media.find("audio")[0].player.play();}, 0);
 			}
-		}
-		
-		// function called from mediaPlayer.js when media player has been set up
-		this.mediaFunct = function(mediaElement) {
-			mediaElement.addEventListener("ended", function(e) {
-				if ($("#pageContents").data("playAll") == true) {
-					if ($("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").length > 0) {
-						$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
-					} else {
-						$("#pageContents").data("playAll", false);
-					}
-				}
-			});
 		}
 		
 		this.checkIfBtnsNeeded = function() {
@@ -656,6 +737,30 @@
 		});
 		this.exitFullScreen_org();
 	}
+
+	this.leavePage = function () {
+			videoState.segment.end = videoState.lastTime || -1;
+			addSegment(videoState);
+			$(".embed").each(function() {
+				$(this).data("popcornInstance").pause();
+			});
+			if (this.popcornInstance != null) {
+				this.removeEvents();
+				this.popcornInstance.destroy();
+			}
+			if (videoState == undefined)
+			{
+				videoState = {
+					duration: this.popcornInstance.duration() || 0,
+					synchName: "video",
+					watched: [],
+					segments:[]
+				};
+			}
+			var progress = XThelperDetermineProgress(videoState) * 100.0;
+			XTSetPageScore(x_currentPage, progress);
+			XTVideo(x_currentPage, trackinglabel, "", "exit", videoState, x_currentPageXML.getAttribute("grouping"));
+		};
 	
 	perspectives.init();
 	
