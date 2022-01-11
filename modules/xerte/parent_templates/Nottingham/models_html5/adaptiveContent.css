@@ -99,7 +99,7 @@ li.select-interaction.selected {
 }
 
 .graph-container {
-  /* width: 45%; */
+  width: 45%;
   float: right;
   display: inline-flex;
 }
@@ -139,10 +139,10 @@ li.select-interaction.selected {
 .panel.legend p{
 	font-size: 1.75vmin;
 }
+
 .graph-container-wide {
   width: 100%;
 }
-
 
 .graph {
   display: inline-block;
