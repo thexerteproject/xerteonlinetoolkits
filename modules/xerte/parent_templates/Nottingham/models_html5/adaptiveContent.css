@@ -99,33 +99,50 @@ li.select-interaction.selected {
 }
 
 .graph-container {
-  width: 45%;
+  /* width: 45%; */
   float: right;
   display: inline-flex;
-}
-
-@media (max-width: 900px) {
-  .graph-container {
-    width: 100%;
-    margin-top: 1rem;
-  }
-  .summary-container {
-    width: 100%;
-    display: inline-block;
-  }
-  .graph-container fieldset.noStyle {
-    width: 100%;
-  }
-}
-
-.graph-container-wide {
-  width: 100%;
 }
 
 .graph-container fieldset.noStyle {
   width: 50%;
   float: left;
 }
+
+.graph-container-wide fieldset.noStyle {
+  width: 100%;
+  float: unset;
+}
+
+@media (max-width: 1200px) {
+  .summary-container {
+    display: block;
+  }
+  .graph-container {
+    width: 100%;
+    float: unset;
+    margin-top: 1rem;
+  }
+  .summary {
+    width: 100%;
+    /* display: inline-block; */
+  }
+  .graph-container fieldset.noStyle {
+    width: 100%;
+  }
+}
+
+.panel.legend {
+	width: 35% !important;
+}
+
+.panel.legend p{
+	font-size: 1.75vmin;
+}
+.graph-container-wide {
+  width: 100%;
+}
+
 
 .graph {
   display: inline-block;
