@@ -519,7 +519,7 @@ class OAIServer
             $entry_node = $this->response->addChild($taxon_node, 'entry');
             $domain = $record['metadata']['classification']['domain'];
             $langstring_node = $this->response->addChild($entry_node, 'langstring', $domain);
-            $langstring_node->setAttribute("xml:lang", $language);
+            $langstring_node->setAttribute("xml:lang", "nl");
 
             // CLASSIFICATION education - level
 
@@ -543,7 +543,7 @@ class OAIServer
             $entry_node = $this->response->addChild($taxon_node, 'entry');
             $level = $record['metadata']['classification']['level'];
             $langstring_node = $this->response->addChild($entry_node, 'langstring', $level);
-            $langstring_node->setAttribute("xml:lang", $language);
+            $langstring_node->setAttribute("xml:lang", 'nl');
 
             // CLASSIFICATION accesrights
             $classification_node = $this->response->addChild($schema_node, 'classification');
