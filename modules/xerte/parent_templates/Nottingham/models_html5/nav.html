@@ -316,7 +316,7 @@
 						
 					// uploaded video / youtube / vimeo
 					} else if (fileExt == "mp4" || x_isYouTubeVimeo(this.getAttribute("url")) != false) {
-						$media = $('<div id="myDiv" class="navMedia video"></div>');
+						$media = $('<div id="navMedia_' + i + '" class="navMedia video"></div>');
 						
 						$media.data({
 							source: this.getAttribute("url"),
@@ -501,7 +501,6 @@
 		}
 
 		this.initTracking = function(){
-
 			videoState = {
 				time: 0,
 				lastTime: 0,
