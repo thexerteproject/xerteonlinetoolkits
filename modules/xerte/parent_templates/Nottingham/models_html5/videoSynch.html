@@ -293,9 +293,11 @@ var videoSynch = new function() {
 		$(".embed").each(function() {
 			$(this).data("popcornInstance").pause();
 		});
+
 		if (this.popcornInstance != null) {
 			this.removeEvents();
 			this.popcornInstance.destroy();
+			this.popcornInstance = undefined;
 		}
 		if (videoState == undefined)
 		{

@@ -22,8 +22,8 @@
 	// other functions for model should also be in here to avoid conflicts
 	
 	var perspectives = new function() {
-		var videoState;
-			
+		var videoState,
+			popcornInstances;			
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -668,10 +668,8 @@
 			
 			this.thumbsCovers();
 			
-			if (playAll) perspectives.playAll($video);
+			if (playAll) perspectives.playAll($("#pageVideo"));
 		}
-
-		
 		
 		this.playAll = function($media) {
 			$(".playAll").addClass("playing");
@@ -680,7 +678,7 @@
 					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
 				}, (x_currentPageXML.getAttribute("playImgTime") != undefined && x_currentPageXML.getAttribute("playImgTime") != 0 ? Number(x_currentPageXML.getAttribute("playImgTime")) : 5) * 1000);
 			} else if ($media.is($("#pageVideo"))) {
-				setTimeout(function(){$media.find("video")[0].player.play();}, 0);
+				setTimeout(function(){perspectives.popcornInstance.play()}, 0);
 			} else {
 				setTimeout(function(){$media.find("audio")[0].player.play();}, 0);
 			}
