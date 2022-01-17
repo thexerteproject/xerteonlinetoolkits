@@ -657,14 +657,6 @@
 			this.initTracking();
 			this.addEvents(this.popcornInstance);	
 			resizeEmbededMedia($(".popcornMedia.embed"), {width: $video.data("dimensions")[0], height: $video.data("dimensions")[1]})
-
-			// $video.mediaPlayer({
-			// 	type: "video",
-			// 	source: $video.data("src"),
-			// 	width: ($video.data("width") != "fixed" ? $video.data("dimensions")[0] : Number($video.data("dimensions")[0])),
-			// 	height: ($video.data("width") != "fixed" ? $video.data("dimensions")[1] : Number($video.data("dimensions")[1])),
-			// 	pageName: "perspectives"
-			// });
 			
 			this.thumbsCovers();
 			
@@ -678,7 +670,7 @@
 					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
 				}, (x_currentPageXML.getAttribute("playImgTime") != undefined && x_currentPageXML.getAttribute("playImgTime") != 0 ? Number(x_currentPageXML.getAttribute("playImgTime")) : 5) * 1000);
 			} else if ($media.is($("#pageVideo"))) {
-				setTimeout(function(){perspectives.popcornInstance.play()}, 0);
+				setTimeout(function(){perspectives.popcornInstance.play();}, 0);
 			} else {
 				setTimeout(function(){$media.find("audio")[0].player.play();}, 0);
 			}
