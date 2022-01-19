@@ -22,7 +22,6 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var youtube = new function() {
-		var videoState;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -131,64 +130,14 @@
 					transcript: undefined,
 					transcriptBtnTxt: "",
 					audioImage: undefined,
-					audioImageTip: ""
+					audioImageTip: "",
+					trackMedia: true
 				}, true);
-
-			this.initTracking();
-			this.addEvents(this.popcornInstance);	
 			resizeEmbededMedia($(".popcornMedia.embed"), {width: iframe.width, height: iframe.height})
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		};
-
-		this.initTracking = function(){
-			videoState = {
-				time: 0,
-				lastTime: 0,
-				prevTime: 0,
-				duration: this.popcornInstance.duration() || 0,
-				synchName: "video",
-				watched: [],
-				segments: [],
-				segment: {start: 0, end: -1}
-			}
-			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
-			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
-            {
-                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
-            }
-			XTSetPageType(x_currentPage, 'numeric', 0 , 1);
-			XTVideo(x_currentPage, trackinglabel, "", "initialized", videoState, x_currentPageXML.getAttribute("grouping"));
-		}
-
-		this.addEvents = function(popcornInstance) {
-			popcornInstance.on( "timeupdate", function() {
-				videoState = addTrackingOnTimeUpdate(youtube.popcornInstance, videoState);
-			});
-			popcornInstance.on( "play", function() {
-				videoState = addTrackingOnPlay(youtube.popcornInstance, videoState);
-			});
-			popcornInstance.on( "pause", function() {
-				videoState = addTrackingOnPause(youtube.popcornInstance, videoState);
-			});
-			popcornInstance.on( "seeked", function() {
-				videoState = addTrackingOnSeeked(youtube.popcornInstance, videoState);
-			});
-			popcornInstance.on( "ended", function() {
-				videoState = addTrackingOnEnded(youtube.popcornInstance, videoState);
-			});
-		}
-
-		this.removeEvents = function() {
-			if (this.popcornInstance) {
-				this.popcornInstance.off("timeupdate");
-				this.popcornInstance.off("play");
-				this.popcornInstance.off("pause");
-				this.popcornInstance.off("seeked");
-				this.popcornInstance.off("ended");
-			}
-        };
 
 		this.parseIframeCode = function(code, params) {
 			var parts = code.split(' ');
@@ -218,29 +167,9 @@
 			return params;
 		};
 
-		this.leavePage = function () {
-			videoState.segment.end = videoState.lastTime || -1;
-			addSegment(videoState);
-			$(".embed").each(function() {
-				$(this).data("popcornInstance").pause();
-			});
-			if (this.popcornInstance != null) {
-				this.removeEvents();
-				this.popcornInstance.destroy();
-			}
-			if (videoState == undefined)
-			{
-				videoState = {
-					duration: this.popcornInstance.duration() || 0,
-					synchName: "video",
-					watched: [],
-					segments:[]
-				};
-			}
-			var progress = XThelperDetermineProgress(videoState) * 100.0;
-			XTSetPageScore(x_currentPage, progress);
-			XTVideo(x_currentPage, trackinglabel, "", "exit", videoState, x_currentPageXML.getAttribute("grouping"));
-		};
+		this.leavePage = function() {
+			document.dispatchEvent(new Event('leavepage'));
+		}
 	};
 
 	youtube.init();
