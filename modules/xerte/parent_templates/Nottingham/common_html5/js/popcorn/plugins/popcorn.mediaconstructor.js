@@ -69,6 +69,12 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
                     + $("#" + $holder.attr("id") + " video").parents('.mejs-video').attr('id'));
             }
         }
+
+        if(mediaData.trackMedia)
+        {
+            var videoState = initVideoState();
+            addBasicTracking(popcornInstance, videoState);
+        }
         
     } else if (mediaType == "audio") {
         // load audio in panel - width is either with of audioImage (if exists) or full width of panel
@@ -144,8 +150,21 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     return popcornInstance;
 }
 
+this.initVideoState = function()
+{
+    return {
+        time: 0,
+        lastTime: 0,
+        prevTime: 0,
+        duration: -1,
+        synchName: "video",
+        watched: [],
+        segments: [],
+        segment: {start: 0, end: -1},
+    }
+}
+
 // sets the size of videos. width and height take precedence over ratio
-// Called using: resizeEmbededMedia($video, {ratio: 16 / 9})
 this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
     var $holder = $video.parent()
 
@@ -179,16 +198,32 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
     });
 };
 
-// Test if a segment is valid and significant enough to be added to the state.
-// if not, do nothing.
-this.addSegment = function(videoState) {
-    var segment = videoState.segment;
-    if (segment.start != -1 && segment.end != -1 && segment.start < segment.end && segment.end - segment.start > 0.5)
-    {
-        // Pushing copy of segment
-        var csegment = $.extend(true, {}, segment);
-        videoState.segments.push(csegment);
-    }
+// Adds XAPI tracking to the popcornInstance.
+this.addBasicTracking = function(popcornInstance, videoState) {
+
+    // Broadcast initialized verb for loaded video to xAPI.
+    XTVideo(x_currentPage, getTrackingLabel(), "", "initialized", videoState, x_currentPageXML.getAttribute("grouping"));
+
+    // Add callbacks on events for tracking.
+    popcornInstance.on( "timeupdate", function() {
+        videoState = addTrackingOnTimeUpdate(popcornInstance, videoState);
+    });
+    popcornInstance.on( "play", function() {
+        videoState = addTrackingOnPlay(popcornInstance, videoState);
+    });
+    popcornInstance.on( "pause", function() {
+        videoState = addTrackingOnPause(popcornInstance, videoState);
+    });
+    popcornInstance.on( "seeked", function() {
+        videoState = addTrackingOnSeeked(popcornInstance, videoState);
+    });
+    popcornInstance.on( "ended", function() {
+        videoState = addTrackingOnEnded(popcornInstance, videoState);
+    });
+
+    document.addEventListener('leavepage', function () { 
+        addTrackingOnLeavePage(popcornInstance, videoState); 
+    }, false);
 }
 
 // Timeupdates are only tracked for seeks and leavepage()
@@ -206,7 +241,7 @@ this.addTrackingOnPlay = function(popcornInstance, videoState){
     videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
     videoState.time = time;
-    XTVideo(x_currentPage, "", "", "played", videoState, x_currentPageXML.getAttribute("grouping"));
+    XTVideo(x_currentPage, getTrackingLabel(), "", "played", videoState, x_currentPageXML.getAttribute("grouping"));
     return videoState;
 }
 
@@ -214,10 +249,10 @@ this.addTrackingOnPause = function(popcornInstance, videoState){
     var time = popcornInstance.currentTime();
     videoState.time = time;
     videoState.segment.end = time;
-    this.addSegment(videoState);
+    addSegment(videoState);
     videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
-    XTVideo(x_currentPage, "", "", "paused", videoState, x_currentPageXML.getAttribute("grouping"))
+    XTVideo(x_currentPage, getTrackingLabel(), "", "paused", videoState, x_currentPageXML.getAttribute("grouping"))
     return videoState;
 }
 
@@ -225,10 +260,10 @@ this.addTrackingOnSeeked = function(popcornInstance, videoState){
     var time = popcornInstance.currentTime();
     videoState.time = time;
     videoState.segment.end = videoState.prevTime;
-    this.addSegment(videoState);
+    addSegment(videoState);
     videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
-    XTVideo(x_currentPage, "", "", "seeked", videoState, x_currentPageXML.getAttribute("grouping"));
+    XTVideo(x_currentPage, getTrackingLabel(), "", "seeked", videoState, x_currentPageXML.getAttribute("grouping"));
     return videoState;
 }
 
@@ -237,8 +272,65 @@ this.addTrackingOnEnded = function(popcornInstance, videoState){
     videoState.duration = popcornInstance.duration();
     videoState.time = time;
     videoState.segment.end = time;
-    this.addSegment(videoState);
+    addSegment(videoState);
     videoState.segment = {start: time, end: -1};
-    XTVideo(x_currentPage, "", "", "paused", videoState, x_currentPageXML.getAttribute("grouping"));
+    XTVideo(x_currentPage, getTrackingLabel(), "", "paused", videoState, x_currentPageXML.getAttribute("grouping"));
     return videoState;
+}
+
+this.addTrackingOnLeavePage = function(popcornInstance, videoState) {
+    // Add the latest segment to the state
+    videoState.segment.end = videoState.lastTime || -1;
+    addSegment(videoState);
+
+    // Determine the final score (noop results & xAPI tracking)
+    videoState.duration = popcornInstance.duration() || 0;
+    var progress = XThelperDetermineProgress(videoState) * 100.0;
+    XTSetPageType(x_currentPage, 'numeric', 0 , 1);
+    XTSetPageScore(x_currentPage, progress);
+
+    // Send the exit verb to XAPI
+    XTVideo(x_currentPage, getTrackingLabel(), "", "exit", videoState, x_currentPageXML.getAttribute("grouping"));
+
+    // Destroy this instance
+    if (popcornInstance) {
+        removeEvents(popcornInstance);
+        popcornInstance.destroy();
+    }
+}
+
+/*___HELPER FUNCTIONS___*/
+
+// Test if a segment is valid and significant enough to be added to the state.
+// if not, do nothing.
+function addSegment(videoState) {
+    var segment = videoState.segment;
+    if (segment.start != -1 && segment.end != -1 && segment.start < segment.end && segment.end - segment.start > 0.5)
+    {
+        // Pushing copy of segment
+        var csegment = $.extend(true, {}, segment);
+        videoState.segments.push(csegment);
+    }
+}
+
+// Removes popcorn events (when the instance is destroyed/page left)
+function removeEvents(popcornInstance) {
+    if (popcornInstance) {
+        popcornInstance.off("timeupdate");
+        popcornInstance.off("play");
+        popcornInstance.off("pause");
+        popcornInstance.off("seeked");
+        popcornInstance.off("ended");
+    }
+};
+
+// Gets the trackinglabel of the current page.
+// This is either the page's name or (if set) a custom label.
+function getTrackingLabel() {
+    var trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+    if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+    {
+        trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+    }
+    return trackinglabel;
 }
