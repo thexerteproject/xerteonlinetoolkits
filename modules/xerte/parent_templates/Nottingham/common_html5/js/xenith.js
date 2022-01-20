@@ -1834,6 +1834,8 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 				if (page !== false) {
 					if (page != x_currentPage) {
 						x_changePage(page, addHistory);
+					} else {
+						x_doDeepLink();
 					}
 				} else {
 					x_deepLink = '';
