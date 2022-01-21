@@ -530,6 +530,7 @@
 				// work out the best layout that maximises size of images - three possibilities: single row, single column or 2x2 grid
 				// ** problems with this - it assumes all the images / series being viewed are same image size / proportions which isn't always the case
 				// ** also, does it work correctly when the images aren't forced to be as large as possible?
+				// ** single image scaling issues here too
 				if (currentView > 1) {
 					var ratio = $img.width() / $img.height();
 					
@@ -758,7 +759,7 @@
 				
 				// set up view menu
 				// if it's used then imgHolder is cloned as there can be more than one series shown at a time
-				if (x_currentPageXML.getAttribute('view') == 'true' && x_currentPageXML.getAttribute('viewNum') > 1) {
+				if (x_currentPageXML.getAttribute('view') == 'true' && x_currentPageXML.getAttribute('viewNum') > 1 && x_browserInfo.mobile != true) {
 					
 					var menuHtml = '<label for="cases">' + x_currentPageXML.getAttribute('viewLabel') + ':</label><span id="viewOption">';
 					for (var i=0; i<x_currentPageXML.getAttribute('viewNum'); i++) {
