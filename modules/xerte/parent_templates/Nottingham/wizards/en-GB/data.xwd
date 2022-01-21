@@ -171,7 +171,19 @@
 	  />]]></hotSpotQuestion><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left" attempts = "1"
   	  nextTxt="Next"
 	  priorTxt="Previous"
-	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" tip="Enter a Description for Accessibility"
+	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageSequence><![CDATA[<imageSequence name="Enter Page Title" text="Enter text for the page here" align="left" imgSize="auto"
+	  load="Loading image..." 
+	  load2="Loading images... {n}% completed" 
+	  resetLabel="Reset" 
+	  playLabel="Play" 
+	  pauseLabel="Pause" 
+	  infoLabel="Info" 
+	  magnifyLabel="Magnifier" 
+	  backLabel="Scroll back" 
+	  fwdLabel="Scroll forward" 
+	  viewLabel="View" 
+	  caseLabel="Case"
+	  />]]></imageSequence><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" tip="Enter a Description for Accessibility"
 	  moveTip="Move"
 	  zoomInTip="Zoom In"
 	  zoomOutTip="Zoom Out"
@@ -3365,7 +3377,141 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageviewer" label="Page Text" type="text" height="250" remove="true">
+	</lightboxGroup></iSpring><imageSequence menu="Media" menuItem="Image Sequence" hint="A page which animates a series of images in a sequence through scrolling. Image series can be displayed on their own or grouped with others into cases." icon="icImages" thumb="thumbs/imageSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageSequence" remove="true" deepLink="true">
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+	<text label="Page Text" type="TextArea" height="300" width="380"/>
+    <align label="Image Position" options="Left,Right" type="ComboBox" data="left,right" width="100"/>
+	<imgSize label="Image Size" options="Auto,Full Screen" type="ComboBox" data="auto,full" width="100" tooltip="When set to Full Screen, the images will show as large as possible - even if this means showing them larger than the original image size."/>
+	
+	<load label="Loading Image" type="TextInput" wysiwyg="true" language="true"/>
+	<load2 label="Loading Series" type="TextInput" wysiwyg="true" language="true"/>
+	<resetLabel label="Reset Label" type="TextInput" language="true"/>
+	<playLabel label="Play Label" type="TextInput" language="true"/>
+	<pauseLabel label="Pause Label" type="TextInput" language="true"/>
+	<infoLabel label="Info Label" type="TextInput" language="true"/>
+	<magnifyLabel label="Magnify Label" type="TextInput" language="true"/>
+	<backLabel label="Back Label" type="TextInput" language="true"/>
+	<fwdLabel label="Forward Label" type="TextInput" language="true"/>
+	<viewLabel label="View Label" type="TextInput" language="true"/>
+	<caseLabel label="Case Label" type="TextInput" language="true"/>
+	
+	<controlsGroup type="group" label="Control Buttons" optional="true" tooltip="Disable/enable the buttons that appear below each series or image">
+		
+		<reset label="Reset" type="checkbox" defaultValue="true" optional="true" tooltip="A button to reset to the first image in the series"/>
+		
+		<play label="Play" type="checkbox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A button to play the series"/>
+		<playSpeed label="Play Speed" type="NumericStepper" min="0.01" max="1" step="0.01" defaultValue="0.1" condition="play!='false'" optional="true" tooltip="Speed of the play animation"/>
+
+		<magnifier label="Magnifier" type="checkbox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A button to show the magnifier which zooms an area as the mouse is moved across the image"/>
+		<magnifierSize label="Magnifier Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
+		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
+		
+	</controlsGroup>
+	
+	<thumbH label="Thumbnail Bar Size" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" width="200" optional="true" tooltip="The size of the thumbnail images on the menu bar"/>
+	
+	<viewGroup type="group" label="View Menu" optional="true" tooltip="When a case contains more than one series or image, the view menu allows you to diplay more than one on screen at a time.">
+		<view label="Show" type="checkbox" defaultValue="true" optional="true"/>
+		<viewNum label="Max" type="NumericStepper" min="2" max="4" step="1" defaultValue="4" optional="true"/>
+		<viewDefault label="Default" type="NumericStepper" min="1" max="4" step="1" defaultValue="1" optional="true"/>
+	</viewGroup>
+	
+    <newNodes>
+      <case><![CDATA[<imgGroup name="Case Name" txt="Enter text here"></imgGroup>]]></case>
+	</newNodes>
+
+  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
+	</passwordGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup></imageSequence><case menuItem="Case" icon="icFolder" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<caseID label="Case ID" type="TextInput" optional="true" tooltip="Link directly to this case by giving it a unique ID"/>
+	
+	<newNodes>
+	  <imgSeries><![CDATA[<imgSeries name="Series Name" txt="Enter text here" src="Select an Image" tooltip="Enter a Description for Accessibility" firstImg="Select an Image" lastImg="Select an Image" cycleImages="false"></imgSeries>]]></imgSeries>	  
+	  <singleImg><![CDATA[<singleImg name="Image Name" txt="Enter text here" src="Select an Image" tooltip="Enter a Description for Accessibility"></singleImg>]]></singleImg>	  
+	</newNodes>
+	
+  </case><imgSeries menuItem="Series" icon="icPictures" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<thumbGroup type="group" label="Thumbnail Image" tooltip="The image that appears on the thumbnail bar menu if this case contains more than one series or image">
+		<src label="File" type="media"/>
+		<tooltip label="Description" type="TextInput"/>
+	</thumbGroup>
+	
+	<imgGroup type="group" label="Series Images" info="File names of images within the series must be identical, except for a number at the end which determines the image's position within the series.&lt;/br&gt;&lt;/br&gt;For example, in a series of 50 images the images could be called img1.jpg, img2.jpg, img3.jpg... img50.jpg.&lt;/br&gt;&lt;/br&gt;All images for the series must be in the same folder.">
+		<firstImg label="First Image" type="media" tooltip="The first image in the series"/>
+		<lastImg label="Last Image" type="media" mandatory="true" tooltip="The last image in the series"/>
+		<cycleImages label="Loop Images" type="checkBox" defaultValue="false" tooltip="When checked, the series will play in a loop instead of stopping at the last image"/>
+	</imgGroup>
+	
+	<initImg label="Initial Image" type="media" optional="true" tooltip="The first image shown when the series has loaded. By default this will be the first image but can can be changed to any image within the series with this optional property"/>
+	<seriesID label="Series ID" type="TextInput" optional="true" tooltip="Link directly to this series by giving it a unique ID"/>
+	
+  </imgSeries><singleImg menuItem="Single Image" icon="icPicture" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<thumbGroup type="group" label="Image">
+		<src label="File" type="media"/>
+		<tooltip label="Description" type="TextInput"/>
+	</thumbGroup>
+	
+	<seriesID label="Image ID" type="TextInput" optional="true" tooltip="Link directly to this image by giving it a unique ID"/>
+	
+  </singleImg><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageviewer" label="Page Text" type="text" height="250" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>

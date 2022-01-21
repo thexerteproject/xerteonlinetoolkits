@@ -1,0 +1,1307 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	
+	var imageSequence = new function() {
+		
+		var allCases = [],
+			currentView = 1, // no. of series currently being viewed
+			imgNum = 0, // which image is currently being targetted?
+			lastLoaded, // which image was most recently loaded?
+			
+			currentCase = false,
+			currentSeries = [],
+			currentImg = [],
+			numImgs = [],
+			imgs = [];
+		
+		// Called from xenith if case level deeplinking is available
+		this.deepLink = function(item) {
+			var items = item.split(","),
+				tempCase, tempSeries;
+			
+			for (var i=0; i<items.length; i++) {
+				// check for matching case (or series if deeplink is an id that matches a series id)
+				if (i == 0) {
+					// check case index
+					if ($.isNumeric(items[i]) && allCases.length-1 >= items[i]) {
+						tempCase = items[i];
+						
+					} else {
+						for (var j=0; j<allCases.length; j++) {
+							// check case ID
+							if (allCases[j].id != undefined && allCases[j].id.toLowerCase() == items[i].toLowerCase()) {
+								tempCase = j;
+								break;
+								
+							} else {
+								// check series ID
+								for (var k=0; k<allCases[j].children.length; k++) {
+									if (allCases[j].children[k].id != undefined && allCases[j].children[k].id.toLowerCase() == items[i].toLowerCase()) {
+										tempCase = j;
+										tempSeries = k;
+										break;
+									}
+								}
+								
+								if (tempSeries != undefined) {
+									break;
+								}
+							}
+						}
+					}
+				
+				// check for matching series within the case that's already found
+				} else if (i > 0 && tempCase != undefined && tempSeries == undefined) {
+					// check series index
+					if ($.isNumeric(items[i]) && allCases[tempCase].length-1 >= items[i]) {
+						tempSeries = items[i];
+						
+					} else {
+						// check series ID
+						for (var j=0; j<allCases[tempCase].children.length; j++) {
+							if (allCases[tempCase].children[j].id != undefined && allCases[tempCase].children[j].id.toLowerCase() == items[i].toLowerCase()) {
+								tempSeries = j;
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			// if deep link case/series is found then load immediately
+			if (tempCase != undefined) {
+				currentCase = tempCase;
+				
+				if (tempSeries != undefined) {
+					imageSequence.loadCase(currentCase, true);
+					$("#caseHolder").find("#caseSelect option:nth-child(" + (currentCase+2) + ")").prop('selected', true);
+					$('#seriesHolderInner .thumbs:eq(' + tempSeries + ')').click();
+					
+				} else {
+					imageSequence.loadCase(currentCase);
+					$("#caseHolder").find("#caseSelect option:nth-child(" + (currentCase+2) + ")").prop('selected', true);
+				}
+			}
+		}
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.resetPage();
+		}
+		
+		// function is called when the page is left (before the next page is loaded)
+		this.leavePage = function () {
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(pageChg) {
+			if (currentCase !== false) {
+				if (x_browserInfo.mobile != true) {
+					// check whether the scroll buttons on series thumbnail bar are needed - if not, remove them
+					$('#seriesMenu').removeClass('scrollBtns');
+					
+					if ($('#seriesHolderInner')[0].scrollWidth > $('#seriesHolder').width()) {
+						$('#seriesMenu').addClass('scrollBtns');
+					}
+				}
+				
+				// resize any image or series viewer that's currently on the page
+				var $imgHolder = $('.imgHolder:visible');
+				if ($imgHolder.length > 0) {
+					if ($imgHolder.find('.imgs .viewerImg').length > 0) {
+						$imgHolder.find('.imgs .viewerImg').each(function() {
+							var $thisImg = $(this);
+							
+							imageSequence.scaleImg($thisImg);
+							$thisImg.parents('.imgHolder').find('.sliderBar').height($thisImg.height());
+						});
+						
+					} else if ($imgHolder.find('.imgs .singleImg').length > 0) {
+						this.scaleImg($imgHolder.find('.imgs .singleImg'));
+					}
+				}
+			}
+		}
+		
+		// load a new case - normally triggered by change in drop down menu
+		this.loadCase = function(currentCase, seriesDeepLink) {
+			
+			imgNum = 0;
+			
+			$('#seriesHolderInner').empty();
+			
+			for (var i=0; i<currentSeries.length; i++) {
+				currentSeries.splice(i, 1, false);
+				currentImg.splice(i, 1, false);
+				numImgs.splice(i, 1, false);
+				imgs.splice(i, 1, []);
+			}
+			
+			$('#imgHolders, .imgHolder, .imgCtrl').hide();
+			
+			// add case text to screen (override page text)
+			imageSequence.setTxt(allCases[currentCase], 'case', $('#mainTxt'));
+			
+			// no series so hide controls
+			if (allCases[currentCase].children.length == 0) {
+				if (allCases.length == 1) {
+					$('#controlBar').hide();
+					$('#infoHolder').addClass('noTopGap');
+				}
+				
+			} else {
+				// only one series so don't show series thumbnail bar
+				// case intro text won't appear on the screen
+				if (allCases[currentCase].children.length == 1) {
+					$('#viewHolder, #seriesMenu').hide();
+					
+					if (allCases.length == 1) {
+						$('#controlBar').hide();
+						$('#infoHolder').addClass('noTopGap');
+					}
+					
+					currentSeries.splice(0, 1, 0);
+					imageSequence.loadSeries(currentCase, currentSeries, imgNum);
+					
+				// more than one series so set up & show the thumbnail bar - image viewer will load when thumbnail is clicked
+				} else {
+					for (var i=0; i<allCases[currentCase].children.length; i++) {
+						$('#seriesHolderInner').append('<button class="thumbs"><img class="thumbImg ' + allCases[currentCase].children[i].type + 'Thumb x_noLightBox" src="' + allCases[currentCase].children[i].src + '" width="50px" alt="' + allCases[currentCase].children[i].tooltip + '"></button>');
+					}
+					
+					imageSequence.setUpViewMenu();
+					
+					$('#viewHolder, #seriesMenu').show();
+					$('#infoHolder').removeClass('noTopGap');
+					
+					$('#seriesHolderInner .thumbs')
+						.click(function() {
+							// check whether more than one series is in view, if so - load series in next available slot
+							if (currentView > 1) {
+								imgNum = lastLoaded+1 == currentView ? 0 : lastLoaded+1;
+							}
+							
+							// show a new series
+							if (currentSeries[imgNum] !== $(this).index() || currentView > 1) {
+								$('#seriesHolderInner .thumbs:eq(' + currentSeries[imgNum] + ').selected').removeClass('selected');
+								currentSeries.splice(imgNum, 1, $(this).index());
+								
+								$(this).addClass('selected');
+								imageSequence.loadSeries(currentCase, currentSeries, imgNum);
+								
+								$("#viewHolder").show();
+								
+							// if current series is clicked (when only 1 series in view), remove series from view & show case text again (if there is some)
+							} else if (currentView == 1 && allCases[currentCase].text != undefined && allCases[currentCase].text != '') {
+								$('#seriesHolderInner .thumbs.selected').removeClass('selected');
+								currentSeries.splice(imgNum, 1, false);
+								
+								$('#imgHolders, .imgCtrl').hide();
+								imageSequence.setTxt(allCases[currentCase], 'case', $('#mainTxt'));
+								
+								$("#viewHolder").hide();
+							}
+						})
+						.focusin(function() {
+							$(this).addClass('highlighted');
+						})
+						.focusout(function() {
+							$(this).removeClass('highlighted');
+						});
+					
+					// check whether the scroll buttons are needed - if not, remove them
+					if (x_browserInfo.mobile != true) {
+						$('#seriesMenu').removeClass('scrollBtns');
+						
+						if ($('#seriesHolderInner')[0].scrollWidth > $('#seriesHolder').width()) {
+							$('#seriesMenu').addClass('scrollBtns');
+						}
+					}
+					
+					// if no case text then just show 1st series straight away (this could be more than one if allowed)
+					if ($('#mainTxt .caseTxt').length == 0 && seriesDeepLink != true) {
+						for (var i=0; i<currentView; i++) {
+							$('#seriesHolderInner .thumbs:eq(' + i + ')').click();
+						}
+					} else {
+						$("#viewHolder").hide();
+					}
+				}
+			}
+		}
+		
+		// called when an image thumbnail is clicked & should trigger the load of the main image viewer
+		this.loadSeries = function(currentCase, currentSeries, imgPos) {
+			
+			lastLoaded = imgPos;
+			
+			var thisSeries = allCases[currentCase].children[currentSeries[imgPos]],
+				type = thisSeries.type;
+			
+			// make sure we're targeting the correct imgHolder
+			var $imgHolder = $('#imgHolders .imgHolder:eq(' + imgPos + ')');
+			
+			$imgHolder.find('.imgCtrl').hide();
+			
+			if ($imgHolder.find('.playBtn').data('state') == 'pause') {
+				$imgHolder.find('.playBtn').click();
+			}
+			
+			if (type == 'series') {
+				$imgHolder.find('.resetBtn').show();
+				
+				numImgs.splice(imgPos, 1, thisSeries.lastImg.num - thisSeries.firstImg.num);
+				
+				if (thisSeries.firstImg.num === 0) {
+					numImgs.splice(imgPos, 1, numImgs[imgPos]++);
+				}
+				
+				// get all images paths
+				imgs.splice(imgPos, 1, []);
+				for (var i=0; i<numImgs[imgPos]; i++) {
+					imgs[imgPos].push(thisSeries.imgFolder + thisSeries.firstImg.name + (thisSeries.firstImg.num+i) + '.' + thisSeries.fileExt);
+				}
+				
+				$imgHolder.hide();
+				$imgHolder.find('.imgs').empty();
+				
+				var $textHolder = $('#textHolder'),
+					loadTxt = x_currentPageXML.getAttribute("load2").replace('{n}', '<br/><span id="imgLoadNum">0</span>');
+				
+				$textHolder.find('#mainTxt').html('').show();
+				
+				var preloadImgs = function(theseImgs, callback) {
+					var loaded = 0;
+					
+					for (var i=0; i<theseImgs.length; i++) {
+						(function (thisImg, src) {
+							thisImg.onload = function () {   
+								if (++loaded == numImgs[imgPos] && callback) {
+									// all loaded
+									callback();
+									
+								} else {
+									// show percentage loaded
+									$('#imgLoadNum').html(Math.round(loaded / theseImgs.length * 100));
+								}
+							};
+							
+							// image doesn't exist - continue loading other images though
+							thisImg.onerror = function () {
+								console.log("Error loading image: " + thisImg.src);
+								thisImg.onload();
+							};
+							
+							thisImg.src = src;
+							
+						} (new Image(), theseImgs[i]));
+					}
+				};
+				
+				// not previously viewed so preload all images in series
+				if (thisSeries.viewed == false) {
+					$textHolder.find('#loadMsg').html('<div class="panel">' + loadTxt + '<div class="loadMsgSpinner fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
+					
+					preloadImgs(imgs[imgPos], function(){
+						imageSequence.initialiseViewer(thisSeries, imgPos);
+					});
+				
+				// already viewed - initialise viewer immediately without preloading images
+				} else {
+					imageSequence.initialiseViewer(thisSeries, imgPos);
+				}
+				
+			} else if (type == 'singleImg') {
+				var $textHolder = $('#textHolder');
+				
+				$('#imgHolders').show()
+				
+				$imgHolder
+					.show()
+					.css({'opacity': 0, 'filter': 'alpha(opacity=0)'});
+				
+				$imgHolder.find('.imgs').empty();
+				$imgHolder.find('.resetBtn').hide();
+				
+				$textHolder.find('#loadMsg').html('<div class="panel">' + x_currentPageXML.getAttribute("load") + '<div class="fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
+				$textHolder.find('#mainTxt').html('').show();
+				
+				var $thisImg = $('<img class="singleImg x_noLightBox" id="img_0" alt="' + thisSeries.tooltip + '">');
+				
+				$thisImg
+					.prependTo($imgHolder.find('.imgs'))
+					.css({
+						'opacity': 0,
+						'filter': 'alpha(opacity=0)'
+					})
+					.one('load', function() {
+						imageSequence.scaleImg($imgHolder.find('.imgs .singleImg'));
+						
+						$(this).css({ 'opacity': 1, 'filter': 'alpha(opacity=100)' })
+						$('#loadMsg').hide();
+						$imgHolder.css({'opacity': 1, 'filter': 'alpha(opacity=100)'});
+						
+						if (currentView == 1) {
+							// add text to screen (override page & case text)
+							imageSequence.setTxt(thisSeries, 'series', $('#mainTxt'));
+							$imgHolder.find('.infoBtn').hide();
+							
+						} else if (thisSeries.text != undefined && thisSeries.text != '') {
+							// text will be shown in lightbox if infoBtn is clicked
+							$imgHolder.find('.infoBtn').show();
+							
+						} else {
+							$imgHolder.find('.infoBtn').hide();
+						}
+						
+						$imgHolder.find('.imgCtrlBelow').show();
+						$imgHolder.find('.playBtn').hide();
+					})
+					.attr('src', thisSeries.src)
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger('load');
+						}
+					});
+			}
+		}
+		
+		// next two functions set up the controls for viewing the series
+		this.initialiseViewer = function(thisSeries, imgPos) {
+			// make sure we're targeting the correct imgHolder
+			var $imgHolder = $('#imgHolders .imgHolder:eq(' + imgPos + ')');
+			
+			// load 1st image in series before setting up controls
+			currentImg.splice(imgPos, 1, thisSeries.initImg != undefined ? thisSeries.initImg : 0);
+			var $img = $('<img class="viewerImg x_noLightBox" id="img_' + currentImg[imgPos] + '" alt="' + thisSeries.tooltip + '">').prependTo($imgHolder.find('.imgs'));
+			
+			$img
+				.one('load', function() {
+					thisSeries.viewed = true;
+					
+					$('#loadMsg').hide();
+					
+					if (currentView == 1) {
+						// add series text to screen (override page & case text)
+						imageSequence.setTxt(thisSeries, 'series', $('#mainTxt'));
+						$imgHolder.find('.infoBtn').hide();
+						
+					} else if (thisSeries.text != undefined && thisSeries.text != '') {
+						// text will be shown in lightbox if infoBtn is clicked
+						$imgHolder.find('.infoBtn').show();
+						
+					} else {
+						$imgHolder.find('.infoBtn').hide();
+					}
+					imageSequence.setUpCtrls($(this));
+				})
+				.attr('src', imgs[imgPos][currentImg[imgPos]])
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger('load');
+					}
+				});
+		}
+		
+		this.setUpCtrls = function($img) {
+			$('.imgCtrl, .playBtn, #imgHolders').show();
+			
+			// make sure we're targeting the correct imgHolder
+			var $imgHolder = $img.parents('.imgHolder');
+			
+			$imgHolder.show();
+			
+			imageSequence.scaleImg($imgHolder.find('.imgs .viewerImg'), true);
+			
+			// change image on scroll of mouse wheel
+			$imgHolder
+				.off()
+				.on('wheel', function(event) {
+					// make sure we're targeting the correct imgHolder
+					var $imgHolder = $(this);
+					imgNum = $imgHolder.data('index');
+					
+					if ($imgHolder.find('.playBtn').data('state') == 'pause') {
+						$imgHolder.find('.playBtn').click();
+					}
+					
+					if (event.originalEvent.deltaY < 0) {
+						imageSequence.prevImg();
+					
+					} else {
+						imageSequence.nextImg();
+					}
+				});
+			
+			$imgHolder.find('.viewerImg').click(function() {
+				// make sure we're targeting the correct imgHolder
+				var $imgHolder = $(this).parents('.imgHolder');
+				imgNum = $imgHolder.data('index');
+				imageSequence.nextImg();
+			});
+			
+			// change image on up/down swipe if touch screen
+			if (x_browserInfo.touchScreen == true) {
+				var mousePosition = [0, 0];
+				
+				// touch start - keep track of initial touch position
+				$imgHolder.find('.viewerImg').bind("touchstart", function(e) {
+					// make sure we're targeting the correct imgHolder
+					var $imgHolder = $(this).parents('.imgHolder');
+					imgNum = $imgHolder.data('index');
+					
+					var touch = e.originalEvent.touches[0];
+					mousePosition = [touch.pageX, touch.pageY];
+				});
+				
+				// touch move - change image if swipe is mostly up/down rather than left/right
+				$imgHolder.find('.viewerImg').bind("touchmove", function(e) {
+					var touch = e.originalEvent.touches[0],
+						numTouches = e.originalEvent.touches.length,
+						mouseNew = [touch.pageX, touch.pageY];
+					
+					if (numTouches == 1) {
+						var dif = [mousePosition[0] - mouseNew[0], mousePosition[1] - mouseNew[1]];
+						if (Math.abs(dif[1]) > Math.abs(dif[0])) {
+							if (dif[1] > 0) {
+								imageSequence.nextImg();
+								
+							} else if (dif[1] < 0) {
+								imageSequence.prevImg();
+							}
+						}
+					}
+					mousePosition = mouseNew;
+				});
+			}
+		}
+		
+		// function scales series images
+		this.scaleImg = function($img, slider) {
+			var $imgHolder = $img.parents('.imgHolder');
+			
+			if ($('#infoHolder').width() == 0) {
+				setTimeout(function() { imageSequence.scaleImg($img, slider); }, 100);
+				
+			} else {
+				// get max space available (exclude panel border and series controls)
+				var imgHoldersW = $('#infoHolder').width(),
+					imgHoldersH = $x_pageHolder.height() - $('#controlBar').outerHeight(true) - ($('#x_pageDiv').outerHeight(true) - $('#x_pageDiv').height());
+				
+				// make sure available space accounts for more than 1 being shown on the screen
+				// work out the best layout that maximises size of images - three possibilities: single row, single column or 2x2 grid
+				// ** problems with this - it assumes all the images / series being viewed are same image size / proportions which isn't always the case
+				// ** also, does it work correctly when the images aren't forced to be as large as possible?
+				if (currentView > 1) {
+					var ratio = $img.width() / $img.height();
+					
+					var row = imgHoldersW/currentView + ((imgHoldersW/currentView) / ratio < imgHoldersH ? (imgHoldersW/currentView) / ratio : imgHoldersH),
+						col = imgHoldersH/currentView + ((imgHoldersH/currentView) * ratio < imgHoldersW ? (imgHoldersH/currentView) * ratio : imgHoldersW),
+						grid = ((imgHoldersH/2) * ratio < imgHoldersW/2 ? (imgHoldersH/2) * ratio : imgHoldersW/2) +
+							   ((imgHoldersW/2) / ratio < imgHoldersH/2 ? (imgHoldersW/2) / ratio : imgHoldersH/2);
+					
+					var panelW = ($imgHolder.find('.imgInnerDiv').outerWidth(true) - $imgHolder.find('.imgInnerDiv').width()) + ($img.hasClass('singleImg') ? 0 : $imgHolder.find('.imgCtrlRight').width()) + ($img.hasClass('singleImg') ? 0 : 20),
+						panelH = ($imgHolder.find('.imgInnerDiv').outerHeight(true) - $imgHolder.find('.imgInnerDiv').height()) + $imgHolder.find('.imgCtrlBelow').outerHeight(true);
+					
+					row = row - (panelW * currentView) - panelH;
+					col = col - panelW - (panelH * currentView);
+					grid = grid - (panelW * 2) - (panelH * 2);
+					
+					if (Math.max(row, col, grid) == grid) {
+						$('#imgHolders').addClass('grid');
+					} else {
+						$('#imgHolders').removeClass('grid');
+					}
+					
+					imgHoldersW = Math.max(row, col, grid) == row ? imgHoldersW/currentView : Math.max(row, col, grid) == col ? imgHoldersW : imgHoldersW/2;
+					imgHoldersH = Math.max(row, col, grid) == col ? imgHoldersH/currentView : Math.max(row, col, grid) == row ? imgHoldersH : imgHoldersH/2;
+				}
+				
+				var maxW = imgHoldersW - ($imgHolder.find('.imgInnerDiv').outerWidth(true) - $imgHolder.find('.imgInnerDiv').width()) - ($img.hasClass('singleImg') ? 0 : $imgHolder.find('.imgCtrlRight').width()) - ($img.hasClass('singleImg') ? 0 : 20),
+					maxH = imgHoldersH - ($imgHolder.find('.imgInnerDiv').outerHeight(true) - $imgHolder.find('.imgInnerDiv').height()) - $imgHolder.find('.imgCtrlBelow').outerHeight(true);
+				
+				// is image allowed to be shown larger than the original size?
+				if (x_currentPageXML.getAttribute("imgSize") == 'full') {
+					x_scaleImg($img, maxW, maxH, true, true, false, true);
+				} else {
+					x_scaleImg($img, maxW, maxH, true, true);
+				}
+				
+				if (slider == true) {
+					imageSequence.setUpSlider($imgHolder);
+				}
+				
+				imageSequence.setUpMagnifier($imgHolder);
+			}
+		}
+		
+		this.setUpSlider = function($imgHolder) {
+			if ($imgHolder.find('.imgs img').height() > 0) {
+				var index = $imgHolder.data('index');
+				
+				// change image on slider control change
+				$imgHolder.find('.imgSlider').empty();
+				$('<div class="sliderBar"></div>')
+					.appendTo($imgHolder.find('.imgSlider'))
+					.height($imgHolder.find('.imgs img').height())
+					.slider({
+						orientation: 'vertical',
+						value: numImgs[index] - currentImg[index] - 1,
+						min: 0,
+						max: numImgs[index]-1,
+						step: 1,
+						slide: function(event, ui) {
+							// make sure we're targeting the correct imgHolder
+							var $imgHolder = $(this).parents('.imgHolder');
+							imgNum = $imgHolder.data('index');
+							
+							if ($imgHolder.find('.playBtn').data('state') == 'pause') {
+								$imgHolder.find('.playBtn').click();
+							}
+							
+							currentImg.splice(imgNum, 1, imgs[imgNum].length-ui.value-1);
+							$imgHolder.find('.imgs .viewerImg').attr('src', imgs[imgNum][imgs[imgNum].length-ui.value-1]);
+							imageSequence.scaleImg($imgHolder.find('.imgs .viewerImg'));
+						}
+					});
+			} else {
+				setTimeout(function() { imageSequence.setUpSlider(); }, 100);
+			}
+		}
+		
+		// load previous image in series
+		// called from slider up / swipe up / mouse wheel up
+		this.prevImg = function() {
+			// make sure we're targeting the correct imgHolder
+			var $imgHolder = $('#imgHolders .imgHolder:eq(' + imgNum + ')'),
+				cycleImages = allCases[currentCase].children[currentSeries[imgNum]].cycleImages != 'true' ? false : true,
+				update = false;
+			
+			if (currentImg[imgNum] > 0) {
+				currentImg[imgNum]--;
+				update = true;
+				
+			} else if (cycleImages) { // go to last image after 1st
+				currentImg.splice(imgNum, 1, numImgs[imgNum]-1);
+				update = true;
+			}
+			
+			if (update == true) {
+				$imgHolder.find('.imgs .viewerImg').attr('src', imgs[imgNum][currentImg[imgNum]]);
+				imageSequence.scaleImg($imgHolder.find('.imgs .viewerImg'));
+			}
+			
+			// keep slider control in sync
+			$imgHolder.find('.sliderBar').slider('value', numImgs[imgNum] - currentImg[imgNum] - 1);
+		}
+		
+		// load next image in series
+		// called from slider down / swipe down / mouse wheel down / click series / play button
+		this.nextImg = function(animate, imgPos, playClick) {
+			// make sure we're targeting the correct imgHolder (more than 1 series can be played at a time
+			var imgPos = imgPos != undefined ? imgPos : imgNum,
+				$imgHolder = $('#imgHolders .imgHolder:eq(' + imgPos + ')'),
+				cycleImages = allCases[currentCase].children[currentSeries[imgPos]].cycleImages != 'true' ? false : true,
+				update = false;
+			
+			if (currentImg[imgPos] < numImgs[imgPos]-1) {
+				currentImg[imgPos]++;
+				update = true;
+				
+			} else if (cycleImages || playClick == true) { // go to 1st image after last
+				currentImg.splice(imgPos, 1, 0);
+				update = true;
+			}
+			
+			if (update == true) {
+				$imgHolder.find('.imgs .viewerImg').attr('src', imgs[imgPos][currentImg[imgPos]]);
+				imageSequence.scaleImg($imgHolder.find('.imgs .viewerImg'));
+			}
+			
+			// keep slider control in sync
+			$imgHolder.find('.sliderBar').slider('value', numImgs[imgPos] - currentImg[imgPos] - 1);
+			
+			// series is being played - show next image after short delay
+			if (animate == true && $imgHolder.find('.playBtn').data('state') == 'pause' && currentImg[imgPos] < numImgs[imgPos]-1) {
+				setTimeout(function() { imageSequence.nextImg(true, imgPos); }, 100);
+				
+			// end of animation
+			} else if (animate == true) {
+				if ($imgHolder.find('.playBtn').data('state') == 'pause') {
+					$imgHolder.find('.playBtn').click();
+				}
+			}
+		}
+		
+		// load text - could be page, case or series text
+		this.setTxt = function(info, type, $target) {
+			// add case text to screen (override page text)
+			var txtString = '';
+			if (info.text != undefined && info.text != '') {
+				if (info.name != undefined && info.name != '') {
+					txtString += '<div class="' + type + 'Title">' + info.name + '</div>';
+				}
+				txtString += '<div class="' + type + 'Txt">' + info.text + '</div>';
+			}
+			
+			if ($target == 'lightbox') {
+				$.featherlight(txtString, {});
+			} else {
+				$target.html(txtString);
+			}
+		}
+		
+		// set up magnifier on series images
+		this.setUpMagnifier = function($imgHolder) {
+			// make sure we're targeting the correct imgHolder
+			var index = $imgHolder.data('index');
+			
+			if ($imgHolder.find('.magnifyBtn input').is(':checked')) {
+				$imgHolder.find(".magnifier").remove();
+				$imgHolder.find(".magnifiedImg").remove();
+				
+				$imgHolder.find('.magnifyBtn input').attr('aria-checked', true);
+				
+				var $img = $imgHolder.find(".imgs img:visible");
+				if ($img.length > 0) {
+					var imageLensInfo = { radius: 0, borderSize: 0 };
+					
+					if (x_currentPageXML.getAttribute('magnifierSize') != undefined) {
+						imageLensInfo.lensSize = x_currentPageXML.getAttribute('magnifierSize');
+					}
+					
+					// force magnification to always work even if goes larger than original
+					if (x_currentPageXML.getAttribute('magnifierForce') == 'true') {
+						imageLensInfo.force = 1.3;
+					}
+					
+					// if force magnification isn't on, don't magnify if not scaled to less that 80% of original image
+					if (x_currentPageXML.getAttribute('magnifierForce') == 'true' || ($img.data("origSize") != undefined && $img.width() / $img.data("origSize")[0] < 0.8)) {
+						$img.imageLens(imageLensInfo);
+					}
+				}
+				
+			} else {
+				$imgHolder.find(".magnifier").remove();
+				$imgHolder.find(".magnifiedImg").remove();
+				
+				$imgHolder.find('.magnifyBtn input').attr('aria-checked', false);
+			}
+		}
+		
+		// start setting the page up
+		this.init = function() {
+			
+			// set up layout
+			if (x_currentPageXML.getAttribute('text') != undefined && x_currentPageXML.getAttribute('text') != '') {
+				$('#mainTxt').html(x_currentPageXML.getAttribute('text'));
+			}
+			
+			// no series so remove all controls & img holder
+			if ($(x_currentPageXML).children().length == 0) {
+				$('#controlBar, #imgHolders').remove();
+				$('#infoHolder').addClass('noTopGap');
+				
+			} else {
+				
+				// set up the imgHolder elements
+				$('#imgHolders .imgInnerDiv')
+					.append('<div class="imgLeft"><div class="imgs"></div></div>') // series images will load in here
+					.append('<div class="imgCtrlRight imgCtrl imgRight"><div class="imgSlider"></div></div>') // controls on right
+					.append('<div class="imgCtrlBelow imgCtrl"><button class="resetBtn"></button><button class="playBtn"></button><button class="infoBtn"></button><div class="magnifyCtrl"></div></div>'); // control buttons below
+				
+				$('#imgHolders .imgInnerDiv .magnifyCtrl') // add magnify toggle btn
+					.append('<div class="magnifyLabel"></div>')
+					.append('<label class="magnifyBtn switch"><input type="checkbox" role="switch" aria-checked="false"><span class="slider round"></span></label>');
+				
+				if (x_currentPageXML.getAttribute('thumbH') != undefined && x_currentPageXML.getAttribute('thumbH') != 'medium') {
+					$('#seriesMenu').addClass(x_currentPageXML.getAttribute('thumbH'));
+				}
+				
+				// set up view menu
+				// if it's used then imgHolder is cloned as there can be more than one series shown at a time
+				if (x_currentPageXML.getAttribute('view') == 'true' && x_currentPageXML.getAttribute('viewNum') > 1) {
+					
+					var menuHtml = '<label for="cases">' + x_currentPageXML.getAttribute('viewLabel') + ':</label><span id="viewOption">';
+					for (var i=0; i<x_currentPageXML.getAttribute('viewNum'); i++) {
+						menuHtml += '<button><img class="x_noLightBox" src="' + x_templateLocation + 'common_html5/view_' + (i+1) + '.png" alt="' + (i+1) + '"></button>';
+					}
+					menuHtml += '</span>';
+					
+					var defaultValue = x_currentPageXML.getAttribute('viewDefault') > x_currentPageXML.getAttribute('viewNum') ? x_currentPageXML.getAttribute('viewNum') : x_currentPageXML.getAttribute('viewDefault');
+					
+					$("#viewHolder")
+						.append(menuHtml)
+						.data({
+							'default': defaultValue,
+							'max': x_currentPageXML.getAttribute('viewNum')
+						})
+						.hide();
+					
+					for (var i=0; i<x_currentPageXML.getAttribute('viewNum'); i++) {
+						currentCase = false;
+						currentSeries.push(false);
+						currentImg.push(false);
+						numImgs.push(false);
+						imgs.push([]);
+					}
+					
+					$("#viewHolder").find("#viewOption button")
+						.click(function() {
+							// currentView is the current no. series being shown
+							if (currentView - 1 != $(this).index()) {
+								
+								// how many series are already shown?
+								var numShown = currentView;
+								currentView = $(this).index() + 1;
+								
+								$("#viewHolder .selected").removeClass("selected");
+								$(this).addClass("selected");
+								
+								// show more imgHolders on screen
+								if (numShown < currentView) {
+									
+									if (numShown == 1) {
+										// add info button to existing series if needed
+										var $imgHolder = $('#imgHolders .imgHolder:eq(' + 0 + ')'),
+											existingSeries = allCases[currentCase].children[currentSeries[0]];
+										
+										if (existingSeries != undefined && existingSeries.text != undefined && existingSeries.text != '') {
+											// text will be shown in lightbox if infoBtn is clicked
+											$imgHolder.find('.infoBtn').show();
+										}
+									}
+									
+									for (var i=0; i<currentView - numShown; i++) {
+										// find a series that isn't already being shown & load it
+										for (var j=0; j<allCases[currentCase].children.length; j++) {
+											if ($.inArray(j, currentSeries) === -1) {
+												currentSeries.splice(i+numShown, 1, j);
+												imgNum = i+numShown;
+												
+												imageSequence.loadSeries(currentCase, currentSeries, imgNum);
+												
+												$('#seriesHolderInner .thumbs:eq(' + j + ')').addClass('selected');
+												
+												break;
+											}
+										}
+									}
+									
+									imageSequence.sizeChanged();
+									
+								// show fewer imgHolders on screen
+								} else if (numShown > currentView) {
+									
+									if (currentView == 1) {
+										// remove info button from existing series & show text
+										var $imgHolder = $('#imgHolders .imgHolder:eq(' + 0 + ')'),
+											existingSeries = allCases[currentCase].children[currentSeries[0]];
+										
+										$imgHolder.find('.infoBtn').hide();
+										
+										if (existingSeries != undefined && existingSeries.text != undefined && existingSeries.text != '') {
+											imageSequence.setTxt(existingSeries, 'series', $('#mainTxt'));
+										}
+										
+									}
+									
+									for (var i=0; i<numShown - currentView; i++) {
+										currentSeries.splice(i+currentView, 1, false);
+										currentImg.splice(i+currentView, 1, false);
+										numImgs.splice(i+currentView, 1, false);
+										imgs.splice(i+currentView, 1, []);
+										
+										$('#imgHolders .imgHolder:eq(' + (i+currentView) + ')').hide();
+									}
+									
+									$('#seriesHolderInner .thumbs.selected').removeClass('selected');
+									for (var i=0; i<currentSeries.length; i++) {
+										if (currentSeries !== false) {
+											$('#seriesHolderInner .thumbs:eq(' + currentSeries[i] + ')').addClass('selected');
+										}
+									}
+									
+									imageSequence.sizeChanged();
+								}
+								imgNum = 0;
+							}
+						})
+						.focusin(function() {
+							$(this).addClass('highlighted');
+						})
+						.focusout(function() {
+							$(this).removeClass('highlighted');
+						});
+					
+					// duplicate the imgHolder so max in view are available for later
+					var $imgHolder = $('.imgHolder');
+					for (var i=0; i<x_currentPageXML.getAttribute('viewNum'); i++) {
+						if (i != 0) {
+							$imgHolder.clone().appendTo('#imgHolders');
+						}
+						
+						$('.imgHolder').eq(i)
+							.hide()
+							.data('index', i);
+					}
+					
+				} else {
+					$("#viewHolder").remove();
+					
+					currentCase = false;
+					currentSeries.push(false);
+					currentImg.push(false);
+					numImgs.push(false);
+					imgs.push([]);
+				}
+				
+				$('#imgHolders').hide();
+				
+				if (x_currentPageXML.getAttribute('align') == 'right') {
+					$('.imgInnerDiv')
+						.addClass('x_floatRight')
+						.removeClass('x_floatLeft');
+				}
+				
+				// control bar buttons are controlled by editor options
+				if (x_currentPageXML.getAttribute('reset') == 'false') {
+					$('.resetBtn').remove();
+					
+				} else {
+					$('.resetBtn')
+						.button({
+							icons:	{secondary:"fa fa-refresh"},
+							text: false,
+							label:	x_currentPageXML.getAttribute('resetLabel')
+						})
+						.click(function() {
+							// make sure we're targeting the correct imgHolder
+							var $imgHolder = $(this).parents('.imgHolder');
+							imgNum = $imgHolder.data('index');
+							
+							var thisSeries = allCases[currentCase].children[currentSeries[imgNum]],
+								type = thisSeries.type;
+							
+							if (type == 'series') {
+								// stop play animation
+								if ($imgHolder.find('.playBtn').data('state') == 'pause') {
+									$imgHolder.find('.playBtn').click();
+								}
+								
+								// reset series animation to initial image
+								currentImg.splice(imgNum, 1, thisSeries.initImg != undefined ? thisSeries.initImg : 0);
+								$imgHolder.find('.sliderBar').slider('value', numImgs[imgNum] - currentImg[imgNum] - 1);
+								$imgHolder.find('.imgs .viewerImg').attr('src', imgs[imgNum][currentImg[imgNum]]);
+								imageSequence.setUpMagnifier($imgHolder);
+							}
+						});
+				}
+				
+				if (x_currentPageXML.getAttribute('play') == 'false') {
+					$('.playBtn').remove();
+					
+				} else {
+					$('.playBtn')
+						.button({
+							icons:	{secondary:"fa fa-play"},
+							text: false,
+							label:	x_currentPageXML.getAttribute('playLabel')
+						})
+						.data('state', 'play')
+						.click(function() {
+							// make sure we're targeting the correct imgHolder
+							var $imgHolder = $(this).parents('.imgHolder');
+							imgNum = $imgHolder.data('index');
+							
+							var $this = $(this),
+								state = $this.data('state');
+							
+							if (state == 'pause') {
+								$this.data('state', 'play');
+								
+							} else {
+								$this.data('state', 'pause');
+								imageSequence.nextImg(true, imgNum, true);
+							}
+							
+							$(this)
+								.button({
+									icons: {secondary:"fa fa-" + $this.data('state')},
+									label: x_currentPageXML.getAttribute($this.data('state') + 'Label')
+								});
+						});
+				}
+				
+				if (x_currentPageXML.getAttribute('magnifier') == 'false') {
+					$('.magnifyCtrl').remove();
+					
+				} else {
+					$('.magnifyLabel')
+						.append('<i class="fas fa-search"></i><span class="sr-only">' + x_currentPageXML.getAttribute('magnifyLabel') + '</span>')
+						.click(function() {
+							$(this).parents('.imgHolder').find('.magnifyBtn input').click();
+						});
+					
+					$('.magnifyBtn input')
+						.click(function(e,i) {
+							// make sure we're targeting the correct imgHolder
+							var $imgHolder = $(this).parents('.imgHolder');
+							imgNum = $imgHolder.data('index');
+							
+							imageSequence.setUpMagnifier($imgHolder);
+						});
+						
+				}
+				
+				$('.infoBtn')
+					.button({
+						icons:	{secondary:"fa fa-info"},
+						text: false,
+						label:	x_currentPageXML.getAttribute('infoLabel')
+					})
+					.click(function() {
+						var $imgHolder = $(this).parents('.imgHolder');
+							imgNum = $imgHolder.data('index');
+						
+						imageSequence.setTxt(allCases[currentCase].children[currentSeries[imgNum]], 'series', 'lightbox');
+					});
+				
+				if ($('.resetBtn, .playBtn, .magnifyBtn').length == 0) {
+					$('.imgCtrlBelow').remove();
+				}
+				
+				// set up buttons to scroll thumbnail bar if required
+				if (x_browserInfo.mobile != true) {
+					$('#seriesMenu').addClass('scrollBtns');
+					
+					$("#seriesBtnLeft")
+						.button({
+							icons: {primary: 'fa fa-x-prev-circle'},
+							label: x_currentPageXML.getAttribute('backLabel'),
+							text: false
+						})
+						.click(function() {
+							var scrollL = 0;
+							
+							$('#seriesHolder .thumbs').each(function() {
+								if ($(this).position().left - $('#seriesHolderInner').position().left >= 0) {
+									scrollL = $('#seriesHolderInner').scrollLeft() - ($('#seriesHolderInner').width() - ($(this).position().left - $('#seriesHolderInner').position().left));
+									return false;
+								}
+							});
+							
+							$('#seriesHolderInner').animate({scrollLeft: scrollL}, 800, "easeInOutCubic");
+						});
+					
+					$("#seriesBtnRight")
+						.button({
+							icons: {primary: 'fa fa-x-next-circle'},
+							label: x_currentPageXML.getAttribute('fwdLabel'),
+							text: false
+						})
+						.click(function() {
+							var scrollL = $('#seriesHolderInner').scrollLeft() + $('#seriesHolderInner').width()
+							
+							$('#seriesHolder .thumbs').each(function(i) {
+								if ($(this).offset().left - $('#seriesHolderInner').offset().left + $(this).width() > $('#seriesHolderInner').width()) {
+									scrollL = $(this).position().left + $('#seriesHolderInner').scrollLeft() - $('#seriesHolderInner').position().left;
+									return false;
+								}
+							});
+							
+							$('#seriesHolderInner').animate({scrollLeft: scrollL}, 800, "easeInOutCubic");
+						});
+				}
+				
+				// get info about all cases & all series in each case
+				$(x_currentPageXML).children().each(function(i) {
+					var thisCase = {
+							name: this.getAttribute('name'),
+							text: this.getAttribute('txt'),
+							id: this.getAttribute('caseID') != undefined && this.getAttribute('caseID') != '' ? this.getAttribute('caseID') : undefined,
+							children: []
+						};
+					
+					$(this).children().each(function(j) {
+						
+						if (this.nodeName == 'series') {
+							if (this.getAttribute('firstImg').indexOf('/') != -1 && this.getAttribute('lastImg').indexOf('/') != -1) {
+								
+								var thisSeries = {
+									type: this.nodeName,
+									name: this.getAttribute('name'),
+									text: this.getAttribute('txt'),
+									src: this.getAttribute('src'),
+									tooltip: this.getAttribute('tooltip'),
+									cycleImages: this.getAttribute('cycleImages'),
+									reset: this.getAttribute('reset'),
+									play: this.getAttribute('play'),
+									magnifier: this.getAttribute('magnifier'),
+									id: this.getAttribute('seriesID') != undefined && this.getAttribute('seriesID') != '' ? this.getAttribute('seriesID') : undefined,
+									viewed: false
+								};
+								
+								function getImgNum(fileName) {
+									var name = fileName.substr(0, fileName.lastIndexOf('.')), // remove file extension
+										num = '';
+									
+									// extract the number from the end of the file name
+									// ** need to get this to work for numbers that include a zero at the beginning, e.g. img01.jpg
+									for (var k=name.length-1; k>-1; k--) {
+										if ("" + parseInt(name[k]) != "NaN") {
+											num = name[k] + num;
+										} else {
+											name = name.substring(0, name.length - num.length);
+											break;
+										}
+									}
+									
+									// return the file name (without number) & number seperately
+									return { name: name, num: num != '' ? Number(num) : num };
+								}
+								
+								var firstImg = this.getAttribute('firstImg').substring(this.getAttribute('firstImg').lastIndexOf('/')+1),
+									lastImg = this.getAttribute('lastImg').substring(this.getAttribute('lastImg').lastIndexOf('/')+1);
+								
+								thisSeries.firstImg = getImgNum(firstImg);
+								thisSeries.lastImg = getImgNum(lastImg);
+								
+								// first & last images must be in the same folder & have same file name except for number at the end & have same file extension
+								// first image should be the image with the lowest number and last image should be the image with the highest number
+								if (Number.isInteger(thisSeries.firstImg.num) && Number.isInteger(thisSeries.lastImg.num) 
+									&& thisSeries.firstImg.name == thisSeries.lastImg.name 
+									&& this.getAttribute('firstImg').substring(0, this.getAttribute('firstImg').lastIndexOf('/')+1) == this.getAttribute('lastImg').substring(0, this.getAttribute('lastImg').lastIndexOf('/')+1) 
+									&& this.getAttribute('firstImg').substring(this.getAttribute('firstImg').lastIndexOf('.')+1) == this.getAttribute('lastImg').substring(this.getAttribute('lastImg').lastIndexOf('.')+1)) {
+									
+									thisSeries.imgFolder = this.getAttribute('firstImg').substring(0, this.getAttribute('firstImg').lastIndexOf('/')+1);
+									thisSeries.fileExt = this.getAttribute('firstImg').substring(this.getAttribute('firstImg').lastIndexOf('.')+1);
+									
+									// make sure first image is lowest number & last image is highest number
+									if (thisSeries.firstImg.num > thisSeries.lastImg) {
+										var temp = thisSeries.firstImg;
+										thisSeries.firstImg = thisSeries.lastImg;
+										thisSeries.lastImg = temp;
+									}
+									
+									// by default the image viewer will start with the first image in view & scroll up to the last image - initial image changes the default first image shown
+									if (this.getAttribute('initImg') != undefined && this.getAttribute('initImg') != '' && this.getAttribute('initImg').indexOf('/') != -1) {
+										
+										// initial image must be in the same folder as the other images & have same file name except for number at the end & have same file extension
+										if (this.getAttribute('initImg').substring(0, this.getAttribute('initImg').lastIndexOf('/')+1) == thisSeries.imgFolder) {
+											var initImg = getImgNum(this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('/')+1));
+											
+											// initImg must be between numbers of first and last image
+											if (Number.isInteger(initImg.num) && initImg.name == thisSeries.firstImg.name 
+												&& initImg.num >= thisSeries.firstImg.num && initImg.num <= thisSeries.lastImg.num 
+												&& this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('.')+1) == thisSeries.fileExt) {
+												
+												thisSeries.initImg = initImg.num - thisSeries.firstImg.num;
+												
+											} else {
+												console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
+												if (!Number.isInteger(initImg.num)) {
+													console.log("-> Initial image file name must end in a number");
+												}
+												if (initImg.name != thisSeries.firstImg.name) {
+													console.log("-> File names of initial and first images must match (except for number at end of name)");
+												}
+												if (initImg.num < thisSeries.firstImg.num || initImg.num > thisSeries.lastImg.num) {
+													console.log("-> Number of initial image file must be between first and last images");
+												}
+												if (this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('.')+1) != thisSeries.fileExt) {
+													console.log("-> Initial and first images must have the same file extension");
+												}
+											}
+										} else {
+											console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
+											console.log("-> Initial image must be in the same folder as first and last images");
+										}
+									}
+									
+									thisCase.children.push(thisSeries);
+									
+								} else {
+									console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
+									if (!Number.isInteger(thisSeries.firstImg.num) || !Number.isInteger(thisSeries.lastImg.num)) {
+										console.log("-> Image file names must end in a number");
+									}
+									if (thisSeries.firstImg.name != thisSeries.lastImg.name) {
+										console.log("-> File names of first and last images must match (except for number at end of name)");
+									}
+									if (this.getAttribute('firstImg').substring(0, this.getAttribute('firstImg').lastIndexOf('/')+1) != this.getAttribute('lastImg').substring(0, this.getAttribute('lastImg').lastIndexOf('/')+1) ) {
+										console.log("-> First and last images must be in the same folder");
+									}
+									if (this.getAttribute('firstImg').substring(this.getAttribute('firstImg').lastIndexOf('.')+1) != this.getAttribute('lastImg').substring(this.getAttribute('lastImg').lastIndexOf('.')+1)) {
+										console.log("-> First and last images must have the same file extension");
+									}
+								}
+							} else {
+								console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
+							}
+							
+						} else if (this.nodeName == 'singleImg') {
+							var thisImg = {
+								type: this.nodeName,
+								name: this.getAttribute('name'),
+								text: this.getAttribute('txt'),
+								src: this.getAttribute('src'),
+								tooltip: this.getAttribute('tooltip'),
+								id: this.getAttribute('seriesID') != undefined && this.getAttribute('seriesID') != '' ? this.getAttribute('seriesID') : undefined
+							};
+							
+							thisCase.children.push(thisImg);
+						}
+					});
+					
+					allCases.push(thisCase);
+				});
+				
+				// only one case so don't show case drop down menu
+				if (allCases.length == 1) {
+					// page text won't appear on the screen
+					$('#caseHolder').remove();
+					
+					if (x_currentPageXML.getAttribute('view') != 'true') {
+						$('#dropDownHolder').remove();
+					}
+					
+					currentCase = 0;
+					imageSequence.loadCase(currentCase);
+					
+				// more than one case so set up & show the case drop down menu
+				} else {
+					var selectHtml = '<label for="cases">' + x_currentPageXML.getAttribute('caseLabel') + ':</label><select id="caseSelect"><option></option>';
+					for (var i=0; i<allCases.length; i++) {
+						selectHtml += '<option value="case' + i + '">' + allCases[i].name + '</option>';
+					}
+					selectHtml += '</select>';
+					
+					$("#caseHolder").append(selectHtml);
+					
+					$("#caseHolder").find("#caseSelect").on("change", function() {
+						if ($("#caseHolder").find("#caseSelect").children("option:selected").index() !== 0) {
+							currentCase = $("#caseHolder").find("#caseSelect").children("option:selected").index() - 1;
+							imageSequence.loadCase(currentCase);
+			
+						} else {
+							imageSequence.resetPage();
+						}
+					});
+					
+					$('#seriesMenu').hide();
+				}
+			}
+			
+			x_pageLoaded();
+		}
+		
+		// reset back to initial view of the page
+		this.resetPage = function() {
+			allCases.splice(0, allCases.length);
+			currentView = 1;
+			imgNum = 0;
+			lastLoaded = undefined;
+			currentCase = false,
+			currentSeries.splice(0, currentSeries.length);
+			currentImg.splice(0, currentImg.length);
+			numImgs.splice(0, numImgs.length);
+			imgs.splice(0, imgs.length);
+			
+			
+			$('#caseHolder, #viewHolder, #seriesHolderInner, #loadMsg, #mainTxt').empty();
+			$('#imgHolders .imgHolder:not(:first)').remove();
+			$('#imgHolders .imgHolder .imgInnerDiv').empty();
+			$('#imgHolders, .imgHolder, #controlBar, #viewHolder, #seriesMenu, #loadMsg').show();
+			
+			this.init();
+		}
+		
+		// function makes sure the view menu is showing the correct number of options for the current case
+		// options on view menu shouldn't be more than no. series available
+		this.setUpViewMenu = function() {
+			if ($("#viewHolder").length > 0 && currentCase != undefined) {
+				
+				var numViews = $("#viewHolder button").length;
+				
+				for (var i=0; i<numViews; i++) {
+					var $thisImg = $("#viewHolder button:eq(" + i + ")");
+					
+					if (i+1 > allCases[currentCase].children.length) {
+						$thisImg.hide();
+					} else {
+						$thisImg.show();
+					}
+				}
+				
+				// if no button selected or selected is now hidden, select the default button from view menu
+				if ($("#viewHolder button.selected").length == 0 || $("#viewHolder button.selected").is(":hidden")) {
+					$("#viewHolder .selected").removeClass("selected");
+					
+					var defaultValue = allCases[currentCase].children.length < $("#viewHolder").data('default') ? allCases[currentCase].children.length : $("#viewHolder").data('default');
+					
+					$("#viewHolder button:eq(" + (defaultValue-1) + ")")
+						.addClass("selected")
+						.click();
+				}
+			}
+		}
+	}
+	
+	imageSequence.init();
+	
+</script>
+
+<div id="pageContents">
+	
+	<div id="controlBar">
+		
+		<div id="dropDownHolder">
+			<div id="caseHolder"></div>
+			<div id="viewHolder"></div>
+		</div>
+		
+		<div id="seriesMenu">
+			<button id="seriesBtnLeft"></button>
+			<div id="seriesHolder">
+				<div id="seriesHolderInner"></div>
+			</div>
+			<button id="seriesBtnRight"></button>
+		</div>
+		
+	</div>
+	
+	<div id="infoHolder">
+		<div id="imgHolders">
+			<div class="imgHolder">
+				<div class="imgInnerDiv panel inline x_floatLeft"></div>
+			</div>
+		</div>
+		
+		<div id="textHolder">
+			<div id="loadMsg"></div>
+			<div id="mainTxt"></div>
+		</div>
+	</div>
+	
+</div>
