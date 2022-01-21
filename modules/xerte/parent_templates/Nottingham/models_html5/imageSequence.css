@@ -271,7 +271,6 @@
 
 .resetBtn, .playBtn, .infoBtn {
 	background: none;
-	background-color: #ddd;
 	border: none;
 	width: 2em;
 	height: 2em;
@@ -284,11 +283,6 @@
 
 .resetBtn:hover, .playBtn:hover, .infoBtn:hover, .resetBtn:focus, .playBtn:focus, .infoBtn:focus {
 	background-color: #ccc;
-}
-
-.magnifyLabel {
-	color: #555;
-	cursor: pointer;
 }
 
 .switch {
@@ -391,6 +385,9 @@ input:checked + .slider:before {
 .magnifyLabel {
 	vertical-align: middle;
 	display: inline-block;
+	color: #555;
+	cursor: pointer;
+	margin-right: 5px;
 }
 
 .magnifier {

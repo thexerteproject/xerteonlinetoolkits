@@ -90,14 +90,16 @@
 			
 			// if deep link case/series is found then load immediately
 			if (tempCase != undefined) {
-				currentCase = tempCase;
-				
 				if (tempSeries != undefined) {
-					imageSequence.loadCase(currentCase, true);
-					$("#caseHolder").find("#caseSelect option:nth-child(" + (currentCase+2) + ")").prop('selected', true);
-					$('#seriesHolderInner .thumbs:eq(' + tempSeries + ')').click();
+					if (currentCase != tempCase || currentSeries[0] != tempSeries) {
+						currentCase = tempCase;
+						imageSequence.loadCase(currentCase, true);
+						$("#caseHolder").find("#caseSelect option:nth-child(" + (currentCase+2) + ")").prop('selected', true);
+						$('#seriesHolderInner .thumbs:eq(' + tempSeries + ')').click();
+					}
 					
-				} else {
+				} else if (currentCase != tempCase) {
+					currentCase = tempCase;
 					imageSequence.loadCase(currentCase);
 					$("#caseHolder").find("#caseSelect option:nth-child(" + (currentCase+2) + ")").prop('selected', true);
 				}
@@ -145,7 +147,6 @@
 		
 		// load a new case - normally triggered by change in drop down menu
 		this.loadCase = function(currentCase, seriesDeepLink) {
-			
 			imgNum = 0;
 			
 			$('#seriesHolderInner').empty();
@@ -161,6 +162,10 @@
 			
 			// add case text to screen (override page text)
 			imageSequence.setTxt(allCases[currentCase], 'case', $('#mainTxt'));
+			
+			if (allCases[currentCase].id != undefined && allCases[currentCase].id != '') {
+				window.history.pushState(null, '', window.location.href.split('|')[0] + '|' + allCases[currentCase].id);
+			}
 			
 			// no series so hide controls
 			if (allCases[currentCase].children.length == 0) {
@@ -252,7 +257,6 @@
 		
 		// called when an image thumbnail is clicked & should trigger the load of the main image viewer
 		this.loadSeries = function(currentCase, currentSeries, imgPos) {
-			
 			lastLoaded = imgPos;
 			
 			var thisSeries = allCases[currentCase].children[currentSeries[imgPos]],
@@ -267,6 +271,10 @@
 				$imgHolder.find('.playBtn').click();
 			}
 			
+			if (thisSeries.id != undefined && thisSeries.id != '') {
+				window.history.pushState(null, '', window.location.href.split('|')[0] + '|' + thisSeries.id);
+			}
+			
 			if (type == 'series') {
 				$imgHolder.find('.resetBtn').show();
 				
@@ -279,7 +287,17 @@
 				// get all images paths
 				imgs.splice(imgPos, 1, []);
 				for (var i=0; i<numImgs[imgPos]; i++) {
-					imgs[imgPos].push(thisSeries.imgFolder + thisSeries.firstImg.name + (thisSeries.firstImg.num+i) + '.' + thisSeries.fileExt);
+					var thisImgNum = thisSeries.firstImg.num + i;
+					
+					// add zeros before image number if required
+					if (thisSeries.numLength != undefined) {
+						var zerosToAdd = thisSeries.numLength - String(thisImgNum).length;
+						thisImgNum = String(thisImgNum);
+						for (var j=0; j<zerosToAdd; j++) {
+							thisImgNum = '0' + thisImgNum;
+						}
+					}
+					imgs[imgPos].push(thisSeries.imgFolder + thisSeries.firstImg.name + thisImgNum + '.' + thisSeries.fileExt);
 				}
 				
 				$imgHolder.hide();
@@ -798,7 +816,6 @@
 											if ($.inArray(j, currentSeries) === -1) {
 												currentSeries.splice(i+numShown, 1, j);
 												imgNum = i+numShown;
-												
 												imageSequence.loadSeries(currentCase, currentSeries, imgNum);
 												
 												$('#seriesHolderInner .thumbs:eq(' + j + ')').addClass('selected');
@@ -868,6 +885,10 @@
 					
 				} else {
 					$("#viewHolder").remove();
+					
+					$('.imgHolder')
+						.hide()
+						.data('index', 0);
 					
 					currentCase = false;
 					currentSeries.push(false);
@@ -1045,11 +1066,11 @@
 					
 					$(this).children().each(function(j) {
 						
-						if (this.nodeName == 'series') {
+						if (this.nodeName == 'imgSeries') {
 							if (this.getAttribute('firstImg').indexOf('/') != -1 && this.getAttribute('lastImg').indexOf('/') != -1) {
 								
 								var thisSeries = {
-									type: this.nodeName,
+									type: 'series',
 									name: this.getAttribute('name'),
 									text: this.getAttribute('txt'),
 									src: this.getAttribute('src'),
@@ -1067,7 +1088,6 @@
 										num = '';
 									
 									// extract the number from the end of the file name
-									// ** need to get this to work for numbers that include a zero at the beginning, e.g. img01.jpg
 									for (var k=name.length-1; k>-1; k--) {
 										if ("" + parseInt(name[k]) != "NaN") {
 											num = name[k] + num;
@@ -1078,7 +1098,7 @@
 									}
 									
 									// return the file name (without number) & number seperately
-									return { name: name, num: num != '' ? Number(num) : num };
+									return { name: name, num: (num != '' ? Number(num) : num), addZeros: (num.length - String(Number(num)).length) };
 								}
 								
 								var firstImg = this.getAttribute('firstImg').substring(this.getAttribute('firstImg').lastIndexOf('/')+1),
@@ -1104,42 +1124,58 @@
 										thisSeries.lastImg = temp;
 									}
 									
-									// by default the image viewer will start with the first image in view & scroll up to the last image - initial image changes the default first image shown
-									if (this.getAttribute('initImg') != undefined && this.getAttribute('initImg') != '' && this.getAttribute('initImg').indexOf('/') != -1) {
-										
-										// initial image must be in the same folder as the other images & have same file name except for number at the end & have same file extension
-										if (this.getAttribute('initImg').substring(0, this.getAttribute('initImg').lastIndexOf('/')+1) == thisSeries.imgFolder) {
-											var initImg = getImgNum(this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('/')+1));
-											
-											// initImg must be between numbers of first and last image
-											if (Number.isInteger(initImg.num) && initImg.name == thisSeries.firstImg.name 
-												&& initImg.num >= thisSeries.firstImg.num && initImg.num <= thisSeries.lastImg.num 
-												&& this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('.')+1) == thisSeries.fileExt) {
-												
-												thisSeries.initImg = initImg.num - thisSeries.firstImg.num;
-												
-											} else {
-												console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
-												if (!Number.isInteger(initImg.num)) {
-													console.log("-> Initial image file name must end in a number");
-												}
-												if (initImg.name != thisSeries.firstImg.name) {
-													console.log("-> File names of initial and first images must match (except for number at end of name)");
-												}
-												if (initImg.num < thisSeries.firstImg.num || initImg.num > thisSeries.lastImg.num) {
-													console.log("-> Number of initial image file must be between first and last images");
-												}
-												if (this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('.')+1) != thisSeries.fileExt) {
-													console.log("-> Initial and first images must have the same file extension");
-												}
-											}
+									var validNum = true;
+									
+									// deal with digits at end of file paths that start with zeros, e.g. img001.jpg
+									if (thisSeries.firstImg.addZeros > 0) {
+										if (String(thisSeries.firstImg.num).length + thisSeries.firstImg.addZeros == String(thisSeries.lastImg.num).length + thisSeries.lastImg.addZeros) {
+											thisSeries.numLength = String(thisSeries.firstImg.num).length + thisSeries.firstImg.addZeros;
 										} else {
+											validNum = false;
 											console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
-											console.log("-> Initial image must be in the same folder as first and last images");
+											console.log("-> Image file names must end in a number (avoid numbers which start with zeros, e.g. image0001.jpg, unless all image file names are in this format)");
 										}
 									}
 									
-									thisCase.children.push(thisSeries);
+									if (validNum) {
+										
+										// by default the image viewer will start with the first image in view & scroll up to the last image - initial image changes the default first image shown
+										if (this.getAttribute('initImg') != undefined && this.getAttribute('initImg') != '' && this.getAttribute('initImg').indexOf('/') != -1) {
+											
+											// initial image must be in the same folder as the other images & have same file name except for number at the end & have same file extension
+											if (this.getAttribute('initImg').substring(0, this.getAttribute('initImg').lastIndexOf('/')+1) == thisSeries.imgFolder) {
+												var initImg = getImgNum(this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('/')+1));
+												
+												// initImg must be between numbers of first and last image
+												if (Number.isInteger(initImg.num) && initImg.name == thisSeries.firstImg.name 
+													&& initImg.num >= thisSeries.firstImg.num && initImg.num <= thisSeries.lastImg.num 
+													&& this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('.')+1) == thisSeries.fileExt) {
+													
+													thisSeries.initImg = initImg.num - thisSeries.firstImg.num;
+													
+												} else {
+													console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
+													if (!Number.isInteger(initImg.num)) {
+														console.log("-> Initial image file name must end in a number");
+													}
+													if (initImg.name != thisSeries.firstImg.name) {
+														console.log("-> File names of initial and first images must match (except for number at end of name)");
+													}
+													if (initImg.num < thisSeries.firstImg.num || initImg.num > thisSeries.lastImg.num) {
+														console.log("-> Number of initial image file must be between first and last images");
+													}
+													if (this.getAttribute('initImg').substring(this.getAttribute('initImg').lastIndexOf('.')+1) != thisSeries.fileExt) {
+														console.log("-> Initial and first images must have the same file extension");
+													}
+												}
+											} else {
+												console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
+												console.log("-> Initial image must be in the same folder as first and last images");
+											}
+										}
+										
+										thisCase.children.push(thisSeries);
+									}
 									
 								} else {
 									console.log("Error creating series: " + thisCase.name + " - " + this.getAttribute('name'));
