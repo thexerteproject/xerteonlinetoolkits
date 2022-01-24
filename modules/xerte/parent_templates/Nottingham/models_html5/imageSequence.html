@@ -89,8 +89,8 @@
 			}
 			
 			// if deep link case/series is found then load immediately
-			if (tempCase != undefined) {
-				if (tempSeries != undefined) {
+			if (tempCase !== undefined) {
+				if (tempSeries !== undefined) {
 					if (currentCase != tempCase || currentSeries[0] != tempSeries) {
 						currentCase = tempCase;
 						imageSequence.loadCase(currentCase, true);
@@ -98,7 +98,7 @@
 						$('#seriesHolderInner .thumbs:eq(' + tempSeries + ')').click();
 					}
 					
-				} else if (currentCase != tempCase) {
+				} else if (currentCase !== tempCase) {
 					currentCase = tempCase;
 					imageSequence.loadCase(currentCase);
 					$("#caseHolder").find("#caseSelect option:nth-child(" + (currentCase+2) + ")").prop('selected', true);
@@ -528,9 +528,6 @@
 				
 				// make sure available space accounts for more than 1 being shown on the screen
 				// work out the best layout that maximises size of images - three possibilities: single row, single column or 2x2 grid
-				// ** problems with this - it assumes all the images / series being viewed are same image size / proportions which isn't always the case
-				// ** also, does it work correctly when the images aren't forced to be as large as possible?
-				// ** single image scaling issues here too
 				if (currentView > 1) {
 					var ratio = $img.width() / $img.height();
 					
@@ -687,6 +684,19 @@
 				$.featherlight(txtString, {});
 			} else {
 				$target.html(txtString);
+				
+				if (txtString == '') {
+					$('.imgHolder').addClass('centreAlign');
+					$('.imgInnerDiv').removeClass('x_floatRight, x_floatLeft');
+					
+				} else {
+					$('.imgHolder').removeClass('centreAlign');
+					if (x_currentPageXML.getAttribute('align') == 'right') {
+						$('.imgInnerDiv').addClass('x_floatRight');
+					} else {
+						$('.imgInnerDiv').addClass('x_floatLeft');
+					}
+				}
 			}
 		}
 		
@@ -809,6 +819,13 @@
 											// text will be shown in lightbox if infoBtn is clicked
 											$imgHolder.find('.infoBtn').show();
 										}
+										
+										$('.imgHolder').removeClass('centreAlign');
+										if (x_currentPageXML.getAttribute('align') == 'right') {
+											$('.imgInnerDiv').addClass('x_floatRight');
+										} else {
+											$('.imgInnerDiv').addClass('x_floatLeft');
+										}
 									}
 									
 									for (var i=0; i<currentView - numShown; i++) {
@@ -840,8 +857,10 @@
 										
 										if (existingSeries != undefined && existingSeries.text != undefined && existingSeries.text != '') {
 											imageSequence.setTxt(existingSeries, 'series', $('#mainTxt'));
+										} else {
+											$('.imgHolder').addClass('centreAlign');
+											$('.imgInnerDiv').removeClass('x_floatRight, x_floatLeft');
 										}
-										
 									}
 									
 									for (var i=0; i<numShown - currentView; i++) {

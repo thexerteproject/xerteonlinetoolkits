@@ -262,6 +262,15 @@
 	padding: 0.3em;
 }
 
+.imgHolder.centreAlign {
+	text-align: center;
+}
+
+.imgHolder.centreAlign .imgInnerDiv {
+	text-align: left;
+	margin: 0 0 5px 0 !important;
+}
+
 /* ----- IMAGE CONTROLS IN IMAGE PANEL ----- */
 
 .imgCtrlBelow {
