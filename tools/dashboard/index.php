@@ -80,7 +80,7 @@ if(is_numeric($id) || $id == null) {
         $group = $LAUNCH->ltiCustomGet('group');
     }
     if ($group === false && isset($_REQUEST['group'])) {
-        $group = $_REQUEST{'group'};
+        $group = $_REQUEST['group'];
     }
     if ($group !== false) {
         $xerte_toolkits_site->group = $group;
@@ -91,7 +91,7 @@ if(is_numeric($id) || $id == null) {
         $course = $LAUNCH->ltiCustomGet('course');
     }
     if ($course === false && isset($_REQUEST['course'])) {
-        $course = $_REQUEST{'course'};
+        $course = $_REQUEST['course'];
     }
     if ($course !== false) {
         $xerte_toolkits_site->course = $course;
@@ -101,7 +101,7 @@ if(is_numeric($id) || $id == null) {
         $module = $LAUNCH->ltiCustomGet('module');
     }
     if ($module === false && isset($_REQUEST['module'])) {
-        $module = $_REQUEST{'module'};
+        $module = $_REQUEST['module'];
     }
     if ($module !== false) {
         $xerte_toolkits_site->module = $module;
