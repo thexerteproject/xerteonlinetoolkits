@@ -178,6 +178,8 @@
 				// only one series so don't show series thumbnail bar
 				// case intro text won't appear on the screen
 				if (allCases[currentCase].children.length == 1) {
+					currentView = 1;
+					
 					$('#viewHolder, #seriesMenu').hide();
 					
 					if (allCases.length == 1) {
@@ -193,6 +195,8 @@
 					for (var i=0; i<allCases[currentCase].children.length; i++) {
 						$('#seriesHolderInner').append('<button class="thumbs"><img class="thumbImg ' + allCases[currentCase].children[i].type + 'Thumb x_noLightBox" src="' + allCases[currentCase].children[i].src + '" width="50px" alt="' + allCases[currentCase].children[i].tooltip + '"></button>');
 					}
+					
+					currentView = 1;
 					
 					imageSequence.setUpViewMenu();
 					
@@ -551,23 +555,26 @@
 					
 					imgHoldersW = Math.max(row, col, grid) == row ? imgHoldersW/currentView : Math.max(row, col, grid) == col ? imgHoldersW : imgHoldersW/2;
 					imgHoldersH = Math.max(row, col, grid) == col ? imgHoldersH/currentView : Math.max(row, col, grid) == row ? imgHoldersH : imgHoldersH/2;
+					
+				} else {
+					imgHoldersH = imgHoldersH - 25;
 				}
 				
-				var maxW = imgHoldersW - ($imgHolder.find('.imgInnerDiv').outerWidth(true) - $imgHolder.find('.imgInnerDiv').width()) - ($img.hasClass('singleImg') ? 0 : $imgHolder.find('.imgCtrlRight').width()) - ($img.hasClass('singleImg') ? 0 : 20),
+				var maxW = imgHoldersW - ($imgHolder.find('.imgInnerDiv').outerWidth(true) - $imgHolder.find('.imgInnerDiv').width()) - ($img.hasClass('singleImg') ? 0 : 22/*$imgHolder.find('.imgCtrlRight').width()*/)/* - ($img.hasClass('singleImg') ? 0 : 20)*/ - 10,
 					maxH = imgHoldersH - ($imgHolder.find('.imgInnerDiv').outerHeight(true) - $imgHolder.find('.imgInnerDiv').height()) - $imgHolder.find('.imgCtrlBelow').outerHeight(true);
+				
+				imageSequence.setUpMagnifier($imgHolder);
 				
 				// is image allowed to be shown larger than the original size?
 				if (x_currentPageXML.getAttribute("imgSize") == 'full') {
 					x_scaleImg($img, maxW, maxH, true, true, false, true);
 				} else {
-					x_scaleImg($img, maxW, maxH, true, true);
+					x_scaleImg($img, maxW, maxH, true, $img.data("origSize") != undefined ? false : true);
 				}
 				
 				if (slider == true) {
 					imageSequence.setUpSlider($imgHolder);
 				}
-				
-				imageSequence.setUpMagnifier($imgHolder);
 			}
 		}
 		
@@ -777,12 +784,12 @@
 					}
 					menuHtml += '</span>';
 					
-					var defaultValue = x_currentPageXML.getAttribute('viewDefault') > x_currentPageXML.getAttribute('viewNum') ? x_currentPageXML.getAttribute('viewNum') : x_currentPageXML.getAttribute('viewDefault');
+					//var defaultValue = x_currentPageXML.getAttribute('viewDefault') > x_currentPageXML.getAttribute('viewNum') ? x_currentPageXML.getAttribute('viewNum') : x_currentPageXML.getAttribute('viewDefault');
 					
 					$("#viewHolder")
 						.append(menuHtml)
 						.data({
-							'default': defaultValue,
+							'default': 1,
 							'max': x_currentPageXML.getAttribute('viewNum')
 						})
 						.hide();
@@ -1311,7 +1318,7 @@
 				}
 				
 				// if no button selected or selected is now hidden, select the default button from view menu
-				if ($("#viewHolder button.selected").length == 0 || $("#viewHolder button.selected").is(":hidden")) {
+				if ($("#viewHolder button.selected").length == 0 || $("#viewHolder button.selected").is(":hidden") || currentView != $("#viewHolder button.selected").index()+1) {
 					$("#viewHolder .selected").removeClass("selected");
 					
 					var defaultValue = allCases[currentCase].children.length < $("#viewHolder").data('default') ? allCases[currentCase].children.length : $("#viewHolder").data('default');

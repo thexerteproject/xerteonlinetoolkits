@@ -3413,7 +3413,6 @@
 	<viewGroup type="group" label="View Menu" optional="true" tooltip="When a case contains more than one series or image, the view menu allows you to diplay more than one on screen at a time.">
 		<view label="Show" type="checkbox" defaultValue="true" optional="true"/>
 		<viewNum label="Max" type="NumericStepper" min="2" max="4" step="1" defaultValue="4" optional="true"/>
-		<viewDefault label="Default" type="NumericStepper" min="1" max="4" step="1" defaultValue="1" optional="true"/>
 	</viewGroup>
 	
     <newNodes>
