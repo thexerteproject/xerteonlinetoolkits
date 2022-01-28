@@ -5863,9 +5863,10 @@
 	</play>
 
     <newNodes>
-      <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
+	  <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
       <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound" mediaW="Medium" align="Right"></sound>]]></sound>
-      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="Enter a Description for Accessibility" mediaW="Medium" align="Right"></image>]]></image>	  
+      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="Enter a Description for Accessibility" mediaW="Medium" align="Right"></image>]]></image>
+	  <mpText><![CDATA[<mpText txt="Enter text for the page here" name="Text" src="Select an Image" tooltip="Enter a Description for Accessibility"></mpText>]]></mpText>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -5919,7 +5920,20 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></perspectives><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
+	</lightboxGroup></perspectives><mpText menuItem="Text" icon="icPageWhiteText" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<thumbnail type="group" label="Thumbnail" tooltip="The image that will appear on the thumbnail bar for this item.">
+		<src label="Image" type="media" defaultValue="Select an Image"/>
+		<tooltip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+	</thumbnail>
+	
+	<linkInfo type="group" label="Page Link" optional="true">
+		<pageLink label="Page" type="pageList" optional="true"/>
+		<pageLinkTxt label="Text" type="textInput" wysiwyg="true" defaultValue="Enter Text for Link" optional="true"/>
+	</linkInfo>
+  </mpText><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
 	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Right" width="100"/>
