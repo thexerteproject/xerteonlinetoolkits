@@ -1875,6 +1875,12 @@ var EDITOR = (function ($, parent) {
 					$("#mainPanel .ui-jqgrid").show();
 					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
 				});
+				
+				// make sure datagrid is correct width when first loaded
+				$("#mainPanel .ui-jqgrid").hide();
+				var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
+				$("#mainPanel .ui-jqgrid").show();
+				$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
 
 				jqGridSetUp == true;
 			}
