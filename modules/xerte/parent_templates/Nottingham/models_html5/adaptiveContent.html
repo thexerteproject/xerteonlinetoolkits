@@ -150,7 +150,7 @@
       return "rgba(" + r + ", " + g + ", " + b + ", " + opa + ")";
     }
 
-    var ctx = $(identifier);
+    var ctx = $('#' + identifier + ' .graph-container canvas');
     var bgColourIn = "0xff0000";
     if (interaction.getAttribute("colour") != null) {
       bgColourIn = interaction.getAttribute("colour");
@@ -235,33 +235,118 @@
       });
     }
 
-    // Show mean_all and latest
-    var myRadarChart = new Chart(ctx, {
-      type: "radar",
-      data: {
-        labels: classtitles,
-        datasets: datasets,
-      },
-      options: {
-        scale: {
-          ticks: {
-            suggestedMin: 0,
-            suggestedMax: 100,
-            fontSize: textSize - 10,
+    if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
+      // Show mean_all and latest
+      var myRadarChart = new Chart(ctx, {
+        type: "radar",
+        data: {
+          labels: classtitles,
+          datasets: datasets,
+        },
+        options: {
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              fontSize: textSize - 10,
+            },
           },
-          pointLabels: {
-            fontSize: textSize,
+          legend: {
+            labels: {
+              fontSize: textSize,
+            },
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+    } else if (interaction.getAttribute('opinionGraphType') == 'hor_bar_comb_marks_avg') {
+      let passingGrade = x_params.trackingPassed;
+      if (passingGrade == null) {
+        passingGrade = "55";
+      } else {
+        if (passingGrade.indexOf("%") >= 0) {
+          passingGrade = parseInt(passingGrade) + "";
+        } else if (
+          parsefloat(passingGrade) >= 0 &&
+          parsefloat(passingGrade) <= 1
+        ) {
+          passingGrade = parseFloat(passingGrade) * 100.0 + "";
+        }
+      }
+      let ctx = "#" + identifier + "-graph";
+
+      let labelCounter = 0;
+      let data = [];
+      datasets[0].data.forEach((val, key) => {
+        data.push({
+          x: classtitles[key],
+          y: Math.round(val, 2),
+          goals: [
+            {
+              name: "Group average",
+              value: datasets[2].data[key],
+              strokeWidth: 5,
+              strokeColor: "#775DD0",
+            },
+          ],
+        });
+        labelCounter += 1;
+      });
+      var options = {
+        series: [
+          {
+            data,
+          },
+        ],
+        chart: {
+          toolbar: {
+            show: false,
+          },
+          height: 350,
+          type: "bar",
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            distributed: true,
+          },
+        },
+        colors: [
+          "#FF6384",
+          "#4BC0C0",
+          "#FFCD56",
+          "#C9CBCF",
+          "#36A2EB",
+          "#B284BE",
+        ],
+        dataLabels: {
+          formatter: function (val, opt) {
+            const goals =
+              opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
+                .goals;
+
+            if (goals && goals.length) {
+              return `${val}%`;
+            }
+            return val;
           },
         },
         legend: {
-          labels: {
-            fontSize: textSize,
+          show: true,
+          showForSingleSeries: true,
+          customLegendItems: ["Group Average"],
+          markers: {
+            fillColors: ["#775DD0"],
           },
         },
-        responsive: true,
-        maintainAspectRatio: false,
-      },
-    });
+      };
+      var chart = new ApexCharts(
+        document.querySelector(`${ctx}`),
+        options
+      );
+      chart.render();
+    }
   };
 
   function hasToRetrieveAll(interaction) {
@@ -1601,7 +1686,6 @@
           });
           chart.draw();
         } else if (interaction.getAttribute("graphType") == "bar_marks") {
-            debugger;
           var xAxisLabelBarMarks =
             interaction.getAttribute("xAxisLabelBarMarks");
           var yAxisLabelBarMarks =
@@ -2094,106 +2178,6 @@
             options
           );
           chart.render();
-        } else if (
-          interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
-        ) {
-            debugger;
-          let passingGrade = x_params.trackingPassed;
-          if (passingGrade == null) {
-            passingGrade = "55";
-          } else {
-            if (passingGrade.indexOf("%") >= 0) {
-              passingGrade = parseInt(passingGrade) + "";
-            } else if (
-              parsefloat(passingGrade) >= 0 &&
-              parsefloat(passingGrade) <= 1
-            ) {
-              passingGrade = parseFloat(passingGrade) * 100.0 + "";
-            }
-          }
-          let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
-
-          let visitedGroups = {};
-          for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
-          }
-          let labelCounter = 0;
-          let data = [];
-          for (key in visitedGroups) {
-            data.push({
-              x: key,
-              y: Math.round(visitedGroups[key][0], 2),
-              goals: [
-                {
-                  name: "Expected",
-                  value: passingGrade,
-                  strokeWidth: 5,
-                  strokeColor: "#775DD0",
-                },
-              ],
-            });
-            labelCounter += 1;
-          }
-          var options = {
-            series: [
-              {
-                data,
-              },
-            ],
-            chart: {
-              toolbar: {
-                show: false,
-              },
-              height: 350,
-              type: "bar",
-            },
-            plotOptions: {
-              bar: {
-                horizontal: true,
-                distributed: true,
-              },
-            },
-            colors: [
-              "#FF6384",
-              "#4BC0C0",
-              "#FFCD56",
-              "#C9CBCF",
-              "#36A2EB",
-              "#B284BE",
-            ],
-            dataLabels: {
-              formatter: function (val, opt) {
-                const goals =
-                  opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
-                    .goals;
-
-                if (goals && goals.length) {
-                  return `${val}%`;
-                }
-                return val;
-              },
-            },
-            legend: {
-              show: true,
-              showForSingleSeries: true,
-              customLegendItems: ["Average"],
-              markers: {
-                fillColors: ["#775DD0"],
-              },
-            },
-          };
-          var chart = new ApexCharts(
-            document.querySelector(`#${ctx}`),
-            options
-          );
-          chart.render();
         }
       }
     };
@@ -2528,9 +2512,18 @@
         "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
       );
 
-      div.append(
-          "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>"
-      );
+
+      if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
+        div.append(
+            "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>"
+        );
+      } else if (interaction.getAttribute('opinionGraphType') == 'hor_bar_comb_marks_avg') {
+        div.append(
+          "<div class='graph'><div id='" +
+            escapeUrl(url, type, interactionIndex) +
+            "-graph'></div></div>"
+        );
+      }
       if (showExplanation == "true" && Explanation != "") {
         div.append(
           '<div class="panel legend" style="width: ' +
@@ -2540,10 +2533,7 @@
             "</div>"
         );
       }
-      var identifier =
-        "#" +
-        escapeUrl(url, type, interactionIndex) +
-        " .graph-container canvas";
+      var identifier = escapeUrl(url, type, interactionIndex);
       createDiagram(
         jsonData,
         identifier,
