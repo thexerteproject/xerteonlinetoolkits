@@ -104,27 +104,44 @@ li.select-interaction.selected {
   display: inline-flex;
 }
 
-@media (max-width: 900px) {
+.graph-container fieldset.noStyle {
+  width: 50%;
+  float: left;
+}
+
+.graph-container-wide fieldset.noStyle {
+  width: 100%;
+  float: unset;
+}
+
+@media (max-width: 1200px) {
+  .summary-container {
+    display: block;
+  }
   .graph-container {
     width: 100%;
+    float: unset;
     margin-top: 1rem;
   }
-  .summary-container {
+  .summary {
     width: 100%;
-    display: inline-block;
+    /* display: inline-block; */
   }
   .graph-container fieldset.noStyle {
     width: 100%;
   }
 }
 
-.graph-container-wide {
-  width: 100%;
+.panel.legend {
+	width: 35% !important;
 }
 
-.graph-container fieldset.noStyle {
-  width: 50%;
-  float: left;
+.panel.legend p{
+	font-size: 1.75vmin;
+}
+
+.graph-container-wide {
+  width: 100%;
 }
 
 .graph {

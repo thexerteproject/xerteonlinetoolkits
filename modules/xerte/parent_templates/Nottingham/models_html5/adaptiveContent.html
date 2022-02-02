@@ -1022,7 +1022,6 @@
         summaryText = `<h1><p>${summaryText}</p></h1>`;
       }
       let summaryDiv = ''
-        debugger;
       if (
         summaryText !== '' ||
           specificationDiv !== '' ||
@@ -1314,7 +1313,6 @@
         IncorrectText = "Incorrect";
       }
       var xertelo = interaction.getAttribute("xertelo");
-        debugger;
       //var statements = filterOwnStatements(data, xertelo);
       var statements = data;
       xerteurl = interaction.getAttribute("xerteurl");
@@ -1536,7 +1534,8 @@
               "-graph'></canvas></div>"
           );
         } else if (
-          interaction.getAttribute("graphType") == "hor_bar_comb_marks"
+          interaction.getAttribute("graphType") == "hor_bar_comb_marks" ||
+          interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
         ) {
           div.append(
             "<div class='graph'><div id='" +
@@ -1602,6 +1601,7 @@
           });
           chart.draw();
         } else if (interaction.getAttribute("graphType") == "bar_marks") {
+            debugger;
           var xAxisLabelBarMarks =
             interaction.getAttribute("xAxisLabelBarMarks");
           var yAxisLabelBarMarks =
@@ -1915,7 +1915,6 @@
         } else if (
           interaction.getAttribute("graphType") == "polar_area_per_category"
         ) {
-            debugger;
           let backgroundColors = [
             "#FF6384",
             "#4BC0C0",
@@ -1999,6 +1998,106 @@
         } else if (
           interaction.getAttribute("graphType") == "hor_bar_comb_marks"
         ) {
+          let passingGrade = x_params.trackingPassed;
+          if (passingGrade == null) {
+            passingGrade = "55";
+          } else {
+            if (passingGrade.indexOf("%") >= 0) {
+              passingGrade = parseInt(passingGrade) + "";
+            } else if (
+              parsefloat(passingGrade) >= 0 &&
+              parsefloat(passingGrade) <= 1
+            ) {
+              passingGrade = parseFloat(passingGrade) * 100.0 + "";
+            }
+          }
+          let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
+          let visitedGroups = {};
+          for (let statement in statements) {
+            let group =
+              statements[statement].context.contextActivities.grouping[0]
+                .definition.name["en-US"];
+            if (!(group in visitedGroups)) {
+              visitedGroups[group] = [statements[statement].result.score.raw];
+            } else {
+              visitedGroups[group].push(statements[statement].result.score.raw);
+            }
+          }
+          let labelCounter = 0;
+          let data = [];
+          for (key in visitedGroups) {
+            data.push({
+              x: key,
+              y: Math.round(visitedGroups[key][0], 2),
+              goals: [
+                {
+                  name: "Expected",
+                  value: passingGrade,
+                  strokeWidth: 5,
+                  strokeColor: "#775DD0",
+                },
+              ],
+            });
+            labelCounter += 1;
+          }
+          var options = {
+            series: [
+              {
+                data,
+              },
+            ],
+            chart: {
+              toolbar: {
+                show: false,
+              },
+              height: 350,
+              type: "bar",
+            },
+            plotOptions: {
+              bar: {
+                horizontal: true,
+                distributed: true,
+              },
+            },
+            colors: [
+              "#FF6384",
+              "#4BC0C0",
+              "#FFCD56",
+              "#C9CBCF",
+              "#36A2EB",
+              "#B284BE",
+            ],
+            dataLabels: {
+              formatter: function (val, opt) {
+                const goals =
+                  opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
+                    .goals;
+
+                if (goals && goals.length) {
+                  return `${val}%`;
+                }
+                return val;
+              },
+            },
+            legend: {
+              show: true,
+              showForSingleSeries: true,
+              customLegendItems: ["Average"],
+              markers: {
+                fillColors: ["#775DD0"],
+              },
+            },
+          };
+          var chart = new ApexCharts(
+            document.querySelector(`#${ctx}`),
+            options
+          );
+          chart.render();
+        } else if (
+          interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
+        ) {
+            debugger;
           let passingGrade = x_params.trackingPassed;
           if (passingGrade == null) {
             passingGrade = "55";
@@ -2430,7 +2529,7 @@
       );
 
       div.append(
-        "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>"
+          "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>"
       );
       if (showExplanation == "true" && Explanation != "") {
         div.append(
@@ -3097,15 +3196,34 @@
           //$(printableItems).find(".panel").css("box-shadow", "none !important");
           $("#adaptiveContent .panel").addClass("panel-print");
           $("#adaptiveContent .panel").removeClass("panel");
+          $(".panel-print").css("width", "794px");
+          $(".panel-print").css("height", "210px");
+          $(".summary-container").css("display", "block");
+          $(".graph-container").css("float", "unset");
+          $(".graph-container").css("width", "100%");
+          $("canvas").css("width", "100%");
+          $("canvas").css("height", "100%");
+          $("p").css("font-size", "16px");
+          $("ul").css("font-size", "16px");
           let opt = {
               filename: 'xerte-adaptive-content.pdf',
               jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
-          html2pdf().set(opt).from($("#adaptiveContent")[0]).save();
+          html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
+            $("#adaptiveContent .panel-print").addClass("panel");
+            $("#adaptiveContent .panel").removeClass("panel-print");
+            $(".panel").css("width", "100%");
+            $(".panel").css("height", "fit-content");
+            $(".summary-container").css("display", "flex");
+            $(".graph-container").css("float", "graph");
+            $(".graph-container").css("width", "45%");
+            $("canvas").css("width", "100%");
+            $("canvas").css("height", "100%");
+            $("p").css("font-size", "2.5vmin");
+            $("ul").css("font-size", "2.5vmin");
+          }).save();
           // Wait 10 seconds before placing the class back. This should be refactored at some point.
-          await new Promise(resolve => setTimeout(resolve, 10000));
-          $("#adaptiveContent .panel-print").addClass("panel");
-          $("#adaptiveContent .panel").removeClass("panel-print");
+          //await new Promise(resolve => setTimeout(resolve, 10000));
       });
       $("#adaptiveContentMain").addClass("unlisted");
       $("#introductionText").html(
