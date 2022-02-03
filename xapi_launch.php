@@ -105,6 +105,8 @@ if(is_numeric($id))
     if (isset($_REQUEST['module'])) {
         $xerte_toolkits_site->course = $_REQUEST['module'];
     }
+    _debug("xapi_launch: SESSION=" . print_r($_SESSION, true));
+
 
 	require("play.php");
 
