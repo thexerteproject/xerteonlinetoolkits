@@ -323,10 +323,10 @@
     if (
       xertelo != undefined &&
       xertelo == x_TemplateId &&
-      obj.context != undefined &&
-      obj.context.extensions != undefined &&
-      obj.context.extension["http://xerte.org.uk/sessionId"] != undefined &&
-      obj.context.extension["http://xerte.org.uk/sessionId"] == state.sessionId
+      statement.context != undefined &&
+      statement.context.extensions != undefined &&
+      statement.context.extensions["http://xerte.org.uk/sessionId"] != undefined &&
+      statement.context.extensions["http://xerte.org.uk/sessionId"] == state.sessionId
     ) {
       return true;
     }
@@ -1027,7 +1027,8 @@
           specificationDiv !== '' ||
           adviceHeader !== '' ||
           interaction.getAttribute("showNrOfParticipants") === "true" ||
-          interaction.getAttribute("showScore") === "true"
+          interaction.getAttribute("showScore") === "true" ||
+          interactionType === "open"
         ) {
         summaryDiv = '<div class="summary">' +
           summaryText +
@@ -1546,12 +1547,13 @@
           div.append(
             "<div class='graph'><svg id='" +
               escapeUrl(url, type, interactionIndex) +
-              "-graph'></svg></div>"
+              "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
           );
-          document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
-          document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
+
+          //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
+          //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
           //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("preserveAspectRatio", "xMinYMin meet");
-          document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("viewBox", "0 0 700 300");
+          //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("viewBox", "0 0 700 300");
           //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute('viewBox','0 0 '+Math.min(width,height) +' '+Math.min(width,height) )
         //.attr('preserveAspectRatio','xMinYMin')
         }
@@ -2937,7 +2939,7 @@
         } else {
           if (group == "true") {
             if (x_urlParams["group"] != undefined) {
-              group = x_urlParams["group"];
+              group = decodeURIComponent(x_urlParams["group"]);
             } else {
               if (interaction.getAttribute("groupName") != undefined) {
                 group = interaction.getAttribute("groupName");
@@ -3196,18 +3198,21 @@
           //$(printableItems).find(".panel").css("box-shadow", "none !important");
           $("#adaptiveContent .panel").addClass("panel-print");
           $("#adaptiveContent .panel").removeClass("panel");
-          $(".panel-print").css("width", "794px");
+          $(".panel-print").css("width", "714px");
           $(".panel-print").css("height", "210px");
           $(".summary-container").css("display", "block");
           $(".graph-container").css("float", "unset");
           $(".graph-container").css("width", "100%");
           $("canvas").css("width", "100%");
           $("canvas").css("height", "100%");
-          $("p").css("font-size", "16px");
-          $("ul").css("font-size", "16px");
+          $("p").css("font-size", "14px");
+          $("ul").css("font-size", "14px");
           let opt = {
               filename: 'xerte-adaptive-content.pdf',
-              jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+              margin:   10,
+              image:    { type: 'jpeg', quality: 1 },
+              html2canvas:  { dpi: 300, letterRendering: true},
+              jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
           html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
             $("#adaptiveContent .panel-print").addClass("panel");
@@ -3264,7 +3269,7 @@
         } else {
           if (group == "true") {
             if (x_urlParams["group"] != undefined) {
-              group = x_urlParams["group"];
+              group = decodeURIComponent(x_urlParams["group"]);
             } else {
               if (interaction.getAttribute("groupName") != undefined) {
                 group = interaction.getAttribute("groupName");
