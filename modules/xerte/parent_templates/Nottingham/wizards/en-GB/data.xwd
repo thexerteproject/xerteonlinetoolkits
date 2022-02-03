@@ -3694,7 +3694,7 @@
     <text label="Description" type="TextArea" height="150"/>
 	<bgColour label="Highlight Colour" type="ColourPicker"/>
 
-  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
+  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		
@@ -3758,7 +3758,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></interactiveVideo><ivMediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+	</lightboxGroup></interactiveVideo><ivMediaPanel menuItem="Media Panel" icon="icFilm" remove="false" duplicate="false">
 
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		
