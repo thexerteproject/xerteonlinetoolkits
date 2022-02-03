@@ -1773,94 +1773,106 @@ function x_dialog(text){
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
-    var page = XTStartPage();
-    if (force && page >= 0) {  // this is a resumed tracked LO, go to the page saved by the LO
-        x_changePage(page, addHistory);
-    }
-    else {
+    var page,
+		inclHistory = false;
+	
+	// if it's first page then we've already found x_deepLink
+	if (x_firstLoad == false || addHistory == false) {
+		var deepLinkInfo = getDeepLink(pageInfo.ID);
+		pageInfo.ID = deepLinkInfo[0];
 		
-		// if it's first page then we've already found x_deepLink
-		if (x_firstLoad == false || addHistory == false) {
-			var deepLinkInfo = getDeepLink(pageInfo.ID);
-			pageInfo.ID = deepLinkInfo[0];
+		if (deepLinkInfo.length > 1) {
+			x_deepLink = deepLinkInfo[1];
+		} else {
+			x_deepLink = '';
+		}
+	}
+	
+	if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+		// relative links added from WYSIWYG xerte page links button
+		if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+			var pageIndex = $.inArray(x_currentPage, x_normalPages);
 			
-			if (deepLinkInfo.length > 1) {
-				x_deepLink = deepLinkInfo[1];
+			switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
+				case "next":
+					// won't change if this is a standalone page
+					if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
+						page = x_normalPages[pageIndex + 1];
+					break;
+				case "previous":
+					if (pageIndex != -1 && pageIndex > 0) {
+						page = x_normalPages[pageIndex - 1];
+					} else {
+						// ** it's a standalone page - do historic back
+					}
+					break;
+				case "first":
+					if (pageIndex !== 0) {
+						page = x_normalPages[0];
+					}
+					break;
+				case "last":
+					if (pageIndex < x_normalPages.length-1) {
+						page = x_normalPages[x_normalPages.length-1]
+					}
+					break;
+			}
+		}
+		else {
+			// could be the linkID generated automatically in XML or a custom ID added in editor
+			page = x_lookupPage(pageInfo.type, pageInfo.ID);
+			
+			// id was a deeplink so info about page & deeplink has been returned
+			if ($.isArray(page)) {
+				x_deepLink = page.slice(1, page.length);
+				page = page[0];
+			}
+			
+			if (page !== false) {
+				if (page != x_currentPage) {
+					inclHistory = true;
+				} else {
+					x_doDeepLink();
+				}
 			} else {
 				x_deepLink = '';
+				if (force == true) {
+					inclHistory = true;
+				}
 			}
 		}
+	}
+	else if (pageInfo.type == "index") {
+		page = pageInfo.ID;
+		inclHistory = true;
 		
-		if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-			// relative links added from WYSIWYG xerte page links button
-        	if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
-				var pageIndex = $.inArray(x_currentPage, x_normalPages);
-				
-				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
-					case "next":
-						// won't change if this is a standalone page
-						if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
-							x_changePage(x_normalPages[pageIndex + 1]);
-						break;
-					case "previous":
-						if (pageIndex != -1 && pageIndex > 0) {
-							x_changePage(x_normalPages[pageIndex - 1]);
-						} else {
-							// ** it's a standalone page - do historic back
-						}
-						break;
-					case "first":
-						if (pageIndex !== 0) {
-							x_changePage(x_normalPages[0]);
-						}
-						break;
-					case "last":
-						if (pageIndex < x_normalPages.length-1) {
-							x_changePage(x_normalPages[x_normalPages.length-1]);
-						}
-						break;
-				}
-        	}
-        	else {
-				// could be the linkID generated automatically in XML or a custom ID added in editor
-				page = x_lookupPage(pageInfo.type, pageInfo.ID);
-				
-				// id was a deeplink so info about page & deeplink has been returned
-				if ($.isArray(page)) {
-					x_deepLink = page.slice(1, page.length);
-					page = page[0];
-				}
-				
-				if (page !== false) {
-					if (page != x_currentPage) {
-						x_changePage(page, addHistory);
-					} else {
-						x_doDeepLink();
-					}
-				} else {
-					x_deepLink = '';
-					if (force == true) {
-						x_changePage(0, addHistory);
-					}
-				}
-			}
-        }
-        else if (pageInfo.type == "index") {
-			x_changePage(pageInfo.ID, addHistory);
-			
-        } else {
-			page = parseInt(pageInfo.ID);
-            if (page > 0 && page <= x_pages.length) {
-                x_changePage(page-1, addHistory);
-            }
-            else {
-            	x_deepLink = '';
-            	if (force == true) {
-                	x_changePage(0, addHistory);
-                }
-            }
+	} else {
+		page = parseInt(pageInfo.ID);
+		if (page > 0 && page <= x_pages.length) {
+			page = page-1;
+			inclHistory = true;
 		}
-    }
+		else {
+			x_deepLink = '';
+			if (force == true) {
+				page = 0;
+				inclHistory = true;
+			}
+		}
+	}
+	
+	var resumeLO = XTStartPage();
+	
+	// this is a resumed tracked LO, go to the page saved by the LO - unless it's currently trying to show a standalone page in a lightbox
+	if (force && resumeLO >= 0 && (x_pageInfo[page].standalone != true || x_pages[page].getAttribute('linkTarget') == 'new' || x_pages[page].getAttribute('linkTarget') == 'same')) { 
+		x_changePage(resumeLO, addHistory);
+		
+	} else if (inclHistory == true) {
+		x_changePage(page, addHistory);
+		
+	} else {
+		x_changePage(page);
+	}
 }
 
 
