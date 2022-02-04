@@ -15,7 +15,7 @@
 		border-radius:		50% 50%;
 	}
 	
-	#hsHolder a.selected, #hsHolder .hsGroup.selected a {
+	#hsHolder .hotspot.selected, #hsHolder .hsGroup.selected .hotspot {
 		border:		2px solid;
 	}
 	
