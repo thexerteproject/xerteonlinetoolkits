@@ -3218,7 +3218,7 @@
         // We leave HTMLVideoElement and HTMLAudioElement wrappers out
         // of the mix, since we'll default to HTML5 video if nothing
         // else works.  Waiting on #1254 before we add YouTube to this.
-        wrappers = "HTMLYouTubeVideoElement HTMLVimeoVideoElement HTMLMediasiteVideoElement HTMLSoundCloudAudioElement HTMLNullVideoElement".split(" ");
+        wrappers = "HTMLYouTubeVideoElement HTMLVimeoVideoElement HTMLMediasiteVideoElement HTMLPeerTubeVideoElement HTMLSoundCloudAudioElement HTMLNullVideoElement".split(" ");
 
     if ( !node ) {
       Popcorn.error( "Specified target `" + target + "` was not found." );
@@ -4595,7 +4595,274 @@
 
 
 
-}( Popcorn, window, document ));/**
+}( Popcorn, window, document ));
+
+(function( Popcorn, window, document ) 
+{
+    var CURRENT_TIME_MONITOR_MS = 16;
+
+    function HTMLPeerTubeVideoElement(id) 
+    {
+        console.log("Biembamboembambiem");
+        debugger;
+        var self = new Popcorn._MediaElementProto(),
+            parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
+            elem = document.createElement( "div" ),
+            impl = {
+                src: "",
+                networkState: self.NETWORK_EMPTY,
+                readyState: self.HAVE_NOTHING,
+                seeking: false,
+                autoplay: "",
+                preload: "",
+                controls: false,
+                loop: false,
+                poster: "",
+                volume: 1,
+                muted: 0,
+                currentTime: 0,
+                duration: NaN,
+                ended: false,
+                paused: true,
+                error: null
+            },
+            playerReady = false,
+            player,
+            playerPaused = true,
+            playerReadyCallbacks = [],
+            timeUpdateInterval,
+            currentTimeInterval;
+
+          // Namespace all events we'll produce
+          self._eventNamespace = Popcorn.guid( "HTMLPeerTubeVideoElement::" );
+
+          self.parentNode = parent;
+
+          // Mark type as Mediasite
+          self._util.type = "Peertube";
+
+          elem.id = "peertubeIframe";
+          elem.addClass = " .iframe ";
+
+        function addPlayerReadyCallback( callback ) {
+            playerReadyCallbacks.push( callback );
+        }
+
+        function changeSrc( aSrc ) 
+        {
+            if (!self._canPlaySrc(aSrc)) {
+                impl.error = {
+                    name: "MediaError",
+                    message: "Media Source Not Supported",
+                    code: MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED
+                };
+                self.dispatchEvent("error");
+                return;
+            }
+            impl.src = aSrc;
+            parent.appendChild(elem);
+            self.dispatchEvent("loadstart");
+            self.dispatchEvent("progress");
+            onReady();
+        }   
+
+        function onReady()
+        {
+            impl.duration = player.getDuration();
+            self.dispatchEvent("loadedmetadata");
+
+            currentTimeInterval = setInterval( monitorCurrentTime,
+                CURRENT_TIME_MONITOR_MS );
+
+            self.dispatchEvent( "loadeddata" );
+
+            impl.readyState = self.HAVE_FUTURE_DATA;
+            self.dispatchEvent( "canplay" );
+
+            impl.readyState = self.HAVE_ENOUGH_DATA;
+            self.dispatchEvent( "canplaythrough" );
+
+            player.currentTime = 0;
+
+            player.seekTo(0);
+            playerReady = true;
+        }
+
+
+        function monitorCurrentTime() {
+            var playerTime = player.getCurrentTime();
+
+            if ( !impl.seeking ) {
+                if ( Math.abs( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
+                    onSeeking();
+                    onSeeked();
+                }
+                impl.currentTime = playerTime;
+            } else if ( Math.abs( playerTime - impl.currentTime ) < 1 ) {
+                onSeeked();
+            }
+        }
+
+        function changeCurrentTime( aTime ) {
+            if (aTime === impl.currentTime) {
+                return;
+            }
+            impl.currentTime = aTime;
+            onSeeking();
+            player.seekTo(aTime);
+        }
+
+
+        function onTimeUpdate() {
+            self.dispatchEvent("timeupdate");
+        }
+
+        function onPlay() {
+            if( impl.ended ) {
+                changeCurrentTime( 0 );
+                impl.ended = false;
+            }
+            impl.duration = player.getDuration();
+            self.dispatchEvent( "durationchange" );
+
+            timeUpdateInterval = setInterval( onTimeUpdate,
+                self._util.TIMEUPDATE_MS );
+            impl.paused = false;
+            if( playerPaused ) {
+                playerPaused = false;
+
+                self.dispatchEvent( "play" );
+
+                self.dispatchEvent( "playing" );
+            }
+        }
+
+            self.play = function() {
+                impl.paused = false;
+                if( !playerReady ) {
+                    addPlayerReadyCallback( function() { self.play(); } );
+                    return;
+                }
+
+                player.play();
+            };
+
+            function onPause () {
+                impl.paused = true;
+                if ( !playerPaused ) {
+                    playerPaused = true;
+                    clearInterval( timeUpdateInterval );
+                    self.dispatchEvent( "pause" );
+                }
+            }
+
+            self.pause = function() {
+                impl.paused = true;
+                if( !playerReady ) {
+                    addPlayerReadyCallback( function() { self.pause(); } );
+                }
+                player.pause();
+            };
+
+            self.setVST = function(vst) {
+              player.setVisibleStreamTypes(vst.split(" ").map(parseIntOne));
+
+              function parseIntOne(str)
+              {
+                return parseInt(str);
+              }
+            };
+
+        function onSeeking() {
+            impl.seeking = true;
+            self.dispatchEvent( "seeking" );
+        }
+
+        function onSeeked() {
+            impl.ended = false;
+            impl.seeking = false;
+
+            self.dispatchEvent( "timeupdate" );
+            self.dispatchEvent( "seeked" );
+            self.dispatchEvent( "canplay" );
+            self.dispatchEvent( "canplaythrough" );
+        }
+
+        function onEnded() {
+            impl.ended = true;
+            onPause();
+            self.dispatchEvent("timeupdate");
+            self.dispatchEvent("ended");
+        }
+
+        Object.defineProperties( self, {
+
+            src: {
+                get: function () {
+                    return impl.src;
+                },
+                set: function (aSrc) {
+                    if (aSrc && aSrc !== impl.src) {
+                        changeSrc(aSrc);
+                    }
+                }
+            },
+
+            seeking: {
+                get: function() {
+                    return impl.seeking;
+                }
+            },
+
+            loop: {
+                get: function() {
+                    return impl.loop;
+                },
+                set: function( aValue ) {
+                    impl.loop = self._util.isAttributeSet( aValue );
+                }
+            },
+
+            paused: {
+                get: function() {
+                    return impl.paused;
+                }
+            },
+
+            duration: {
+                get: function() {
+                    return impl.duration;
+                }
+            },
+
+            currentTime: {
+                get: function() {
+                    return impl.currentTime;
+                },
+                set: function( aValue ) {
+                    changeCurrentTime( aValue );
+                }
+            }
+        });
+
+        self._canPlaySrc = Popcorn.HTMLPeerTubeVideoElement._canPlaySrc;
+
+        return self;
+    }
+
+
+    Popcorn.HTMLPeerTubeVideoElement = function( id ) {
+        return new HTMLPeerTubeVideoElement( id );
+    };
+
+    // Helper for identifying URLs we know how to play.
+    Popcorn.HTMLPeerTubeVideoElement._canPlaySrc = function( url ) {
+        return "probably";
+    };
+}( Popcorn, window, document ));
+
+
+/**
  * Simplified Media Fragments (http://www.w3.org/TR/media-frags/) Null player.
  * Valid URIs include:
  *
@@ -6879,7 +7146,7 @@
     function onSeeking() {
       // a seek in youtube fires a paused event.
       // we don't want to listen for this, so this state catches the event.
-      // 20/12 This was disabled because the next play and pause event were also caught after a seek.
+      // 20/12/2021 This was disabled because the next play and pause event were also caught after a seek.
       // It does send one pause event too many to Xapi, but that seems to be no issue.
       // addYouTubeEvent( "pause", catchRoguePauseEvent );
       // removeYouTubeEvent( "pause", onPause );
