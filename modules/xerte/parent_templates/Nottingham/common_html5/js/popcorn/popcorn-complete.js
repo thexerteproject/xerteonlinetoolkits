@@ -4590,7 +4590,7 @@
 
     // Helper for identifying URLs we know how to play.
     Popcorn.HTMLMediasiteVideoElement._canPlaySrc = function( url ) {
-        return "probably";
+        return (/.+mediamission.+/).test( url ) ? "probably" : "";
     };
 
 
@@ -4603,11 +4603,9 @@
 
     function HTMLPeerTubeVideoElement(id) 
     {
-        console.log("Biembamboembambiem");
-        debugger;
         var self = new Popcorn._MediaElementProto(),
             parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
-            elem = document.createElement( "div" ),
+            elem = document.createElement( "iframe" ),
             impl = {
                 src: "",
                 networkState: self.NETWORK_EMPTY,
@@ -4663,35 +4661,65 @@
             parent.appendChild(elem);
             self.dispatchEvent("loadstart");
             self.dispatchEvent("progress");
-            onReady();
+            elem.width="100%";
+            elem.height="100%";
+            elem.src=aSrc + "?api=1";
+            elem.frameborder="0";
+            elem.allowfullscreen="";
+            elem.sandbox="allow-same-origin allow-scripts allow-popups";
+
+            $.getScript("https://unpkg.com/@peertube/embed-api/build/player.min.js")
+                .done(function () {
+                    onReady();
+                }
+                ).fail(function () {
+                });
         }   
 
+        // Called when the player script has loaded
         function onReady()
         {
-            impl.duration = player.getDuration();
-            self.dispatchEvent("loadedmetadata");
-
-            currentTimeInterval = setInterval( monitorCurrentTime,
-                CURRENT_TIME_MONITOR_MS );
-
-            self.dispatchEvent( "loadeddata" );
-
+            const PeerTubePlayer = window['PeerTubePlayer']
+            player = new PeerTubePlayer(elem);        
+            player.addEventListener("playbackStatusUpdate", function(videoState) {monitorCurrentTime(videoState)}, false);
+          
             impl.readyState = self.HAVE_FUTURE_DATA;
             self.dispatchEvent( "canplay" );
 
             impl.readyState = self.HAVE_ENOUGH_DATA;
             self.dispatchEvent( "canplaythrough" );
 
-            player.currentTime = 0;
-
-            player.seekTo(0);
             playerReady = true;
         }
 
 
-        function monitorCurrentTime() {
-            var playerTime = player.getCurrentTime();
+        function monitorCurrentTime(videoState) {
+            var playerTime = videoState.position;
+            if (impl.duration != videoState.duration) {
+              impl.duration = videoState.duration;
+              self.dispatchEvent( "durationchange" );
+              if (impl.duration > 0) {
+                self.dispatchEvent( "loadedmetadata" );
+                self.dispatchEvent( "loadeddata" );
+              }
+            }
 
+            if (impl.currentTime != videoState.position) {
+              self.dispatchEvent("timeupdate");
+            }
+
+            // Playbackstates are: playing, notstarted, paused and ended. Only playing is relevant for us.
+            var isPaused = !(videoState.playbackState == 'playing');
+            if (isPaused != impl.playerPaused) {
+              if (isPaused) {
+                onPause();
+              }
+              else {
+                onPlay();
+              }
+              impl.playerPaused = isPaused;
+            }
+            
             if ( !impl.seeking ) {
                 if ( Math.abs( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
                     onSeeking();
@@ -4709,12 +4737,7 @@
             }
             impl.currentTime = aTime;
             onSeeking();
-            player.seekTo(aTime);
-        }
-
-
-        function onTimeUpdate() {
-            self.dispatchEvent("timeupdate");
+            player.seek(aTime);
         }
 
         function onPlay() {
@@ -4722,56 +4745,41 @@
                 changeCurrentTime( 0 );
                 impl.ended = false;
             }
-            impl.duration = player.getDuration();
             self.dispatchEvent( "durationchange" );
-
-            timeUpdateInterval = setInterval( onTimeUpdate,
-                self._util.TIMEUPDATE_MS );
             impl.paused = false;
             if( playerPaused ) {
                 playerPaused = false;
-
                 self.dispatchEvent( "play" );
-
                 self.dispatchEvent( "playing" );
             }
         }
 
-            self.play = function() {
-                impl.paused = false;
-                if( !playerReady ) {
-                    addPlayerReadyCallback( function() { self.play(); } );
-                    return;
-                }
-
-                player.play();
-            };
-
-            function onPause () {
-                impl.paused = true;
-                if ( !playerPaused ) {
-                    playerPaused = true;
-                    clearInterval( timeUpdateInterval );
-                    self.dispatchEvent( "pause" );
-                }
+        self.play = function() {
+            impl.paused = false;
+            if( !playerReady ) {
+                addPlayerReadyCallback( function() { self.play(); } );
+                return;
             }
 
-            self.pause = function() {
-                impl.paused = true;
-                if( !playerReady ) {
-                    addPlayerReadyCallback( function() { self.pause(); } );
-                }
-                player.pause();
-            };
+            player.play();
+        };
 
-            self.setVST = function(vst) {
-              player.setVisibleStreamTypes(vst.split(" ").map(parseIntOne));
+        function onPause () {
+            impl.paused = true;
+            if ( !playerPaused ) {
+                playerPaused = true;
+                clearInterval( timeUpdateInterval );
+                self.dispatchEvent( "pause" );
+            }
+        }
 
-              function parseIntOne(str)
-              {
-                return parseInt(str);
-              }
-            };
+        self.pause = function() {
+            impl.paused = true;
+            if( !playerReady ) {
+                addPlayerReadyCallback( function() { self.pause(); } );
+            }
+            player.pause();
+        };
 
         function onSeeking() {
             impl.seeking = true;
@@ -4857,7 +4865,8 @@
 
     // Helper for identifying URLs we know how to play.
     Popcorn.HTMLPeerTubeVideoElement._canPlaySrc = function( url ) {
-        return "probably";
+      return "probably";//( (/player.vimeo.com\/video\/\d+/).test( url ) ||
+             //(/vimeo.com\/\d+/).test( url ) ) ? "probably" : EMPTY_STRING;
     };
 }( Popcorn, window, document ));
 
