@@ -32,40 +32,51 @@ _load_language_file("/website_code/php/properties/share_this_template.inc");
 
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
+if(is_numeric($_POST['id'])&&is_numeric($_POST['template_id'])){
 
     if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
-        $user_id = $_POST['user_id'];
+        $id = $_POST['id'];
 
         $tutorial_id = $_POST['template_id'];
 
         $database_id = database_connect("Share this template database connect success", "Share this template database connect success");
 
+        $new_role = $_POST['role'];
+        $group = $_POST['group'] == "true";
         /**
          * find the user you are sharing with's root folder to add this template to
          */
+        if (!$group){
+            $query_to_find_out_root_folder = "select folder_id from {$prefix}folderdetails where login_id = ? and folder_parent=? and folder_name!=?";
 
-        $query_to_find_out_root_folder = "select folder_id from {$prefix}folderdetails where login_id = ? and folder_parent=? and folder_name!=?";
+            $params = array($id, '0', 'recyclebin');
 
-        $params = array($user_id, '0', 'recyclebin');
+            $row_query_root = db_query_one($query_to_find_out_root_folder, $params);
 
-        $row_query_root = db_query_one($query_to_find_out_root_folder, $params);
-
-        $query_to_insert_share = "INSERT INTO {$prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
-        $params = array($tutorial_id, $user_id, "editor", $row_query_root['folder_id']);
-
-        if (db_query($query_to_insert_share, $params)) {
+            $query_to_insert_share = "INSERT INTO {$prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
+            $params = array($tutorial_id, $id, $new_role, $row_query_root['folder_id']);
+        }else{
+            $query_to_insert_share = "INSERT INTO {$prefix}template_group_rights (template_id, group_id, role) VALUES (?,?,?)";
+            $params = array($tutorial_id, $id, $new_role);
+        }
+        if (db_query($query_to_insert_share, $params) !== false){
 
             /**
              * sort ouf the html to return to the screen
              */
+            if (!$group){
+                $query_for_name = "select firstname, surname from {$prefix}logindetails WHERE login_id=?";
+                $params = array($id);
 
-            $query_for_name = "select firstname, surname from {$prefix}logindetails WHERE login_id=?";
-            $params = array($user_id);
+                $row = db_query_one($query_for_name, $params);
 
-            $row = db_query_one($query_for_name, $params);
-
-            echo SHARING_THIS_FEEDBACK_SUCCESS . " " . $row['firstname'] . " " . $row['surname'] . "<br>";
+                echo SHARING_THIS_FEEDBACK_SUCCESS . " " . $row['firstname'] . " " . $row['surname'] . "<br>";
+            }else{
+                $query_for_groupname = "select group_name from {$prefix}user_groups WHERE group_id=?";
+                $params = array($id);
+                $row = db_query_one($query_for_groupname, $params);
+                echo SHARING_THIS_FEEDBACK_SUCCESS . " " . $row['group_name'] . "<br>";
+            }
 
         } else {
 

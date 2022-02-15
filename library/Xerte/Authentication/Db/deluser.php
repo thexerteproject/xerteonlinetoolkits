@@ -35,6 +35,7 @@ if(is_user_admin()){
     if (strlen($mesg) == 0)
     {
         $mesg = $authmech->delUser(urldecode($_POST['username']));
+
     }
     if (strlen($mesg) > 0)
     {

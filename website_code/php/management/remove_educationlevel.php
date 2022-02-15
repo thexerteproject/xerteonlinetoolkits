@@ -17,30 +17,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- * set sharing rights template, modifies rights to a template for a group
- *
- * @author Noud Liefrink
- * @version 1.0
- * @package
- */
-
-
 require_once("../../../config.php");
 
-$prefix = $xerte_toolkits_site->database_table_prefix;
-if(is_numeric($_POST['group_id'])&&is_numeric($_POST['template_id'])){
+require("../user_library.php");
+require("management_library.php");
 
-    $new_rights = $_POST['rights'];
+if(is_user_admin()){
 
-    $group_id = $_POST['group_id'];
+	
+    $query="delete from {$xerte_toolkits_site->database_table_prefix}educationlevel where educationlevel_id=?";
+    $res = db_query($query, array($_POST['remove'] ));
 
-    $tutorial_id = $_POST['template_id'];
+	educationlevel_list();
+			
+}else{
+	management_fail();
 
-    $database_id=database_connect("Template sharing rights database connect success","Template sharing rights database connect failed");
-
-    $query_to_change_share_rights = "update {$prefix}template_group_rights set role = ? WHERE template_id = ? and group_id= ?";
-    $params = array($new_rights, $tutorial_id, $group_id);
-    db_query($query_to_change_share_rights, $params);
 }

@@ -677,7 +677,7 @@
         var dashboardMode = 'false';
 
         this.loadJS = function() {
-            if (numLoaded < 3) {
+            if (numLoaded < 4) {
                 var fileToLoad;
                 if (numLoaded == 0) {
                     fileToLoad = x_templateLocation + 'common_html5/js/chart.min.js';
@@ -692,6 +692,9 @@
                 }
                 else if (numLoaded == 2) {
                     fileToLoad = x_templateLocation + 'common_html5/js/moment-with-locales.min.js';
+                }
+                else if (numLoaded == 3) {
+                    fileToLoad = x_templateLocation + 'common_html5/js/apexcharts.min.js';
                 }
 
                 $.getScript(fileToLoad)
@@ -736,6 +739,7 @@
         this.pageChanged = function() {
             $("#adaptiveContentMain").html("");
             var displayMode = x_currentPageXML.getAttribute('displayMode');
+        debugger;
             if(displayMode == "Listed"){
                 this.setUpListed();
             }else {
@@ -1238,12 +1242,22 @@
                     ExplanationPanelWidth = "40%";
                 }
                 div = $('#' + escapeUrl(url, type, interactionIndex) + ' .graph-container');
-                if (interaction.getAttribute('graphType') == 'pie_marks' || interaction.getAttribute('graphType') == 'bar_comb_marks'){
+                if (
+                    interaction.getAttribute('graphType') == 'pie_marks'
+                    || interaction.getAttribute('graphType') == 'bar_comb_marks'
+                    || interaction.getAttribute('graphType') == 'polar_area_per_category'){
                     div.append(
                         "<div class='graph'><canvas id='" +
                         escapeUrl(url, type, interactionIndex) +
                         "-graph'></canvas></div>"
                     );
+                }
+                else if (interaction.getAttribute('graphType') == 'hor_bar_comb_marks') {
+                  div.append(
+                      "<div class='graph'><div id='" +
+                      escapeUrl(url, type, interactionIndex) +
+                      "-graph'></div></div>"
+                  );
                 }
                 else {
                     div.append(
@@ -1584,6 +1598,175 @@
                         }
                     );
                     chart.draw();
+                }
+                else if (interaction.getAttribute("graphType") == "polar_area_per_category") {
+                  let backgroundColors = [
+                    '#FF6384',
+                    '#4BC0C0',
+                    '#FFCD56',
+                    '#C9CBCF',
+                    '#36A2EB',
+                    '#B284BE',
+                  ];
+                  let visitedGroups = {};
+                  for (let statement in statements) {
+                      let group = statements[statement].context.contextActivities.grouping[0].definition.name["en-US"];
+                      if (!(group in visitedGroups)) {
+                          visitedGroups[group] = [statements[statement].result.score.raw];
+                      } else {
+                          visitedGroups[group].push(statements[statement].result.score.raw);
+                      }
+                  }
+                  let labelCounter = 0;
+                  let legendLabels = [];
+                  for (key in visitedGroups) {
+                    legendLabels.push({
+                      text: key,
+                      fillStyle: backgroundColors[labelCounter],
+                    });
+                    labelCounter += 1;
+                  }
+                  labelCounter = 0;
+                  let questions = statements.map(statement => statement.result.extensions['http://xerte.org.uk/result/grouping/scores']);
+                  let labels = [];
+                  let backgroundColor = [];
+                  let dataValues = [];
+                  for (let index in questions) {
+                    let questionsGroup = questions[index];
+                    for (let index in questionsGroup) {
+                      let singleQuestion = questionsGroup[index];
+                      labels.push(singleQuestion[0][0]);
+                      dataValues.push(singleQuestion[1]);
+                      backgroundColor.push(backgroundColors[labelCounter]);
+                    }
+                    labelCounter += 1;
+                  }
+                  let ctx = escapeUrl(url, type, interactionIndex) + '-graph';
+                  let options = {
+                      maintainAspectRatio: false,
+                  };
+                  const data = {
+                    labels,
+                    datasets: [{
+                      label: 'My First Dataset',
+                      data: dataValues,
+                      backgroundColor
+                    }]
+                  };
+                  var myChart = new Chart(ctx, {
+                      type: 'polarArea',
+                      data: data,
+                      options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            display: true,
+                            labels: {
+                              generateLabels: function(chart) {
+                                return legendLabels;
+                              }
+                            }
+                          }
+                        }
+                      }
+                  });
+
+                }
+                else if (interaction.getAttribute("graphType") == 'hor_bar_comb_marks') {
+                  //<div id="chart" style="height: 600px; width: 600px;">
+                  //</div>
+                  let passingGrade = x_params.trackingPassed;
+                  if (passingGrade == null) {
+                      passingGrade = '55';
+                  }
+                  else
+                  {
+                      if (passingGrade.indexOf('%') >=0) {
+                          passingGrade = parseInt(passingGrade) + '';
+                      }
+                      else if (parsefloat(passingGrade) >= 0 && parsefloat(passingGrade) <= 1)
+                      {
+                          passingGrade = (parseFloat(passingGrade) * 100.0) + '';
+                      }
+                  }
+                  let ctx = escapeUrl(url, type, interactionIndex) + '-graph';
+
+                  let visitedGroups = {};
+                  for (let statement in statements) {
+                      let group = statements[statement].context.contextActivities.grouping[0].definition.name["en-US"];
+                      if (!(group in visitedGroups)) {
+                          visitedGroups[group] = [statements[statement].result.score.raw];
+                      } else {
+                          visitedGroups[group].push(statements[statement].result.score.raw);
+                      }
+                  }
+                  let labelCounter = 0;
+                  let data = [];
+                  for (key in visitedGroups) {
+                    data.push({
+                      x: key,
+                      y: Math.round(visitedGroups[key][0], 2),
+                      goals: [
+                        {
+                          name: 'Expected',
+                          value: passingGrade,
+                          strokeWidth: 5,
+                          strokeColor: '#775DD0'
+                        }
+                      ],
+                    });
+                    labelCounter += 1;
+                  }
+                  debugger;
+                  var options = {
+                    series: [
+                      {
+                        data,
+                      },
+                    ],
+                    chart: {
+                      height: 350,
+                      type: 'bar'
+                    },
+                    plotOptions: {
+                      bar: {
+                        horizontal: true,
+                        distributed: true,
+                      }
+                    },
+                    colors: [
+                      '#FF6384',
+                      '#4BC0C0',
+                      '#FFCD56',
+                      '#C9CBCF',
+                      '#36A2EB',
+                      '#B284BE',
+                    ],
+                    dataLabels: {
+                      formatter: function(val, opt) {
+                        const goals =
+                          opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
+                            .goals
+
+                        if (goals && goals.length) {
+                          return `${val}%`
+                        }
+                        return val
+                      }
+                    },
+                    legend: {
+                      show: true,
+                      showForSingleSeries: true,
+                      customLegendItems: ['Average'],
+                      markers: {
+                        fillColors: [
+                           '#775DD0',
+                        ]
+                      }
+                    }
+                  };
+                  var chart = new ApexCharts(document.querySelector(`#${ctx}`), options);
+                  chart.render();
                 }
             }
         };

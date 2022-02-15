@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -17,32 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/**
- * 
- * remove sharing template, removes a group from the list of groups sharing the template
- *
- * @author Noud Liefrink
- * @version 1.0
- * @package
- */
-
 require_once("../../../config.php");
 
-if(is_numeric($_POST['template_id'])){
+require("../user_library.php");
+require("management_library.php");
 
-    $prefix = $xerte_toolkits_site->database_table_prefix;
-
-    $group_id = $_POST['group_id'];
-
-    $template_id = $_POST['template_id'];
-
-    $database_id=database_connect("Template sharing database connect failed","Template sharing database connect failed");
-
-    $query_to_delete_share = "delete from {$prefix}template_group_rights where template_id = ? AND group_id = ?";
-
-    $params = array($template_id, $group_id);
-    db_query($query_to_delete_share, $params);
-    
-
+if(is_user_admin()){
+	educationlevel_list();
+}else{
+	management_fail();
 }

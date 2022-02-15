@@ -293,7 +293,8 @@ if (in_array("give", $template_supports)) {
                         if (nr_user_groups() > 0)
                         {
                         ?>
-                        <div class="tab_spacer" style="height:<?PHP echo (((5 - count($template_supports)) * 53)) + 18; ?>px;">							
+<!--
+                        <div class="tab_spacer" style="height:<?PHP echo (((5 - count($template_supports)) * 53)) + 18; ?>px;">
                         </div>
                         <div id="tab12" class="tab"  style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('12');
@@ -304,6 +305,7 @@ if (in_array("give", $template_supports)) {
                         <?php
                         }
                         ?>
+-->
                         <div class="tab_spacer">
                     </div>
                 </div>									

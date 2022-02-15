@@ -62,7 +62,7 @@ Start the page and once loaded set the default option
 
 -->
 
-<body onload="javascript:folderproperties_template();tab_highlight('1');">
+<body onload="javascript:folderproperties();tab_highlight('1');">
 <div class="properties_main">
 		<div class="main_area">
 				<div>
@@ -99,7 +99,7 @@ Start the page and once loaded set the default option
 										<div id="tab1-1" class="tab_right_pad" style="height:38px;">
 										</div>
 										<div id="tab1" class="tab" style="width:146px; height:38px;">
-												<p onclick="javascript:tab_highlight('1');folderproperties_template()">
+												<p onclick="javascript:tab_highlight('1');folderproperties()">
 														<?PHP echo "<i class=\"fa fa-folder\"></i>&nbsp;".FOLDERPROPERTIES_TAB_FOLDER; ?>
 												</p>									
 										</div>
@@ -108,7 +108,7 @@ Start the page and once loaded set the default option
 										<div id="tab2-1" class="tab_right_pad" style="height:38px;">										
 										</div>
 										<div id="tab2" class="tab" style="width:146px; height:38px;">
-												<p onclick="javascript:tab_highlight('2'); folder_content_template()">
+												<p onclick="javascript:tab_highlight('2'); folder_content()">
 														<?PHP echo "<i class=\"fa fa-folder-open\"></i>&nbsp;".FOLDERPROPERTIES_TAB_CONTENT; ?>
 												</p>									
 										</div>
@@ -117,22 +117,21 @@ Start the page and once loaded set the default option
 										<div id="tab3-1" class="tab_right_pad" style="height:38px;">										
 										</div>
 										<div id="tab3" class="tab" style="width:146px; height:38px;">
-												<p onclick="javascript:tab_highlight('3'); folder_rss_template()">
+												<p onclick="javascript:tab_highlight('3'); folder_rss()">
 														<?PHP echo "<i class=\"fa fa-rss\"></i>&nbsp;".FOLDERPROPERTIES_TAB_RSS; ?>
 												</p>									
 										</div>
-                                        <!--
+
 										<div class="tab_spacer">
 										</div>
                                         <div id="tab4-1" class="tab_right_pad" style="height:38px;">
                                         </div>
-                                        <!-- Copied and modified from properties.php ->
+                                        <!-- Copied and modified from properties.php -->
                                         <div id="tab4" class="tab"  style="width:146px; height:38px;">
-                                                <p onclick="javascript:tab_highlight('4'); sharing_status_folder_template()">
+                                                <p onclick="javascript:tab_highlight('4'); sharing_status_folder()">
                                                     <?PHP echo "<i class=\"fa fa-share\"></i>&nbsp;".FOLDERPROPERTIES_TAB_SHARED; ?>
                                                 </p>
                                         </div>
-                                        -->
 
                                         <div class="tab_spacer">
                                         </div>

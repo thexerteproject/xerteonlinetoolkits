@@ -184,8 +184,10 @@ function has_template_multiple_editors($template_id){
 
 function has_rights_to_this_template($template_id, $user_id){
     global $xerte_toolkits_site;
+    require_once('folder_status.php');
+    $pre = $xerte_toolkits_site->database_table_prefix;
     //individual rights:
-    $query = "select * from {$xerte_toolkits_site->database_table_prefix}templaterights where user_id=? AND template_id = ?";
+    $query = "select role, folder from {$pre}templaterights where user_id=? AND template_id = ?";
     $result = db_query_one($query, array($user_id, $template_id));
 
     //group rights:
@@ -196,6 +198,18 @@ function has_rights_to_this_template($template_id, $user_id){
 
     if(!empty($result) || !empty($groupresult)) {
         return true;
+    }else{
+        //implicit role:
+        $implicit = get_implicit_role($template_id, $user_id);
+        if ( $implicit != ""){
+            return true;
+        }else{
+            //implicit group role
+            $implicit_group = get_implicit_group_role($template_id, $user_id);
+            if ( $implicit_group != ""){
+                return true;
+            }
+        }
     }
     return false;
 }
@@ -207,8 +221,9 @@ function get_user_access_rights($template_id){
 
     $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $user_id));
     $groupresult = get_user_group_access_rights($user_id, $template_id);
-
-    $roles = array($row['role'], $groupresult);
+    $implicit = get_implicit_role($template_id, $user_id);
+    $implicit_group = get_implicit_group_role($template_id, $user_id);
+    $roles = array($row['role'], $groupresult, $implicit, $implicit_group);
     usort($roles, "compare_roles");
     return $roles[0];
 }
@@ -278,11 +293,18 @@ function is_user_an_editor($template_id, $user_id){
     usort($roles, "compare_roles");
 
     if(($roles[0]=="creator")||($roles[0]=="co-author")||($roles[0]=="editor")){
-
         return true;
-
     }else{
-
+        // Only check implicitly if no explicit >=editor role is found to limit queries
+        $implicit = get_implicit_role($template_id, $user_id);
+        if(($implicit=="creator")||($implicit=="co-author")||($implicit=="editor")){
+            return true;
+        }else{
+            $implicit_group = get_implicit_group_role($template_id, $user_id);
+            if(($implicit_group=="creator")||($implicit_group=="co-author")||($implicit_group=="editor")) {
+                return true;
+            }
+        }
         return false;
 
     }
@@ -377,6 +399,44 @@ function is_user_creator_or_coauthor($template_id){
     if($roles[0]=="creator" || $roles[0]=="co-author"){
         return true;
     }else{
+        //Only check implicit roles if no >=co-author already found, to limit queries
+        $implicit = get_implicit_role($template_id, $user_id);
+        if($implicit=="creator" || $implicit=="co-author") {
+            return true;
+        }else{
+            $implicit_group = get_implicit_group_role($template_id, $user_id);
+            if($implicit_group=="creator" || $implicit_group=="co-author") {
+                return true;
+            }
+        }
         return false;
     }
+}
+
+function get_implicit_role($template_id, $login_id){
+    global $xerte_toolkits_site;
+    //find out in what folder this template is:
+    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =?";
+    $row = db_query_one($query, array($template_id));
+
+    if (!is_null($row['folder'])){
+        require_once("folder_status.php");
+
+        $folder_id = $row['folder'];
+        return get_implicit_folder_role($login_id, $folder_id);
+    }else{
+        return "";
+    }
+}
+
+function get_implicit_group_role($template_id, $login_id)
+{
+    global $xerte_toolkits_site;
+    //find out in what folder this template is:
+    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =?";
+    $row = db_query_one($query, array($template_id));
+    if (!is_null($row['folder'])) {
+        return get_implicit_folder_group_role($login_id, $row['folder']);
+    }
+    return "";
 }

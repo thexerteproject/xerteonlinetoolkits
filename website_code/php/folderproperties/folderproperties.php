@@ -28,10 +28,12 @@
  */
 
 require_once("../../../config.php");
+include "../folder_status.php";
 
 _load_language_file("/website_code/php/folderproperties/folderproperties.inc");
 
 include "../url_library.php";
+include "../user_library.php";
 
 if (!isset($_SESSION['toolkits_logon_username']))
 {
@@ -40,15 +42,15 @@ if (!isset($_SESSION['toolkits_logon_username']))
 }
 
 //connect to the database
-
-if(is_numeric($_POST['folder_id'])){
+$folder_id = $_POST['folder_id'];
+if(is_numeric($folder_id) && (has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || is_user_admin())){
 
     $database_connect_id = database_connect("Folder name database connect success", "Folder name database connect failed");
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
     
     $query_for_folder_name = "select folder_name from {$prefix}folderdetails where folder_id=?";
-    $params = array($_POST['folder_id']);
+    $params = array($folder_id);
 
     $row_template_name = db_query_one($query_for_folder_name, $params);
 
@@ -56,13 +58,16 @@ if(is_numeric($_POST['folder_id'])){
 
     echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . str_replace("_", " ", $row_template_name['folder_name']) . "</p>";
 
-    echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
+    if (is_user_creator_or_coauthor_folder($folder_id)){
+        echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
 
-    echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . 
+        echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" .
             $_POST['folder_id'] ."', 'rename_form')\">"
             . "<input style=\"padding-bottom:5px\" type=\"text\" value=\"" .
             str_replace("_", " ", $row_template_name['folder_name']) . "\" "
             . "name=\"newfoldername\" /><button type=\"submit\" class=\"xerte_button\"  "
             . "align=\"top\" style=\"padding-left:5px\">" . FOLDER_PROPERTIES_BUTTON_SAVE . "</button></form>";
-
+    }
+}else{
+    echo "<p>" . FOLDER_PROPERTIES_FAIL . "</p>";
 }

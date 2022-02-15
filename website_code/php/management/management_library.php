@@ -43,6 +43,30 @@
 	
 	}
 
+    function educationlevel_list(){
+
+        global $xerte_toolkits_site;
+
+        $query="select * from " . $xerte_toolkits_site->database_table_prefix . "educationlevel order by educationlevel_name ASC";
+
+        echo "<p>" . MANAGEMENT_LIBRARY_ADD_EDUCATION . "</p>";
+
+        echo "<p>" . MANAGEMENT_LIBRARY_NEW_EDUCATION . "<form><textarea cols=\"100\" rows=\"2\" id=\"neweducationlevel\">" . MANAGEMENT_LIBRARY_NEW_EDUCATION_NAME . "</textarea></form></p>";
+        echo "<p><form action=\"javascript:new_educationlevel();\"><button class=\"xerte_button\" type=\"submit\"><i class=\"fa fa-plus-circle\"></i> " . MANAGEMENT_LIBRARY_NEW_LABEL . "</button></form></p>";
+
+        echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_EDUCATION . "</p>";
+
+        $query_response = db_query($query);
+
+        foreach($query_response as $row) {
+
+            echo "<p>" . $row['educationlevel_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_educationlevel('" . $row['educationlevel_id'] .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
+
+        }
+
+    }
+
+
     function grouping_list(){
 
         global $xerte_toolkits_site;
