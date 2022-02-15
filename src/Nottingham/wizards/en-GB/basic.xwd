@@ -113,9 +113,9 @@
 		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
 		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
 		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
-		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optonal="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used."/>
 		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
-		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optionl="true" tooltip="The thumbnail to publish with the metadata" />
+		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
     </meta>
 	
 	<twittercard type="group" label="Twitter card" optional="true">
