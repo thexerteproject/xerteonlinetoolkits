@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OAI-PMH 2.0 Data Provider (written in PHP)</title>
+</head>
+<body>
+
+<h1>OAI-PMH 2.0 Data Provider (written in PHP)</h1>
+
+<p>This is an implementation of an <a href="http://www.openarchives.org/OAI/openarchivesprotocol.html" target="_blank">OAI-PMH 2.0 Data Provider</a>, written in <a href="http://www.php.net" title="PHP's website" target="_blank">PHP</a>
+
+<h2>Simple interface to sample server</h2>
+
+<ul>
+    <li><a href="oai.php?verb=Identify">Identify</a></li>
+    <li><a href="oai.php?verb=ListMetadataFormats">ListMetadataFormats</a></li>
+    <li><a href="oai.php?verb=ListSets">ListSets</a></li>
+    <li><a href="oai.php?verb=ListIdentifiers&amp;metadataPrefix=lom_ims">ListIdentifiers(metadataPrefix=lom_ims)</a></li>
+    <li><a href="oai.php?verb=ListRecords&amp;metadataPrefix=lom_ims">ListRecords(metadataPrefix=lom_ims)</a></li>
+    <li><a href="oai.php?verb=GetRecord&amp;metadataPrefix=lom_ims&amp;identifier=a.b.c">GetRecord(metadataPrefix=lom_ims, identifier=a.b.c)</a></li>
+</ul>
+</body>
+</html>

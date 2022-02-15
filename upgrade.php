@@ -1082,6 +1082,7 @@ function upgrade_27()
         `id` bigint(20) NOT NULL AUTO_INCREMENT,
         `folder_id` bigint(20) NOT NULL,
         `user_id` bigint(20) NOT NULL,
+        `folder_parent` bigint(20) NOT NULL,
         `role` char(255) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
@@ -1125,4 +1126,22 @@ function upgrade_28()
     return $message;
 }
 
+function upgrade_29()
+{
+    $table = table_by_key('educationlevel');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+                `educationlevel_id` int(11) NOT NULL AUTO_INCREMENT,
+                `educationlevel_name` char(255) DEFAULT NULL,
+                PRIMARY KEY (`educationlevel_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message = "Creating educationlevel table - ok ? " . ($ok ? 'true' : 'false');
+
+    $ok = db_query("insert into `$table` (`educationlevel_id`,`educationlevel_name`) values (1,'University'),(2,'College'),(3,'Secondary Education'),(4,'Primary Educaton'),(5,'Vocational Education'),(6,'Adult Education'),(7,'All')");
+
+    $message .= "Filling default educationlevel into educationlevel table - ok ? " . ($ok ? 'true' : 'false');
+
+    return $message;
+}
 
