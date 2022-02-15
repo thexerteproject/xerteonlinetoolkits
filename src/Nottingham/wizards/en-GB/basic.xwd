@@ -107,14 +107,14 @@
 	</tracking>
 
 	<meta type="group" label="Meta data" optional="true">
-	   	<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
-	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
-		<category label="Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object (i.e. Maths), stored in xAPI events, to be used for categorising in xAPI reports"/>
-		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" />
-        <metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
-        <metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
-		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optonal="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
-		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the eduction."/>
+		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
+		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
+		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
+		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
+		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optonal="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used."/>
+		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
 		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optionl="true" tooltip="The thumbnail to publish with the metadata" />
     </meta>
 	
