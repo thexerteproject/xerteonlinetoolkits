@@ -1,37 +1,74 @@
 /* annotatedDiagram.html */
 	
-	#imageHolder, #canvas, #hsHolder {
-		position:	absolute;
-		margin:		0;
-	}
-	
-	#pageContents .hotspot {
-		position:	absolute;
-		cursor:		pointer;
-	}
-	
-	#pageContents .oval {
-		-moz-border-radius:	50% 50%;
-		border-radius:		50% 50%;
-	}
-	
-	#hsHolder .hotspot.selected, #hsHolder .hsGroup.selected .hotspot {
-		border:		2px solid;
-	}
-	
-	#textContents {
-		position: 	absolute;
-		top:		0;
-		left:		0;
-	}
-	
-	#textContents div {
-		padding:	10px;
+	#listHolder {
+		display: inline-block;
 	}
 	
 	.listItem {
-		font-weight:	bold;
-		display:		block;
-		padding:		5px;
+		font-weight: bold;
+		display: block;
+		padding: 0.3em;
+	}
+	
+	#panel.right {
+		float: right;
+		margin: 0 0 20px 20px;
+	}
+	
+	#panel.left {
+		float: left;
+		margin: 0 20px 20px 0;
+	}
+	
+	#imageHolder {
+		position: relative;
+	}
+	
+	#pageContents .hotspot {
+		position: absolute;
+		cursor: pointer;
+	}
+	
+	#infoHolder {
+		padding-top: 10px;
+	}
+	
+	#mainText {
+		padding-bottom: 10px;
+	}
+	
+	#pageContents .highlightBorder {
+		border: 1px solid;
+		margin-top: -1px;
+		margin-left: -1px;
+	}
+	
+	#pageContents .selected {
+		margin-top: -2px;
+		margin-left: -2px;
+	}
+	
+	#canvas {
+		position: absolute;
+		margin: 0;
+		pointer-events: none;
+		left: 0;
+		top: 0;
+	}
+	
+	#pageContents #hsHolder:not(.mapster) {
+		position: absolute;
+		top: 0;
+	}
+	
+	#pageContents #hsHolder:not(.mapster) .hotspot {
+		position:	absolute;
+		cursor:		pointer;
+		border:		2px solid transparent;
+	}
+	
+	#pageContents #hsHolder:not(.mapster).oval .hotspot {
+		-moz-border-radius:	50% 50%;
+		border-radius:		50% 50%;
 	}
 	

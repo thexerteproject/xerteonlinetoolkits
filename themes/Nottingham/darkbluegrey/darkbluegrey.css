@@ -222,8 +222,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_annotatedDiagram_page #infoHolder {
-  background: #027ab3;
-  margin-left: 10px;
+  background: none;
 }
 
 .target.ui-droppable.border.highlight {

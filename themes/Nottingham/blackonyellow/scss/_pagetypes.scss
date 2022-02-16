@@ -204,8 +204,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background:none;
 }
 .x_annotatedDiagram_page #infoHolder{
-  background:darken($lightestcolor, 20%);
-  margin-left:10px;
+  background:$defaultpagebackground;
 }
 //*******Drag and Drop Labelling*********/
 .target.ui-droppable.border.highlight {
