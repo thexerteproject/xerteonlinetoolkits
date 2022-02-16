@@ -278,6 +278,9 @@ a.hotspot, a.hotspot.selected {
 .hsinfo{
   padding:1%;
 }
+.x_hotspotImage_page #infoHolder {
+  background: none;
+}
 //******Interactive lists*******/
 .x_interactiveText_page .highlight{
   background: $lightestcolor;

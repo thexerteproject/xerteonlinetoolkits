@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left" attempts = "1"
+      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotspotImage>
@@ -21,17 +21,16 @@
 	</image>
     
     <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
-    <hsAppearance type="group" label="Hotspot highlight appearance" optional="true" tooltip="Set colours of hotspots">
-        <hicol label="Stroke colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
-        <hs_strokeOpacity label="Stroke opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
-        <hs_strokeWidth label="Stroke width" type="TextInput" optional="true" defaultValue="2" tooltip="Width of the edges of the hotspot" />
-        <hs_fill label="Fill hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot" />
-        <hs_fillColor label="Fill colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
-        <hs_fillOpacity label="Fill opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
-        <hs_showTooltip label="Show tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
+    <hsAppearance type="group" label="Hotspot Highlight Appearance" optional="true" tooltip="Set colours of hotspots">
+        <hicol label="Stroke Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
+        <hs_strokeOpacity label="Stroke Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
+        <hs_strokeWidth label="Stroke Width" type="TextInput" optional="true" defaultValue="2" tooltip="Width of the edges of the hotspot" />
+        <hs_fill label="Fill Hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot" />
+        <hs_fillColor label="Fill Colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
+        <hs_fillOpacity label="Fill Opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
+        <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
 	</hsAppearance>
-	<interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" width="100"/>
-    <attempts label="Amount of attempts" type="TextInput" defaultValue="1"></attempts>
+	<interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" tooltip="Include forward and back buttons to highlight the hotspots in order (Show Me) or hotspots must be found by exploring the image itself (Click Explore)" width="100"/>
 	
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>

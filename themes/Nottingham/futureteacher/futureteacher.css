@@ -324,6 +324,10 @@ a.hotspot, a.hotspot.selected {
   padding: 1%;
 }
 
+.x_hotspotImage_page #infoHolder {
+  background: none;
+}
+
 .x_interactiveText_page .highlight {
   background: #F4F4F6;
 }
