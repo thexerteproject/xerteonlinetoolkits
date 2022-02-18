@@ -77,9 +77,9 @@
 			<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue=""/>
 			<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
 			<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
-			<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optonal="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
+			<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
 			<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the eduction."/>
-			<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optionl="true" tooltip="The thumbnail to publish with the metadata"/>
+			<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata"/>
 		</meta>
 
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
