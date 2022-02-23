@@ -39,7 +39,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
         // is it from youtube or vimeo or mediasite?
         if (mediaData.media.indexOf('youtu') > 0 
          || mediaData.media.indexOf('vimeo') > 0 
-         || mediaData.media.indexOf('frama') > 0 
+         || mediaData.media.indexOf('videos/embed') > 0 
          || mediaData.media.indexOf('mediamission') > 0) {
             popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
             var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");

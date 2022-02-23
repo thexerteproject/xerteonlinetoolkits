@@ -4865,8 +4865,9 @@
 
     // Helper for identifying URLs we know how to play.
     Popcorn.HTMLPeerTubeVideoElement._canPlaySrc = function( url ) {
-      return "probably";//( (/player.vimeo.com\/video\/\d+/).test( url ) ||
-             //(/vimeo.com\/\d+/).test( url ) ) ? "probably" : EMPTY_STRING;
+      return (/\/videos\/embed\/[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}$/).test( url ) 
+      ? "probably" 
+      : EMPTY_STRING;  
     };
 }( Popcorn, window, document ));
 
