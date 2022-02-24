@@ -393,7 +393,7 @@ function file_need_save(response) {
         if (response) {
             $.ajax({
                 type: "POST",
-                url: "wwebsite_code/php/versioncontrol/update_file.php",
+                url: "website_code/php/versioncontrol/update_file.php",
                 data: {
                     file_path: result[1],
                     template_id: result[2]
