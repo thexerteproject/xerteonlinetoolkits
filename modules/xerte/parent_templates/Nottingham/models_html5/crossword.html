@@ -25,7 +25,6 @@
         var tab = 0;
         var active = 0;
         var nextPosition;
-        var is_keyboard = false
         var tries = 30;
 		
 		// function called every time the page is viewed after it has initially loaded
@@ -40,13 +39,10 @@
         }
 
         this.move = function (){
-
-            rePosition();
-            $(document).keydown(function(e) {
+            $("#crossword").keydown(function(e) {
                 var inp = String.fromCharCode(e.keyCode);
                 if (!(/[a-zA-Z0-9-_ ]/.test(inp) || e.keyCode == 96)){
                     reCalculate(e);
-                    rePosition();
                     // if key is an arrow key, don't type the user input.
                     // if it is any other key (a, b, c, etc)
                     // edit the text
@@ -56,123 +52,116 @@
                     }
                 }
             });
+			
+			// force 1st word in crossword to be selected when 1st tabbed to
+			$(window).keyup(function (e) {
+				var code = (e.keyCode ? e.keyCode : e.which);
+				if (code == 9 && $('#crossword input:eq(0):focus').length && e.shiftKey == false) {
+					$("#clue1").click();
+				}
+			});
 
             $('td').click(function() {
 
-                if(x_browserInfo.mobile === true){
-                    is_keyboard = true
-                }
-
                 active = $(this).closest('table tbody').find('td').index(this);
                 if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
-                rePosition();
-                removeHighlight();
+					rePosition();
+					removeHighlight();
 
-                var rows = $('#crossword-table tbody tr').length;
-                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+					var rows = $('#crossword-table tbody tr').length;
+					var columns = $('#crossword-table tbody tr:eq(0) td').length;
 
+					var wholeNumber = Math.floor(active/columns)
+					var remainder = active%columns
 
-                var wholeNumber = Math.floor(active/columns)
-                var remainder = active%columns
+					for (var i = 0; i < startPositionArray.length; i++) {
+						if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+							if (startPositionArray[i][2] === "across") {
+								var counter = startPositionArray[i][1]
+								for (var j = 0; j < columns; j++) {
+									if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter !== columns) {
+										$('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+										counter++
+										nextPosition = startPositionArray[i][2]
+									} else {
+										return
+									}
+								}
 
-                    for (var i = 0; i < startPositionArray.length; i++) {
-                        if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
-                            if (startPositionArray[i][2] === "across") {
-                                var counter = startPositionArray[i][1]
-                                for (var j = 0; j < columns; j++) {
-                                    if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter !== columns) {
-                                        $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+							} else {
+								for (var j = 0; j < rows; j++) {
+									var temp = j * columns
+									if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
+										$('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
+										nextPosition = startPositionArray[i][2]
+									} else {
+										return;
+									}
+								}
+							}
+							return
+						}
+					}
 
-                                        // var x = startPositionArray[i][0]
-                                        // var y = counter
-                                        // var coord = x + "," + y
-                                        // document.getElementById(coord).style.backgroundColor= "#24FF00"
-                                        counter++
-                                        nextPosition = startPositionArray[i][2]
-                                    } else {
-                                        return
-                                    }
-                                }
+					if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] || $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
+						for (var i = 0; i < startPositionArray.length; i++) {
+							if (startPositionArray[i][0] == wholeNumber) {
+								var counter = startPositionArray[i][1]
+								for (var j = 0; j < columns; j++) {
+									var temp = startPositionArray[i][0] * columns
+									temp += startPositionArray[i][1]
+									if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
+										$('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+										nextPosition = startPositionArray[i][2]
+										counter++
+									} else {
+										return;
+									}
+								}
 
-                            } else {
-                                for (var j = 0; j < rows; j++) {
-                                    var temp = j * columns
-                                    if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
-                                        $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
-                                        nextPosition = startPositionArray[i][2]
-                                    } else {
-                                        return;
-                                    }
-                                }
-                            }
-                            return
-                        }
-                    }
+								return
+							}
+						}
+					}
 
-                    if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] || $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
-                        for (var i = 0; i < startPositionArray.length; i++) {
-                            if (startPositionArray[i][0] == wholeNumber) {
-                                var counter = startPositionArray[i][1]
-                                for (var j = 0; j < columns; j++) {
-                                    var temp = startPositionArray[i][0] * columns
-                                    temp += startPositionArray[i][1]
-                                    if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
-                                        $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
-                                        nextPosition = startPositionArray[i][2]
-                                        counter++
-                                    } else {
-                                        return;
-                                    }
-                                }
+					for (var i = 0; i < startPositionArray.length; i++) {
+						if (startPositionArray[i][1] == remainder) {
+							var alignH
+							var alignV
+							if(startPositionArray[i][2]=="across"){
+								alignH = columns
+								alignV= rows
+							}else{
+								alignH = columns
+								alignV = rows
+							}
+							for (var j = 0; j < alignV; j++) {
+								var temp = startPositionArray[i][0] * alignH
+								temp += startPositionArray[i][1]
 
-                                return
-                            }
-                        }
-                    }
-
-                    for (var i = 0; i < startPositionArray.length; i++) {
-                        if (startPositionArray[i][1] == remainder) {
-                            var alignH
-                            var alignV
-                            if(startPositionArray[i][2]=="across"){
-                                alignH = columns
-                                alignV= rows
-                            }else{
-                                alignH = columns
-                                alignV = rows
-                            }
-                            for (var j = 0; j < alignV; j++) {
-                                var temp = startPositionArray[i][0] * alignH
-                                temp += startPositionArray[i][1]
-
-                                var add = j * alignH
-                                if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
-                                    $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
-                                    nextPosition = startPositionArray[i][2]
-                                } else {
-                                    return;
-                                }
-                            }
-                            return
-                        }
-                    }
-                }
-
+								var add = j * alignH
+								if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
+									$('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+									nextPosition = startPositionArray[i][2]
+								} else {
+									return;
+								}
+							}
+							return
+						}
+					}
+				}
             });
 
             function reCalculate(e) {
-
                 var rows = $('#crossword-table tbody tr').length;
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
                 var temp;
-
                 var tabColumns;
                 var tabRow;
                 var total;
 
-
-
-                if (e.keyCode == 37) {
+                if (e.keyCode == 37) { // left arrow
                     temp = active;
                     while (temp > 0) {
                         temp = temp - 1;
@@ -185,6 +174,7 @@
                                 if (startPositionArray[i][0] == wholeNumber) {
 
                                     addHighlight(active, i, rows, columns,"arrow")
+									rePosition();
 
                                     return
                                 }
@@ -194,6 +184,7 @@
                                 if (startPositionArray[i][1] == remainder) {
 
                                     addHighlight(active, i, rows, columns, "arrow")
+									rePosition();
 
                                     return
                                 }
@@ -201,7 +192,7 @@
                         }
                     }
                 }
-                if (e.keyCode == 38) {
+                if (e.keyCode == 38) { // up arrow
                     temp = active;
 
                     while (temp - columns >= 0) {
@@ -215,6 +206,7 @@
                                 if (startPositionArray[i][0] == wholeNumber) {
 
                                     addHighlight(active, i, rows, columns, "arrow")
+									rePosition();
 
                                     return
                                 }
@@ -224,6 +216,7 @@
                                 if (startPositionArray[i][1] == remainder) {
 
                                     addHighlight(active, i, rows, columns, "arrow")
+									rePosition();
 
                                     return
                                 }
@@ -231,7 +224,7 @@
                         }
                     }
                 }
-                if (e.keyCode == 39) {
+                if (e.keyCode == 39) { // right arrow
                     temp = active;
                     while (temp < (columns * rows) - 1) {
                         temp = temp + 1;
@@ -244,6 +237,7 @@
                                 if (startPositionArray[i][0] == wholeNumber) {
 
                                     addHighlight(active, i, rows, columns, "arrow")
+									rePosition();
 
                                     return
                                 }
@@ -253,6 +247,7 @@
                                 if (startPositionArray[i][1] == remainder) {
 
                                     addHighlight(active, i, rows, columns, "arrow")
+									rePosition();
 
                                     return
                                 }
@@ -260,7 +255,7 @@
                         }
                     }
                 }
-                if (e.keyCode == 40) {
+                if (e.keyCode == 40) { // down arrow
                     temp = active;
                     while (temp + columns <= (rows * columns) - 1) {
                         temp = temp + columns;
@@ -273,6 +268,7 @@
                                 if (startPositionArray[i][0] == wholeNumber) {
 
                                     addHighlight(active, i, rows, columns, "arrow")
+									rePosition();
 
                                     return
                                 }
@@ -282,6 +278,7 @@
                                 if (startPositionArray[i][1] == remainder) {
 
                                     addHighlight(active, i, rows, columns, "arrow")
+									rePosition();
 
                                     return
                                 }
@@ -290,13 +287,14 @@
                     }
                 }
 
-                if(e.keyCode == 9 && e.ctrlKey==false){
-
+                if(e.keyCode == 9 && e.shiftKey==false){ // tab
+					// if you've tabbed to the last word already, next tab will take you to submit button - otherwise you get stuck going in circles through crossword
                     temp = active
                     var wholeNumber = Math.floor(temp/columns)
                     var remainder = active%columns
                     var searching = true
                     removeHighlight();
+					
                     while(searching) {
                         for (var i = 0; i < startPositionArray.length; i++) {
                             if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
@@ -307,9 +305,14 @@
                                 tabColumns = startPositionArray[tab][0] * columns
                                 tabRow = startPositionArray[tab][1]
                                 total = tabColumns + tabRow
-                                active = total
-
-                                addHighlight(active, i, rows,columns, "tab", false)
+								if (i+1 == startPositionArray.length) {
+									active = 0;
+									$("#show_button").focus();
+								} else {
+									active = total
+									addHighlight(active, i, rows,columns, "tab", false)
+									rePosition();
+								}
 
                                 searching = false
                                 return
@@ -324,8 +327,14 @@
                                 tabColumns = startPositionArray[tab][0] * columns
                                 tabRow = startPositionArray[tab][1]
                                 total = tabColumns + tabRow
-                                active = total
-                                addHighlight(active, i, rows,columns, "tab", false)
+								if (i+1 == startPositionArray.length) {
+									active = 0;
+									$("#show_button").focus();
+								} else {
+									active = total
+									addHighlight(active, i, rows,columns, "tab", false)
+									rePosition();
+								}
 
                                 searching = false
                                 return
@@ -340,17 +349,21 @@
                                 tabColumns = startPositionArray[tab][0] * columns
                                 tabRow = startPositionArray[tab][1]
                                 total = tabColumns + tabRow
-                                active = total
-
-                                addHighlight(active, i, rows,columns, "tab",false)
+								if (i+1 == startPositionArray.length) {
+									active = 0;
+									$("#show_button").focus();
+								} else {
+									active = total
+									addHighlight(active, i, rows,columns, "tab",false)
+									rePosition();
+								}
 
                                 searching = false
                                 return
                             }
                         }
                     }
-                }else if(e.keyCode == 9 && e.ctrlKey){
-
+                }else if(e.keyCode == 9 && e.shiftKey){ // shift tab
                     temp = active
                     var wholeNumber = Math.floor(temp/columns)
                     var remainder = active%columns
@@ -369,6 +382,7 @@
                                 active = total
 
                                 addHighlight(active, tab, rows,columns, "tab",true)
+								rePosition();
 
                                 searching = false
                                 return
@@ -385,6 +399,7 @@
                                 total = tabColumns + tabRow
                                 active = total
                                 addHighlight(active, i, rows,columns, "tab",true)
+								rePosition();
 
                                 searching = false
                                 return
@@ -402,6 +417,7 @@
                                 active = total
 
                                 addHighlight(active, i, rows,columns, "tab",true)
+								rePosition();
 
                                 searching = false
                                 return
@@ -523,7 +539,6 @@
                         } else {
                             return
                         }
-
                     }
 
                 } else {
@@ -542,11 +557,8 @@
                 }
             }
 
-
-
             addHighlight = function (active, position, rows, columns, type, ctrl){
-
-                 var p = 1;
+                var p = 1;
                 if(ctrl){
                     p = 0
                 }
@@ -650,8 +662,6 @@
                             return
                         }
                     }
-
-
                 }
             }
 
@@ -672,19 +682,8 @@
 		this.init = function () {
 			
 			$pageContents = $("#pageContents");
-			
-			// add text to the top of the page
-			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != '') {
-				$pageContents
-					.addClass('txtTop')
-					.append('<div id="textHolder">' + x_currentPageXML.getAttribute("text") + '</div>');
-			}
-			
-			// array with words
-			var words = [];
-			//array with hints
-			var hints = [];
 
+			// set up the page - various layouts are possible
 			var position = x_currentPageXML.getAttribute("align")
             if(position === null || position === undefined  || position===""){
                 position = "Right"
@@ -711,22 +710,41 @@
                 }
             }else{
                 $pageContents.append(
-                    '<div class="panel"><div id="crossword"></div></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                    '<div class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
                     '<div id="attempt"></div>'
                 );
             }
+			
+			// add text to the top of the page
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != '') {
+				if (x_currentPageXML.getAttribute("textPos") == "Above" && x_browserInfo.mobile === false) {
+					if ($("#clues-container").length > 0) {
+						$("#clues-container").prepend('<div id="textHolder">' + x_currentPageXML.getAttribute("text") + '</div>');
+					} else {
+						$("#clues").before('<div id="textHolder">' + x_currentPageXML.getAttribute("text") + '</div>');
+					}
+				} else {
+					$pageContents
+						.addClass('txtTop')
+						.prepend('<div id="textHolder">' + x_currentPageXML.getAttribute("text") + '</div>');
+				}
+			}
 
 
 			//store all the words and hints
+			var words = [];
+			var hints = [];
+			
 			$(x_currentPageXML).children().each(function (i) {
-				hints.push(this.getAttribute("text"));
-				words.push(this.getAttribute("wordAnswer"));
+				if (this.getAttribute("text") != '' && this.getAttribute("wordAnswer") != '') {
+					hints.push(this.getAttribute("text"));
+					words.push(this.getAttribute("wordAnswer"));
+				}
 			});
 
 			// Create crossword object with the words and clues
 			var cw = getCrossword(words, hints)
 			// create the crossword grid (try to make it have a 1:1 width to height ratio in 10 tries)
-			//var tries = 30;
 			var grid = cw.getSquareGrid(tries);
 
 			// report a problem with the words in the crossword
@@ -736,11 +754,9 @@
 				for (var i = 0; i < bad_words.length; i++) {
 					str.push(bad_words[i].word);
 				}
-				alert("Shoot! A grid could not be created with these words, because there are no similar characters:\n" + str.join("\n"));
+				alert("A grid could not be created with these words, because there are no similar characters:\n" + str.join("\n"));
 				return;
 			}
-
-
 
 			// turn the crossword grid into HTML
 			var show_answers = true;
@@ -777,7 +793,7 @@
                 if(imgMaxW > imgMaxH){
                     imgMaxW = imgMaxH
                 }
-                debugger
+                
                 var rowCount = $('#crossword-table tbody tr ').length,
 					cellCount = $('#crossword-table tbody tr td').length,
 					columnCount = cellCount/rowCount,
@@ -807,7 +823,7 @@
             for (var k in groups) {
                 var html = [];
                 for (var i = 0; i < groups[k].length; i++) {
-                    html.push("<li class='li-clue' name='"+k+"' id='"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] +"</p></li>");
+                    html.push("<li class='li-clue' name='"+k+"' id='clue"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] +"</p></li>");
                 }
                 document.getElementById(k).innerHTML = html.join("\n");
             }
@@ -1187,19 +1203,10 @@
 			        showAnswers();
                 }else{
 			        checkAttempt();
-                    attempts--;
-                    var again = x_currentPageXML.getAttribute("again")
-                    if(again === null || again===undefined){
-                        again = "Try again, you have /a attempt(s) left"
-                    }
-                    var again = again.replace("/a", attempts);
-                    var h3 = $('<h3>').append(again);
-                    $("#attempt").html(h3);
                 }
             }
 
 			checkAttempt = function (){
-
                 var coordinates = [];
                 var letters = [];
                 var coordinate = ""
@@ -1214,19 +1221,31 @@
                         }
                     }
                 }
-
+				
+				var incorrectLetters = 0;
                 for(var coor = 0; coor < coordinates.length; coor++){
                     var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase();
                     if(letters[coor].toLowerCase() === inputValue){
-
                         //make border green
-
                     }else{
                         //replace letter
                         document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'');
-
+						incorrectLetters += 1;
                     }
                 }
+				
+				if (incorrectLetters == 0) {
+					showAnswers();
+				} else {
+					attempts--;
+                    var again = x_currentPageXML.getAttribute("again")
+                    if(again === null || again===undefined){
+                        again = "Try again, you have /a attempt(s) left"
+                    }
+                    var again = again.replace("/a", attempts);
+                    var h3 = $('<h3>').append(again);
+                    $("#attempt").html(h3);
+				}
             }
 
             showAnswers = function () {
@@ -1257,6 +1276,8 @@
                         document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
                         document.getElementById(coordinates[coor]).value = letters[coor];
                     }
+					
+					document.getElementById(coordinates[coor]).readOnly = true;
                 }
 
                 document.getElementById("show_button").disabled = true;
@@ -1270,8 +1291,8 @@
             }
 
             hintClick = function (hint){
-
-                addHighlightHint(hint.id, hint.attributes.name.value)
+				var hintIndex = hint.id.substring(4);
+                addHighlightHint(hint.id.substring(4), hint.attributes.name.value)
             }
 
 
@@ -1335,8 +1356,6 @@
             next(keyCode, x, y)
 
         })
-
-
 
 		var CrosswordUtils = {
 			toHtml: function (grid, show_answers) {
@@ -1424,11 +1443,5 @@
 	crossword.init();
 	crossword.move();
 </script>
-
-
-<style type="text/css">
-
-</style>
-
 
 <div id="pageContents"></div>

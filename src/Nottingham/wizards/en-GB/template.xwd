@@ -1767,8 +1767,11 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"/>
 	
-	<text label="Page Text" type="TextArea" height="100" optional="true"/>
-	<feedback label="Feedback" type="TextArea" wysiwyg="true" height="100" optional="true"/>
+	<textGroup type="group" label="Page Text" optional="true">
+		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="100" optional="true"/>
+		<textPos label="Position" options="Top,Above Clues" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
+	</textGroup>
+	<feedback label="Feedback" type="TextArea" defaultValue="Enter feedback text here" wysiwyg="true" height="100" optional="true"/>
     <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
 	
 	<acrossLabel label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
@@ -1778,7 +1781,7 @@
 	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
 	
     <newNodes>
-      <wordAndHint><![CDATA[<wordAndHint name="Word" text="The hint for your word" wordAnswer="The word you want to have in the crossword"/>]]></wordAndHint>
+      <wordAndHint><![CDATA[<wordAndHint name="Label" text="Enter clue here" wordAnswer="Enter word here"/>]]></wordAndHint>
     </newNodes>
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -1832,9 +1835,9 @@
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup></crossword><wordAndHint menuItem="Word" icon="icBullet">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Word" wysiwyg="false"/>
-    <wordAnswer label="Word" type="TextInput" wysiwyg="false"/>
-    <text label="Hint" type="TextInput" height="100"/>
+	<wordAnswer label="Word" type="TextInput" wysiwyg="false" tooltip="The word (answer) that will appear in the crossword"/>
+    <text label="Hint" type="TextInput" height="100" tooltip="The clue for the word"/>
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Label" wysiwyg="false"/>
   </wordAndHint><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true" deprecated="This page is now deprecated as Flash (used by the diagram editor) will be unavailable after 2020. Existing pages will continue to work after this date but will not be editable. Try the Hotspot Image, Annotated Diagram, Drag &amp; Drop Labelling and Hotspot Image Connector pages for similar functionality.">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
