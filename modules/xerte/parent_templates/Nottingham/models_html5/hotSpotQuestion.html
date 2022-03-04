@@ -21,40 +21,24 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var hotSpotQuestion = new function() {
-		var	$img;
-		var amountOfAttempts = parseInt(x_currentPageXML.getAttribute("attempts"));
-		var counter = [];
-		var hits = [];
-		var pointsUpdated = [];
-		var canvas;
-		var gotHint = false;
-		var pointArray;
-		var amountOfCorrectOptions = 0;
-		var attempts = 0;
-		var highlightsArray= [];
-		var allHighlightsArray= [];
-		var amountOfCorrect = 0
-		var amountOfWrong = 0
-		var resize = false
+		var	$pageContents,
+			$img,
+			attempts = 0,
+			highlightsIndexArray = [],
+			highlightsArray = [],
+			allHighlightsArray = [];
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$pageContents = $('#pageContents');
 			$img = $("#image");
-			$(".selected").removeClass("selected");
-			this.counter = [];
-			this.hits = [];
-			this.gotHint = false;
-			this.ntOfCorrectOptions = 0;
-			this.attempts = 0;
-			amountOfCorrect = 0;
-			amountOfWrong = 0;
-			highlightsArray= [];
-			this.highlightsArray= [];
-			this.allHighlightsArray= [];
-			this.amountOfCorrect = 0;
-			this.amountOfWrong = 0;
+			allHighlightsArray = [];
+			
+			attempts = $pageContents.data('attempts');
+			highlightsIndexArray = $pageContents.data('highlightsIndexArray');
+			highlightsArray = $pageContents.data('highlightsArray');
+			
 			this.resizeImg(false);
-
 		};
 
 		this.sizeChanged = function () {
@@ -65,21 +49,24 @@
 				}
 			})
 			allHighlightsArray = [];
+			
 			this.resizeImg(false);
 			
 			resizehighlightArray.forEach((h)=>{
 				$('area[data-key="'+h+'"]').mapster('select')
 				$('area[data-key="'+h+'"]').addClass("selected")
 			})
-			resize = true;
 		};
 
 		this.init = function() {
-			this.weighting = 1.0;
+			
+			$pageContents = $('#pageContents');
+			
+			var weighting = 1.0;
 			if(x_currentPageXML.getAttribute("trackingWeight") != null){
-				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+				weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
-			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+			XTSetPageType(x_currentPage, 'numeric', 1, weighting);
 
 			var $textHolder = $('#textHolder');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
@@ -97,10 +84,6 @@
 				}
 			}
 			
-		    x_currentPageXML.childNodes.forEach(function () {
-				hits.push(false);
-				counter.push(0);
-            });
 			$img = $("#image");
 			$img
 				.css({
@@ -177,7 +160,7 @@
 						$("#pageContents .hotspot.selected").mapster("select");
 					}
 					
-					amountOfCorrectOptions = 0; // total number of correct hotspots available
+					var amountOfCorrectOptions = 0; // total number of correct hotspots available
 					
 					allHighlightsArray.forEach((highlight)=>{
 						if(highlight.getAttribute("truth") === "true"){
@@ -185,8 +168,8 @@
 						}
 					})
 
-					amountOfCorrect = 0; // number of correct hotspots selected
-					amountOfWrong = 0; // number of incorrect hotspots selected
+					var amountOfCorrect = 0, // number of correct hotspots selected
+						amountOfWrong = 0; // number of incorrect hotspots selected
 					
 					highlightsArray.forEach((highlight)=>{
 						if(highlight.getAttribute("truth") === "true"){
@@ -197,19 +180,21 @@
 					})
 
 					attempts++;
+					var maxAttempts = parseInt(x_currentPageXML.getAttribute("attempts")),
+						remainingAttempts = maxAttempts - attempts;
 					
 					// activity is complete - either because max attempts reached (even if some still incorrect) or all correct & no incorrect have been found
-					if((attempts >= amountOfAttempts || (amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0)) && amountOfCorrect+amountOfWrong > 0){
-
-						allHighlightsArray.forEach((highlight, index)=>{
-							if(highlight.getAttribute('truth') === "true"){
-								if (x_currentPageXML.getAttribute("answers") == "true"){
+					if((attempts >= maxAttempts || (amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0)) && amountOfCorrect+amountOfWrong > 0){
+						
+						if (x_currentPageXML.getAttribute("answers") == "true"){
+							allHighlightsArray.forEach((highlight, index)=>{
+								if(highlight.getAttribute('truth') === "true"){
 									$('area[data-key="'+index+'"]').mapster('deselect')
 									$('img').mapster('set_options', optionsCorrect);
 									$('area[data-key="'+index+'"]').mapster('select')
 								}
-							}
-						})
+							})
+						}
 						
 						var scoreLabel;
 						// all correct
@@ -232,6 +217,8 @@
 						highlightsArray.forEach((highlight) =>{
 							$("area").off('click')
 						})
+						
+						$('#hsHolder').addClass('complete');
 						
 						$("#checkButton").hide();
 						var h3 = $('<h3>').append(scoreLabel)
@@ -284,7 +271,7 @@
 								scoreTxt = x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : "You have not selected any of the /c correct answers."
 								scoreTxt += x_currentPageXML.getAttribute("again") != undefined ? (x_currentPageXML.getAttribute("again") != '' ? '<br/>' + x_currentPageXML.getAttribute("again") : '') : '<br/>Try again, you have /a attempt(s) left.';
 								scoreTxt = scoreTxt.replace("/c", amountOfCorrectOptions);
-								scoreTxt = scoreTxt.replace("/a", attempts);
+								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
 								
 							} else if (amountOfWrong == 0) {
 								// all correct
@@ -298,7 +285,7 @@
 								scoreTxt = scoreTxt.replace("/r", amountOfCorrect);
 								scoreTxt = scoreTxt.replace("/w", amountOfWrong);
 								scoreTxt = scoreTxt.replace("/c", amountOfCorrectOptions);
-								scoreTxt = scoreTxt.replace("/a", attempts);
+								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
 							
 							} else {
 								// some correct, some incorrect
@@ -307,7 +294,7 @@
 								scoreTxt = scoreTxt.replace("/r", amountOfCorrect);
 								scoreTxt = scoreTxt.replace("/w", amountOfWrong);
 								scoreTxt = scoreTxt.replace("/c", amountOfCorrectOptions);
-								scoreTxt = scoreTxt.replace("/a", attempts);
+								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
 							}
 
 							var h3 = $('<h3>').append(scoreTxt);
@@ -322,11 +309,22 @@
 						}
 
 					}
+					
+					$pageContents.data('attempts', attempts);
 				});
+			
+			$pageContents.data({
+				'attempts': attempts,
+				'highlightsIndexArray': highlightsIndexArray,
+				'highlightsArray': highlightsArray
+			});
 		};
 
 		this.resizeImg = function(firstLoad) {
-
+			
+			$('.mapster_el').remove(); // force this to be removes as sometimes it's not (don't know why unbind below doesn't always work)
+			$img.mapster('unbind');
+			
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
@@ -342,7 +340,6 @@
 				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
 			}
-			$img.mapster('unbind');
 
 			if(imgMaxH+70 > $x_pageHolder.height()){
 				imgMaxH*=0.75
@@ -365,7 +362,7 @@
 		this.createHS = function() {
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
-				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
+				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined; // *8 can prob get rid of this
 			var correctOptions = [],
 					correctAnswer = [],
 					correctFeedback = [];
@@ -392,7 +389,7 @@
 					correctAnswer.push(answerTxt);
 				}
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.getAttribute('text'), ""));
-				var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" tabindex="' + (i+2) + '" />');
+				var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" tabindex="0" />');
 				var coords = [];
 				var coords_string = "";
 				
@@ -424,22 +421,24 @@
 					.click(function() {
 
 						var $this = $(this);
-						if($this.hasClass('hotspot') && !$this.hasClass("selected")){
-
+						if($this.hasClass('hotspot') && highlightsIndexArray.indexOf(i) == -1){
 							$this.addClass("selected");
-							highlightsArray.push(_this)
+							highlightsArray.push(_this);
+							highlightsIndexArray.push(i);
 
 						}else{
-
 							$this.removeClass("selected")
 							const index = highlightsArray.indexOf(_this);
 							if (index > -1) {
 								highlightsArray.splice(index, 1);
+								highlightsIndexArray.splice(index, 1);
 							}
-
 						}
 						
-						x_pageContentsUpdated();
+						$pageContents.data({
+							'highlightsArray': highlightsArray,
+							'highlightsIndexArray': highlightsIndexArray
+						});
 					})
 					.focusin(function() {
 						$('img').mapster('set_options', tabfocusoptions);
@@ -484,10 +483,6 @@
 			}
 			XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 
-			if (selected != undefined) {
-				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
-			}
-
 			var stroke = true;
 			var highlightColour = "#ffff00";
 			var strokeWidth = 2;
@@ -518,10 +513,6 @@
 				fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
 			}
 
-			if (selected != undefined) {
-				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
-
-			}
 			options = {
 				render_highlight:
 						{
@@ -546,6 +537,7 @@
 				scaleMap: true,
 				clickNavigate: true
 			};
+			
 			var tabfocusoptions = JSON.parse(JSON.stringify(options));
 			// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
 			tabfocusoptions.render_highlight.stroke = true;
@@ -553,38 +545,16 @@
 			
 			$('img').mapster(options);
 
-			$("#pageContents .hotspot.selected").mapster("select");
-		};
-
-
-		this.selectHs = function(type) {
-		
-			var currentSelection = $("#pageContents .selected"),
-				i = currentSelection.index();
-
-			currentSelection.removeClass("selected");
-			$("area").mapster('deselect');
-
-			if (type == "next") {
-				i = i+1;
-			} else {
-				i=i-1;
+			for (var i=0; i<highlightsIndexArray.length; i++) {
+				$("#pageContents .hotspot:eq(" + highlightsIndexArray[i] + ")").mapster("select");
 			}
-
-			if(i > 0){
-                $("#prevHS").button("enable");
-			}else{
-                $("#prevHS").button("disable");
+			
+			// if activity is complete, make sure the click functionality doesn't start working again after resize
+			if ($('#hsHolder').hasClass('complete')) {
+				highlightsArray.forEach((highlight) =>{
+					$("area").off('click')
+				})
 			}
-
-			if(i < counter.length-1){
-                $("#nextHS").button("enable");
-			}else{
-                $("#nextHS").button("disable");
-			}
-
-			$("#pageContents .hotspot:eq(" + i  + ")").addClass("selected").trigger("click");
-			$img.mapster('set', true, i);
 		};
 	};
 
@@ -619,7 +589,7 @@
 				
 			</div>
 			
-			<div id="textHolder" tabindex="1"></div>
+			<div id="textHolder"></div>
 			
 		</fieldset>
 	</div>
