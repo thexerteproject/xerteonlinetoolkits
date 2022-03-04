@@ -2,7 +2,7 @@
 
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1"
+      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true"
 	  acrossLabel="Across"
 	  downLabel="Down"
 	  checkLabel="Submit"
@@ -14,6 +14,7 @@
   <crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword puzzle where clues are given to each word or phrase that must be completed in the grid." thumb="thumbs/crossword.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#crossword" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"></attempts>
+	<capitalise label="Force Capitalisation" type="CheckBox" defaultValue="false" mandatory="true" tooltip="Force the letters entered in the crossword to appear capitalised"/>
 	
 	<textGroup type="group" label="Page Text" optional="true">
 		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="100" optional="true"/>
@@ -35,7 +36,7 @@
 
   <wordAndHint menuItem="Word" icon="icBullet">
 	<wordAnswer label="Word" type="TextInput" wysiwyg="false" tooltip="The word (answer) that will appear in the crossword"/>
-    <text label="Hint" type="TextInput" height="100" tooltip="The clue for the word"/>
+    <text label="Hint" type="TextArea" height="50" tooltip="The clue for the word"/>
 	<name label="Label" type="TextInput" mandatory="true" defaultValue="Label" wysiwyg="false"/>
   </wordAndHint>
 

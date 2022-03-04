@@ -115,6 +115,10 @@
      font-size: 15px;
      font-weight: bold;
  }
+ 
+ #crossword.upper input {
+	 text-transform: uppercase;
+ }
 
  .highlighted .crossword-input[type=text]{
      background-color: yellow;

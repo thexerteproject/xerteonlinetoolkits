@@ -26,10 +26,17 @@
         var active = 0;
         var nextPosition;
         var tries = 30;
+		var best_grid = null;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function () {
 			$pageContents = $("#pageContents");
+			startPositionArray = $pageContents.data("startPositionArray");
+			tab = 0;
+			active = 0;
+			nextPosition = undefined;
+			best_grid = $pageContents.data("best_grid");
+			
             this.resize();
 		}
 
@@ -38,6 +45,7 @@
             this.resize()
         }
 
+		// function sorts highlighting in crossword and focus when typing or using tab / keyboard arrows to navigate around grid
         this.move = function (){
             $("#crossword").keydown(function(e) {
                 var inp = String.fromCharCode(e.keyCode);
@@ -744,34 +752,47 @@
 
 			// Create crossword object with the words and clues
 			var cw = getCrossword(words, hints)
-			// create the crossword grid (try to make it have a 1:1 width to height ratio in 10 tries)
-			var grid = cw.getSquareGrid(tries);
-
-			// report a problem with the words in the crossword
-			if (grid == null) {
-				var bad_words = cw.getBadWords();
-				var str = [];
-				for (var i = 0; i < bad_words.length; i++) {
-					str.push(bad_words[i].word);
-				}
-				alert("A grid could not be created with these words, because there are no similar characters:\n" + str.join("\n"));
-				return;
-			}
-
-			// turn the crossword grid into HTML
-			var show_answers = true;
-			document.getElementById("crossword").innerHTML = CrosswordUtils.toHtml(grid, show_answers);
-
-			// make a nice legend for the clues
-			var legend = cw.getLegend(grid);
-			addLegendToPage(legend);
 			
-			$('#show_button').button(); // do this so button styling is consistent with other pages
+			if (cw !== false) {
+				// create the crossword grid (try to make it have a 1:1 width to height ratio in 10 tries)
+				var grid = cw.getSquareGrid(tries);
+
+				// report a problem with the words in the crossword
+				if (grid == null) {
+					var bad_words = cw.getBadWords();
+					var str = [];
+					for (var i = 0; i < bad_words.length; i++) {
+						str.push(bad_words[i].word);
+					}
+					alert("A grid could not be created with these words, because there are no similar characters:\n" + str.join("\n"));
+					return;
+				}
+
+				// turn the crossword grid into HTML
+				var show_answers = true;
+				document.getElementById("crossword").innerHTML = CrosswordUtils.toHtml(grid, show_answers);
+				$pageContents.data("startPositionArray", startPositionArray);
+
+				// make a nice legend for the clues
+				var legend = cw.getLegend(grid);
+				addLegendToPage(legend);
+				
+				if (x_currentPageXML.getAttribute("capitalise") == "true") {
+					$("#crossword").addClass("upper");
+				}
+				
+				$('#show_button').button(); // do this so button styling is consistent with other pages
+				
+			} else {
+				$("#crosswordHolder, #clues-container").hide();
+			}
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 			
 			this.resize();
+			
+			this.move();
 		}
 
         this.resize = function (){
@@ -813,10 +834,19 @@
         var cw = ""
         function getCrossword(words, hints){
 		    if(cw === ""){
-                cw = new Crossword(words, hints);
-            }
-
-		    return cw;
+				if (words.length < 2) {
+					alert("A crossword must have at least 2 words");
+					return false;
+				} else if (words.length != hints.length) {
+					alert("The number of words must equal the number of clues");
+					return false;
+				} else {
+					cw = new Crossword(words, hints);
+					return cw;
+				}
+            } else {
+				return cw;
+			}
         }
 
         function addLegendToPage(groups) {
@@ -850,7 +880,6 @@
 			this.index = index; // use to map this node to its word or clue
 		}
 
-        var best_grid = null;
 		function Crossword(words_in, clues_in) {
 			var GRID_ROWS = 50;
 			var GRID_COLS = 50;
@@ -878,6 +907,8 @@
 
                         if (best_ratio == 1) break;
                     }
+					
+					$pageContents.data("best_grid", best_grid);
                 }
 
 				return best_grid;
@@ -1305,10 +1336,6 @@
 				char_index = {};
 			}
 
-			// constructor
-			if (words_in.length < 2) throw "A crossword must have at least 2 words";
-			if (words_in.length != clues_in.length) throw "The number of words must equal the number of clues";
-
 			// build the grid;
 			var grid = new Array(GRID_ROWS);
 			for (var i = 0; i < GRID_ROWS; i++) {
@@ -1386,29 +1413,29 @@
                                 if(cell['down'] !== null && cell['across'] !== null){
                                     if(cell['across']['is_start_of_word']===true && cell['down']['is_start_of_word']===true){
 
-                                        var char ="<div id='"+legend['down'][counterDown].position+ "' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input  type='text' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                        var char ="<div id='"+legend['down'][counterDown].position+ "' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
                                         startPositionArray.push([r,c,"down, across"])
                                         counterDown++;
                                         counterAcross++;
                                     }else{
                                         if(cell['across']['is_start_of_word']===false){
 
-                                            var char ="<div id='"+legend['down'][counterDown].position+"' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input  type='text' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                            var char ="<div id='"+legend['down'][counterDown].position+"' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
                                             startPositionArray.push([r,c,"down"])
                                             counterDown++;
                                         }else{
-                                            var char ="<div id='"+legend['across'][counterAcross].position+"'  class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"'><input  type='text'  autocomplete='off' class='crossword-input'   maxlength='1' id='" + r + "," + c + "' /></div>"
+                                            var char ="<div id='"+legend['across'][counterAcross].position+"'  class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"'><input type='text' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
                                             startPositionArray.push([r,c,"across"])
                                             counterAcross++;
                                         }
                                     }
 
                                 }else if (cell['down'] !== null) {
-                                    var char ="<div id='"+legend['down'][counterDown].position+"'  class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text'  autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                    var char ="<div id='"+legend['down'][counterDown].position+"'  class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
                                     startPositionArray.push([r,c,"down"])
                                     counterDown++;
                                 }else{
-                                    var char ="<div id='"+legend['across'][counterAcross].position+"' ' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1'><input type='text'  autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
+                                    var char ="<div id='"+legend['across'][counterAcross].position+"' ' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1'><input type='text' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
                                     startPositionArray.push([r,c,"across"])
                                     counterAcross++;
                                 }
@@ -1441,7 +1468,7 @@
 	}
 
 	crossword.init();
-	crossword.move();
+	
 </script>
 
 <div id="pageContents"></div>
