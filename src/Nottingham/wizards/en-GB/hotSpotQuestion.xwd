@@ -1,12 +1,14 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts="1"
   	  warning="You have not selected anything"
-	  scoreTxt="You have /r answer(s) right and /w wrong"
-	  again="Try again, you have /a attempt(s) left"
-	  allGood="You have selected all correct answers"
-	  allWrong="You have not selected any of the correct answers"
+	  scoreTxt="You have /r answer(s) right (out of /c) and /w wrong."
+	  again="Try again, you have /a attempt(s) remaining."
+	  allGood="Well done, you have selected all of the correct answers."
+	  allGood2="You have not selected all of the /c correct answers."
+	  allWrong="You have not selected any of the /c correct answers."
+	  btnLabel="Submit"
 	  />]]></hotSpotQuestion>
     </newNodes>
   </pageWizard>
@@ -17,11 +19,11 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	<textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox"  data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
 		<tip label="Description" type="TextInput"/>
+		<textWidth label="Size" options="Full Screen,Large,Medium,Small" type="ComboBox"  data="none,narrow,wide,max" defaultValue="narrow" width="200" tooltip="The page text will be hidden when the image is set to full screen"/>
 	</image>
 
     <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
@@ -39,11 +41,13 @@
     <generalFeedback label="Feedback" type="TextArea" wysiwyg="true"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
-    <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/r (right) and /w (wrong) are where the score are placed "/>
-    <warning label="Warning Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
-    <allGood label="All answers correct Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
-    <allWrong label="All answers wrong Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
+    <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="where /c is the total number of correct answers available, /r is the number of right selections made and /w is the number of wrong selections made"/>
+    <warning label="Warning Label" type="TextInput" wysiwyg="true" language="true"/>
+    <again label="Try Again Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /a is the number of attempts remaining"/>
+    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" language="true" />
+    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /c is the total number of correct answers available."/>
+	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
+	<btnLabel label="Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
 
     <newNodes>
