@@ -113,7 +113,7 @@
                         if (panelWidth == "Small") {
                             $splitScreen.addClass("medium");
                         } else if (panelWidth == "Large") {
-                            $splitScreen.addClass("large");
+                            $splitScreen.addClass("xlarge");
                         } else {
                             $splitScreen.addClass("large");
                         }
@@ -132,7 +132,7 @@
 						convertedAnswer = '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
 					
 					$answer
-						.append("<h3>" + correctLabel + "</h3>")
+						.append("<h3 class='fbLabel'>" + correctLabel + "</h3>")
 						.append(convertedAnswer)
 						.hide();
 				} else {
@@ -154,14 +154,14 @@
                 }
 
                 $("#FurtherClarification")
-					.append("<h3>" + x_currentPageXML.getAttribute("FurtherClarificationLabel") + "</h3>")
+					.append("<h3 class='fbLabel'>" + x_currentPageXML.getAttribute("FurtherClarificationLabel") + "</h3>")
                     .append(x_currentPageXML.getAttribute("FurtherClarification"))
 					.hide();
 
-				var correctIcon = '<span class="fa fa-fw fa-x-tick"></span>';
-                var incorrectIcon = '<span class="fa fa-fw fa-x-cross"></span>';
+				var correctIcon = '<span class="markIcon fa fa-fw fa-x-tick"></span>';
+                var incorrectIcon = '<span class="markIcon fa fa-fw fa-x-cross"></span>';
                 var incorrect = '<p>' + incorrectIcon + x_currentPageXML.getAttribute("textWrong") + '</p>';
-                var incompleet = '<p>' + incorrectIcon + x_currentPageXML.getAttribute("textIncomplete") + '</p>';
+                var incompleet = '<p>' + x_currentPageXML.getAttribute("textIncomplete") + '</p>';
                 var correct = '<p>' + correctIcon + x_currentPageXML.getAttribute("textRight") + '</p>';
                 var checkButtonTxt = x_currentPageXML.getAttribute("checkBtn");
                 var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
