@@ -167,7 +167,7 @@
 	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
-	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts="1"
+	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" answers="true" align="Left" attempts="1"
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right (out of /c) and /w wrong."
 	  again="Try again, you have /a attempt(s) remaining."
@@ -3163,8 +3163,8 @@
 		<textWidth label="Size" options="Full Screen,Large,Medium,Small" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200" tooltip="The page text will be hidden when the image is set to full screen"/>
 	</image>
 
-    <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
-    <answers label="Show Answers" type="CheckBox" mandatory="true" defaultValue="false"/>
+    <answers label="Show Answers" type="CheckBox" mandatory="true" defaultValue="false" tooltip="Show the correct answers after the maximum number of attempts have been made"/>
+	
     <hsAppearance type="group" label="Hotspot Appearance" optional="true">
         <hicol label="Stroke Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the hotspot border"/>
         <hs_strokeOpacity label="Stroke Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the hotspot border"/>
@@ -3184,8 +3184,7 @@
     <allGood label="All Correct Label" type="TextInput" wysiwyg="true" language="true"/>
     <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /c is the total number of correct answers available."/>
 	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
-	<btnLabel label="Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
-
+	<btnLabel label="Submit Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
     <newNodes>
 	  <QHotSpot><![CDATA[<QHotSpot name="Hotspot" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>

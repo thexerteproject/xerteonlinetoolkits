@@ -230,13 +230,13 @@
 						}
 
 						highlightsArray.forEach((highlight) =>{
-							$("#checkButton").hide();
 							$("area").off('click')
-							
-							var h3 = $('<h3>').append(scoreLabel)
-							$("#score").html(h3);
-							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
 						})
+						
+						$("#checkButton").hide();
+						var h3 = $('<h3>').append(scoreLabel)
+						$("#score").html(h3);
+						$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
 
 						// score tracking
 						var setScore = 0;
@@ -288,8 +288,15 @@
 								
 							} else if (amountOfWrong == 0) {
 								// all correct
-								scoreTxt = x_currentPageXML.getAttribute("allGood2") != undefined ? x_currentPageXML.getAttribute("allGood2") : "You have not selected all of the /c correct answers."
+								if (x_currentPageXML.getAttribute("allGood2") == undefined) {
+									// for projects made before allGood2 added to xwd
+									scoreTxt = x_currentPageXML.getAttribute("scoreTxt") != undefined ? x_currentPageXML.getAttribute("scoreTxt") : "You have /r answer(s) right (out of /c) and /w wrong.";
+								} else {
+									scoreTxt = x_currentPageXML.getAttribute("allGood2") != undefined ? x_currentPageXML.getAttribute("allGood2") : "You have not selected all of the /c correct answers."
+								}
 								scoreTxt += x_currentPageXML.getAttribute("again") != undefined ? (x_currentPageXML.getAttribute("again") != '' ? '<br/>' + x_currentPageXML.getAttribute("again") : '') : '<br/>Try again, you have /a attempt(s) left.';
+								scoreTxt = scoreTxt.replace("/r", amountOfCorrect);
+								scoreTxt = scoreTxt.replace("/w", amountOfWrong);
 								scoreTxt = scoreTxt.replace("/c", amountOfCorrectOptions);
 								scoreTxt = scoreTxt.replace("/a", attempts);
 							
@@ -546,21 +553,7 @@
 			
 			$('img').mapster(options);
 
-			if (x_currentPageXML.getAttribute("highlight") == "true") {
-				if(!resize) {
-					allHighlightsArray.forEach((highlight, index) => {
-						$('area[data-key="' + index + '"]').addClass('selected')
-						highlightsArray.push(highlight)
-					})
-					setTimeout(function () {
-						$("area").mapster('select');
-					}, 100);
-				}
-			}
-			else {
-
-				$("#pageContents .hotspot.selected").mapster("select");
-			}
+			$("#pageContents .hotspot.selected").mapster("select");
 		};
 
 
@@ -570,10 +563,7 @@
 				i = currentSelection.index();
 
 			currentSelection.removeClass("selected");
-			if (x_currentPageXML.getAttribute("highlight") !== "true") {
-
-				$("area").mapster('deselect');
-			}
+			$("area").mapster('deselect');
 
 			if (type == "next") {
 				i = i+1;
@@ -594,10 +584,7 @@
 			}
 
 			$("#pageContents .hotspot:eq(" + i  + ")").addClass("selected").trigger("click");
-			if (x_currentPageXML.getAttribute("highlight") !== "true") {
-				$img.mapster('set', true, i);
-			}
-
+			$img.mapster('set', true, i);
 		};
 	};
 

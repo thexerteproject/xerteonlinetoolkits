@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts="1"
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" answers="true" align="Left" attempts="1"
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right (out of /c) and /w wrong."
 	  again="Try again, you have /a attempt(s) remaining."
@@ -26,8 +26,8 @@
 		<textWidth label="Size" options="Full Screen,Large,Medium,Small" type="ComboBox"  data="none,narrow,wide,max" defaultValue="narrow" width="200" tooltip="The page text will be hidden when the image is set to full screen"/>
 	</image>
 
-    <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
-    <answers label="Show Answers" type="CheckBox" mandatory="true" defaultValue="false"/>
+    <answers label="Show Answers" type="CheckBox" mandatory="true" defaultValue="false" tooltip="Show the correct answers after the maximum number of attempts have been made"/>
+	
     <hsAppearance type="group" label="Hotspot Appearance" optional="true">
         <hicol label="Stroke Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the hotspot border"/>
         <hs_strokeOpacity label="Stroke Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the hotspot border"/>
@@ -47,8 +47,7 @@
     <allGood label="All Correct Label" type="TextInput" wysiwyg="true" language="true" />
     <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /c is the total number of correct answers available."/>
 	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
-	<btnLabel label="Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
-
+	<btnLabel label="Submit Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
     <newNodes>
 	  <QHotSpot><![CDATA[<QHotSpot name="Hotspot" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>
