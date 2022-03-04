@@ -362,10 +362,10 @@
 		this.createHS = function() {
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
-				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined; // *8 can prob get rid of this
-			var correctOptions = [],
-					correctAnswer = [],
-					correctFeedback = [];
+				correctOptions = [],
+				correctAnswer = [],
+				correctFeedback = [];
+			
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 
 			$(x_currentPageXML).children().each(function(i) {
