@@ -57,14 +57,20 @@ function receive_message($user_name, $type, $level, $subject, $content){
 
 
     /*
-     * If error email list is set, send an error email message to those users
+     * If error email list is set, send an error email message to those users.
+	 * Don't send if our error level is in ignored_levels--this gets rid of the 
+	 * "getting four emails every time a user logs in and out" problem.
+	 *
+	 * Might want to declare the array somewhere else, but it'll work here for now. 
+	 *
      */
+    $ignored_levels = array("SUCCESS","LOGINS","MGMT");
+    if(isset($xerte_toolkits_site->email_error_list) && (in_array($level, $ignored_levels) == false) && trim($xerte_toolkits_site->email_error_list) != false){
 
-    if(isset($xerte_toolkits_site->email_error_list) && trim($xerte_toolkits_site->email_error_list) != false){
-
-        email_message($user_name, $type, $level, $subject, $content);		
+        email_message($user_name, $type, $level, $subject, $content);
 
     }
+
 
 }
 
