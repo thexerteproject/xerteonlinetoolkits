@@ -227,7 +227,6 @@
 				$('.tl-timemarker-content').mouseup(function (){
 					setTimeout(function() {
 						var itemBlocks = $('.tl-timemarker')
-						debugger
 
 						for (var i = 0; i < itemBlocks.length; i++) {
 							var className = itemBlocks.eq(i).attr('class')
@@ -307,7 +306,7 @@
 				$('.tl-message-content').html(str)
 
 			}, 100);
-			debugger
+			
 			$('.tl-slidenav-next').attr("title","next")
 
 			$(document).on('keydown', e => {
@@ -336,8 +335,6 @@
 			if(x_browserInfo.mobile === true){
 
 			}else{
-
-				debugger;
 
 				var pageHeight = $('#x_pageHolder').height();
 				$('#timeline-embed').css('height', pageHeight-70);
@@ -472,7 +469,7 @@
 						"padding-left": "4%"
 					})
 				}
-				debugger
+				
 				var pos = $('.tl-timenav').position();
 				$('.tl-menubar').css("top", pos.top+40+"px");
 
