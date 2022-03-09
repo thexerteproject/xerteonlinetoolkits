@@ -69,8 +69,7 @@
 				}
 			});
 
-            $('td').click(function() {
-
+            $('#crossword-table td').click(function() {
                 active = $(this).closest('table tbody').find('td').index(this);
                 if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
 					rePosition();
@@ -81,7 +80,7 @@
 
 					var wholeNumber = Math.floor(active/columns)
 					var remainder = active%columns
-
+					
 					for (var i = 0; i < startPositionArray.length; i++) {
 						if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
 							if (startPositionArray[i][2] === "across") {
@@ -536,10 +535,11 @@
                 num1+= startPositionArray[id][1]
                 relocateFocus(num1)
                 var counter = startPositionArray[id][1]
+				
                 if (dir === "across") {
                     for (var j = 0; j < columns; j++) {
                         var temp = startPositionArray[id][0] * columns
-                        temp+= startPositionArray[id][1]
+                        temp+= startPositionArray[id][1];
                         if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
                             $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
                             counter++
@@ -553,8 +553,7 @@
                     for (var j = 0; j < columns; j++) {
                         var temp = startPositionArray[id][0] * columns
                         temp+= startPositionArray[id][1]
-
-                        var add = j * columns
+                        var add = j * columns;
                         if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
                             $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
                             nextPosition = dir
@@ -1322,7 +1321,6 @@
             }
 
             hintClick = function (hint){
-				var hintIndex = hint.id.substring(4);
                 addHighlightHint(hint.id.substring(4), hint.attributes.name.value)
             }
 
