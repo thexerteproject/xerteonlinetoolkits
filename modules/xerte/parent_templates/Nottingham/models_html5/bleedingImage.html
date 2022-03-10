@@ -26,29 +26,18 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
-			this.loadAudio($("#pageImg").width());
 		}
 		
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
-			if (x_currentPageXML.getAttribute("imagesize") == "full screen") { // set image size for full screen
-				var addMargin = x_currentPageXML.getAttribute("addmargin");
-				if (addMargin != "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
-					addMargin = "true";
-				}
-				
-				if (addMargin != "true") {
-					x_scaleImg($("#pageImg"), $x_pageHolder.width(), $x_pageHolder.height(), true, false);
-				} else {
-					var offset = this.calculateOffset(addMargin);
-					x_scaleImg($("#pageImg"), $x_pageHolder.width() - offset[0], $x_pageHolder.height() - offset[1], true, false);
-				}
-				
-				if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
-					if ($("#pageAudio .mejs-audio").width() != $("#pageImg").width()) {
-						this.loadAudio();
-					}
-				}
+		this.sizeChanged = function() {
+			var imageSize = x_currentPageXML.getAttribute("imagesize");
+			if (imageSize == "full screen" || imageSize == "small" || imageSize == "medium" || imageSize == "large") {
+				var maxWH = this.getMaxDimensions();
+				x_scaleImg($("#pageImg"), maxWH[0], maxWH[1]);
+			}
+			
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+				this.loadAudio($("#pageImg").width());
 			}
 			
 			this.setUpMagnifier();
@@ -60,41 +49,24 @@
 			var	$textHolder	= $("#textHolder"),
 				$panel		= $("#pageContents .panel"),
 				$pageImg	= $("#pageImg"),
-				imageSize	= x_currentPageXML.getAttribute("imagesize"), // auto|full screen
-				addMargin	= x_currentPageXML.getAttribute("addmargin"),
-				imgMaxW,	imgMaxH;
+				addMargin	= x_currentPageXML.getAttribute("addmargin");
 			
-			// image scaling
-			if (imageSize == "full screen") {
-				if (parseInt($x_pageHolder.css("margin-top")) != 0) {
-					if (addMargin != "true" && (x_currentPageXML.getAttribute("sound") == undefined || x_currentPageXML.getAttribute("sound") == "")) {
-						imgMaxW = $x_pageHolder.width();
-						imgMaxH = $x_pageHolder.height();
-					} else {
-						var offset = this.calculateOffset(addMargin);
-						imgMaxW = $x_pageHolder.width() - offset[0];
-						imgMaxH = $x_pageHolder.height() - offset[1];
-					}
-				}
-				
-				// align
+			if (x_currentPageXML.getAttribute("imagesize") == "full screen") {
 				$("#imgHolder").addClass("centerAlign");
+				
 				$textHolder.remove();
+				
 				if (addMargin != "true") {
 					var newMargin = 0 - Number(parseInt($panel.css("padding-top")) + 10);
 					$panel.css("margin", newMargin);
 				}
 				
-			} else { // auto
-				imgMaxW = 500; // desktop / tablet
-				imgMaxH = 450;
-				if (x_browserInfo.mobile == true) {
-					imgMaxW = 250; // mobile
-					imgMaxH = 250;
-				}
-				
+			} else {
 				// text align
 				var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+				if (x_browserInfo.mobile == true && x_currentPageXML.getAttribute("align") != "Top" && x_currentPageXML.getAttribute("align") != "Bottom") {
+					textAlign = "Bottom";
+				}
 				if (textAlign == "Top" || textAlign == "Bottom") {
 					if (textAlign == "Top") {
 						$pageContents.prepend($textHolder);
@@ -102,6 +74,7 @@
 						$textHolder.css("padding-top", "20px");
 					}
 					$("#imgHolder").addClass("centerAlign");
+					
 					if (addMargin != "true") {
 						// remove margin which indents image away from LO border
 						var newMargin = 0 - Number(parseInt($panel.css("padding-top")) + 10);
@@ -115,12 +88,14 @@
 							"margin-right"	:newMargin
 						});
 					}
+					
 				} else {
 					if (textAlign != "Right") { // Left
 						$panel.addClass("x_floatRight");
 					} else {
 						$panel.addClass("x_floatLeft");
 					}
+					
 					if (addMargin != "true") {
 						// remove margin which indents image away from LO border
 						var newMargin = 0 - Number(parseInt($panel.css("padding-top")) + 10);
@@ -170,9 +145,11 @@
 			
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
+			var maxWH = this.getMaxDimensions();
+			
 			$pageImg
 				.one("load", function() {
-					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+					x_scaleImg(this, maxWH[0], maxWH[1], true, true);
 					bleedingImage.loadAudio($pageImg.width());
 					bleedingImage.setUpMagnifier();
 					x_pageLoaded(); // call this function in every model once everything's loaded
@@ -188,6 +165,52 @@
 				});
 		}
 		
+		this.getMaxDimensions = function() {
+			var imgMaxW, imgMaxH,
+				imageSize = x_currentPageXML.getAttribute("imagesize"); // responsive(small|medium|large)|auto|full screen - auto is actually a fixed size but is still called this for backwards compatibility
+			
+			if (imageSize == "full screen") {
+				if (parseInt($x_pageHolder.css("margin-top")) != 0) {
+					imgMaxW = $x_pageDiv.width();
+					imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
+					
+					var offset = this.calculateOffset();
+					imgMaxW -= offset[0];
+					imgMaxH -= offset[1];
+				}
+				
+			} else {
+				if (imageSize == "small" || imageSize == "medium" || imageSize == "large") {
+					imgMaxW = $x_pageDiv.width();
+					imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
+					
+					
+					
+					if (imageSize == "small") {
+						imgMaxW = imgMaxW * 0.4;
+					} else if (imageSize == "medium") {
+						imgMaxW = imgMaxW * 0.6;
+					} else {
+						imgMaxW = imgMaxW * 0.8;
+					}
+					
+					var offset = this.calculateOffset();
+					imgMaxW -= offset[0];
+					imgMaxH -= offset[1];
+					
+				} else { // auto (fixed)
+					imgMaxW = 500; // desktop / tablet
+					imgMaxH = 450;
+					if (x_browserInfo.mobile == true) {
+						imgMaxW = 250; // mobile
+						imgMaxH = 250;
+					}
+				}
+			}
+			
+			return [imgMaxW, imgMaxH]
+		}
+		
 		this.loadAudio = function(width) {
 			var soundFile = x_currentPageXML.getAttribute("sound");
 			if (soundFile != undefined && soundFile != "") {
@@ -199,15 +222,18 @@
 			}
 		}
 		
-		this.calculateOffset = function(addMargin) {
+		this.calculateOffset = function() {
 			// calculates available space when image is full screen
 			var offset = [0, 0];
-			if (addMargin == "true") {
-				offset.splice(0, 1, offset[0] + parseInt($(".panel").css("padding-left")) + 20 * 2);
-				offset.splice(1, 1, offset[1] + parseInt($(".panel").css("padding-top")) + 20 * 2);
+			if (x_currentPageXML.getAttribute("addmargin") == "true") {
+				offset.splice(0, 1, offset[0] + ($(".panel").outerWidth() - $(".panel").width()));
+				offset.splice(1, 1, offset[1] + ($(".panel").outerHeight() - $(".panel").height()));
 			}
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
 				offset.splice(1, 1, offset[1] + x_audioBarH);
+			}
+			if (x_currentPageXML.getAttribute("link") != undefined && x_currentPageXML.getAttribute("link") != "") {
+				offset.splice(1, 1, offset[1] + $("#linkImg").outerHeight());
 			}
 			return offset;
 		}
