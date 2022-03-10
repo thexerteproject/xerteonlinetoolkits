@@ -190,7 +190,7 @@
 	  fwdLabel="Scroll forward" 
 	  viewLabel="View" 
 	  caseLabel="Case"
-	  />]]></imageSequence><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" tip="Enter a Description for Accessibility"
+	  />]]></imageSequence><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" imagesize="medium" tip="Enter a Description for Accessibility"
 	  moveTip="Move"
 	  zoomInTip="Zoom In"
 	  zoomOutTip="Zoom Out"
@@ -3531,6 +3531,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
+		<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" mandatory="true" type="ComboBox" width="100"/>
 		<tip label="Description" type="TextInput"/>
 	</image>
 	
