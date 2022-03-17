@@ -27,6 +27,30 @@
 			QRcode.loadAudio();
 		}
 		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			var imageSize = x_currentPageXML.getAttribute("imagesize");
+			if (imageSize != undefined) {
+				var size = this.getMaxDimensions();
+				$("#qrcode, #pageAudio").empty();
+				
+				// Create the QRcode
+				var qrcode = new QRCode(document.getElementById("qrcode"), size);
+				qrcode.makeCode(x_currentPageXML.getAttribute("url"));
+				
+				$('#qrcode img')
+					.attr({ "alt":	x_currentPageXML.getAttribute("tip") })
+					.addClass('x_noLightBox');
+				
+				$('#qrcode')
+					.attr({
+						"title":	x_currentPageXML.getAttribute("tip")
+					});
+				
+				QRcode.loadAudio(true);
+			}
+		}
+		
 		this.init = function() {
 			// Load in the required scripts before we can begin
 			$script.path(x_templateLocation + 'common_html5/js/qrcode/');
@@ -65,16 +89,8 @@
 			}
 
 			// Work out the correct sizes
-			var size = {
-				width : 400, // desktop / tablet
-				height : 400
-			};
-			if (x_browserInfo.mobile == true) {
-				size = {
-					width : 250,
-					height : 250
-				}
-			}
+			var size = this.getMaxDimensions();
+			
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
 				size.height -= x_audioBarH;
 			}
@@ -93,6 +109,50 @@
 				});
 			
 			QRcode.loadAudio(true);
+		}
+		
+		this.getMaxDimensions = function() {
+			// ** when hide text is on
+			var imgMaxW, imgMaxH,
+				imageSize = x_currentPageXML.getAttribute("imagesize");
+			
+			if (x_currentPageXML.getAttribute("align") == "Hide text") {
+				imgMaxW = $x_pageDiv.width();
+				imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
+				imgMaxW -= ($("#imgHolder .panel").outerWidth() - $("#imgHolder .panel").width());
+				imgMaxH -= ($("#imgHolder .panel").outerHeight() - $("#imgHolder .panel").height());
+				
+			} else if (imageSize != undefined && x_browserInfo.mobile != true) {
+				imgMaxW = $x_pageDiv.width();
+				imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
+				
+				if (imageSize == "small") {
+					imgMaxW = imgMaxW * 0.2;
+				} else if (imageSize == "medium") {
+					imgMaxW = imgMaxW * 0.4;
+				} else {
+					imgMaxW = imgMaxW * 0.6;
+				}
+				
+				imgMaxW -= ($("#imgHolder .panel").outerWidth() - $("#imgHolder .panel").width());
+				imgMaxH -= ($("#imgHolder .panel").outerHeight() - $("#imgHolder .panel").height());
+				
+			} else { // fixed (this isn't an option now but was default before imagesize added to xwd)
+				imgMaxW = 400; // desktop / tablet
+				imgMaxH = 400;
+				if (x_browserInfo.mobile == true) {
+					imgMaxW = 250; // mobile
+					imgMaxH = 250;
+				}
+			}
+			
+			imgMaxH -= $("#shorturltodisplay").outerHeight();
+			
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+				imgMaxH -= x_audioBarH;
+			}
+			
+			return {width: Math.min(imgMaxW, imgMaxH), height: Math.min(imgMaxW, imgMaxH)};
 		}
 		
 		this.loadAudio = function(firstLoad) {
@@ -119,7 +179,7 @@
 
 	<div id="imgHolder" class="mobileAlign">
 		<div class="panel inline">
-            <div id="shorturltodisplay"></div>
+            <div id="shorturltodisplay">*</div>
 			<div id="qrcode"></div>
 			<div id="pageAudio"></div>
 		</div>
