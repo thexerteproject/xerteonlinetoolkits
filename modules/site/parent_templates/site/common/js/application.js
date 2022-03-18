@@ -1796,7 +1796,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 	}
 	
 	// lightbox image links might also need to be added
-	setUpLightBox(page, $(thisSection));
+	setUpLightBox(page, $(thisSection), section);
 }
 
 function updateContent($section) {
@@ -2835,11 +2835,10 @@ function setUpVideo(url, iframeRatio, id) {
 }
 
 // by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO, page & section level
-function setUpLightBox(thisPageInfo, thisSectionInfo) {
+function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 	if (thisSectionInfo.attr("lightbox") == "true" || (thisSectionInfo.attr("lightbox") != "false" && (thisPageInfo.attr("lightbox") == "true" || (thisPageInfo.attr("lightbox") != "false" && $(data).find('learningObject').attr('lightbox') != "false")))) {
-
 		// use the x_noLightBox class to force images to not open in lightboxes
-		$("#mainContent img:not('.x_noLightBox')").each(function( index ) {
+		$section.find("img:not('.x_noLightBox')").each(function( index ) {
 			var $this = $(this);
 			if ($this.closest('a').length == 0) {
 				if (!$this.parent().hasClass('lightboxWrapper')) {
