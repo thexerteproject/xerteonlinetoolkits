@@ -95,3 +95,27 @@
 		flex-direction: column;
 		align-items: flex-start;
 	}
+	
+	#markingIcons .correct {
+		position: absolute;
+		margin-left: -22px;
+		margin-top: -22px;
+	}
+	
+	#markingIcons .incorrect {
+		position: absolute;
+		margin-left: -17px;
+		margin-top: -22px;
+	}
+	
+	#markingIcons .correct span:before {
+		font-family: FontAwesome;
+		content: "\f00c";
+		color: green;
+	}
+	
+	#markingIcons .incorrect span:before {
+		font-family: FontAwesome;
+		content: "\f00d";
+		color: red;
+	}

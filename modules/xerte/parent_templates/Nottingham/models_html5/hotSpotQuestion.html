@@ -56,6 +56,31 @@
 				$('area[data-key="'+h+'"]').mapster('select')
 				$('area[data-key="'+h+'"]').addClass("selected")
 			})
+			
+			if ($('#markingIcons .correct, #markingIcons .incorrect').length > 0) {
+				
+				$('#markingIcons').empty();
+				
+				highlightsArray.forEach((highlight)=>{
+					var points = JSON.parse(highlight.getAttribute("points")),
+						lowestPoint = points[0];
+					
+					for (var i=0; i<points.length; i++) {
+						if (points[i].y > lowestPoint.y) {
+							lowestPoint = points[i];
+						} else if (points[i].y == lowestPoint.y && points[i].x > lowestPoint.x) {
+							lowestPoint = points[i];
+						}
+					}
+					
+					var $markIcon = $("<div class='" + (highlight.getAttribute("truth") === "true" ? "correct" : "incorrect") + "'><span></span></div>")
+						resize = $img.width() / $img.data("origSize")[0];
+					
+					$markIcon
+						.css({top: lowestPoint.y * resize, left: lowestPoint.x * resize})
+						.appendTo("#markingIcons");
+				});
+			}
 		};
 
 		this.init = function() {
@@ -146,7 +171,7 @@
 									fillColor: fillColor.substr(1),
 									fillOpacity: fillOpacity,
 									stroke: stroke,
-									strokeColor: "7FFF00",
+									strokeColor: "008000",
 									strokeOpacity: strokeOpacity,
 									strokeWidth: strokeWidth
 								},
@@ -187,8 +212,28 @@
 					if((attempts >= maxAttempts || (amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0)) && amountOfCorrect+amountOfWrong > 0){
 						
 						if (x_currentPageXML.getAttribute("answers") == "true"){
+							
+							highlightsArray.forEach((highlight)=>{
+								var points = JSON.parse(highlight.getAttribute("points")),
+									lowestPoint = points[0];
+								for (var i=0; i<points.length; i++) {
+									if (points[i].y > lowestPoint.y) {
+										lowestPoint = points[i];
+									} else if (points[i].y == lowestPoint.y && points[i].x > lowestPoint.x) {
+										lowestPoint = points[i];
+									}
+								}
+								
+								var $markIcon = $("<div class='" + (highlight.getAttribute("truth") === "true" ? "correct" : "incorrect") + "'><span></span></div>")
+									resize = $img.width() / $img.data("origSize")[0];
+								
+								$markIcon
+									.css({top: lowestPoint.y * resize, left: lowestPoint.x * resize})
+									.appendTo("#markingIcons");
+							})
+							
 							allHighlightsArray.forEach((highlight, index)=>{
-								if(highlight.getAttribute('truth') === "true"){
+								if(highlight.getAttribute('truth') === "true" && $.inArray(highlight, highlightsArray) == -1){
 									$('area[data-key="'+index+'"]').mapster('deselect')
 									$('img').mapster('set_options', optionsCorrect);
 									$('area[data-key="'+index+'"]').mapster('select')
@@ -573,9 +618,7 @@
 					<div id="imageHolder">
 						<img id="image" class="x_noLightBox" />
 						<div id="hsHolder"></div>
-						<div id="btnHolder"></div>
-						<div id="hint"></div>
-						<div id="feedback"></div>
+						<div id="markingIcons"></div>
 					</div>
 				</div>
 
