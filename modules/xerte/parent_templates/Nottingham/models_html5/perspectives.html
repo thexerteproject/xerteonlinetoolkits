@@ -280,7 +280,7 @@
 						$thisThumb.find("h3").html(thumbType == "caption" ? this.getAttribute("name") : $thisThumb.index() + adjustIndex);
 					}
 				}
-			});
+			});  
 			
 			if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("highlightCol") != undefined && x_currentPageXML.getAttribute("highlightCol") != "" && x_currentPageXML.getAttribute("highlightCol") != "0x") {
 				highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightCol"));
@@ -322,6 +322,7 @@
 					var mediaW = thisData.getAttribute("mediaW"),
 						$media;
 					mediaW = x_browserInfo.mobile == true ? 0.8 : mediaW == "Small" ? 0.2 : mediaW == "Large" ? 0.6 : mediaW == "Full" ? 0.8 : 0.4;
+
 					
 					if (chgInfo == true) {
 						$("#thumbHolder .current").removeClass("current");
@@ -389,6 +390,7 @@
 									
 									if ($thisVideo.data("width") != "fixed") {
 										$mediaPanel.width((mediaW * 100) + "%");
+										$mediaPanel.height((mediaW * 100) + "%");
 									}
 									
 									$thisVideo.data({
@@ -396,8 +398,7 @@
 										"dimensions": videoDimensions,
 										"trackMedia": true
 									});
-
-									perspectives.loadVideo($mediaPanel, $thisVideo, playAll);
+									perspectives.loadVideo($thisVideo, $thisVideo, playAll);
 								}
 							}
 							
@@ -611,17 +612,22 @@
 		this.loadVideo = function($holder, $video, playAll) {
 			this.popcornInstance = loadMedia($holder, "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
-					width: ($video.data("width") != "fixed" ? $video.data("dimensions")[0] : Number($video.data("dimensions")[0])),
-					height: ($video.data("width") != "fixed" ? $video.data("dimensions")[1] : Number($video.data("dimensions")[1])),
+					width: $video.data("dimensions")[0],
+					height: $video.data("dimensions")[1],
 					media: $video.data("src"),
 					autoplay: "false",
 					trackMedia: $video.trackMedia || true
 				}, true);
 			
-			if ($video.trackMedia) {
+			if ($video.data("trackMedia")) {
+				$video.css({
+					"height": "100%",
+					"width": "100%"
+				});
 				this.addEvents(this.popcornInstance);	
 				resizeEmbededMedia($(".popcornMedia.embed"), {width: $video.data("dimensions")[0], height: $video.data("dimensions")[1]})
 			}
+
 			this.thumbsCovers();
 			
 			if (playAll) perspectives.playAll($("#pageVideo"));

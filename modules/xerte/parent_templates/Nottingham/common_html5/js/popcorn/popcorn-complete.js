@@ -4590,7 +4590,7 @@
 
     // Helper for identifying URLs we know how to play.
     Popcorn.HTMLMediasiteVideoElement._canPlaySrc = function( url ) {
-        return (/.+mediamission.+/).test( url ) ? "probably" : "";
+        return (/.+mediamission.+/).test( url ) || (/.+deltion.+/).test( url ) ? "probably" : "";
     };
 
 
@@ -4663,7 +4663,8 @@
             self.dispatchEvent("progress");
             elem.width="100%";
             elem.height="100%";
-            elem.src=aSrc + "?api=1";
+            //elem.src=aSrc + "?api=1";
+            elem.src=aSrc + "?start=54s&amp;api=1";
             elem.frameborder="0";
             elem.allowfullscreen="";
             elem.sandbox="allow-same-origin allow-scripts allow-popups";
@@ -4867,7 +4868,7 @@
     Popcorn.HTMLPeerTubeVideoElement._canPlaySrc = function( url ) {
       return (/\/videos\/embed\/[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}$/).test( url ) 
       ? "probably" 
-      : EMPTY_STRING;  
+      : "";  
     };
 }( Popcorn, window, document ));
 
@@ -6920,7 +6921,6 @@
         return;
       }
       addYouTubeEvent( "pause", onFirstPause );
-      player.seekTo( 0 );
       player.pauseVideo();
     }
 
@@ -7071,6 +7071,9 @@
 
       // Don't show video info before playing
       playerVars.showinfo = playerVars.showinfo || 0;
+
+      // Specify the start time as given number of seconds from start of video
+      playerVars.start = playerVars.start || 0;
 
       // Specify our domain as origin for iframe security
       var domain = window.location.protocol === "file:" ? "*" :
