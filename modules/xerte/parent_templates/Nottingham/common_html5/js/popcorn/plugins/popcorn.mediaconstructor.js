@@ -51,7 +51,6 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             }
         } 
         else {
-            debugger;
             $myVideo
                 .attr("title", mediaData.tip)
                 .css("margin", "0 auto")
