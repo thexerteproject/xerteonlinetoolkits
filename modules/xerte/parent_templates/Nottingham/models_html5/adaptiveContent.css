@@ -1,7 +1,7 @@
-svg{
+/*svg{
   height: 300px;
   width: 700px;
-}
+}*/
 canvas {
   height: 400px;
   width : 100%;
@@ -10,10 +10,6 @@ canvas {
   margin-top: 5px;
   margin-bottom: 5px;
   padding-bottom: 20px;
-}
-
-.graph-container {
-  display:flex;
 }
 
 .legend {
@@ -105,8 +101,57 @@ li.select-interaction.selected {
 .graph-container {
   width: 45%;
   float: right;
+  display: inline-flex;
 }
 
 .graph-container fieldset.noStyle {
+  width: 50%;
+  float: left;
+}
+
+.graph-container-wide fieldset.noStyle {
   width: 100%;
+  float: unset;
+}
+
+@media (max-width: 1200px) {
+  .summary-container {
+    display: block;
+  }
+  .graph-container {
+    width: 100%;
+    float: unset;
+    margin-top: 1rem;
+  }
+  .summary {
+    width: 100%;
+    /* display: inline-block; */
+  }
+  .graph-container fieldset.noStyle {
+    width: 100%;
+  }
+}
+
+.panel.legend {
+	width: 35% !important;
+}
+
+.panel.legend p{
+	font-size: 1.75vmin;
+}
+
+.graph-container-wide {
+  width: 100%;
+}
+
+.graph {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  /*padding-bottom: 100%; /* aspect ratio */
+  vertical-align: top;
+}
+
+#button-placeholder {
+  text-align: right;
 }

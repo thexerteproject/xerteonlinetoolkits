@@ -50,6 +50,16 @@ if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
 login_processing();
 login_processing2();
 
+// Check if any redirection needs to take place for Password protected files...
+if (isset($_SESSION['pwprotected_url']))
+{
+    _debug(" Redirection found: " . $_SESSION['pwprotected_url']);
+    $redirect=$_SESSION['pwprotected_url'];
+    unset($_SESSION['pwprotected_url']);
+    header("Location: " . $redirect);
+}
+
+
 /*If the authentication method isn't set to Moodle
 * the code in the required file below is simply skipped
 */
@@ -299,7 +309,7 @@ Folder popup is the div that appears when creating a new folder
                 if ($authmech->canManageUser($jsscript)){
                     echo '
                     <div class="settingsDropdown">
-                        <button onclick="changepasswordPopup()" title=" ' . INDEX_CHANGE_PASSWORD . ' " class="fa fa-cog xerte_button settingsButton"></button>
+                        <button onclick="changepasswordPopup()" title=" ' . INDEX_CHANGE_PASSWORD . ' " class="fa fa-cog xerte_workspace_button settingsButton"></button>
                         <!-- <div id="settings" class="settings-content">
                             <button class="xerte_button" onclick="changepasswordPopup()">' . INDEX_CHANGE_PASSWORD . '</button>
                             <button class="xerte_button">Placeholder</button>

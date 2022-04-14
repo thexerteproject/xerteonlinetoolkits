@@ -65,7 +65,9 @@
             $lti_def->tsugi_useglobal = $row['tsugi_usetsugikey'];
             $lti_def->tsugi_privateonly = $row['tsugi_privatekeyonly'];
             $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
+            $lti_def->tsugi13_url = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $row['template_id'];
             $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
+            $lti_def->url13 = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $row['template_id'];
             $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
             $lti_def->xapi_useglobal = $row['tsugi_xapi_useglobal'];
             $lti_def->xapi_endpoint = "";
@@ -74,7 +76,7 @@
             $lti_def->dashboard_urls = "";
             $lti_def->xapi_student_id_mode = 0; // e-mail address
             if ($tsugi_installed) {
-                if ($lti_def->published == 1 && !$lti_def->tsugi_useglobal) {
+                if ($lti_def->published == 1) {
                     $PDOX = LTIX::getConnection();
                     $tsugirow = $PDOX->rowDie(
                         "	SELECT l.title, k.key_key, k.secret
@@ -86,11 +88,6 @@
                         $lti_def->secret = $tsugirow["secret"];
                         $lti_def->title = $tsugirow["title"];
                     }
-                }
-                else{
-                    $lti_def->key = "";
-                    $lti_def->secret = "";
-                    $lti_def->title = "";
                 }
             }
             if($lti_def->xapi_enabled == 1)

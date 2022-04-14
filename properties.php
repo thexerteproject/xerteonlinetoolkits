@@ -20,8 +20,11 @@
  
 require_once(dirname(__FILE__) . "/config.php");
 require_once(dirname(__FILE__) . "/website_code/php/template_library.php");
+require_once(dirname(__FILE__) . "/website_code/php/properties/properties_library.php");
 
 _load_language_file("/properties.inc");
+$version = getVersion();
+
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -39,9 +42,6 @@ _load_language_file("/properties.inc");
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
         <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
@@ -154,7 +154,7 @@ _load_language_file("/properties.inc");
                         <!--<div id="tab2-1" class="tab_right_pad" style="height:38px;"></div>-->
                         <div id="tab2" class="tab"  style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('2');
-                                                                                                        notes_template()">
+                                                                                                        notes_template(); ">
                                 <i class="fa fa-edit xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_NOTES; ?>
                             </p>									
                         </div>
@@ -290,8 +290,11 @@ if (in_array("give", $template_supports)) {
                             -->
                             <?PHP
                         }
+                        if (nr_user_groups() > 0)
+                        {
                         ?>
-                        <div class="tab_spacer" style="height:<?PHP echo (((5 - count($template_supports)) * 53)) + 18; ?>px;">							
+<!--
+                        <div class="tab_spacer" style="height:<?PHP echo (((5 - count($template_supports)) * 53)) + 18; ?>px;">
                         </div>
                         <div id="tab12" class="tab"  style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('12');
@@ -299,8 +302,12 @@ if (in_array("give", $template_supports)) {
                                 <i class="fas fa-users xerte-icon"></i><?PHP echo PROPERTIES_TAB_GROUP_SHARED; ?>
                             </p>
                         </div>
+                        <?php
+                        }
+                        ?>
+-->
                         <div class="tab_spacer">
-                    </div>						
+                    </div>
                 </div>									
                 <div style="clear:both;"></div>
             </div>

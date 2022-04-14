@@ -231,7 +231,8 @@ CREATE TABLE `$templaterights` (
   `user_id` bigint(20) DEFAULT NULL,
   `role` char(255) DEFAULT NULL,
   `folder` bigint(20) DEFAULT NULL,
-  `notes` char(255) DEFAULT NULL
+  `notes` char(255) DEFAULT NULL,
+   KEY `index1` (`template_id`,`user_id`,`role`(10))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (
@@ -286,7 +287,8 @@ CREATE TABLE `template_group_rights` (
 CREATE TABLE `folderrights` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `folder_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
+  `login_id` bigint(20) NOT NULL,
+  `folder_parent` bigint(20) NOT NULL,
   `role` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

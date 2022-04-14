@@ -112,7 +112,7 @@ function folder_rename_stateChanged(){
 	 * @author Patrick Lockley
 	 */
 
-function folder_rss_template(){
+function folder_rss(){
 	/*
 	if(setup_ajax()!=false){
     
@@ -126,7 +126,7 @@ function folder_rss_template(){
 	 */
 	 $.ajax({
 		 type: "POST",
-		 url: "website_code/php/folderproperties/folder_rss_template.php",
+		 url: "website_code/php/folderproperties/folder_rss.php",
 		 data: {folder_id: window.name},
 	 })
 	 .done(function(response){
@@ -142,10 +142,10 @@ function folder_rss_template(){
 	 * @author Patrick Lockley
 	 */
 
-function folderproperties_template(){
+function folderproperties(){
 	 $.ajax({
 		 type: "POST",
-		 url: "website_code/php/folderproperties/folderproperties_template.php",
+		 url: "website_code/php/folderproperties/folderproperties.php",
 		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
 	 })
 	 .done(function(response){
@@ -162,11 +162,11 @@ function folderproperties_template(){
 	 */
 
 
-function folder_content_template(){
+function folder_content(){
 
 	$.ajax({
 		 type: "POST",
-		 url: "website_code/php/folderproperties/folder_content_template.php",
+		 url: "website_code/php/folderproperties/folder_content.php",
 		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
 	})
 	.done(function(response){
@@ -185,11 +185,11 @@ function folder_content_template(){
 	 */
 
 
-function folder_name_template_a() {
+function folder_name_a() {
 
 	 $.ajax({
 		 type: "POST",
-		 url: "website_code/php/folderproperties/folder_name_template.php",
+		 url: "website_code/php/folderproperties/folder_name.php",
 		 data: {folder_id: window.name},
 	 })
 	 .done(function (response) {
@@ -215,7 +215,7 @@ function rename_folder(folder_id,form_tag){
 	if(is_ok_name(new_name)){
 		$.ajax({
 			type: "POST",
-			url: "website_code/php/folderproperties/rename_folder_template.php",
+			url: "website_code/php/folderproperties/rename_folder.php",
 			data: {
 				folder_id: folder_id,
 				folder_name: new_name
@@ -252,7 +252,7 @@ function rename_folder(folder_id,form_tag){
  * @author Patrick Lockley
  */
 
-function sharing_status_folder_template(){
+function sharing_status_folder(){
 
 	$.ajax({
 		type: "POST",
@@ -273,7 +273,7 @@ function sharing_status_folder_template(){
  * @author Patrick Lockley
  */
 
-function name_select_folder_template(){
+function name_select_folder(){
 
 	if(setup_ajax()!=false){
 
@@ -310,8 +310,6 @@ function share_stateChanged(){
 
 		if(xmlHttp.responseText!=""){
 			document.getElementById('area3').innerHTML = xmlHttp.responseText;
-			alert( document.getElementById('area3').textContent);
-
 		}
 	}
 }
@@ -343,10 +341,72 @@ function share_this_folder(folder, id, group=false){
 		})
 		.done(function(response){
 			$('#area3').html(response);
-			alert( $('#area3').text());
+			sharing_status_folder()
 		});
 	}
 
+}
+
+
+function set_sharing_rights_folder(role, folder, id, group=false){
+
+	if(setup_ajax()!=false){
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/folderproperties/share_this_folder.php",
+			data: {
+				folder_id: window.name,
+				id: id,
+				role: role,
+				group: group,
+			},
+		})
+			.done(function(response){
+				//$('#area3').html(response);
+				sharing_status_folder()
+			});
+	}
+
+}
+
+
+function delete_sharing_folder(folder_id,id,who_deleted_flag, group=false){
+
+	var answer = confirm(SHARING_CONFIRM_FOLDER_PROPERTIES);
+	var after_sharing_deleted = false;
+	if(answer){
+		if(who_deleted_flag){
+			after_sharing_deleted = true;
+		}
+
+		if(setup_ajax()!=false){
+			$.ajax({
+				type: "POST",
+				url: "website_code/php/folderproperties/remove_sharing_folder.php",
+				data: {
+					folder_id: folder_id,
+					id: id,
+					group: group,
+					user_deleting_self: after_sharing_deleted
+				},
+			})
+				.done(function(response){
+					$('#area3').html(response);
+
+					if(after_sharing_deleted){
+						if(typeof window_reference==="undefined"){
+							window.opener.refresh_workspace();
+						}
+						else {
+							window_reference.refresh_workspace();
+						}
+
+					}
+
+					sharing_status_folder()
+				});
+		}
+	}
 }
 
 //   	xmlHttp.open("post",properties_ajax_php_path + url,true);

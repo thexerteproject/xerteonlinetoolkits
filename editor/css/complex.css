@@ -1236,6 +1236,10 @@ i.tooltipIcon {
 	margin-right: 5px;
 	color: #333366;
 }
+.passwordIcon {
+	margin-right: 5px;
+	color: #444;
+}
 .iconEnabled
 {
 	display: inline-block;

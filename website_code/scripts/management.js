@@ -43,20 +43,11 @@ function management_ajax_send_prepare(url){
 
 }
 
-// Function management state changed update screen
-//
-// Generic ajax handler for this script
-
 function management_stateChanged(response) {
 	if (response != "") {
 
 		document.getElementById('admin_area').innerHTML = response;
 		loadModal();
-
-		$('#list_user').selectize({
-			plugins: ['remove_button'],
-			hideSelected: false
-		});
 	}
 }
 
@@ -752,7 +743,7 @@ function errors_list(template){
 	function_to_use="errors";
 	$.ajax({
 		type: "POST",
-		url: "website_code/php/management/errors_list.php",
+		url: "website_code/php/management/error_list.php",
 		data: {
 			logon_id: 1
 		},
@@ -1257,8 +1248,25 @@ function user_groups_list(){
 		},
 	})
 	.done(function (response) {
-		management_stateChanged(response);
+		management_usergroupStateChanged(response);
 	});
+}
+
+// Function management state changed update screen
+//
+// Specific ajax handler for user_groups_list
+
+function management_usergroupStateChanged(response) {
+	if (response != "") {
+
+		document.getElementById('admin_area').innerHTML = response;
+		loadModal();
+
+		$('#list_user').selectize({
+			plugins: ['remove_button'],
+			hideSelected: false
+		});
+	}
 }
 
 function list_group_members(tag, id=-1){

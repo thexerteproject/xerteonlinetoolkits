@@ -66,7 +66,17 @@ if (!$.fn.toggleClick) {
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
-	if (!parent.window.$.featherlight.current()) {
+	// Place lightbox check in a try block, because an exception will be triggereed if LO is embedded in an iframe
+	let shownInFeatherlight = false;
+	try
+	{
+		shownInFeatherlight = parent.window.$.featherlight.current();
+	}
+	catch (e)
+	{
+		// Ignore
+	}
+	if (!shownInFeatherlight) {
 		switch(e.which) {
 			case 33: // PgUp
 				var pageIndex = $.inArray(x_currentPage, x_normalPages);
@@ -868,6 +878,10 @@ function x_GetTrackingTextFromHTML(html, fallback)
 
 // setup functions load interface buttons and events
 function x_setUp() {
+	
+	// prevent flashes of css body tag colours before the main interface has loaded
+	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');
+	
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
 	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
 
@@ -940,7 +954,7 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	if (x_params.embed != true || x_params.displayMode != 'full screen') {
+	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
 		$("#x_cssBtn")
 			.button({
@@ -1435,22 +1449,27 @@ function x_continueSetUp1() {
 				);
 			});
 
-		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")) {
+		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
 			x_dialogInfo.push({type:'saveSession', built:false});
+			var tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
+			if (typeof lti_enabled != "undefined" && lti_enabled)
+			{
+				tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+			}
 			$x_saveSessionBtn
 				.button({
 					icons: {
 						primary: "x_saveSession"
 					},
-					label: x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session"),
+					label: tooltip,
 					text: false
 				})
 				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
 				.click(function () {
 					x_openDialog(
 						"saveSession",
-						x_getLangInfo(x_languageData.find("saveSession")[0], "label", "Save Session"),
-						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close Save Session"),
+						tooltip,
+						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close"),
 						null,
 						null,
 						function () {
@@ -1464,7 +1483,7 @@ function x_continueSetUp1() {
 		}
 		else
 		{
-			$x_saveSessionBtn.hide();
+			$x_saveSessionBtn.remove();
 		}
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
@@ -1625,6 +1644,14 @@ function x_continueSetUp2() {
 
 	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
 	// Set course, module and resume options AFTER XTInitialise
+	// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
+	if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal')
+	{
+		var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
+		var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
+		scorm_alert_lang = scorm_alert_lang.replace("{0}", XTGetMode());
+		alert(scorm_alert_lang);
+	}
 	if (x_params.course != undefined && x_params.course != "") {
 		XTSetOption('course', x_params.course);
 	}
@@ -1633,41 +1660,40 @@ function x_continueSetUp2() {
 	}
 	if (XTTrackingSystem() === 'xAPI') {
 		var callStartPage = false;
-		if (x_params.restartOptions != undefined) {
-			switch (x_params.restartOptions) {
-				case 'ask':
-					var canResume = XTCanResume();
-					if (canResume.canResume) {
-						x_dialogInfo.push({type: 'resumeSession', built: false});
-						x_openDialog(
-							"resumeSession",
-							x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
-							x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
-							null,
-							null,
-							function () {
-								setUpComplete = true;
+		if (x_params.restartOptions == undefined)
+		{
+			x_params.restartOptions = 'ask';
+		}
+		switch (x_params.restartOptions) {
+			case 'ask':
+				var canResume = XTCanResume();
+				if (canResume.canResume) {
+					x_dialogInfo.push({type: 'resumeSession', built: false});
+					x_openDialog(
+						"resumeSession",
+						x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
+						x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
+						null,
+						null,
+						function () {
+							setUpComplete = true;
 
-								x_navigateToPage(true, x_startPage);
-							}
-						);
-					} else {
-						XTSetOption('resume', false);
-						callStartPage = true;
-					}
-					break;
-				case 'restart':
-					XTSetOption('resume', true);
-					callStartPage = true;
-					break;
-				case 'do_not_restart':
+							x_navigateToPage(true, x_startPage);
+						}
+					);
+				} else {
 					XTSetOption('resume', false);
 					callStartPage = true;
-					break;
-			}
-		} else {
-			XTSetOption('resume', true);
-			callStartPage = true;
+				}
+				break;
+			case 'restart':
+				XTSetOption('resume', true);
+				callStartPage = true;
+				break;
+			case 'do_not_restart':
+				XTSetOption('resume', false);
+				callStartPage = true;
+				break;
 		}
 		if (callStartPage)
 		{
@@ -1727,7 +1753,7 @@ function x_dialog(text){
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
     var page = XTStartPage();
-    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
+    if (force && page >= 0) {  // this is a resumed tracked LO, go to the page saved by the LO
         x_changePage(page, addHistory);
     }
     else {
@@ -2020,7 +2046,7 @@ function x_changePageStep4(x_gotoPage) {
 
 function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage))
+    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {
         var pageObj;
 
@@ -2081,6 +2107,7 @@ function x_changePageStep5(x_gotoPage) {
 }
 
 function x_changePageStep5a(x_gotoPage) {
+	
     var prevPage = x_currentPage;
 
     // disable onload of #special_theme_css
@@ -2185,13 +2212,101 @@ function x_changePageStep5a(x_gotoPage) {
 
 		pageTitle = pageTitle + extraTitle;
 		
-		x_addCountdownTimer();
-		x_addNarration('x_changePageStep6', '');
+		// is page password protected? if so, don't finish page setup until after a valid password entered
+		var pswds = [];
+		if ($.trim(x_currentPageXML.getAttribute('password')).length > 0) {
+			var temp = $.trim(x_currentPageXML.getAttribute('password')).split(',');
+			
+			for (var i=0; i<temp.length; i++) {
+				if (temp[i] != '') {
+					pswds.push(x_currentPageXML.getAttribute('passwordCase') != 'true' ? $.trim(temp[i].toLowerCase()) : $.trim(temp[i]));
+				}
+			}
+		}
+		
+		if (pswds.length > 0) {
+			x_passwordPage(pswds);
+		} else {
+			x_addCountdownTimer();
+			x_addNarration('x_changePageStep6', '');
+		}
     }
 }
 
-function x_changePageStep6() {
+function x_passwordPage(pswds) {
+	if (x_pageInfo[x_currentPage].passwordPass != true) {
+		
+		if (x_params.authorSupport == "true") {
+			
+			x_pageInfo[x_currentPage].passwordPass = true;
+			
+			pageTitle += ' <span class="alert">' + x_getLangInfo(x_languageData.find("password")[0], "pageSupport", "In live projects, an access code must be entered to view this page") + ': ' + pswds + '</span>';
+			
+			x_addCountdownTimer();
+			x_addNarration('x_changePageStep6', '');
+			
+		} else {
+		
+			// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+				x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
+			} else {
+				x_findText(x_currentPageXML);
+			}
+			
+			x_pageInfo[x_currentPage].passwordPass = false;
+			
+			$("#x_headerBlock h2").html(pageTitle);
+			$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
+			
+			x_updateCss(false);
+			
+			$("#x_pageDiv").show();
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			
+			var $pswdBlock = $('#x_page' + x_currentPage);
+			$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
+			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
+			$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+			
+			$pswdBlock.find('#x_pagePswdBtn')
+				.button()
+				.on('click', function() {
+					var pswdEntered = x_currentPageXML.getAttribute('passwordCase') != 'true' ? $pswdBlock.find('#x_pagePswd').val().toLowerCase() : $pswdBlock.find('#x_pagePswd').val();
+					
+					if ($.inArray(pswdEntered, pswds) >= 0) {
+						// correct password - remember this so it doesn't need to be re-entered on return to page
+						x_pageInfo[x_currentPage].passwordPass = true;
+						$pswdBlock.remove();
+						x_addCountdownTimer();
+						x_addNarration('x_changePageStep6', '');
+					} else {
+						$pswdBlock.find('.x_pswdError').show();
+					}
+				});
+			
+			$pswdBlock.find('#x_pagePswd').keypress(function (e) {
+				if (e.which == 13) {
+					$pswdBlock.find('#x_pagePswdBtn').click();
+				} else {
+					$pswdBlock.find('.x_pswdError').hide();
+				}
+			});
+			
+			// Queue reparsing of MathJax - fails if no network connection
+			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+			
+			x_setUpPage();
+		}
 
+	} else {
+		x_addCountdownTimer();
+		x_addNarration('x_changePageStep6', '');
+	}
+}
+
+function x_changePageStep6() {
     $("#x_headerBlock h2").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
@@ -2257,9 +2372,9 @@ function x_changePageStep6() {
 		
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0) {
-                if (typeof customHTML.pageChanged === "function") {
-                	customHTML.pageChanged();
-                }
+			if (typeof customHTML.pageChanged === "function") {
+				customHTML.pageChanged();
+			}
         }
 		
 		// updates variables as their values might have changed
@@ -2285,6 +2400,8 @@ function x_changePageStep6() {
                 }
             }
         }
+		
+		x_focusPageContents(false);
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
@@ -2357,18 +2474,20 @@ function x_changePageStep6() {
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
-	}x_focusPageContents();
+	}
 }
 
-function x_focusPageContents(){
-	//focus pageContents after page load and page change
+function x_focusPageContents(firstLoad) {
+	if (self == top || !firstLoad) {
+		//focus pageContents after page load (if not shown in iframe) and after page change (always - even if in iframe)
 		$('#pageContents').attr('tabIndex', 0).focus();
 		//#pageContents:focus is set to none in default theme
 		//uncomment the line below to see the focus outline
 		//or use a theme where this isn't hidden
 		//$('#pageContents:focus').css('outline','solid');
-	if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
-		$('#adaptiveContentMain').attr('tabIndex', 0).focus();
+		if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
+			$('#adaptiveContentMain').attr('tabIndex', 0).focus();
+		}
 	}
 }
 
@@ -2389,7 +2508,7 @@ function x_pageContentsUpdated() {
 
 // by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO & page level
 function x_setUpLightBox() {
-	if ((x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
+	if (x_currentPageXML != undefined && (x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
 		
 		// use the x_noLightBox class in page models to force images to not open in lightboxes
 		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
@@ -2543,7 +2662,9 @@ function x_setUpPage() {
 			$x_nextBtn.button("disable");
 		}
 		if (x_currentPageXML.getAttribute("save") == "false") {
-			$x_saveSessionBtn.button("disable");
+			if ($("#x_saveSessionBtn").length > 0) {
+				$x_saveSessionBtn.button("disable");
+			}
 		}
 	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
@@ -2570,6 +2691,7 @@ function x_setUpPage() {
 				$("#x_mainBg").hide();
 			}
 		}
+		$('#preventFlash').remove();
         x_firstLoad = false;
     }
 }
@@ -2623,7 +2745,9 @@ function x_pageLoaded() {
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
-	x_focusPageContents();
+	
+	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
+	x_focusPageContents(pagesLoaded <= 1 ? true : false);
 }
 
 // detect page loaded change and update progress bar
@@ -2864,8 +2988,8 @@ function x_updateCss(updatePage) {
 
 // function isn't called until the narration bar has loaded
 function x_updateCss2(updatePage) {
-	$x_pageHolder.css("margin-bottom", $x_footerBlock.height());
-    $x_background.css("margin-bottom", $x_footerBlock.height());
+	$x_pageHolder.css("margin-bottom", $x_footerBlock.outerHeight());
+    $x_background.css("margin-bottom", $x_footerBlock.outerHeight());
 	
     if (x_browserInfo.mobile == false) {
 		$x_pageHolder.css("margin-top", $x_headerBlock.height());
@@ -3068,7 +3192,7 @@ function x_isMenu() {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2", "passwordInfo", "passwordError"],
         i, j, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
@@ -3076,6 +3200,10 @@ function x_findText(pageXML, exclude, list) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
             x_insertText(pageXML.attributes[i], exclude, list);
         }
+		
+		if (pageXML.attributes[i].name == 'data') {
+			x_insertText(pageXML.attributes[i], true, ['glossary'], true);
+		}
     }
 
     for (i=0, len=pageXML.childNodes.length; i<len; i++) {
@@ -3090,7 +3218,7 @@ function x_findText(pageXML, exclude, list) {
 }
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
-function x_insertText(node, exclude, list) {
+function x_insertText(node, exclude, list, data) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
@@ -3104,7 +3232,7 @@ function x_insertText(node, exclude, list) {
 	// check text for variables - if found replace with variable value
 	// also handle case where comma decimal separator has been requested
 	if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
-		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator);
+		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator, data);
 	}
 	
 	// check text for global variables - if found replace with variable value
@@ -3514,7 +3642,8 @@ function x_saveSessionBtnIsStyled() {
 	if (x_params.theme != undefined && x_params.theme == "default")
 		return true;
 	var files = $.map(document.styleSheets, function(s) {
-		return s.href && s.href.indexOf('/themes/Nottingham/')>0 ? s : null;
+		// All css files in the themes folders except responsivetext.css
+		return s.href && s.href.indexOf('/themes/Nottingham/')>0 && s.href.indexOf('responsivetext')<0 ? s : null;
 	});
 
 	var isStyled = files.reduce(function(a,r){
@@ -4004,7 +4133,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	},
 	
 	
-	replaceVariables = function (tempText, decimalSeparator) {
+	replaceVariables = function (tempText, decimalSeparator, dataInfo) {
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
 			function (match, contents, round, id) {
@@ -4032,45 +4161,48 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 		
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image & mathjax tags first
-			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
-				for (var m=0; m<$tempText.find('img').length; m++){
-					var tempImgTag = $tempText.find('img')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
-					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+			if (dataInfo == true) {
+				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
+				// replace with the variable text
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
+				
+			} else {
+				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
+				// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
+				var tags = ['img', '.mathjax', 'iframe', 'a'];
+				
+				for (var p=0; p<tags.length; p++) {
+					var thisTag = tags[p];
+					
+					if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+						var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+						for (var m=0; m<$tempText.find(thisTag).length; m++){
+							var tempTag = $tempText.find(thisTag)[m].outerHTML,
+								regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+							tempTag = tempTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+							$($tempText.find(thisTag)[m]).replaceWith(tempTag);
+						}
+						tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+					}
 				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
-			}
-			
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
-				for (var m=0; m<$tempText.find('.mathjax').length; m++){
-					var tempImgTag = $tempText.find('.mathjax')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
-					$($tempText.find('.mathjax')[m]).replaceWith(tempImgTag);
-				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
-			}
-			
-			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
-			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
-			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
-			
-			// replace with a text input field which the end user can use to set the value of the variable
-			regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
-			tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
-			
-			// this format of the text input field has specified a default value
-			regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
-			
-			var matches = tempText.match(regExp);
-			if (matches != null) {
-				for (var m=0; m<matches.length; m++) {
-					tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				
+				// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
+				tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
+				
+				// replace with a text input field which the end user can use to set the value of the variable
+				regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
+				
+				// this format of the text input field has specified a default value
+				regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
+				
+				var matches = tempText.match(regExp);
+				if (matches != null) {
+					for (var m=0; m<matches.length; m++) {
+						tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+					}
 				}
 			}
 		}
@@ -4176,6 +4308,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	self.handleSubmitButton = handleSubmitButton;
 	self.replaceVariables = replaceVariables;
 	self.showVariables = showVariables;
+	self.getVariable = getVariable;
 	self.updateVariable = updateVariable;
 	self.setVariable = setVariable;
 

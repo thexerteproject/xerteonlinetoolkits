@@ -221,3 +221,24 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
   color: $whiteorlightest;
   background-color: $panelcolor;
 }
+
+/* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
+
+.pswdBlock {
+    background-color: #000;
+    border-color: #444;
+}
+
+.sectionPswdBtn, #pagePswdBtn {
+	background-color: orange;
+	color: black;
+}
+
+.sectionPswdBtn:active, .sectionPswdBtn:hover, .sectionPswdBtn:focus,
+#pagePswdBtn:active, #pagePswdBtn:hover, #pagePswdBtn:focus {
+	background-color: orange;
+}
+
+.pswdError {
+	color: red;
+}

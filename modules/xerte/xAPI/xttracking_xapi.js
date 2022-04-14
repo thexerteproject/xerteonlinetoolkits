@@ -278,7 +278,7 @@ function XApiTrackingState() {
 
     function getSuccessStatus() {
         if (this.lo_type != "pages only") {
-            if (this.getdScaledScore() > (this.lo_passed / 100)) {
+            if (this.getdScaledScore() * this.getCompletionPercentage() > this.lo_passed) {
                 return "passed";
             } else {
                 return "failed";
@@ -331,12 +331,12 @@ function XApiTrackingState() {
                 // If the weight is 0.0, set the score to 100
                 totalscore = 100.0;
             }
-            return Math.round(totalscore * 100) / 100;
+            return totalscore;
         }
     }
 
     function getRawScore() {
-        return this.getdRawScore() + "";
+        return Math.round(this.getdRawScore() * 100) / 100 + "";
     }
 
     function getdMinScore() {
@@ -378,11 +378,11 @@ function XApiTrackingState() {
     }
     
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
-        correctanswer, feedback, grouping) {
+        correctanswer, feedback, grouping, context) {
         this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions,
             correctanswer, feedback);
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
-        sit.enterInteraction(correctanswer, correctoptions, grouping);
+        sit.enterInteraction(correctanswer, correctoptions, grouping, context);
         this.currentid = sit.id;
     }
 
@@ -1011,6 +1011,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
     this.weighting = 0.0;
     this.score = 0.0;
     this.grouping = "";
+    this.context = "";
     this.correctAnswers = [];
     this.learnerAnswers = [];
     this.learnerOptions = [];
@@ -1042,6 +1043,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         this.nrinteractions = jsonObj.nrinteractions;
         this.weighting = jsonObj.weighting;
         this.score = jsonObj.score;
+        this.grouping = jsonObj.grouping;
+        this.context = jsonObj.context;
         this.correctOptions = jsonObj.correctOptions;
         this.correctAnswers = jsonObj.correctAnswers;
         this.learnerOptions = jsonObj.learnerOptions;
@@ -1123,7 +1126,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
     }
 
-    function enterInteraction(correctAnswers, correctOptions, grouping) {
+    function enterInteraction(correctAnswers, correctOptions, grouping, context) {
         this.correctAnswers = correctAnswers;
         this.correctOptions = correctOptions;
 
@@ -1132,6 +1135,13 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             this.grouping = grouping;
         } else {
             this.grouping = "";
+        }
+
+        if (typeof context != "undefined" && context != "" && context !=
+            null) {
+            this.context = context;
+        } else {
+            this.context = "";
         }
 
         var id = this.getxApiId();
@@ -1178,6 +1188,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                     objectType: "Activity"
                 }]
             };
+        }
+        if (this.context != "")
+        {
+            let contextitems = this.context.split(',');
+            contextitems.forEach(function (contextitem){
+                let item = contextitem.split('=');
+                if (item.length == 2) {
+                    let key = "http://xerte.org.uk/" + item[0];
+                    let value = item[1].replace(" ", "_");
+                    statement.context.extensions[key] = value;
+                }
+            });
         }
         SaveStatement(statement);
 
@@ -1552,6 +1574,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 }]
                             };
                     }
+                    if (this.context != "")
+                    {
+                        let contextitems = this.context.split(',');
+                        contextitems.forEach(function (contextitem){
+                           let item = contextitem.split('=');
+                           if (item.length == 2) {
+                               let key = "http://xerte.org.uk/" + item[0];
+                               let value = item[1];
+                               statement.context.extensions[key] = value;
+                           }
+                        });
+                    }
                     SaveStatement(statement);
                     if (typeof statement.result.score != 'undefined') {
                         var scoredstatement = {
@@ -1581,6 +1615,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         };
                         if (this.grouping != "") {
                             scoredstatement.context.contextActivities = statement.context.contextActivities;
+                        }
+                        if (this.context != "")
+                        {
+                            let contextitems = this.context.split(',');
+                            contextitems.forEach(function (contextitem){
+                                let item = contextitem.split('=');
+                                if (item.length == 2) {
+                                    let key = "http://xerte.org.uk/" + item[0];
+                                    let value = item[1];
+                                    statement.context.extensions[key] = value;
+                                }
+                            });
                         }
                         SaveStatement(scoredstatement);
                     }
@@ -1623,6 +1669,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 objectType: "Activity"
                             }]
                         };
+                    }
+                    if (this.context != "")
+                    {
+                        let contextitems = this.context.split(',');
+                        contextitems.forEach(function (contextitem){
+                            let item = contextitem.split('=');
+                            if (item.length == 2) {
+                                let key = "http://xerte.org.uk/" + item[0];
+                                let value = item[1];
+                                statement.context.extensions[key] = value;
+                            }
+                        });
                     }
                     SaveStatement(statement);
                     // If not a page
@@ -1674,6 +1732,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     objectType: "Activity"
                                 }]
                             };
+                        }
+                        if (this.context != "")
+                        {
+                            let contextitems = this.context.split(',');
+                            contextitems.forEach(function (contextitem){
+                                let item = contextitem.split('=');
+                                if (item.length == 2) {
+                                    let key = "http://xerte.org.uk/" + item[0];
+                                    let value = item[1];
+                                    statement.context.extensions[key] = value;
+                                }
+                            });
                         }
                         SaveStatement(statement);
                     }
@@ -1751,10 +1821,23 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         }]
                     };
             }
+            if (this.context != "")
+            {
+                let contextitems = this.context.split(',');
+                contextitems.forEach(function (contextitem){
+                    let item = contextitem.split('=');
+                    if (item.length == 2) {
+                        let key = "http://xerte.org.uk/" + item[0];
+                        let value = item[1];
+                        statement.context.extensions[key] = value;
+                    }
+                });
+            }
             SaveStatement(statement);
         }
     }
     this.grouping = "";
+    this.context = "";
 }
 
 function getStatements(q, one, callback)
@@ -1944,6 +2027,16 @@ function XTInitialise(category) {
                 }
 
         }
+    }
+    if (typeof x_urlParams.embedded_from != "undefined")
+    {
+        state.embedded = true;
+        state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
+        state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
+    }
+    else
+    {
+        state.embedded = false;
     }
 
     if (!state.initialised) {
@@ -2954,9 +3047,9 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
 }
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
-    correctanswer, feedback, grouping) {
+    correctanswer, feedback, grouping, context) {
     state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
-        correctanswer, feedback, grouping);
+        correctanswer, feedback, grouping, context);
 }
 
 function XTExitInteraction(page_nr, ia_nr, result, learneroptions,
@@ -3288,8 +3381,8 @@ function XTTerminate() {
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {
                 url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
-            } else if (url.indexOf("lti2_launch.php") >= 0) {
-                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti13_launch.php") >= 0) {
+                url = url.replace("lti13_launch.php", "website_code/php/lti/sendgrade.php");
             } else {
                 url = "";
             }
@@ -3298,7 +3391,7 @@ function XTTerminate() {
                         method: "POST",
                         url: url,
                         data: {
-                            grade: state.getScaledScore()
+                            grade: state.getdScaledScore()
                         }
                     })
                     .done(function(msg) {
@@ -3316,6 +3409,11 @@ function SaveStatement(statement, async) {
         "http://xerte.org.uk/learningObjectId": baseUrl() + state.templateId,
         "http://xerte.org.uk/learningObjectTitle": $("<div>").html(x_params.name).text()
     };
+    if (state.embedded)
+    {
+        extension["http://xerte.org.uk/launchedFrom"] = state.embedded_from;
+        extension["http://xerte.org.uk/launchedFromTitle"] = state.embedded_fromTitle;
+    }
     if (state.coursename != "") {
         extension["http://xerte.org.uk/course"] = state.coursename;
     }

@@ -35,7 +35,7 @@
 	//PROJECT INFO PANEL IN THE WORKSPACE - MORE TERSE TEXT
 	define ("PROJECT_INFO_NAME", "Name");
 
-	define ("PROJECT_INFO_ID", "Id");
+	define ("PROJECT_INFO_ID", "ID");
 
 	define ("PROJECT_INFO_CREATED", "Created on");
 
@@ -68,6 +68,8 @@
 	define ("PROJECT_INFO_ACCESS_SET_AS", "is currently set as");
 
 	define ("PROJECT_INFO_NRVIEWS", ", number of views is %n");
+	
+	define ("PROJECT_INFO_NRVIEWSTITLE", "Views");
 
 	define ("PROJECT_INFO_RSS_SYNDICATION" , "RSS: Project is published through rss");
 
@@ -102,6 +104,8 @@
     define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "HTML5");
 
     define("PROPERTIES_LIBRARY_DEFAULT_FLASH", "Flash");
+	
+    define("PROPERTIES_LIBRARY_FLASH_WARNING", "The Flash player is no longer supported. You can change the default player to HTML5 in the project properties");
 
     define("PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED", "Default engine has been changed.");
 
@@ -118,7 +122,7 @@
 
 	define("PROPERTIES_LIBRARY_NOTES", "Project Notes:");
 
-	define("PROPERTIES_LIBRARY_NOTES_EXPLAINED", "These notes are only visible to yourself");
+	define("PROPERTIES_LIBRARY_NOTES_EXPLAINED", "These notes are only visible to the creator and any co-authors of the project");
 
 	define("PROPERTIES_LIBRARY_NOTES_SAVED", "Notes saved");
 
@@ -273,8 +277,9 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL", "Update");
 
-	define("PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL", "Your launch url is:");
+	define("PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL", "Your LTI 1.1 launch url is:");
 
+    define("PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL", "Your LTI 1.3 launch url is:");
 
 
 

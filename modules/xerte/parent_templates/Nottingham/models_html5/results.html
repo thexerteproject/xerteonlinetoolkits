@@ -104,7 +104,7 @@
 
     this.replaceArrow = function(str) {
       if (typeof(str) === 'string') {
-        return str.replace(/-->/g, '<i class="fa fa-long-arrow-right"></i>');
+        return str.replace(/-->/g, '<i class="fas fa-long-arrow-alt-right"></i>');
       } else {
         return str;
       }
@@ -257,7 +257,7 @@
           altnormalrow = !altnormalrow;
           altfullrow = false;
           if (x.subinteractions.length > 0 && x.type != 'page') {
-            detailstable.append("<tr><td class='correct th'></td><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>" + correctAnswerTxt + "</th></tr>");
+            detailstable.append("<tr><th class='correct th'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>" + correctAnswerTxt + "</th></tr>");
             var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
             var detailstablerows = [];
             altfullrow = false;
@@ -480,7 +480,7 @@
               font: 'NotoSerif',
               fontStyle: 'normal',
               overflow: 'linebreak',
-              cellWidth: 'wrap',
+              cellWidth: 'auto',
               halign: 'center'
             },
             headStyles: {
@@ -530,7 +530,7 @@
                 font: 'NotoSerif',
                 fontStyle: 'normal',
                 overflow: 'linebreak',
-                cellWidth: 'wrap',
+                cellWidth: 'auto',
               },
               headStyles: {
                 fillColor: [128, 128, 128],

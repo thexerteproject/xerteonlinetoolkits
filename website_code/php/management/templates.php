@@ -57,19 +57,6 @@ if (is_user_admin()) {
         <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></p>";
 
-    echo "<p style=\"margin:20px 0 0 5px\">"  . TEMPLATE_RESTRICT_NOTTINGHAM . "</p>";
-
-    echo "<p style=\"...\">" . TEMPLATE_RESTRICT_NOTTINGHAM_DESCRIPTION . "</p>";
-
-    echo "</br><button type='button' class='xerte_button' id='nottingham_btn'>manage</button>";
-    echo "<div id='nottingham_modal' class='modal'>" .
-            "<div class='modal-content'>" .
-                "<span class='close'>&times;</span>" .
-                "<div>". NOTTINGHAM_TEMPLATES ."</div>" .
-                "<div class='template-content'>" .
-                "</div></div></div>";
-
-
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
     $last_template_type = "";
 

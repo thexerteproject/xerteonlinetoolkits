@@ -10,7 +10,7 @@
 	 * @package
 	 */
 
-	define("SHARING_INSTRUCTION","To share this project with some one, please type their name here. The user must have an account on the site to appear in this search.");
+	define("SHARING_INSTRUCTION","To share this project with some one or a group, please type their name here. The user must have an account on the site to appear in this search.");
 	
 	define("SHARING_NAMES","Names will appear here");
 

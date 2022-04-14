@@ -222,6 +222,7 @@ function ScormTrackingState()
             this.scoremode = jsonObj.scoremode;
             this.nrpages = jsonObj.nrpages;
             this.pages_visited=jsonObj.pages_visited;
+            this.completedPages=jsonObj.completedPages;
 //            this.start = new Date(jsonObj.start);
             this.duration_previous_attempts = jsonObj.duration_previous_attempts;
             this.lo_type = jsonObj.lo_type;
@@ -242,6 +243,9 @@ function ScormTrackingState()
         if (typeof jsonObj.pageHistory != "undefined") {
             x_pageHistory = jsonObj.pageHistory;
         }
+        if (typeof jsonObj.pagesViewed != "undefined") {
+            x_restorePagesViewed(jsonObj.pagesViewed);
+        }
     }
 
     function getVars()
@@ -254,6 +258,7 @@ function ScormTrackingState()
         jsonObj.scoremode = this.scoremode;
         jsonObj.nrpages = this.nrpages;
         jsonObj.pages_visited=this.pages_visited;
+        jsonObj.completedPages=this.completedPages;
 //            this.start = new Date(jsonObj.start);
         jsonObj.duration_previous_attempts = this.duration_previous_attempts;
         jsonObj.lo_type = this.lo_type;
@@ -279,6 +284,7 @@ function ScormTrackingState()
         }
          */
         jsonObj.pageHistory = this.pageHistory;
+        jsonObj.pagesViewed = this.pagesViewed;
         return JSON.stringify(jsonObj);
     }
 
@@ -811,6 +817,7 @@ function ScormTrackingState()
             state.currentpageid = currentid;
             x_pageHistory.splice(x_pageHistory.length - 1, 1);
             state.pageHistory = x_pageHistory;
+            state.pagesViewed = x_pagesViewed();
             var suspend_str = this.getVars();
             if (lessonStatus == 'incomplete') {
                 setValue('cmi.core.exit', 'suspend');
@@ -1409,17 +1416,17 @@ function XTGetMode(extended)
             }
             else
             {
-                return "tracking";
+                return "normal";
             }
         }
-        return "tracking";
+        return "normal";
     }
     return state.scormmode;
 }
 
 function XTStartPage()
 {
-    if (getValue('cmi.core.entry') == 'resume')
+    if (getValue('cmi.core.entry') == 'resume' && state.scormmode == "normal")
     {
         var currentid = state.currentpageid;
         state.currentpageid = "";
@@ -1606,7 +1613,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
     XTSetPageScore(page_nr, score);
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping, context)
 {
     if (state.scormmode == 'normal')
     {

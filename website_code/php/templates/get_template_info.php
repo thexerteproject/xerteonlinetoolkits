@@ -68,13 +68,13 @@ if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_
         $info->dashnoard = "";
     }
 
-    $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? and user_id = ?";
+//    $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
+//        " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
+//        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? and user_id = ?";
+//
+//    $row = db_query_one($sql, array($_POST['template_id'], $_SESSION['toolkits_logon_id']));
 
-    $row = db_query_one($sql, array($_POST['template_id'], $_SESSION['toolkits_logon_id']));
-
-    $info->role = $row['role'];
+    $info->role = get_user_access_rights($_POST['template_id']);
 
 
     echo json_encode($info);

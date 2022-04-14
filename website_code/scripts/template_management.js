@@ -225,20 +225,38 @@ function edit_window(admin, edit, location) {
                     console.log("Window open parent: " + window_open.parent);
                     if (!window_open || window_open.parent == null) {
 
-                        size = node.editor_size.split(",");
+                        let size = node.editor_size.split(",");
+                        let swidth = window.screen.width;
+                        let sheight = window.screen.height;
+                        if (size[0].indexOf('%') >= 0)
+                        {
+                            let sizew = parseInt(size[0]);
+                            let sizeh = parseInt(size[1]);
+                            if (sizew <= 100 && sizeh <= 100)
+                            {
+                                size[0] = (sizew * swidth) / 100;
+                                size[1] = (sizeh * sheight) / 100;
+                            }
+                            if (size[0] < 1280 && swidth > 1280)
+                                size[0] = 1280;
+                            if (size[1] < 768 && sheight > 768)
+                                size[1] = 768;
+                        }
+                        if (size[0] > swidth)
+                            size[0] = swidth;
+                        if (size[1] > sheight)
+                            size[1] = sheight;
+
 
                         if (location != null) {
-                            if (size.length == 1) {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
-                            } else {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), '_blank');
-                            }
+                            var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
                         }
                         else {
                             if (size.length == 1) {
                                 var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes");
                             } else {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes,resizable=yes");
+                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" +
+                                    size[0] + ",toolbar=yes,location=yes,resizable=yes");
                             }
                         }
 
@@ -587,10 +605,10 @@ function properties_window(admin) {
             NewWindow.focus();
         } else {
             for (var i = 0; i < ids.length; i++) {
-                if (workspace.nodes[ids[i]].type != "folder") {
+                if (workspace.nodes[ids[i]].type != "folder" && workspace.nodes[ids[i]].type != "folder_shared" && workspace.nodes[ids[i]].type != "folder_group") {
                     if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
                         var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id,
-                            "height=760, width=1000");
+                            "height=760,width=1000,status=yes");
                         NewWindow.window_reference = self;
                         NewWindow.focus();
                     } else {
@@ -661,29 +679,7 @@ function getProjectInformation(user_id, template_id) {
     })
     .done(function(info) {
         document.getElementById('project_information').innerHTML = info.properties;
-        if (info.role == 'read-only') {
-            // disable edit button.
-            var editbtn = document.getElementById("edit");
-            var propertiesbtn = document.getElementById("properties");
-            var deletebtn = document.getElementById("delete");
-            var publishbtn = document.getElementById("publish");
-
-            editbtn.disabled = "disabled";
-            editbtn.className = "xerte_button_c_no_width disabled";
-            editbtn.onclick = "";
-
-            publishbtn.disabled = "disabled";
-            publishbtn.className = "xerte_button_c_no_width disabled";
-            publishbtn.onclick = "";
-
-            propertiesbtn.disabled = "disabled";
-            propertiesbtn.className = "xerte_button_c_no_width disabled";
-            propertiesbtn.onclick = "";
-
-            deletebtn.disabled = "disabled";
-            deletebtn.className = "xerte_button_c_no_width disabled";
-            deletebtn.onclick = "";
-        }
+        disableReadOnlyButtons(info);
         if (info.fetch_statistics) {
             url = site_url + info.template_id;
             q = {};
@@ -711,6 +707,56 @@ function getProjectInformation(user_id, template_id) {
     .fail(function(jqXHR, textStatus, errorThrown)
     {
 
+    });
+}
+
+function disableReadOnlyButtons(info){
+    var editbtn = document.getElementById("edit");
+    var propertiesbtn = document.getElementById("properties");
+    var deletebtn = document.getElementById("delete");
+    var publishbtn = document.getElementById("publish");
+    var newfolderbtn = document.getElementById("newfolder");
+
+    switch(info.role){
+        case "creator":
+        case "co-creator":
+            break;
+        case "read-only":
+            editbtn.disabled = "disabled";
+            editbtn.className = "xerte_workspace_button disabled";
+            editbtn.onclick = "";
+
+            publishbtn.disabled = "disabled";
+            publishbtn.className = "xerte_workspace_button disabled";
+            publishbtn.onclick = "";
+
+            propertiesbtn.disabled = "disabled";
+            propertiesbtn.className = "xerte_workspace_button disabled";
+            propertiesbtn.onclick = "";
+
+            deletebtn.disabled = "disabled";
+            deletebtn.className = "xerte_workspace_button disabled";
+            deletebtn.onclick = "";
+        case "editor":
+            newfolderbtn.disabled="disabled";
+            newfolderbtn.className = "xerte_workspace_button disabled";
+            newfolderbtn.onclick="";
+            break;
+
+    }
+}
+
+function getFolderInformation(user_id, folder_id) {
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/folders/get_folder_info.php",
+        data: {folder_id: folder_id},
+        dataType: "json",
+        success: function (info) {
+            document.getElementById('project_information').innerHTML = info.properties;
+            disableReadOnlyButtons(info);
+
+        }
     });
 }
 
@@ -1323,6 +1369,8 @@ function template_submit()
     var formData = new FormData(form);
     $.ajax({
         type: "POST",
+        processData: false,
+        contentType: false,
         url: "website_code/php/management/upload.php",
         data: formData
     })

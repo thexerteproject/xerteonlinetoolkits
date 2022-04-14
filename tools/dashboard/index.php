@@ -327,3 +327,6 @@ body_scroll handles the calculation of the documents actual height in IE.
         x_Dashboard.show_dashboard(startstartofday, todayendofday);
     });
 </script>
+
+</body>
+</html>

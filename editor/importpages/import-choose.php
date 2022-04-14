@@ -54,7 +54,9 @@ for($i=count($workspace->items) - 1; $i>=0; $i--)
         array_splice($workspace->items, $i, 1);
         continue;
     }
-    if ((($template == "xerte" && $item->type != "nottingham") || ($template == "site" && $item->type != "site")) && $item->type != "workspace" && $item->type != "folder")
+    $temptype = str_replace("_group", "", $item->type);
+    $temptype = str_replace("_shared", "", $temptype);
+    if ((($template == "xerte" && $temptype != "nottingham") || ($template == "site" && $temptype != "site")) && $temptype != "workspace" && $temptype != "folder" && $temptype != "group")
     {
         unset($workspace->nodes->{$item->id});
         array_splice($workspace->items, $i, 1);

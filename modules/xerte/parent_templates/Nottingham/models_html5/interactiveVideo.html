@@ -77,6 +77,7 @@
                 var zoomLevel = window.devicePixelRatio;
                 var zoomCorrection = -1/zoomLevel;
                 // make sure no scroll bars are on screen during panel sizing
+                var curroverflow = $x_pageHolder.css("overflow");
                 $x_pageHolder.css("overflow", "hidden");
                 var numTileH = $("#panelHolder .panel.tileH").length,
                     numTileV = $("#panelHolder .panel.tileV").length;
@@ -109,7 +110,7 @@
                 $panelHolder.find(".panel.halfH")
                     .height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
                 
-                $x_pageHolder.css("overflow", "hidden");
+                $x_pageHolder.css("overflow", curroverflow);
                 
                 this.resizeMedia();
             };

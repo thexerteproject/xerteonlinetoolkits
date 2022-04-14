@@ -1,7 +1,7 @@
 <language name="Nederlands" code="nl-NL">
     <layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" pin="Vast maken" unpin="Los maken"  />
     <edit label="Wijzig ..." tooltip="Wijzig deze optie" description="Wijzig knop" />
-    <insertDialog label="Voeg {i} toe" preview="Voorbeeld">
+    <insertDialog label="Voeg {i} toe" preview="Voorbeeld" example="Bekijk voorbeeld">
         <insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>
         <insertAfter label="Voeg toe na" tooltip="Nieuwe pagina na geselecteerde pagina"/>
         <insertAtEnd label="Voeg toe aan einde" tooltip="Niewe pagina als laatste toevoegen "/>
@@ -175,7 +175,7 @@
 			<rectangle>Teken een rechthoek door op de linker muisknop te drukken en de muis te slepen</rectangle>
 			<polygon>Klik om punten aan het polygon toe te voegen. Klik op het eerste (rode) punt om te stoppen</polygon>
 			<reset>Klik op de &#8634; herstart knop om opnieuw te beginnen</reset>
-			<edit>De hotspot kan verlaatst en vrandert worden door er op te klikken</edit>
+			<edit>De hotspot kan verplaatst en veranderd worden door erop te klikken</edit>
 			<save>Klik op &#9745; Ok om je selectie op te slaan. Op &#9746; annuleren om de selectie en wijzigen te negeren.</save>
 			<forceRectangle>Alleen rechthoeken kunnen worden gemaakt. Flexibele hotspot is niet beschikbaar</forceRectangle>
 		</Instructions>

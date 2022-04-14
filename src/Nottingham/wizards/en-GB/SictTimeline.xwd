@@ -1,23 +1,12 @@
-<!--
-    - <wizard> is standaard.
-    - De "menus" attribute geeft aan in welke categorie de page komt.
-    - De naam van het element is dezelfde naam als die jij aan je .xwd file gegeven hebt. Dus in dit geval heet de pagina
-    "SictTimeline.xwd", dus noem je het element <SictTimeline>.
-    - De attributes in de SictTimeline element zijn required attributes die elke pagina moet hebben
-    en die aangeven hoe de pagina eruit komt te zien op de insert-page. (Deze attributes kunnen niet
-    ge-edit worden door de page-user)
-
-    - In de element komen "Child-nodes", één child-node representeert een editable-field in de page wizard.
--->
 <wizard menus="Media">
 
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" language="English" text="" error="There is no image" />]]></SictTimeline>
+      <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" language="English" text="Enter text for the page here" error="There is no image" />]]></SictTimeline>
     </newNodes>
   </pageWizard>
 
-    <SictTimeline menu="Media" menuItem="Timeline media" icon="icTimeline" hint="A customizable timeline built up with seperate sections" thumb="thumbs/sictTimeline.jpg" removed="true">
+    <SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" remove="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="150"/>
         <language label="Language" options="Afrikaans,Arabic,Armenian,Basque,Belarusian,Bulgarian,Catalan,Chinese,Croatian/Hrvatski,Czech,Danish,Dutch,English,Esperanto,Estonian,Faroese,Farsi,Finnish,French,Frisian,Galician,Georgian,German,Greek,Hebrew,Hindi,
@@ -26,16 +15,16 @@
         Hungarian,Icelandic,Indonesian,Irish,Italian,Japanese,Korean,Latvian,Lithuanian,Luxembourgish,Malay,Nepali,Norwegian,Polish,Portuguese,Portuguese (Brazilian),Romanian,Romansh,Russian,Serbian - Cyrillic, Serbian - Latin,Sinhalese,Slovak,Slovenian,Spanish,Swedish,
         Tagalog,Tamil,Taiwanese,Telugu,Thai,Turkish,Ukrainian" defaultValue="English" width="100"/>
         <image type="group" label="Image" optional="true">
-          <url label="File" type="media"/>
-          <tip label="Description" type="TextInput"/>
+          <url label="File" type="media" defaultValue="Select Media" optional="true"/>
+          <tip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
         </image>
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
-          <timeLineText><![CDATA[<timeLineText name="Enter Page Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
-          <timelineimage><![CDATA[<timelineimage name="Enter Page Title" text="" align="Left" url="Select an Image" tip="" date="Choose Date"/>]]></timelineimage>
-          <timelinevideo><![CDATA[<timelinevideo name="Enter Page Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
-          <timeLineAudio><![CDATA[<timeLineAudio name="Enter Page Title" url="Select a Audio" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
+          <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
+          <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="Enter text for the item here" align="Left" url="Select an Image" tip="Enter a Description for Accessibility" date="Choose Date"/>]]></timelineimage>
+          <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
+          <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="Select an Audio File" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
 
         </newNodes>
     </SictTimeline>
@@ -47,23 +36,23 @@
 
     </timelinedate> -->
 
-    <timeLineText menuItem="Text item" icon="icPageWhite" remove="true">
+    <timeLineText menuItem="Text Item" icon="icPageWhite" remove="true">
       <date label="Date" type="dateField" defaultValue=""/>
-      <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
-      <name label="Name" type="TextInput" wysiwyg="true"/>
-      <text label="Page Text" type="TextArea" height="150"/>
+      <name label="Title" type="TextInput" wysiwyg="true"/>
+      <text label="Text" type="TextArea" height="150"/>
         <TimeLineEndDate type="group" label="End Date" optional="true">
       		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
                   <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
         </TimeLineEndDate>
     </timeLineText>
 
-    <timelineimage menuItem="Image item" icon="icPageWhite" max="12" remove="true">
+    <timelineimage menuItem="Image Item" icon="icPageWhite" max="12" remove="true">
       <date label="Date" type="dateField" defaultValue="" />
-      <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-      <name label="Name" type="TextInput" wysiwyg="true"/>
-      <text label="Page Text" type="TextArea" height="150"/>
+      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+      <name label="Title" type="TextInput" wysiwyg="true"/>
+      <text label="Text" type="TextArea" height="150"/>
       <image type="group" label="Image">
         <url label="File" type="media"/>
         <tip label="Description" type="TextInput"/>
@@ -74,10 +63,10 @@
               </TimeLineEndDate>
     </timelineimage>
 
-    <timelinevideo menuItem="Video item" icon="icPageWhite" max="12" remove="true">
+    <timelinevideo menuItem="Video Item" icon="icPageWhite" max="12" remove="true">
       <date label="Date" type="dateField" defaultValue=""/>
-      <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-      <name label="Page Title" type="TextInput" wysiwyg="true"/>
+      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+      <name label="Title" type="TextInput" wysiwyg="true"/>
       <url label="Video" type="Media"/>
       <TimeLineEndDate type="group" label="End Date" optional="true">
             		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
@@ -85,10 +74,10 @@
               </TimeLineEndDate>
     </timelinevideo>
 
-    <timeLineAudio menuItem="Audio item" icon="icPageWhite" max="12" remove="true">
+    <timeLineAudio menuItem="Audio Item" icon="icPageWhite" max="12" remove="true">
           <date label="Date" type="dateField" defaultValue=""/>
-          <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-          <name label="Page Title" type="TextInput" wysiwyg="true"/>
+          <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+          <name label="Title" type="TextInput" wysiwyg="true"/>
           <url label="Audio" type="Media"/>
           <TimeLineEndDate type="group" label="End Date" optional="true">
                 		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>

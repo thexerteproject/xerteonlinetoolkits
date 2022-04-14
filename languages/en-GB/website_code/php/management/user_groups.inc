@@ -32,7 +32,7 @@
 
     define("USER_GROUPS_MANAGEMENT_ONE_MEMBER", "This group currently has 1 member.");
 
-    define("USER_GROUPS_MANAGEMENT_MEMBERS_COUNT", "This group currently has {&} members.");
+    define("USER_GROUPS_MANAGEMENT_MEMBERS_COUNT", "This group currently has {n} members.");
 
     define("USER_GROUPS_MANAGEMENT_GROUP_EXISTS", "This group name is already in use.");
 

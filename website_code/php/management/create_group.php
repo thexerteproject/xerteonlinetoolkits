@@ -46,7 +46,7 @@ if(is_user_admin()){
         return;
     }else{
         //Add new group to database
-        $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_groups (group_id, group_name) VALUES (NULL, '" . $group_name . "')";
+        $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_groups set group_name=?";
         $id = db_query($query, array($group_name));
     }
 
