@@ -633,39 +633,39 @@ div#shorturltodisplay a {
 }
 
 #x_nextBtn:after {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:after {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:after {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:after {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:after {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:after {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:after {
-  content: "";
+  content: "\f128";
 }
 
 #x_menuBtn:after {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:after {
-  content: "";
+  content: "\f0c7";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
 }
