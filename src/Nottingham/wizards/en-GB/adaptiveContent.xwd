@@ -13,6 +13,7 @@
       <startDate label="Start date" optional="true" type="dateField" defaultValue="" tooltip="Read records starting from this date" />
       <endDate label="Stop date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date" />
      <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group" />
+      <disableprinting label="Disable printing" type="CheckBox" optional="true" defaultValue="false" />
      <listedModeOptions type="group" condition="displayMode=='Listed'" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
          <sortOrder label="Sort order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list acoording to this criteria. Only has meaning for 'Listed' display mode" />
      </listedModeOptions>

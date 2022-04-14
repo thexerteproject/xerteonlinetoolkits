@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
 	var opinion = new function()
 	{
 		var $pageContents;
@@ -32,7 +32,7 @@
         $.getScript(fileToLoad)
           .done(function (script, textStatus) {
             numLoaded++;
-            adaptiveContent.loadJS();
+            opinion.loadJS();
           })
           .fail(function (jqxhr, settings, exception) {
             console.log("Failed to load chart scripts");
@@ -579,7 +579,9 @@
 
 			if (x_currentPageXML.getAttribute("diagram") !== "true"){
 				$("#diagram").show();
-        $("#printBtn").show()
+        if (x_currentPageXML.getAttribute('disableprinting') !== 'true') {
+          $("#printBtn").show()
+        }
 			} else {
 				$('#diagram').hide();
         $("#printBtn").hide();
@@ -805,20 +807,20 @@
           $("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
-			
+
 			// reset button
         $("#resetBtn")
 				.button({
 					label: resetBtnText
 				})
 				.click(function() {
-					if ($(x_currentPageXML).children().length > 0) {	
+					if ($(x_currentPageXML).children().length > 0) {
 						$pageContents.data({
 							'answeredValues': {},
 							'diagramLabels': [],
 							'diagramAnswers': []
 						});
-						
+
             $('#printBtn').hide();
 						opinion.startQuestions();
 					}
@@ -829,7 +831,18 @@
 					label: 'print'
 				})
 				.click(function() {
-            html2pdf($("#mainPanel")[0]);
+            $("#mainPanel").prepend(
+                `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+            );
+            $("#mainPanel #buttonHolder").hide();
+            let opt = {
+                filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+              };
+            html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
+              $("#print-title").remove();
+              $("#buttonHolder").show();
+            }).save();
 				});
         $("#printBtn").hide();
 
@@ -845,6 +858,9 @@
 
 <div id="pageContents">
 
+  <div id="buttonHolder" style="direction: rtl; float: none;">
+    <button id="printBtn" hidden></button>
+  </div>
 	<div class="splitScreen">
 
 		<div id="textHolder" class="left"></div>
@@ -863,7 +879,6 @@
 					<div id="wrapper">
 						<div id="qHolder"></div>
 						<div id="buttonHolder">
-							<button id="printBtn" hidden></button>
 							<button id="resetBtn"></button>
 							<button id="checkBtn"></button>
 						</div>
