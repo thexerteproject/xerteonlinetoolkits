@@ -155,3 +155,7 @@ li.select-interaction.selected {
 #button-placeholder {
   text-align: right;
 }
+
+.graph-container{
+  width: 45%;
+}
