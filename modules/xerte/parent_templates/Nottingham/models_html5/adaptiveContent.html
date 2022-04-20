@@ -3190,12 +3190,14 @@
           /*  $("#adaptiveContent").addClass("hide-screen");
             $(".hide-screen").css("background-color", "black");
             $(".hide-screen").css("z-index", "999");*/
+            var canvasWidthHeights = [];
 
             $(".html2pdf__page-break").each(function (index){
-                if($(this).children().eq(2).children().eq(1).children().hasClass("panel")){
-                    $(this).children().eq(2).children().eq(1).children().eq(0).addClass("graph-panel")
+                canvasWidthHeights.push({width: $(this).children().eq(2).children().eq(1).children().eq(0).children().width(), height: $(this).children().eq(2).children().eq(1).children().eq(0).children().height(), parentHeight: $(this).height()})
+                if($(this).find('.graph-container').find('.panel').length > 0){
+                    $(this).find('.graph-container').find('.noStyle').addClass("graph-panel")
                 }else{
-                    $(this).children().eq(2).children().eq(1).children().eq(0).addClass("graph-no-panel")
+                    $(this).find('.graph-container').find('.noStyle').addClass("graph-no-panel")
                 }
             })
 
@@ -3215,7 +3217,9 @@
             $(".summary-container").css("flex-direction", "column");
            /* $(".graph-container").css("float", "unset");*/
             $(".graph-container").css("width", "635px");
-            $(".graph-panel canvas").css("width", "535px");
+            $(".graph-container").css("height", "365px");
+            $(".graph-panel canvas").css("max-width", "535px");
+            $(".graph-panel canvas").css("max-height", "365px");
             $(".graph-panel").css({
                 'width' : '535px',
                 'height' : '295px'
@@ -3231,18 +3235,47 @@
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
               };
             html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
-              $("#print-title").remove();
-              $("#adaptiveContent .panel-print").addClass("panel");
-              $("#adaptiveContent .panel").removeClass("panel-print");
-              $(".panel").css("width", "100%");
-              $(".panel").css("height", "fit-content");
-              $(".summary-container").css("display", "flex");
-              $(".graph-container").css("float", "graph");
-              $(".graph-container").css("width", "100%");
-              $("canvas").css("width", "100%");
-              $("canvas").css("height", "100%");
-              $("p").css("font-size", "2.5vmin");
-              $("ul").css("font-size", "2.5vmin");
+
+
+
+                $(".graph-container .panel-legend").addClass("panel");
+                $(".graph-container .panel-legend").removeClass("panel-legend");
+
+                $("#print-title").remove();
+              /*  $("#adaptiveContent .panel").css({'padding' : "0", 'padding-bottom' : "20px"});*/
+                $(".panel-print").css("padding", "0px");
+                $("#adaptiveContent .panel-print").addClass("panel");
+                $("#adaptiveContent .panel").removeClass("panel-print");
+
+                $(".panel").css("width", "100%");
+                $(".panel").css("height", "fit-content");
+
+                $(".summary-container").css("display", "flex");
+                $(".summary-container").css("flex-direction", "row");
+
+                $(".graph-container").css("width", "45%");
+                $(".graph-container").css("float", "graph");
+
+                $(".graph").css("width", "100%");
+
+                $(".introduction").css("width", "100%");
+
+                $("p").css("font-size", "2.5vmin");
+                $("ul").css("font-size", "2.5vmin");
+                $(".panel .legend p").css("font-size", "1.75vmin");
+
+                $(".html2pdf__page-break").each(function (index){
+                    debugger
+                    $(this).css({'height' : canvasWidthHeights[index].parentHeight, 'padding' : "20px"})
+                    $(this).find('.graph').css({'width': canvasWidthHeights[index].width, 'height' : canvasWidthHeights[index].height})
+                    if($(this).find('.graph-container').find('.graph-panel').length > 0){
+                        $(this).find('.graph-container').find('.graph-panel').removeClass("graph-panel")
+                        $(this).find('.graph-container').find('.graph-panel').children().css({'width': canvasWidthHeights[index].width, 'height' : canvasWidthHeights[index].height})
+
+                    }else{
+                        $(this).find('.graph-container').find('.graph-no-panel').removeClass("graph-no-panel")
+                    }
+                })
             }).save();
         });
       }
