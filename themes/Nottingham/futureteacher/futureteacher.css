@@ -310,6 +310,10 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   color: #ffffff;
 }
 
+.x_gapFill_page #labelHolder .label.selected {
+  border: 2px solid green !important;
+}
+
 .x_gapFill_page .target.correct {
   color: green;
   font-weight: bold;

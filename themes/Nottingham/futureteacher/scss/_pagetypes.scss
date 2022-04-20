@@ -265,6 +265,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-color:darken($lightestcolor, 50%) !important;
   color:$whiteorlightest;
 }
+.x_gapFill_page #labelHolder .label.selected {
+	border: 2px solid green !important;
+}
 .x_gapFill_page .target.correct{
   color:green;
   font-weight:bold;
