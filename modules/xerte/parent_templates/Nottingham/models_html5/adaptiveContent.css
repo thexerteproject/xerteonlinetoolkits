@@ -159,3 +159,22 @@ li.select-interaction.selected {
 .graph-container{
   width: 45%;
 }
+
+.container-print{
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (max-width: 1200px) {
+  .graph-container {
+    width: 90%;
+  }
+
+  .graph{
+    width: 90%;
+  }
+
+  .panel.legend p{
+    font-size: 2.75vmin;
+  }
+}
