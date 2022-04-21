@@ -167,11 +167,11 @@ li.select-interaction.selected {
 
 @media screen and (max-width: 1200px) {
   .graph-container {
-    width: 90%;
+    width: 95% !important;
   }
 
   .graph{
-    width: 90%;
+    width: 95% !important;
   }
 
   .panel.legend p{
