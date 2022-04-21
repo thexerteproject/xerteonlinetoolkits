@@ -35,7 +35,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarCanCollapse = true;
     config.allowedContent = true;
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
-    config.fillEmptyBlocks = false;
+    //config.fillEmptyBlocks = false;
 
     config.uploadUrl = '';
 
