@@ -50,15 +50,15 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if ($("#imgHolder").hasClass("fullScreen")) {
-				if ($pageImg.hasClass("move")) {
-					$moveBtn.trigger("click");
-				}
-				$pageImg.css({
-					"left"	:0,
-					"top"	:0
-				});
-				this.setFullScreenWH();
+			var imageSize = x_currentPageXML.getAttribute("imagesize");
+			if (imageSize != undefined) {
+				var maxWH = this.getMaxDimensions();
+				x_scaleImg($pageImg, maxWH[0], maxWH[1]);
+				$cropImg
+					.width($pageImg.width())
+					.height($pageImg.height());
+				$pageImg.data("scaledSize", [$pageImg.width(), $pageImg.height()]);
+				$resetBtn.trigger("click");
 			}
 		}
 		
@@ -264,7 +264,7 @@
 			
 			
 			// zoom in/out also works on scrolling mouse wheel
-			if (x_browserInfo.touchScreen == false) {
+			if (x_browserInfo.mobile == false) {
 				$("#pageImg, #imgCover").on("mousewheel DOMMouseScroll", function(e) {
 					// has wheel scrolled up or down? different browsers show this in e.originalEvent in different ways
 					if (e.originalEvent.detail == -3 || e.originalEvent.wheelDelta == 120) { // up
@@ -480,16 +480,11 @@
 				}
 			);
 			
+			var maxWH = this.getMaxDimensions();
+			
 			$pageImg
 				.one("load", function() {
-					var imgMaxW = 500, // desktop / tablet
-						imgMaxH = 400;
-					if (x_browserInfo.mobile == true) {
-						imgMaxW = 250; // mobile
-						imgMaxH = 250;
-					}
-					
-					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+					x_scaleImg(this, maxWH[0], maxWH[1], true, true);
 					imageViewer.imgLoaded();
 				})
 				.attr({
@@ -511,6 +506,36 @@
 			$pageImg.data("scaledSize", [$pageImg.width(), $pageImg.height()]);
 			
 			x_pageLoaded(); // call this function in every model once everything's loaded
+		}
+		
+		this.getMaxDimensions = function() {
+			var imgMaxW, imgMaxH,
+				imageSize = x_currentPageXML.getAttribute("imagesize");
+			
+			if (imageSize != undefined) {
+				imgMaxW = $x_pageDiv.width();
+				imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
+				
+				if (imageSize == "small") {
+					imgMaxW = imgMaxW * 0.4;
+				} else if (imageSize == "medium") {
+					imgMaxW = imgMaxW * 0.6;
+				} else {
+					imgMaxW = imgMaxW * 0.8;
+				}
+				
+				imgMaxW -= ($("#mainPanel").outerWidth() - $("#mainPanel").width());
+				imgMaxH -= ($("#mainPanel").outerHeight() - $("#mainPanel").height());
+				
+			} else { // fixed (this isn't an option now but was default before imagesize added to xwd)
+				imgMaxW = 500; // desktop / tablet
+				imgMaxH = 400;
+				if (x_browserInfo.mobile == true) {
+					imgMaxW = 250; // mobile
+					imgMaxH = 250;
+				}
+			}
+			return [imgMaxW, imgMaxH];
 		}
 		
 		this.animate = function(newW, newL, newT) {

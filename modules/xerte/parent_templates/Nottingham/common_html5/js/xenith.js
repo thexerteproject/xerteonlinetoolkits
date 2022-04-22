@@ -146,8 +146,29 @@ $(document).ready(function() {
     {
         x_browserInfo.Android = true;
     }
-
-    x_browserInfo.touchScreen = !!("ontouchstart" in window);
+	
+	// detect touchscreen function (https://patrickhlauke.github.io/touch/touchscreen-detection/)
+	function detectTouchscreen() {
+		var result = false;
+		if (window.PointerEvent && ('maxTouchPoints' in navigator)) {
+			// if Pointer Events are supported, just check maxTouchPoints
+			if (navigator.maxTouchPoints > 0) {
+			result = true;
+			}
+		} else {
+			// no Pointer Events...
+			if (window.matchMedia && window.matchMedia("(any-pointer:coarse)").matches) {
+				// check for any-pointer:coarse which mostly means touchscreen
+				result = true;
+			} else if (window.TouchEvent || ('ontouchstart' in window)) {
+				// last resort - check for exposed touch events API / event handler
+				result = true;
+			}
+		}
+		return result;
+	}
+	
+	x_browserInfo.touchScreen = detectTouchscreen();
 	if (x_browserInfo.touchScreen == true) {
 		$x_mainHolder.addClass("x_touchScreen");
 	}
@@ -612,7 +633,7 @@ x_projectDataLoaded = function(xmlData) {
             x_fillWindow = false; // overrides fill window for touchscreen devices
 
         } else if (x_urlParams.display == "fixed" || x_urlParams.display == "default" || x_urlParams.display == "full" || x_urlParams.display == "fill") {
-            if (x_browserInfo.touchScreen == true) {
+            if (x_browserInfo.mobile == true) {
                 x_fillWindow = true;
             }
             if (x_urlParams.display == "fixed" || x_urlParams.display == "default") { // default fixed size using values in css (800,600)
@@ -1752,92 +1773,106 @@ function x_dialog(text){
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
-    var page = XTStartPage();
-    if (force && page >= 0) {  // this is a resumed tracked LO, go to the page saved by the LO
-        x_changePage(page, addHistory);
-    }
-    else {
+    var page,
+		inclHistory = false;
+	
+	// if it's first page then we've already found x_deepLink
+	if (x_firstLoad == false || addHistory == false) {
+		var deepLinkInfo = getDeepLink(pageInfo.ID);
+		pageInfo.ID = deepLinkInfo[0];
 		
-		// if it's first page then we've already found x_deepLink
-		if (x_firstLoad == false || addHistory == false) {
-			var deepLinkInfo = getDeepLink(pageInfo.ID);
-			pageInfo.ID = deepLinkInfo[0];
+		if (deepLinkInfo.length > 1) {
+			x_deepLink = deepLinkInfo[1];
+		} else {
+			x_deepLink = '';
+		}
+	}
+	
+	if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+		// relative links added from WYSIWYG xerte page links button
+		if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+			var pageIndex = $.inArray(x_currentPage, x_normalPages);
 			
-			if (deepLinkInfo.length > 1) {
-				x_deepLink = deepLinkInfo[1];
+			switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
+				case "next":
+					// won't change if this is a standalone page
+					if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
+						page = x_normalPages[pageIndex + 1];
+					break;
+				case "previous":
+					if (pageIndex != -1 && pageIndex > 0) {
+						page = x_normalPages[pageIndex - 1];
+					} else {
+						// ** it's a standalone page - do historic back
+					}
+					break;
+				case "first":
+					if (pageIndex !== 0) {
+						page = x_normalPages[0];
+					}
+					break;
+				case "last":
+					if (pageIndex < x_normalPages.length-1) {
+						page = x_normalPages[x_normalPages.length-1]
+					}
+					break;
+			}
+		}
+		else {
+			// could be the linkID generated automatically in XML or a custom ID added in editor
+			page = x_lookupPage(pageInfo.type, pageInfo.ID);
+			
+			// id was a deeplink so info about page & deeplink has been returned
+			if ($.isArray(page)) {
+				x_deepLink = page.slice(1, page.length);
+				page = page[0];
+			}
+			
+			if (page !== false) {
+				if (page != x_currentPage) {
+					inclHistory = true;
+				} else {
+					x_doDeepLink();
+				}
 			} else {
 				x_deepLink = '';
+				if (force == true) {
+					inclHistory = true;
+				}
 			}
 		}
+	}
+	else if (pageInfo.type == "index") {
+		page = pageInfo.ID;
+		inclHistory = true;
 		
-		if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-			// relative links added from WYSIWYG xerte page links button
-        	if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
-				var pageIndex = $.inArray(x_currentPage, x_normalPages);
-				
-				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
-					case "next":
-						// won't change if this is a standalone page
-						if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
-							x_changePage(x_normalPages[pageIndex + 1]);
-						break;
-					case "previous":
-						if (pageIndex != -1 && pageIndex > 0) {
-							x_changePage(x_normalPages[pageIndex - 1]);
-						} else {
-							// ** it's a standalone page - do historic back
-						}
-						break;
-					case "first":
-						if (pageIndex !== 0) {
-							x_changePage(x_normalPages[0]);
-						}
-						break;
-					case "last":
-						if (pageIndex < x_normalPages.length-1) {
-							x_changePage(x_normalPages[x_normalPages.length-1]);
-						}
-						break;
-				}
-        	}
-        	else {
-				// could be the linkID generated automatically in XML or a custom ID added in editor
-				page = x_lookupPage(pageInfo.type, pageInfo.ID);
-				
-				// id was a deeplink so info about page & deeplink has been returned
-				if ($.isArray(page)) {
-					x_deepLink = page.slice(1, page.length);
-					page = page[0];
-				}
-				
-				if (page !== false) {
-					if (page != x_currentPage) {
-						x_changePage(page, addHistory);
-					}
-				} else {
-					x_deepLink = '';
-					if (force == true) {
-						x_changePage(0, addHistory);
-					}
-				}
-			}
-        }
-        else if (pageInfo.type == "index") {
-			x_changePage(pageInfo.ID, addHistory);
-			
-        } else {
-			page = parseInt(pageInfo.ID);
-            if (page > 0 && page <= x_pages.length) {
-                x_changePage(page-1, addHistory);
-            }
-            else {
-            	x_deepLink = '';
-            	if (force == true) {
-                	x_changePage(0, addHistory);
-                }
-            }
+	} else {
+		page = parseInt(pageInfo.ID);
+		if (page > 0 && page <= x_pages.length) {
+			page = page-1;
+			inclHistory = true;
 		}
-    }
+		else {
+			x_deepLink = '';
+			if (force == true) {
+				page = 0;
+				inclHistory = true;
+			}
+		}
+	}
+	
+	var resumeLO = XTStartPage();
+	
+	// this is a resumed tracked LO, go to the page saved by the LO - unless it's currently trying to show a standalone page in a lightbox
+	if (force && resumeLO >= 0 && (x_pageInfo[page].standalone != true || x_pages[page].getAttribute('linkTarget') == 'new' || x_pages[page].getAttribute('linkTarget') == 'same')) { 
+		x_changePage(resumeLO, addHistory);
+		
+	} else if (inclHistory == true) {
+		x_changePage(page, addHistory);
+		
+	} else {
+		x_changePage(page);
+	}
 }
 
 
@@ -1903,7 +1938,7 @@ function x_checkPages(type, id, pageArray) {
 }
 function x_setMaxWidth() {
 	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
-		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
 		var styleString = '<style>';
 		for (var i=0; i<workingPages.length; i++) {
 			if (i>0) { styleString += ', '; }
@@ -1928,7 +1963,8 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 	
 	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
-	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
+	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
+		parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
 	}
@@ -3639,6 +3675,10 @@ function x_getAriaText(text) {
 
 // Script to check whther saveSession button is styled in theme
 function x_saveSessionBtnIsStyled() {
+	// In offline the line below with r.rules causes a CORS error.
+	// Offline doesn't use save session anyway, so return true
+	if (xot_offline)
+		return true;
 	if (x_params.theme != undefined && x_params.theme == "default")
 		return true;
 	var files = $.map(document.styleSheets, function(s) {

@@ -217,6 +217,10 @@
 				})
 			}
 			
+			if (x_currentPageXML.getAttribute('openFirst') == "true") {
+				$(".listItem:first").click();
+			}
+			
 			x_pageLoaded();
 		}
 		

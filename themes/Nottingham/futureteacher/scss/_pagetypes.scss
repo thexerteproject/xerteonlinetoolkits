@@ -193,8 +193,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background:none;
 }
 .x_annotatedDiagram_page #infoHolder{
-  background:$lightestcolor;
-  margin-left:10px;
+  background:$defaultpagebackground;
 }
 //*******Drag and Drop Labelling*********/
 .target.ui-droppable.border.highlight {
@@ -266,6 +265,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-color:darken($lightestcolor, 50%) !important;
   color:$whiteorlightest;
 }
+.x_gapFill_page #labelHolder .label.selected {
+	border: 2px solid green !important;
+}
 .x_gapFill_page .target.correct{
   color:green;
   font-weight:bold;
@@ -277,6 +279,10 @@ a.hotspot, a.hotspot.selected {
 }
 .hsinfo{
   padding:1%;
+}
+
+.x_hotspotImage_page #infoHolder {
+  background: none;
 }
 //******Interactive lists*******/
 .x_interactiveText_page .highlight{

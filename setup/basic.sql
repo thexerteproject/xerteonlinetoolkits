@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `$originaltemplatesdetails` ;
 DROP TABLE IF EXISTS `$play_security_details` ;
 DROP TABLE IF EXISTS `$sitedetails` ;
 DROP TABLE IF EXISTS `$syndicationcategories` ;
+DROP TABLE IF EXISTS `$educationlevel` ;
 DROP TABLE IF EXISTS `$grouping` ;
 DROP TABLE IF EXISTS `$course`;
 DROP TABLE IF EXISTS `$syndicationlicenses` ;
@@ -178,6 +179,14 @@ CREATE TABLE `$syndicationcategories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationcategories`(`category_id`,`category_name`) values (1,'American and Canadian Studies'),(2,'Biology'),(3,'Biomedical Sciences'),(4,'Biosciences'),(5,'Built Environment, The'),(6,'Centre for English Language Education'),(7,'Chemistry'),(9,'Community Health Sciences'),(10,'Computer Science'),(11,'Contemporary Chinese Studies'),(12,'Economics'),(13,'Education'),(14,'English Studies'),(15,'Geography'),(16,'Medicine and Health'),(17,'History'),(18,'Humanities'),(20,'Mathematical Sciences'),(21,'Modern Languages and Cultures'),(22,'Nursing, Midwifery and Physiotherapy'),(23,'Pharmacy'),(24,'Physics & Astronomy'),(25,'Politics and International Relations'),(26,'Psychology'),(27,'Sociology & Social Policy'),(28,'Veterinary Medicine and Science');
+
+CREATE TABLE `$educationlevel` (
+                                   `educationlevel_id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `educationlevel_name` char(255) DEFAULT NULL,
+                                   PRIMARY KEY (`educationlevel_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert into `$educationlevel` (`educationlevel_id`,`educationlevel_name`) values (1,'University'),(2,'College'),(3,'Secondary Education'),(4,'Primary Educaton'),(5,'Vocational Education'),(6,'Adult Education'),(7,'All');
 
 CREATE TABLE `$grouping` (
   `grouping_id` int(11) NOT NULL AUTO_INCREMENT,

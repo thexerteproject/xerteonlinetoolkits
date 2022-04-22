@@ -43,7 +43,7 @@
 	<styles optional="true" type="script" height="200" label="Styles"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecatedv="This property is deprecated as the resume functionality is now available automatically"/>
+    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated as the resume functionality is now available automatically"/>
     <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	<forcePage1 type="CheckBox" label="Force First Page" defaultValue="true" optional="true" tooltip="Force projects to open on first page even if the URL contains specific page information. Useful when creating projects, such as escape rooms, where you don't want users to be able to jump ahead."/>
 	
@@ -63,7 +63,7 @@
 		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
 	</toc>
 	
-	<mediaFile type="group" label="Media" optional="true">
+	<mediaFile type="group" label="Media" optional="true" deprecated="This property is deprecated and no longer supported">
 		<media optional="true" type="media" label="File" defaultValue="Select an Audio or Video File"/>
 		<mediaImage optional="true" type="media" label="Image (Audio only)" defaultValue="Select an Image"/>
 		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
@@ -102,18 +102,32 @@
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
         <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed to count as completed" />
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong" />
-       	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
-		<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button" />
+       	<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button" />
 		<restartOptions label="Restart session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" tooltip="If restart xAPI information is available, should that be used to restart tehe session?" />
 	</tracking>
 
 	<meta type="group" label="Meta data" optional="true">
-	   	<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
-	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
-		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" />
-        <metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
-        <metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true"/>
+		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
+		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
+		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
+		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
+		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used."/>
+		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
+		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
     </meta>
+	
+	<twittercard type="group" label="Twitter card" optional="true">
+		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter." />
+		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
+		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
+		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
+		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
+		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
+		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
+		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
+	</twittercard>
 
     <newNodes>
     </newNodes>

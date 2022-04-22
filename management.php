@@ -332,11 +332,11 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                     <div class="admin_mgt_area">
                         <div class="admin_mgt_area_top">
-                            <div class="top_left sign_in_TL m_b_d_2_child">
-                                <div class="top_right sign_in_TR m_b_d_2_child">
-                                    <p class="heading">
+                            <div class="sign_in_TL m_b_d_2_child">
+                                <div class="sign_in_TR m_b_d_2_child">
+                                    <h1 class="heading">
         <?PHP echo MANAGEMENT_TITLE; ?>
-                                    </p>
+                                    </h1>
                                 </div>
                             </div>
                         </div>
@@ -351,7 +351,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                 -->
 
                                 <div class="admin_mgt_area_middle_button_left">
-                                    <button type="button" style="margin-left:10px;" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users-cog"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:user_groups_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USER_GROUPS; ?>	</button>
@@ -359,14 +359,15 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                     <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle"></i> <?PHP echo MANAGEMENT_MENUBAR_LOGS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:educationlevel_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_EDUCATION; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:grouping_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_GROUPINGS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:course_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_COURSES; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button> <!--style="margin-right:10px;"-->
-                                </div>
-                                <div class="admin_mgt_area_middle_button_right">
-                                    <button type="button" class="xerte_button" onclick="javascript:save_changes()"><i class="fa fa-floppy-o"></i> <?PHP echo MANAGEMENT_MENUBAR_SAVE; ?></button>
-                                </div>
+									<div class="admin_mgt_area_middle_button_right">
+										<button type="button" class="xerte_button" onclick="javascript:save_changes()"><i class="fa fa-floppy-o"></i> <?PHP echo MANAGEMENT_MENUBAR_SAVE; ?></button>
+									</div>
+								</div>
                                 <div id="admin_area">
                                 </div>
                             </div>

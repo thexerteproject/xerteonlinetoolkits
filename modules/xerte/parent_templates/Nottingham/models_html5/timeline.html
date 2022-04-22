@@ -139,14 +139,14 @@
 					} else {
 						if (correct == 0) {
 							if(XTGetMode() == "normal")  
-								$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? x_currentPageXML.getAttribute("allWrongTracking") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+								$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? '<p>' + x_currentPageXML.getAttribute("allWrongTracking") + '</p>' : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							else
-								$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+								$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? '<p>' + x_currentPageXML.getAttribute("allWrong") + '</p>' : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						} else {
 							if(XTGetMode() == "normal")
-								$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+								$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? '<p>' + x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) + '</p>' : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							else	
-								$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+								$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? '<p>' + x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) + '</p>' : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						}
 						timeline.finishTracking();
 					}

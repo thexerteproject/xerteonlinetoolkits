@@ -169,14 +169,18 @@
 				$thisThumb.find(".thumbMedia").remove();
 				
 				$thisThumb.click(function() {
-					$("#thumbHolder .thumbBox:eq(1)").trigger("click", true);
+					if ($(".playAll").hasClass("playing")) {
+						$("#thumbHolder .thumbBox:eq(1)").trigger("click");
+					} else {
+						$("#thumbHolder .thumbBox:eq(1)").trigger("click", true);
+					}
 				});
 				
 				adjustIndex--;
 			}
 			
 			$(x_currentPageXML).children().each(function(i) {
-				if (this.getAttribute("src") != undefined && this.getAttribute("src") != "") {
+				if ((this.getAttribute("src") != undefined && this.getAttribute("src") != "") || this.nodeName == "mpText") {
 					var	$thisThumb = $(newThumb);
 					$thumbHolder.append($thisThumb);
 					$thisThumb.data("index", i);
@@ -195,11 +199,11 @@
 							maxImgSize = [$thisThumb.width(), $thisThumb.height()];
 						}
 						
-						if (this.nodeName == "image" || this.nodeName == "sound") {
+						if (this.nodeName == "image" || this.nodeName == "sound" || this.nodeName == "mpText") {
 							var	imgSrc,
 								imgTip;
 							
-							if (this.nodeName == "image") {
+							if (this.nodeName == "image" || this.nodeName == "mpText") {
 								imgSrc = x_evalURL(this.getAttribute("src"));
 								imgTip = this.getAttribute("tooltip");
 								
@@ -314,6 +318,12 @@
 							
 							$mainTxt.html("");
 							
+							if (thisData.nodeName == "mpText") { // text
+								$mediaPanel.hide();
+							} else {
+								$mediaPanel.show();
+							}
+							
 							// insert & size media
 							if (thisData.nodeName == "image") {
 								$mediaPanel.html('<img id="pageImage" alt="' + $this.find("img").attr("alt") + '" class="centre" />');
@@ -344,7 +354,7 @@
 										perspectives.loadAudio($thisAudio, playAll);
 									});
 								
-							} else { // movie
+							} else if (thisData.nodeName == "movie") { // movie
 								var videoTip = $this.find(".thumbMedia").data("videoTip");
 								
 								if (thisData.getAttribute("src").substr(0,7) == "<iframe") {
@@ -374,27 +384,33 @@
 									
 									perspectives.loadVideo($thisVideo, playAll);
 								}
+								
+							} else {
+								if (playAll) perspectives.playAll("text");
 							}
+
 							
 							// position image / text correctly
 							$mediaPanel.removeClass("full x_floatLeft x_floatRight");
 							$mainInfoHolder.removeClass("centerAlign");
 							
 							if (thisData.getAttribute("mediaW") != "Full") {
-								if (thisData.getAttribute("align") == "Top" || thisData.getAttribute("align") == "Bottom" ||  x_browserInfo.mobile == true) {
-									$mainInfoHolder.addClass("centerAlign");
+								if (thisData.nodeName !== "mpText") {
+									if (thisData.getAttribute("align") == "Top" || thisData.getAttribute("align") == "Bottom" ||  x_browserInfo.mobile == true) {
+										$mainInfoHolder.addClass("centerAlign");
+										
+									} else if (thisData.getAttribute("align") == "Left") {
+										$mediaPanel.addClass("x_floatRight");
+										
+									} else { // default - media left & text right
+										$mediaPanel.addClass("x_floatLeft");
+									}
 									
-								} else if (thisData.getAttribute("align") == "Left") {
-									$mediaPanel.addClass("x_floatRight");
-									
-								} else { // default - media left & text right
-									$mediaPanel.addClass("x_floatLeft");
-								}
-								
-								if (thisData.getAttribute("align") != "Top") {
-									$mediaPanel.insertBefore($mainTxt);
-								} else {
-									$mainTxt.insertBefore($mediaPanel);
+									if (thisData.getAttribute("align") != "Top") {
+										$mediaPanel.insertBefore($mainTxt);
+									} else {
+										$mainTxt.insertBefore($mediaPanel);
+									}
 								}
 								
 								// get text for page (incl. links etc.)
@@ -470,7 +486,7 @@
 								$audio.data("width", $mediaPanel.find("#audioImage").width());
 								perspectives.loadAudio($audio, playAll);
 							}
-						} else {
+						} else if (thisData.nodeName == "movie") {
 							var $video = $mediaPanel.find("#pageVideo")
 							if ($video.data("width") != "fixed") {
 								if ($video.find(".mejs-video").width() == $video.width() || ($video.find(".mejs-video").width() > $video.width() && $video.find(".mejs-video").width() - 10 <= $video.width()) || ($video.find(".mejs-video").width() < $video.width() && $video.find(".mejs-video").width() + 10 >= $video.width())) {
@@ -580,9 +596,11 @@
 		
 		this.playAll = function($media) {
 			$(".playAll").addClass("playing");
-			if ($media[0].nodeName == "IMG") {
+			if ($media == "text" || $media.length == 0 || $media[0].nodeName == "IMG") {
 				setTimeout(function(){
-					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+					if ($(".playAll").hasClass("playing")) { // in case it's been paused
+						$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+					}
 				}, (x_currentPageXML.getAttribute("playImgTime") != undefined && x_currentPageXML.getAttribute("playImgTime") != 0 ? Number(x_currentPageXML.getAttribute("playImgTime")) : 5) * 1000);
 			} else if ($media.is($("#pageVideo"))) {
 				setTimeout(function(){$media.find("video")[0].player.play();}, 0);

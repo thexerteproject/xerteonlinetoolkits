@@ -1,6 +1,6 @@
 /*  
     http://www.dailycoding.com/
-	with a few changes made for its use in Xerte Online Toolkits (add class to image and magnifier and include offset in calculating magnifier position)
+	with a few changes made for its use in Xerte Online Toolkits (add class to image and magnifier, include offset in calculating magnifier position & allow magnification over original image size)
 */
 (function ($) {
     $.fn.imageLens = function (options) {
@@ -10,9 +10,13 @@
             borderSize	:2,
             borderColor	:"#666666"
         };
+		
         var options = $.extend(defaults, options);
+		
+		options.radius = options.radius != undefined ? ((options.lensSize / 2 + options.borderSize) / 100) * options.radius : options.lensSize / 2 + options.borderSize;
+		
         var lensStyle = "background-position: 0px 0px;width: " + String(options.lensSize) + "px;height: " + String(options.lensSize)
-            + "px;float: left;display: none;border-radius: " + String(options.lensSize / 2 + options.borderSize)
+            + "px;float: left;display: none;border-radius: " + String(options.radius)
             + "px;border: " + String(options.borderSize) + "px solid " + options.borderColor 
             + ";background-repeat: no-repeat;position: absolute;cursor: none;";
 			
@@ -35,6 +39,18 @@
             $(imageTag).load(function () {
                 widthRatio = $(this).width() / obj.width();
                 heightRatio = $(this).height() / obj.height();
+				
+				// force magnification even if has to be shown larger than original image
+				if (options.force != undefined && options.force != false) {
+					if (widthRatio <= options.force) {
+						$(this).width(obj.width() * options.force);
+						$(this).height(obj.height() * options.force);
+						widthRatio = $(this).width() / obj.width();
+						heightRatio = $(this).height() / obj.height();
+					}
+				}
+				
+				target.css('background-size', $(this).width() + 'px ' + $(this).height() + 'px');
             }).appendTo($(this).parent());
 			
             target.css({ backgroundImage: "url('" + imageSrc + "')" });

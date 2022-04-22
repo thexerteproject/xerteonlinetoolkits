@@ -22,17 +22,12 @@
 	// other functions for model should also be in here to avoid conflicts
 	var hotspotImage = new function() {
 		var	$img;
-		var amountOfAttempts = x_currentPageXML.getAttribute("attempts");
-		var attempts = parseInt(amountOfAttempts, 10);
-		var counter = [];
-		var hits = [];
-		var pointsUpdated = [];
-		var canvas;
-		var gotHint = false;
-		var pointArray;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
+			
+			$("area").mapster('set',false);
 			
 			$(".selected").removeClass("selected");
 			$("#infoHolder").html("");
@@ -46,29 +41,25 @@
 				"opacity"	:0,
 				"filter"	:'alpha(opacity=0)'
 			});
+			
 			this.resizeImg(false);
-
 		};
 		
 		this.init = function() {
-		    x_currentPageXML.childNodes.forEach(function () {
-				hits.push(false);
-				counter.push(0);
-            });
-
 			$img = $("#image");
-
 
             if (x_currentPageXML.getAttribute("align") == "Right") {
 				$("#panel").addClass("left");
 			} else {
 				$("#panel").addClass("right");
 			}
+			
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
 			$img
 				.css({
-						"opacity"	:0,
-						"filter"	:'alpha(opacity=0)'
+					"opacity": 0,
+					"filter": 'alpha(opacity=0)'
 				})
 				.one("load", function() {
 					hotspotImage.resizeImg(true);
@@ -77,9 +68,9 @@
 					x_pageLoaded();
 				})
 				.attr({
-					"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
-					"alt"	:x_currentPageXML.getAttribute("tip"),
-					"usemap":"#hsHolder_map"
+					"src": x_evalURL(x_currentPageXML.getAttribute("url")),
+					"alt": x_currentPageXML.getAttribute("tip"),
+					"usemap": "#hsHolder_map"
 				})
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
@@ -107,7 +98,6 @@
 						text	:false
 					})
 					.click(function() {
-
 						hotspotImage.selectHs("next");
 					});
 				
@@ -123,11 +113,11 @@
 					.click(function() {
 						hotspotImage.selectHs("prev");
 					});
+				
 			} else { // click explore
-				$("#pageContents button").remove();
+				$("#btnHolder").remove();
 
 			}
-            //this.selectHs("next");
 		};
 
 		this.resizeImg = function(firstLoad) {
@@ -148,8 +138,8 @@
 		
 		this.createHS = function() {
 			// create hotspots - taking scale of image into account
-			var scale = $img.width() / $img.data("origSize")[0],
-				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
+			var selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
+			
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 
 			var stroke = true;
@@ -159,13 +149,13 @@
 			var fill = true;
 			var fillColor = "#000000";
 			var fillOpacity = 0.1;
+			
 			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
 				highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
 			}
 			if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
 				strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
-				if (strokeWidth == 0)
-				{
+				if (strokeWidth == 0) {
 					stroke = false;
 				}
 			}
@@ -181,10 +171,7 @@
 			if (x_currentPageXML.getAttribute("hs_fillOpacity") != undefined && x_currentPageXML.getAttribute("hs_fillOpacity") != "") {
 				fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
 			}
-
-			if (selected != undefined) {
-				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
-			}
+			
 			var options = {
 				render_highlight:
 						{
@@ -210,8 +197,8 @@
 				clickNavigate: true
 			};
 
-			var tabfocusoptions = JSON.parse(JSON.stringify(options));
 			// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
+			var tabfocusoptions = JSON.parse(JSON.stringify(options));
 			tabfocusoptions.render_highlight.stroke = true;
 			tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0? 1 : strokeWidth * 2);
 
@@ -219,8 +206,7 @@
 				.each(function(i) {
 					var _this = this;
 
-					// var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
-					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="' + (i+2) + '" />');
+					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="0" />');
 
 					var coords = [];
 					var coords_string = "";
@@ -240,8 +226,6 @@
 						if (coords.length > 0) {
 							for (var j in coords) {
 								// No more need to scale the points, handled by the plugin
-								//coords[j].x *= scale;
-								//coords[j].y *= scale;
 								if (j>0)
 								{
 									coords_string += ",";
@@ -254,7 +238,7 @@
 					$hotspot
 						.attr("coords", coords_string)
 						.click(function() {
-							$("#infoHolder").html("<hr/><h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
+							$("#infoHolder").html("<hr/><h3>" + _this.getAttribute("name") + "</h3>" + x_addLineBreaks(_this.getAttribute("text")));
 							
 							$(".selected").removeClass("selected");
 							if (x_currentPageXML.getAttribute("highlight") !== "true") {
@@ -279,7 +263,6 @@
 							}
 							
 							if (x_currentPageXML.getAttribute("highlight") == "true") {
-
 								setTimeout(function(){
 									$("area").mapster('select');
 								}, 100);
@@ -288,18 +271,18 @@
 							x_pageContentsUpdated();
 						})
 						.focusin(function() {
-								$('img').mapster('set_options', tabfocusoptions);
+								$img.mapster('set_options', tabfocusoptions);
 								$(this)
 									.removeClass("transparent")
 									.addClass("highlight");
 								$(this).mapster('highlight');
 							})
 						.focusout(function() {
-								$('img').mapster('set_options', options);
+								$img.mapster('set_options', options);
 								$(this)
 									.removeClass("highlight")
 									.addClass("transparent");
-								$("img").mapster('highlight', false);
+								$img.mapster('highlight', false);
 
 							})
 						.keypress(function(e) {
@@ -308,6 +291,7 @@
 								$(this).trigger("click");
 							}
 						});
+					
 					if (x_currentPageXML.getAttribute("hs_showTooltip") != undefined && x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
 						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
 							$hotspot.attr("title", this.getAttribute("alttext"));
@@ -327,10 +311,9 @@
 				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
 			}
 
-
-			$('img').mapster(options);
+			$img.mapster(options);
+			
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
-
 				setTimeout(function(){
 					$("area").mapster('select');
 				}, 100);
@@ -340,13 +323,13 @@
 			}
 		};
 
-
 		this.selectHs = function(type) {
 
 			var currentSelection = $("#pageContents .selected"),
 				i = currentSelection.index();
 
 			currentSelection.removeClass("selected");
+			
 			if (x_currentPageXML.getAttribute("highlight") !== "true") {
 				$("area").mapster('deselect');
 			}
@@ -363,31 +346,17 @@
                 $("#prevHS").button("disable");
 			}
 
-			if(i < counter.length-1){
+			if(i < x_currentPageXML.childNodes.length-1){
                 $("#nextHS").button("enable");
 			}else{
                 $("#nextHS").button("disable");
 			}
 
-			//if(counter[i] >= attempts || hits[i]){
 			$("#pageContents .hotspot:eq(" + i  + ")").addClass("selected").trigger("click");
+			
 			if (x_currentPageXML.getAttribute("highlight") !== "true") {
 				$img.mapster('set', true, i);
 			}
-			//}
-
-            //var $question = $("#questionText");
-            //var question = x_currentPageXML.childNodes[i].getAttribute("question");
-            //question = $("<div>").html(question).text().trim();
-            //$question.html(question);
-
-            //$("#hint").html("");
-			//$("#feedback").html("");
-            //if(x_currentPageXML.childNodes[i].getAttribute("hint") === null || x_currentPageXML.childNodes[i].getAttribute("hint") === ""){
-            //    gotHint = false
-			//}else{
-            //    gotHint = true;
-			//}
 		};
 		
 	};
@@ -400,7 +369,6 @@
 <div id="pageContents">
 	
 	<div id="panel" class="panel inline">
-		<div id="questionText" class="right"/>
 		<div id="imageHolder">
 			<img id="image" class="x_noLightBox" />
 			<div id="hsHolder"></div>
@@ -408,17 +376,11 @@
 				<button id="prevHS"></button>
 				<button id="nextHS"></button>
 			</div>
-			<div id="hint">
-
-			</div>
-			<div id="feedback">
-
-			</div>
 		</div>
 	</div>
 	
 	<div id="textContents">
-		<div id="mainText" tabindex="1"></div>
+		<div id="mainText"></div>
 		<div id="infoHolder" class="hsinfo" aria-live="polite"></div>
 	</div>
 	

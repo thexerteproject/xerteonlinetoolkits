@@ -153,6 +153,30 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => $xerte_toolkits_site->site_url . "modules/site/parent_templates/site/common/img/default.jpg"));
     }
     /**
+     * Build CategoryList
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories order by category_name asc";
+    $categories = db_query($sql);
+
+    /**
+     * Build EducationList
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}educationlevel order by educationlevel_name asc";
+    $educationlevels = db_query($sql);
+
+    /**
+     * Build Grouping List
+     */
+    $sql = "select * from `{$xerte_toolkits_site->database_table_prefix}grouping` order by grouping_name asc";
+    $grouping = db_query($sql);
+
+    /**
+     * Build Course List
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}course order by course_name asc";
+    $course = db_query($sql);
+
+    /**
      * sort of the screen sies required for the preview window
      */
 
@@ -342,6 +366,19 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    echo "category_list=" . json_encode($categories) . ";\n";
+    echo "educationlevel_list=" . json_encode($educationlevels) . ";\n";
+    echo "grouping_list=" . json_encode($grouping) . ";\n";
+    echo "course_list=" . json_encode($course) . ";\n";
+    // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
+    // If not present, set to true
+    if (!isset($xerte_toolkits_site->course_freetext_enabled))
+    {
+        echo "course_freetext_enabled=true;\n";
+    }
+    else {
+        echo "course_freetext_enabled=" . ($xerte_toolkits_site->course_freetext_enabled == 'true' ? 'true' : 'false') . ";\n";
+    }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 

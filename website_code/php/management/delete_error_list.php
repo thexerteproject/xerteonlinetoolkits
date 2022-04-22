@@ -19,6 +19,8 @@
  */
 require_once("../../../config.php");
 
+_load_language_file("/website_code/php/management/error_list.inc");
+
 require("../user_library.php");
 require("management_library.php");
 
@@ -28,7 +30,7 @@ if(is_user_admin()){
 
 	$error_file_list = opendir($path);
 	
-	echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\">All log files deleted</div>";
+	echo "<div style=\"float:left; margin-top:10px;\"><p>" . DELETE_ALL_LOGS_COMPLETE . "</p></div>";
 
 	while($file = readdir($error_file_list)){
 

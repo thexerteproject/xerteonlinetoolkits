@@ -13,18 +13,14 @@
 		margin:		0px;
 	}
 	
-	#linkImg {
-		padding:	10px;
-		position:	absolute;
-		top:		0;
-		right:		0;
-	}
-	
-	#pageContents a img {
+	#pageContents a #linkImg {
 		border:	2px solid transparent;
 	}
 	
-	#pageContents a:focus img {
+	#pageContents a:focus #linkImg {
 		border-color:	blue;
 	}
 	
+	#x_pageDiv .x_floatLeft.noBorder, #x_pageDiv .x_floatRight.noBorder {
+		padding-top: 0;
+	}

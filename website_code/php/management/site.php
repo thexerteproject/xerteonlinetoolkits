@@ -22,6 +22,7 @@
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/site.inc");
+_load_language_file("/management.inc");
 _load_language_file( "/website_code/php/properties/sharing_status_template.inc");
 
 require_once("../user_library.php");
@@ -46,10 +47,10 @@ if(is_user_admin()){
         $site_text = $site_texts[0];
         $tutorial_text="";
     }
+	
+	echo "<h2>" . MANAGEMENT_MENUBAR_SITE . "</h2>";
 
-    echo "<p>" . MANAGEMENT_SITE_REGISTER_TEXT . "</p>";
-
-    echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:register();\"><i class=\"fa fa-globe\"></i> " .  MANAGEMENT_SITE_REGISTER . "</button>";
+    echo "<div class=\"register admin_block\">" . MANAGEMENT_SITE_REGISTER_TEXT . "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:register();\"><i class=\"fa fa-globe\"></i> " .  MANAGEMENT_SITE_REGISTER . "</button></div>";
 
     echo "<div class=\"template\" id=\"sitedetails\"><p>" . MANAGEMENT_SITE_TITLE . " <button type=\"button\" class=\"xerte_button\" id=\"sitedetails_btn\" onclick=\"javascript:templates_display('sitedetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"sitedetails_child\">";
 
@@ -190,9 +191,9 @@ if(is_user_admin()){
 
     echo "<div class=\"template\" id=\"authdetails\"><p>" . MANAGEMENT_SITE_AUTH_DETAILS . " <button type=\"button\" class=\"xerte_button\" id=\"authdetails_btn\" onclick=\"javascript:templates_display('authdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"authdetails_child\">";
 
-    echo "<p>" . MANAGEMENT_SITE_AUTH_METHOD . "<form style=\"margin: top: 20px; padding: 4em 0.15em; \">";
+    echo "<p>" . MANAGEMENT_SITE_AUTH_METHOD . "<form>";
 
-        echo "<select name=\"authentication_method\" id=\"authentication_method\" style=\"margin: 15px 0 0 10px; padding: 0.4em 0.15em; \">";
+        echo "<select name=\"authentication_method\" id=\"authentication_method\" style=\"padding: 0.4em 0.15em; \">";
 
         echo "<option value=\"Guest\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Guest') ? " selected" : "") . ">Guest</option>";
         echo "<option value=\"Ldap\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Ldap') ? " selected" : "") . ">Ldap</option>";
@@ -275,9 +276,9 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_NONANONYMOUS_VIEW . "<form><textarea id=\"site_xapi_dashboard_nonanonymous\">" . $row['dashboard_nonanonymous'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE . "<form style=\"margin: top: 20px; padding: 4em 0.15em; \">";
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE . "<form>";
 
-    echo "<select name=\"xapi_dashboard_minrole\" id=\"xapi_dashboard_minrole\" style=\"margin: 15px 0 0 10px; padding: 0.4em 0.15em; \">";
+    echo "<select name=\"xapi_dashboard_minrole\" id=\"xapi_dashboard_minrole\" style=\"padding: 0.4em 0.15em; \">";
 
     echo "<option value=\"creator\"" . ((isset($row['xapi_dashboard_minrole']) && $row['xapi_dashboard_minrole'] == 'creator') ? " selected" : "") . ">" . SHARING_CREATOR. "</option>";
     echo "<option value=\"co-author\"" . ((isset($row['xapi_dashboard_minrole']) && $row['xapi_dashboard_minrole'] == 'co-author') ? " selected" : "") . ">" . SHARING_COAUTHOR . "</option>";
@@ -346,10 +347,10 @@ if(!isset($lti)) {
     echo "<p>" . LTI_KEYS_CONTEXT_ID . "<form><textarea id=\"lti_keys_context_id" . $row['lti_keys_id'] .  "\">" . $row['lti_keys_context_id'] . "</textarea></form></p>";
 
     if($row['lti_keys_id']=='NEW') {
-      echo "<div><p><form action=\"javascript:new_LTI_key();\"><input type=\"submit\" name=\"new-lti\" value=\"". LTI_KEYS_ADD_SUBMIT ."\"></form></p></div>";
+      echo "<div><p><form action=\"javascript:new_LTI_key();\"><input class=\"xerte_button\" type=\"submit\" name=\"new-lti\" value=\"". LTI_KEYS_ADD_SUBMIT ."\"></form></p></div>";
     } else {
       echo "<div style=\"width:300px;\">";
-      echo "<div style=\"float:left;width:100px;\"><p><form action=\"javascript:edit_LTI_key(" . $row['lti_keys_id'] . ");\"><input type=\"submit\" name=\"edit-lti\" value=\"". LTI_KEYS_EDIT_SUBMIT ."\"></form></p></div>";
+      echo "<div style=\"float:left;width:100px;\"><p><form action=\"javascript:edit_LTI_key(" . $row['lti_keys_id'] . ");\"><input class=\"xerte_button\" type=\"submit\" name=\"edit-lti\" value=\"". LTI_KEYS_EDIT_SUBMIT ."\"></form></p></div>";
     //  echo "<div style=\"float:right;width:100px;\"><p><form><input type=\"submit\" name=\"delete-lti\" value=\"". LTI_KEYS_DELETE_SUBMIT ."\"></form></p></div>";
       echo "</div>";
 

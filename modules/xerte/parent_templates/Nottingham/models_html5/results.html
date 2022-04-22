@@ -382,7 +382,7 @@
         pdf.addFont('NotoSerif_Bold.ttf', 'NotoSerif', 'bold');
       }
 
-      var loTitle = x_params.name;
+      var loTitle = $('<div>').html(x_params.name).text();
       var cursor = pdfPageMargins.top;
 
       pdf.setFont('NotoSerif', 'normal');
@@ -411,7 +411,7 @@
             font: 'NotoSerif',
             fontStyle: 'normal',
             overflow: 'linebreak',
-            cellWidth: 'wrap'
+            cellWidth: 'auto'
           }
         });
         cursor = pdf.autoTable.previous.finalY + pdfPostTableSpacing;
@@ -432,7 +432,7 @@
               font: 'NotoSerif',
               fontStyle: 'normal',
               overflow: 'linebreak',
-              cellWidth: 'wrap',
+              cellWidth: 'auto',
               halign: 'center'
             },
             headStyles: {
@@ -537,9 +537,10 @@
                 fontStyle: 'bold'
               },
               columnStyles: {
-                0: {
-                  cellWidth: 15
-                },
+                0: {cellWidth: 14},
+                1: {cellWidth: 68},
+                2: {cellWidth: 54},
+                3: {cellWidth: 54},
               },
               didParseCell: function(chd) {
                 if (chd.section === 'body' && chd.column.dataKey === 0) {
@@ -559,7 +560,7 @@
           }
         }
       }
-      var name = x_params.name + "_" + XTResults().start + ".pdf";
+      var name = $('<div>').html(x_params.name + "_" + XTResults().start + ".pdf").text();
       pdf.save(name.replace(/ /g, "_"));
     }
   };

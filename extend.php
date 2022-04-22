@@ -237,8 +237,8 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                     <div class="admin_mgt_area">
                         <div class="admin_mgt_area_top">
-                            <div class="top_left sign_in_TL m_b_d_2_child">
-                                <div class="top_right sign_in_TR m_b_d_2_child">
+                            <div class="sign_in_TL m_b_d_2_child">
+                                <div class="sign_in_TR m_b_d_2_child">
                                     <p class="heading">
         <?PHP echo EXTEND_TITLE; ?>
                                     </p>

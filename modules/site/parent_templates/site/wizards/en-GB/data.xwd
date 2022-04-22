@@ -69,7 +69,19 @@
 			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
 			<wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true"/>
 		</wcagGroup>
-		
+
+		<meta type="group" label="Meta data" optional="true">
+			<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+			<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+			<metaCategory label="Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object (i.e. Maths), stored in xAPI events, to be used for categorising in xAPI reports"/>
+			<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue=""/>
+			<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
+			<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
+			<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
+			<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the eduction."/>
+			<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata"/>
+		</meta>
+
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
@@ -90,6 +102,17 @@
 		</varGroup>
 		
 		<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
+
+		<twittercard type="group" label="Twitter card" optional="true">
+        		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter."/>
+        		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
+        		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
+        		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
+        		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
+        		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
+        		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
+        		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
+        	</twittercard>
 		
 		<newNodes>
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>
@@ -110,7 +133,7 @@
 		<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
 		<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
 		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
-	</headerGroup><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
+	</headerGroup><pageLink label="Page Link" type="TextInput" wysiwyg="true" defaultValue="" optional="true" tooltip="The link text for the page menu (by default this will be the page title)" common="true"/><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>

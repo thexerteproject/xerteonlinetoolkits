@@ -491,19 +491,19 @@ function project_info($template_id){
 
     $row_template_name = db_query_one($query_for_template_name, $params);
 
-    $info = "<b>" . PROJECT_INFO_NAME . ":</b> " . str_replace('_', ' ', $row_template_name['template_name']) . "<br/>";
+    $info = PROJECT_INFO_NAME . ": " . str_replace('_', ' ', $row_template_name['template_name']) . "<br/>";
 
-    $info .= "<b>" . PROJECT_INFO_ID . ":</b> " . $row['template_id'] . "<br/>";
+    $info .= PROJECT_INFO_ID . ": " . $row['template_id'] . "<br/>";
 
-    $info .= "<b>" . PROJECT_INFO_CREATED . ":</b> " . $row['date_created'] . "<br/>";
+    $info .= PROJECT_INFO_CREATED . ": " . $row['date_created'] . "<br/>";
 
-    $info .=  "<b>" . PROJECT_INFO_MODIFIED . ":</b> " . $row['date_modified'] . "<br/>";
+    $info .=  PROJECT_INFO_MODIFIED . ": " . $row['date_modified'] . "<br/>";
 
 
 
     include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-    $info .=  "<b>" . PROJECT_INFO_RUNTIME  . ":</b> ";
+    $info .=  PROJECT_INFO_RUNTIME  . ": ";
 
     if (get_default_engine($template_id) == 'flash')
     {
@@ -517,7 +517,7 @@ function project_info($template_id){
 
     if(template_access_settings($template_id)!='Private'){
 
-        $info .= '<br/><b>' . PROJECT_INFO_URL . ":</b> ";
+        $info .= '<br/>' . PROJECT_INFO_URL . ": ";
 
         $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
             url_return("play", $_POST['template_id']) . "'>" .
@@ -566,7 +566,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  '<br/><b>' . PROJECT_INFO_EMBEDCODE . ":</b><br/><form><textarea rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
+        $info .=  '<br/>' . PROJECT_INFO_EMBEDCODE . ":<br/><form><textarea rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
 
     }
     return $info;
@@ -752,7 +752,7 @@ function media_quota_info($template_id)
                     $quota += filesize($full);
                 }
             }
-            $info =  "<b>" . PROJECT_INFO_MEDIA . ":</b> ";
+            $info =  PROJECT_INFO_MEDIA . ": ";
             $info .=  (round($quota/10000, 0)/100) . " MB<br/>";
             return $info;
         }
@@ -782,7 +782,7 @@ function sharing_info($template_id)
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
-    $info =  "<b>" . PROJECT_INFO_SHARED . ":</b> ";
+    $info =  PROJECT_INFO_SHARED . ": ";
 
     if(sizeof($query_sharing_rows)==1 && empty($query_group_sharing_rows)){
         $info .= PROJECT_INFO_NOTSHARED . "<br/>";
@@ -911,8 +911,10 @@ function folder_sharing_info($folder_id)
 
 function nr_user_groups()
 {
+    global $xerte_toolkits_site;
+
     $count = 0;
-    $sql = "select count(*) as count from user_groups";
+    $sql = "select count(*) as count from {$xerte_toolkits_site->database_table_prefix}user_groups";
     $res = db_query($sql);
 
     if ($res !== false && $res != null)
@@ -969,7 +971,7 @@ function access_info($template_id){
 
     $row_access = db_query_one($query_for_template_access, $params);
 
-    $info = "<b>" . PROJECT_INFO_ACCESS . ":</b> ";
+    $info = PROJECT_INFO_ACCESS . ": ";
 
     $accessStr = template_access_settings($_POST['template_id']);
     switch ($accessStr)
@@ -1003,7 +1005,7 @@ function access_info($template_id){
     if (isset($nrViews) && $nrViews!= "")
     {
        /* $info .= str_replace("%n", $nrViews, PROJECT_INFO_NRVIEWS);*/
-		$info .= "<br/><b>" . PROJECT_INFO_NRVIEWSTITLE . "</b>: " . $nrViews;
+		$info .= "<br/>" . PROJECT_INFO_NRVIEWSTITLE . ": " . $nrViews;
     }
     $info .= "<br/>";
     return $info;
