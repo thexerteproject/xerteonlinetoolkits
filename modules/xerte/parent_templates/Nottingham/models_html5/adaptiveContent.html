@@ -2169,7 +2169,7 @@
             legend: {
               show: true,
               showForSingleSeries: true,
-              customLegendItems: ["Average"],
+              customLegendItems: ["Passing Score"],
               markers: {
                 fillColors: ["#775DD0"],
               },
@@ -2214,7 +2214,7 @@
           txt = txt.replace(/\{0\}/, givenAnswer);
           $(
             "#" + escapeUrl(url, type, interactionIndex) + " .score .stats"
-          ).append("<p>" + txt + "</p>");
+          ).append("<li>" + txt + "</li>");
         }
         for (
           blockIndex = 0;
@@ -2235,7 +2235,7 @@
         txt = txt.replace(/\{0\}/, data.length);
         $(
           "#" + escapeUrl(url, type, interactionIndex) + " .score .stats"
-        ).append("<p>" + txt + "</p>");
+        ).append("<li>" + txt + "</li>");
       }
       if (interaction.getAttribute("graph") === "true") {
         var showExplanation = interaction.getAttribute("showExplanation");
@@ -2492,7 +2492,7 @@
         txt = txt.replace(/\{0\}/, data.length);
         $(
           "#" + escapeUrl(url, type, interactionIndex) + " .score .stats"
-        ).append("<p>" + txt + "</p>");
+        ).append("<li>" + txt + "</li>");
       }
       jsonData = data.map(function (d) {
         var obj = {};
@@ -3174,52 +3174,113 @@
     };
 
     this.setUpUnlisted = function () {
-      $("#adaptiveContentMain").append(
-          '<div id="button-placeholder"><button id="printBtn" hidden></button></div><div id="introductionText"></div><div id="adaptiveContent"></div>'
-      );
+      if (x_currentPageXML.getAttribute('disableprinting') !== 'true') {
+        $("#adaptiveContentMain").append(
+            '<div id="button-placeholder"><button id="printBtn" hidden></button></div>'
+        );
 
-      $("#printBtn")
-      .button({
-        label: 'print'
-      })
-      .click(async function() {
-          let printableItems = $("#adaptiveContent").clone();
-          //$(printableItems).find(".panel").removeClass("panel");
-          //$(printableItems).find(".panel").css("box-shadow", "none !important");
-          $("#adaptiveContent .panel").addClass("panel-print");
-          $("#adaptiveContent .panel").removeClass("panel");
-          $(".panel-print").css("width", "714px");
-          $(".panel-print").css("height", "210px");
-          $(".summary-container").css("display", "block");
-          $(".graph-container").css("float", "unset");
-          $(".graph-container").css("width", "100%");
-          $("canvas").css("width", "100%");
-          $("canvas").css("height", "100%");
-          $("p").css("font-size", "14px");
-          $("ul").css("font-size", "14px");
-          let opt = {
-              filename: 'xerte-adaptive-content.pdf',
-              margin:   10,
-              image:    { type: 'jpeg', quality: 1 },
-              html2canvas:  { dpi: 300, letterRendering: true},
-              jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-          html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
-            $("#adaptiveContent .panel-print").addClass("panel");
-            $("#adaptiveContent .panel").removeClass("panel-print");
-            $(".panel").css("width", "100%");
-            $(".panel").css("height", "fit-content");
-            $(".summary-container").css("display", "flex");
-            $(".graph-container").css("float", "graph");
-            $(".graph-container").css("width", "45%");
-            $("canvas").css("width", "100%");
-            $("canvas").css("height", "100%");
-            $("p").css("font-size", "2.5vmin");
-            $("ul").css("font-size", "2.5vmin");
-          }).save();
-          // Wait 10 seconds before placing the class back. This should be refactored at some point.
-          //await new Promise(resolve => setTimeout(resolve, 10000));
-      });
+        $("#printBtn")
+        .button({
+          label: 'print'
+        })
+        .click(async function() {
+            $(".panel-print").prepend(
+                `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+            );
+          /*  $("#adaptiveContent").addClass("hide-screen");
+            $(".hide-screen").css("background-color", "black");
+            $(".hide-screen").css("z-index", "999");*/
+            var canvasWidthHeights = [];
+
+            $(".html2pdf__page-break").each(function (index){
+                canvasWidthHeights.push({width: $(this).children().eq(2).children().eq(1).children().eq(0).children().width(), height: $(this).children().eq(2).children().eq(1).children().eq(0).children().height(), parentHeight: $(this).height()})
+                $(this).find('.summary-container').addClass('container-print');
+                if($(this).find('.graph-container').find('.panel').length > 0){
+                    $(this).find('.graph-container').find('.noStyle').addClass("graph-panel");
+                }else{
+                    $(this).find('.graph-container').find('.noStyle').addClass("graph-no-panel");
+                }
+            })
+
+            $(".graph-container .panel").addClass("panel-legend");
+            $(".graph-container .panel").removeClass("panel");
+            $(".panel-legend").css("padding-left", "0px");
+            $(".panel-legend").css("width", "90px");
+            $(".panel-legend").css("height", "90px");
+
+
+            $("#adaptiveContent .panel").addClass("panel-print");
+            $("#adaptiveContent .panel").removeClass("panel");
+            $(".panel-print").css("width", "794px");
+            $(".panel-print").css("height", "210px");
+            $(".panel-print").css("padding", "79.4px");
+
+           /* $(".graph-container").css("float", "unset");*/
+            $(".graph-container").css("width", "635px");
+            $(".graph-container").css("height", "365px");
+            $(".graph-panel canvas").css("min-width", "400px");
+            $(".graph-panel canvas").css("min-height", "270px");
+            $(".graph-panel canvas").css("max-width", "535px");
+            $(".graph-panel canvas").css("max-height", "365px");
+            $(".graph-panel").css({
+                'width' : '535px',
+                'height' : '295px'
+            });
+            $(".graph-no-panel").css("width", "635px");
+            $(".introduction").css("width", "635px");
+            $("p").css("font-size", "16px");
+            $("ul").css("font-size", "16px");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            let opt = {
+                filename: 'xerte-adaptive-content.pdf',
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+              };
+            html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
+
+
+
+                $(".graph-container .panel-legend").addClass("panel");
+                $(".graph-container .panel-legend").removeClass("panel-legend");
+
+                $("#print-title").remove();
+              /*  $("#adaptiveContent .panel").css({'padding' : "0", 'padding-bottom' : "20px"});*/
+                $(".panel-print").css("padding", "0px");
+                $("#adaptiveContent .panel-print").addClass("panel");
+                $("#adaptiveContent .panel").removeClass("panel-print");
+
+                $(".panel").css("width", "100%");
+                $(".panel").css("height", "fit-content");
+
+                $(".graph-container").css("width", "45%");
+                $(".graph-container").css("float", "graph");
+
+                $(".graph").css("width", "100%");
+
+                $(".introduction").css("width", "100%");
+
+                $("p").css("font-size", "2.5vmin");
+                $("ul").css("font-size", "2.5vmin");
+                $(".panel .legend p").css("font-size", "1.75vmin");
+
+                $(".html2pdf__page-break").each(function (index){
+                    debugger
+                    $(this).css({'height' : canvasWidthHeights[index].parentHeight, 'padding' : "20px"})
+                    $(this).find('.graph').css({'width': canvasWidthHeights[index].width, 'height' : canvasWidthHeights[index].height})
+                    $(this).find('.container-print').removeClass('container-print');
+                    if($(this).find('.graph-container').find('.graph-panel').length > 0){
+                        $(this).find('.graph-container').find('.graph-panel').removeClass("graph-panel")
+                        $(this).find('.graph-container').find('.graph-panel').children().css({'width': canvasWidthHeights[index].width, 'height' : canvasWidthHeights[index].height})
+
+                    }else{
+                        $(this).find('.graph-container').find('.graph-no-panel').removeClass("graph-no-panel")
+                    }
+                })
+            }).save();
+        });
+      }
+      $("#adaptiveContentMain").append(
+          '<div id="introductionText"></div><div id="adaptiveContent"></div>'
+      );
       $("#adaptiveContentMain").addClass("unlisted");
       $("#introductionText").html(
         x_currentPageXML.getAttribute("introduction")
