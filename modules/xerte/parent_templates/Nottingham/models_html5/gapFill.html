@@ -223,7 +223,7 @@
 						var dropDownSort = x_currentPageXML.getAttribute("dropDownSort");
 						if (dropDownSort != undefined && dropDownSort != "" && dropDownSort != "alphabetic") // must be random
 						    allAnswers.sort(
-						        function() { return 0.5 - Math.random(); }
+						        function() { return Math.random() * allAnswers.length; }
 						    );
 						else
 						    allAnswers.sort();
