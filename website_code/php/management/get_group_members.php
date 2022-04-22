@@ -47,7 +47,7 @@ function get_group_members($group_id){
 
     //get selected group name:
     $group = db_query_one("SELECT * FROM {$prefix}user_groups WHERE group_id=?", array($group_id));
-    echo "<h2>" . USER_GROUPS_MANAGEMENT_GROUP_MEMBERS . $group['group_name'] . ".</h2>";
+    echo "<h3>" . USER_GROUPS_MANAGEMENT_GROUP_MEMBERS . $group['group_name'] . "</h3>";
 
     $membercount = count($query_response);
     if (empty($query_response)){
@@ -58,9 +58,12 @@ function get_group_members($group_id){
         }else{
             echo "<p>" . str_replace("{n}", $membercount, USER_GROUPS_MANAGEMENT_MEMBERS_COUNT) . "</p>";
         }
+		
+		echo "<div class=\"indented\">";
+		
         foreach($query_response as $row) {
 
-            echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button><button style=\"float:right;\" type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:delete_member('" . $row['login_id'] . "', 'group')\">" . USER_GROUPS_MANAGEMENT_REMOVE_MEMBER . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
+            echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button> <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:delete_member('" . $row['login_id'] . "', 'group')\"><i class=\"fa fa-minus-circle\"></i> " . USER_GROUPS_MANAGEMENT_REMOVE_MEMBER . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
             echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
             echo "<p>" . USERS_FIRST . "<form><textarea id=\"firstname" . $row['login_id'] .  "\">" . $row['firstname'] . "</textarea></form></p>";
@@ -69,6 +72,8 @@ function get_group_members($group_id){
             echo "</div>";
 
         }
+		
+		echo "</div>";
     }
 }
 
