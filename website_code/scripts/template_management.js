@@ -199,8 +199,8 @@ function edit_window(admin, edit, location) {
 
     if (!admin) {
 
-        var tree = $.jstree.reference("#workspace"),
-            ids = tree.get_selected();
+        var jstree = $.jstree.reference("#workspace"),
+            ids = jstree.get_selected();
         if (ids.length == 0)
             return;
 
@@ -249,7 +249,24 @@ function edit_window(admin, edit, location) {
 
 
                         if (location != null) {
-                            var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
+                            if (location === "_blank") {
+                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
+                            }
+                            else
+                            {
+                                var NewEditWindow = $.featherlight(
+                                    {
+                                        iframe: site_url + url_return(edit, node.xot_id),
+                                        iframeWidth: '95%',
+                                        iframeHeight: '95%',
+                                        beforeClose: function(){
+                                            this.$content[0].contentWindow.WIZARD_EDITOR.tree.savepreviewasync(false);
+                                            //tree.savepreviewasync(false);
+                                            // Fake path, only id is used
+                                            edit_window_close(node.xot_id + "-");
+                                        }
+                                    });
+                            }
                         }
                         else {
                             if (size.length == 1) {
@@ -279,7 +296,8 @@ function edit_window(admin, edit, location) {
                         NewEditWindow.ajax_handle = xmlHttp;
                         self.last_reference = self;
 
-                        NewEditWindow.focus();
+                        if (!NewEditWindow.iframe)
+                            NewEditWindow.focus();
 
                         edit_window_open.push({
                             id: node.id,

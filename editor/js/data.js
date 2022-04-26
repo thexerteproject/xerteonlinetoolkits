@@ -111,3 +111,5 @@ var EDITOR = (function ($, parent) {
     return parent;
 
 })(jQuery, EDITOR || {});
+
+window.WIZARD_EDITOR=EDITOR;
