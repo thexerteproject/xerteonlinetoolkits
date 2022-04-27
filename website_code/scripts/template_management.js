@@ -260,10 +260,12 @@ function edit_window(admin, edit, location) {
                                         iframeWidth: '95%',
                                         iframeHeight: '95%',
                                         beforeClose: function(){
-                                            this.$content[0].contentWindow.WIZARD_EDITOR.tree.savepreviewasync(false);
-                                            //tree.savepreviewasync(false);
-                                            // Fake path, only id is used
-                                            edit_window_close(node.xot_id + "-");
+                                            if (typeof this.$content[0].contentWindow.WIZARD_EDITOR != "undefined") {
+                                                this.$content[0].contentWindow.WIZARD_EDITOR.tree.savepreviewasync(false);
+                                                //tree.savepreviewasync(false);
+                                                // Fake path, only id is used
+                                                edit_window_close(node.xot_id + "-");
+                                            }
                                         }
                                     });
                             }
