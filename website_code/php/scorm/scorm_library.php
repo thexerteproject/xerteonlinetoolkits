@@ -1,5 +1,4 @@
 <?PHP
-<?PHP
 
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
