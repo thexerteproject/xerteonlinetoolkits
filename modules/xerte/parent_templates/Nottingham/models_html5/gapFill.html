@@ -198,7 +198,7 @@
 			
             for (var i=0; i<passageArray.length; i++) {
 				if (markedWord == false) {
-					gapFillStr += '<span tabindex="0">' + passageArray[i] + '</span>';
+					gapFillStr += '<span class="staticTxt" tabindex="0">' + passageArray[i] + '</span>';
 					markedWord = true;
 				} else {
 					decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
@@ -264,6 +264,17 @@
 			}
 			
 			var $gapFillTxt = $('<div>' + gapFillStr + '</div>').appendTo($targetHolder);
+			
+			// remove any staticTxt tags that have other staticTxt tags in them - in FF these can make you get stuck in loop when tabbing and unable to reach draggable labels
+			// these tags are added when layout uses tables
+			$gapFillTxt.find('.staticTxt').each(function() {
+				var $parent = $(this).parents('.staticTxt');
+				if ($parent.length > 0) {
+					$parent[0].removeAttribute('tabindex');
+					$parent.removeClass('staticTxt');
+				}
+			});
+			
 			$gapFillTxt.find("span.target, input").each(function(i) {
 				var $this = $(this);
 				if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {

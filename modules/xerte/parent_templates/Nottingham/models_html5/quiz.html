@@ -32,7 +32,6 @@
 
 			// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#feedbackGroup").find('.feedbackBlock').html("");
 			if ($(x_currentPageXML).children().length > 0) {
 				this.startQs();
 			}
@@ -43,7 +42,7 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $panel = $("#pageContents .qPanel");
+			var $panel = $("#pageContents #mainPanel");
 			if (x_browserInfo.mobile == false) {
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
@@ -77,7 +76,7 @@
 				}
 			}
 			
-			$("#qTxt").width($panel.width());
+			//$("#qTxt").width($panel.width());
 		};
 
 
@@ -94,6 +93,8 @@
 
 
 		this.startQs = function() {
+			$("#feedbackGroup").find('.feedbackBlock').html("");
+			
 			// if language attributes aren't in xml will have to use english fall back
 			this.qNoTxt = x_currentPageXML.getAttribute("quesCount");
 			if (this.qNoTxt == undefined) {
@@ -395,7 +396,7 @@
 					feedbackOrder = thisQ.getAttribute('feedbackPos') == undefined ? 'GAC' : thisQ.getAttribute('feedbackPos');
 
 			feedbackOrder = [...feedbackOrder];
-			debugger
+			
             if(this.showfeedback){
             	if(thisQ.getAttribute("type") != "Multiple Answer"){
 					for (var i=0; i<feedbackDiv.length; i++) {
@@ -427,7 +428,6 @@
 						if (feedbackOrder[p] == 'G') {
 							thisFeedback = thisQ.getAttribute('feedback');
 						} else if (feedbackOrder[p] == 'A') {
-							debugger
 							var selectedInput = $("#optionHolder input:checked")
 							var multipleFeedback = []
 							var feedback = "";
@@ -468,7 +468,7 @@
                 success: correct,
                 score: correct ? 100.0 : 0.0
             };
-            debugger
+            
             XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
             quiz.myProgress.splice(quiz.currentQ, 1, correct);
 

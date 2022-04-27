@@ -44,6 +44,14 @@
 		height:				100%;
 		overflow:			hidden;
 		white-space:		nowrap;
+		/* hide scrollbar IE, Edge, FF */
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	/* hide scrollbar Chrome, Safari, Opera */
+	#thumbHolder::-webkit-scrollbar {
+		display: none;
 	}
 	
 	#thumbHolder .thumbBox {

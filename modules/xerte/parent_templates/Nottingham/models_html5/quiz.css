@@ -67,6 +67,10 @@
 	#feedback .audioHolder {
 		margin:	0.5em 0 1em 0;
 	}
+	
+	#feedbackGroup {
+		clear: both;
+	}
 
 	#feedbackGroup h3 {
 		border-top: 1px solid #ccc;
@@ -79,4 +83,8 @@
 
 	#feedbackGroup .feedbackBlock {
 		margin-bottom: 0.5em;
+	}
+
+	#mainPanel {
+		overflow: auto;
 	}

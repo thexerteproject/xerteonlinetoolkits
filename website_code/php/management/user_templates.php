@@ -20,13 +20,17 @@
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/user_templates.inc");
+_load_language_file("/management.inc");
 
 require("../user_library.php");
 require("../url_library.php");
 require("management_library.php");
 
 if(is_user_admin()){
-
+	
+	echo "<h2>" . MANAGEMENT_MENUBAR_TEMPLATES . "</h2>";
+	echo "<div class=\"admin_block\">";
+	
     $database_id = database_connect("templates list connected","template list failed");
 
     $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails order by surname,firstname,username" ;
@@ -50,6 +54,7 @@ if(is_user_admin()){
 
     echo "<div id=\"transferownership\" style=\"display:none;\"></div>";
     echo "<div id=\"usertemplatelist\"></div>";
+    echo "</div>";
 
 }else{
 

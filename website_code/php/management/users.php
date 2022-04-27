@@ -20,6 +20,7 @@
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/users.inc");
+_load_language_file("/management.inc");
 
 require("../user_library.php");
 require("management_library.php");
@@ -35,6 +36,9 @@ if(is_user_admin()){
         $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
+	
+	echo "<h2>" . MANAGEMENT_MENUBAR_USERS . "</h2>";
+	echo "<div class=\"admin_block\">";
 
     if ($authmech->check() && $authmech->canManageUser($jsscript))
     {
@@ -62,6 +66,8 @@ if(is_user_admin()){
         echo "</div>";
 
     }
+	
+	echo "</div>";
 
 }else{
 

@@ -76,7 +76,7 @@ if(is_user_admin()){
 
     _debug("Query returned " . count($query_templates_response) . "records");
 
-    echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ") </p><br /><br /></div><div class=\"template_details\" style=\"display:block;\" id=\"" . $row['username']  . "_child\">";
+    echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ") </p></div><div class=\"template_details\" style=\"display:block;\" id=\"" . $row['username']  . "_child\">";
 
     if(count($query_templates_response) > 0){
         // This user has templates, loop over them

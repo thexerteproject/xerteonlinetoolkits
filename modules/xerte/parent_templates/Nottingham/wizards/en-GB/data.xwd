@@ -44,7 +44,7 @@
 	<styles optional="true" type="script" height="200" label="Styles"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecatedv="This property is deprecated as the resume functionality is now available automatically"/>
+    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated as the resume functionality is now available automatically"/>
     <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	<forcePage1 type="CheckBox" label="Force First Page" defaultValue="true" optional="true" tooltip="Force projects to open on first page even if the URL contains specific page information. Useful when creating projects, such as escape rooms, where you don't want users to be able to jump ahead."/>
 	
@@ -64,7 +64,7 @@
 		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
 	</toc>
 	
-	<mediaFile type="group" label="Media" optional="true">
+	<mediaFile type="group" label="Media" optional="true" deprecated="This property is deprecated and no longer supported">
 		<media optional="true" type="media" label="File" defaultValue="Select an Audio or Video File"/>
 		<mediaImage optional="true" type="media" label="Image (Audio only)" defaultValue="Select an Image"/>
 		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
@@ -103,26 +103,43 @@
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
         <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed to count as completed"/>
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong"/>
-       	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
-		<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button"/>
+       	<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button"/>
 		<restartOptions label="Restart session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" tooltip="If restart xAPI information is available, should that be used to restart tehe session?"/>
 	</tracking>
 
 	<meta type="group" label="Meta data" optional="true">
-	   	<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
-	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
-		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue=""/>
-        <metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
-        <metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true"/>
+		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
+		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
+		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
+		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
+		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used."/>
+		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
+		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata"/>
     </meta>
+	
+	<twittercard type="group" label="Twitter card" optional="true">
+		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter."/>
+		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
+		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
+		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
+		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
+		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
+		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
+		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
+	</twittercard>
 
     <newNodes>
-    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility">Enter text for the page here</QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" language="English" text="Enter text for the page here" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" panelWidth="Medium" tip="Enter a Description for Accessibility" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Description for Accessibility" imagesize="auto">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
+    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility" imagesize="large">Enter text for the page here</QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" language="English" text="Enter text for the page here" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" panelWidth="Medium" tip="Enter a Description for Accessibility" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Description for Accessibility" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
 	  home="false" back="false" next="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
-	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1"
+	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><chooseImage><![CDATA[<chooseImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Click Explore" align="Left" attempts="1"
+  	  nextTxt="Next"
+	  priorTxt="Previous"
+	  />]]></chooseImage><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
+	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true"
 	  acrossLabel="Across"
 	  downLabel="Down"
 	  checkLabel="Submit"
@@ -153,16 +170,33 @@
 	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
-	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" answers="true" align="Left" attempts="1"
   	  warning="You have not selected anything"
-	  scoreTxt="You have /r answer(s) right and /w wrong"
-	  again="Try again, you have /a attempt(s) left"
-	  allGood="You have selected all correct answers"
-	  allWrong="You have not selected any of the correct answers"
-	  />]]></hotSpotQuestion><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left" attempts = "1"
+	  scoreTxt="You have /r answer(s) right (out of /c) and /w wrong."
+	  again="Try again, you have /a attempt(s) remaining."
+	  allGood="Well done, you have selected all of the correct answers."
+	  allGood2="You have not selected all of the /c correct answers."
+	  allWrong="You have not selected any of the /c correct answers."
+	  btnLabel="Submit"
+	  />]]></hotSpotQuestion><hotSpotSumma><![CDATA[<hotSpotSumma name="hotSpotSumma" text="Pagina met fotos waar je om moet kliken en score bijkomt" url="Plaats een foto" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left" attempts = "1"
   	  nextTxt="Next"
 	  priorTxt="Previous"
-	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" tip="Enter a Description for Accessibility"
+	  />]]></hotSpotSumma><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left"
+  	  nextTxt="Next"
+	  priorTxt="Previous"
+	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageSequence><![CDATA[<imageSequence name="Enter Page Title" text="Enter text for the page here" align="left" imgSize="auto"
+	  load="Loading image..." 
+	  load2="Loading images... {n}% completed" 
+	  resetLabel="Reset" 
+	  playLabel="Play" 
+	  pauseLabel="Pause" 
+	  infoLabel="Info" 
+	  magnifyLabel="Magnifier" 
+	  backLabel="Scroll back" 
+	  fwdLabel="Scroll forward" 
+	  viewLabel="View" 
+	  caseLabel="Case"
+	  />]]></imageSequence><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" imagesize="medium" tip="Enter a Description for Accessibility"
 	  moveTip="Move"
 	  zoomInTip="Zoom In"
 	  zoomOutTip="Zoom Out"
@@ -174,7 +208,7 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here" panelWidth="Large"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
+	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here" panelWidth="Large" openFirst="true"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  checkBtnTxt="Check" />]]></mcq><media360><![CDATA[<media360 name="Enter Page Title" text="Enter text for the page here" size="large" position="right"
@@ -224,7 +258,7 @@
       PersonalAvgLabel = "Avg. of your attempts"
       PersonalLastLabel = "Your last attempt"
       AvgLabel = "Avg. of all attempts"
-      ></showGraph>]]></showGraph><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><stopTracking><![CDATA[<stopTracking name="Enter Page Title" textIntro="Instruction" buttonLbl="Stop and finish tracking of this session" textAfter="You can now close the window">Enter text for the page here</stopTracking>]]></stopTracking><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" panelWidth="Large"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false" align="Left" introduction="Enter text for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Submit"  textRight="Your answer is correct" textWrong="Your answer is incorrect" FurtherClarificationLabel="Feedback" answerLabel="Answer" attemptLabel="Attempts remaining" correctLabel="Correct Answer" textIncomplete="You have not attempted the question"/>]]></textCorrection><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Description for Accessibility" transcriptbuttonlabel="Transcript">Enter text for the page here</textGraphics>]]></textGraphics><textHighlight><![CDATA[<textHighlight name="Enter Page Title" 
+      ></showGraph>]]></showGraph><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><stopTracking><![CDATA[<stopTracking name="Enter Page Title" textIntro="Instruction" buttonLbl="Stop and finish tracking of this session" textAfter="You can now close the window">Enter text for the page here</stopTracking>]]></stopTracking><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" panelWidth="Large"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false" align="Left" introduction="Enter text for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" disableAnswers="true" checkBtn="Submit"  textRight="Your answer is correct" textWrong="Your answer is incorrect" FurtherClarificationLabel="Feedback" answerLabel="Answer" attemptLabel="Attempts remaining" correctLabel="Correct Answer" textIncomplete="You have not attempted the question"/>]]></textCorrection><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Description for Accessibility" transcriptbuttonlabel="Transcript">Enter text for the page here</textGraphics>]]></textGraphics><textHighlight><![CDATA[<textHighlight name="Enter Page Title" 
 		text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" textPos="top" textTitle="Introduction" 
 		initialText="&lt;p&gt;Enter initial text here&lt;/p&gt;" initialPos="panelA" initialTitle="Initial Text" 
 		suggestedText="&lt;p&gt;Enter suggested answer text here&lt;/p&gt;" suggestedPos="panelB" suggestedTitle="Suggested Text" 
@@ -260,6 +294,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="URL" type="TextInput"/>
     <tip label="QR Code Description" type="TextInput"/>
+	<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" type="ComboBox" width="100" mandatory="true"/>
 
     <sound label="Sound" type="media" optional="true"/>
 	
@@ -273,7 +308,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -341,7 +376,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -444,7 +479,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -547,7 +582,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -678,16 +713,16 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
-	<align label="Text Align" type="ComboBox" options="Left,Bottom" data="Left,Top" defaultValue="Left" width="100"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" mandatory="true" width="100"/>
+	<align label="Text Align" type="ComboBox" options="Left,Right,Bottom" data="Left,Right,Top" defaultValue="Left" width="100"/>
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
 		<tip label="Description" type="TextInput"/>
+		<panelWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" mandatory="true" width="100"/>
 	</image>
 	
 	<hs type="group" label="Highlight">
-		<shape label="Type" type="ComboBox" options="Line,Oval,Rectangle,Arrow" data="None,Oval,Rectangle,Arrow" defaultValue="None" width="120"/>
+		<shape label="Type" type="ComboBox" options="Line,Oval,Outline,Arrow" data="None,Oval,Rectangle,Arrow" defaultValue="Rectangle" width="120"/>
 		<colour label="Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
 	</hs>
 	
@@ -695,9 +730,9 @@
 
     <newNodes>
       <hotspotGroup><![CDATA[<hotspotGroup name="Enter Hotspot Group Title Here" text="Description for the hotspot"/>]]></hotspotGroup>
-      <hotspot><![CDATA[<hotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
-
+	
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -706,7 +741,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -755,14 +790,18 @@
     <text label="Text" type="TextArea" height="250"/>
 
     <newNodes>
-      <hotspot><![CDATA[<hotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 
   </hotspotGroup><hotspot type="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </hotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" remove="true">
+  </hotspot><flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="250"/>
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
+  </flexhotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <sound label="Sound" type="Media"/>
@@ -781,7 +820,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -844,11 +883,16 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<imagesize label="Size" options="Auto,Full screen" data="auto,full screen" defaultValue="auto" type="ComboBox" width="100"/>
+		<imagesize label="Size" options="Small,Medium,Large,Fixed,Full screen" data="small,medium,large,auto,full screen" type="ComboBox" width="100"/>
 		<tip label="Description" type="TextInput"/>
 	</image>
 	
-	<magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+	<magnifierGroup type="group" label="Image Magnification" optional="true">
+		<magnifier label="Magnifier" type="checkBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+		<magnifierSize label="Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
+		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
+	</magnifierGroup>
+	
     <sound label="Sound" type="media" optional="true" tooltip="Add an audio player below the image"/>
 	
 	<linkInfo type="group" label="Link" optional="true">
@@ -869,7 +913,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -931,7 +975,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -994,7 +1038,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1057,7 +1101,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1119,7 +1163,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1192,7 +1236,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1252,7 +1296,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1319,7 +1363,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1394,7 +1438,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1441,7 +1485,102 @@
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
-  </series><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#columnpage">
+  </series><chooseImage menu="Interactivity" menuItem="Choose Image" hint="An interaction where you have to choose the correct and incorrect regions of an image." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+	
+	<image type="group" label="Image">
+		<url label="File" type="media"/>
+		<tip label="Description" type="TextInput"/>
+	</image>
+    
+    <hsAppearance type="group" label="Hotspot highlight appearance" optional="true" tooltip="Set colours of hotspots">
+        <hicol label="Stroke colour" type="ColourPicker" optional="true" defaultValue="0xFFFFFF" tooltip="The colour of the edges of the hotspot"/>
+        <hs_strokeOpacity label="Stroke opacity" type="TextInput" optional="true" defaultValue="0" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
+        <hs_strokeWidth label="Stroke width" type="TextInput" optional="true" defaultValue="0" tooltip="Width of the edges of the hotspot"/>
+        <hs_fill label="Fill hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot"/>
+        <hs_fillColor label="Fill colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
+        <hs_fillOpacity label="Fill opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
+	</hsAppearance>
+    <attempts label="Amount of attempts" type="TextInput" defaultValue="1"/>
+	
+    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
+
+  <button menuItem="Button" icon="icBulletBlue" remove="true">
+    <name label="Button Label" type="TextInput" wysiwyg="true"/>
+	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>	
+    <text label="Feedback" type="TextArea" height="250"/>
+  </button>
+
+    <newNodes>
+	  <chotspot><![CDATA[<chotspot name="Hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></chotspot>
+    </newNodes>
+
+  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
+	</passwordGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup></chooseImage><chotspot type="flexhotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <truth label="Hotspot Truth" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
+  </chotspot><hotspotquestion type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+
+    <name label="Label" type="TextInput" wysiwyg="true"/>
+    <question label="Question" type="TextArea" height="250"/>
+    <feedback label="Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
+    <hint label="Hint" type="TextArea" wysiwyg="true" optional="true"/>
+
+  </hotspotquestion><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#columnpage">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 	
@@ -1460,7 +1599,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1551,7 +1690,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1676,7 +1815,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1733,9 +1872,13 @@
   </cMenuListedPage><crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword puzzle where clues are given to each word or phrase that must be completed in the grid." thumb="thumbs/crossword.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#crossword" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"/>
+	<capitalise label="Force Capitalisation" type="CheckBox" defaultValue="false" mandatory="true" tooltip="Force the letters entered in the crossword to appear capitalised"/>
 	
-	<text label="Page Text" type="TextArea" height="100" optional="true"/>
-	<feedback label="Feedback" type="TextArea" wysiwyg="true" height="100" optional="true"/>
+	<textGroup type="group" label="Page Text" optional="true">
+		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="100" optional="true"/>
+		<textPos label="Position" options="Top,Above Clues" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
+	</textGroup>
+	<feedback label="Feedback" type="TextArea" defaultValue="Enter feedback text here" wysiwyg="true" height="100" optional="true"/>
     <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
 	
 	<acrossLabel label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
@@ -1745,7 +1888,7 @@
 	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
 	
     <newNodes>
-      <wordAndHint><![CDATA[<wordAndHint name="Word" text="The hint for your word" wordAnswer="The word you want to have in the crossword"/>]]></wordAndHint>
+      <wordAndHint><![CDATA[<wordAndHint name="Label" text="Enter clue here" wordAnswer="Enter word here"/>]]></wordAndHint>
     </newNodes>
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -1755,7 +1898,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1799,9 +1942,9 @@
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup></crossword><wordAndHint menuItem="Word" icon="icBullet">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Word" wysiwyg="false"/>
-    <wordAnswer label="Word" type="TextInput" wysiwyg="false"/>
-    <text label="Hint" type="TextInput" height="100"/>
+	<wordAnswer label="Word" type="TextInput" wysiwyg="false" tooltip="The word (answer) that will appear in the crossword"/>
+    <text label="Hint" type="TextArea" height="50" tooltip="The clue for the word"/>
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Label" wysiwyg="false"/>
   </wordAndHint><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true" deprecated="This page is now deprecated as Flash (used by the diagram editor) will be unavailable after 2020. Existing pages will continue to work after this date but will not be editable. Try the Hotspot Image, Annotated Diagram, Drag &amp; Drop Labelling and Hotspot Image Connector pages for similar functionality.">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -1855,7 +1998,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -1940,7 +2083,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2071,7 +2214,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2141,7 +2284,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2227,7 +2370,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2306,7 +2449,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2503,7 +2646,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2565,7 +2708,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2641,7 +2784,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2714,7 +2857,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2778,7 +2921,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2870,7 +3013,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -2928,7 +3071,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3008,7 +3151,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3069,7 +3212,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3117,15 +3260,15 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	<textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
 		<tip label="Description" type="TextInput"/>
+		<textWidth label="Size" options="Full Screen,Large,Medium,Small" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200" tooltip="The page text will be hidden when the image is set to full screen"/>
 	</image>
 
-    <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
-    <answers label="Show Answers" type="CheckBox" mandatory="true" defaultValue="false"/>
+    <answers label="Show Answers" type="CheckBox" mandatory="true" defaultValue="false" tooltip="Show the correct answers after the maximum number of attempts have been made"/>
+	
     <hsAppearance type="group" label="Hotspot Appearance" optional="true">
         <hicol label="Stroke Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the hotspot border"/>
         <hs_strokeOpacity label="Stroke Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the hotspot border"/>
@@ -3139,12 +3282,13 @@
     <generalFeedback label="Feedback" type="TextArea" wysiwyg="true"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
-    <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/r (right) and /w (wrong) are where the score are placed "/>
-    <warning label="Warning Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
-    <allGood label="All answers correct Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <allWrong label="All answers wrong Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-
+    <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="where /c is the total number of correct answers available, /r is the number of right selections made and /w is the number of wrong selections made"/>
+    <warning label="Warning Label" type="TextInput" wysiwyg="true" language="true"/>
+    <again label="Try Again Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /a is the number of attempts remaining"/>
+    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" language="true"/>
+    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /c is the total number of correct answers available."/>
+	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
+	<btnLabel label="Submit Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
     <newNodes>
 	  <QHotSpot><![CDATA[<QHotSpot name="Hotspot" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>
@@ -3158,7 +3302,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3206,7 +3350,7 @@
     <text label="Feedback" type="TextArea" height="250"/>
     <truth label="Correct Answer" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </QHotSpot><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" remove="true">
+  </QHotSpot><hotSpotSumma menu="Interactivity" menuItem="SummaHotSpot" hint="Een test hotspot van Summa" icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -3234,7 +3378,7 @@
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 
     <newNodes>
-	  <flexhotspot><![CDATA[<flexhotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
+	  <SummaHotSpot><![CDATA[<SummaHotSpot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></SummaHotSpot>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -3245,7 +3389,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3288,18 +3432,93 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></hotspotImage><flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+	</lightboxGroup></hotSpotSumma><SummaHotSpot type="flexhotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
+    <truth label="Hotspot Truth" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </flexhotspot><hotspotquestion type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+  </SummaHotSpot><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" remove="true">
 
-    <name label="Label" type="TextInput" wysiwyg="true"/>
-    <question label="Question" type="TextArea" height="250"/>
-    <feedback label="Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
-    <hint label="Hint" type="TextArea" wysiwyg="true" optional="true"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+	
+	<image type="group" label="Image">
+		<url label="File" type="media"/>
+		<tip label="Description" type="TextInput"/>
+	</image>
+    
+    <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
+    <hsAppearance type="group" label="Hotspot Highlight Appearance" optional="true" tooltip="Set colours of hotspots">
+        <hicol label="Stroke Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
+        <hs_strokeOpacity label="Stroke Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
+        <hs_strokeWidth label="Stroke Width" type="TextInput" optional="true" defaultValue="2" tooltip="Width of the edges of the hotspot"/>
+        <hs_fill label="Fill Hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot"/>
+        <hs_fillColor label="Fill Colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
+        <hs_fillOpacity label="Fill Opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
+        <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
+	</hsAppearance>
+	<interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" tooltip="Include forward and back buttons to highlight the hotspots in order (Show Me) or hotspots must be found by exploring the image itself (Click Explore)" width="100"/>
+	
+    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 
-  </hotspotquestion><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
+    <newNodes>
+	  <flexhotspot><![CDATA[<flexhotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
+    </newNodes>
+
+  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
+	</passwordGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup></hotspotImage><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="ISpring Movie" type="Media"/>
@@ -3313,7 +3532,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3356,13 +3575,147 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageviewer" label="Page Text" type="text" height="250" remove="true">
+	</lightboxGroup></iSpring><imageSequence menu="Media" menuItem="Image Sequence" hint="A page which animates a series of images in a sequence through scrolling. Image series can be displayed on their own or grouped with others into cases." icon="icImages" thumb="thumbs/imageSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageSequence" remove="true" deepLink="true">
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+	<text label="Page Text" type="TextArea" height="300" width="380"/>
+    <align label="Image Position" options="Left,Right" type="ComboBox" data="left,right" width="100"/>
+	<imgSize label="Image Size" options="Auto,Full Screen" type="ComboBox" data="auto,full" width="100" tooltip="When set to Full Screen, the images will show as large as possible - even if this means showing them larger than the original image size."/>
+	
+	<load label="Loading Image" type="TextInput" wysiwyg="true" language="true"/>
+	<load2 label="Loading Series" type="TextInput" wysiwyg="true" language="true"/>
+	<resetLabel label="Reset Label" type="TextInput" language="true"/>
+	<playLabel label="Play Label" type="TextInput" language="true"/>
+	<pauseLabel label="Pause Label" type="TextInput" language="true"/>
+	<infoLabel label="Info Label" type="TextInput" language="true"/>
+	<magnifyLabel label="Magnify Label" type="TextInput" language="true"/>
+	<backLabel label="Back Label" type="TextInput" language="true"/>
+	<fwdLabel label="Forward Label" type="TextInput" language="true"/>
+	<viewLabel label="View Label" type="TextInput" language="true"/>
+	<caseLabel label="Case Label" type="TextInput" language="true"/>
+	
+	<controlsGroup type="group" label="Control Buttons" optional="true" tooltip="Disable/enable the buttons that appear below each series or image">
+		
+		<reset label="Reset" type="checkbox" defaultValue="true" optional="true" tooltip="A button to reset to the first image in the series"/>
+		
+		<play label="Play" type="checkbox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A button to play the series"/>
+		<playSpeed label="Play Speed" type="NumericStepper" min="0.01" max="1" step="0.01" defaultValue="0.1" condition="play!='false'" optional="true" tooltip="Speed of the play animation"/>
+
+		<magnifier label="Magnifier" type="checkbox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A button to show the magnifier which zooms an area as the mouse is moved across the image"/>
+		<magnifierSize label="Magnifier Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
+		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
+		
+	</controlsGroup>
+	
+	<thumbH label="Thumbnail Bar Size" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" width="200" optional="true" tooltip="The size of the thumbnail images on the menu bar"/>
+	
+	<viewGroup type="group" label="View Menu" optional="true" tooltip="When a case contains more than one series or image, the view menu allows you to diplay more than one on screen at a time.">
+		<view label="Show" type="checkbox" defaultValue="true" optional="true"/>
+		<viewNum label="Max" type="NumericStepper" min="2" max="4" step="1" defaultValue="4" optional="true"/>
+	</viewGroup>
+	
+    <newNodes>
+      <case><![CDATA[<imgGroup name="Case Name" txt="Enter text here"></imgGroup>]]></case>
+	</newNodes>
+
+  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
+	</passwordGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup></imageSequence><case menuItem="Case" icon="icFolder" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<caseID label="Case ID" type="TextInput" optional="true" tooltip="Link directly to this case by giving it a unique ID"/>
+	
+	<newNodes>
+	  <imgSeries><![CDATA[<imgSeries name="Series Name" txt="Enter text here" src="Select an Image" tooltip="Enter a Description for Accessibility" firstImg="Select an Image" lastImg="Select an Image" cycleImages="false"></imgSeries>]]></imgSeries>	  
+	  <singleImg><![CDATA[<singleImg name="Image Name" txt="Enter text here" src="Select an Image" tooltip="Enter a Description for Accessibility"></singleImg>]]></singleImg>	  
+	</newNodes>
+	
+  </case><imgSeries menuItem="Series" icon="icPictures" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<thumbGroup type="group" label="Thumbnail Image" tooltip="The image that appears on the thumbnail bar menu if this case contains more than one series or image">
+		<src label="File" type="media"/>
+		<tooltip label="Description" type="TextInput"/>
+	</thumbGroup>
+	
+	<imgGroup type="group" label="Series Images" info="File names of images within the series must be identical, except for a number at the end which determines the image's position within the series.&lt;/br&gt;&lt;/br&gt;For example, in a series of 50 images the images could be called img1.jpg, img2.jpg, img3.jpg... img50.jpg.&lt;/br&gt;&lt;/br&gt;All images for the series must be in the same folder.">
+		<firstImg label="First Image" type="media" tooltip="The first image in the series"/>
+		<lastImg label="Last Image" type="media" mandatory="true" tooltip="The last image in the series"/>
+		<cycleImages label="Loop Images" type="checkBox" defaultValue="false" tooltip="When checked, the series will play in a loop instead of stopping at the last image"/>
+	</imgGroup>
+	
+	<initImg label="Initial Image" type="media" optional="true" tooltip="The first image shown when the series has loaded. By default this will be the first image but can can be changed to any image within the series with this optional property"/>
+	<seriesID label="Series ID" type="TextInput" optional="true" tooltip="Link directly to this series by giving it a unique ID"/>
+	
+  </imgSeries><singleImg menuItem="Single Image" icon="icPicture" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<thumbGroup type="group" label="Image">
+		<src label="File" type="media"/>
+		<tooltip label="Description" type="TextInput"/>
+	</thumbGroup>
+	
+	<seriesID label="Image ID" type="TextInput" optional="true" tooltip="Link directly to this image by giving it a unique ID"/>
+	
+  </singleImg><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageviewer" label="Page Text" type="text" height="250" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
+		<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" mandatory="true" type="ComboBox" width="100"/>
 		<tip label="Description" type="TextInput"/>
 	</image>
 	
@@ -3381,7 +3734,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3490,7 +3843,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3540,7 +3893,7 @@
     <text label="Description" type="TextArea" height="150"/>
 	<bgColour label="Highlight Colour" type="ColourPicker"/>
 
-  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
+  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		
@@ -3561,7 +3914,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3604,7 +3957,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></interactiveVideo><ivMediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+	</lightboxGroup></interactiveVideo><ivMediaPanel menuItem="Media Panel" icon="icFilm" remove="false" duplicate="false">
 
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		
@@ -3810,7 +4163,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3889,7 +4242,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -3972,7 +4325,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4039,7 +4392,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4092,6 +4445,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100"/>
+	<openFirst label="Show First Item" type="Checkbox" defaultValue="false" mandatory="true" tooltip="Show first item when page is first viewed"/>
+	
 	<hicol label="Text colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the text"/>
     <hicolback label="Background Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The background colour of the button"/>
     <hicolHover label="Hover Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the button when the mouse is hovering over the button"/>
@@ -4108,7 +4463,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4180,7 +4535,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4245,7 +4600,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4330,7 +4685,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4415,7 +4770,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4463,11 +4818,25 @@
 	<name label="Title" type="TextInput" wysiwyg="true"/>
   
 	<title label="Show Title" type="CheckBox" defaultValue="false"/>
+	
+	
   
-    <media type="group" label="Image">
-		<file label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+    <media type="group" label="Image" condition="cubemapcb!='true'">
+		<file label="File" type="media" condition="cubemapcb!='true'"/>
+		<tip label="Description" type="TextInput" condition="cubemapcb!='true'"/>
 	</media>
+	
+	<cubemapimages type="group" label="Cubemap Images" optional="true" tooltip="Upload and use 6 cube faces instead of a single image. All 6 faces are required. When including multiple Cubemap scenes be careful to use unique image names e.g. image1234_front.jpg, image1235_front.jpg etc or use subfolders for each Cubemap scene.">
+	<cubemapcb label="Cubemap" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
+		<cubemaptip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
+		<front label="Front" type="media" condition="cubemapcb!='false'"/>
+		<right label="Right" type="media" condition="cubemapcb!='false'"/>
+		<back label="Back" type="media" condition="cubemapcb!='false'"/>
+		<left label="Left" type="media" condition="cubemapcb!='false'"/>
+		<top label="Top" type="media" condition="cubemapcb!='false'"/>
+		<bottom label="Bottom" type="media" condition="cubemapcb!='false'"/>
+	</cubemapimages>
+
 	
 	<compass label="Compass" type="CheckBox" defaultValue="true" optional="true"/>
 	
@@ -4587,7 +4956,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -4924,7 +5293,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5015,7 +5384,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5075,7 +5444,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5140,7 +5509,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5212,7 +5581,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5255,7 +5624,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a series of sub-pages. Layout options include accordion, button, columns, slideshow and tabs." icon="icPages" thumb="thumbs/tabNav.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-navigatortabs" remove="true" deepLink="true">
+	</lightboxGroup></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a series of sub-pages. Layout options include accordion, button, columns, slideshow and tabs." icon="icPages" thumb="thumbs/tabNav.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-navigator" remove="true" deepLink="true">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -5285,7 +5654,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5371,7 +5740,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5461,7 +5830,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5564,7 +5933,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5629,7 +5998,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5697,9 +6066,10 @@
 	</play>
 
     <newNodes>
-      <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
+	  <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
       <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound" mediaW="Medium" align="Right"></sound>]]></sound>
-      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="Enter a Description for Accessibility" mediaW="Medium" align="Right"></image>]]></image>	  
+      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="Enter a Description for Accessibility" mediaW="Medium" align="Right"></image>]]></image>
+	  <mpText><![CDATA[<mpText txt="Enter text for the page here" name="Text" src="Select an Image" tooltip="Enter a Description for Accessibility"></mpText>]]></mpText>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -5710,7 +6080,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5753,7 +6123,20 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></perspectives><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
+	</lightboxGroup></perspectives><mpText menuItem="Text" icon="icPageWhiteText" duplicate="true" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <txt label="Text" type="TextArea" height="300"/>
+	
+	<thumbnail type="group" label="Thumbnail" tooltip="The image that will appear on the thumbnail bar for this item.">
+		<src label="Image" type="media" defaultValue="Select an Image"/>
+		<tooltip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+	</thumbnail>
+	
+	<linkInfo type="group" label="Page Link" optional="true">
+		<pageLink label="Page" type="pageList" optional="true"/>
+		<pageLinkTxt label="Text" type="textInput" wysiwyg="true" defaultValue="Enter Text for Link" optional="true"/>
+	</linkInfo>
+  </mpText><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
 	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Right" width="100"/>
@@ -5860,7 +6243,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -5939,7 +6322,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6028,7 +6411,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6089,7 +6472,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6161,7 +6544,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6252,7 +6635,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6447,7 +6830,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6510,7 +6893,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6569,7 +6952,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6634,7 +7017,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6698,7 +7081,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6766,7 +7149,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6841,7 +7224,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6920,7 +7303,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -6972,14 +7355,17 @@
 			<copyText label="Use As Prompt" defaultValue="false" type="CheckBox" tooltip="Pre-populate answer box with incorrect text" mandatory="true"/>
 		</wrongTextGroup>
 		
-		<answer label="Correct Text" type="script" height="150"/>
+		<answerTextGroup type="group" label="Correct Text">
+			<answer label="Text" type="script" height="150"/>
+			<disableAnswers label="Show At End" type="CheckBox" mandatory="true" defaultValue="true" tooltip="Show the correct answer after the maximum number of attempts have been made (unless the correct answer has been submitted)."/>
+		</answerTextGroup>
+		
 		<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 		
 		<showFurtherClarification label="Show Feedback" defaultValue="false" type="CheckBox" optional="true" deprecated="This property is deprecated."/>
         <FurtherClarification label="Feedback" type="TextArea" height="50" defaultValue="Enter feedback here" optional="true"/>
 		<amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" tooltip="Attempts allowed before feedback is given"/>
-        <disableAnswers label="Disable Correct Answer" type="CheckBox" optional="true" tooltip="By default the correct answer will show when the maximum number of attempts have been made. Use this optional property to prevent showing the correct answer."/>
         <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
         <checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
@@ -6999,7 +7385,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7057,7 +7443,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7114,7 +7500,13 @@
 	<transcriptbuttonlabel label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
 	<caption label="Image Caption" type="textInput" defaultValue="Enter a Caption for the Image" optional="true" wysiwyg="true" tooltip="A caption displayed below the image"/>
-	<magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+	
+	<magnifierGroup type="group" label="Image Magnification" optional="true">
+		<magnifier label="Magnifier" type="checkBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+		<magnifierSize label="Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
+		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
+	</magnifierGroup>
+	
 	<sound label="Sound" type="media" optional="true" tooltip="Add an audio player below the image"/>
     <transcript label="Transcript" type="textArea" height="100" optional="true" tooltip="Use in conjunction with the 'sound' optional property"/>    
     <hidePanel label="Hide Panel" type="checkBox" defaultValue="false" optional="true"/>
@@ -7127,7 +7519,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7241,7 +7633,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7318,7 +7710,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7388,7 +7780,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7462,7 +7854,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7527,7 +7919,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7614,7 +8006,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7694,7 +8086,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7774,7 +8166,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7841,7 +8233,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7912,7 +8304,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -7983,7 +8375,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -8056,7 +8448,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -8115,7 +8507,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -8177,7 +8569,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -8238,7 +8630,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>

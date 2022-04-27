@@ -175,19 +175,25 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * Build CategoryList
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories order by category_name asc";
     $categories = db_query($sql);
+
+    /**
+     * Build EducationList
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}educationlevel order by educationlevel_name asc";
+    $educationlevels = db_query($sql);
 
     /**
      * Build Grouping List
      */
-    $sql = "select * from `{$xerte_toolkits_site->database_table_prefix}grouping`";
+    $sql = "select * from `{$xerte_toolkits_site->database_table_prefix}grouping` order by grouping_name asc";
     $grouping = db_query($sql);
 
     /**
      * Build Course List
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}course";
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}course order by course_name asc";
     $course = db_query($sql);
 
 
@@ -395,6 +401,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "category_list=" . json_encode($categories) . ";\n";
+    echo "educationlevel_list=" . json_encode($educationlevels) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "course_list=" . json_encode($course) . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table

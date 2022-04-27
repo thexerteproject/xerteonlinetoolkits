@@ -73,6 +73,10 @@
     padding-left: 0;
 }
 
+#Across, #Down {
+	padding-left: .3em;
+}
+
 #x_pageDiv table td, #x_pageDiv table th{
     padding: 0;
 }
@@ -111,13 +115,18 @@
      font-size: 15px;
      font-weight: bold;
  }
+ 
+ #crossword.upper input {
+	 text-transform: uppercase;
+ }
 
  .highlighted .crossword-input[type=text]{
      background-color: yellow;
  }
 
  #pageContents-innerContainer{
-     display: flex ;
+     display: flex;
+	 justify-content: center;
  }
 
  #clues-container{
@@ -125,8 +134,13 @@
 	margin-top: 1em;
  }
  
- #clues-container th {
-	 text-decoration: underline;
+ #clues-container table {
+	 width: 100%;
+ }
+ 
+ #x_pageDiv #clues-container table th, #x_pageDiv #clues th {
+	 border-bottom: 2px solid black;
+	 padding: .2em;
  }
  
  #pageContents-innerContainer.crosswordLeft #clues-container {
@@ -177,6 +191,10 @@
  #showButton{
      margin-top: 1em;
 	 float: right;
+ }
+ 
+ .panel #showButton{
+	 float: none;
  }
 
  .li-clue{

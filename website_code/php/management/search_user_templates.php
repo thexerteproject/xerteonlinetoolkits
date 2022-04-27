@@ -96,7 +96,7 @@ if(is_user_admin()){
                     echo "</div>";
                 }
                 $curruser = $row_templates['owner_username'];
-                echo "<div class=\"template\" id=\"" . $row_templates['owner_username'] . "\" savevalue=\"" . $row_templates['owner_id'] .  "\"><p>" . $row_templates['owner_firstname'] . " " . $row_templates['owner_surname'] . " (" . $row_templates['owner_username'] . ") </p><br /><br /></div><div class=\"template_details\" style=\"display:block;\" id=\"" . $row_templates['owner_username']  . "_child\">";
+                echo "<div class=\"template\" id=\"" . $row_templates['owner_username'] . "\" savevalue=\"" . $row_templates['owner_id'] .  "\"><p>" . $row_templates['owner_firstname'] . " " . $row_templates['owner_surname'] . " (" . $row_templates['owner_username'] . ") </p></div><div class=\"template_details\" style=\"display:block;\" id=\"" . $row_templates['owner_username']  . "_child\">";
 
             }
 

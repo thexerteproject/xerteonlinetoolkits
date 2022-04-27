@@ -38,12 +38,16 @@
 					}
 				} else {
 					var $btns = x_currentPageXML.getAttribute("type") == "Button" ? $('.navChildTitle') : $('.navChildTitle a');
-					$btns.each(function(i) {
-						if ( ($.isNumeric(item) && i === parseInt(item)) || (item.toLowerCase() === $(this).text().toLowerCase()) ) {
-							$(this).click();
-							return false;
-						}
-					});
+					if ($.isNumeric(item) && $btns.eq(parseInt(item)).length > 0) {
+						$btns.eq(parseInt(item)).click();
+					} else {
+						$btns.each(function(i) {
+							if (item.toLowerCase() === $(this).text().toLowerCase()) {
+								$(this).click();
+								return false;
+							}
+						});
+					}
 				}
 			}
 		}

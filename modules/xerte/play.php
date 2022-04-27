@@ -226,6 +226,24 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
 
+        //twittercard
+        $xml = new XerteXMLInspector();
+        $xml->loadTemplateXML($xmlfile);
+        $tcoption = $xml->getLOAttribute('tcoption');
+        $tcmode= $xml->getLOAttribute('tcmode');
+        $tcsite= $xml->getLOAttribute('tcsite');
+        $tccreator= $xml->getLOAttribute('tccreator');
+        $tctitle= $xml->getLOAttribute('tctitle');
+        $tcdescription= $xml->getLOAttribute('tcdescription');
+        $tcimage= $xml->getLOAttribute('tcimage');
+        $tcimage = str_replace("FileLocation + '" , $xerte_toolkits_site->site_url . $string_for_flash, $tcimage);
+        $tcimage = str_replace("'", "", $tcimage);
+        $tcimagealt= $xml->getLOAttribute('tcimagealt');
+        if ($tcoption=="true"){
+            $page_content = str_replace("%TWITTERCARD%", '<meta name="twitter:card" content="'.$tcmode.'"><meta name="twitter:site" content="'.$tcsite.'"><meta name="twitter:creator" content="'.$tccreator.'"><meta name="twitter:title" content="'.$tctitle.'"><meta name="twitter:description" content="'.$tcdescription.'"><meta name="twitter:image" content="'.$tcimage.'"><meta name="twitter:image:alt" content="'.$tcimagealt.'">', $page_content);
+        }else{
+            $page_content = str_replace("%TWITTERCARD%", "", $page_content);
+        }
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
