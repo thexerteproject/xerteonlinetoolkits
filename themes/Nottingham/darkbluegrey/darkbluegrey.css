@@ -572,39 +572,39 @@ div#shorturltodisplay a {
 }
 
 #x_nextBtn:after {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:after {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:after {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:after {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:after {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:after {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:after {
-  content: "";
+  content: "\f128";
 }
 
 #x_menuBtn:after {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:after {
-  content: "";
+  content: "\f0c7";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
 }
@@ -657,7 +657,7 @@ div#shorturltodisplay a {
 }
 
 .fa-x-close:before {
-  content: "";
+  content: "\f00d";
 }
 
 .ui-dialog .ui-dialog-titlebar-close {
@@ -1418,19 +1418,19 @@ img {
 }
 /* chevron */
 .fa-x-next:before {
-  content: "";
+  content: "\f054";
 }
 
 .fa-x-prev:before {
-  content: "";
+  content: "\f053";
 }
 
 .fa-x-next-circle:before {
-  content: "";
+  content: "\f138";
 }
 
 .fa-x-prev-circle:before {
-  content: "";
+  content: "\f137";
 }
 
 /* arrow */
@@ -1441,51 +1441,51 @@ img {
 .fa-x-prev-circle:before { content: "\f0a8"; }
 */
 .fa-x-refresh:before {
-  content: "";
+  content: "\f021";
 }
 
 .fa-x-acc-hide:before {
-  content: "";
+  content: "\f0da";
 }
 
 .fa-x-acc-show:before {
-  content: "";
+  content: "\f0d7";
 }
 
 .fa-x-btn-hide:before {
-  content: "";
+  content: "\f0d8";
 }
 
 .fa-x-btn-show:before {
-  content: "";
+  content: "\f0d7";
 }
 
 .fa-x-zoom-in:before {
-  content: "";
+  content: "\f00e";
 }
 
 .fa-x-zoom-out:before {
-  content: "";
+  content: "\f010";
 }
 
 .fa-x-download:before {
-  content: "";
+  content: "\f019";
 }
 
 .fa-x-info-circle:before {
-  content: "";
+  content: "\f05a";
 }
 
 .fa-x-info:before {
-  content: "";
+  content: "\f129";
 }
 
 .fa-x-question:before {
-  content: "";
+  content: "\f128";
 }
 
 .fa-x-lightbulb:before {
-  content: "";
+  content: "\f0eb";
 }
 
 .fa-x-copy:before {
