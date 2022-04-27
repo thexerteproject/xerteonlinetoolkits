@@ -20,10 +20,6 @@
 
 require_once("../../../config.php");
 
-if(empty($_SESSION['toolkits_logon_id'])) {
-    die("Please login");
-}
-
 $file = $_REQUEST['xml'];
 
 // Check that xml file is stored beneath root of project
