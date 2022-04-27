@@ -193,15 +193,26 @@ function _do_cleanup()
         'themes/Nottingham/flatwhite/responsivetext.css',
         'themes/Nottingham/orangepurple/responsivetext.css',
         'themes/Nottingham/sketch/responsivetext.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt'
+        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt',
+        'USER-FILES/*/.htaccess',
+        'modules/xerte/templates/*/.htaccess',
+        'modules/site/templates/*/.htaccess',
+        'modules/decision/templates/*/.htaccess'
     );
 
     foreach ($filelist as $file)
     {
-        if (file_exists($file))
+        if (file_exists($file) || strpos($file, "*") !== false)
         {
             echo 'Removing ' . $file . '<br>';
-            unlink($file);
+            if (strpos($file, "*") === false)
+            {
+                unlink($file);
+            }
+            else
+            {
+                system("rm " . $file);
+            }
         }
         else
         {
@@ -1145,3 +1156,14 @@ function upgrade_29()
     return $message;
 }
 
+function upgrade_30()
+{
+    if (!_db_field_exists('templatedetails', 'tsugi_manage_key_id')) {
+        $error = _db_add_field('templatedetails', 'tsugi_manage_key_id', 'int', '-1', 'tsugi_usetsugikey');
+        return "Creating tsugi_manage_key_id field in templatedetails - ok ? " . ($error === false ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+    }
+}

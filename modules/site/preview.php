@@ -42,7 +42,7 @@ function show_preview_code($row)
         $title = SITE_PREVIEW_TITLE;
     }
 
-    $string_for_flash_xml = $xmlfile . "?time=" . time();
+    $string_for_flash_xml = $xmlfile;
 
     $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
@@ -70,6 +70,7 @@ function show_preview_code($row)
     $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
     $page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
     $page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
+    $page_content = str_replace("%USE_URL%", "", $page_content);
 
     //twittercard
     $xml = new XerteXMLInspector();

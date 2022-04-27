@@ -57,6 +57,7 @@
 
 <body><a class="skip-link" href="#pageContents">Skip to main content</a>
 	<noscript>This Learning Object requires JavaScript!</noscript>
+    <div id="x_embed_overlay" class="embed-overlay-inactive" aria-hidden="true"></div>
 	<div id="x_mainHolder" style="visibility:hidden;">
 
 		<div id="x_mobileScroll">
@@ -132,12 +133,14 @@
         var x_numPlays = String("%NUMPLAYS%");
         var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
         var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
-		
+		%USE_URL%
+
 		var globalVars = {
 			lastUpdated: x_lastUpdatedLocale,
 			dateCreated: x_dateCreatedLocale,
 			numViews: x_numPlays
 		};
+		%EMBED_SUPPORT%
     </script>
 </body>
 </html>

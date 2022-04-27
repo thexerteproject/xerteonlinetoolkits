@@ -168,7 +168,8 @@ function scorm2004_html_page_create($id, $name, $type, $rlo_file, $lo_name, $lan
     {
         $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm2004.3rd.js\"></script>";
     }
-    $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%EMBED_SUPPORT%", "",$scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scorm2004RLO.htm", 'w');
 
@@ -181,7 +182,7 @@ function scorm2004_html_page_create($id, $name, $type, $rlo_file, $lo_name, $lan
 
 }
 
-function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $need_download_url=false){
+function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -203,6 +204,9 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%DATECREATED%", $date_created, $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%NUMPLAYS%", 0, $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js?version=" . $version . "\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
@@ -214,6 +218,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     if ($need_download_url) $tracking .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
 
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%EMBED_SUPPORT%","",$scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scorm2004RLO.htm", 'w');

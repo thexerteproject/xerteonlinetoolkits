@@ -223,6 +223,7 @@ CREATE TABLE `$templatedetails` (
   `extra_flags` varchar(45) DEFAULT NULL,
   `tsugi_published` int DEFAULT 0,
   `tsugi_usetsugikey` int(1) DEFAULT 1,
+  `tsugi_manage_key_id` INT NULL DEFAULT -1,
   `tsugi_privatekeyonly` int(1) DEFAULT 0,
   `tsugi_xapi_enabled` int DEFAULT 0,
   `tsugi_xapi_useglobal` int(1) DEFAULT 1,

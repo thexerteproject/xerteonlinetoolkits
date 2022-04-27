@@ -80,7 +80,8 @@
         var x_numPlays = String("%NUMPLAYS%");
         var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
         var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
-		
+		%USE_URL%
+
 		var globalVars = {
 			lastUpdated: x_lastUpdatedLocale,
 			dateCreated: x_dateCreatedLocale,

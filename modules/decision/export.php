@@ -121,7 +121,7 @@ $lo_name = $xml->getName();
 /*
  * Create basic HTML page
  */
-basic_html5_page_create($row['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $row['date_modified']);
+basic_html5_page_create($row['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $row['date_modified'], $row['date_created']);
 
 
 /*

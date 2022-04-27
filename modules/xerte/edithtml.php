@@ -216,6 +216,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * set up the onunload function used in version control
      */
+    /* Set flag of whther oai-pmh harvesting is configured and available */
+    $oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
+
     _debug("Starting editor page");
 ?>
 <!DOCTYPE html>
@@ -414,6 +417,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         echo "course_freetext_enabled=" . ($xerte_toolkits_site->course_freetext_enabled == 'true' ? 'true' : 'false') . ";\n";
     }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
+    echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
     ?>
 
     function bunload(){

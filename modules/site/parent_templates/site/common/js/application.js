@@ -123,9 +123,15 @@ function initSidebar(){
 }
 
 function loadContent(){
+	var now = new Date().getTime();
+	let url = "website_code/php/templates/get_template_xml.php?file=" + x_projectXML + "&time=" + now;
+	if (typeof use_url !== "undefined" && use_url)
+	{
+		url = x_projectXML + "?time=now";
+	}
 	$.ajax({
 		type: "GET",
-		url: projectXML,
+		url: url,
 		dataType: "text",
 		success: function(text) {
 			var newString = makeAbsolute(text);
@@ -180,6 +186,7 @@ function loadContent(){
 		
 		fixSideBar();
 	});
+	x_xAPI_SessionId = new Date().getTime() + "" + Math.round(Math.random() * 1000000);
 }
 
 function fixSideBar() {
@@ -2549,6 +2556,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
+	debugger;
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
@@ -2579,10 +2587,18 @@ function loadXotContent($this) {
 	}
 
 	// If this bootstrap LO is started using LTI, launch Xerte as an LTI tool as well.
-	if (typeof lti_enabled != 'undefined' && lti_enabled)
+	if (typeof lti_enabled != 'undefined' && lti_enabled) {
+		xotLink += separator + 'site=' + x_TemplateId;
+		if (window.location.pathname.indexOf("lti13_launch") !== false) {
+			xotLink = xotLink.replace('play.php?', lti13Endpoint);
+		} else {
+			xotLink = xotLink.replace('play.php?', ltiEndpoint);
+		}
+	}
+	else if (typeof pedit_enabled != 'undefined' && pedit_enabled)
 	{
 		xotLink += separator + 'site=' + x_TemplateId;
-		xotLink = xotLink.replace('play.php?', ltiEndpoint);
+		xotLink = xotLink.replace('play.php?', peditEndpoint);
 	}
 	else if (typeof xapi_enabled != 'undefined' && xapi_enabled)
 	{
@@ -2591,7 +2607,9 @@ function loadXotContent($this) {
 		xotLink += separator + 'group=' + urlParams.group;
 	}
 	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
-	xotLink += separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
+	xotLink += separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId);
+	xotLink += separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
+	xotLink += separator + "embedded_fromSessionId=" + encodeURIComponent(x_xAPI_SessionId);
 
 	// add back any url params that haven't been overridden
 	for (var i=0; i<params.length; i++) {

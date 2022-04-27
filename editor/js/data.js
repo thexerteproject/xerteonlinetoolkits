@@ -87,9 +87,10 @@ var EDITOR = (function ($, parent) {
 
         var _this = this;
         var now = new Date().getTime();
+        let url = "website_code/php/templates/get_template_xml.php?file=" + xmlurl + "&time=" + now;
         $.ajax({
             type: "GET",
-            url: xmlurl + "?t=" + now,
+            url: url,
             dataType: "text",
             success: function (data) {
                 wait(2, data);

@@ -44,6 +44,23 @@ if(!isset($xapi_enabled))
 {
     $xapi_enabled = false;
 }
+if (!isset($lti_enabled))
+{
+    $lti_enabled = false;
+}
+if ((!isset($x_embed)))
+{
+    if ($_GET['embed'] === 'true') {
+        $x_embed = true;
+        if ($_GET['activated'] !== 'true')
+        {
+            $x_embed_activated = false;
+        }
+        else{
+            $x_embed_activated = true;
+        }
+    }
+}
 
 //error_reporting(E_ALL);
 //ini_set('display_errors',"ON");
