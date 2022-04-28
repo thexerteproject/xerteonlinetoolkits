@@ -200,7 +200,7 @@ function show_template($row, $xapi_enabled=false){
         $hidesocial = $xml->getLOAttribute('hidesocial');
         $footerhide = $xml->getLOAttribute('footerHide');
         $footerpos = $xml->getLOAttribute('footerPos');
-        if ($hidesocial != 'true' && $footerhide != 'true' && $footerpos != 'replace' && $xerte_toolkits_site->globalhidesocial != 'true' && $xerte_toolkits_site->globalsocialauth != 'false') {
+        if ($hidesocial != 'true' && $footerhide != 'true' && $footerpos != 'replace' && ($xerte_toolkits_site->globalhidesocial != 'true' || $xerte_toolkits_site->globalsocialauth != 'false')) {
             $page_content = str_replace("%ADDTHISSCRIPT%", '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>', $page_content);
         } else {
             $page_content = str_replace("%ADDTHISSCRIPT%", '', $page_content);
