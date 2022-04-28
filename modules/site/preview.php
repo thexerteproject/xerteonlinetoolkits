@@ -71,6 +71,18 @@ function show_preview_code($row)
     $page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
     $page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
 
+    //remove socialicons script
+    $xml = new XerteXMLInspector();
+    $xml->loadTemplateXML($xmlfile);
+    $hidesocial = $xml->getLOAttribute('hidesocial');
+    $footerhide = $xml->getLOAttribute('footerHide');
+    $footerpos = $xml->getLOAttribute('footerPos');
+    if ($hidesocial != 'true' && $footerhide != 'true' && $footerpos != 'replace' && globalhidesocial != 'true' && globalsocialauth != 'false') {
+        $page_content = str_replace("%ADDTHISSCRIPT%", '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>', $page_content);
+    } else {
+        $page_content = str_replace("%ADDTHISSCRIPT%", '', $page_content);
+    }
+
     //twittercard
     $xml = new XerteXMLInspector();
     $xml->loadTemplateXML($xmlfile);
