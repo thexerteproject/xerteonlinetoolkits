@@ -559,7 +559,9 @@ function update_site() {
 			site_xapi_dashboard_nonanonymous: document.getElementById("site_xapi_dashboard_nonanonymous").value,
 			xapi_dashboard_minrole: document.getElementById("xapi_dashboard_minrole").value,
 			xapi_dashboard_urls: document.getElementById("xapi_dashboard_urls").value,
-			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value
+			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
+			globalhidesocial: document.getElementById("site_socialicon_globaldisable").value,
+			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value
 		},
 	})
 	.done(function (response) {
