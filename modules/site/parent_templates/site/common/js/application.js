@@ -1623,9 +1623,9 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 	//the following fixes the side bar active highlight issue but requires changes to makeNav
 	//so commented out until we can discuss on next dev day
-	//$('[data-spy="scroll"]').each(function () {
-	//	var $spy = $(this).scrollspy('refresh')
-	//})
+	$('[data-spy="scroll"]').each(function () {
+		var $spy = $(this).scrollspy('refresh')
+	})
 
 	//force facebook / twitter objects to initialise
 	//twttr.widgets.load(); // REMOVED??
