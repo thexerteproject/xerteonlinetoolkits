@@ -57,12 +57,14 @@
 					.width(width)
 					.height(height);
 
-				if (videoDimensions) {
-					resizeEmbededMedia($(".popcornMedia.embed"), {width: videoDimensions[0], height: videoDimensions[1]}) //popcorn mediaconstructor
-				}
-				else {
-					resizeEmbededMedia($(".popcornMedia.embed"), {ratio: ratio}) //popcorn mediaconstructor
-				}	
+				$(".popcornMedia.embed").each(function(i) {
+					if (videoDimensions) {
+						resizeEmbededMedia($(this), {width: videoDimensions[0], height: videoDimensions[1]}) //popcorn mediaconstructor
+					}
+					else {
+						resizeEmbededMedia($(this), {ratio: ratio}) //popcorn mediaconstructor
+					}	
+				});
 			}
 		}
 		
