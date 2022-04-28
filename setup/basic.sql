@@ -169,6 +169,8 @@ CREATE TABLE `$sitedetails` (
   `dashboard_allowed_links` text,
   `course_freetext_enabled` char(255) DEFAULT 'true',
   `tsugi_dir` text,
+  `globalhidesocial` char(255) DEFAULT 'false',
+  `globalsocialauth` char(255) DEFAULT 'true',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

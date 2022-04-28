@@ -190,8 +190,11 @@ function show_template($row, $xapi_enabled=false){
     $page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
     $page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
     $page_content = str_replace("%USE_URL%", "", $page_content);
+    $page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $page_content);
+    $page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $page_content);
 
-        //remove socialicons script
+
+    //remove socialicons script
         $xml = new XerteXMLInspector();
         $xml->loadTemplateXML($xmlfile);
         $hidesocial = $xml->getLOAttribute('hidesocial');

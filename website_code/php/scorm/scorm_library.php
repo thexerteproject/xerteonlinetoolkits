@@ -250,7 +250,10 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%DATECREATED%", $date_created, $buffer);
     $buffer = str_replace("%NUMPLAYS%", 0, $buffer);
     $buffer = str_replace("%USE_URL%", "var use_url=true;", $buffer);
-	$index = "index.htm";
+    $buffer = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $buffer);
+    $buffer = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $buffer);
+
+    $index = "index.htm";
 
 	
     $file_handle = fopen($dir_path . $index, 'w');
@@ -296,6 +299,8 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%DATECREATED%", $date_created, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%NUMPLAYS%", 0, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $scorm_html_page_content);
 
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";

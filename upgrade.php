@@ -1167,3 +1167,31 @@ function upgrade_30()
         return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
     }
 }
+
+function upgrade_31()
+{
+    if (! _db_field_exists('sitedetails', 'globalhidesocial')) {
+        $error1 = _db_add_field('sitedetails', 'globalhidesocial', 'char(255)', 'false', 'tsugi_dir');
+        $error1_returned = true;
+
+        $error2 = _db_add_field('sitedetails', 'globalsocialauth', 'char(255)', 'true', 'globalhidesocial');
+        $error2_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+
+        return "Creating Social Icon settings fields - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating Social Icon settings fields already present - ok ? true". "<br>";
+    }
+}
+
