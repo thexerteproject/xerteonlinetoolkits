@@ -28,11 +28,13 @@ $file = $_REQUEST['xml'];
 // like 542-tom-Notingham/../database.php or like 542-tom-Notingham/../../../../etc/passwd
 $unsafe_file_path = $_GET['file'];
 
+
+$full_unsafe_file_path = $xerte_toolkits_site->root_file_path . $unsafe_file_path;
+
 // Account for Windows, because realpath changes / to \
 if(DIRECTORY_SEPARATOR !== '/') {
-    $unsafe_file_path = str_replace('/', DIRECTORY_SEPARATOR, $unsafe_file_path);
+    $full_unsafe_file_path = str_replace('/', DIRECTORY_SEPARATOR, $full_unsafe_file_path);
 }
-$full_unsafe_file_path = $xerte_toolkits_site->root_file_path . $unsafe_file_path;
 // This gets the canonical file name, so in case of 542-tom-Notingham/../../../../etc/passwd -> /etc/passwd
 $realpath = realpath($full_unsafe_file_path);
 // Check that is start with root_path/USER-FILES
