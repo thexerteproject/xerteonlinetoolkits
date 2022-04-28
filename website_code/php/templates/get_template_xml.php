@@ -20,8 +20,6 @@
 
 require_once("../../../config.php");
 
-$file = $_REQUEST['xml'];
-
 // Check that xml file is stored beneath root of project
 // be VERY paranoid over the path the user is requesting to download.
 // Even if the file starts with a correct pattern (old implementation) the user could travers path
