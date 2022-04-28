@@ -50,7 +50,7 @@ if (!isset($lti_enabled))
 }
 if ((!isset($x_embed)))
 {
-    if ($_GET['embed'] === 'true') {
+    if (isset($_GET['embed']) && $_GET['embed'] === 'true') {
         $x_embed = true;
         if ($_GET['activated'] !== 'true')
         {
