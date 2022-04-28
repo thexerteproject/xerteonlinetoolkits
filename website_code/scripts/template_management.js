@@ -266,7 +266,8 @@ function edit_window(admin, edit, location) {
                                                 // Fake path, only id is used
                                                 edit_window_close(node.xot_id + "-");
                                             }
-                                        }
+                                        },
+                                        closeOnClick: false,
                                     });
                             }
                         }
