@@ -59,10 +59,10 @@ function init() {
 	
 	// _____ GET & SORT XML DATA _____
 	var now = new Date().getTime();
-	let url = "website_code/php/templates/get_template_xml.php?file=" + x_projectXML + "&time=" + now;
+	let url = "website_code/php/templates/get_template_xml.php?file=" + projectXML + "&time=" + now;
 	if (typeof use_url !== "undefined" && use_url)
 	{
-		url = x_projectXML + "?time=now";
+		url = projectXML + "?time=now";
 	}
 
 	$.ajax({
