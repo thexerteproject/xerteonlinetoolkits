@@ -183,9 +183,15 @@ $(document).ready(function() {
         x_projectDataLoaded(xmlData);
     }
     else {
+		var now = new Date().getTime();
+    	let url = "website_code/php/templates/get_template_xml.php?file=" + x_projectXML + "&time=" + now;
+    	if (typeof use_url !== "undefined" && use_url)
+		{
+			url = x_projectXML + "?time=now";
+		}
         $.ajax({
             type: "GET",
-            url: x_projectXML,
+            url: url,
             dataType: "text",
             success: function (text) {
                 var newString = x_makeAbsolute(x_fixLineBreaks(text)),
@@ -719,7 +725,21 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
-
+	if (typeof x_embed == "undefined")
+	{
+		x_embed = false;
+		x_embed_activated = false;
+	}
+	if (x_embed && !x_embed_activated)
+	{
+		// Activate overlay
+		$("#x_embed_overlay")
+			.switchClass("embed-overlay-inactive", "embed-overlay")
+			.click(function(){
+				window.location = x_embed_activation_url;
+			})
+			.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
+	}
 }
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
@@ -1114,9 +1134,11 @@ function x_cssSetUp(param) {
 			break;
         case "theme":
             if (!xot_offline) {
-                $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-                // Set id
-                $('link[href="' + x_themePath + x_params.theme + '/' + x_params.theme + '.js"]').attr('id', 'theme_js');
+            	if (x_params.theme != undefined) {
+					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+					// Set id
+					$('link[href="' + x_themePath + x_params.theme + '/' + x_params.theme + '.js"]').attr('id', 'theme_js');
+				}
             }
             x_cssSetUp("responsive");
             break;

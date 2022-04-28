@@ -38,6 +38,9 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
 	global $youtube_api_key;
 	global $pedit_enabled;
 	global $lti_enabled;
+	global $xapi_enabled;
+	global $x_embed;
+	global $x_embed_activated;
 
     _load_language_file("/modules/xerte/preview.inc");
 
@@ -64,7 +67,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
     {
         $title = XERTE_PREVIEW_TITLE;
     }
-    $string_for_flash_xml = $xmlfile . "?time=" . time();
+    $string_for_flash_xml = $xmlfile;
 
     $flash_js_dir = "modules/" . $row['template_framework'] . "/";
     $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
@@ -190,6 +193,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         }
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+        $page_content = str_replace("%EMBED_SUPPORT%", "", $page_content);
     }
     else if ($engine == 'xml')
     {
@@ -225,6 +229,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
+        $page_content = str_replace("%USE_URL%", "", $page_content);
 
         //twittercard
         $xml = new XerteXMLInspector();
@@ -336,6 +341,25 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
 		$page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
 		$page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
+
+		if ($x_embed)
+        {
+            if ($x_embed_activated)
+            {
+                $embedsupport = "    var x_embed = true;\n";
+                $embedsupport .= "    var x_embed_activated = true;\n";
+            }
+            else{
+                $embedsupport = "    var x_embed = true;\n";
+                $embedsupport .= "    var x_embed_activated = false;\n";
+                $embedsupport .= "    var x_embed_activation_url = '" . $_SERVER['REQUEST_URI'] . "&activated=true';\n";
+            }
+        }
+		else
+		{
+            $embedsupport = "";
+        }
+        $page_content = str_replace("%EMBED_SUPPORT%", $embedsupport, $page_content);
     }
 
     return $page_content;

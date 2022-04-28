@@ -39,7 +39,7 @@ function show_template($row_play, $xapi_enabled=false)
         $title = XERTE_PREVIEW_TITLE;
     }
 
-    $string_for_flash_xml = $xmlfile . "?time=" . time();
+    $string_for_flash_xml = $xmlfile;
 
     $template_path_string = "modules/decision/parent_templates/" . $row_play['parent_template'] . "/";
 
@@ -63,6 +63,7 @@ function show_template($row_play, $xapi_enabled=false)
     $page_content = str_replace("%LASTUPDATED%", $row_play['date_modified'], $page_content);
 	$page_content = str_replace("%DATECREATED%", $row_play['date_created'], $page_content);
 	$page_content = str_replace("%NUMPLAYS%", $row_play['number_of_uses'], $page_content);
+    $page_content = str_replace("%USE_URL%", "", $page_content);
 
     echo $page_content;
 }
