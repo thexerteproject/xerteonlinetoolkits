@@ -295,14 +295,24 @@ if(is_user_admin()){
 
     echo "</div>";
 
+    echo "<div class=\"template\" id=\"socialicondetails\"><p>" . MANAGEMENT_SITE_SOCIALICONS . " <button type=\"button\" class=\"xerte_button\" id=\"socialicondetails_btn\" onclick=\"javascript:templates_display('socialicondetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"socialicondetails_child\">";
 
-  echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <button type=\"button\" class=\"xerte_button\" id=\"ltidetails_btn\" onclick=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
+    echo "<p>" . MANAGEMENT_SITE_SOCIALICONS_GLOBALDISABLE . "<form><textarea id=\"site_socialicon_globaldisable\">" . $row['globalhidesocial'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_SOCIALICONS_ALLOWOVERRIDE . "<form><textarea id=\"site_socialicon_globalauthorauth\">" . $row['globalsocialauth'] . "</textarea></form></p>";
+
+    echo "</div>";
+
+
+
+    echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <button type=\"button\" class=\"xerte_button\" id=\"ltidetails_btn\" onclick=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
 
 
   echo "<div class=\"template\" id=\"ltikeys\"><p>" . MANAGEMENT_SITE_LTI_KEYS . " <button type=\"button\" class=\"xerte_button\" id=\"ltikeys_btn\"onclick=\"javascript:templates_display('ltikeys')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltikeys_child\">";
 
 
     echo "<div id=\"ltikeys\">";
+
 
 
 if(!isset($mysqli)) {
@@ -361,9 +371,13 @@ if(!isset($lti)) {
   }
     echo "</div>";
 
-    echo "</div>";
 
     echo "</div>";
+
+
+    echo "</div>";
+
+
 
 }else{
 
