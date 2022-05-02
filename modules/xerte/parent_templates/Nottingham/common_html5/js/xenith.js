@@ -4435,18 +4435,18 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	
 	// glossary page generation
 	buildPage = function() {
-		var tableData = '<table class="glossary">';
 			
 		var x_glossary_temp = x_glossary.slice(0);
 		x_glossary.sort(function(a, b){ // sort alphabetically
 			return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
 		});
 
+		var tableData = '<table class="glossary">';
 		for (var i=0; i<x_glossary.length; i++) {
 			tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
 		}
-		
 		tableData += "</table>";
+
 		$("#glossaryItems").append(tableData);
 		
 		x_pageContentsUpdated();
