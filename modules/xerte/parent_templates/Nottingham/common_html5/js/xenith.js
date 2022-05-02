@@ -4495,9 +4495,7 @@ return parent; })(jQuery, XENITH || {});
 var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
 	
 	var	replaceGlobalVars = function (tempText) {
-		var regExp = new RegExp('\\{(.*?)\\}', 'g');
-		
-		var matches = tempText.match(regExp);
+		var matches = tempText.match(/\{(.*?)\}/g);
 		if (matches != null) {
 			for (var m=0; m<matches.length; m++) {
 				try {
@@ -4505,7 +4503,6 @@ var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
 				} catch (e){}
 			}
 		}
-		
 		return tempText;
 	};
 	
