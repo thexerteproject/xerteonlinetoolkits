@@ -204,7 +204,6 @@ $(document).ready(function() {
             }
         });
     }
-
 });
 
 x_pagesViewed = function()
@@ -449,7 +448,6 @@ x_projectDataLoaded = function(xmlData) {
 		else {
 			pageToHide.push(i);
 		}
-
     });
 	
 	// removes hidden pages from x_pages array
@@ -473,7 +471,6 @@ x_projectDataLoaded = function(xmlData) {
     if (x_normalPages.length < 2) {
         // don't show navigation options if there's only one page
         $("#x_footerBlock .x_floatRight").remove();
-		
     } else {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
@@ -699,7 +696,6 @@ x_projectDataLoaded = function(xmlData) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
 
-
 	if (x_params.trackingPassed != undefined)
 	{
 		// Get value, and try to convert to decimal between 0 and 1
@@ -794,7 +790,6 @@ function getHashInfo(urlHash) {
 				thisPage = false;
 			}
 		}
-		
 		return thisPage;
 		
 	} else {
@@ -883,37 +878,23 @@ function x_evalURL(url)
                 url = url.substr(0,pos) + url.substr(pos + 16);
                 return eval(url);
             }
-            else
-            {
-                return eval(url);
-            }
+            else return eval(url);
         }
-        else {
-            return eval(url)
-        }
+        else return eval(url);
     }
-    else
-    {
-        return url;
-    }
+    else return url;
 }
 
 function x_GetTrackingTextFromHTML(html, fallback)
 {
     var div = $('<div>').html(html);
     var txt = $.trim(div.text());
-    if (txt == "")
-    {
+    if (txt == "") {
         var img = div.find("img");
-        if (img != undefined && img.length > 0)
-        {
-            txt = img[0].attributes['alt'].value;
-        }
+        if (img != undefined && img.length > 0) txt = img[0].attributes['alt'].value;
     }
-    if (txt == "")
-    {
-        txt = fallback;
-    }
+    if (txt == "") txt = fallback;
+
     return txt;
 }
 
@@ -1420,7 +1401,6 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 
-
 		var	menuIcon = "x_info",
 			menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
@@ -1549,7 +1529,6 @@ function x_continueSetUp1() {
 			}
 		}
 
-
 		$x_window.resize(function() {
 			if (x_fillWindow == true) {
 				if (this.resizeTo) {
@@ -1571,7 +1550,6 @@ function x_continueSetUp1() {
 				x_updateCss();
 			}
 		});
-
 
 		if (x_browserInfo.touchScreen == true) {
 			// Set start orientation
@@ -1787,11 +1765,8 @@ function x_charmapLoaded(xml)
 }
 
 function x_dialog(text){
-
     window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
-
 }
-
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
@@ -1897,13 +1872,9 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 	}
 }
 
-
 // function returns page no. of page with matching linkID / pageID & whether it's from array of normal pages or standalone pages
 function x_lookupPage(type, id) {
-	var	pageType,
-		found = x_checkPages(type, id, x_pageInfo);
-	
-	return found;
+	return x_checkPages(type, id, x_pageInfo);
 }
 
 // checks through the pageArray specified for a page with matching ID
@@ -1916,9 +1887,7 @@ function x_checkPages(type, id, pageArray) {
 			// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID
 			(type == "linkID" && pageArray[i].pageID && pageArray[i].pageID == id) ||
 			(type == "pageID" && pageArray[i].linkID && pageArray[i].linkID == id)
-		){
-            return i;
-		}
+		) return i;
     }
 	
 	// Now check the children of each page
@@ -1958,6 +1927,7 @@ function x_checkPages(type, id, pageArray) {
 
 	return false;
 }
+
 function x_setMaxWidth() {
 	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
 		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
@@ -2128,6 +2098,7 @@ function x_endPageTracking(pagechange, x_gotoPage) {
         XTExitPage(x_currentPage);
     }
 }
+
 function x_changePageStep5(x_gotoPage) {
 	x_setMaxWidth();
 	
@@ -2619,7 +2590,6 @@ function x_loadPage(response, status, xhr) {
     x_setUpPage();
 }
 
-
 // get deep link info
 function getDeepLink(info) {
 	if (String(info).indexOf('|') >= 0) {
@@ -2650,7 +2620,6 @@ function x_doDeepLink() {
 		}
 	}
 }
-
 
 // function called when page model loaded/appended - sorts button states etc.
 function x_setUpPage() {
@@ -2754,7 +2723,6 @@ function x_setUpPage() {
     }
 }
 
-
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
@@ -2849,7 +2817,6 @@ function x_addNarration(funct, arguments) {
 	}
 }
 
-
 // function adds timer bar above main controls on interface - optional property that can be added to any interactivity page
 function x_addCountdownTimer() {
     var x_timerLangInfo = [
@@ -2905,7 +2872,6 @@ function x_addCountdownTimer() {
         x_timer = setInterval(x_countdownTicker, 1000);
     }
 }
-
 
 // function adds individual page backgrounds & sets up all the attributes of it (opacity, size etc.)
 function x_loadPageBg(loadModel) {
@@ -2994,11 +2960,8 @@ function x_loadPageBg(loadModel) {
 				"filter" :"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
 			})
 			.show();
-	} else {
-		$("#x_bgDarken").hide();
 	}
-
-
+	else $("#x_bgDarken").hide();
 
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
 		//setTimeout(function(){$pageBg.gray();}, 100);
@@ -3010,12 +2973,8 @@ function x_loadPageBg(loadModel) {
 		}
 		$("#pageBg").gray().fadeIn();
 	}
-
-
-
 	$("#x_mainBg").hide();
 }
-
 
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
@@ -3201,7 +3160,6 @@ function x_setDialogSize($x_popupDialog, position) {
     }
 }
 
-
 // function called from button on footer bar or from link in main text e.g. <a onclick="x_openMediaWindow(); return false;" href="#">Open media in new window</a>
 function x_openMediaWindow() {
     // get info about how to display captions - if none are found the code in the mediaViewer folder will look for details in tt file - otherwise it will use defaults
@@ -3228,7 +3186,6 @@ function x_openInfoWindow(text){
     window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
 
 }
-
 
 // function returns correct phrase from language file or uses fallback if no matches / no language file
 function x_getLangInfo(node, attribute, fallBack) {
@@ -3335,7 +3292,6 @@ function x_insertText(node, exclude, list, data) {
     node.nodeValue = tempText;
 }
 
-
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
 	x_fillWindow = true;
@@ -3364,7 +3320,6 @@ function x_setFillWindow(updatePage) {
 
 	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
 }
-
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
 function x_insertCSS(href, func, disable, id, keep) {
@@ -3428,10 +3383,7 @@ function x_insertCSS(href, func, disable, id, keep) {
         }
         else
         {
-            if (func != undefined)
-            {
-                func();
-            }
+            if (func != undefined) func();
         }
     }
     else {
@@ -3448,23 +3400,19 @@ function x_checkDecimalSeparator(value, forcePeriod) {
 			var temp = value.replace(/\,/g, '.');
 			if ($.isNumeric(temp)) {
 				return temp;
-			} else {
-				return value;
 			}
-		} else {
-			return value;
+			else return value;
 		}
-		
-	} else {
+		else return value;
+	}
+	else {
 		// convert to , as it is to be shown on page
 		if ($.isNumeric(value) && x_params.decimalseparator !== undefined && x_params.decimalseparator === 'comma') {
 			return String(value).replace('.', ',');
-		} else {
-			return value;
 		}
+		else return value;
 	}
 }
-
 
 // ___ FUNCTIONS CALLED FROM PAGE MODELS ___
 
@@ -3509,7 +3457,6 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
     $img.css("visibility", "visible"); // kept hidden until resize is done
 }
-
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text, override) {
@@ -3578,7 +3525,6 @@ function x_addLineBreaks(text, override) {
     }
 }
 
-
 // function called from model pages - returns reference to swfs (different depending on browser)
 function x_getSWFRef(swfID) {
     var flashMovie;
@@ -3594,7 +3540,6 @@ function x_getSWFRef(swfID) {
     }
     return flashMovie;
 }
-
 
 // function sorts initObject data for any pages where swfs or custom html can be added (e.g. textSWF, xerteModel, navigators)
 function x_sortInitObject(initObj) {
@@ -3622,7 +3567,6 @@ function x_sortInitObject(initObj) {
     return initObject;
 }
 
-
 // function selects text (e.g. when users are to be prompted to copy text on screen)
 function x_selectText(element) {
     var     text = document.getElementById(element),
@@ -3641,12 +3585,10 @@ function x_selectText(element) {
     }
 }
 
-
 // function deals with hex values that might be abbreviated ones from the flash editor
 function x_getColour(colour) {
 	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
 }
-
 
 // function returns black or white depending on which contrasts best with a given colour (e.g. for text over background colour)
 function x_blackOrWhite(colour) {
@@ -3677,7 +3619,6 @@ function x_shuffleArray(array) {
 	return array;
 }
 
-
 // function returns whether string is a url to a youtube or vimeo video
 function x_isYouTubeVimeo(url) {
 	if (url.indexOf("www.youtube.com") != -1 || url.indexOf("//youtu") != -1) {
@@ -3688,7 +3629,6 @@ function x_isYouTubeVimeo(url) {
 		return false;
 	}
 }
-
 
 // strip html tags and return just text which is appropriate for screen reader
 function x_getAriaText(text) {
@@ -3726,7 +3666,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			variableErrors = [],
 			dynamicCalcs = [],
 			dynamicID = 1,
-
 
 	// function starts the calculation of variables set by author via the variables optional property
 	init = function (variableData) {
@@ -3775,16 +3714,13 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 				i--;
 			}
 		}
-		
 		calcVariables(toCalc);
 	},
-
 
 	// Check if we have any variables to deal with
 	exist = function () {
 		return variables.length > 0;
 	},
-
 
 	calcVariables = function (toCalc) {
 		var lastLength, checkDefault,
@@ -3831,7 +3767,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			$("#x_authorSupportMsg p").append('<span class="x_varMsg"></br>' + '<a onclick="XENITH.VARIABLES.showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
 		}
 	},
-
 
 	// function calculates the value of any author set variables
 	calcVar = function (thisVar, recalc, checkDefault) {
@@ -4064,7 +3999,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		return thisVar;
 	},
 
-	 getVariable = function(name) {
+	getVariable = function(name) {
 		for (var i=0; i<variables.length; i++)
 		{
 			if (variables[i].name == name)
@@ -4156,7 +4091,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		}
 	},
 
-
 	// function displays author set variables in popup when in author support mode
 	showVariables = function () {
 		var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
@@ -4193,8 +4127,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 
 		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + pageText + '</p>');
 	},
-	
-	
+
 	replaceVariables = function (tempText, decimalSeparator, dataInfo) {
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
