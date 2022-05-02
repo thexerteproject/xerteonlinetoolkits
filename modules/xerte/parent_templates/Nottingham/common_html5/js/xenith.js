@@ -187,7 +187,7 @@ $(document).ready(function() {
     	let url = "website_code/php/templates/get_template_xml.php?file=" + x_projectXML + "&time=" + now;
     	if (typeof use_url !== "undefined" && use_url)
 		{
-			url = x_projectXML + "?time=now";
+			url = x_projectXML + "?time=" + now;
 		}
         $.ajax({
             type: "GET",
