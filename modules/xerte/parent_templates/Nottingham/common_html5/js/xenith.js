@@ -3431,19 +3431,14 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
         }
 
 		if (enlarge != true) {
-			if (maxW > imgW) {
-				maxW = imgW;
-			}
-			if (maxH > imgH) {
-				maxH = imgH;
-			}
+			maxW = Math.min(maxW, imgW);
+			maxH = Math.min(maxH, imgH);
 		}
 
         if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
-            var scaleW = maxW / imgW;
-            var scaleH = maxH / imgH;
-            var scaleFactor;
-			scaleFactor = Math.min(scaleW, scaleH);
+            var scaleW = maxW / imgW,
+                scaleH = maxH / imgH,
+                scaleFactor = Math.min(scaleW, scaleH);
 
             imgW = Math.round(imgW * scaleFactor);
             imgH = Math.round(imgH * scaleFactor);
