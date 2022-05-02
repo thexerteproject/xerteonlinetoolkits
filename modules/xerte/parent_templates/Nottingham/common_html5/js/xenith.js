@@ -2964,8 +2964,6 @@ function x_loadPageBg(loadModel) {
 	else $("#x_bgDarken").hide();
 
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
-		//setTimeout(function(){$pageBg.gray();}, 100);
-		//$pageBg.gray();
 		if ($("#pageBg" + x_currentPage).length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
 			$(".grayscale:not(#x_mainBg):not('[id]')").addClass("pageBg").attr("id", "pageBg" + x_currentPage);
 			$pageBg = $("#pageBg" + x_currentPage);
