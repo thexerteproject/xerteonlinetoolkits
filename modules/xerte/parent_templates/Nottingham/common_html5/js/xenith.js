@@ -4385,7 +4385,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
     // Declare local variables
 	var 	x_glossary      = [],
 			$x_glossaryHover,
-
+			multiple_terms = false, // link all terms on page or just the first - default is FIRST ONLY
+			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including &nbsp; - default is IGNORE AND REMOVE
+									// we always remove leading and trailing whitespace
 
 	init = function () {
 		
@@ -4399,10 +4401,12 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			items = x_params.glossary.split("||");
 
 		for (i=0, len=items.length; i<len; i++) {
-			item = items[i].split("|"),
-			word = {word:item[0], definition:item[1]};
+			item = items[i].split("|");
+			item[0] = item[0].replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "");
+			if (ignore_space) item[0] = item[0].replace(/(\s|&nbsp;)+/g, " ");
+			word = { word : item[0], definition : item[1] };
 
-			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+			if (word.word.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "" && word.definition.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "") {
 				x_glossary.push(word);
 			}
 		}
@@ -4535,11 +4539,12 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				let term = ignore_space ? x_glossary[k].word.replace(/\s/, '(\\s|&nbsp;)+') : x_glossary[k].word;
+				let regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + term + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', multiple_terms ? 'ig' : 'i');
 				tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
 			}
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				let regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', multiple_terms ? 'ig' : 'i');
 				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
 			}
 		}
