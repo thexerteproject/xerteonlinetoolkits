@@ -7432,6 +7432,10 @@
 		<download label="Allow Download" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<filename label="Filename (without extension)" type="TextInput" defaultValue="textHighlight" condition="download=='true'" optional="true"/>
 		<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" condition="download=='true'" optional="true"/>
+	    <h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
+        <h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
+        <h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
+        <p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
 	</downloadGroup>
 	
 	<allowTyping label="Allow Typing" type="CheckBox" optional="true" condition="mode=='Notes'" defaultValue="true" tooltip="Allow typing directly in notes area (on by default)"/>
