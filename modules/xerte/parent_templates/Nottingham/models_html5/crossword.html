@@ -1316,7 +1316,7 @@
 					document.getElementById(coordinates[coor]).readOnly = true;
                 }
                 var incorrectWords = [];
-                incorrectIndices.forEach(function(index){ incorrectWords.push(words_in[index]);});console.log(incorrectWords);
+                incorrectIndices.forEach(function(index){ incorrectWords.push(words_in[index]);});
                 $(".li-clue > p").each(function(index, element){
                     var word = $(element).text();
                     if (incorrectWords.indexOf(word) !== -1) {
