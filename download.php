@@ -54,6 +54,7 @@ class mime10class
     public function getFile() { return $this->data . '--' . self::boundary . '--'; }
 }
 
+
 $data = json_decode($_POST['data'], true);
 
 $filename = "file";
@@ -67,7 +68,7 @@ $doc = "";
 $doc .= "<html>";
 $doc .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
 $doc .= '<head>';
-$doc .= '<style>@page Section1 {size:' . $data['size'] . ';mso-page-orientation:' . $data['orientation'] . ';}div.Section1 {page:Section1;}</style>';
+$doc .= '<style>@page Section1 {size:' . $data['size'] . ';mso-page-orientation:' . $data['orientation'] . ';}div.Section1 {page:Section1;} h1{font-size:'.$data['h1'].';} h2{font-size:'.$data['h2'].';} h3{font-size:'.$data['h3'].';} p{font-size:'.$data['p'].';}</style>';
 $doc .= "<style>" . $data['styles'] . "</style>";
 $doc .= '</head>';
 
