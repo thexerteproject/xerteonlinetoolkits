@@ -223,7 +223,7 @@
 						var dropDownSort = x_currentPageXML.getAttribute("dropDownSort");
 						if (dropDownSort != undefined && dropDownSort != "" && dropDownSort != "alphabetic") // must be random
 						    allAnswers.sort(
-						        function() { return 0.5 - Math.random(); }
+						        function() { return Math.random() - 0.5; }
 						    );
 						else
 						    allAnswers.sort();
@@ -723,7 +723,7 @@
 				}
 			}
 			
-			var labels = $("#labelHolder .label").sort(function() { return (Math.round(Math.random())-0.5); });
+			var labels = $("#labelHolder .label").sort(function() { return Math.random() - 0.5; });
 			for (var i=0; i<labels.length; i++) {
 				$(labels[i])
 					.appendTo($("#labelHolder"))
