@@ -353,7 +353,7 @@ and (max-width :500px) {
 	caret-color: transparent;
 }
 /*gap fill: add ticks to correct answers*/
-.x_gapFill_page #targetHolder input[readonly].correct+span:before, .x_gapFill_page #targetHolder input[correct]+span:before, .x_gapFill_page #targetHolder .target.correct+span:before,.x_gapFill_page #targetHolder select[disabled].correct+span:before{
+.x_crossword_page .li-clue p.correct:after, .x_gapFill_page #targetHolder input[readonly].correct+span:before, .x_gapFill_page #targetHolder input[correct]+span:before, .x_gapFill_page #targetHolder .target.correct+span:before,.x_gapFill_page #targetHolder select[disabled].correct+span:before{
 	font-family: FontAwesome;
 	content: "\f00c";
 	color: green;
@@ -372,7 +372,7 @@ and (max-width :500px) {
 	padding:initial !important;
 }
 /*gap fill: show red crosses when incorrect and in tracking mode*/
-.x_gapFill_page #targetHolder select[disabled]+span:before,.x_gapFill_page #targetHolder .target.incorrect+span:before, .x_gapFill_page #pageContents input[readonly]+span:before{
+.x_crossword_page .li-clue p.incorrect:after, .x_gapFill_page #targetHolder select[disabled]+span:before,.x_gapFill_page #targetHolder .target.incorrect+span:before, .x_gapFill_page #pageContents input[readonly]+span:before{
 	font-family: FontAwesome;
 	content: "\f00d";
 	color: red;
