@@ -21,6 +21,11 @@
       }
     }
 
+    // Check for an image alt tag
+    if (element.getAttribute('data-image-alt') !== null) {
+      FL.alt = element.getAttribute('data-image-alt');
+    }
+
     // Get featherlight type
     if (element.getAttribute('data-featherlight')) {
       FL.type = element.getAttribute('data-featherlight');
@@ -225,6 +230,10 @@ console.log("right", editor.getSelectedHtml().getHtml());debugger;
               // Take the first chance we can to remove this
               if (element.getAttribute('target') === '_lightbox') element.removeAttribute('target');
 
+              if (featherlightAttributes.alt) { console.log(featherlightAttributes.alt)
+                element.setAttribute('data-image-alt', featherlightAttributes.alt);
+              }
+
               // If type is set then we want to write 'data-featherlight' attributes to the element
               if (featherlightAttributes.type && featherlightAttributes.type.length > 0) {
                 // first we set the type selected
@@ -315,6 +324,7 @@ console.log("right", editor.getSelectedHtml().getHtml());debugger;
             var lightboxTypeOnChange = function() {
               var display = (this.getValue() === 'iframe');
               this.getDialog().getContentElement('target', 'iframeSizeSettings').getElement()[display ? 'show' : 'hide']();
+              this.getDialog().getContentElement('target', 'imageAltText').getElement()[display ? 'hide' : 'show']();
             };
 
             // Add a filedset containing lightbox Options
@@ -348,157 +358,174 @@ console.log("right", editor.getSelectedHtml().getHtml());debugger;
                     }
                   },
                   {
-                    type: 'fieldset',
-                    id: 'iframeSizeSettings',
-                    label: ' ',
-                    onLoad: function() {
-                      var dialog = this.getDialog();
-                      var checkbox = document.createElement('input');
-                      checkbox.setAttribute('type', 'checkbox');
-                      checkbox.onclick = function() {
-                        sizeToggle.call(this, dialog);
-                      };
-
-                      var legend = this.getElement().$.firstElementChild;
-                      legend.appendChild(checkbox);
-                      legend.appendChild(document.createTextNode(' ' + lang.sizeSettingsLegendText));
-                    },
-                    setup: function() {
-                      if (!featherlightAttributes.size) featherlightAttributes.size = false;
-                      var checkbox = this.getElement().$.firstElementChild.firstElementChild;
-                      checkbox.checked = featherlightAttributes.size;
-                      setSizeElements(this.getDialog(), featherlightAttributes.size);
-                    },
+                    type: 'hbox',
                     children: [{
-                      type: 'vbox',
-                      children: [{
-                          type: 'hbox',
-                          children: [{
-                              id: 'widthSetting',
-                              label: lang.dimensionWidthNameP,
-                              type: 'number',
-                              style: 'width: 58px',
-                              'default': '90',
-                              min: 0,
-                              max: 9999,
-                              step: 1,
-                              setup: function(data) {
-                                if (featherlightAttributes.width && featherlightAttributes.width.value) {
-                                  this.setValue(featherlightAttributes.width.value);
-                                } else {
-                                  if (featherlightAttributes.height && featherlightAttributes.height.value) {
-                                    this.setValue('');
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              type: 'select',
-                              id: 'widthUnits',
-                              label: '',
-                              style: 'margin-top:0px;',
-                              'default': '%',
-                              items: [
-                                ['% ', '%'],
-                                ['px ', 'px']
-                              ],
-                              setup: function(data) {
-                                if (featherlightAttributes.width && featherlightAttributes.width.value) {
-                                  this.setValue(featherlightAttributes.width.units);
-                                }
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          type: 'hbox',
-                          children: [{
-                              id: 'heightSetting',
-                              label: lang.dimensionHeightNameP,
-                              type: 'number',
-                              style: 'width: 58px;',
-                              'default': '90',
-                              min: 0,
-                              max: 9999,
-                              step: 1,
-                              setup: function(data) {
-                                if (featherlightAttributes.height && featherlightAttributes.height.value) {
-                                  this.setValue(featherlightAttributes.height.value);
-                                } else {
-                                  if (featherlightAttributes.width && featherlightAttributes.width.value) {
-                                    this.setValue('');
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              type: 'select',
-                              id: 'heightUnits',
-                              label: '',
-                              style: 'margin-top:0px;',
-                              'default': '%',
-                              items: [
-                                ['% ', '%'],
-                                ['px ', 'px']
-                              ],
-                              setup: function(data) {
-                                if (featherlightAttributes.height && featherlightAttributes.height.value) {
-                                  this.setValue(featherlightAttributes.height.units);
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }],
-                    validate: function() {
-                      var dialog = this.getDialog(),
-                        message = [],
-                        langHelper = function (text, attr) {
-                          return text
-                              .replace('{a}', lang['dimension' + attr + 'NameL'])
-                              .replace('{A}', lang['dimension' + attr + 'NameP']);
+                      type: 'fieldset',
+                      id: 'iframeSizeSettings',
+                      label: ' ',
+                      onLoad: function() {
+                        var dialog = this.getDialog();
+                        var checkbox = document.createElement('input');
+                        checkbox.setAttribute('type', 'checkbox');
+                        checkbox.onclick = function() {
+                          sizeToggle.call(this, dialog);
                         };
 
-                      if (featherlightAttributes.size === true) {
-                        ['Width', 'Height'].map(function(attr) {
-                          var setting = dialog.getContentElement('target', attr.toLowerCase() + 'Setting').getValue(),
-                            units = dialog.getContentElement('target', attr.toLowerCase() + 'Units').getValue();
-
-                          if (units === '%' && (setting < 10 || setting > 100)) {
-                            message.push(langHelper(lang.validRangePercentageText, attr));
-                          } else if (units === 'px' && setting < 1) {
-                            message.push(langHelper(lang.validRangePixelText, attr));
+                        var legend = this.getElement().$.firstElementChild;
+                        legend.appendChild(checkbox);
+                        legend.appendChild(document.createTextNode(' ' + lang.sizeSettingsLegendText));
+                      },
+                      setup: function() {
+                        if (!featherlightAttributes.size) featherlightAttributes.size = false;
+                        var checkbox = this.getElement().$.firstElementChild.firstElementChild;
+                        checkbox.checked = featherlightAttributes.size;
+                        setSizeElements(this.getDialog(), featherlightAttributes.size);
+                      },
+                      children: [{
+                        type: 'vbox',
+                        children: [{
+                            type: 'hbox',
+                            children: [{
+                                id: 'widthSetting',
+                                label: lang.dimensionWidthNameP,
+                                type: 'number',
+                                style: 'width: 58px',
+                                'default': '90',
+                                min: 0,
+                                max: 9999,
+                                step: 1,
+                                setup: function(data) {
+                                  if (featherlightAttributes.width && featherlightAttributes.width.value) {
+                                    this.setValue(featherlightAttributes.width.value);
+                                  } else {
+                                    if (featherlightAttributes.height && featherlightAttributes.height.value) {
+                                      this.setValue('');
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                type: 'select',
+                                id: 'widthUnits',
+                                label: '',
+                                style: 'margin-top:0px;',
+                                'default': '%',
+                                items: [
+                                  ['% ', '%'],
+                                  ['px ', 'px']
+                                ],
+                                setup: function(data) {
+                                  if (featherlightAttributes.width && featherlightAttributes.width.value) {
+                                    this.setValue(featherlightAttributes.width.units);
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            type: 'hbox',
+                            children: [{
+                                id: 'heightSetting',
+                                label: lang.dimensionHeightNameP,
+                                type: 'number',
+                                style: 'width: 58px;',
+                                'default': '90',
+                                min: 0,
+                                max: 9999,
+                                step: 1,
+                                setup: function(data) {
+                                  if (featherlightAttributes.height && featherlightAttributes.height.value) {
+                                    this.setValue(featherlightAttributes.height.value);
+                                  } else {
+                                    if (featherlightAttributes.width && featherlightAttributes.width.value) {
+                                      this.setValue('');
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                type: 'select',
+                                id: 'heightUnits',
+                                label: '',
+                                style: 'margin-top:0px;',
+                                'default': '%',
+                                items: [
+                                  ['% ', '%'],
+                                  ['px ', 'px']
+                                ],
+                                setup: function(data) {
+                                  if (featherlightAttributes.height && featherlightAttributes.height.value) {
+                                    this.setValue(featherlightAttributes.height.units);
+                                  }
+                                }
+                              }
+                            ]
                           }
-                        });
-                      }
+                        ]
+                      }],
+                      validate: function() {
+                        var dialog = this.getDialog(),
+                          message = [],
+                          langHelper = function (text, attr) {
+                            return text
+                                .replace('{a}', lang['dimension' + attr + 'NameL'])
+                                .replace('{A}', lang['dimension' + attr + 'NameP']);
+                          };
 
-                      if (message.length > 0) alert(message.join(' '));
+                        if (featherlightAttributes.size === true) {
+                          ['Width', 'Height'].map(function(attr) {
+                            var setting = dialog.getContentElement('target', attr.toLowerCase() + 'Setting').getValue(),
+                              units = dialog.getContentElement('target', attr.toLowerCase() + 'Units').getValue();
 
-                      return (message.length === 0);
-                    },
-                    commit: function(data) {
-                      var dialog = this.getDialog();
-
-                      if (featherlightAttributes.size === true) {
-                        if (['iframe'].includes(
-                            dialog.getContentElement('target', 'lightboxType').getValue()
-                          )) {
-                          ['width', 'height'].map(function(attr) {
-                            var setting = dialog.getContentElement('target', attr + 'Setting').getValue(),
-                              units = dialog.getContentElement('target', attr + 'Units').getValue();
-
-                            featherlightAttributes[attr] = {};
-                            if (setting.length > 0) {
-                              featherlightAttributes[attr].value = setting;
-                              featherlightAttributes[attr].units = units.replace('%', 'v' + attr.substring(0, 1)).trim();
+                            if (units === '%' && (setting < 10 || setting > 100)) {
+                              message.push(langHelper(lang.validRangePercentageText, attr));
+                            } else if (units === 'px' && setting < 1) {
+                              message.push(langHelper(lang.validRangePixelText, attr));
                             }
                           });
                         }
+
+                        if (message.length > 0) alert(message.join(' '));
+
+                        return (message.length === 0);
+                      },
+                      commit: function(data) {
+                        var dialog = this.getDialog();
+
+                        if (featherlightAttributes.size === true) {
+                          if (['iframe'].includes(
+                              dialog.getContentElement('target', 'lightboxType').getValue()
+                            )) {
+                            ['width', 'height'].map(function(attr) {
+                              var setting = dialog.getContentElement('target', attr + 'Setting').getValue(),
+                                units = dialog.getContentElement('target', attr + 'Units').getValue();
+
+                              featherlightAttributes[attr] = {};
+                              if (setting.length > 0) {
+                                featherlightAttributes[attr].value = setting;
+                                featherlightAttributes[attr].units = units.replace('%', 'v' + attr.substring(0, 1)).trim();
+                              }
+                            });
+                          }
+                        }
                       }
-                    }
+                    }]
                   }
                 ]
+              },
+              {
+                type: 'text',
+                id: 'imageAltText',
+                label: "Alt Text",
+                setup: function() {
+                  if (featherlightAttributes.alt) {
+                    this.setValue(featherlightAttributes.alt);
+                  }
+                  lightboxTypeOnChange.call(this);
+                },
+                commit: function( data ) {
+                  featherlightAttributes.alt = this.getValue();
+                }
               }]
             });
           }
