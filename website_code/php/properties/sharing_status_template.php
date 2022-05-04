@@ -121,7 +121,7 @@ foreach($query_sharing_rows as $row) {
     echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] .") - (" . $row['role'] . ")</span></p>";
 
     if($row['role']!="creator") {
-
+        //or is user admin hieronder
         if (is_user_creator_or_coauthor($template_id)) {
 
             echo '<p class=\"share_files_paragraph\">' .
