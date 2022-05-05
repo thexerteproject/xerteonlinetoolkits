@@ -3609,6 +3609,18 @@ function x_isYouTubeVimeo(url) {
 	}
 }
 
+// Based somewhat on these regexps for YouTube and Vimeo (check there for updates)
+//   https://stackoverflow.com/questions/19377262/regex-for-youtube-url
+//   https://stackoverflow.com/questions/5008609/vimeo-video-link-regex
+function x_fixYouTubeVimeo(url) {
+	var path = url.trim();
+	let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
+	if (result) return "www.youtube.com/watch?v=" + result[7];
+	result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
+	if (result) return "vimeo.com/" + result[2];
+	return url;
+}
+
 // strip html tags and return just text which is appropriate for screen reader
 function x_getAriaText(text) {
 	return $('<p>' + text + '</p>').text();
