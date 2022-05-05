@@ -39,9 +39,9 @@
 
 	var SOME_ITEMS_PUBLISHED_PROMPT = "Some of your selected items are published and may be referred to by other systems.";
 
-	var SOME_ITEMS_SHARED_PROMPT = "Some of your selected items are shared with others. If you delete those items, they will be deleted for the shared persons as well.";
+	var SOME_ITEMS_SHARED_PROMPT = "Some of your selected items are shared with others. If you delete those items, they will be deleted for the shared people as well.";
 
-	var ITEM_SHARED_PROMPT = "This Learning Object is shared with others. If you delete this Learning Object, they will be deleted for the hared persons as well.";
+	var ITEM_SHARED_PROMPT = "This Learning Object is shared with others. If you delete this Learning Object, it will be deleted for the shared people as well.";
 	
 	var ITEM_PUBLISHED_PROMPT = "This Learning Object is published and may be referred to by other systems.";
 
