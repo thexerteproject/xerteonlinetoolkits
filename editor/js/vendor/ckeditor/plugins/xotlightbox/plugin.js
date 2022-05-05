@@ -516,7 +516,7 @@ console.log("right", editor.getSelectedHtml().getHtml());debugger;
               {
                 type: 'text',
                 id: 'imageAltText',
-                label: "Alt Text",
+                label: lang.lightboxImgAlt,
                 setup: function() {
                   if (featherlightAttributes.alt) {
                     this.setValue(featherlightAttributes.alt);

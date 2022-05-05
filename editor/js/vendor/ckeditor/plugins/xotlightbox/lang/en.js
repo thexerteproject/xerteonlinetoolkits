@@ -2,6 +2,7 @@ CKEDITOR.plugins.setLang('xotlightbox', 'en', {
   lightboxOptionsLabel: 'Lightbox Options',
   lightboxTypeLabel: 'Type',
   linkTargetTypeDropdownOption: 'Lightbox',
+  lightboxImgAlt: 'Alternative Text',
   dimensionWidthNameP: 'Width',
   dimensionWidthNameL: 'width',
   dimensionHeightNameP: 'Height',
