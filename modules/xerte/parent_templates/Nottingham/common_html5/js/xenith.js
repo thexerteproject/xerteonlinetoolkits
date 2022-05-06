@@ -4463,9 +4463,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word; console.log('\\b(' + term + ')\\b');
+				let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word;
 				let regExp = new RegExp('\\b(' + term + ')\\b', multiple_terms ? 'ig' : 'i');
-				tempText = tempText.replace(regExp, '{|{'+k+'::$1}|}'); console.log(tempText);
+				tempText = tempText.replace(regExp, '{|{'+k+'::$1}|}');
 			}
 			for (var k=0, len=x_glossary.length; k<len; k++) {
 				let regExp = new RegExp('{\\|{' + k + '::(.*?)}\\|}', multiple_terms ? 'ig' : 'i');
