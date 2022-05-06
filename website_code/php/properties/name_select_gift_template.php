@@ -28,6 +28,7 @@
 
 require_once("../../../config.php");
 include "../template_status.php";
+include "../user_library.php";
 
 _load_language_file("/website_code/php/properties/name_select_gift_template.inc");
 

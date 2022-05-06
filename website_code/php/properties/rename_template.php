@@ -33,6 +33,7 @@ include "../template_status.php";
 include "../screen_size_library.php";
 include "../url_library.php";
 include "properties_library.php";
+include "../user_library.php";
 
 if (!isset($_SESSION['toolkits_logon_username']))
 {

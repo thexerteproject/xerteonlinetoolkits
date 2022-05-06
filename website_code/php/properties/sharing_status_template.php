@@ -49,7 +49,7 @@ $template_id = $_POST['template_id'];
  * show a different view if you are the file creator
  */
 
-if(is_user_creator_or_coauthor((int) $template_id)){
+if(is_user_creator_or_coauthor((int) $template_id) || is_user_admin()){
 
     echo "<div>";
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_SHARED . "</span></p>";
@@ -77,7 +77,7 @@ if(is_user_creator_or_coauthor((int) $template_id)){
 
 $sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
     " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-    " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? AND user_id != ?";
+    " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? AND user_id != ? ";
 
 $query_sharing_rows = db_query($sql, array($template_id, $_SESSION['toolkits_logon_id']));
 
@@ -95,7 +95,7 @@ if(sizeof($query_sharing_rows)==0 && sizeof($query_sharing_rows_group)==0){
 echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
 
 
-if(is_user_creator_or_coauthor($template_id)){
+if(is_user_creator_or_coauthor($template_id)|| is_user_admin()){
     foreach($query_sharing_rows_group as $row) {
         echo "<p class=\"share_files_paragraph\"><span>" . $row['group_name'] . " - (" . $row['role'] . ")</span></p>";
 
@@ -120,9 +120,9 @@ foreach($query_sharing_rows as $row) {
 
     echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] .") - (" . $row['role'] . ")</span></p>";
 
-    if($row['role']!="creator") {
-        //or is user admin hieronder
-        if (is_user_creator_or_coauthor($template_id)) {
+    if($row['role']!="creator"|| is_user_admin()) {
+
+        if (is_user_creator_or_coauthor($template_id)|| is_user_admin()) {
 
             echo '<p class=\"share_files_paragraph\">' .
                 '<input type="radio" name="role' . $row['user_id'] . '" value="co-author" ' . ($row['role'] == 'co-author' ? "checked" : "") . ' onclick="javascript:set_sharing_rights_template(\'co-author\', \'' . $template_id . '\',\'' . $row['user_id'] . '\')">' .
