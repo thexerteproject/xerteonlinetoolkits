@@ -97,6 +97,10 @@
 				.attr('id', 'solve')
 				.click( function() {
 					wordfindgame.solve(puzzle, words);
+					$("#words ul li").on("click focus", function ($this) {
+						wordsearch.highlightWord($this.target.innerText);
+					});
+					$("#words ul li").attr("tabindex", "0").first().focus();
 				})
 				.text(solveBtnTxt)
 				.toggle(!(hideSolve || hideSolveUntilTimer && hasTimer))
@@ -106,6 +110,8 @@
 			$('<button>')
 				.attr('id', 'retry')
 				.click( function() {
+					$("#words ul li").off("click focus");
+					$("#words ul li").removeAttr("tabindex");
 					wordsearch.begin();
 				})
 				.text(retryBtnTxt)
@@ -114,6 +120,20 @@
 			$("#btnHolder button").button();
 		}
 
+		this.highlightWord = function (word) {
+			$(".puzzleSquare").removeClass("highlight");
+			var solution = wordfind.solve(puzzle, words).found;
+			solution.forEach(function (entry) {
+				let x = entry.x, y = entry.y,
+					o = entry.orientation,
+					xdir = ((o.indexOf('horiz') > -1 || o.indexOf('diag') > -1) ? 1 : 0) * (o.indexOf('Back') > -1 ? -1 : 1),
+					ydir = ((o.indexOf('vert') > -1 || o.indexOf('diag') > -1) ? 1 : 0) * (o.indexOf('Down') > -1 ? 1 : -1) * (o.indexOf('Up') > -1 ? 1 : -1);
+
+				if (word.toLowerCase() == entry.word.toLowerCase())
+					for(let i = 0; i < entry.overlap; i++, x += xdir, y += ydir)
+						$(".puzzleSquare[x='" + x + "'][y='" + y + "']").addClass("highlight");
+			});
+		}
 
 		this.game = function () {
       var puzzleCase = x_currentPageXML.getAttribute('puzzleCase');

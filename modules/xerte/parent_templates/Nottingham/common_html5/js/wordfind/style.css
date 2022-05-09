@@ -89,3 +89,11 @@ button::-moz-focus-inner {
 #solve {
   margin: 0 1em;
 }
+
+/**
+* Styles for highlight
+*/
+#puzzle .highlight {
+  background-color: yellow !important;
+  color: black;
+}
