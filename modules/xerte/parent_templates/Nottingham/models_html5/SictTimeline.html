@@ -257,6 +257,7 @@
 				 SictTimeline.resizeImg();
 				$('.spinnerHolder').remove();
 				$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
+				$('.tl-text-content')[0].innerHTML = x_currentPageXML.getAttribute("text");
 			}, 3000);
 
 		}
