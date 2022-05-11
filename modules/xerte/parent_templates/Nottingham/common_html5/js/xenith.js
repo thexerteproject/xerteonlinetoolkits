@@ -1298,15 +1298,14 @@ function x_continueSetUp1() {
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
-		console.log(x_params.homePageLink);
 		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
 			$("#x_headerBlock h1").append(
 				$("<a>")
 					.html(x_params.name)
 					.attr("href", "#")
 					.addClass("x_homePageLink")
-					.attr("title", "Goto Home page")
-					.attr("aria-label", "Goto Home page")
+					.attr("title", x_getLangInfo(x_languageData.find("homeLink")[0], "description", "Go to Home page"))
+					.attr("aria-label", x_getLangInfo(x_languageData.find("homeLink")[0], "description", "Go to Home page"))
 					.on("click", x_goHome)
 				);
 		}
@@ -1627,7 +1626,8 @@ function x_continueSetUp1() {
 }
 
 function x_goHome() {
-	if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
+	// home page can be changed from page 1 (except for menu pages where home page will always be TOC)
+	if (x_params.navigation != 'Menu' && x_params.navigation != 'Menu with Page Controls' && x_params.homePage != undefined && x_params.homePage != "") {
 		x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
 	} else {
 		x_changePage(0);

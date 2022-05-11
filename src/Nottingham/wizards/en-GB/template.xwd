@@ -6,7 +6,7 @@
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
 	<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue=""/>
 
-    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170"/>
+    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" deprecated="This property is deprecated"/>
     <language type="LanguageList" label="Language" width="170"/>
@@ -17,8 +17,8 @@
 	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (e.g. 1400px) that the page contents will be displayed on larger displays. Note: some pages like media lesson and hotspot connector will currently still fill the full width of the page."/>
 	
 	<homePageGroup type="group" label="Home Page" optional="true">
-	<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" tooltip="Home page used when navigation is set to 'Historic'. By default this is the first page in the project."/>
-	<homePageLink optional="true" type="CheckBox" label="Link LO title to Home Page" defaultValue="false"/>
+		<homePageLink optional="true" type="CheckBox" label="Link LO title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the learning object title a link which returns users to the home page."/>
+		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="By default, the home page (linked to from LO title or home button when navigation is set to 'Historic') is the first page in the project. Select a page from the drop down to use a different page in your project as the home page instead."/>
 	</homePageGroup>
 
     <kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
