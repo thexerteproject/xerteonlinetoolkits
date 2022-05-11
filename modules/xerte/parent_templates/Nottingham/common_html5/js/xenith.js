@@ -1297,7 +1297,22 @@ function x_continueSetUp1() {
 		checkExists(type, fallback);
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
-		$("#x_headerBlock h1").html(x_params.name);
+		// add link to LO title?
+		console.log(x_params.homePageLink);
+		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
+			$("#x_headerBlock h1").append(
+				$("<a>")
+					.html(x_params.name)
+					.attr("href", "#")
+					.addClass("x_homePageLink")
+					.attr("title", "Goto Home page")
+					.attr("aria-label", "Goto Home page")
+					.on("click", x_goHome)
+				);
+		}
+		else {
+			$("#x_headerBlock h1").html(x_params.name);
+		}
 
 		// strips code out of page title
 		var div = $("<div>").html(x_params.name);
@@ -1421,11 +1436,7 @@ function x_continueSetUp1() {
 								.removeClass("ui-state-hover");
 						}
 					);
-				} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
-					x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
-				} else {
-					x_changePage(0);
-				}
+				} else x_goHome();
 				
 				$(this)
 					.blur()
@@ -1612,6 +1623,14 @@ function x_continueSetUp1() {
 		} else {
 			x_continueSetUp2();
 		}
+	}
+}
+
+function x_goHome() {
+	if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
+		x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
+	} else {
+		x_changePage(0);
 	}
 }
 

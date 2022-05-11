@@ -320,6 +320,11 @@ and (max-width :500px) {
 	max-width: 95vw;
 }
 
+.x_homePageLink, .x_homePageLink:visited, .x_homePageLink:hover, .x_homePageLink:focus {
+	color: #ffffff;
+	text-decoration: none;
+}
+
 .skip-link {
 	background: #000000;
 	color: #ffffff;
