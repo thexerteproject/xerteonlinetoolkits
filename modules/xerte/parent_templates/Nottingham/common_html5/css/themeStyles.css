@@ -321,7 +321,7 @@ and (max-width :500px) {
 }
 
 .x_homePageLink, .x_homePageLink:visited, .x_homePageLink:hover, .x_homePageLink:focus {
-	color: #ffffff;
+	color: inherit;
 	text-decoration: none;
 }
 
