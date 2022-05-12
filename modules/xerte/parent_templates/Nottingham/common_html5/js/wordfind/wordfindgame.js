@@ -223,9 +223,9 @@
           $('.' + curWord).addClass('wordFound');
         }
 
-        /*if (wordList.length === 0) {
-          $('.puzzleSquare').addClass('complete');
-        }*/
+        if (wordList.length === 0) {
+          $('#solve').click();
+        }
       }
 
       // reset the turn
