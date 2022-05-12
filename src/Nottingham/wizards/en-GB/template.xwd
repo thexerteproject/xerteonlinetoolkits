@@ -8244,6 +8244,7 @@
 		<colour2 label="Found" type="ColourPicker" defaultValue="0x0000FF" optional="true"/>
 		<colour3 label="Complete" type="ColourPicker" defaultValue="0x800080" optional="true"/>
 		<colour4 label="Solved" type="ColourPicker" defaultValue="0x008000" optional="true"/>
+		<colour5 label="Highlight" type="ColourPicker" defaultValue="0xffff00" optional="true"/>
 	</colours>
 	
 	<order label="Word Ordering" options="None,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" defaultValue="none" optional="true"/>
