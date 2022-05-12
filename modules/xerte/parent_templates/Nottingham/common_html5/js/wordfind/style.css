@@ -61,6 +61,12 @@ button::-moz-focus-inner {
   background-color: green;
 }
 
+/* highlight the word in the puzzle */
+#puzzle .highlight {
+  background-color: yellow !important;
+  color: black !important;
+}
+
 /**
 * Styles for the word list
 */
@@ -88,12 +94,4 @@ button::-moz-focus-inner {
 */
 #solve {
   margin: 0 1em;
-}
-
-/**
-* Styles for highlight
-*/
-#puzzle .highlight {
-  background-color: yellow !important;
-  color: black !important;
 }

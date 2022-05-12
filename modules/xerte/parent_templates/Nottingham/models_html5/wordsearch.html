@@ -61,6 +61,9 @@
 
 			colour = checkColour(x_currentPageXML.getAttribute("colour4")) ? x_getColour(x_currentPageXML.getAttribute("colour4")) : "#008000"; // green
 			colourStyles += "#puzzle .complete { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
+
+			colour = checkColour(x_currentPageXML.getAttribute("colour5")) ? x_getColour(x_currentPageXML.getAttribute("colour5")) : "#FFFF00"; // yellow
+			colourStyles += "#puzzle .highlight { background-color: " + colour + " !important; color: " + x_blackOrWhite(colour) + " !important; }";
 			colourStyles += "</style>";
 
 			$("#pageContents").prepend(colourStyles);
@@ -97,10 +100,12 @@
 				.attr('id', 'solve')
 				.click( function() {
 					wordfindgame.solve(puzzle, words);
+					$("#words ul li").on("focusout", wordsearch.removeHighlight);
 					$("#words ul li").on("click focus", function ($this) {
 						wordsearch.highlightWord($this.target.innerText);
 					});
-					$("#words ul li").attr("tabindex", "0").first().focus();
+					$("#words").attr("tabindex", "0").focus().removeAttr("tabindex"); // Move tab focus to the words list without highlighting first word
+					$("#words ul li").attr("tabindex", "0");//.first().focus(); // Was used to highlight first word but didn't like the effect
 				})
 				.text(solveBtnTxt)
 				.toggle(!(hideSolve || hideSolveUntilTimer && hasTimer))
@@ -111,6 +116,7 @@
 				.attr('id', 'retry')
 				.click( function() {
 					$("#words ul li").off("click focus");
+					$("#words ul li").off("focusout");
 					$("#words ul li").removeAttr("tabindex");
 					wordsearch.begin();
 				})
@@ -120,8 +126,12 @@
 			$("#btnHolder button").button();
 		}
 
-		this.highlightWord = function (word) {
+		this.removeHighlight = function () {
 			$(".puzzleSquare").removeClass("highlight");
+		}
+
+		this.highlightWord = function (word) {
+			wordsearch.removeHighlight(); // remove any existing highlights
 			var solution = wordfind.solve(puzzle, words).found;
 			solution.forEach(function (entry) {
 				let x = entry.x, y = entry.y,
