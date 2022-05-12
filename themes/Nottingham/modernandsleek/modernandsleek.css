@@ -3,9 +3,9 @@
   font-family: 'Libre Franklin';
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/libre-franklin-v12-latin-ext_latin-regular.eot");
+  src: url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot");
   /* IE9 Compat Modes */
-  src: local(""), url("../fonts/libre-franklin-v12-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/libre-franklin-v12-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/libre-franklin-v12-latin-ext_latin-regular.woff") format("woff"), url("../fonts/libre-franklin-v12-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/libre-franklin-v12-latin-ext_latin-regular.svg#LibreFranklin") format("svg");
+  src: local(""), url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff") format("woff"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.svg#LibreFranklin") format("svg");
   /* Legacy iOS */ }
 /*---colours to use - sleek and modern:  #2f2E33, #D5D6D2, #FFFF, #3A5199---*/
 /*define color pallette*/

@@ -1,11 +1,11 @@
-/* varela-round-regular - latin-ext_latin */
+/* libre-franklin-regular - latin-ext_latin */
 @font-face {
-  font-family: 'Varela Round';
+  font-family: 'Libre Franklin';
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/varela-round-v19-latin-ext_latin-regular.eot");
+  src: url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot");
   /* IE9 Compat Modes */
-  src: local(""), url("../fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("../fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg");
+  src: local(""), url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff") format("woff"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.svg#LibreFranklin") format("svg");
   /* Legacy iOS */ }
 /* default #2196F3;*/
 /*start here and set the default values for all the variables*/
