@@ -43,6 +43,7 @@
 
         // function called every time the size of the LO is changed
         this.sizeChanged = function(firstLoad) {
+			
             $x_pageHolder.scrollTop(0);
             var $panel = $("#mainPanel");
 
@@ -76,20 +77,20 @@
                 // Sometimes when we zoom all the way in and back out we get an division by zero that we can't recover from
                 // In that case it's easier to rip up the targets and redraw
                 if (resetTargets) {
-                  $("#targetHolder").empty();
-                  this.drawTargets();
+					$("#targetHolder").empty();
+					this.drawTargets();
                 }
 
                 // also adjust labels
                 $("#labelHolder .ui-draggable").each(function(i) {
-                    var $this = $(this);
-                    var $target = $this.data("target");
-                    if (!isNaN($target)) {
-                      $target = $("#targetHolder .target").eq($target);
-                      $this.css({
-                          "left"		:$target.position().left + 2 + $panel.position().left,
-                          "top"		:$target.position().top + 2 + $panel.position().top
-                      });
+                    var $this = $(this),
+						$target = $this.data("target");
+					
+                    if ($target != undefined) {
+						$this.css({
+							"left": $target.position().left + 2 + $panel.position().left,
+							"top": $target.position().top + 2 + $panel.position().top
+						});
                     }
                 });
             }
@@ -153,7 +154,6 @@
                                         })
                                         .focusout(function () {
                                             $(this).removeClass("focus");
-                                            $("#infoHolder").html("");
                                         })
                                 if (XTGetMode() == "normal")
                                     $this.draggable("disable");
@@ -217,7 +217,7 @@
                     .each(function(i) {
                         var labelNum = Math.floor(Math.random() * tempData.length);
 
-                        $('<div class="label panel" id="label' + i + '" tabindex="' + (i+3) + '" title="' + labelTxt1 + '">' + tempData[labelNum].name + '</div>')
+                        $('<div class="label panel" id="label' + i + '" tabindex="0" title="' + labelTxt1 + '">' + tempData[labelNum].name + '</div>')
                                 .appendTo($labelHolder)
                                 .data("correct", tempData[labelNum].correct);
 
@@ -295,7 +295,6 @@
                         })
                         .focusout(function () {
                             var $this = $(this);
-                            $("#infoHolder").html("");
                             $this.removeClass("focus");
                             if ($this.is($("#pageContents").data("selectedLabel")) == false) {
                                 $this.attr("title", labelTxt1);
@@ -316,8 +315,6 @@
                                         .addClass("selected")
                                         .attr("title", labelTxt1 + ' - ' + labelTxt2);
                                 $pageContents.data("selectedLabel", $this);
-
-                                $("#infoHolder").html("");
                             }
                         })
                         .disableSelection();
@@ -388,8 +385,6 @@
                                         .addClass("selected")
                                         .attr("title", labelTxt1 + ' - ' + labelTxt2);
                                 $pageContents.data("selectedLabel", $this);
-
-                                $("#infoHolder").html("");
                             }
                         })
                         .disableSelection();
@@ -415,16 +410,6 @@
                     $("#targetHolder").html("");
                     dragDropLabel.imgLoaded();
                     $("#submitBtn").show();
-                    //$("#targetHolder .target")
-                    //        .each(function () {
-                    //            var $this = $(this);
-                    //            $this.droppable("enable");
-                    //            //$this.droppable({
-                    //            //    tolerance: "pointer",
-                    //            //    accept: "*"
-                    //            //});
-                    //        })
-                    //        .off("click");
                 }
                 else
                 {
@@ -485,7 +470,7 @@
                       xywh = [xywh[0] * scale, xywh[1] * scale, xywh[2] * scale, xywh[3] * scale];
 
                       // create target and position it
-                      $('<div class="target transparent"></div>')
+                      $('<div class="target transparent" tabindex="0"></div>')
                           .appendTo($targetHolder)
                           .attr("title", (tooltips[i] != undefined && tooltips[i] != "") ? tooltips[i] : targetTxt1 + " " + (i + 1))
                           .data("text", this.getAttribute("text"))
@@ -573,16 +558,6 @@
                                   }
                               }
                           });
-
-                  // set tab index for targets - leaving space between them for a label to be put on it
-                  var tabIndex = 2;
-                  tabIndex += $("#labelHolder .label").length;
-                  $targets.each(function() {
-                      tabIndex++;
-                      var $this = $(this);
-                      $this.attr("tabindex", tabIndex);
-                      tabIndex++;
-                  });
         };
 
         // function called when label dropped on target - by mouse or keyboard
@@ -605,7 +580,7 @@
                 $thisLabel
                         .attr({
                             "title": labelTxt1,
-                            "tabindex": $thisTarget.attr("tabindex") + 1,
+							"tabindex": 0,
                             "style": "cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
                         })
                         .data("infoTxt", $infoHolder.html())
@@ -625,7 +600,7 @@
                         })
                         .focusout(function () {
                             $(this).removeClass("focus");
-                            $("#infoHolder").html("");
+                            //$("#infoHolder").html("");
                         })
                         .data("target", targetIndex);
                 $thisTarget
@@ -644,7 +619,7 @@
                 $thisLabel
                         .attr({
                             "title": labelTxt1,
-                            "tabindex": $thisTarget.attr("tabindex") + 1,
+							"tabindex": 0,
                             "style": "cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
                         })
                         .data("infoTxt", $infoHolder.html())
@@ -662,20 +637,31 @@
                         })
                         .focusin(function () {
                             $(this).addClass("focus");
-                            $("#infoHolder").html($(this).data("infoTxt"));
                         })
                         .focusout(function () {
                             $(this).removeClass("focus");
-                            $("#infoHolder").html("");
                         })
+						.keypress(function (e) {
+                            var charCode = e.charCode || e.keyCode;
+                            if (charCode == 32) {
+								 $("#infoHolder").html($(this).data("infoTxt"));
+							}
+						})
                         .data("target", $thisTarget);
+				
                 $thisTarget
                         .attr("title", (tooltips[$thisTarget.index()] != undefined && tooltips[$thisTarget.index()] != "") ? tooltips[$thisTarget.index()] : targetTxt1 + " " + ($thisTarget.index() + 1))
                         .data("infoTxt", $infoHolder.html())
                         .css("cursor", "pointer")
                         .click(function() {
                             $("#infoHolder").html($(this).data("infoTxt"));
-                        });
+                        })
+						.keypress(function (e) {
+                            var charCode = e.charCode || e.keyCode;
+                            if (charCode == 32) {
+								 $("#infoHolder").html($(this).data("infoTxt"));
+							}
+						});
                 if ($("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length) {
                     $("#pageContents hr:eq(1)").remove();
                 }
@@ -744,7 +730,7 @@
                     else {
                         if (XTGetMode() != "normal") {
                             $this
-								.attr({"tabindex": i + 3})
+								.attr("tabindex", 0)
 								.removeAttr( 'style' )
 								.css({
 									"position": "relative",
@@ -814,9 +800,9 @@
     </div>
 
     <div id="textHolder">
-        <div id="mainText" tabindex="1"></div>
+        <div id="mainText" ></div>
         <hr/>
-        <div id="infoHolder" tabindex="2" aria-live="polite"></div>
+        <div id="infoHolder" aria-live="polite"></div>
     </div>
 
 </div>
