@@ -126,10 +126,7 @@
 			if (x_currentPageXML.getAttribute("align") == "top") {
 				$("#gridHolder")
 					.appendTo($pageContents)
-					.css({
-						"margin":"auto",
-						"margin-top":"10px"
-					});
+
 				$("#feedback").appendTo($pageContents);
 				$("#btnHolder").appendTo($pageContents);
 			} else if (x_currentPageXML.getAttribute("align") == "right") {
@@ -140,6 +137,30 @@
 					.addClass("x_floatRight")
 				$("#btnHolder").appendTo($pageContents)
 						.addClass("x_floatRight")
+			}
+
+
+			var $grid = $("#grid");
+			var $text = $("#otherContent");
+			if(x_currentPageXML.getAttribute("gridSize") == "small"){
+				$text.css("max-width", "75%");
+			}else if(x_currentPageXML.getAttribute("gridSize") == "medium"){
+				$text.css("max-width", "50%");
+			}else if(x_currentPageXML.getAttribute("gridSize") == "large"){
+				$text.css("max-width", "25%");
+			}else{
+				$text.remove()
+			}
+
+			var $content = $("#content");
+			debugger
+			if(x_currentPageXML.getAttribute("align") == "left"){
+				$content.css("flex-direction", "row")
+			}else if(x_currentPageXML.getAttribute("align") == "right"){
+				$content.css("flex-direction", "row-reverse")
+			}else{
+				$content.css("flex-direction", "column")
+				$text.css("max-width", "100%");
 			}
 
 			$("#checkBtn")
@@ -196,6 +217,34 @@
 			// call this function in every model once everything has loaded
 			x_pageLoaded();
 		}
+
+
+		/*this.gridSize = function (size){
+			var $grid = $("#grid"), $ul, $holder, row;
+			var $text = $("#otherContent");
+			var $content = $("#content");
+			if(x_currentPageXML.getAttribute("gridSize") == "small"){
+				$grid.width(size);
+				$text.css("max-width", "75%");
+			}else if(x_currentPageXML.getAttribute("gridSize") == "medium"){
+				$grid.width(size * 2);
+				$text.css("max-width", "50%");
+			}else if(x_currentPageXML.getAttribute("gridSize") == "large"){
+				$grid.width(size * 3);
+				$text.css("max-width", "25%");
+			}else{
+				$text.remove()
+			}
+
+			debugger
+			if(x_currentPageXML.getAttribute("align") == "left"){
+				$content.css("flex-direction", "row")
+			}else if(x_currentPageXML.getAttribute("align") == "right"){
+				$content.css("flex-direction", "row-reverse")
+			}else{
+				$content.css("flex-direction", "column")
+			}
+		}*/
 
 		this.sortData = function(data) {
 			var $grid = $("#grid"), $ul, $holder, row,
@@ -324,7 +373,7 @@
 				$holder = $('<div class="listHolder"></div>').appendTo($grid);
 				$ul = $('<ul/>').appendTo($holder);
 				labelData.push([]);
-
+				debugger
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
 					$tr = $('<tr/>').appendTo($gridBorders);
@@ -335,6 +384,23 @@
 					}
 				}
 
+				debugger
+				row = data[0].split(separator);
+				var colWidth = $("#pageContents").width() - $("#otherContent").width();
+				if(x_currentPageXML.getAttribute("align") == "top"){
+					colWidth =  $("#pageContents").width()
+				}
+
+				if(fixedCols.length>0){
+					colWidth = colWidth - (colWidth/6)
+					colWidth = colWidth/(row.length-1);
+				}else{
+					colWidth = colWidth - (colWidth/6)
+					colWidth = colWidth/row.length;
+				}
+
+
+				$grid.css('width', colWidth)
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
 				$grid.find("ul li").each(function(i) {
@@ -855,17 +921,21 @@
 
 
 <div id="pageContents">
-	
-	<div id="gridHolder">
-		<table id="gridBorders"/>
-		<div id="grid"/>
-	</div>
-	<div id="btnHolder">
-		<button style="float:right" id="checkBtn" tabindex="2"></button>
-	</div>
+
+	<div id="content">
 	<div id="otherContent">
 		<div id="textHolder" tabindex="1"/>
 		<div id="feedback"/>
 	</div>
+
+	<div id="gridHolder">
+		<table id="gridBorders"/>
+		<div id="grid"/>
+	</div>
+	</div>
+	<div id="btnHolder">
+		<button id="checkBtn" tabindex="2"></button>
+	</div>
+
 	
 </div>
