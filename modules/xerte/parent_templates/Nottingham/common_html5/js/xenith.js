@@ -2558,27 +2558,28 @@ function x_setUpLightBox() {
 		
 		$.featherlight.prototype.afterContent = function () {
 			if (this.$currentTarget != undefined) {
+				
+				var caption = this.$currentTarget.find('img').attr('alt');
+				
 				if (this.$currentTarget[0].nodeName === 'A' && this.$currentTarget.attr('data-image-alt') != undefined) {
-						this.$content.attr('alt', this.$currentTarget.attr('data-image-alt'));
+					this.$content.attr('alt', this.$currentTarget.attr('data-image-alt'));
+					caption = this.$content.attr('alt');
 				}
-				else {
-					var caption = this.$currentTarget.find('img').attr('alt');
 
-					if (caption != undefined && caption != '') {
-						this.$instance.find('.featherlight-content img').attr('alt', caption);
+				if (caption != undefined && caption != '') {
+					this.$instance.find('.featherlight-content img').attr('alt', caption);
+					
+					// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
+					// captions can be turned on at LO or page level
+					if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
+						this.$instance.find('.caption').remove();
+						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
 						
-						// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
-						// captions can be turned on at LO or page level
-						if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
-							this.$instance.find('.caption').remove();
-							var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
-							
-							if (caption != undefined && caption != '') {
-								if (before == true) {
-									$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
-								} else {
-									$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
-								}
+						if (caption != undefined && caption != '') {
+							if (before == true) {
+								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+							} else {
+								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
 							}
 						}
 					}
