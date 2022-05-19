@@ -1531,6 +1531,9 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	} else {
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
+	//dynamically change the skip link for each page
+	var skipLinkTarget='#page'+(currentPage+1)+'section1';
+	$(".srskip").prop("href", skipLinkTarget)
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
