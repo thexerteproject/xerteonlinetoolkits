@@ -22,7 +22,7 @@
 		<highlightColour label="Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
 	</highlight>
 	
-    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100"/>
+    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100" tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
 	
 	<tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true" />
 	<submitText label="Submit button label for Match" type="TextInput" wysiwyg="true" language="true" />
