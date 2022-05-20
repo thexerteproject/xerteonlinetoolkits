@@ -333,21 +333,11 @@
 				}
 			}
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
-			    correctAnswers = [];
-                correctOptions = [];
-                name = x_currentPageXML.getAttribute("name");
-				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-				{
-					name = x_currentPageXML.getAttribute("trackinglabel");
-				}
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
-					correctAnswer = answerData[interactionNumber][0];
-					correctAnswer = correctAnswer + "-->" + correctAnswer;
-					correctAnswers.push(correctAnswer);
-					correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
-					correctOptions.push(correctOption);
+					name = "interaction number" + " " + interactionNumber;
+					correctAnswer = answerData[interactionNumber];
+					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("grouping"));
 				}
-                XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
             }
 			else{ // drop down menu
                 for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
@@ -1069,7 +1059,6 @@
 							success: correct,
 							score: (correct ? 100.0 : 0.0)
 						};
-						
 						XTExitInteraction(x_currentPage, $this.data("index") , result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					});
 
@@ -1143,33 +1132,31 @@
 					});
 					
 					// track before moving back labels or else results page looks like you haven't attempted to answer
-					var l_options = [];
-					var l_answers = [];
-					var feedback = "Correct";
 					total = 0;
 					correct_answers = 0;
 					
 					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
-						var correctAnswer = answerData[interactionNumber][0];
-						var labelSource = labelAnswers[correctAnswer];
-						var option = {source: labelSource, target: correctAnswer};
-						l_options.push(option);
+						var feedback = "Correct",
+							correct = false,
+							correctAnswer = answerData[interactionNumber][0],
+							labelSource = labelAnswers[correctAnswer] == undefined ? '' : labelAnswers[correctAnswer],
+							option = {source: labelSource, target: correctAnswer};
+						
 						if (option.source == option.target) {
 							correct_answers++;
+							correct = true;
 						}
-
-						var l_answer = labelSource + "-->" + correctAnswer;
-						l_answers.push(l_answer);
+						
+						var result = {
+							success: correct,
+							score: (correct ? 100.0 : 0.0)
+						};
+						if (!correct) { feedback = "Incorrect"; }
+						
 						total++;
+						XTExitInteraction(x_currentPage, interactionNumber, result, [], labelSource, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					}
-					var correct = (total == correct_answers);
-					var result = {
-						success: correct,
-						score: (correct ? 100.0 : 0.0)
-					};
-					if (!correct) { feedback = "Incorrect"; }
-
-					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, feedback);
+					var allCorrect = (total == correct_answers);
 					
 					gapFill.finishTracking();
 					
@@ -1215,7 +1202,7 @@
 						$("#submitBtn").hide();
 						finished = true;
 						
-						if (correct !== true) {
+						if (allCorrect !== true) {
 							$("#showBtn").show();
 						}
 					}
