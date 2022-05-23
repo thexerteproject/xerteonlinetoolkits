@@ -4488,10 +4488,13 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			let nodes = getTextNodes(fragment);
 			let index = 'textContent' in document.body ? 'textContent' : 'innerText';
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				nodes.forEach(function(node) {
+				nodes.some(function(node) {
 					let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word;
 					let regExp = new RegExp('\\b(' + term + ')\\b', multiple_terms ? 'ig' : 'i');
+					let found = regExp.test(node[index]);
+
 					node[index] = node[index].replace(regExp, '{|{'+k+'::$1}|}');
+					return found && !multiple_terms;
 				});
 			}
 			// Need to treat single text node differently but rebuild from fragmant
