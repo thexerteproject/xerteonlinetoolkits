@@ -325,6 +325,7 @@ console.log("right", editor.getSelectedHtml().getHtml());debugger;
               var display = (this.getValue() === 'iframe');
               this.getDialog().getContentElement('target', 'iframeSizeSettings').getElement()[display ? 'show' : 'hide']();
               this.getDialog().getContentElement('target', 'imageAltText').getElement()[display ? 'hide' : 'show']();
+              this.getDialog().getContentElement('target', 'tooltip').getElement()[display ? 'show' : 'hide']();
             };
 
             // Add a filedset containing lightbox Options
@@ -335,27 +336,37 @@ console.log("right", editor.getSelectedHtml().getHtml());debugger;
               children: [{
                 type: 'hbox',
                 children: [{
-                    type: 'select',
-                    id: 'lightboxType',
-                    label: lang.lightboxTypeLabel,
-                    onChange: lightboxTypeOnChange,
-                    'default': 'iframe',
-                    items: [
-                      ['Image', 'image'],
-                      ['iFrame', 'iframe'],
-                    ],
-                    setup: function(data) {
-                      if (featherlightAttributes && featherlightAttributes.type) {
-                        if (['image', 'iframe'].includes(featherlightAttributes.type.toLowerCase()))
-                          this.setValue(featherlightAttributes.type.toLowerCase());
+                    type: 'vbox',
+                    children: [
+                      {
+                        type: 'select',
+                        id: 'lightboxType',
+                        label: lang.lightboxTypeLabel,
+                        onChange: lightboxTypeOnChange,
+                        'default': 'iframe',
+                        items: [
+                          ['Image', 'image'],
+                          ['iFrame', 'iframe'],
+                        ],
+                        setup: function(data) {
+                          if (featherlightAttributes && featherlightAttributes.type) {
+                            if (['image', 'iframe'].includes(featherlightAttributes.type.toLowerCase()))
+                              this.setValue(featherlightAttributes.type.toLowerCase());
+                          }
+                          lightboxTypeOnChange.call(this);
+                        },
+                        commit: function(data) {
+                          if (data.target && data.target.name === '_lightbox') {
+                            featherlightAttributes.type = ['image', 'iframe'].includes(this.getValue()) ? this.getValue() : '';
+                          }
+                        }
+                      },
+                      {
+                        type: 'html',
+                        html: lang.lightboxTooltip,
+                        id: 'tooltip'
                       }
-                      lightboxTypeOnChange.call(this);
-                    },
-                    commit: function(data) {
-                      if (data.target && data.target.name === '_lightbox') {
-                        featherlightAttributes.type = ['image', 'iframe'].includes(this.getValue()) ? this.getValue() : '';
-                      }
-                    }
+                    ]
                   },
                   {
                     type: 'hbox',
