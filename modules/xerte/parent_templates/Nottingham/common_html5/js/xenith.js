@@ -4170,8 +4170,8 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			if (dataInfo == true) {
 				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
 				// replace with the variable text
-				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');console.log(tempText);
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));console.log(tempText);
 				
 			} else {
 				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
@@ -4482,18 +4482,45 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	insertText = function(tempText, exclude, list) {
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
+
+			// Create a fragment and traverse the DOM tree, checking for terms in each node separately
+			let fragment = document.createRange().createContextualFragment(tempText);
+			let nodes = getTextNodes(fragment);
+			let index = 'textContent' in document.body ? 'textContent' : 'innerText';
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word;
-				let regExp = new RegExp('\\b(' + term + ')\\b', multiple_terms ? 'ig' : 'i');
-				tempText = tempText.replace(regExp, '{|{'+k+'::$1}|}');
+				nodes.forEach(function(node) {
+					let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word;
+					let regExp = new RegExp('\\b(' + term + ')\\b', multiple_terms ? 'ig' : 'i');
+					node[index] = node[index].replace(regExp, '{|{'+k+'::$1}|}');
+				});
 			}
+			// Need to treat single text node differently but rebuild from fragmant
+			tempText = nodes.length === 1 ? nodes[0].textContent : Array.from(fragment.childNodes).map(x => x.outerHTML).join('');
+
+			// Replace all our tokens with the glossary tag
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				let regExp = new RegExp('{\\|{' + k + '::(.*?)}\\|}', multiple_terms ? 'ig' : 'i');
+				let regExp = new RegExp('{\\|{' + k + '::(.*?)}\\|}', 'ig');
 				tempText = tempText.replace(regExp, '<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$1</span>');
 			}
 		}
-		
+
 		return tempText;
+	},
+
+	getTextNodes = function (fragment) {
+		let textNodes = [];
+		(function R(node) {
+			
+		  if (node = node.firstChild)
+			  while (node != null) {
+				  if (node.nodeType == 3) {
+						if (node && node.parentNode && node.parentNode.nodeName !== "A") textNodes.push(node);
+				  }
+				  else if (node.nodeType == 1) R(node);
+				  node = node.nextSibling;
+			  }
+		})(fragment);
+		return textNodes;
 	},
 	
 	touchStartHandler = function() {
