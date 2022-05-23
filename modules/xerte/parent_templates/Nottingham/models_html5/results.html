@@ -561,7 +561,13 @@
         }
       }
       var name = $('<div>').html(x_params.name + "_" + XTResults().start + ".pdf").text();
-      pdf.save(name.replace(/ /g, "_"));
+
+      // Workaround for Firefox/98.0 default opening issue
+      let firefox = navigator.userAgent.indexOf("Firefox");
+      if (parseInt(navigator.userAgent.substr(firefox + 8, 4)) >= 98)
+        window.open(pdf.output("bloburl", { filename: name.replace(/ /g, "_") }));
+      else
+        pdf.save(name.replace(/ /g, "_"));
     }
   };
   results.init();
