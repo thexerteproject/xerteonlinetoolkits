@@ -166,7 +166,7 @@
 	  pinAlt="Draggable pin icon"
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No media selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="Enter text for the page here" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
 	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
@@ -2333,7 +2333,6 @@
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
-	<mediaError label="No Media Error Text" type="TextInput" language="true"/>
 	<downloadTxt label="Download Button Label" type="TextInput" language="true"/>
 	<nextTxt label="Next Button Label" type="TextInput" language="true"/>
 	<prevTxt label="Previous Button Label" type="TextInput" language="true"/>
@@ -2400,7 +2399,7 @@
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text here"/>]]></section>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
 	  <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -2416,7 +2415,7 @@
 
     <newNodes>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -2466,11 +2465,11 @@
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </description><line menuItem="Horizontal Rule" icon="icHr">
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
-  </line><media menuItem="Media" icon="icPicture">
-    <name label="Media Title" type="TextInput" wysiwyg="true"/>
+  </line><media menuItem="Image" icon="icPicture">
+    <name label="Image Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
 	
-	<mediaGroup type="group" label="Media">
+	<mediaGroup type="group" label="Image">
 		<url label="File" type="media"/>
 		<tip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility"/>
 	</mediaGroup>
