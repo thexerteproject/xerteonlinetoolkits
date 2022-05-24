@@ -687,6 +687,13 @@
             if (x_currentPageXML.getAttribute("paging") != undefined) {
                 $pageContents.data('pageMode', x_currentPageXML.getAttribute("paging") === "true");
             }
+            else {
+				if ($pageContents.data('listMode') === 'all') {
+					$pageContents.data('pageMode', false);
+				} else {
+					$pageContents.data('pageMode', true);
+				}
+			}
 
             if (x_currentPageXML.getAttribute("pagesize") != undefined) {
                 $pageContents.data('pageSize', parseInt(x_currentPageXML.getAttribute("pagesize")));
