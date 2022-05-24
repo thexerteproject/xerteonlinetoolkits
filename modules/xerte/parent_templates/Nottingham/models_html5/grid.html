@@ -41,6 +41,83 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			var $grid = $("#grid");
+			var data = x_currentPageXML.getAttribute("data").split("||");
+			this.addLabelRefresh(data)
+
+			row = data[0].split(separator);
+			$("#content").css({
+				'width': ""
+			})
+
+			var colWidth = $("#pageContents").width() - $("#otherContent").width();
+			if(x_currentPageXML.getAttribute("align") == "top"){
+				colWidth =  $("#pageContents").width()
+			}
+			colWidth = colWidth - (colWidth/6);
+			debugger
+
+			if(fixedCols.length>0){
+				colWidth = colWidth/(row.length-1);
+			}else{
+				colWidth = colWidth/row.length;
+			}
+			$grid.css('width', colWidth)
+			$(".listHolder ul:not(:first)").css('width', colWidth)
+			// every label should be same width & height...
+			var maxW = 0, maxH = 0;
+			$grid.find("ul:not(:first) li").each(function(i) {
+				$(this).css("width", "");
+				$(this).css("height", "");
+				if ($.inArray($(this).data("xy")[0],fixedCols) == -1) {
+					maxW = Math.max(maxW, $(this).width());
+				}
+				if ($.inArray(i,fixedRows) == -1) {
+					maxH = Math.max(maxH, $(this).height());
+				}
+			})
+					.width(maxW + 5 + "px")
+					.height(maxH + "px");
+
+			var column = maxW+5;
+
+			// ...unless they're in a fixed column/row when they must just have same width/height as other labels on that column/row
+			for (var i=0; i<fixedCols.length; i++) {
+				maxW = 0;
+				var $labels = $([]);
+				$grid.find("ul li.static").each(function() {
+					if ($(this).data("xy")[0] == fixedCols[i]) {
+						$(this).css("width", "");
+						maxW = Math.max(maxW, $(this).width());
+						if ($labels == undefined) { $labels = $(this); } else { $labels = $labels.add($(this));}
+					}
+				});
+				$labels.width(maxW + 5 + "px");
+			}
+
+			for (var i=0; i<fixedRows.length; i++) {
+				maxH = 0;
+				var $labels = $([]);
+				$grid.find("ul li.static").each(function() {
+					if ($(this).data("xy")[1] == fixedRows[i]) {
+						$(this).css("height", "");
+						maxH = Math.max(maxH, $(this).height());
+						if ($labels == undefined) { $labels = $(this) } else { $labels = $labels.add($(this)); }
+					}
+				});
+				$labels.height(maxH);
+			}
+			debugger
+			var gridWidth;
+			if(fixedCols.length>0){
+				gridWidth = column * (row.length-1) + maxW + 5 + (24*row.length);
+			}else{
+				gridWidth = column * (row.length) + maxW + 5 + (24*row.length);
+			}
+
+			$("#gridBorders").css('width', gridWidth);
+			$(".listHolder ul:first").css('width', gridWidth);
+			$(".listHolder ul:not(:first)").css('width', gridWidth);
 
 		}
 
@@ -153,11 +230,16 @@
 			}
 
 			var $content = $("#content");
-			debugger
+
 			if(x_currentPageXML.getAttribute("align") == "left"){
-				$content.css("flex-direction", "row")
+				$content.css({
+					"flex-direction":"row"
+				})
 			}else if(x_currentPageXML.getAttribute("align") == "right"){
-				$content.css("flex-direction", "row-reverse")
+				$content.css({
+					"flex-direction": "row-reverse",
+					"justify-content" : "space-between"
+				})
 			}else{
 				$content.css("flex-direction", "column")
 				$text.css("max-width", "100%");
@@ -215,6 +297,7 @@
 			}
 			this.initTracking();
 			// call this function in every model once everything has loaded
+			//this.sizeChanged();
 			x_pageLoaded();
 		}
 
@@ -236,7 +319,7 @@
 				$text.remove()
 			}
 
-			debugger
+
 			if(x_currentPageXML.getAttribute("align") == "left"){
 				$content.css("flex-direction", "row")
 			}else if(x_currentPageXML.getAttribute("align") == "right"){
@@ -246,7 +329,10 @@
 			}
 		}*/
 
+
+
 		this.sortData = function(data) {
+			debugger
 			var $grid = $("#grid"), $ul, $holder, row,
 				$gridBorders = $("#gridBorders"), $tr;
 
@@ -373,7 +459,7 @@
 				$holder = $('<div class="listHolder"></div>').appendTo($grid);
 				$ul = $('<ul/>').appendTo($holder);
 				labelData.push([]);
-				debugger
+
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
 					$tr = $('<tr/>').appendTo($gridBorders);
@@ -384,7 +470,7 @@
 					}
 				}
 
-				debugger
+
 				row = data[0].split(separator);
 				var colWidth = $("#pageContents").width() - $("#otherContent").width();
 				if(x_currentPageXML.getAttribute("align") == "top"){
@@ -403,6 +489,7 @@
 				$grid.css('width', colWidth)
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
+				debugger
 				$grid.find("ul li").each(function(i) {
 					if ($.inArray($(this).data("xy")[0],fixedCols) == -1) {
 						maxW = Math.max(maxW, $(this).width());
@@ -667,6 +754,53 @@
 			$grid.find("ul li").css("color",$x_body.css("color")); // override jquery ui style
 		}
 
+		this.sortDataRefresh = function (data){
+
+			var $grid = $("#grid"), $ul, $holder, row,
+					$gridBorders = $("#gridBorders"), $tr;
+
+			if (x_currentPageXML.getAttribute("constrain") == "col") {
+				for (var i=0; i<data.length; i++) {
+					row = data[i].split(separator);
+
+					for (var j=0; j<row.length; j++) {
+						this.addLabelRefresh(i, j);
+					}
+				}
+
+			} else if (x_currentPageXML.getAttribute("constrain") == "row") {
+				for (i = 0; i < data.length; i++) {
+					labelData.push([]);
+					row = data[i].split(separator);
+					for (j = 0; j < row.length; j++) {
+						this.addLabelRefresh(i, j);
+					}
+				}
+			}else{
+				debugger
+				for (i=0; i<data.length; i++) {
+					row = data[i].split(separator);
+
+					for (j=0; j<row.length; j++) {
+						this.addLabelRefresh(i, j);
+					}
+				}
+			}
+		}
+
+		this.addLabelRefresh = function (data){
+			debugger
+			var row = data[0].split(separator).length;
+
+			$(".listHolder ul:first li").each(function (index){
+				$(this).data({
+					"correct" : $( this ).index(),
+					"xy" : [index%row,Math.floor(index/row)]
+				});
+			})
+
+		}
+
 		this.addLabel = function(txt, $parent, i, j) {
 			var $li = $('<li>' + txt + '</li>')
 				.appendTo($parent)
@@ -854,7 +988,6 @@
 		rows = x_currentPageXML.getAttribute("data").split("||");
 		rowCount = 1;
 
-		//debugger;
 		var header = (x_currentPageXML.getAttribute("header") != undefined ? x_currentPageXML.getAttribute("header") : "");
 		var fixedCells = (x_currentPageXML.getAttribute("fixedCells") != undefined ? x_currentPageXML.getAttribute("fixedCells") : "");
 		var fixedRows = (x_currentPageXML.getAttribute("fixedRows") != undefined ? x_currentPageXML.getAttribute("fixedRows") : "");
@@ -934,7 +1067,7 @@
 	</div>
 	</div>
 	<div id="btnHolder">
-		<button id="checkBtn" tabindex="2"></button>
+		<button id="checkBtn" class="" tabindex="2"></button>
 	</div>
 
 	

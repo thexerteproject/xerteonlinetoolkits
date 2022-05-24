@@ -119,9 +119,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * Get sublist of pages (if any)
      */
+
     $template_sub_pages = get_template_pagelist($row_edit['template_id']);
     $simple_mode = count($template_sub_pages) != 0;
     $simple_lo_page = get_template_simple_lo_page($row_edit['template_id']);
+
+
 
     /**
      * build an array of available themes for this template

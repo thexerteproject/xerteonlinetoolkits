@@ -104,6 +104,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         }
     }
 
+    /**
+     * Get sublist of pages (if any)
+     */
+    $template_sub_pages = array("page");
+    $simple_lo_page = get_template_simple_lo_page($row_edit['template_id']);
+    $simple_mode = $simple_lo_page;
 	/**
      * build an array of available themes for this template
      */
@@ -370,6 +376,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "educationlevel_list=" . json_encode($educationlevels) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "course_list=" . json_encode($course) . ";\n";
+    echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
+    echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
+    echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
     // If not present, set to true
     if (!isset($xerte_toolkits_site->course_freetext_enabled))
