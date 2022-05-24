@@ -55,7 +55,7 @@
 				colWidth =  $("#pageContents").width()
 			}
 			colWidth = colWidth - (colWidth/6);
-			debugger
+
 
 			if(fixedCols.length>0){
 				colWidth = colWidth/(row.length-1);
@@ -107,7 +107,7 @@
 				});
 				$labels.height(maxH);
 			}
-			debugger
+
 			var gridWidth;
 			if(fixedCols.length>0){
 				gridWidth = column * (row.length-1) + maxW + 5 + (24*row.length);
@@ -115,9 +115,13 @@
 				gridWidth = column * (row.length) + maxW + 5 + (24*row.length);
 			}
 
+			debugger
+
 			$("#gridBorders").css('width', gridWidth);
 			$(".listHolder ul:first").css('width', gridWidth);
 			$(".listHolder ul:not(:first)").css('width', gridWidth);
+			var gridHolderHeight = $("#grid").height();
+			$("#gridHolder").css({"height": gridHolderHeight})
 
 		}
 
@@ -332,7 +336,7 @@
 
 
 		this.sortData = function(data) {
-			debugger
+
 			var $grid = $("#grid"), $ul, $holder, row,
 				$gridBorders = $("#gridBorders"), $tr;
 
@@ -489,7 +493,7 @@
 				$grid.css('width', colWidth)
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
-				debugger
+
 				$grid.find("ul li").each(function(i) {
 					if ($.inArray($(this).data("xy")[0],fixedCols) == -1) {
 						maxW = Math.max(maxW, $(this).width());
@@ -777,7 +781,7 @@
 					}
 				}
 			}else{
-				debugger
+
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
 
@@ -789,7 +793,7 @@
 		}
 
 		this.addLabelRefresh = function (data){
-			debugger
+
 			var row = data[0].split(separator).length;
 
 			$(".listHolder ul:first li").each(function (index){
