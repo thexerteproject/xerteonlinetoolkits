@@ -309,10 +309,10 @@
                 break;
         }
         if (xertelo != undefined && xertelo == x_TemplateId
-            && obj.context != undefined
-            && obj.context.extensions != undefined
-            && obj.context.extension['http://xerte.org.uk/sessionId'] != undefined
-            && obj.context.extension['http://xerte.org.uk/sessionId'] == state.sessionId)
+            && statement.context != undefined
+            && statement.context.extensions != undefined
+            && statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined
+            && statement.context.extensions['http://xerte.org.uk/sessionId'] == state.sessionId)
         {
             return true;
         }
@@ -884,7 +884,7 @@
             {
                 summaryText = `<h1><p>${summaryText}</p></h1>`;
             }
-            if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
+            //if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
                 div.html(
                     `<h2><p>${name}</p></h2>` +
                     `<div class='introduction'>${introductionText}</div>` +
@@ -903,17 +903,20 @@
                     '<div class="graph-container"></div>' +
                     '</div>'
                 );
-            }
-            else
-            {
-                div.html(
-                    `<h2><p>${name}</p></h2>` +
-                    `<div class='introduction'>${introductionText}</div>` +
-                    '<div class="summary-container">' +
-                    '<div class="graph-container"></div>' +
-                    '</div>'
-                );
-            }
+            //}
+            //else
+            //{
+            //    div.html(
+            //        `<h2><p>${name}</p></h2>` +
+            //        `<div class='introduction'>${introductionText}</div>` +
+            //        '<div class="summary-container">' +
+            //        '<div class="score">' +
+            //        '<div class="stats-div"><ul class="stats"></ul></div>' +
+            //        '</div>' +
+            //        '<div class="graph-container"></div>' +
+            //        '</div>'
+            //    );
+            //}
 
             $(location).append(div);
 
