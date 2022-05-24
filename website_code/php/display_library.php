@@ -362,7 +362,7 @@ function list_users_projects($sort_type) {
 }
 
 if (!function_exists('str_contains')) {
-    function str_contains(string $haystack, string $needle): bool
+    function str_contains($haystack, $needle)
     {
         return '' === $needle || false !== strpos($haystack, $needle);
     }
