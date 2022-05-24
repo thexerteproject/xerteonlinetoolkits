@@ -1239,13 +1239,7 @@
             {
 				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
-			if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
-			{
-                XTSetPageType(x_currentPage, 'numeric', answerData.length, this.weighting);
-			}
-			else { // text fill in blank or drag & drop
-                XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-            }
+			XTSetPageType(x_currentPage, 'numeric', answerData.length, this.weighting);
 		}
 		
 		//Stopping the tracking
