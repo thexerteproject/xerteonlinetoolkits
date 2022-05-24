@@ -117,7 +117,7 @@
 			}
 			$pageContents.data({
 				"dialogPos":dialogPos,
-				"continueBtnTxt":x_currentPageXML.getAttribute("continueBtnTxt") != undefined ? x_currentPageXML.getAttribute("continueBtnTxt") : "Close"
+				"continueBtnTxt":x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close")
 			});
 		};
 
