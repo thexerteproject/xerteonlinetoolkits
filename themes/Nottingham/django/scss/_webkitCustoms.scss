@@ -18,3 +18,7 @@ a:-webkit-any-link {
   color: #007cdb !important;
   text-decoration: none !important;
 }
+
+#x_headerBlock a:-webkit-any-link {
+  color: inherit !important;
+}
