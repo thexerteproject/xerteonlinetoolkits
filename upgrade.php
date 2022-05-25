@@ -220,6 +220,11 @@ function _do_cleanup()
         }
     }
 
+    // Turn off Rss template since it has no HTML engine
+    $table = table_by_key('originaltemplatesdetails');
+    $ok = db_query("update `$table` SET `active` = '0' WHERE `$table`.`template_type_id` = 8");
+    echo "Rss template " . ($ok ? 'set inactive' : 'already inactive :-)') . "<br>";
+
     echo 'Done<br>';
 }
 
