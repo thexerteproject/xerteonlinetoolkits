@@ -564,6 +564,7 @@
 					default:
 						$input = $('<input>')
 							.attr('type', 'text')
+							.attr('aria-label', 'Answer')
 							.attr('value', '');
 						
 						if (xml.getAttribute('defaultTxt')) $input.attr('placeholder', xml.getAttribute('defaultTxt'));
