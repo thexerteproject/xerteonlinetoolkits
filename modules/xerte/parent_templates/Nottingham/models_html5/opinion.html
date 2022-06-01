@@ -581,7 +581,7 @@
             for(var i = 0; i< diagramLabels.length; i++){
                 var q = diagramLabels[i];
                 classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
-                if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title") != "") {
+                if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title")) {
                     classTitles[q.parentNode.classId] = q.parentNode.getAttribute("title");
                 }
                 else
