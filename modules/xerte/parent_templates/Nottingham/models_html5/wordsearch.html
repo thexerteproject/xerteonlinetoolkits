@@ -147,13 +147,14 @@
 			words = x_currentPageXML.getAttribute("words");
 
 			// Force words case
-			var puzzleCase = x_currentPageXML.getAttribute('puzzleCase'); console.log(puzzleCase)
+			var puzzleCase = x_currentPageXML.getAttribute('puzzleCase');
 			if (puzzleCase === 'lowercase' || puzzleCase === '' || puzzleCase === undefined)
 				words = words.toLowerCase();
 			else if (puzzleCase === 'uppercase')
 				words = words.toUpperCase();
 
 			words = $.trim(words).split("\n");
+
 			switch(x_currentPageXML.getAttribute("order")) {
 				case 'random':
 					words.sort(function() { return Math.random() - 0.5; });
