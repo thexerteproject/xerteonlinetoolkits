@@ -454,8 +454,6 @@
 			{
 			    this.loadQuestions();
 			}
-
-			opinion.showPrintButton();
 		};
 
 		this.trackQuestion = function(currentQuestion)
@@ -528,6 +526,7 @@
 			{
 				this.trackOpinion();
 				$pageContents.data('resultShown', true);
+				opinion.showPrintButton();
 			}
 
             x_pageContentsUpdated();
