@@ -43,10 +43,10 @@ function clearEducationalTable() {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $q = "delete from {$xerte_toolkits_site->database_table_prefix}educationlevel";
+    $q = "delete from {$prefix}educationlevel";
     db_query($q);
 
-    $q = "delete from {$xerte_toolkits_site->database_table_prefix}oai_education";
+    $q = "delete from {$prefix}oai_education";
     db_query($q);
 }
 
@@ -54,14 +54,14 @@ function insertEducational($termID, $label){
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $q = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}educationlevel(educationlevel_name) VALUES (?)";
+    $q = "INSERT INTO {$prefix}educationlevel(educationlevel_name) VALUES (?)";
     $res = db_query($q,array($label));
 
-    $q2 = "SELECT educationlevel_id,educationlevel_name FROM {$xerte_toolkits_site->database_table_prefix}educationlevel WHERE educationlevel_name like ?";
+    $q2 = "SELECT educationlevel_id,educationlevel_name FROM {$prefix}educationlevel WHERE educationlevel_name like ?";
     $result = db_query($q2,array($label));
     $return_id = $result[0]['educationlevel_id'];
 
-    $q3 = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}oai_education(education_id,term_id,label) VALUES (?,?,?)";
+    $q3 = "INSERT INTO {$prefix}oai_education(education_id,term_id,label) VALUES (?,?,?)";
     $params = array($return_id,$termID,$label);
     $res = db_query($q3,$params);
 

@@ -224,7 +224,7 @@
         }
 
         if (wordList.length === 0) {
-          $('.puzzleSquare').addClass('complete');
+          $('#solve').click();
         }
       }
 

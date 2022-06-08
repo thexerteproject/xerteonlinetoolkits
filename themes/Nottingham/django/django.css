@@ -19,6 +19,10 @@ a:-webkit-any-link {
   text-decoration: none !important;
 }
 
+#x_headerBlock a:-webkit-any-link {
+  color: inherit !important;
+}
+
 #x_headerBlock {
   background: linear-gradient(to bottom, rgba(0, 92, 202, 0.68) 0%, rgba(22, 109, 218, 0.65) 100%);
 }

@@ -2,7 +2,10 @@
 
 require_once('oaiserver.php');
 require_once('../config.php');
-
+if (!file_exists("oai_config.php"))
+{
+    die("oai-pmh is not available");
+}
 require_once('oai_config.php');
 require_once('xerteobjects.php');
 
@@ -33,8 +36,8 @@ $identifyResponse["repositoryName"] = $xerte_toolkits_site->name ;
 $identifyResponse["baseURL"] =  $xerte_toolkits_site->site_url . 'oai-pmh/oai.php'; //'http://198.199.108.242/~neis/oai_pmh/oai.php';
 $identifyResponse["protocolVersion"] = '2.0';
 $identifyResponse['adminEmail'] = $config['adminEmail']; //'danielneis@gmail.com';
-$identifyResponse["earliestDatestamp"] = call_user_func(getEarliestDatestamp) . "T00:00:00Z";//'2013-01-01T12:00:00Z';
-$identifyResponse["deletedRecord"] = 'no'; // How your repository handles deletions
+$identifyResponse["earliestDatestamp"] = call_user_func('getEarliestDatestamp') . "T00:00:00Z";//'2013-01-01T12:00:00Z';
+$identifyResponse["deletedRecord"] = 'persistent'; // How your repository handles deletions
 // no:             The repository does not maintain status about deletions.
 //                It MUST NOT reveal a deleted status.
 // persistent:    The repository persistently keeps track about deletions
@@ -100,7 +103,7 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                 if ($set != '') {
                     throw new OAIException('noSetHierarchy');
                 }
-                $records = call_user_func(getTemplates, $metadataPrefix,$from, $until);
+                $records = call_user_func('getTemplates', $metadataPrefix,$from, $until);
                 return $records;
             },
 
@@ -154,6 +157,7 @@ function getSingleTemplate($metadataPrefix,$template_id) {
           td.template_name,  
           td.creator_id as owner_userid, 
           ld.username as owner_username, 
+          concat(ld.firstname,' ',ld.surname) as owner,
           td.date_created, 
           td.date_modified, 
           td.date_accessed, 
@@ -171,7 +175,7 @@ function getSingleTemplate($metadataPrefix,$template_id) {
     if (!$response_template) {
         throw new OAIException('idDoesNotExist');
     }
-    $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]["owner_username"],$response_template[0]["template_type"]);
+    $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]["owner_username"],$response_template[0]["template_type"],$response_template[0]['owner']);
     $response_record = call_user_func(makeRecordFromTemplate,$metadataPrefix,$response_template[0], $tempMetaData);
 
     return $response_record;
@@ -188,6 +192,7 @@ function getTemplates($metadataPrefix,$from,$until) {
           td.template_name,  
           td.creator_id as owner_userid, 
           ld.username as owner_username, 
+          concat(ld.firstname,' ',ld.surname) as owner,
           td.date_created, 
           td.date_modified, 
           td.date_accessed, 
@@ -229,9 +234,9 @@ function getTemplates($metadataPrefix,$from,$until) {
     for($i=0;$i<count($templates);$i++)
     {
         $currentTemplate = $templates[$i];
-        $tempMetaData = call_user_func(get_meta_data,$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"]);
+        $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
         if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown"){
-            $currentRecord = call_user_func(makeRecordFromTemplate,$metadataPrefix,$currentTemplate, $tempMetaData);
+            $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
             $tmpRecords[] = $currentRecord;
         }
         
@@ -262,14 +267,15 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                         'http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd'
                 ),
                 'general' => array(
-                    'title' => $template['template_name'],//'Testing records',
+                    //'title' => $template['template_name'],//'Testing records',
+                    'title' => $metadata->name,//'Testing records',
                     'language' => explode("-", $metadata->language)[0],
                     'description' => $metadata->description,
 
                 ),
                 'misc' => array(
                     'course' => $metadata->course,
-                    'educational_code' => $metadata->education,
+                    'educational_code' => $metadata->educode,
                     'location' => ($xerte_toolkits_site->site_url . 'play.php?template_id=' . $template['template_id']),
                 ),
                 'keywords' => explode("\n", $metadata->keywords),
@@ -283,6 +289,7 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                 ),
                 'rights' => array(
                     'rights' => $metadata->rights,
+                    'rightsId' => $metadata->rightsId,
                     'download' => $metadata->download
                 ),
                 'classification' => array(

@@ -53,10 +53,12 @@
 		
 		this.init = function() {
 			// Load in the required scripts before we can begin
-			$script.path(x_templateLocation + 'common_html5/js/qrcode/');
-			$script(['qrcode.min.js'], function () {
-				QRcode.begin();
-			});
+			// Uses new loadjs
+			loadjs([x_templateLocation + 'common_html5/js/qrcode/qrcode.min.js'], {
+				success: function() {
+					QRcode.begin();
+				}
+			})
 		}
 		
 		this.isgdJSON = function (response) {

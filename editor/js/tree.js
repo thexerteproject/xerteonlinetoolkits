@@ -37,7 +37,23 @@ var EDITOR = (function ($, parent) {
         do_buttons();
         build(xml);
 
+        keepalive();
         window.onbeforeunload = unloadFunction;
+    },
+
+    keepalive = function()
+    {
+        var now = new Date().getTime();
+        setTimeout(function(){
+            $.ajax({
+                type: "GET",
+                url: "website_code/php/keepalive.php" + "?t=" + now,
+                dataType: "json",
+                success: function (data) {
+                    keepalive();
+                }
+            })
+        }, 600000);
     },
 
     unloadFunction = function() {
@@ -1670,6 +1686,7 @@ var EDITOR = (function ($, parent) {
     my.getParent = getParent;
     my.refresh_workspaceMerge = refresh_workspaceMerge;
     my.build_json = build_json;
+    my.savepreviewasync = savepreviewasync;
 
 
     return parent;

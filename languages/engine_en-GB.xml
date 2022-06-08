@@ -14,6 +14,8 @@
   
   <homeButton label="Home" description="Home Button"/>
   
+  <homeLink label="Home" description="Go to Home page"/>
+  
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
   
   <glossaryButton label="Glossary" description="Glossary Button"/>

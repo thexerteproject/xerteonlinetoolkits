@@ -58,9 +58,16 @@ function init() {
 	smallScreen = screen.width <= 550 ? true : false;
 	
 	// _____ GET & SORT XML DATA _____
+	var now = new Date().getTime();
+	let url = "website_code/php/templates/get_template_xml.php?file=" + projectXML + "&time=" + now;
+	if (typeof use_url !== "undefined" && use_url)
+	{
+		url = projectXML + "?time=now";
+	}
+
 	$.ajax({
 		type: "GET",
-		url: projectXML,
+		url: url,
 		dataType: "text",
 		success: function(text) {
 			var	newString = fixLineBreaks(makeURLsAbsolute(text)),

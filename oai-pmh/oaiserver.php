@@ -343,25 +343,33 @@ class OAIServer
             $langstring_node->setAttribute("xml:lang", "x-none");
             $this->response->addChild($general_node, 'language', $language);
 
+            // GENERAL - Description
+            if (isset($description) && $description != "")
+            {
+                $description_node = $this->response->addChild($general_node, 'description');
+                $langstring_node = $this->response->addChild($description_node, 'langstring', $description);
+                $langstring_node->setAttribute("xml:lang", $language);
+            }
             // GENERAL - Keywords
-
             foreach ($record['metadata']['keywords'] as $value) {
                 $keyword_node = $this->response->addChild($general_node, 'keyword');
                 $langstring_node = $this->response->addChild($keyword_node, 'langstring', $value);
                 $langstring_node->setAttribute("xml:lang", $language);
             }
             // GENERAL - Keywords - Course
-
-            $course_name = $record['metadata']['misc']['course'];
-            $keyword_node = $this->response->addChild($general_node, 'keyword');
-            $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Course: ' . $course_name));
-            $langstring_node->setAttribute("xml:lang", $language);
-
+            if (isset($record['metadata']['misc']['course']) && $record['metadata']['misc']['course'] != "") {
+                $course_name = $record['metadata']['misc']['course'];
+                $keyword_node = $this->response->addChild($general_node, 'keyword');
+                $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Course: ' . $course_name));
+                $langstring_node->setAttribute("xml:lang", $language);
+            }
             // GENERAL - Keywords - Educational code
-            $educational_code = $record['metadata']['misc']['educational_code'];
-            $keyword_node = $this->response->addChild($general_node, 'keyword');
-            $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Educational code: ' . $educational_code));
-            $langstring_node->setAttribute("xml:lang", $language);
+            if (isset($record['metadata']['misc']['educational_code']) && $record['metadata']['misc']['educational_code'] != "") {
+                $educational_code = $record['metadata']['misc']['educational_code'];
+                $keyword_node = $this->response->addChild($general_node, 'keyword');
+                $langstring_node = $this->response->addChild($keyword_node, 'langstring', ($educational_code));
+                $langstring_node->setAttribute("xml:lang", $language);
+            }
 
             // GENERAL - Aggregation level
 
@@ -386,11 +394,16 @@ class OAIServer
             $langstring_node = $this->response->addChild($value_node, 'langstring', "author");
             $langstring_node->setAttribute("xml:lang", "x-none");
 
-            $centity_node = $this->response->addChild($contribute_node, 'centity');
 
-            $author_name = $record['metadata']['lifecycle']['author'];
-            $vcard = "BEGIN:VCARD\nFN:{$author_name}\nVERSION:3.0\nEND:VCARD";
-            $this->response->addChild($centity_node, 'vcard', $vcard);
+
+            $author_names = explode(',', $record['metadata']['lifecycle']['author']);
+
+            foreach ($author_names as $author_name) {
+                $trimmed = trim($author_name);
+                $centity_node = $this->response->addChild($contribute_node, 'centity');
+                $vcard = "BEGIN:VCARD\nFN:{$trimmed}\nVERSION:3.0\nEND:VCARD";
+                $this->response->addChild($centity_node, 'vcard', $vcard);
+            }
 
             // LIFECYCLE - Publisher
             $contribute_node = $this->response->addChild($lifecycle_node, 'contribute');
@@ -459,19 +472,20 @@ class OAIServer
             $langstring_node->setAttribute("xml:lang", "x-none");
 
             $value_node = $this->response->addChild($copyright_node, 'value');
+            _debug("Rights: " . print_r($record['metadata']['rights'], true));
             $download = $record['metadata']['rights']['download'];
             $copyright_description = $record['metadata']['rights']['rights'];
             if ($copyright_description == "") {
                 $copy_right_value = "no";
             } else {
-                $copy_right_value = "yes";
+                $copy_right_value = $record['metadata']['rights']['rightsId'];
             }
 
             $langstring_node = $this->response->addChild($value_node, 'langstring', $copy_right_value);
             $langstring_node->setAttribute("xml:lang", "x-none");
 
             //RIGHTS - Description
-            if ($copy_right_value == "yes") {
+            if ($copy_right_value !== "no") {
                 $description_node = $this->response->addChild($rights_node, 'description');
                 $langstring_node = $this->response->addChild($description_node, 'langstring', $copyright_description);
                 $langstring_node->setAttribute("xml:lang", $language);

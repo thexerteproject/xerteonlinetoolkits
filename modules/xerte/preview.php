@@ -162,6 +162,7 @@ function show_preview_code2($row, $row_username){
         $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+        $page_content = str_replace("%EMBED_SUPPORT%", "", $page_content);
     }
     else
     {
@@ -188,6 +189,7 @@ function show_preview_code2($row, $row_username){
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
         $page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
+        $page_content = str_replace("%EMBED_SUPPORT%", "", $page_content);
     }
     echo $page_content;
 }

@@ -6,7 +6,7 @@
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
 	<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue=""/>
 
-    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170"/>
+    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" deprecated="This property is deprecated"/>
     <language type="LanguageList" label="Language" width="170"/>
@@ -15,7 +15,11 @@
 	<hideFooter optional="true" type="CheckBox" label="Hide Footer" defaultValue="false"/>
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||fixDisplay"/>
 	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (e.g. 1400px) that the page contents will be displayed on larger displays. Note: some pages like media lesson and hotspot connector will currently still fill the full width of the page."/>
-	<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" tooltip="Home page used when navigation is set to 'Historic'. By default this is the first page in the project."/>
+	
+	<homePageGroup type="group" label="Home Page" optional="true">
+		<homePageLink optional="true" type="CheckBox" label="Link LO title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the learning object title a link which returns users to the home page."/>
+		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="By default, the home page (linked to from LO title or home button when navigation is set to 'Historic') is the first page in the project. Select a page from the drop down to use a different page in your project as the home page instead."/>
+	</homePageGroup>
 
     <kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
     <decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
@@ -108,15 +112,17 @@
 	</tracking>
 
 	<meta type="group" label="Meta data" optional="true">
+		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" mandatory="true"/>
 		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
 		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
 		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
 		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
 		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
 		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
-		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used." condition="oai_pmh_available"/>
 		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
 		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata"/>
+		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agee to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" mandatory="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available"/>
     </meta>
 	
 	<twittercard type="group" label="Twitter card" optional="true">
@@ -136,7 +142,7 @@
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
-	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true"
+	  notFoundMessage="could not be found in this project." />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true"
 	  acrossLabel="Across"
 	  downLabel="Down"
 	  checkLabel="Submit"
@@ -160,9 +166,9 @@
 	  onCompletion="You can retake the quiz at any time"   
 	  restart="Restart"  
 	  pinAlt="Draggable pin icon"
-	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
+	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No media selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="Enter text for the page here" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
 	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
@@ -197,7 +203,7 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -213,7 +219,7 @@
 	  feedbackBtnTxt="Feedback" 
 	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
 	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
-	  copyBtnLabel="Select Text" copyShortcutTxt="Press Ctrl + C to copy" closeBtnTxt="close" answerFieldLabel="Answer"
+	  copyBtnLabel="Select Text" copyShortcutTxt="Press Ctrl + C to copy" answerFieldLabel="Answer"
 	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" panelWidth="Medium" 
 	  copyBtnLabel="Select Text" 
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
@@ -1566,9 +1572,6 @@
         <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
 	</hsAppearance>
 
-    <continueBtnTxt label="Close Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <continueBtnWidth label="Close Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
-
 	<popUp type="group" label="Dialog Position" optional="true" tooltip="Control the position of the pop up window that appears when hotspot clicked">
 		<popUpVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
 		<popUpHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
@@ -1965,8 +1968,6 @@
 	<helpString label="Question Help Label" type="TextInput" wysiwyg="true" language="true"/>
 	<btnLabel label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	
-	<closeBtn label="Close Button" type="TextInput" wysiwyg="true" language="true"/>
-	
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
 		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text="Enter text here"/>]]></infoStep>
@@ -2338,7 +2339,6 @@
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
-	<mediaError label="No Media Error Text" type="TextInput" language="true"/>
 	<downloadTxt label="Download Button Label" type="TextInput" language="true"/>
 	<nextTxt label="Next Button Label" type="TextInput" language="true"/>
 	<prevTxt label="Previous Button Label" type="TextInput" language="true"/>
@@ -2405,7 +2405,7 @@
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text here"/>]]></section>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
 	  <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -2421,7 +2421,7 @@
 
     <newNodes>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -2471,11 +2471,11 @@
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </description><line menuItem="Horizontal Rule" icon="icHr">
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
-  </line><media menuItem="Media" icon="icPicture">
-    <name label="Media Title" type="TextInput" wysiwyg="true"/>
+  </line><media menuItem="Image" icon="icPicture">
+    <name label="Image Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
 	
-	<mediaGroup type="group" label="Media">
+	<mediaGroup type="group" label="Image">
 		<url label="File" type="media"/>
 		<tip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility"/>
 	</mediaGroup>
@@ -2529,7 +2529,7 @@
 		<highlightColour label="Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
 	</highlight>
 	
-    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100"/>
+    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100" tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
 	
 	<tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<submitText label="Submit button label for Match" type="TextInput" wysiwyg="true" language="true"/>
@@ -3648,7 +3648,6 @@
 	<mcqBtnTxt label="MCQ Check Button" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqBtnTxt2 label="MCQ Next Button" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqBtnTxt3 label="MCQ Restart Button" type="TextInput" wysiwyg="true" language="true"/>
-	<mcqDialogClose label="MCQ Close Button" type="TextInput" language="true"/>
 	<feedbackTxt label="Feedback" type="TextInput" wysiwyg="true" language="true"/>
 	<groupTxt label="Group" type="TextInput" wysiwyg="true" language="true"/>
 	<yourAnswerTxt label="Your Answer" type="TextInput" wysiwyg="true" language="true"/>
@@ -5189,7 +5188,6 @@
     <exampleHeaderTxt label="Example Header" type="TextInput" wysiwyg="true" language="true"/>
 	<copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <copyShortcutTxt label="Copy Shortcut Text" type="TextInput" wysiwyg="true" language="true"/>
-	<closeBtnTxt label="Close Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
 
     <copypasteinfo label="Copy and Paste Info (Flash)" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required"/>
@@ -8259,6 +8257,7 @@
 		<colour2 label="Found" type="ColourPicker" defaultValue="0x0000FF" optional="true"/>
 		<colour3 label="Complete" type="ColourPicker" defaultValue="0x800080" optional="true"/>
 		<colour4 label="Solved" type="ColourPicker" defaultValue="0x008000" optional="true"/>
+		<colour5 label="Highlight" type="ColourPicker" defaultValue="0xffff00" optional="true"/>
 	</colours>
 	
 	<order label="Word Ordering" options="None,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" defaultValue="none" optional="true"/>

@@ -152,7 +152,7 @@
 			
 			var videoSrc = x_currentPageXML.getAttribute("url");
 			$pageVideo.data({
-				"src"			:videoSrc,
+				"src"			:x_fixYouTubeVimeo(videoSrc),
 				"dimensions"	:videoDimensions
 			});
 			

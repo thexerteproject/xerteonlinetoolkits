@@ -57,6 +57,7 @@
       filesToLoad = [
         'NotoSerif-Bold.js',
         'NotoSerif-Normal.js',
+        'FileSaver.min.js',
         'jspdf.min.js',
         'jspdf.plugin.autotable.min.js'
       ],
@@ -561,7 +562,17 @@
         }
       }
       var name = $('<div>').html(x_params.name + "_" + XTResults().start + ".pdf").text();
-      pdf.save(name.replace(/ /g, "_"));
+
+      // Workaround for Firefox/98.0 default opening issue
+      let firefox = navigator.userAgent.indexOf("Firefox");
+      if (parseInt(navigator.userAgent.substr(firefox + 8, 4)) >= 98) {
+          console.warn('Firefox 98+ detected - using alternative PDF save way...');
+          let blob = pdf.output('blob');
+          blob = blob.slice(0, blob.size, 'application/octet-stream');
+          saveAs(blob, name.replace(/ /g, "_"));
+      }
+      else
+        pdf.save(name.replace(/ /g, "_"));
     }
   };
   results.init();

@@ -304,7 +304,7 @@
 								.dialog({
 									closeOnEscape:  true,
 									title:		x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information",
-									closeText:	x_currentPageXML.getAttribute("closeBtn") ? x_currentPageXML.getAttribute("closeBtn") : "Close"
+									closeText:	x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close")
 									})
 								.html(x_addLineBreaks(currentStepInfo.helpTxt));
 							
@@ -328,7 +328,7 @@
 						$dialog.dialog({
 							closeOnEscape:	true,
 							title:	x_currentPageXML.getAttribute("copyShortcutTxt") ? x_currentPageXML.getAttribute("copyShortcutTxt") : "Press Ctrl + C to copy",
-							closeText:	x_currentPageXML.getAttribute("closeBtn") ? x_currentPageXML.getAttribute("closeBtn") : "close"
+							closeText:	x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close")
 						});
 						
 						x_setDialogSize($dialog);

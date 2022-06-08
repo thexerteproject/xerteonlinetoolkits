@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
 @import "scss/_allvariables"; /*start here and set the default values for all the variables*/
 @import "scss/_header";
 @import "scss/_pagetypes";
@@ -16,6 +15,7 @@ body {
 	color:$mainfontcolour;
 	font-family: $mainfonts;
 }
+
 .cke_editable {
 	background: $defaultpagebackground;
 }

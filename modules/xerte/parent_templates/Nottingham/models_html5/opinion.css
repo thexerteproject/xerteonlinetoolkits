@@ -95,6 +95,10 @@
     padding-bottom:	5px;
     }
 
+    .qTxt {
+        width: 100%;
+    }
+
     #qNo {
         padding-top: 5px;
         padding-bottom: 10px;

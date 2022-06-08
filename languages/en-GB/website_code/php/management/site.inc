@@ -182,6 +182,13 @@
 
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_ALLOWED_URLS", "xAPI dashboard urls to show (seperated by commas)");
 
+define("MANAGEMENT_SITE_SOCIALICONS","Social Icons settings (prevent the use of cookies).");
+
+define("MANAGEMENT_SITE_SOCIALICONS_GLOBALDISABLE","Disable social icons by default (prevent the use of cookies).");
+
+define("MANAGEMENT_SITE_SOCIALICONS_ALLOWOVERRIDE","Allow authors to enable social icons.");
+
+
 define("LTI_TOGGLE","View");
 
 define("LTI_KEYS_NAME","LTI Key Descriptive Name");

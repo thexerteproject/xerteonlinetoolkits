@@ -101,7 +101,7 @@ $opts = array(
             'uploadDeny' => array('text/x-php','application/x-php'),
             'attributes' => array(
                 array( // hide readmes
-                    'pattern' => '/\.(txt|html|php|php5|php*|py|pl|sh|xml)$/i',
+                    'pattern' => '/(readme\.txt)|\.(html|php|php5|php*|py|pl|sh)$/i',
                     'read'   => false,
                     'write'  => false,
                     'locked' => true,

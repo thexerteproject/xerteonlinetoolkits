@@ -270,7 +270,7 @@
 				canvas.fill();
 				canvas.textBaseline = "top";
 				canvas.fillStyle = txtColour;
-				canvas.fillText(allSeries[i].name, -70, 20 + i * 20);
+				canvas.fillText(chart.convertTxt(allSeries[i].name), -70, 20 + i * 20);
 			}
 
 			// draw the x labels
@@ -279,7 +279,7 @@
 				canvas.fillStyle = txtColour;
 				canvas.textBaseline = "top";
 				var xLength = canvas.measureText(allSeries[0].data[i].x).width;
-				canvas.fillText(allSeries[0].data[i].x, barW * (i + 0.5) - xLength / 2 - 1, availH - 16);
+				canvas.fillText(chart.convertTxt(allSeries[0].data[i].x), barW * (i + 0.5) - xLength / 2 - 1, availH - 16);
 			}
 
 			// draw the y labels
@@ -310,15 +310,15 @@
 			}
 
 			// draw legend
-      var maxWidth = 50;
+			var maxWidth = 50;
 			for (var i=0; i<allSeries[0].data.length; i++) {
 				canvas.fillStyle = colours[i];
 				canvas.fillRect(-50, 10 + i * 20, 12, 12); // xywh
 				canvas.fill();
 				canvas.textBaseline = "top";
 				canvas.fillStyle = txtColour;
-				canvas.fillText(allSeries[0].data[i].x, -30, 10 + i * 20);
-        maxWidth = Math.max(maxWidth, canvas.measureText(allSeries[0].data[i].x).width);
+				canvas.fillText(chart.convertTxt(allSeries[0].data[i].x), -30, 10 + i * 20);
+				maxWidth = Math.max(maxWidth, canvas.measureText(allSeries[0].data[i].x).width);
 			}
 
 			// draw chart
@@ -335,6 +335,13 @@
 				this.drawWedge(canvas, diameter / 2 + maxWidth, diameter / 2 + 10, diameter / 2, theta, exTheta, colours[i]);
 				exTheta += theta;
 			}
+		}
+		
+		// convert html entities (e.g. &amp;) so they appear correctly in chart legends
+		this.convertTxt = function(txt) {
+			var temp = document.createElement('span');
+			temp.innerHTML = txt;
+			return temp.textContent;
 		}
 
         this.drawWedge = function(canvas, x, y, radius, arc, r, colour) { // xy are to centre of circle

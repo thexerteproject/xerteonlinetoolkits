@@ -6187,3 +6187,20 @@ a.badge:focus {
 	}
 	
 }
+.skip-link {
+  background: #000000;
+  color: #ffffff;
+  font-weight: 700;
+  left: 50%;
+  padding: 4px !important;
+  position: absolute;
+  transform: translateY(-100%);
+  transition: transform 0.3s;
+}
+.skip-link a, .skip-link a:visited{
+  color:#ffffff !important;
+}
+.skip-link:focus {
+  transform: translateY(0%);
+  color:#ffffff !important;
+}

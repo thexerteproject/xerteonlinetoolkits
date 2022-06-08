@@ -42,7 +42,7 @@ button::-moz-focus-inner {
 
 /* indicates when a square has been selected */
 #puzzle .selected {
-  background-color: orange;
+  background-color: orange !important;
 }
 
 /* indicates that the square is part of a word that has been found */ 
@@ -59,6 +59,12 @@ button::-moz-focus-inner {
 /* indicates that all words have been found */
 #puzzle .complete {
   background-color: green;
+}
+
+/* highlight the word in the puzzle */
+#puzzle .highlight {
+  background-color: yellow !important;
+  color: black !important;
 }
 
 /**

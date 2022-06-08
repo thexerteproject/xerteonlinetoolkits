@@ -202,6 +202,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      * set up the onunload function used in version control
      */
 
+    /* Set flag of whther oai-pmh harvesting is configured and available */
+    $oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $_SESSION['toolkits_language'];?>">
@@ -379,6 +382,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
+    echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
     // If not present, set to true
     if (!isset($xerte_toolkits_site->course_freetext_enabled))

@@ -104,7 +104,7 @@
 			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseFloat($panelHolder.find(".panel.tileH").css("margin-right"));
 			
 			$panelHolder.find(".panel.tileH")
-				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2 + zoomCorrection);
+				.width(Math.floor(($x_pageDiv.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2 + zoomCorrection);
 			
 			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
 			
@@ -652,7 +652,7 @@
 					{	tip: mediaPanelData.attr("tip"),
 						width: mediaPanelData.attr("width"),
 						height: mediaPanelData.attr("height"),
-						media: mediaPanelData.attr("media"),
+						media: x_fixYouTubeVimeo(mediaPanelData.attr("media")),
 						autoplay: mediaPanelData.attr("autoplay"),
 						aspect: mediaPanelData.attr("aspect"),
 						transcript: mediaPanelData.attr("transcript"),
@@ -885,6 +885,7 @@
 				var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
 
 				// is it from youtube or vimeo?
+				mediaData.media = x_fixYouTubeVimeo(mediaData.media);
 				if (mediaData.media.indexOf("www.youtube.com") != -1 || mediaData.media.indexOf("//youtu") != -1) {
 					var $youTube = $holder.find(".popcornMedia").addClass("youTube");
 					$youTube.attr("aspect", mediaData.aspect);
@@ -922,7 +923,7 @@
 						.css("margin", "0 auto")
 						.mediaPlayer({
 							type		:"video",
-							source		:mediaData.media,
+							source		:x_fixYouTubeVimeo(mediaData.media),
 							width		:"100%",
 							height		:"100%",
 							autoPlay	:mediaData.autoplay,

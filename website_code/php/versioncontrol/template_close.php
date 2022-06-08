@@ -39,21 +39,52 @@ require('../template_status.php');
 
 $users_array = array();
 
+$file_path = $_POST['file_path'];
 $temp_array = explode("-", $_POST['file_path']);
+
+if (count($temp_array) !== 3)
+{
+    // assum $temmp_array[0] is template_id
+    if (is_numeric($temp_array[0]))
+    {
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        $template_row = db_query_one("Select ld.username, otd.template_name as template_type, td.template_name from {$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd, {$prefix}logindetails ld WHERE td.template_id = ? and otd.template_type_id=td.template_type_id and ld.login_id=td.creator_id", array($temp_array[0]));
+        if ($template_row !== false && $template_row !== null)
+        {
+            $temp_array[1] = $template_row['username'];
+            $temp_array[2] = $template_row['template_type'] . '/';
+            $temp_array[3] = $template_row['template_name'];
+            $file_path =  $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2];
+        }
+        else
+        {
+            die("template {$temp_array[0]} not found");
+        }
+    }
+    else
+    {
+        die("invalid input");
+    }
+}
 
 database_connect("template close success","template close fail");
 
-if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] . "lockfile.txt")){
+if(file_exists($xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt")){
 
     /*
      *  Code to delete the lock file
      */
 
-    _debug("Detected lockfile on closing " . $_POST['file_path']);
+    _debug("Detected lockfile on closing " . $file_path);
 
-    $row_template_name = db_query_one("Select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?", array($temp_array[0]));
+    if (count($temp_array) == 4) {
+        $template_name = $temp_array[3];
+    } else {
+        $row_template_name = db_query_one("Select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?", array($temp_array[0]));
+        $template_name =  $row_template_name['template_name'];
+    }
 
-    $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/lockfile.txt");
+    $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt");
 
     $temp = explode("*", $lock_file_data);
 
@@ -87,13 +118,13 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
 		$users_array[$username] = 1;
 	}
 
-        mail($username . $mail_domain, "File available - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", "Hello, <br><br> This is to notify you that the Xerte file \"" . str_replace("_"," ",$row_template_name['template_name']) . "\" has become available for editing. The file was made available at " . date("h:i a") . " on " . date("l, jS F") . " <br><br> Please note that multiple attempts to edit the file may have been made, and as such you may not be the only person to have received one of these notifications. For that reason the file may soon become locked again by another user.<br><br> Please log into the site at <a href=\"" . $xerte_toolkits_site->site_url . "\">" . $xerte_toolkits_site->site_url . "</a>. <br><br> Thank you, <br><br> the Xerte Online toolkits team", get_email_headers());
+        mail($username . $mail_domain, "File available - \"" . str_replace("_"," ",$template_name) ."\"", "Hello, <br><br> This is to notify you that the Xerte file \"" . str_replace("_"," ",$template_name) . "\" has become available for editing. The file was made available at " . date("h:i a") . " on " . date("l, jS F") . " <br><br> Please note that multiple attempts to edit the file may have been made, and as such you may not be the only person to have received one of these notifications. For that reason the file may soon become locked again by another user.<br><br> Please log into the site at <a href=\"" . $xerte_toolkits_site->site_url . "\">" . $xerte_toolkits_site->site_url . "</a>. <br><br> Thank you, <br><br> the Xerte Online toolkits team", get_email_headers());
 
     }
 
-    unlink($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] . "lockfile.txt");
+    unlink($xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt");
 
-    _debug("Lockfile " . $xerte_toolkits_site->users_file_area_full . $_POST['file_path'] . "lockfile.txt" . " is deleted.");
+    _debug("Lockfile " . $xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt" . " is deleted.");
 }
 
 /*
@@ -102,7 +133,7 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
 
 if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
 
-    $prefix = $xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2];
+    $prefix = $xerte_toolkits_site->users_file_area_full . $file_path;
     $preview_file = $prefix . '/preview.xml';
     $data_file = $prefix . '/data.xml';
 
@@ -110,7 +141,7 @@ if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
         $preview_xml = file_get_contents($preview_file);
         $data_xml = file_get_contents($data_file);
         if($data_xml!=$preview_xml){
-            echo TEMPLATE_CLOSE_QUESTION . "~*~" . $xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "~*~" . $temp_array[0];
+            echo TEMPLATE_CLOSE_QUESTION . "~*~" . $xerte_toolkits_site->users_file_area_full . $file_path . "~*~" . $temp_array[0];
         }
     }
 }
