@@ -193,21 +193,37 @@ function _do_cleanup()
         'themes/Nottingham/flatwhite/responsivetext.css',
         'themes/Nottingham/orangepurple/responsivetext.css',
         'themes/Nottingham/sketch/responsivetext.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt'
+        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt',
+        'USER-FILES/*/.htaccess',
+        'modules/xerte/templates/*/.htaccess',
+        'modules/site/templates/*/.htaccess',
+        'modules/decision/templates/*/.htaccess'
     );
 
     foreach ($filelist as $file)
     {
-        if (file_exists($file))
+        if (file_exists($file) || strpos($file, "*") !== false)
         {
             echo 'Removing ' . $file . '<br>';
-            unlink($file);
+            if (strpos($file, "*") === false)
+            {
+                unlink($file);
+            }
+            else
+            {
+                system("rm " . $file);
+            }
         }
         else
         {
             echo 'File ' . $file . ' not found (already deleted :-) )<br>';
         }
     }
+
+    // Turn off Rss template since it has no HTML engine
+    $table = table_by_key('originaltemplatesdetails');
+    $ok = db_query("update `$table` SET `active` = '0' WHERE `$table`.`template_type_id` = 8");
+    echo "Rss template " . ($ok ? 'set inactive' : 'already inactive :-)') . "<br>";
 
     echo 'Done<br>';
 }
@@ -1126,4 +1142,61 @@ function upgrade_28()
     return $message;
 }
 
+function upgrade_29()
+{
+    $table = table_by_key('educationlevel');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+                `educationlevel_id` int(11) NOT NULL AUTO_INCREMENT,
+                `educationlevel_name` char(255) DEFAULT NULL,
+                PRIMARY KEY (`educationlevel_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message = "Creating educationlevel table - ok ? " . ($ok ? 'true' : 'false');
+
+    $ok = db_query("insert into `$table` (`educationlevel_id`,`educationlevel_name`) values (1,'University'),(2,'College'),(3,'Secondary Education'),(4,'Primary Educaton'),(5,'Vocational Education'),(6,'Adult Education'),(7,'All')");
+
+    $message .= "Filling default educationlevel into educationlevel table - ok ? " . ($ok ? 'true' : 'false');
+
+    return $message;
+}
+
+function upgrade_30()
+{
+    if (!_db_field_exists('templatedetails', 'tsugi_manage_key_id')) {
+        $error = _db_add_field('templatedetails', 'tsugi_manage_key_id', 'int', '-1', 'tsugi_usetsugikey');
+        return "Creating tsugi_manage_key_id field in templatedetails - ok ? " . ($error === false ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+    }
+}
+
+function upgrade_31()
+{
+    if (! _db_field_exists('sitedetails', 'globalhidesocial')) {
+        $error1 = _db_add_field('sitedetails', 'globalhidesocial', 'char(255)', 'false', 'tsugi_dir');
+        $error1_returned = true;
+
+        $error2 = _db_add_field('sitedetails', 'globalsocialauth', 'char(255)', 'true', 'globalhidesocial');
+        $error2_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+
+        return "Creating Social Icon settings fields - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating Social Icon settings fields already present - ok ? true". "<br>";
+    }
+}
 

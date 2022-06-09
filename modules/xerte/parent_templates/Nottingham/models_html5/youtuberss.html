@@ -122,7 +122,7 @@
 
 					$.each(response.items, function (index, item) {
 
-						if (x_browserInfo.iOS == true || x_browserInfo.touchScreen || x_browserInfo.mobile) {
+						if (x_browserInfo.iOS == true || x_browserInfo.mobile) {
 							hyperlink = '<a href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + '</a>';
 						} else {
 							hyperlink = '<a target="_blank" href="https://www.youtube.com/watch?v=' +  item.id.videoId + '">' + item.snippet.title + '</a>';

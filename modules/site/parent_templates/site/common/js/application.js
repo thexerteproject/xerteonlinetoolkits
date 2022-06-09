@@ -123,9 +123,15 @@ function initSidebar(){
 }
 
 function loadContent(){
+	var now = new Date().getTime();
+	let url = "website_code/php/templates/get_template_xml.php?file=" + projectXML + "&time=" + now;
+	if (typeof use_url !== "undefined" && use_url)
+	{
+		url = projectXML + "?time=now";
+	}
 	$.ajax({
 		type: "GET",
-		url: projectXML,
+		url: url,
 		dataType: "text",
 		success: function(text) {
 			var newString = makeAbsolute(text);
@@ -180,6 +186,7 @@ function loadContent(){
 		
 		fixSideBar();
 	});
+	x_xAPI_SessionId = new Date().getTime() + "" + Math.round(Math.random() * 1000000);
 }
 
 function fixSideBar() {
@@ -497,6 +504,10 @@ function setup() {
 				name.css({ 'font-size': '', 'background-color': 'transparent' });
 				name.find('[style*="font-size"]').css('font-size', '');
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
+			}
+			
+			if ($(this).attr('pageLink') != undefined && $(this).attr('pageLink') != '') {
+				name = $(this).attr('pageLink');
 			}
 
 			var $link = $('<li class=""><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
@@ -1321,16 +1332,29 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
 			// link to section
 			if (pages[i].childNodes.length > 0) {
+				// only check sections that aren't hidden
+				var sectionVisibleIndex = 0;
+				
 				for (var j=0; j<pages[i].childNodes.length; j++) {
-					if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
-						var destination = pages[i].getAttribute("linkID");
-						if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
-							// page has customID so use this instead of auto-generated linkID
-							destination = pages[i].getAttribute("customLinkID");
+					
+					var hideSection = checkIfHidden(pages[i].childNodes[j].getAttribute('hidePage'), pages[i].childNodes[j].getAttribute('hideOnDate'), pages[i].childNodes[j].getAttribute('hideOnTime'), pages[i].childNodes[j].getAttribute('hideUntilDate'), pages[i].childNodes[j].getAttribute('hideUntilTime'), 'Section');
+					if ($.isArray(hideSection)) {
+						hideSection = hideSection[0];
+					}
+
+					if (hideSection == false || authorSupport == true) {
+						if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
+							var destination = pages[i].getAttribute("linkID");
+							if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+								// page has customID so use this instead of auto-generated linkID
+								destination = pages[i].getAttribute("customLinkID");
+							}
+							parseContent({ type: "id", id: destination }, sectionVisibleIndex+1);
+							found = true;
+							break;
 						}
-						parseContent({ type: "id", id: destination }, j+1);
-						found = true;
-						break;
+						
+						sectionVisibleIndex++;
 					}
 				}
 			}
@@ -1507,6 +1531,9 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	} else {
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
+	//dynamically change the skip link for each page
+	var skipLinkTarget='#page'+(currentPage+1)+'section1';
+	$(".srskip").prop("href", skipLinkTarget)
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
@@ -1515,8 +1542,10 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 		$('#pageSubTitle').append(' <span class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('pageSupport') != null ? languageData.find("password")[0].getAttribute('pageSupport') : 'In live projects, an access code must be entered to view this page') + ': ' + pswds + '</span>');
 	}
 	
+	var sectionVisibleIndex = 0;
+	
 	//create the sections
-	page.find('section').each( function(index, value){
+	page.find('section').each( function(sectionIndex, value){
 
 		// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
 		var hideSection = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
@@ -1526,8 +1555,6 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 		}
 
 		if (hideSection == false || authorSupport == true) {
-			
-			var sectionIndex = index;
 
 			//expand mainContent if section menu hidden and expand option is true
 			if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
@@ -1551,7 +1578,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
 				}
 
-				var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
+				var $link = $('<li' + (sectionVisibleIndex==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 			}
 
@@ -1561,8 +1588,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 				subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
 
 			var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
-
-			var section = $('<section id="' + pageHash + 'section' + (index+1) + '">' + pageHeader + '</section>');
+			var section = $('<section id="' + pageHash + 'section' + (sectionVisibleIndex+1) + '">' + pageHeader + '</section>');
 			
 			var pswds = [];
 			if ($.trim($(this).attr('password')).length > 0) {
@@ -1576,13 +1602,15 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			}
 			
 			if (pswds.length > 0) {
-				passwordSection(this, section, sectionIndex, index, page, pageHash, pageIndex, pswds);
+				passwordSection(this, section, sectionVisibleIndex, page, pageHash, pageIndex, pswds);
 			} else {
-				loadSection(this, section, sectionIndex, index, page, pageHash, pageIndex);
+				loadSection(this, section, sectionVisibleIndex, page, pageHash, pageIndex);
 			}
 
 			//add the section to the document
 			$('#mainContent').append(section);
+			
+			sectionVisibleIndex++;
 		}
 	});
 	
@@ -1598,9 +1626,9 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 	//the following fixes the side bar active highlight issue but requires changes to makeNav
 	//so commented out until we can discuss on next dev day
-	//$('[data-spy="scroll"]').each(function () {
-	//	var $spy = $(this).scrollspy('refresh')
-	//})
+	$('[data-spy="scroll"]').each(function () {
+		var $spy = $(this).scrollspy('refresh')
+	})
 
 	//force facebook / twitter objects to initialise
 	//twttr.widgets.load(); // REMOVED??
@@ -1610,7 +1638,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 	afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 }
 
-function loadSection(thisSection, section, sectionIndex, index, page, pageHash, pageIndex, pswds) {
+function loadSection(thisSection, section, sectionIndex, page, pageHash, pageIndex, pswds) {
 	
 	if (authorSupport == true && $(thisSection).attr('passwordPass') == 'true') {
 		if (section.find('.sectionSubLinks').length > 0) {
@@ -1636,12 +1664,12 @@ function loadSection(thisSection, section, sectionIndex, index, page, pageHash, 
 				}
 				
 				var tempLink = validPages.indexOf(pageIndex) != -1 ? 'page' + (validPages.indexOf(pageIndex)+1) : (page.attr("customLinkID") != "" && page.attr("customLinkID") != undefined ? page.attr("customLinkID") : page.attr('linkID'));
-				var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#' + tempLink + 'section' + (index+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
+				var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#' + tempLink + 'section' + (sectionIndex+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
 				$link.find('a').append(subLinkName);
 
 			}
 
-			section.append( '<h2 id="' + pageHash + 'section' + (index+1) + 'content' + (itemIndex+1) + '">' + $(this).attr('name') + '</h2>');
+			section.append( '<h2 id="' + pageHash + 'section' + (sectionIndex+1) + 'content' + (itemIndex+1) + '">' + $(this).attr('name') + '</h2>');
 		}
 
 		if (this.nodeName == 'text'){
@@ -1778,7 +1806,7 @@ function loadSection(thisSection, section, sectionIndex, index, page, pageHash, 
 	}
 	
 	// lightbox image links might also need to be added
-	setUpLightBox(page, $(thisSection));
+	setUpLightBox(page, $(thisSection), section);
 }
 
 function updateContent($section) {
@@ -1873,11 +1901,15 @@ function passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAl
 		}
 
 	} else {
-		loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
+		if (authorSupport == true) {
+			loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds);
+		} else {
+			loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
+		}
 	}
 }
 
-function passwordSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex, pswds) {
+function passwordSection(thisSection, $section, sectionIndex, page, pageHash, pageIndex, pswds) {
 	
 	if ($(thisSection).attr('passwordPass') != 'true') {
 		
@@ -1885,7 +1917,7 @@ function passwordSection(thisSection, $section, sectionIndex, index, page, pageH
 			
 			$(thisSection).attr('passwordPass', true);
 			
-			loadSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex, pswds);
+			loadSection(thisSection, $section, sectionIndex, page, pageHash, pageIndex, pswds);
 			
 		} else {
 		
@@ -1905,7 +1937,7 @@ function passwordSection(thisSection, $section, sectionIndex, index, page, pageH
 						$(thisSection).attr('passwordPass', true);
 						$section.find('.pswdBlock').remove();
 						$section.find('.sectionSubLinks').show();
-						loadSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex);
+						loadSection(thisSection, $section, sectionIndex, page, pageHash, pageIndex);
 						updateContent($section);
 						
 					} else {
@@ -1923,7 +1955,7 @@ function passwordSection(thisSection, $section, sectionIndex, index, page, pageH
 		}
 		
 	} else {
-		loadSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex);
+		loadSection(thisSection, $section, sectionIndex, page, pageHash, pageIndex);
 	}
 }
 
@@ -2527,6 +2559,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
+	debugger;
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
@@ -2557,10 +2590,18 @@ function loadXotContent($this) {
 	}
 
 	// If this bootstrap LO is started using LTI, launch Xerte as an LTI tool as well.
-	if (typeof lti_enabled != 'undefined' && lti_enabled)
+	if (typeof lti_enabled != 'undefined' && lti_enabled) {
+		xotLink += separator + 'site=' + x_TemplateId;
+		if (window.location.pathname.indexOf("lti13_launch") !== false) {
+			xotLink = xotLink.replace('play.php?', lti13Endpoint);
+		} else {
+			xotLink = xotLink.replace('play.php?', ltiEndpoint);
+		}
+	}
+	else if (typeof pedit_enabled != 'undefined' && pedit_enabled)
 	{
 		xotLink += separator + 'site=' + x_TemplateId;
-		xotLink = xotLink.replace('play.php?', ltiEndpoint);
+		xotLink = xotLink.replace('play.php?', peditEndpoint);
 	}
 	else if (typeof xapi_enabled != 'undefined' && xapi_enabled)
 	{
@@ -2569,7 +2610,9 @@ function loadXotContent($this) {
 		xotLink += separator + 'group=' + urlParams.group;
 	}
 	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
-	xotLink += separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
+	xotLink += separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId);
+	xotLink += separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
+	xotLink += separator + "embedded_fromSessionId=" + encodeURIComponent(x_xAPI_SessionId);
 
 	// add back any url params that haven't been overridden
 	for (var i=0; i<params.length; i++) {
@@ -2813,11 +2856,10 @@ function setUpVideo(url, iframeRatio, id) {
 }
 
 // by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO, page & section level
-function setUpLightBox(thisPageInfo, thisSectionInfo) {
+function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 	if (thisSectionInfo.attr("lightbox") == "true" || (thisSectionInfo.attr("lightbox") != "false" && (thisPageInfo.attr("lightbox") == "true" || (thisPageInfo.attr("lightbox") != "false" && $(data).find('learningObject').attr('lightbox') != "false")))) {
-
 		// use the x_noLightBox class to force images to not open in lightboxes
-		$("#mainContent img:not('.x_noLightBox')").each(function( index ) {
+		$section.find("img:not('.x_noLightBox')").each(function( index ) {
 			var $this = $(this);
 			if ($this.closest('a').length == 0) {
 				if (!$this.parent().hasClass('lightboxWrapper')) {

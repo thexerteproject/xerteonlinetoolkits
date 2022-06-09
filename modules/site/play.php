@@ -47,7 +47,7 @@ function show_template($row, $xapi_enabled=false){
         $title = SITE_PREVIEW_TITLE;
     }
 
-    $string_for_flash_xml = $xmlfile . "?time=" . time();
+    $string_for_flash_xml = $xmlfile;
 
 	$template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
     $js_dir = "modules/" . $row['template_framework'] . "/";
@@ -109,12 +109,23 @@ function show_template($row, $xapi_enabled=false){
         {
             $tracking .= "  var lti_enabled=false;\n";
         }
+        if (isset($pedit_enabled) && $pedit_enabled)
+        {
+            // Set lti_enabled variable so that we can send back gradebook results through LTI
+            $tracking .= "  var pedit_enabled=true;\n";
+        }
+        else
+        {
+            $tracking .= "  var pedit_enabled=false;\n";
+        }
         if($row["tsugi_xapi_enabled"] == 1) {
             $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
             $tracking .= "  var lrsUsername = '';\n";
             $tracking .= "  var lrsPassword  = '';\n";
             $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
             $tracking .= "  var ltiEndpoint = '" .  (function_exists('addSession') ? addSession("lti_launch.php") . "&tsugisession=1&" : "lti_launch.php?") . "';\n";
+            $tracking .= "  var lti13Endpoint = '" .  (function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
+            $tracking .= "  var peditEndpoint = '" . (function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
             $tracking .= "  var xapiEndpoint = '" . (function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
 
             if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
@@ -161,7 +172,15 @@ function show_template($row, $xapi_enabled=false){
     else {
         if (isset($lti_enabled) && $lti_enabled) {
             // Set lti_enabled variable so that we can send back gradebook results through LTI
-            $tracking .= "<script>\n  var lti_enabled=true;\n  var xapi_enabled=false;\n</script>\n";
+            $tracking .= "<script>\n";
+            $tracking .= "  var lti_enabled=true;\n";
+            $tracking .= "  var xapi_enabled=false;\n";
+            $tracking .= "  var ltiEndpoint = '" .  (function_exists('addSession') ? addSession("lti_launch.php") . "&tsugisession=1&" : "lti_launch.php?") . "';\n";
+            $tracking .= "  var lti13Endpoint = '" .  (function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
+            $tracking .= "  var peditEndpoint = '" . (function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
+            $tracking .= "  var xapiEndpoint = '" . (function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
+            $tracking .=  "</script>\n";
+            _debug("Tracking script: " . $tracking);
         }
     }
 
@@ -170,6 +189,41 @@ function show_template($row, $xapi_enabled=false){
     $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
     $page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
     $page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
+    $page_content = str_replace("%USE_URL%", "", $page_content);
+    $page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $page_content);
+    $page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $page_content);
+
+
+    //remove socialicons script
+        $xml = new XerteXMLInspector();
+        $xml->loadTemplateXML($xmlfile);
+        $hidesocial = $xml->getLOAttribute('hidesocial');
+        $footerhide = $xml->getLOAttribute('footerHide');
+        $footerpos = $xml->getLOAttribute('footerPos');
+        if ($hidesocial != 'true' && $footerhide != 'true' && $footerpos != 'replace' && ($xerte_toolkits_site->globalhidesocial != 'true' || $xerte_toolkits_site->globalsocialauth != 'false')) {
+            $page_content = str_replace("%ADDTHISSCRIPT%", '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>', $page_content);
+        } else {
+            $page_content = str_replace("%ADDTHISSCRIPT%", '', $page_content);
+        }
+
+    //twittercard
+    $xml = new XerteXMLInspector();
+    $xml->loadTemplateXML($xmlfile);
+    $tcoption = $xml->getLOAttribute('tcsite');
+    $tcmode= $xml->getLOAttribute('tcmode');
+    $tcsite= $xml->getLOAttribute('tcsite');
+    $tccreator= $xml->getLOAttribute('tccreator');
+    $tctitle= $xml->getLOAttribute('tctitle');
+    $tcdescription= $xml->getLOAttribute('tcdescription');
+    $tcimage= $xml->getLOAttribute('tcimage');
+    $tcimage = str_replace("FileLocation + '" , $xerte_toolkits_site->site_url . $string_for_flash, $tcimage);
+    $tcimage = str_replace("'", "", $tcimage);
+    $tcimagealt= $xml->getLOAttribute('tcimagealt');
+    if ($tcoption=="true"){
+        $page_content = str_replace("%TWITTERCARD%", '<meta name="twitter:card" content="'.$tcmode.'"><meta name="twitter:site" content="'.$tcsite.'"><meta name="twitter:creator" content="'.$tccreator.'"><meta name="twitter:title" content="'.$tctitle.'"><meta name="twitter:description" content="'.$tcdescription.'"><meta name="twitter:image" content="'.$tcimage.'"><meta name="twitter:image:alt" content="'.$tcimagealt.'">', $page_content);
+    }else{
+        $page_content = str_replace("%TWITTERCARD%", "", $page_content);
+    }
 
     echo $page_content;
 

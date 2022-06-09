@@ -44,6 +44,8 @@
 	
 	define("MANAGEMENT_MENUBAR_CATEGORIES","Categories");
 
+	define("MANAGEMENT_MENUBAR_EDUCATION", "Educations");
+
 	define("MANAGEMENT_MENUBAR_GROUPINGS","Groupings");
 
 	define("MANAGEMENT_MENUBAR_COURSES","Courses");

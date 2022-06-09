@@ -24,6 +24,9 @@
 	
 	<feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="Enter feedback here"/>
     <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true" tooltip="Show all possible answers when activity is complete"/>
+    <delimiters type="group" label="Delimiters" optional="true">
+        <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
+    </delimiters>
     <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" tooltip="Attempts allowed before feedback is given"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 

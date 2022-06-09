@@ -18,6 +18,7 @@
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/templates.inc");
+_load_language_file("/management.inc");
 
 require("../user_library.php");
 require("management_library.php");
@@ -42,32 +43,37 @@ if (is_user_admin()) {
     }
     $xwdData->loadTemplateXML($xwd_path);
 
-    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br />
-    <button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p>";
+	echo "<h2>" . MANAGEMENT_MENUBAR_CENTRAL . "</h2>";
 
-    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_ADD_EXPLANATION .
-    "<br><br>" .
+    echo "<div class=\"admin_block\">" . TEMPLATE_UPDATE_EXPLANATION . "
+    <p><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p></div>";
+
+    echo "<div class=\"admin_block\"><p>" . TEMPLATE_ADD_EXPLANATION .
+    "</p>" .
     "<form action='javascript:template_submit()' method='post' enctype='multipart/form-data' id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
         "<p>
             <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATENAME . "<br>
             <input class='management_input' type='text' name='templateDisplayname'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME . "<br>
             <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION . "<br>
-        </p><br>
+        </p>
         <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
-    "</form></p>";
+    "</form></div>";
 
-    echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
+    echo "<div class=\"admin_block\"><p>" . TEMPLATE_MANAGE . "</p>";
     $last_template_type = "";
 
     $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where access_rights != 'deleted' order by template_framework, parent_template, template_name";
     $query_response = db_query($query);
     foreach ($query_response as $row) {
 
-
         if ($row['template_framework'] != $last_template_type) {
-
-            echo "<h2 style='margin-left:5px'>" . ucfirst($row['template_framework']) . "</h2>";
+			
+			if ($last_template_type != "") {
+				 echo "</div>";
+			}
+			
+            echo "<div class=\"template_list\"><h4 style='margin-left:5px'>" . ucfirst($row['template_framework']) . "</h4>";
 
             $last_template_type = $row['template_framework'];
 
@@ -115,7 +121,7 @@ if (is_user_admin()) {
         if ($row['template_name'] == $row['parent_template']) {
             // Not a subtemplate
 
-            echo "<p>" . TEMPLATE_REPLACE . "<br><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"hidden\" name=\"replace\" value=\"" . $row['template_type_id'] . "\" /><input type=\"hidden\" name=\"folder\" value=\"" . $row['template_name'] . "\" /><input type=\"hidden\" name=\"version\" value=\"" . $version[1] . "\" /><br /><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_check_initialise()\" >" . TEMPLATE_UPLOAD_BUTTON . "</button></form></p>";
+            echo "<p>" . TEMPLATE_REPLACE . "<br><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"hidden\" name=\"replace\" value=\"" . $row['template_type_id'] . "\" /><input type=\"hidden\" name=\"folder\" value=\"" . $row['template_name'] . "\" /><input type=\"hidden\" name=\"version\" value=\"" . $version[1] . "\" /><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_check_initialise()\" ><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button></form></p>";
         }
         else {
             // This is a sub-template
@@ -157,10 +163,27 @@ if (is_user_admin()) {
                     }
                 }
                 echo "</div>";
+            }elseif($row['template_framework'] == "site"){
+                $subpages = array();
+                if ($row['template_sub_pages'] != "") {
+                    $template_sub_pages = $row['template_sub_pages'];
+                    $simple_lo_page = false;
+                    $pos = strpos($template_sub_pages, "simple_lo_page");
+                    if ($pos !== false) {
+                        $template_sub_pages = substr($template_sub_pages, 15); // Get rid of 'simple_lo_page,'
+                        $simple_lo_page = true;
+                    }
+                    $subpages = explode(",", $template_sub_pages);
+                }
+                echo "<p>" . TEMPLATE_SUB_PAGES_TITLEONLY . "<br><div class='sub_page_selection sub_page_title'>";
+                echo "<input class='sub_page_selection_titleonly' type='checkbox' " . ($simple_lo_page ? "checked" : "") . " id='sub_page_select_titleonly_" . $row['template_type_id'] . "' name='select_titleonly' >" . TEMPLATE_SUB_PAGES_SELECT_TITLEONLY . "</div></p>";
+
             }
         }
+		
         echo "</div>";
     }
+	echo "</div>";
 
 } else {
 

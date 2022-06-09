@@ -34,7 +34,7 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			SictTimeline.resizeImg();	
+			SictTimeline.resizeImg();
 		}
 
 		this.loadJS = function () {
@@ -304,6 +304,7 @@
 				 SictTimeline.resizeImg();
 				$('.spinnerHolder').remove();
 				$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
+				$('.tl-text-content')[0].innerHTML = x_currentPageXML.getAttribute("text");
 			}, 3000);
 
 		}
@@ -316,6 +317,7 @@
 			if(x_browserInfo.mobile === true){
 				// TODO mobile implementation
 			}else{
+
 				var pageHeight = $('#x_pageHolder').height();
 				$('#timeline-embed').css('height', pageHeight-70);
 
@@ -462,7 +464,7 @@
 				panel = parseInt( panel.slice(0,  panel.length - 2))/2;
 				$('.tl-slidenav-next').css('top', panel+"px");
 				$('.tl-slidenav-previous').css('top', panel+"px");
-			};
+			}
 		}
 
 		var isoCountries = {

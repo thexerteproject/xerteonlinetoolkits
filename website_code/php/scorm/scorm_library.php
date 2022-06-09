@@ -127,7 +127,7 @@ function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name) {
 
 /**
  *
- * Function basic html page create
+ * Function basic html page create for flash player
  * This function creates a basic HTML page for export
  * @param string $name - name of the template
  * @param string $type - type of template this is
@@ -152,8 +152,6 @@ function basic_html_page_create($id, $name, $type, $rlo_file, $lo_name) {
     $buffer = str_replace("%XMLFILE%", "template.xml", $buffer);
     $buffer = str_replace("%SITE%", $xerte_toolkits_site->site_url, $buffer);
 
-    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"js/xttracking_noop.js\"></script>", $buffer);
-
     $file_handle = fopen($dir_path . "index_flash.htm", 'w');
 
     fwrite($file_handle, $buffer, strlen($buffer));
@@ -166,7 +164,7 @@ function basic_html_page_create($id, $name, $type, $rlo_file, $lo_name) {
 
 /**
  *
- * Function scorm html page create
+ * Function scorm html page create for flash
  * This function creates a scorm HTML page for export
  * @param string $name - name of the template
  * @param string $type - type of template this is
@@ -191,16 +189,6 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
     $scorm_html_page_content = str_replace("%XMLFILE%", "template.xml", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%SITE%", $xerte_toolkits_site->site_url, $scorm_html_page_content);
 
-
-
-    $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
-    $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
-    $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm1.2.js\"></script>\n";
-    if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm1.2.js")) {
-        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
-    }
-    $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
-
     $file_handle = fopen($dir_path . "scormRLO.htm", 'w');
 
     fwrite($file_handle, $scorm_html_page_content, strlen($scorm_html_page_content));
@@ -220,7 +208,7 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -257,9 +245,15 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
         $buffer = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $buffer);
     }
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
+    $buffer = str_replace("%EMBED_SUPPORT%", "", $buffer);
     $buffer = str_replace("%LASTUPDATED%", $date_modified, $buffer);
+    $buffer = str_replace("%DATECREATED%", $date_created, $buffer);
+    $buffer = str_replace("%NUMPLAYS%", 0, $buffer);
+    $buffer = str_replace("%USE_URL%", "var use_url=true;", $buffer);
+    $buffer = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $buffer);
+    $buffer = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $buffer);
 
-	$index = "index.htm";
+    $index = "index.htm";
 
 	
     $file_handle = fopen($dir_path . $index, 'w');
@@ -281,7 +275,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $need_download_url=false) {
+function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -289,6 +283,7 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $language_ISO639_1code = substr($language, 0, 2);
 
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
+    $scorm_html_page_content = str_replace("%TWITTERCARD%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%VERSION%", $version, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "", $scorm_html_page_content);
@@ -302,6 +297,12 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%DATECREATED%", $date_created, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%NUMPLAYS%", 0, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $scorm_html_page_content);
+
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
@@ -312,6 +313,7 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     if ($need_download_url) $tracking .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
 
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%EMBED_SUPPORT%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scormRLO.htm", 'w');

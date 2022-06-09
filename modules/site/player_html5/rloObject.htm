@@ -24,6 +24,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    %TWITTERCARD%
     <title>%TITLE%</title>
     
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -35,7 +36,7 @@
 
 
     <!--jquery-->
-    <script src="%TEMPLATEPATH%common/js/jquery.js%VERSION_PARAM%"></script>
+    <script src="%TEMPLATEPATH%common/js/jquery-1.9.1.js%VERSION_PARAM%"></script>
 	
 	<!-- for lightboxes and lightbox gallery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common/featherlight/featherlight.min.js%VERSION_PARAM%"></script>
@@ -79,7 +80,10 @@
         var x_numPlays = String("%NUMPLAYS%");
         var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
         var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
-		
+        var globalhidesocial="%GLOBALHIDESOCIAL%";
+        var globalsocialauth="%GLOBALSOCIALAUTH%";
+		%USE_URL%
+
 		var globalVars = {
 			lastUpdated: x_lastUpdatedLocale,
 			dateCreated: x_dateCreatedLocale,
@@ -102,7 +106,7 @@
 <div id="alwaysTop"></div>
 
 <div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation" aria-label="pages">
-    <div class="navbar-inner">
+    <div class="navbar-inner"><a class="srskip sr-only" href="#mainContent">Skip to main content</a>
 
         <div class="container">
 
@@ -122,7 +126,7 @@
 </div>
 
 <!--Learning Object Title-->
-<header class="jumbotron hide" id="overview">
+<header class="jumbotron hide" id="overview"><a class="skip-link srskip sr-only sr-only-focusable" href="#mainContent">Skip to main content</a>
     <div class="container">
 
 		<div class="logoL">
@@ -164,7 +168,7 @@
             <div class="span12">
 
 				<div class="addthis_sharing_toolbox"></div>
-				<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>
+                <!--<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>-->%ADDTHISSCRIPT%
             </div>
             <div class="wcagLink hidden">
                     <a href="https://xot.xerte.org.uk/play.php?template_id=214#home" title="View the Xerte accessibility statement" target="_blank"><img class="wcagLogo" alt="WCAG WAI-AA logo and link to Xerte accessibility statement" height="32" src="%TEMPLATEPATH%common/img/wcag2.1AA-blue-v.png" width="88"> </a>
@@ -175,7 +179,7 @@
 
 <!--bootstrap script-->
 
-<script src="%TEMPLATEPATH%common/js/bootstrap.min.js%VERSION_PARAM%"></script>
+<script src="%TEMPLATEPATH%common/js/bootstrap.js%VERSION_PARAM%"></script>
 
 <!--initialise the application specific code-->
 <script src="%TEMPLATEPATH%common/js/application.js%VERSION_PARAM%"></script>

@@ -59,7 +59,7 @@ if (is_numeric($_GET['template_id'])) {
         /*
          * Get the file path
          */
-        $query = "select {$prefix}templatedetails.template_name as zipname, {$prefix}templatedetails.date_modified, {$prefix}templaterights.template_id, "
+        $query = "select {$prefix}templatedetails.template_name as zipname, {$prefix}templatedetails.date_modified, {$prefix}templatedetails.date_created, {$prefix}templaterights.template_id, "
                 . "{$prefix}logindetails.username, {$prefix}originaltemplatesdetails.template_name, {$prefix}originaltemplatesdetails.parent_template, "
                 . "{$prefix}originaltemplatesdetails.template_framework from {$prefix}templaterights, {$prefix}logindetails, "
                 . "{$prefix}originaltemplatesdetails, {$prefix}templatedetails WHERE "

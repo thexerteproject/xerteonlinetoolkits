@@ -171,6 +171,8 @@
 									});
 								}
 								
+								$infoHolder.focus();
+								
 								list.mediaLoad($infoHolder, this, url);
 								
 								x_pageContentsUpdated();
@@ -215,6 +217,10 @@
 					'color': color,
 					'background-color':backgroundColor
 				})
+			}
+			
+			if (x_currentPageXML.getAttribute('openFirst') == "true") {
+				$(".listItem:first").click();
 			}
 			
 			x_pageLoaded();
@@ -304,7 +310,7 @@
 		</div>
 		
 		<div class="right">
-			<div id="infoHolder" class="panel" aria-live="polite">
+			<div id="infoHolder" class="panel" aria-live="polite" tabindex="0">
 			</div>
 		</div>
 		

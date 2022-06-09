@@ -362,7 +362,7 @@ function list_users_projects($sort_type) {
 }
 
 if (!function_exists('str_contains')) {
-    function str_contains(string $haystack, string $needle): bool
+    function str_contains($haystack, $needle)
     {
         return '' === $needle || false !== strpos($haystack, $needle);
     }
@@ -703,10 +703,10 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    //if ($type == "") {
-    //    $query = "select folder_id, folder_name, folder_parent from {$prefix}folderdetails where login_id = ? and folder_parent != 0";
-    //    $params = array($_SESSION['toolkits_logon_id']);
-    //}
+    $query = "select folder_id, folder_name, folder_parent from {$prefix}folderdetails fd where login_id = ? and folder_parent != 0";
+    $params = array($_SESSION['toolkits_logon_id']);
+
+    /*
     if ($type == "group_top") {
         $query = "select fd.folder_id, fd.folder_name, fd.folder_parent, fgr.role, from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr "
             . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
@@ -715,7 +715,7 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
         $query = "select fd.folder_id, fd.folder_name, fr.folder_parent, fr.role from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.login_id=? and fd.folder_parent != 0";
         $params = array($_SESSION['toolkits_logon_id']);
     }
-
+    */
     $top = false;
     $newtype = $type;
     if (str_contains($type, "_top")){
@@ -758,28 +758,17 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
         {
             $query_response[$index]['tree_id'] = $tree_id . '_F' . $row['folder_id'];
             $query_response[$index]['tree_parent_id'] = $tree_id;
-            $shared = "";
-            if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
-                $shared = 'shared';
-            }
-            $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder" . _ .$shared;
             $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id']; // Watch out. do not use $row, it's not filled 2 lines up
         }
         else if ($row['folder_parent'] == $recyclebin)
         {
             $query_response[$index]['tree_id'] = $recyclebin_tree_id . '_F' . $row['folder_id'];
             $query_response[$index]['tree_parent_id'] = $recyclebin_tree_id;
-            $shared = "";
-            if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
-                $shared = 'shared';
-            }
-            $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder" . _ .$shared;
             $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id']; // Watch out. do not use $row, it's not filled 2 lines up
         }
         else
         {
-            if ($query_response[$index]['role'] == 'creator')
-                $unassigned_found = true;
+            $unassigned_found = true;
         }
     }
     while ($unassigned_found)
@@ -793,15 +782,10 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
             {
                 $query_response[$index]['tree_id']  = $currlevel[$row['folder_parent']] . '_F' . $row['folder_id'];
                 $query_response[$index]['tree_parent_id'] = $currlevel[$row['folder_parent']];
-                $shared = "";
-                if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
-                    $shared = 'shared';
-                }
-                $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder" . _ .$shared;
                 $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id'];
             }
             else{
-                if (!isset($row['tree_id']) && $query_response[$index]['role'] == 'creator')
+                if (!isset($row['tree_id']))
                 {
                     $unassigned_found = true;
                 }
@@ -1122,11 +1106,11 @@ function list_blank_templates() {
 
           if ($template['display_id'] != 0) {
 
-              echo "</p><a href=\"javascript:example_window('" . $template['display_id'] . "' )\">" . DISPLAY_EXAMPLE . "</a> | ";
+              echo "</p><a href=\"javascript:example_window('" . $template['display_id'] . "' )\">" . DISPLAY_EXAMPLE . "</a>  ";
 
           } else {
 
-              echo "<br>";
+              echo "</p><br>";
 
           }
 
@@ -1149,7 +1133,7 @@ function list_blank_templates() {
                   } else {
                       ?>
                       <select id="<?php echo $template['template_name']; ?>_templatename" name="templatename"
-                              class="select_template">
+                              class="select_template" onchange="javascript:setup_example('<?php echo $template["template_name"]; ?>_templatename')">
 
                           <?php
                           foreach ($derived as $row) {
@@ -1164,8 +1148,11 @@ function list_blank_templates() {
                   ?>
                   <input type="text" width="200" id="<?php echo $template['template_name']; ?>_filename"
                          name="filename"/>
-                  <button type="submit" class="xerte_button_c"><i
+                  <p>
+                      <a id="<?php echo $template['template_name']; ?>_templatename" style="display:none;" href=#><?php echo DISPLAY_EXAMPLE;?></a>
+                      <button type="submit" class="xerte_button_c"><i
                               class="fa  icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?></button>
+                  </p>
               </form>
           </div>
           </div>

@@ -1,5 +1,4 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css?family=Roboto");
 /*set background colors*/
 /* default #2196F3;*/
 /*set font family*/
@@ -189,8 +188,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   background: none; }
 
 .x_annotatedDiagram_page #infoHolder {
-  background: #333333;
-  margin-left: 10px; }
+  background: #000000; }
 
 .target.ui-droppable.border.highlight {
   background-color: rgba(255, 255, 255, 0.4) !important; }
@@ -1093,7 +1091,7 @@ table.glossary tr {
 table.glossary td {
   background: #000000; }
 
-a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+span.x_glossary, span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
   color: #ffffff; }
 
 #x_mainHolder {

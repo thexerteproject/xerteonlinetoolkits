@@ -21,7 +21,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textVideo = new function() {
-		
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.setUp();
@@ -63,12 +63,12 @@
 					}
 					else {
 						resizeEmbededMedia($(this), {ratio: ratio}) //popcorn mediaconstructor
-					}	
+					}
 				});
 			}
 		}
 		
-		this.init = function() 
+		this.init = function()
 		{
 			var popLocation = "common_html5/js/popcorn/"
 			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
@@ -103,12 +103,12 @@
 			} else {
 				$panel.addClass("x_floatRight");
 			}
-			
+
 			var $pageVideo = $("#pageVideo"),
-				videoSrc = x_currentPageXML.getAttribute("url"),
+				videoSrc = x_fixYouTubeVimeo(x_currentPageXML.getAttribute("url")),
 				ratio = x_currentPageXML.getAttribute("iframeRatio"),
 				iframeRatio = ratio ? ratio : '16:9';
-				
+
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
 				
@@ -119,7 +119,7 @@
 				if ($("#transcriptHolder").length > 0) {
 					$("#transcript").width($pageVideo.width());
 				}
-				
+
 				iframeRatio = iframeRatio.split(':');
 				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
 					iframeRatio = [16,9];
@@ -144,7 +144,7 @@
 
 				iframeRatio = iframeRatio.split(':');
 				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
-					iframeRatio = 16/9; 
+					iframeRatio = 16/9;
 				}
 				else {
 					iframeRatio = iframeRatio[0] / iframeRatio[1];

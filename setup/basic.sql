@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `$originaltemplatesdetails` ;
 DROP TABLE IF EXISTS `$play_security_details` ;
 DROP TABLE IF EXISTS `$sitedetails` ;
 DROP TABLE IF EXISTS `$syndicationcategories` ;
+DROP TABLE IF EXISTS `$educationlevel` ;
 DROP TABLE IF EXISTS `$grouping` ;
 DROP TABLE IF EXISTS `$course`;
 DROP TABLE IF EXISTS `$syndicationlicenses` ;
@@ -86,7 +87,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   PRIMARY KEY (`template_type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',1),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
+insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',0),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
 
 CREATE TABLE `$play_security_details` (
   `security_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -168,6 +169,8 @@ CREATE TABLE `$sitedetails` (
   `dashboard_allowed_links` text,
   `course_freetext_enabled` char(255) DEFAULT 'true',
   `tsugi_dir` text,
+  `globalhidesocial` char(255) DEFAULT 'false',
+  `globalsocialauth` char(255) DEFAULT 'true',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -178,6 +181,14 @@ CREATE TABLE `$syndicationcategories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationcategories`(`category_id`,`category_name`) values (1,'American and Canadian Studies'),(2,'Biology'),(3,'Biomedical Sciences'),(4,'Biosciences'),(5,'Built Environment, The'),(6,'Centre for English Language Education'),(7,'Chemistry'),(9,'Community Health Sciences'),(10,'Computer Science'),(11,'Contemporary Chinese Studies'),(12,'Economics'),(13,'Education'),(14,'English Studies'),(15,'Geography'),(16,'Medicine and Health'),(17,'History'),(18,'Humanities'),(20,'Mathematical Sciences'),(21,'Modern Languages and Cultures'),(22,'Nursing, Midwifery and Physiotherapy'),(23,'Pharmacy'),(24,'Physics & Astronomy'),(25,'Politics and International Relations'),(26,'Psychology'),(27,'Sociology & Social Policy'),(28,'Veterinary Medicine and Science');
+
+CREATE TABLE `$educationlevel` (
+                                   `educationlevel_id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `educationlevel_name` char(255) DEFAULT NULL,
+                                   PRIMARY KEY (`educationlevel_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert into `$educationlevel` (`educationlevel_id`,`educationlevel_name`) values (1,'University'),(2,'College'),(3,'Secondary Education'),(4,'Primary Educaton'),(5,'Vocational Education'),(6,'Adult Education'),(7,'All');
 
 CREATE TABLE `$grouping` (
   `grouping_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -214,6 +225,7 @@ CREATE TABLE `$templatedetails` (
   `extra_flags` varchar(45) DEFAULT NULL,
   `tsugi_published` int DEFAULT 0,
   `tsugi_usetsugikey` int(1) DEFAULT 1,
+  `tsugi_manage_key_id` INT NULL DEFAULT -1,
   `tsugi_privatekeyonly` int(1) DEFAULT 0,
   `tsugi_xapi_enabled` int DEFAULT 0,
   `tsugi_xapi_useglobal` int(1) DEFAULT 1,

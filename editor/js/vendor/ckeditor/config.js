@@ -12,7 +12,6 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarGroups = [
         { name: 'document',	   groups: [ 'mode' ] },
         { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-        { name: 'editing',     groups: [ 'spellchecker' ] },
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
         { name: 'links' },
         { name: 'styles' },
@@ -35,7 +34,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarCanCollapse = true;
     config.allowedContent = true;
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
-    config.fillEmptyBlocks = false;
+    //config.fillEmptyBlocks = false;
 
     config.uploadUrl = '';
 
@@ -60,8 +59,22 @@ CKEDITOR.editorConfig = function( config ) {
 	var temp = config.specialChars.slice(0, insertPosition).concat(newCharacters).concat(config.specialChars.slice(insertPosition));
 	config.specialChars = temp;
 
-    //config.scayt_autoStartup = true;
-    //config.scayt_sLang = loLanguage.replace("-", "_");
+	// SCAYT available languages
+    var scayt_languages = ['da_DK', 'de_DE', 'el_GR', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_CA', 'fr_FR', 'it_IT', 'nb_NO', 'nl_NL', 'sv_SE'];
+    var loLanguageScayt = loLanguage.replace("-", "_");
+    switch (loLanguageScayt)
+    {
+        case 'nl_BE':
+            loLanguageScayt = 'nl_NL';
+            break;
+    }
+
+    if (scayt_languages.includes(loLanguageScayt)) {
+        config.scayt_autoStartup = true;
+        config.scayt_sLang = loLanguageScayt;
+        config.scayt_disableOptionsStorage = 'lang';
+    }
+
 	// custom fonts can be added here that have been included in fonts.css:
 	//config.font_names = 'fontnametodisplay/yourfontname;' + config.font_names;
 

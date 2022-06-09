@@ -34,6 +34,10 @@ global $tsugi_enabled;
 global $xapi_enabled;
 global $lti_enabled;
 global $xerte_toolkits_site;
+global $x_embed;
+global $x_embed_activated;
+
+_debug("LTI launch request: " . print_r($_POST, true));
 
 if (isset($_GET["template_id"])) {
     $id = $_GET["template_id"];
@@ -148,7 +152,16 @@ if(is_numeric($id) || $id == null)
         $_SESSION['XAPI_PROXY'] = $lrs;
     }
 
+    if ($_GET['embed'] === 'true') {
+        $x_embed = true;
+        if ($_GET['activated'] !== 'true') {
+            $lti_enabled = false;
+            $xapi_enabled = false;
+            $x_embed_activated = false;
+        } else {
+            $x_embed_activated = true;
+        }
+    }
     require("play.php");
-
 }
 ?>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vdex xmlns="http://www.imsglobal.org/xsd/imsvdex_v1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsvdex_v1p0 http://www.imsglobal.org/xsd/imsvdex_v1p0.xsd" orderSignificant="true" language="nl" profileType="flatTokenTerms">
+  <!-- This vocabulary was downloaded from http://vocabulairebank.edustandaard.nl/kennisnet -->
+  <vocabName>
+    <langstring language="nl">CZP 5.6 context - Aanbevolen</langstring>
+    <langstring language="en">CZP 5.6 context - Recommended</langstring>
+  </vocabName>
+  <vocabIdentifier>vdex_context_czp_20060628.xml</vocabIdentifier>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>SBaO</termIdentifier>
+    <caption>
+      <langstring language="nl">SBaO</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">speciaal basisonderwijs</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>SO</termIdentifier>
+    <caption>
+      <langstring language="nl">SO</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">speciaal onderwijs</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>VVE</termIdentifier>
+    <caption>
+      <langstring language="nl">VVE</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">voor- en vroegschoolse educatie</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>PO</termIdentifier>
+    <caption>
+      <langstring language="nl">PO</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">primair onderwijs</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>VO</termIdentifier>
+    <caption>
+      <langstring language="nl">VO</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">voortgezet onderwijs</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>BVE</termIdentifier>
+    <caption>
+      <langstring language="nl">BVE</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">beroepsonderwijs en volwasseneneducatie</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>HBO</termIdentifier>
+    <caption>
+      <langstring language="nl">HBO</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">hoger beroepsonderwijs</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>WO</termIdentifier>
+    <caption>
+      <langstring language="nl">WO</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">wetenschappelijk onderwijs</langstring>
+    </description>
+  </term>
+  <term orderSignificant="false" validIndex="true">
+    <termIdentifier>bedrijfsopleiding</termIdentifier>
+    <caption>
+      <langstring language="nl">bedrijfsopleiding</langstring>
+    </caption>
+    <description>
+      <langstring language="nl">diverse bedrijfsopleidingen en cursussen</langstring>
+    </description>
+  </term>
+  <metadata>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="usedIn" xsi:schemaLocation="http://zthes.z3950.org/ http://www.xthes.org/schemas/zthes/zthes-1.2.xsd">Afspraak Content-zoekprofiel</zthes:thesNote>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="usedIn">NL-LOM</zthes:thesNote>
+    <dc:description xmlns:dc="http://purl.org/dc/elements/1.1/" xml:lang="nl" xsi:schemaLocation="http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd">Lijst met waarden die de onderwijscontext waarvoor dit leerobject bedoeld is aangeeft. Dit is het CZP vocabulaire van het betreffende element. 
+			&lt;BR&gt;Commentaar over deze vocabulaire indienen bij EduStandaard via een e-mail naar info@edustandaard.nl.</dc:description>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="Beheerstatus" vocab="knet-ps-0001" identifier="definitief">Definitief</zthes:thesNote>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="Beheerstatus" vocab="knet-ps-0001" identifier="geregistreerd">Geregistreerd</zthes:thesNote>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="historyNote">September 2009 is binnen het veld 'langstring' de naam van attribuut 'xml:lang' gecorrigeerd naar 'language'.</zthes:thesNote>
+    <dcterms:modified xmlns:dcterms="http://purl.org/dc/terms/" xsi:schemaLocation="http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd">2009-09-16</dcterms:modified>
+    <dc:source xmlns:dc="http://purl.org/dc/elements/1.1/">De verwijzing naar deze vocabulaire is: &lt;a href="http://purl.edustandaard.nl/vdex_context_czp_20060628.xml"&gt;http://purl.edustandaard.nl/vdex_context_czp_20060628.xml&lt;/a&gt;</dc:source>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="LOM-veld">5.6 educational.context</zthes:thesNote>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="availableLanguage">Nederlands</zthes:thesNote>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="Eerste publicatie in">2006</zthes:thesNote>
+    <zthes:thesNote xmlns:zthes="http://zthes.z3950.org/" label="authority">EduStandaard</zthes:thesNote>
+  </metadata>
+</vdex>

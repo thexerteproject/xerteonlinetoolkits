@@ -119,9 +119,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * Get sublist of pages (if any)
      */
+
     $template_sub_pages = get_template_pagelist($row_edit['template_id']);
     $simple_mode = count($template_sub_pages) != 0;
     $simple_lo_page = get_template_simple_lo_page($row_edit['template_id']);
+
+
 
     /**
      * build an array of available themes for this template
@@ -175,19 +178,25 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * Build CategoryList
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories order by category_name asc";
     $categories = db_query($sql);
+
+    /**
+     * Build EducationList
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}educationlevel order by educationlevel_name asc";
+    $educationlevels = db_query($sql);
 
     /**
      * Build Grouping List
      */
-    $sql = "select * from `{$xerte_toolkits_site->database_table_prefix}grouping`";
+    $sql = "select * from `{$xerte_toolkits_site->database_table_prefix}grouping` order by grouping_name asc";
     $grouping = db_query($sql);
 
     /**
      * Build Course List
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}course";
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}course order by course_name asc";
     $course = db_query($sql);
 
 
@@ -210,6 +219,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * set up the onunload function used in version control
      */
+    /* Set flag of whther oai-pmh harvesting is configured and available */
+    $oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
+
     _debug("Starting editor page");
 ?>
 <!DOCTYPE html>
@@ -395,6 +407,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "category_list=" . json_encode($categories) . ";\n";
+    echo "educationlevel_list=" . json_encode($educationlevels) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "course_list=" . json_encode($course) . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
@@ -407,6 +420,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         echo "course_freetext_enabled=" . ($xerte_toolkits_site->course_freetext_enabled == 'true' ? 'true' : 'false') . ";\n";
     }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
+    echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
     ?>
 
     function bunload(){

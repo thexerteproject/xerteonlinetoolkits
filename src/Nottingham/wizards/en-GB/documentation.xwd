@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No media selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
+      <documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -17,11 +17,17 @@
 	
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
 	<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
-	
+
+	<fontSize type="group" label="Word Font Size" optional="true">
+    		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
+    		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
+    		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
+    		<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
+    </fontSize>
+
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true" />
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
-	<mediaError label="No Media Error Text" type="TextInput" language="true"/>
 	<downloadTxt label="Download Button Label" type="TextInput" language="true" />
 	<nextTxt label="Next Button Label" type="TextInput" language="true" />
 	<prevTxt label="Previous Button Label" type="TextInput" language="true" />
@@ -39,7 +45,7 @@
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text here"/>]]></section>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
 	  <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -57,7 +63,7 @@
 
     <newNodes>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -119,11 +125,11 @@
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </line>
 
-  <media menuItem="Media" icon="icPicture">
-    <name label="Media Title" type="TextInput" wysiwyg="true"/>
+  <media menuItem="Image" icon="icPicture">
+    <name label="Image Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
 	
-	<mediaGroup type="group" label="Media">
+	<mediaGroup type="group" label="Image">
 		<url label="File" type="media"/>
 		<tip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility"/>
 	</mediaGroup>

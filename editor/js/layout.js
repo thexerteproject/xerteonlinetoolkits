@@ -170,6 +170,14 @@ var EDITOR = (function ($, parent) {
         {
             merge_MainPanelResize(paneName, paneElement, paneState, paneOptions, layoutName);
         }
+		
+		// resize datagrids
+		if ($("#mainPanel .ui-jqgrid").length > 0) {
+			$("#mainPanel .ui-jqgrid").hide();
+			var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
+			$("#mainPanel .ui-jqgrid").show();
+			$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+		}
     }
     // Create the layout once the document has finished loading
     //$(document).ready(setup);

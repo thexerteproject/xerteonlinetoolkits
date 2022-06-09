@@ -33,17 +33,20 @@ require_once("management_library.php");
 
 //returns an insert query to add a list of login_ids to a group
 function add_members_to_group($login_ids, $group_id){
+    global $xerte_toolkits_site;
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
     $entries = array();
     foreach($login_ids as $login_id){
         $entries[] = "(" . $login_id . ", ". $group_id . ")";
     }
 
-    return "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_group_members (login_id, group_id) VALUES " . implode(', ', $entries);
+    return "INSERT INTO {$prefix}user_group_members (login_id, group_id) VALUES " . implode(', ', $entries);
 
 }
 
 if(is_user_admin()){
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $login_ids= $_POST['login_id'];
     $group_id = $_POST['group_id'];
@@ -52,7 +55,7 @@ if(is_user_admin()){
     $database_id = database_connect("member list connected","member list failed");
 
     $params = array( $group_id);
-    $query = "SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "user_group_members WHERE group_id=? AND login_id in (" . $logins . ")";
+    $query = "SELECT * FROM {$prefix}user_group_members WHERE group_id=? AND login_id in (" . $logins . ")";
     $exists = db_query($query, $params);
 
     $existing_arr = [];

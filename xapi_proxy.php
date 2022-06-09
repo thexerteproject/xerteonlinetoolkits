@@ -235,6 +235,11 @@ if (!isset($_SESSION['XAPI_PROXY']))
     if (is_array($_SESSION['XAPI_PROXY']))
     {
         $lrs = $_SESSION['XAPI_PROXY'];
+        if (!isset($lrs['aggregate']))
+        {
+            $lrs = CheckLearningLocker($lrs);
+            $_SESSION['XAPI_PROXY'] = $lrs;
+        }
     }
     else {
         $template_id = $_SESSION['XAPI_PROXY'];
@@ -424,8 +429,12 @@ if (!isset($_SESSION['XAPI_PROXY']))
     }
 }
 // Split header text into an array.
-$header_text = preg_split( '/[\r\n]+/', $header );
-if ( (isset($_GET['mode'] ) && $_GET['mode'] == 'native') || $force_native) {
+$header_text = array();
+if (isset($header))
+{
+    $header_text = preg_split( '/[\r\n]+/', $header );
+}
+if ( (isset($_GET['mode'] ) && $_GET['mode'] == 'native') || (isset($force_native) && $force_native)) {
     if ( !$enable_native ) {
         $contents = 'ERROR: invalid mode';
         $status = array( 'http_code' => 'ERROR' );
@@ -470,11 +479,14 @@ if ( (isset($_GET['mode'] ) && $_GET['mode'] == 'native') || $force_native) {
     $data['contents'] = $decoded_json ? $decoded_json : $contents;
 
     // Generate appropriate content-type header.
-    $is_xhr = strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    $is_xhr = false;
+    if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+        $is_xhr = strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
     header( 'Content-type: application/' . ( $is_xhr ? 'json' : 'x-javascript' ) );
 
     // Get JSONP callback.
-    $jsonp_callback = $enable_jsonp && isset($_GET['callback']) ? $_GET['callback'] : null;
+    $jsonp_callback = isset($enable_jsonp) && $enable_jsonp && isset($_GET['callback']) ? $_GET['callback'] : null;
 
     // Generate JSON/JSONP string
     $json = json_encode( $data );

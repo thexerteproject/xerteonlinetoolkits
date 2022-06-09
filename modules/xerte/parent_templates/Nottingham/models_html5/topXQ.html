@@ -269,7 +269,7 @@
 				
                 var answers = [];
                 for (i = 0; i < elements.length; i++) {
-                    var answer = elements[i].answer.split(",");
+                    var answer = elements[i].answer.split(x_currentPageXML.getAttribute("answerDelimiter"));
                     answers.push({
                         options: answer,
                         counter: 0,
@@ -418,7 +418,7 @@
 							$("#result")
 								.html('<p><span id="finalResult"></span>' + passedOrFailed + '</p>')
 								.show();
-                            debugger
+                            
 							if(passed=== true){
 							    if(passedTxt !== ""){
                                     $("#finalResult")

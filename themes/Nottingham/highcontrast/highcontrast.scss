@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
 @import "scss/_allvariables"; /*start here and set the default values for all the variables*/
 @import "scss/_header";
 @import "scss/_pagetypes";
@@ -16,6 +15,7 @@ body {
 	color:$mainfontcolour;
 	font-family: $mainfonts;
 }
+
 .cke_editable {
 	background: $defaultpagebackground;
 }
@@ -52,7 +52,7 @@ table.glossary td {
 	background: #000000;
 }
 
-a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+span.x_glossary, span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
 	color: #ffffff;
 }
 

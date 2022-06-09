@@ -14,5 +14,7 @@
 	define("LOGS_VIEW", "Show");
 
 	define("DELETE_ALL_LOGS", "Delete all log files");
+	
+	define("DELETE_ALL_LOGS_COMPLETE", "All log files deleted");
 
 

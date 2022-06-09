@@ -1863,10 +1863,10 @@ function getStatements(q, one, callback)
         var tmp=ADL.XAPIWrapper.getStatements(search);
         for (x = 0; x < tmp.statements.length; x++) {
             if (group != ""
-                && tmp.statements[x].context.team != undefined
-                && tmp.statements[x].context.team.account != undefined
-                && tmp.statements[x].context.team.account.name != undefined
-                && tmp.statements[x].context.team.account.name != group) {
+                && (tmp.statements[x].context.team == undefined
+                    || tmp.statements[x].context.team.account == undefined
+                    || tmp.statements[x].context.team.account.name == undefined
+                    || tmp.statements[x].context.team.account.name != group)) {
                 continue;
             }
             statements.push(tmp.statements[x]);
@@ -1883,10 +1883,10 @@ function getStatements(q, one, callback)
                     //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                     //}
                     if (group != ""
-                        && body.statements[x].context.team != undefined
-                        && body.statements[x].context.team.account != undefined
-                        && body.statements[x].context.team.account.name != undefined
-                        && body.statements[x].context.team.account.name != group) {
+                        && (body.statements[x].context.team == undefined
+                            || body.statements[x].context.team.account == undefined
+                            || body.statements[x].context.team.account.name == undefined
+                            || body.statements[x].context.team.account.name != group)) {
                         continue;
                     }
                     statements.push(body.statements[x]);

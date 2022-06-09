@@ -21,100 +21,83 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var hotSpotQuestion = new function() {
-		var	$img;
-		var amountOfAttempts = parseInt(x_currentPageXML.getAttribute("attempts"));
-		//var attempts = parseInt(amountOfAttempts, 10);
-		var counter = [];
-		var hits = [];
-		var pointsUpdated = [];
-		var canvas;
-		var gotHint = false;
-		var pointArray;
-		var amountOfCorrectOptions = 0;
-		var attempts = 0;
-		var hotSpotScore = 0;
-		var AmountOfWrongScore = 0;
-		var highlightsArray= [];
-		var allHighlightsArray= [];
-		var amountOfCorrect = 0
-		var amountOfWrong = 0
-		var resize = false
+		var	$pageContents,
+			$img,
+			attempts = 0,
+			highlightsIndexArray = [],
+			highlightsArray = [],
+			allHighlightsArray = [];
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-
+			$pageContents = $('#pageContents');
 			$img = $("#image");
-
-			$(".selected").removeClass("selected");
-			$("#score").html("");
-			$("#generalFeedback").html("");
-			$("#checkButton").button("enable");
-			this.counter = [];
-			this.hits = [];
-			this.gotHint = false;
-			this.ntOfCorrectOptions = 0;
-			this.attempts = 0;
-			hotSpotScore = 0;
-			AmountOfWrongScore = 0;
-			amountOfCorrect = 0;
-			amountOfWrong = 0;
-			highlightsArray= [];
-			this.highlightsArray= [];
-			this.allHighlightsArray= [];
-			this.amountOfCorrect = 0;
-			this.amountOfWrong = 0;
+			allHighlightsArray = [];
+			
+			attempts = $pageContents.data('attempts');
+			highlightsIndexArray = $pageContents.data('highlightsIndexArray');
+			highlightsArray = $pageContents.data('highlightsArray');
+			
 			this.resizeImg(false);
-
 		};
 
-		// function called every time the size of the LO is changed
-		// this.sizeChanged = function() {
-		// 	$img.css({
-		// 		"opacity"	:0,
-		// 		"filter"	:'alpha(opacity=0)'
-		// 	});
-		// 	this.resizeImg(false);
-		//
-		// };
-			this.sizeChanged = function () {
-
-				if ($("#pageContents .audioHolder").length > 0) {
-					var audioBarW = 0;
-					$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function () {
-						audioBarW += $(this).outerWidth();
-					});
-					if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
-						$x_window.resize();
-					}
+		this.sizeChanged = function () {
+			var resizehighlightArray = []
+			allHighlightsArray.forEach((highlight, index)=>{
+				if($('area[data-key="'+index+'"]').hasClass('selected')){
+					resizehighlightArray.push(index)
 				}
-				var resizehighlightArray = []
-				allHighlightsArray.forEach((highlight, index)=>{
-					if($('area[data-key="'+index+'"]').hasClass('selected')){
-						resizehighlightArray.push(index)
+			})
+			allHighlightsArray = [];
+			
+			this.resizeImg(false);
+			
+			resizehighlightArray.forEach((h)=>{
+				$('area[data-key="'+h+'"]').mapster('select')
+				$('area[data-key="'+h+'"]').addClass("selected")
+			})
+			
+			if ($('#markingIcons .correct, #markingIcons .incorrect').length > 0) {
+				
+				$('#markingIcons').empty();
+				
+				highlightsArray.forEach((highlight)=>{
+					var points = JSON.parse(highlight.getAttribute("points")),
+						lowestPoint = points[0];
+					
+					for (var i=0; i<points.length; i++) {
+						if (points[i].y > lowestPoint.y) {
+							lowestPoint = points[i];
+						} else if (points[i].y == lowestPoint.y && points[i].x > lowestPoint.x) {
+							lowestPoint = points[i];
+						}
 					}
-				})
-				allHighlightsArray = []
-				this.resizeImg(false);
-				debugger
-				resizehighlightArray.forEach((h)=>{
-					$('area[data-key="'+h+'"]').mapster('select')
-					$('area[data-key="'+h+'"]').addClass("selected")
-				})
-				resize = true;
-			};
+					
+					var $markIcon = $("<div class='" + (highlight.getAttribute("truth") === "true" ? "correct" : "incorrect") + "'><span></span></div>")
+						resize = $img.width() / $img.data("origSize")[0];
+					
+					$markIcon
+						.css({top: lowestPoint.y * resize, left: lowestPoint.x * resize})
+						.appendTo("#markingIcons");
+				});
+			}
+		};
 
 		this.init = function() {
-			this.weighting = 1.0;
+			
+			$pageContents = $('#pageContents');
+			
+			var weighting = 1.0;
 			if(x_currentPageXML.getAttribute("trackingWeight") != null){
-				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+				weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
-			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+			XTSetPageType(x_currentPage, 'numeric', 1, weighting);
 
 			var $textHolder = $('#textHolder');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				$textHolder.remove();
 				$("#pageContents").css("text-align", "center");
 				// Remove panel
-				//$("#panel").removeClass("inline");
 				$("#panel").removeClass("panel");
 			} else {
 				$('#textHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -125,55 +108,8 @@
 					$("#panel").addClass("right");
 				}
 			}
-
-			// var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-			// 		$splitScreen = $("#pageContents .splitScreen");
-			// var $textHolder = $("#pageText");
-			//
-			// if (panelWidth === "Full") {
-			// 	$("#pageContents .panel").appendTo($("#pageContents"));
-			// 	$splitScreen.remove();
-			// } else {
-			// 	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			//
-			// 	var textAlign = x_currentPageXML.getAttribute("align");
-			// 	if (textAlign !== "Right") {
-			// 		if (panelWidth === "Small") {
-			// 			$splitScreen.addClass("large");
-			// 		} else if (panelWidth === "Large") {
-			// 			$splitScreen.addClass("small");
-			// 		} else {
-			// 			$splitScreen.addClass("medium");
-			// 		}
-			// 	} else {
-			// 		$textHolder
-			// 				.removeClass("left")
-			// 				.addClass("right")
-			// 				.appendTo($splitScreen);
-			// 		$("#infoHolder")
-			// 				.removeClass("right")
-			// 				.addClass("left");
-			// 		if (panelWidth === "Small") {
-			// 			$splitScreen.addClass("medium");
-			// 			$textHolder.addClass("paddingLeft")
-			// 		} else if (panelWidth === "Large") {
-			// 			$splitScreen.addClass("xlarge");
-			// 			$textHolder.addClass("paddingLeft")
-			// 		} else {
-			// 			$splitScreen.addClass("large");
-			// 			$textHolder.addClass("paddingLeft")
-			// 		}
-			// 	}
-			// }
-
-
-		    x_currentPageXML.childNodes.forEach(function () {
-				hits.push(false);
-				counter.push(0);
-            });
+			
 			$img = $("#image");
-
-
 			$img
 				.css({
 						"opacity"	:0,
@@ -195,260 +131,252 @@
 						$(this).trigger("load");
 					}
 				});
-
-
-
-			$("#checkButton").button({
-				label: "Check"
-			}).click(function (){
-				var stroke = true;
-				var highlightColour = "#ffff00";
-				var strokeWidth = 2;
-				var strokeOpacity = 1;
-				var fill = true;
-				var fillColor = "#000000";
-				var fillOpacity = 0.3;
-				if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
-					highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
-				}
-				if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
-					strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
-					if (strokeWidth == 0)
-					{
-						stroke = false;
+			
+			$("#checkButton")
+				.button({label: x_currentPageXML.getAttribute("btnLabel") != undefined ? x_currentPageXML.getAttribute("btnLabel") : "Submit"})
+				.click(function (){
+					var stroke = true;
+					var highlightColour = "#ffff00";
+					var strokeWidth = 2;
+					var strokeOpacity = 1;
+					var fill = true;
+					var fillColor = "#000000";
+					var fillOpacity = 0.3;
+					if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
+						highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
 					}
-				}
-				if (x_currentPageXML.getAttribute("hs_strokeOpacity") != undefined && x_currentPageXML.getAttribute("hs_strokeOpacity") != "") {
-					strokeOpacity = parseFloat(x_currentPageXML.getAttribute("hs_strokeOpacity"));
-				}
-				if (x_currentPageXML.getAttribute("hs_fill") != undefined && x_currentPageXML.getAttribute("hs_fill") != "") {
-					fill = x_currentPageXML.getAttribute("hs_fill") === "true";
-				}
-				if (x_currentPageXML.getAttribute("hs_fillColor") != undefined && x_currentPageXML.getAttribute("hs_fillColor") != "") {
-					fillColor = x_getColour(x_currentPageXML.getAttribute("hs_fillColor"));
-				}
-				if (x_currentPageXML.getAttribute("hs_fillOpacity") != undefined && x_currentPageXML.getAttribute("hs_fillOpacity") != "") {
-					fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
-				}
-				optionsCorrect = {
-					render_select:
-							{
-								fill: fill,
-								fillColor: fillColor.substr(1),
-								fillOpacity: fillOpacity,
-								stroke: stroke,
-								strokeColor: "7FFF00",
-								strokeOpacity: strokeOpacity,
-								strokeWidth: strokeWidth
-							},
-					scaleMap: true,
-					clickNavigate: true
-				};
-				if (x_currentPageXML.getAttribute("answers") == "true") {
-					// $("area").mapster('deselect');
-					$('img').mapster('set_options', optionsCorrect);
-				}
-				else {
-
-					$("#pageContents .hotspot.selected").mapster("select");
-				}
-				hotSpotScore = 0;
-				AmountOfWrongScore = 0;
-				amountOfCorrectOptions = 0
-				allHighlightsArray.forEach((highlight)=>{
-					if(highlight.getAttribute("truth") === "true"){
-						amountOfCorrectOptions++;
-					}
-				})
-
-				amountOfCorrect = 0;
-				amountOfWrong = 0;
-				highlightsArray.forEach((highlight)=>{
-					if(highlight.getAttribute("truth") === "true"){
-						amountOfCorrect++;
-					}else{
-						amountOfWrong++
-					}
-				})
-
-				attempts++
-				if(attempts >= amountOfAttempts || amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0){
-
-					var allNames = "";
-					var truthNames = ""
-					highlightsArray.forEach((highlight, index) => {
-
-						allNames = allNames + "Hotspot" + " " + highlight.getAttribute("name");
-						if (index !== highlightsArray.length){
-							allNames = allNames + ", "
+					if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
+						strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
+						if (strokeWidth == 0)
+						{
+							stroke = false;
 						}
-
-					})
-
-					var amountOfCorrectAnswers = 0;
-					allHighlightsArray.forEach((highlight, index)=>{
-						if(highlight.getAttribute('truth') === "true"){
-							amountOfCorrectAnswers++
-							truthNames = truthNames + "Hotspot" + " " + highlight.getAttribute("name");
-							if (index !== highlightsArray.length){
-								truthNames = truthNames + ", "
-							}
-
-							if (x_currentPageXML.getAttribute("answers") == "true"){
-								debugger
-								$('area[data-key="'+index+'"]').mapster('deselect')
-								$('img').mapster('set_options', optionsCorrect);
-								$('area[data-key="'+index+'"]').mapster('select')
-							}
-
-						}
-					})
-
-					var name;
-					highlightsArray.forEach((highlight, index) =>{
-						name = "Hotspot" + " " + highlight.getAttribute("name");
-						var points = JSON.parse(highlight.getAttribute("points"))
-						var x = (points[0]["x"]+points[1]["x"])/2
-						var y = (points[0]["y"]+points[2]["y"])/2
-						// XTEnterInteraction(x_currentPage, index, "fill-in", name, [], truthNames, x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
-
+					}
+					if (x_currentPageXML.getAttribute("hs_strokeOpacity") != undefined && x_currentPageXML.getAttribute("hs_strokeOpacity") != "") {
+						strokeOpacity = parseFloat(x_currentPageXML.getAttribute("hs_strokeOpacity"));
+					}
+					if (x_currentPageXML.getAttribute("hs_fill") != undefined && x_currentPageXML.getAttribute("hs_fill") != "") {
+						fill = x_currentPageXML.getAttribute("hs_fill") === "true";
+					}
+					if (x_currentPageXML.getAttribute("hs_fillColor") != undefined && x_currentPageXML.getAttribute("hs_fillColor") != "") {
+						fillColor = x_getColour(x_currentPageXML.getAttribute("hs_fillColor"));
+					}
+					if (x_currentPageXML.getAttribute("hs_fillOpacity") != undefined && x_currentPageXML.getAttribute("hs_fillOpacity") != "") {
+						fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
+					}
+					optionsCorrect = {
+						render_select:
+								{
+									fill: fill,
+									fillColor: fillColor.substr(1),
+									fillOpacity: fillOpacity,
+									stroke: stroke,
+									strokeColor: "008000",
+									strokeOpacity: strokeOpacity,
+									strokeWidth: strokeWidth
+								},
+						scaleMap: true,
+						clickNavigate: true
+					};
+					
+					if (x_currentPageXML.getAttribute("answers") == "true") {
+						$('img').mapster('set_options', optionsCorrect);
+					} else {
+						$("#pageContents .hotspot.selected").mapster("select");
+					}
+					
+					var amountOfCorrectOptions = 0; // total number of correct hotspots available
+					
+					allHighlightsArray.forEach((highlight)=>{
 						if(highlight.getAttribute("truth") === "true"){
-							hotSpotScore++;
-						}else{
-							AmountOfWrongScore++;
+							amountOfCorrectOptions++;
 						}
 					})
 
-					debugger
-					var scoreLabel;
-					if(AmountOfWrongScore==0){
-						var allgood = x_currentPageXML.getAttribute("allGood")
-						if(allgood=="" || allgood == undefined){
-							allgood = "You have selected all correct answers"
+					var amountOfCorrect = 0, // number of correct hotspots selected
+						amountOfWrong = 0; // number of incorrect hotspots selected
+					
+					highlightsArray.forEach((highlight)=>{
+						if(highlight.getAttribute("truth") === "true"){
+							amountOfCorrect++;
+						}else{
+							amountOfWrong++
 						}
-						scoreLabel = allgood;
-					}else if (hotSpotScore >= 1){
-						var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
-						if(scoreTxt==""){
-							scoreTxt = "You have /r answers right and /w wrong"
+					})
+
+					attempts++;
+					var maxAttempts = parseInt(x_currentPageXML.getAttribute("attempts")),
+						remainingAttempts = maxAttempts - attempts;
+					
+					// activity is complete - either because max attempts reached (even if some still incorrect) or all correct & no incorrect have been found
+					if((attempts >= maxAttempts || (amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0)) && amountOfCorrect+amountOfWrong > 0){
+						
+						if (x_currentPageXML.getAttribute("answers") == "true"){
+							
+							highlightsArray.forEach((highlight)=>{
+								var points = JSON.parse(highlight.getAttribute("points")),
+									lowestPoint = points[0];
+								for (var i=0; i<points.length; i++) {
+									if (points[i].y > lowestPoint.y) {
+										lowestPoint = points[i];
+									} else if (points[i].y == lowestPoint.y && points[i].x > lowestPoint.x) {
+										lowestPoint = points[i];
+									}
+								}
+								
+								var $markIcon = $("<div class='" + (highlight.getAttribute("truth") === "true" ? "correct" : "incorrect") + "'><span></span></div>")
+									resize = $img.width() / $img.data("origSize")[0];
+								
+								$markIcon
+									.css({top: lowestPoint.y * resize, left: lowestPoint.x * resize})
+									.appendTo("#markingIcons");
+							})
+							
+							allHighlightsArray.forEach((highlight, index)=>{
+								if(highlight.getAttribute('truth') === "true" && $.inArray(highlight, highlightsArray) == -1){
+									$('area[data-key="'+index+'"]').mapster('deselect')
+									$('img').mapster('set_options', optionsCorrect);
+									$('area[data-key="'+index+'"]').mapster('select')
+								}
+							})
+						}
+						
+						var scoreLabel;
+						// all correct
+						if (amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0) {
+							scoreLabel = x_currentPageXML.getAttribute("allGood") != undefined ? x_currentPageXML.getAttribute("allGood") : "Well done, you have selected all of the correct answers.";
+							
+						// all incorrect
+						}else if (amountOfCorrect == 0){
+							scoreLabel = x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : "You have not selected any of the /c correct answers."
+							scoreLabel = scoreLabel.replace("/c", amountOfCorrectOptions);
+							
+						// some correct, some incorrect
+						} else {
+							scoreLabel = x_currentPageXML.getAttribute("scoreTxt") != undefined ? x_currentPageXML.getAttribute("scoreTxt") : "You have /r answer(s) right (out of /c) and /w wrong.";
+							scoreLabel = scoreLabel.replace("/r", amountOfCorrect);
+							scoreLabel = scoreLabel.replace("/w", amountOfWrong);
+							scoreLabel = scoreLabel.replace("/c", amountOfCorrectOptions);
 						}
 
-						var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
-
-						var score = scoreTemp.replace("/w", AmountOfWrongScore)
-						scoreLabel = score;
-					}else{
-						var allwrong = x_currentPageXML.getAttribute("allWrong")
-						if(allwrong=="" || allwrong == undefined){
-							allwrong = "You have not selected any of the correct answers"
-						}
-						scoreLabel = allwrong;
-					}
-
-
-
-					if(highlightsArray.length > 0){
 						highlightsArray.forEach((highlight) =>{
-							$("#checkButton").button("disable")
 							$("area").off('click')
-							if(highlight.getAttribute("text") !== null){
-								var h3 = $('<h3>').append(scoreLabel)
-								$("#score").html(h3);
-								$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
-							}else{
-								var h3 = $('<h3>').append(scoreLabel)
-								$("#score").html(h3);
-								$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
-							}
 						})
-					}else{
-						var warning = x_currentPageXML.getAttribute("warning")
-						if(warning === null || warning===undefined){
-							warning = "You have not selected anything"
-						}
-						var h3 = $('<h3>').append(warning)
+						
+						$('#hsHolder').addClass('complete');
+						
+						$("#checkButton").hide();
+						var h3 = $('<h3>').append(scoreLabel)
 						$("#score").html(h3);
-					}
+						$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
 
-
-
-					//var setScore = (hotSpotScore/highlightsArray.length)*100;
-					var setScore = 0;
-					if (hotSpotScore == highlightsArray.length)
-					{
-						setScore = 100.0;
-					}
-					var correct = true,
+						// score tracking
+						var setScore = 0;
+						if (amountOfCorrect == highlightsArray.length){
+							setScore = 100.0;
+						}
+						var correct = true,
 							l_options = [],
 							l_answers = [],
 							l_feedbacks = [];
-					highlightsArray.forEach((highlight, index)=> {
-						var currCorrect = highlight.getAttribute("truth")==="true";
-						correct = correct && currCorrect;
-						if (highlight.getAttribute("name") != undefined)
-						{
-							var answerTxt = highlight.getAttribute("name");
-						}
-						else
-						{
-							var answerTxt = 'Hotspot ' + highlight.getAttribute("id") + 1;
-						}
-						l_options.push({
-							id :highlight.getAttribute("id")+1+"",
-							answer: answerTxt,
-							result: currCorrect
+						
+						highlightsArray.forEach((highlight, index)=> {
+							var currCorrect = highlight.getAttribute("truth")==="true",
+								answerTxt;
+							correct = correct && currCorrect;
+							if (highlight.getAttribute("name") != undefined) {
+								answerTxt = highlight.getAttribute("name");
+							} else {
+								answerTxt = 'Hotspot ' + highlight.getAttribute("id") + 1;
+							}
+							l_options.push({
+								id :highlight.getAttribute("id")+1+"",
+								answer: answerTxt,
+								result: currCorrect
+							});
+							l_answers.push(answerTxt);
+							l_feedbacks.push(x_GetTrackingTextFromHTML(highlight.text, ""));
 						});
-						l_answers.push(answerTxt);
-						l_feedbacks.push(x_GetTrackingTextFromHTML(highlight.text, ""));
-					});
-					var result = {
-						success: correct,
-						score: setScore
-					}
-					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-					XTSetPageScore(x_currentPage, setScore, x_currentPageXML.getAttribute("trackinglabel"));
-
-				}else{
-
-					if(amountOfCorrect > 0 || amountOfWrong > 0){
-						var again = x_currentPageXML.getAttribute("again")
-						if(again === null || again===undefined){
-							again = "Try again, you have /a attempt(s) left"
+						
+						var result = {
+							success: correct,
+							score: setScore
 						}
-						var again = again.replace("/a", attempts)
+						XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+						XTSetPageScore(x_currentPage, setScore, x_currentPageXML.getAttribute("trackinglabel"));
 
-						var h3 = $('<h3>').append(again)
-						$("#score").html(h3);
+					// activity is incomplete - some incorrect are selected or not all correct are selected (& max attempts not made)
 					}else{
-						var warning = x_currentPageXML.getAttribute("warning")
-						if(warning === null || warning===undefined){
-							warning = "You have not selected anything"
+
+						if(amountOfCorrect > 0 || amountOfWrong > 0){
+							var scoreTxt;
+							
+							if (amountOfCorrect == 0) {
+								// all wrong
+								scoreTxt = x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : "You have not selected any of the /c correct answers."
+								scoreTxt += x_currentPageXML.getAttribute("again") != undefined ? (x_currentPageXML.getAttribute("again") != '' ? '<br/>' + x_currentPageXML.getAttribute("again") : '') : '<br/>Try again, you have /a attempt(s) left.';
+								scoreTxt = scoreTxt.replace("/c", amountOfCorrectOptions);
+								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
+								
+							} else if (amountOfWrong == 0) {
+								// all correct
+								if (x_currentPageXML.getAttribute("allGood2") == undefined) {
+									// for projects made before allGood2 added to xwd
+									scoreTxt = x_currentPageXML.getAttribute("scoreTxt") != undefined ? x_currentPageXML.getAttribute("scoreTxt") : "You have /r answer(s) right (out of /c) and /w wrong.";
+								} else {
+									scoreTxt = x_currentPageXML.getAttribute("allGood2") != undefined ? x_currentPageXML.getAttribute("allGood2") : "You have not selected all of the /c correct answers."
+								}
+								scoreTxt += x_currentPageXML.getAttribute("again") != undefined ? (x_currentPageXML.getAttribute("again") != '' ? '<br/>' + x_currentPageXML.getAttribute("again") : '') : '<br/>Try again, you have /a attempt(s) left.';
+								scoreTxt = scoreTxt.replace("/r", amountOfCorrect);
+								scoreTxt = scoreTxt.replace("/w", amountOfWrong);
+								scoreTxt = scoreTxt.replace("/c", amountOfCorrectOptions);
+								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
+							
+							} else {
+								// some correct, some incorrect
+								scoreTxt = x_currentPageXML.getAttribute("scoreTxt") != undefined ? x_currentPageXML.getAttribute("scoreTxt") : "You have /r answer(s) right (out of /c) and /w wrong.";
+								scoreTxt += x_currentPageXML.getAttribute("again") != undefined ? (x_currentPageXML.getAttribute("again") != '' ? '<br/>' + x_currentPageXML.getAttribute("again") : '') : '<br/>Try again, you have /a attempt(s) left.';
+								scoreTxt = scoreTxt.replace("/r", amountOfCorrect);
+								scoreTxt = scoreTxt.replace("/w", amountOfWrong);
+								scoreTxt = scoreTxt.replace("/c", amountOfCorrectOptions);
+								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
+							}
+
+							var h3 = $('<h3>').append(scoreTxt);
+							$("#score").html(h3);
+							
+						}else{
+							// no attempt was made
+							var warning = x_currentPageXML.getAttribute("warning") != undefined ? x_currentPageXML.getAttribute("warning") : "You have not selected anything";
+							var h3 = $('<h3>').append(warning)
+							$("#score").html(h3);
+							attempts--;
 						}
-						var h3 = $('<h3>').append(warning)
-						$("#score").html(h3);
-						attempts--;
+
 					}
-
-				}
-
+					
+					$pageContents.data('attempts', attempts);
+				});
+			
+			$pageContents.data({
+				'attempts': attempts,
+				'highlightsIndexArray': highlightsIndexArray,
+				'highlightsArray': highlightsArray
 			});
 		};
 
 		this.resizeImg = function(firstLoad) {
-
+			
+			$('.mapster_el').remove(); // force this to be removes as sometimes it's not (don't know why unbind below doesn't always work)
+			$img.mapster('unbind');
+			
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
 				imgMaxH = Math.round($x_pageHolder.height() * 0.85 -20);
-				$('#panel').css({
-					'margin' : '0px',
-				});
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.6 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 0.6 - 20);
-				$('#panel').css({
-					'margin' : '0px',
-				});
 
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
@@ -457,13 +385,6 @@
 				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
 			}
-			$img.mapster('unbind');
-
-
-			// if(imgMaxW > imgMaxH){
-			// 	var percentage = imgMaxW/imgMaxH
-			// 	imgMaxW = imgMaxW/percentage
-			// }
 
 			if(imgMaxH+70 > $x_pageHolder.height()){
 				imgMaxH*=0.75
@@ -479,157 +400,133 @@
 			$('#panel').css({
 				'max-width' : $img.width() + 'px',
 			});
-			//
-			// if($img.width() > $img.height()){
-			// 	$('.x_noLightBox').css("width", "100%")
-			// }else{
-			// 	$('.mapster_wrap_0').css("margin", "auto")
-			// }
-
+			
 			this.createHS();
 		};
 
 		this.createHS = function() {
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
-				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
-			var correctOptions = [],
-					correctAnswer = [],
-					correctFeedback = [];
+				correctOptions = [],
+				correctAnswer = [],
+				correctFeedback = [];
+			
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 
-			$(x_currentPageXML).children()
-				.each(function(i) {
+			$(x_currentPageXML).children().each(function(i) {
+				var _this = this;
+				_this.setAttribute("id", i);
+				allHighlightsArray.push(_this);
+				if (this.getAttribute("name") != undefined)
+				{
+					var answerTxt = this.getAttribute("name");
+				}
+				else
+				{
+					var answerTxt = 'Hotspot ' + i + 1;
+				}
+				correctOptions.push({
+					id: (i+1)+"",
+					answer: answerTxt,
+					result: this.getAttribute('truth') == 'true'
+				});
+				if (this.getAttribute('truth') == 'true') {
+					correctAnswer.push(answerTxt);
+				}
+				correctFeedback.push(x_GetTrackingTextFromHTML(this.getAttribute('text'), ""));
+				var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" tabindex="0" />');
+				var coords = [];
+				var coords_string = "";
+				
+				// Old way of specifying hotspot: x,y,w,h
+				if (this.getAttribute("mode") == undefined && this.getAttribute("x") != undefined && this.getAttribute("y") != undefined && this.getAttribute("w") != undefined && this.getAttribute("h") != undefined) {
+					// create polygon, start with topleft
+					coords[0] = {x: parseFloat(this.getAttribute("x")), y: parseFloat(this.getAttribute("y"))};
+					coords[1] = {x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")), y: parseFloat(this.getAttribute("y"))};
+					coords[2] = {x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")), y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))};
+					coords[3] = {x: parseFloat(this.getAttribute("x")), y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))};
+				}
+				if (coords.length == 4 || (this.getAttribute("points") != undefined && this.getAttribute("mode") != undefined)) {
+					if (coords.length != 4) {
+						coords = JSON.parse(this.getAttribute("points"));
+					}
 
-					var _this = this;
-					_this.setAttribute("id", i);
-					allHighlightsArray.push(_this);
-					if (this.getAttribute("name") != undefined)
-					{
-						var answerTxt = this.getAttribute("name");
+					if (coords.length > 0) {
+						for (var j in coords) {
+							if (j>0) {
+								coords_string += ",";
+							}
+							coords_string += coords[j].x + "," + coords[j].y;
+						}
 					}
-					else
-					{
-						var answerTxt = 'Hotspot ' + i + 1;
-					}
-					correctOptions.push({
-						id: (i+1)+"",
-						answer: answerTxt,
-						result: this.getAttribute('truth') == 'true'
+				}
+
+				$hotspot
+					.attr("coords", coords_string)
+					.click(function() {
+
+						var $this = $(this);
+						if($this.hasClass('hotspot') && highlightsIndexArray.indexOf(i) == -1){
+							$this.addClass("selected");
+							highlightsArray.push(_this);
+							highlightsIndexArray.push(i);
+
+						}else{
+							$this.removeClass("selected")
+							const index = highlightsArray.indexOf(_this);
+							if (index > -1) {
+								highlightsArray.splice(index, 1);
+								highlightsIndexArray.splice(index, 1);
+							}
+						}
+						
+						$pageContents.data({
+							'highlightsArray': highlightsArray,
+							'highlightsIndexArray': highlightsIndexArray
+						});
+					})
+					.focusin(function() {
+						$('img').mapster('set_options', tabfocusoptions);
+						$(this)
+							.removeClass("transparent")
+							.addClass("highlight");
+						$(this).mapster('highlight');
+
+					})
+					.focusout(function() {
+						$('img').mapster('set_options', options);
+						$(this)
+							.removeClass("highlight")
+							.addClass("transparent");
+						$("img").mapster('highlight', false);
+						})
+					.keypress(function(e) {
+						var charCode = e.charCode || e.keyCode;
+						if (charCode == 32) {
+							$(this).trigger("click");
+						}
 					});
-					if (this.getAttribute('truth') == 'true') {
-						correctAnswer.push(answerTxt);
-					}
-					correctFeedback.push(x_GetTrackingTextFromHTML(this.getAttribute('text'), ""));
-					// var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
-					var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" tabindex="' + (i+2) + '" />');
+				
+				if (x_currentPageXML.getAttribute("hs_showTooltip") != undefined && x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
+					if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
+						$hotspot.attr("title", this.getAttribute("alttext"));
+					else
+						$hotspot.attr("title", this.getAttribute("name"));
+				} else {
+					if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
+						$hotspot.attr("alt", this.getAttribute("alttext"));
+					else
+						$hotspot.attr("alt", this.getAttribute("name"));
+				}
 
-					var coords = [];
-					var coords_string = "";
-					// Old way of specifying hotspot: x,y,w,h
-					if (this.getAttribute("mode") == undefined && this.getAttribute("x") != undefined && this.getAttribute("y") != undefined && this.getAttribute("w") != undefined && this.getAttribute("h") != undefined) {
-						// create polygon, start with topleft
-						coords[0] = {x: parseFloat(this.getAttribute("x")), y: parseFloat(this.getAttribute("y"))};
-						coords[1] = {x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")), y: parseFloat(this.getAttribute("y"))};
-						coords[2] = {x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")), y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))};
-						coords[3] = {x: parseFloat(this.getAttribute("x")), y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))};
-					}
-					if (coords.length == 4 || (this.getAttribute("points") != undefined && this.getAttribute("mode") != undefined)) {
-						if (coords.length != 4) {
-							coords = JSON.parse(this.getAttribute("points"));
-						}
-
-						if (coords.length > 0) {
-							for (var j in coords) {
-								// No more need to scale the points, handled by the plugin
-								//coords[j].x *= scale;
-								//coords[j].y *= scale;
-								if (j>0)
-								{
-									coords_string += ",";
-								}
-								coords_string += coords[j].x + "," + coords[j].y;
-							}
-						}
-					}
-
-					$hotspot
-						.attr("coords", coords_string)
-						.click(function() {
-
-							var $this = $(this);
-							if($this.hasClass('hotspot') && !$this.hasClass("selected")){
-
-								$this.addClass("selected");
-								highlightsArray.push(_this)
-
-							}else{
-
-								$this.removeClass("selected")
-								const index = highlightsArray.indexOf(_this);
-								if (index > -1) {
-									highlightsArray.splice(index, 1);
-								}
-
-							}
-
-							// if (x_currentPageXML.getAttribute("highlight") == "true") {
-							//
-							// 	setTimeout(function(){
-							// 		$('img').mapster('set_options', highlightoptions);
-							// 		$("area").mapster('highlight');
-							// 	}, 100);
-							// }
-
-							x_pageContentsUpdated();
-						})
-						.focusin(function() {
-							$('img').mapster('set_options', tabfocusoptions);
-							$(this)
-								.removeClass("transparent")
-								.addClass("highlight");
-							$(this).mapster('highlight');
-
-						})
-						.focusout(function() {
-							$('img').mapster('set_options', options);
-							$(this)
-								.removeClass("highlight")
-								.addClass("transparent");
-							$("img").mapster('highlight', false);
-							})
-						.keypress(function(e) {
-							var charCode = e.charCode || e.keyCode;
-							if (charCode == 32) {
-								$(this).trigger("click");
-							}
-						})
-					if (x_currentPageXML.getAttribute("hs_showTooltip") != undefined && x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
-						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
-							$hotspot.attr("title", this.getAttribute("alttext"));
-						else
-							$hotspot.attr("title", this.getAttribute("name"));
-					} else {
-						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
-							$hotspot.attr("alt", this.getAttribute("alttext"));
-						else
-							$hotspot.attr("alt", this.getAttribute("name"));
-					}
-
-					$("#hsHolder_map").append($hotspot);
-                });
+				$("#hsHolder_map").append($hotspot);
+			});
 
 			var label = x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute('name'), "Hotspot question " + (x_currentPage+1));
-			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
-			{
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "") {
 				label = x_currentPageXML.getAttribute("trackinglabel");
 			}
 			XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
-
-			if (selected != undefined) {
-
-				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
-			}
 
 			var stroke = true;
 			var highlightColour = "#ffff00";
@@ -661,10 +558,6 @@
 				fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
 			}
 
-			if (selected != undefined) {
-				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
-
-			}
 			options = {
 				render_highlight:
 						{
@@ -689,80 +582,25 @@
 				scaleMap: true,
 				clickNavigate: true
 			};
+			
 			var tabfocusoptions = JSON.parse(JSON.stringify(options));
 			// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
 			tabfocusoptions.render_highlight.stroke = true;
 			tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0? 1 : strokeWidth * 2);
-
-	/*		var highlightoptions = JSON.parse(JSON.stringify(options));
-
-			highlightoptions.render_select.stroke = fill/3;
-			highlightoptions.render_select.fillOpacity = fillOpacity/3;
-			highlightoptions.render_select.stroke = stroke/3;
-			highlightoptions.render_select.strokeOpacity = strokeOpacity/3;
-			highlightoptions.render_select.strokeWidth = strokeWidth/3;*/
-
-
+			
 			$('img').mapster(options);
 
-			if (x_currentPageXML.getAttribute("highlight") == "true") {
-				if(!resize) {
-
-					allHighlightsArray.forEach((highlight, index) => {
-						$('area[data-key="' + index + '"]').addClass('selected')
-						highlightsArray.push(highlight)
-					})
-					setTimeout(function () {
-						/*					$('img').mapster('set_options', highlightoptions);*/
-						$("area").mapster('select');
-
-					}, 100);
-				}
+			for (var i=0; i<highlightsIndexArray.length; i++) {
+				$("#pageContents .hotspot:eq(" + highlightsIndexArray[i] + ")").mapster("select");
 			}
-			else {
-
-				$("#pageContents .hotspot.selected").mapster("select");
+			
+			// if activity is complete, make sure the click functionality doesn't start working again after resize
+			if ($('#hsHolder').hasClass('complete')) {
+				highlightsArray.forEach((highlight) =>{
+					$("area").off('click')
+				})
 			}
 		};
-
-
-		this.selectHs = function(type) {
-
-			var currentSelection = $("#pageContents .selected"),
-				i = currentSelection.index();
-
-			currentSelection.removeClass("selected");
-			if (x_currentPageXML.getAttribute("highlight") !== "true") {
-
-				$("area").mapster('deselect');
-			}
-
-			if (type == "next") {
-				i = i+1;
-			} else {
-				i=i-1;
-			}
-
-			if(i > 0){
-                $("#prevHS").button("enable");
-			}else{
-                $("#prevHS").button("disable");
-			}
-
-			if(i < counter.length-1){
-                $("#nextHS").button("enable");
-			}else{
-                $("#nextHS").button("disable");
-			}
-
-			//if(counter[i] >= attempts || hits[i]){
-			$("#pageContents .hotspot:eq(" + i  + ")").addClass("selected").trigger("click");
-			if (x_currentPageXML.getAttribute("highlight") !== "true") {
-				$img.mapster('set', true, i);
-			}
-
-		};
-
 	};
 
 	hotSpotQuestion.init();
@@ -773,40 +611,29 @@
 <div id="pageContents">
 	<div id="infoHolder" class="right">
 		<fieldset class="noStyle">
-	<div id="panel" class="panel inline">
-		<div id="questionText" class="right">
-		<div id="imageHolder">
+		
+			<div id="panel" class="panel inline">
+			
+				<div id="questionText" class="right">
+					<div id="imageHolder">
+						<img id="image" class="x_noLightBox" />
+						<div id="hsHolder"></div>
+						<div id="markingIcons"></div>
+					</div>
+				</div>
 
-			<img id="image" class="x_noLightBox" />
-			<div id="hsHolder"></div>
-			<div id="btnHolder">
+				<div id="textContents">
+					<button id="checkButton"></button>
+					<div id="text">
+						<div id="score"></div>
+						<div id="generalFeedback"></div>
+					</div>
+				</div>
+				
 			</div>
-
-
-			<div id="hint">
-
-			</div>
-			<div id="feedback">
-
-			</div>
-		</div>
-
-	</div>
-
-	<div id="textContents">
-
-		<button id="checkButton"></button>
-		<div id="text">
-			<div id="score"></div>
-			<div id="generalFeedback"></div>
-		</div>
-
-
-	</div>
-	</div>
-			<div id="textHolder" tabindex="1">
-			</div>
+			
+			<div id="textHolder"></div>
+			
 		</fieldset>
-
 	</div>
 </div>

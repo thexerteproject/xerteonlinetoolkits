@@ -155,3 +155,26 @@ li.select-interaction.selected {
 #button-placeholder {
   text-align: right;
 }
+
+.graph-container{
+  width: 45%;
+}
+
+.container-print{
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (max-width: 1200px) {
+  .graph-container {
+    width: 95% !important;
+  }
+
+  .graph{
+    width: 95% !important;
+  }
+
+  .panel.legend p{
+    font-size: 2.75vmin;
+  }
+}

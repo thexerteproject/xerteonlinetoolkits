@@ -50,7 +50,7 @@ var videoSynch = new function() {
 		}
 	}
 	// Loads popcorn, then calls setup.
-	this.init = function() 
+	this.init = function()
 	{
 		var popLocation = "common_html5/js/popcorn/"
 		var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
@@ -73,10 +73,10 @@ var videoSynch = new function() {
 
 		$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-		var	captionInfo = new Array();
+		    var	captionInfo = new Array();
 
 		// uses data from timedText file if there is one - otherwise use nested page info
-		if (x_currentPageXML.getAttribute("timedText")) {
+		iif (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
 			$.ajax({
 				type: "GET",
 				url: x_evalURL(x_currentPageXML.getAttribute("timedText")),
@@ -86,21 +86,21 @@ var videoSynch = new function() {
 						var	$this = $(this);
 						captionInfo.push({text:$this.text(), synch:$this.attr("begin"), end:$this.attr("end")});
 					});
-					
+
 					videoSynch.createCaptions(captionInfo);
 				},
-				
+
 				error: function () {
 					// see if there are any captions in xml to use instead
 					$(x_currentPageXML).children().each(function() {
 						var	$this = $(this);
 						captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), align:$this.attr("align"), text:$this.attr("text"), synch:$this.attr("synch")});
 					});
-					
+
 					videoSynch.createCaptions(captionInfo);
 				}
 			});
-			
+
 		} else {
 			var synchPoint = 0;
 			$(x_currentPageXML).children().each(function() {
@@ -108,19 +108,19 @@ var videoSynch = new function() {
 				synchPoint = $this.attr("synch")[0] == "+" ? ($.isNumeric($this.attr("synch").slice(1)) ? Number($this.attr("synch").slice(1)) + synchPoint : 0) : Number($this.attr("synch")),
 				captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), align:$this.attr("align"), text:$this.attr("text"), synch:synchPoint});
 			});
-			
+
 			videoSynch.createCaptions(captionInfo);
 		}
 	}
-	
+
 	this.createCaptions = function(captionInfo) {
 		var	captions = new Array();
-		
+
 		$(captionInfo).each(function() {
 			var	$this = $(this),
 				imgStr = "",
 				divString = "";
-			
+
 			if ($this.attr("url") != undefined && $this.attr("url") != "") {
 				imgStr += '<div class="myImg"><img src="' + x_evalURL($this.attr("url")) + '" ';
 				if ($this.attr("tip") != undefined && $this.attr("tip") != "") {
@@ -128,48 +128,48 @@ var videoSynch = new function() {
 				}
 				imgStr += ' /></div>';
 			}
-			
+
 			if ($this.attr("align") == "Bottom") {
 				divString = '<div aria-live="polite">'  + imgStr + x_addLineBreaks($this.attr("text")) + '</div>'
 			} else {
 				divString = '<div aria-live="polite">' + x_addLineBreaks($this.attr("text")) + imgStr + '</div>'
 			}
-			
+
 			var $caption = $(divString)
 					.data("synch", $this.attr("synch"))
 					.hide();
-			
+
 			$infoHolder.append($caption);
-			
+
 			captions.push($caption[0]);
 		});
-		
+
 		$pageContents.data("captions", captions);
-		
+
 		$(captions).click(function() {
 			$pageContents.data("mediaElement").setCurrentTime($(this).data("synch") + 0.1);
 			this.scrollIntoView(true);
 		});
-		
+
 		this.sizeChanged();
-		
-		
+
+
 		var $pageVideo = $("#pageVideo"),
 			videoDimensions = [320,240];
-		
+
 		if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 			var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 			if (dimensions[0] != 0 && dimensions[1] != 0) {
 				videoDimensions = dimensions;
 			}
 		}
-		
+
 		var videoSrc = x_currentPageXML.getAttribute("url");
 		$pageVideo.data({
 			"src"			:videoSrc,
 			"dimensions"	:videoDimensions
 		});
-		
+
 		this.popcornInstance = loadMedia($("#pageVideo"), "video",
 		{	tip: "", //Not set in editor
 			width: videoDimensions[0],
@@ -184,7 +184,7 @@ var videoSynch = new function() {
 			trackMedia: true
 		}, true);
 
-		this.addEvents(this.popcornInstance);	
+		this.addEvents(this.popcornInstance);
 		resizeEmbededMedia($(".popcornMedia.embed"), {width: videoDimensions[0], height: videoDimensions[1]})
 
 		// Show captions that should happen before the first timeupdate.
@@ -192,14 +192,14 @@ var videoSynch = new function() {
 		if ($captionAtStart.length > 0) {
 			$captionAtStart.show();
 		}
-		
+
 		if (x_browserInfo.mobile == false) {
 			$pageContents.css("padding-left", Number($pageVideo.data("dimensions")[0]) + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
 			$("#videoHolder").width($pageContents.css("padding-left"));
 		} else {
 			$pageContents.find(".panel").addClass("inline");
 		}
-		
+
 		x_pageLoaded();
 	}
 
@@ -247,7 +247,7 @@ var videoSynch = new function() {
 			this.popcornInstance.off("timeupdate");
 		}
 	};
-	
+
 	this.leavePage = function () {
 		document.dispatchEvent(new Event('leavepage'));
 	};

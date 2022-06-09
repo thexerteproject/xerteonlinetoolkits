@@ -51,19 +51,6 @@ var modelfilestrs = modelfilestrs || [];
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
-// Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
-// Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
-if (!$.fn.toggleClick) {
-    $.fn.toggleClick = function(){
-		var functions=arguments, iteration=0;
-
-		return this.click(function(){
-			functions[iteration].apply(this,arguments);
-			iteration = (iteration+1) % functions.length;
-		})
-    };
-}
-
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
 	// Place lightbox check in a try block, because an exception will be triggereed if LO is embedded in an iframe
@@ -124,10 +111,10 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
-	// Load the script.js dependency loader
+	// Load the loadjs dependency loader
     if (!xot_offline) {
         // TODO - we should move this to play/preview and let it kickstart the loading of all files
-        $.getScript(x_templateLocation + "common_html5/js/script.js");
+        $.getScript(x_templateLocation + "common_html5/js/loadjs.min.js");
     }
 
     $x_mainHolder = $("#x_mainHolder");
@@ -146,8 +133,29 @@ $(document).ready(function() {
     {
         x_browserInfo.Android = true;
     }
-
-    x_browserInfo.touchScreen = !!("ontouchstart" in window);
+	
+	// detect touchscreen function (https://patrickhlauke.github.io/touch/touchscreen-detection/)
+	function detectTouchscreen() {
+		var result = false;
+		if (window.PointerEvent && ('maxTouchPoints' in navigator)) {
+			// if Pointer Events are supported, just check maxTouchPoints
+			if (navigator.maxTouchPoints > 0) {
+			result = true;
+			}
+		} else {
+			// no Pointer Events...
+			if (window.matchMedia && window.matchMedia("(any-pointer:coarse)").matches) {
+				// check for any-pointer:coarse which mostly means touchscreen
+				result = true;
+			} else if (window.TouchEvent || ('ontouchstart' in window)) {
+				// last resort - check for exposed touch events API / event handler
+				result = true;
+			}
+		}
+		return result;
+	}
+	
+	x_browserInfo.touchScreen = detectTouchscreen();
 	if (x_browserInfo.touchScreen == true) {
 		$x_mainHolder.addClass("x_touchScreen");
 	}
@@ -162,9 +170,15 @@ $(document).ready(function() {
         x_projectDataLoaded(xmlData);
     }
     else {
+		var now = new Date().getTime();
+    	let url = "website_code/php/templates/get_template_xml.php?file=" + x_projectXML + "&time=" + now;
+    	if (typeof use_url !== "undefined" && use_url)
+		{
+			url = x_projectXML + "?time=" + now;
+		}
         $.ajax({
             type: "GET",
-            url: x_projectXML,
+            url: url,
             dataType: "text",
             success: function (text) {
                 var newString = x_makeAbsolute(x_fixLineBreaks(text)),
@@ -177,7 +191,6 @@ $(document).ready(function() {
             }
         });
     }
-
 });
 
 x_pagesViewed = function()
@@ -422,7 +435,6 @@ x_projectDataLoaded = function(xmlData) {
 		else {
 			pageToHide.push(i);
 		}
-
     });
 	
 	// removes hidden pages from x_pages array
@@ -446,7 +458,6 @@ x_projectDataLoaded = function(xmlData) {
     if (x_normalPages.length < 2) {
         // don't show navigation options if there's only one page
         $("#x_footerBlock .x_floatRight").remove();
-		
     } else {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
@@ -612,7 +623,7 @@ x_projectDataLoaded = function(xmlData) {
             x_fillWindow = false; // overrides fill window for touchscreen devices
 
         } else if (x_urlParams.display == "fixed" || x_urlParams.display == "default" || x_urlParams.display == "full" || x_urlParams.display == "fill") {
-            if (x_browserInfo.touchScreen == true) {
+            if (x_browserInfo.mobile == true) {
                 x_fillWindow = true;
             }
             if (x_urlParams.display == "fixed" || x_urlParams.display == "default") { // default fixed size using values in css (800,600)
@@ -672,7 +683,6 @@ x_projectDataLoaded = function(xmlData) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
 
-
 	if (x_params.trackingPassed != undefined)
 	{
 		// Get value, and try to convert to decimal between 0 and 1
@@ -698,7 +708,21 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
-
+	if (typeof x_embed == "undefined")
+	{
+		x_embed = false;
+		x_embed_activated = false;
+	}
+	if (x_embed && !x_embed_activated)
+	{
+		// Activate overlay
+		$("#x_embed_overlay")
+			.switchClass("embed-overlay-inactive", "embed-overlay")
+			.click(function(){
+				window.location = x_embed_activation_url;
+			})
+			.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
+	}
 }
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
@@ -753,7 +777,6 @@ function getHashInfo(urlHash) {
 				thisPage = false;
 			}
 		}
-		
 		return thisPage;
 		
 	} else {
@@ -842,37 +865,23 @@ function x_evalURL(url)
                 url = url.substr(0,pos) + url.substr(pos + 16);
                 return eval(url);
             }
-            else
-            {
-                return eval(url);
-            }
+            else return eval(url);
         }
-        else {
-            return eval(url)
-        }
+        else return eval(url);
     }
-    else
-    {
-        return url;
-    }
+    else return url;
 }
 
 function x_GetTrackingTextFromHTML(html, fallback)
 {
     var div = $('<div>').html(html);
     var txt = $.trim(div.text());
-    if (txt == "")
-    {
+    if (txt == "") {
         var img = div.find("img");
-        if (img != undefined && img.length > 0)
-        {
-            txt = img[0].attributes['alt'].value;
-        }
+        if (img != undefined && img.length > 0) txt = img[0].attributes['alt'].value;
     }
-    if (txt == "")
-    {
-        txt = fallback;
-    }
+    if (txt == "") txt = fallback;
+
     return txt;
 }
 
@@ -1093,9 +1102,11 @@ function x_cssSetUp(param) {
 			break;
         case "theme":
             if (!xot_offline) {
-                $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-                // Set id
-                $('link[href="' + x_themePath + x_params.theme + '/' + x_params.theme + '.js"]').attr('id', 'theme_js');
+            	if (x_params.theme != undefined) {
+					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+					// Set id
+					$('link[href="' + x_themePath + x_params.theme + '/' + x_params.theme + '.js"]').attr('id', 'theme_js');
+				}
             }
             x_cssSetUp("responsive");
             break;
@@ -1286,7 +1297,21 @@ function x_continueSetUp1() {
 		checkExists(type, fallback);
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
-		$("#x_headerBlock h1").html(x_params.name);
+		// add link to LO title?
+		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
+			$("#x_headerBlock h1").append(
+				$("<a>")
+					.html(x_params.name)
+					.attr("href", "#")
+					.addClass("x_homePageLink")
+					.attr("title", x_getLangInfo(x_languageData.find("homeLink")[0], "description", "Go to Home page"))
+					.attr("aria-label", x_getLangInfo(x_languageData.find("homeLink")[0], "description", "Go to Home page"))
+					.on("click", x_goHome)
+				);
+		}
+		else {
+			$("#x_headerBlock h1").html(x_params.name);
+		}
 
 		// strips code out of page title
 		var div = $("<div>").html(x_params.name);
@@ -1377,7 +1402,6 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 
-
 		var	menuIcon = "x_info",
 			menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
@@ -1411,11 +1435,7 @@ function x_continueSetUp1() {
 								.removeClass("ui-state-hover");
 						}
 					);
-				} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
-					x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
-				} else {
-					x_changePage(0);
-				}
+				} else x_goHome();
 				
 				$(this)
 					.blur()
@@ -1506,7 +1526,6 @@ function x_continueSetUp1() {
 			}
 		}
 
-
 		$x_window.resize(function() {
 			if (x_fillWindow == true) {
 				if (this.resizeTo) {
@@ -1528,7 +1547,6 @@ function x_continueSetUp1() {
 				x_updateCss();
 			}
 		});
-
 
 		if (x_browserInfo.touchScreen == true) {
 			// Set start orientation
@@ -1604,6 +1622,15 @@ function x_continueSetUp1() {
 		} else {
 			x_continueSetUp2();
 		}
+	}
+}
+
+function x_goHome() {
+	// home page can be changed from page 1 (except for menu pages where home page will always be TOC)
+	if (x_params.navigation != 'Menu' && x_params.navigation != 'Menu with Page Controls' && x_params.homePage != undefined && x_params.homePage != "") {
+		x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
+	} else {
+		x_changePage(0);
 	}
 }
 
@@ -1744,109 +1771,116 @@ function x_charmapLoaded(xml)
 }
 
 function x_dialog(text){
-
     window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
-
 }
-
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
-    var page = XTStartPage();
-    if (force && page >= 0) {  // this is a resumed tracked LO, go to the page saved by the LO
-        x_changePage(page, addHistory);
-    }
-    else {
+    var page,
+		inclHistory = false;
+	
+	// if it's first page then we've already found x_deepLink
+	if (x_firstLoad == false || addHistory == false) {
+		var deepLinkInfo = getDeepLink(pageInfo.ID);
+		pageInfo.ID = deepLinkInfo[0];
 		
-		// if it's first page then we've already found x_deepLink
-		if (x_firstLoad == false || addHistory == false) {
-			var deepLinkInfo = getDeepLink(pageInfo.ID);
-			pageInfo.ID = deepLinkInfo[0];
+		if (deepLinkInfo.length > 1) {
+			x_deepLink = deepLinkInfo[1];
+		} else {
+			x_deepLink = '';
+		}
+	}
+	
+	if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+		// relative links added from WYSIWYG xerte page links button
+		if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+			var pageIndex = $.inArray(x_currentPage, x_normalPages);
 			
-			if (deepLinkInfo.length > 1) {
-				x_deepLink = deepLinkInfo[1];
+			switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
+				case "next":
+					// won't change if this is a standalone page
+					if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
+						page = x_normalPages[pageIndex + 1];
+					break;
+				case "previous":
+					if (pageIndex != -1 && pageIndex > 0) {
+						page = x_normalPages[pageIndex - 1];
+					} else {
+						// ** it's a standalone page - do historic back
+					}
+					break;
+				case "first":
+					if (pageIndex !== 0) {
+						page = x_normalPages[0];
+					}
+					break;
+				case "last":
+					if (pageIndex < x_normalPages.length-1) {
+						page = x_normalPages[x_normalPages.length-1]
+					}
+					break;
+			}
+		}
+		else {
+			// could be the linkID generated automatically in XML or a custom ID added in editor
+			page = x_lookupPage(pageInfo.type, pageInfo.ID);
+			
+			// id was a deeplink so info about page & deeplink has been returned
+			if ($.isArray(page)) {
+				x_deepLink = page.slice(1, page.length);
+				page = page[0];
+			}
+			
+			if (page !== false) {
+				if (page != x_currentPage) {
+					inclHistory = true;
+				} else {
+					x_doDeepLink();
+				}
 			} else {
 				x_deepLink = '';
+				if (force == true) {
+					inclHistory = true;
+				}
 			}
 		}
+	}
+	else if (pageInfo.type == "index") {
+		page = pageInfo.ID;
+		inclHistory = true;
 		
-		if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-			// relative links added from WYSIWYG xerte page links button
-        	if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
-				var pageIndex = $.inArray(x_currentPage, x_normalPages);
-				
-				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
-					case "next":
-						// won't change if this is a standalone page
-						if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
-							x_changePage(x_normalPages[pageIndex + 1]);
-						break;
-					case "previous":
-						if (pageIndex != -1 && pageIndex > 0) {
-							x_changePage(x_normalPages[pageIndex - 1]);
-						} else {
-							// ** it's a standalone page - do historic back
-						}
-						break;
-					case "first":
-						if (pageIndex !== 0) {
-							x_changePage(x_normalPages[0]);
-						}
-						break;
-					case "last":
-						if (pageIndex < x_normalPages.length-1) {
-							x_changePage(x_normalPages[x_normalPages.length-1]);
-						}
-						break;
-				}
-        	}
-        	else {
-				// could be the linkID generated automatically in XML or a custom ID added in editor
-				page = x_lookupPage(pageInfo.type, pageInfo.ID);
-				
-				// id was a deeplink so info about page & deeplink has been returned
-				if ($.isArray(page)) {
-					x_deepLink = page.slice(1, page.length);
-					page = page[0];
-				}
-				
-				if (page !== false) {
-					if (page != x_currentPage) {
-						x_changePage(page, addHistory);
-					}
-				} else {
-					x_deepLink = '';
-					if (force == true) {
-						x_changePage(0, addHistory);
-					}
-				}
-			}
-        }
-        else if (pageInfo.type == "index") {
-			x_changePage(pageInfo.ID, addHistory);
-			
-        } else {
-			page = parseInt(pageInfo.ID);
-            if (page > 0 && page <= x_pages.length) {
-                x_changePage(page-1, addHistory);
-            }
-            else {
-            	x_deepLink = '';
-            	if (force == true) {
-                	x_changePage(0, addHistory);
-                }
-            }
+	} else {
+		page = parseInt(pageInfo.ID);
+		if (page > 0 && page <= x_pages.length) {
+			page = page-1;
+			inclHistory = true;
 		}
-    }
+		else {
+			x_deepLink = '';
+			if (force == true) {
+				page = 0;
+				inclHistory = true;
+			}
+		}
+	}
+	
+	var resumeLO = XTStartPage();
+	
+	// this is a resumed tracked LO, go to the page saved by the LO - unless it's currently trying to show a standalone page in a lightbox
+	if (force && resumeLO >= 0 && (x_pageInfo[page].standalone != true || x_pages[page].getAttribute('linkTarget') == 'new' || x_pages[page].getAttribute('linkTarget') == 'same')) { 
+		x_changePage(resumeLO, addHistory);
+		
+	} else if (inclHistory == true) {
+		x_changePage(page, addHistory);
+		
+	} else {
+		x_changePage(page);
+	}
 }
-
 
 // function returns page no. of page with matching linkID / pageID & whether it's from array of normal pages or standalone pages
 function x_lookupPage(type, id) {
-	var	pageType,
-		found = x_checkPages(type, id, x_pageInfo);
-	
-	return found;
+	return x_checkPages(type, id, x_pageInfo);
 }
 
 // checks through the pageArray specified for a page with matching ID
@@ -1859,9 +1893,7 @@ function x_checkPages(type, id, pageArray) {
 			// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID
 			(type == "linkID" && pageArray[i].pageID && pageArray[i].pageID == id) ||
 			(type == "pageID" && pageArray[i].linkID && pageArray[i].linkID == id)
-		){
-            return i;
-		}
+		) return i;
     }
 	
 	// Now check the children of each page
@@ -1901,9 +1933,10 @@ function x_checkPages(type, id, pageArray) {
 
 	return false;
 }
+
 function x_setMaxWidth() {
 	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
-		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
 		var styleString = '<style>';
 		for (var i=0; i<workingPages.length; i++) {
 			if (i>0) { styleString += ', '; }
@@ -1928,7 +1961,8 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 	
 	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
-	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
+	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
+		parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
 	}
@@ -2070,6 +2104,7 @@ function x_endPageTracking(pagechange, x_gotoPage) {
         XTExitPage(x_currentPage);
     }
 }
+
 function x_changePageStep5(x_gotoPage) {
 	x_setMaxWidth();
 	
@@ -2523,8 +2558,14 @@ function x_setUpLightBox() {
 		
 		$.featherlight.prototype.afterContent = function () {
 			if (this.$currentTarget != undefined) {
+				
 				var caption = this.$currentTarget.find('img').attr('alt');
 				
+				if (this.$currentTarget[0].nodeName === 'A' && this.$currentTarget.attr('data-image-alt') != undefined) {
+					this.$content.attr('alt', this.$currentTarget.attr('data-image-alt'));
+					caption = this.$content.attr('alt');
+				}
+
 				if (caption != undefined && caption != '') {
 					this.$instance.find('.featherlight-content img').attr('alt', caption);
 					
@@ -2561,7 +2602,6 @@ function x_loadPage(response, status, xhr) {
     x_setUpPage();
 }
 
-
 // get deep link info
 function getDeepLink(info) {
 	if (String(info).indexOf('|') >= 0) {
@@ -2592,7 +2632,6 @@ function x_doDeepLink() {
 		}
 	}
 }
-
 
 // function called when page model loaded/appended - sorts button states etc.
 function x_setUpPage() {
@@ -2696,7 +2735,6 @@ function x_setUpPage() {
     }
 }
 
-
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
@@ -2791,7 +2829,6 @@ function x_addNarration(funct, arguments) {
 	}
 }
 
-
 // function adds timer bar above main controls on interface - optional property that can be added to any interactivity page
 function x_addCountdownTimer() {
     var x_timerLangInfo = [
@@ -2847,7 +2884,6 @@ function x_addCountdownTimer() {
         x_timer = setInterval(x_countdownTicker, 1000);
     }
 }
-
 
 // function adds individual page backgrounds & sets up all the attributes of it (opacity, size etc.)
 function x_loadPageBg(loadModel) {
@@ -2936,15 +2972,10 @@ function x_loadPageBg(loadModel) {
 				"filter" :"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
 			})
 			.show();
-	} else {
-		$("#x_bgDarken").hide();
 	}
-
-
+	else $("#x_bgDarken").hide();
 
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
-		//setTimeout(function(){$pageBg.gray();}, 100);
-		//$pageBg.gray();
 		if ($("#pageBg" + x_currentPage).length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
 			$(".grayscale:not(#x_mainBg):not('[id]')").addClass("pageBg").attr("id", "pageBg" + x_currentPage);
 			$pageBg = $("#pageBg" + x_currentPage);
@@ -2952,12 +2983,8 @@ function x_loadPageBg(loadModel) {
 		}
 		$("#pageBg").gray().fadeIn();
 	}
-
-
-
 	$("#x_mainBg").hide();
 }
-
 
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
@@ -3143,7 +3170,6 @@ function x_setDialogSize($x_popupDialog, position) {
     }
 }
 
-
 // function called from button on footer bar or from link in main text e.g. <a onclick="x_openMediaWindow(); return false;" href="#">Open media in new window</a>
 function x_openMediaWindow() {
     // get info about how to display captions - if none are found the code in the mediaViewer folder will look for details in tt file - otherwise it will use defaults
@@ -3170,7 +3196,6 @@ function x_openInfoWindow(text){
     window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
 
 }
-
 
 // function returns correct phrase from language file or uses fallback if no matches / no language file
 function x_getLangInfo(node, attribute, fallBack) {
@@ -3277,7 +3302,6 @@ function x_insertText(node, exclude, list, data) {
     node.nodeValue = tempText;
 }
 
-
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
 	x_fillWindow = true;
@@ -3290,7 +3314,7 @@ function x_setFillWindow(updatePage) {
     }
 
     $x_mainHolder.css({
-        // The right broder is cut off when embedding if setting to 100%
+        // The right border is cut off when embedding if setting to 100%
 		"width"     :"99.8%",
         "height"    :"100%"
     });
@@ -3306,7 +3330,6 @@ function x_setFillWindow(updatePage) {
 
 	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
 }
-
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
 function x_insertCSS(href, func, disable, id, keep) {
@@ -3370,10 +3393,7 @@ function x_insertCSS(href, func, disable, id, keep) {
         }
         else
         {
-            if (func != undefined)
-            {
-                func();
-            }
+            if (func != undefined) func();
         }
     }
     else {
@@ -3390,23 +3410,19 @@ function x_checkDecimalSeparator(value, forcePeriod) {
 			var temp = value.replace(/\,/g, '.');
 			if ($.isNumeric(temp)) {
 				return temp;
-			} else {
-				return value;
 			}
-		} else {
-			return value;
+			else return value;
 		}
-		
-	} else {
+		else return value;
+	}
+	else {
 		// convert to , as it is to be shown on page
 		if ($.isNumeric(value) && x_params.decimalseparator !== undefined && x_params.decimalseparator === 'comma') {
 			return String(value).replace('.', ',');
-		} else {
-			return value;
 		}
+		else return value;
 	}
 }
-
 
 // ___ FUNCTIONS CALLED FROM PAGE MODELS ___
 
@@ -3425,19 +3441,14 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
         }
 
 		if (enlarge != true) {
-			if (maxW > imgW) {
-				maxW = imgW;
-			}
-			if (maxH > imgH) {
-				maxH = imgH;
-			}
+			maxW = Math.min(maxW, imgW);
+			maxH = Math.min(maxH, imgH);
 		}
 
         if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
-            var scaleW = maxW / imgW;
-            var scaleH = maxH / imgH;
-            var scaleFactor;
-			scaleFactor = Math.min(scaleW, scaleH);
+            var scaleW = maxW / imgW,
+                scaleH = maxH / imgH,
+                scaleFactor = Math.min(scaleW, scaleH);
 
             imgW = Math.round(imgW * scaleFactor);
             imgH = Math.round(imgH * scaleFactor);
@@ -3451,7 +3462,6 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
     $img.css("visibility", "visible"); // kept hidden until resize is done
 }
-
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text, override) {
@@ -3520,7 +3530,6 @@ function x_addLineBreaks(text, override) {
     }
 }
 
-
 // function called from model pages - returns reference to swfs (different depending on browser)
 function x_getSWFRef(swfID) {
     var flashMovie;
@@ -3536,7 +3545,6 @@ function x_getSWFRef(swfID) {
     }
     return flashMovie;
 }
-
 
 // function sorts initObject data for any pages where swfs or custom html can be added (e.g. textSWF, xerteModel, navigators)
 function x_sortInitObject(initObj) {
@@ -3564,7 +3572,6 @@ function x_sortInitObject(initObj) {
     return initObject;
 }
 
-
 // function selects text (e.g. when users are to be prompted to copy text on screen)
 function x_selectText(element) {
     var     text = document.getElementById(element),
@@ -3583,12 +3590,10 @@ function x_selectText(element) {
     }
 }
 
-
 // function deals with hex values that might be abbreviated ones from the flash editor
 function x_getColour(colour) {
 	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
 }
-
 
 // function returns black or white depending on which contrasts best with a given colour (e.g. for text over background colour)
 function x_blackOrWhite(colour) {
@@ -3609,16 +3614,9 @@ function x_hexToRgb(hex, opa) {
 }
 
 // function randomises the order of items in an array
-function x_shuffleArray(array) {
-	for (var i = array.length - 1; i > 0; i--) {
-		var j = Math.floor(Math.random() * (i + 1));
-		var temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
-	}
-	return array;
-}
-
+function x_shuffleArray(array) { 
+    return array.sort(function() {return Math.random()-0.5})
+} 
 
 // function returns whether string is a url to a youtube or vimeo video
 function x_isYouTubeVimeo(url) {
@@ -3631,14 +3629,29 @@ function x_isYouTubeVimeo(url) {
 	}
 }
 
+// Based somewhat on these regexps for YouTube and Vimeo (check there for updates)
+//   https://stackoverflow.com/questions/19377262/regex-for-youtube-url
+//   https://stackoverflow.com/questions/5008609/vimeo-video-link-regex
+function x_fixYouTubeVimeo(url) {
+	var path = url.trim();
+	let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
+	if (result) return "www.youtube.com/watch?v=" + result[7];
+	result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
+	if (result) return "vimeo.com/" + result[2];
+	return url;
+}
 
 // strip html tags and return just text which is appropriate for screen reader
 function x_getAriaText(text) {
 	return $('<p>' + text + '</p>').text();
 }
 
-// Script to check whther saveSession button is styled in theme
+// Script to check whether saveSession button is styled in theme
 function x_saveSessionBtnIsStyled() {
+	// In offline the line below with r.rules causes a CORS error.
+	// Offline doesn't use save session anyway, so return true
+	if (xot_offline)
+		return true;
 	if (x_params.theme != undefined && x_params.theme == "default")
 		return true;
 	var files = $.map(document.styleSheets, function(s) {
@@ -3664,7 +3677,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			variableErrors = [],
 			dynamicCalcs = [],
 			dynamicID = 1,
-
 
 	// function starts the calculation of variables set by author via the variables optional property
 	init = function (variableData) {
@@ -3713,16 +3725,13 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 				i--;
 			}
 		}
-		
 		calcVariables(toCalc);
 	},
-
 
 	// Check if we have any variables to deal with
 	exist = function () {
 		return variables.length > 0;
 	},
-
 
 	calcVariables = function (toCalc) {
 		var lastLength, checkDefault,
@@ -3769,7 +3778,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			$("#x_authorSupportMsg p").append('<span class="x_varMsg"></br>' + '<a onclick="XENITH.VARIABLES.showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
 		}
 	},
-
 
 	// function calculates the value of any author set variables
 	calcVar = function (thisVar, recalc, checkDefault) {
@@ -4002,7 +4010,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		return thisVar;
 	},
 
-	 getVariable = function(name) {
+	getVariable = function(name) {
 		for (var i=0; i<variables.length; i++)
 		{
 			if (variables[i].name == name)
@@ -4094,7 +4102,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		}
 	},
 
-
 	// function displays author set variables in popup when in author support mode
 	showVariables = function () {
 		var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
@@ -4131,8 +4138,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 
 		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + pageText + '</p>');
 	},
-	
-	
+
 	replaceVariables = function (tempText, decimalSeparator, dataInfo) {
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
@@ -4164,8 +4170,8 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			if (dataInfo == true) {
 				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
 				// replace with the variable text
-				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');console.log(tempText);
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));console.log(tempText);
 				
 			} else {
 				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
@@ -4323,7 +4329,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
     // Declare local variables
 	var 	x_glossary      = [],
 			$x_glossaryHover,
-
+			multiple_terms = false, // link all terms on page or just the first - default is FIRST ONLY
+			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including &nbsp; - default is IGNORE AND REMOVE
+									// we always remove leading and trailing whitespace
 
 	init = function () {
 		
@@ -4337,10 +4345,12 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			items = x_params.glossary.split("||");
 
 		for (i=0, len=items.length; i<len; i++) {
-			item = items[i].split("|"),
-			word = {word:item[0], definition:item[1]};
+			item = items[i].split("|");
+			item[0] = item[0].replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "");
+			if (ignore_space) item[0] = item[0].replace(/(\s|&nbsp;)+/g, " ");
+			word = { word : item[0], definition : item[1] };
 
-			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+			if (word.word.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "" && word.definition.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "") {
 				x_glossary.push(word);
 			}
 		}
@@ -4380,7 +4390,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					$(this).trigger("mouseleave");
 
 					var $this = $(this),
-						myText = $this.text().trim(),
+						myText = $this.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 						myDefinition, i, len;
 
 					for (i=0, len=x_glossary.length; i<len; i++) {
@@ -4449,18 +4459,18 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	
 	// glossary page generation
 	buildPage = function() {
-		var tableData = '<table class="glossary">';
 			
 		var x_glossary_temp = x_glossary.slice(0);
 		x_glossary.sort(function(a, b){ // sort alphabetically
 			return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
 		});
 
+		var tableData = '<table class="glossary">';
 		for (var i=0; i<x_glossary.length; i++) {
 			tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
 		}
-		
 		tableData += "</table>";
+
 		$("#glossaryItems").append(tableData);
 		
 		x_pageContentsUpdated();
@@ -4472,17 +4482,48 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	insertText = function(tempText, exclude, list) {
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
+
+			// Create a fragment and traverse the DOM tree, checking for terms in each node separately
+			let fragment = document.createRange().createContextualFragment(tempText);
+			let nodes = getTextNodes(fragment);
+			let index = 'textContent' in document.body ? 'textContent' : 'innerText';
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-				tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+				nodes.some(function(node) {
+					let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word;
+					let regExp = new RegExp('\\b(' + term + ')\\b', multiple_terms ? 'ig' : 'i');
+					let found = regExp.test(node[index]);
+
+					node[index] = node[index].replace(regExp, '{|{'+k+'::$1}|}');
+					return found && !multiple_terms;
+				});
 			}
+			// Need to treat single text node differently but rebuild from fragmant
+			tempText = nodes.length === 1 ? nodes[0].textContent : Array.from(fragment.childNodes).map(function(x) {return x.outerHTML;}).join('');
+
+			// Replace all our tokens with the glossary tag
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
+				let regExp = new RegExp('{\\|{' + k + '::(.*?)}\\|}', 'ig');
+				tempText = tempText.replace(regExp, '<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$1</span>');
 			}
 		}
-		
+
 		return tempText;
+	},
+
+	getTextNodes = function (fragment) {
+		let textNodes = [];
+		(function R(node) {
+			
+		  if (node = node.firstChild)
+			  while (node != null) {
+				  if (node.nodeType == 3) {
+						if (node && node.parentNode && node.parentNode.nodeName !== "A") textNodes.push(node);
+				  }
+				  else if (node.nodeType == 1) R(node);
+				  node = node.nextSibling;
+			  }
+		})(fragment);
+		return textNodes;
 	},
 	
 	touchStartHandler = function() {
@@ -4508,9 +4549,7 @@ return parent; })(jQuery, XENITH || {});
 var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
 	
 	var	replaceGlobalVars = function (tempText) {
-		var regExp = new RegExp('\\{(.*?)\\}', 'g');
-		
-		var matches = tempText.match(regExp);
+		var matches = tempText.match(/\{(.*?)\}/g);
 		if (matches != null) {
 			for (var m=0; m<matches.length; m++) {
 				try {
@@ -4518,7 +4557,6 @@ var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
 				} catch (e){}
 			}
 		}
-		
 		return tempText;
 	};
 	
