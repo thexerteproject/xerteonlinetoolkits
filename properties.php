@@ -302,10 +302,11 @@ if (in_array("give", $template_supports)) {
                                 <i class="fas fa-users xerte-icon"></i><?PHP echo PROPERTIES_TAB_GROUP_SHARED; ?>
                             </p>
                         </div>
+                        -->
                         <?php
                         }
                         ?>
--->
+
                         <div class="tab_spacer">
                     </div>
                 </div>									

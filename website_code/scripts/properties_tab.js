@@ -199,7 +199,7 @@ var after_sharing_deleted = false;
 
 
 function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
-
+	debugger
 	var answer = confirm(SHARING_CONFIRM);
 	if(answer){
 		if(who_deleted_flag){
@@ -1056,7 +1056,7 @@ function gift_this_template(tutorial_id, user_id, action){
 	 */
 
 function name_select_gift_template(){
-
+	debugger;
 	if(setup_ajax()!=false){
 
 		search_string = document.getElementById('share_form').childNodes[0].value;
@@ -1093,7 +1093,7 @@ function name_select_gift_template(){
 	 */
 
 function name_select_template(){
-
+	debugger
 	if(setup_ajax()!=false){
 
 		search_string = document.getElementById('share_form').childNodes[0].value;

@@ -111,11 +111,18 @@
 		margin:	0px 0px 10px 10px;
 	}
 	
-	#pageContents > #btnHolder {
+	/*#pageContents > #btnHolder {
 		float:	right;
-	}
+	}*/
 	
 	#feedback {
 		margin-top:	10px;
 	}
+
+	#content{
+		display: flex;
+	}
+
+
+
 	

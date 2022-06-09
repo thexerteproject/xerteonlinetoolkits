@@ -170,7 +170,7 @@
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
 	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="Enter text for the page here" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
-	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
+	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" answers="true" align="Left" attempts="1"
@@ -228,7 +228,7 @@
 	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" target="new" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
-	  submitBtnText="Submit" 
+	  submitBtnText="Submit"
 	  resetBtnText="Reset"
 	  />]]></opinion><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals="Outline the goals for this content"
 	  audienceHeader="Target Audience" audience="Describe the target audience"
@@ -544,6 +544,7 @@
       <startDate label="Start date" optional="true" type="dateField" defaultValue="" tooltip="Read records starting from this date"/>
       <endDate label="Stop date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date"/>
      <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group"/>
+      <disableprinting label="Disable printing" type="CheckBox" optional="true" defaultValue="false"/>
      <listedModeOptions type="group" condition="displayMode=='Listed'" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
          <sortOrder label="Sort order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list acoording to this criteria. Only has meaning for 'Listed' display mode"/>
      </listedModeOptions>
@@ -627,7 +628,7 @@
 	</lightboxGroup></adaptiveContent><interaction menuItem="Source interaction">
         <name label="Title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true"/>
-        <interactionType label="Interaction type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping,groupings" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping,Based on all groupings" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
+        <interactionType label="Interaction type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping,groupings,opinionclasses" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping,Based on all groupings,Based on all classes" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
         <label label="Tracking Label of source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false"/>
@@ -636,16 +637,17 @@
         <graph type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
           <graphType label="Graph type" type="combobox" condition="interactionType!='opinion'||opinionClass!=null" data="bar_answers,bar_marks,bar_comb_marks,hor_bar_comb_marks,pie_marks,line_own_marks,line_average_marks,polar_area_per_category" options="Bar graph for given answers,Bar graph for received marks,Bar graph for combined received marks,Horizontal bar graph for combined received marks,Pie chart for received marks,Line graph for own received marks,Line graph for average marks of others,Polar chart for subject overview" defaultValue="bar_answers" optional="true"/>
-          <colour label="Personal graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0xFF0000" optional="true"/>
-          <colourPersonalAvg label="Personal average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0x0000FF" optional="true"/>
-          <colourAvg label="Average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0x00FF00" optional="true"/>
+          <opinionGraphType label="Graph type" type="combobox" conditionTrigger="true" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" data="radar,hor_bar_comb_marks_avg" options="Radar diagram,Horizontal bar graph with averages" defaultValue="radar" optional="true"/>
+          <colour label="Personal graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null&amp;&amp;opinionGraphType=='radar'" defaultValue="0xFF0000" optional="true"/>
+          <colourPersonalAvg label="Personal average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null&amp;&amp;opinionGraphType=='radar'" defaultValue="0x0000FF" optional="true"/>
+          <colourAvg label="Average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null&amp;&amp;opinionGraphType=='radar'" defaultValue="0x00FF00" optional="true"/>
           <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="12" optional="true"/>
           <showExplanation label="Show graph explanation" type="checkbox" optional="true" defaulValue="false" tooltip="Show a box with a legend or other explanation next to the graph"/>
           <graphExplanation label="Graph legend/explanation" type="textArea" height="120" optional="true" defaultValue="" wysiwyg="true" tooltip="The legend or other explanation shown next to the graph"/>
           <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
           <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" tooltip="The number of bars in a bargraph, or the number of points in a line graph"/>
         </graph>
-        <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
+        <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'||interactionType=='opinionclasses'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true"/>
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true"/>
         <!-- <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group" /> -->
@@ -2326,7 +2328,14 @@
 	
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
 	<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
-	
+
+	<fontSize type="group" label="Word Font Size" optional="true">
+    		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
+    		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
+    		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
+    		<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
+    </fontSize>
+
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
@@ -3020,6 +3029,7 @@
 	<constrain label="Constrain Labels" type="ComboBox" options="Off,On (Row),On (Column)" data="none,row,col"/>
 	<style label="Borders" type="ComboBox" options="None,Full Grid,Simple,Horizontal Only,Vertical Only,Outside Border" data="none,full,simple,horizontal,vertical,outside"/>
 	<align label="Text Align" type="ComboBox" options="Left,Right,Top" data="left,right,top" defaultValue="left" width="100"/>
+	<gridSize label="Grid Size" type="ComboBox" options="Small, Medium, Large, Full" data="small,medium,large,full" defaultValue="medium" width="100"/>
 	<drag label="Drop Label Action" type="ComboBox" options="Insert,Replace" data="insert,replace"/>
 	
 	<fix type="group" label="Fixed Cells" optional="true">
@@ -5613,7 +5623,7 @@
     <resetBtnText label="Reset Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Reset" language="true"/>
 
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
-	
+
 	<imgGroup type="group" label="Image" optional="true">
 		<img label="File" type="media" defaultValue="Select an Image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
@@ -5624,7 +5634,9 @@
 		<colour label="Colour" type="colourPicker" defaultValue="0x000000" optional="true" condition="diagram!='true'" tooltip="The colour used for this page on the graph"/>
 		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
-	
+
+    <disableprinting label="Disable printing" type="CheckBox" optional="true" defaultValue="false"/>
+
     <layout label="Layout" type="group" optional="true">
       <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
       <paging label="Use Paging" type="checkbox" optional="true" tooltip="Group question list in pages if using list mode" defaultValue="true" deprecated="This property is deprecated - use the List in Pages question layout to create pages of questions"/>
@@ -7419,6 +7431,10 @@
 		<download label="Allow Download" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<filename label="Filename (without extension)" type="TextInput" defaultValue="textHighlight" condition="download=='true'" optional="true"/>
 		<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" condition="download=='true'" optional="true"/>
+	    <h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
+        <h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
+        <h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
+        <p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
 	</downloadGroup>
 	
 	<allowTyping label="Allow Typing" type="CheckBox" optional="true" condition="mode=='Notes'" defaultValue="true" tooltip="Allow typing directly in notes area (on by default)"/>
@@ -7953,6 +7969,9 @@
 	
 	<feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="Enter feedback here"/>
     <showAnswers label="Show Answers" defaultValue="true" type="CheckBox" optional="true" tooltip="Show all possible answers when activity is complete"/>
+    <delimiters type="group" label="Delimiters" optional="true">
+        <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
+    </delimiters>
     <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" tooltip="Attempts allowed before feedback is given"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 

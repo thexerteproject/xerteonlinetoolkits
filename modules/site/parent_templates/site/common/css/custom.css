@@ -637,3 +637,9 @@ and (max-width :600px) {
         float:unset;
     }
 }
+
+@media print {
+    a[href]:after {
+        content: none !important;
+    }
+}
