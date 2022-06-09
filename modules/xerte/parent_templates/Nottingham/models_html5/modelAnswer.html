@@ -198,7 +198,7 @@
 						$thisDialog.dialog({
 							closeOnEscape:	true,
 							title:			copyShortcutTxt,
-							closeText:		closeBtnTxt,
+							closeText:		x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"),
 							close: function() {$thisDialog.parent().detach();}
 						});
 						
@@ -263,10 +263,6 @@
 			var copyShortcutTxt = x_currentPageXML.getAttribute("copyShortcutTxt");
 			if (copyShortcutTxt == undefined) {
 				copyShortcutTxt = "Press Ctrl + C to copy"
-			}
-			var closeBtnTxt = x_currentPageXML.getAttribute("closeBtnTxt");
-			if (closeBtnTxt == undefined) {
-				closeBtnTxt = "close"
 			}
 			
 			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");

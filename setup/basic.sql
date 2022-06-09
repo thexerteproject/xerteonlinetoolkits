@@ -87,7 +87,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   PRIMARY KEY (`template_type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',1),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
+insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',0),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
 
 CREATE TABLE `$play_security_details` (
   `security_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -169,6 +169,8 @@ CREATE TABLE `$sitedetails` (
   `dashboard_allowed_links` text,
   `course_freetext_enabled` char(255) DEFAULT 'true',
   `tsugi_dir` text,
+  `globalhidesocial` char(255) DEFAULT 'false',
+  `globalsocialauth` char(255) DEFAULT 'true',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -223,6 +225,7 @@ CREATE TABLE `$templatedetails` (
   `extra_flags` varchar(45) DEFAULT NULL,
   `tsugi_published` int DEFAULT 0,
   `tsugi_usetsugikey` int(1) DEFAULT 1,
+  `tsugi_manage_key_id` INT NULL DEFAULT -1,
   `tsugi_privatekeyonly` int(1) DEFAULT 0,
   `tsugi_xapi_enabled` int DEFAULT 0,
   `tsugi_xapi_useglobal` int(1) DEFAULT 1,

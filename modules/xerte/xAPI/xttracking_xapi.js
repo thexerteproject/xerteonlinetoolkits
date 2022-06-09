@@ -1921,8 +1921,7 @@ var surf_recipe, surf_course;
 var answeredQs = [];
 
 function XTInitialise(category) {
-    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() *
-        10000000);
+    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
     // Initialise actor object
     if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
         studentidmode = parseInt(studentidmode);
@@ -1942,7 +1941,7 @@ function XTInitialise(category) {
         } else {
             userEMail = "mailto:" + username;
         }
-        if (typeof fullusername == 'undefined')
+        if (typeof fullusername == 'undefined' || fullusername == "")
             fullusername = "Unknown";
         if (typeof groupname != "undefined" && groupname != "") {
             state.group = {
@@ -2033,6 +2032,11 @@ function XTInitialise(category) {
         state.embedded = true;
         state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
         state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
+        state.embedded_fromSessionId = decodeURIComponent(x_urlParams.embedded_fromSessionId);
+        if (state.embedded_fromSessionId != undefined && state.embedded_fromSessionId != "")
+        {
+            state.sessionId = state.embedded_fromSessionId;
+        }
     }
     else
     {

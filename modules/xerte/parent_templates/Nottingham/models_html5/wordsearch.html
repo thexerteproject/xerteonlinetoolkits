@@ -42,11 +42,8 @@
 				colour;
 
 			function checkColour(colour) {
-				if (colour == undefined || colour == "" || colour == "0x") {
-					return false;
-				} else {
-					return true;
-				}
+				if (colour == undefined || colour == "" || colour == "0x") return false;
+				return true;
 			}
 
 			colour = checkColour(x_currentPageXML.getAttribute("colour1")) ? x_getColour(x_currentPageXML.getAttribute("colour1")) : "#FFA500"; // default = orange
@@ -61,6 +58,9 @@
 
 			colour = checkColour(x_currentPageXML.getAttribute("colour4")) ? x_getColour(x_currentPageXML.getAttribute("colour4")) : "#008000"; // green
 			colourStyles += "#puzzle .complete { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
+
+			colour = checkColour(x_currentPageXML.getAttribute("colour5")) ? x_getColour(x_currentPageXML.getAttribute("colour5")) : "#FFFF00"; // yellow
+			colourStyles += "#puzzle .highlight { background-color: " + colour + " !important; color: " + x_blackOrWhite(colour) + " !important; }";
 			colourStyles += "</style>";
 
 			$("#pageContents").prepend(colourStyles);
@@ -69,27 +69,27 @@
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 			// Hide the solve button completely?
-			var hideSolve = x_currentPageXML.getAttribute("hideSolve");
-			hideSolve = (hideSolve === 'true') ? true : false;
+			var hideSolve = (x_currentPageXML.getAttribute("hideSolve") === 'true') ? true : false;
 
 			// Hide the solve button until the timer counts down?
-			hideSolveUntilTimer = x_currentPageXML.getAttribute("hideSolveUntilTimer");
-			hideSolveUntilTimer = (hideSolveUntilTimer === 'true') ? true : false;
+			var hideSolveUntilTimer = (x_currentPageXML.getAttribute("hideSolveUntilTimer") === 'true') ? true : false;
 
 			var hasTimer = (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "");
 
 			// Read language parameters if available
-			solveBtnTxt = x_currentPageXML.getAttribute("solveBtnTxt");
+			var solveBtnTxt = x_currentPageXML.getAttribute("solveBtnTxt");
 			solveBtnTxt = (solveBtnTxt == undefined) ? "Solve Puzzle" : solveBtnTxt;
-			retryBtnTxt = x_currentPageXML.getAttribute("retryBtnTxt");
+			var retryBtnTxt = x_currentPageXML.getAttribute("retryBtnTxt");
 			retryBtnTxt = (retryBtnTxt == undefined) ? "Restart Puzzle" : retryBtnTxt;
 
 			// Load in the required scripts before we can begin
-			$script.path(x_templateLocation + 'common_html5/js/wordfind/');
-			$script(['wordfind.js', 'style.css'], function () {
-				$script('wordfindgame.js', function () {
+			// Uses new loadjs with experimental .path() method
+			loadjs.path(x_templateLocation + 'common_html5/js/wordfind/');
+			loadjs(['wordfind.js', 'style.css', 'wordfindgame.js'], {
+				success: function() {
 					wordsearch.begin();
-				})
+				},
+				async: false // Fetch files in parallel but load in series
 			});
 
 			// Add a solve button and hide it if required
@@ -97,6 +97,12 @@
 				.attr('id', 'solve')
 				.click( function() {
 					wordfindgame.solve(puzzle, words);
+					$("#words ul li").on("focusout", wordsearch.removeHighlight);
+					$("#words ul li").on("click focus", function ($this) {
+						wordsearch.highlightWord($this.target.innerText);
+					});
+					$("#words").attr("tabindex", "0").focus().removeAttr("tabindex"); // Move tab focus to the words list without highlighting first word
+					$("#words ul li").attr("tabindex", "0");//.first().focus(); // Was used to highlight first word but didn't like the effect
 				})
 				.text(solveBtnTxt)
 				.toggle(!(hideSolve || hideSolveUntilTimer && hasTimer))
@@ -106,6 +112,9 @@
 			$('<button>')
 				.attr('id', 'retry')
 				.click( function() {
+					$("#words ul li").off("click focus");
+					$("#words ul li").off("focusout");
+					$("#words ul li").removeAttr("tabindex");
 					wordsearch.begin();
 				})
 				.text(retryBtnTxt)
@@ -114,37 +123,44 @@
 			$("#btnHolder button").button();
 		}
 
+		this.removeHighlight = function () {
+			$(".puzzleSquare").removeClass("highlight");
+		}
+
+		this.highlightWord = function (word) {
+			wordsearch.removeHighlight(); // remove any existing highlights
+			var solution = wordfind.solve(puzzle, words).found;
+			solution.forEach(function (entry) {
+				let x = entry.x, y = entry.y,
+					o = entry.orientation,
+					xdir = ((o.indexOf('horiz') > -1 || o.indexOf('diag') > -1) ? 1 : 0) * (o.indexOf('Back') > -1 ? -1 : 1),
+					ydir = ((o.indexOf('vert') > -1 || o.indexOf('diag') > -1) ? 1 : 0) * (o.indexOf('Down') > -1 ? 1 : -1) * (o.indexOf('Up') > -1 ? 1 : -1);
+
+				if (word.toLowerCase() == entry.word.toLowerCase())
+					for(let i = 0; i < entry.overlap; i++, x += xdir, y += ydir)
+						$(".puzzleSquare[x='" + x + "'][y='" + y + "']").addClass("highlight");
+			});
+		}
 
 		this.game = function () {
-      var puzzleCase = x_currentPageXML.getAttribute('puzzleCase');
-
 			// Get words and sort if required
-      words = x_currentPageXML.getAttribute("words");
+			words = x_currentPageXML.getAttribute("words");
 
-      // Force words case
-      if (puzzleCase === 'lowercase' || puzzleCase === '' || puzzleCase === undefined)
-        words = words.toLowerCase();
-      else if (puzzleCase === 'uppercase' || puzzleCase == undefined)
-        words = words.toUpperCase();
+			// Force words case
+			var puzzleCase = x_currentPageXML.getAttribute('puzzleCase');
+			if (puzzleCase === 'lowercase' || puzzleCase === '' || puzzleCase === undefined)
+				words = words.toLowerCase();
+			else if (puzzleCase === 'uppercase')
+				words = words.toUpperCase();
 
 			words = $.trim(words).split("\n");
+
 			switch(x_currentPageXML.getAttribute("order")) {
 				case 'random':
-					var tempWords = [];
-					for (var i=0, len=words.length; i<len; i++) {
-						var choice = Math.floor(Math.random() * words.length);
-						tempWords.push(words[choice]);
-						words.splice(choice, 1);
-					}
-					words = tempWords;
+					words.sort(function() { return Math.random() - 0.5; });
 					break;
-
 				case 'alphabetical':
 					words.sort();
-					break;
-
-				default:
-					break;
 			}
 
 			// Replace alphabet if the option is selectedIndex
@@ -177,7 +193,7 @@
 				});
 				maxW = (maxW / parseInt($("#puzzle").css("font-size"))) + 1;
 
-				$("#words ul li").css(width, maxW + "em");
+				$("#words ul li").css("width", maxW + "em");
 
 				$("#words ul").width(maxW * numCols + "em");
 			}

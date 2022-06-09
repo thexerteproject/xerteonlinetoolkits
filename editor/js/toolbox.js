@@ -527,6 +527,11 @@ var EDITOR = (function ($, parent) {
                 if (typeof attrs[ctree.name] != "undefined") {
                     return attrs[ctree.name];
                 } else {
+                    try {
+                        var value = eval(ctree.name);
+                        return value;
+                    }
+                    catch (e){};
                     return null;
                 }
             default:
@@ -644,12 +649,29 @@ var EDITOR = (function ($, parent) {
 					.appendTo(tdlabel);
 			}
 
-            tr.append(tdlabel)
-                .append($('<td>')
-                    .addClass("wizardvalue")
-                    .append($('<div>')
-                        .addClass("wizardvalue_inner")
-                        .append(displayDataType(value, options, name, key))));
+			if (options.type.toLowerCase() === "info") {
+			    /*
+                var tdlabel = $('<td colspan="2" class="wizardparameter explanation">')
+                    .append('<p>' + label + '</p>');
+                if (options.tooltip) {
+                    $('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
+                        .attr('title', options.tooltip)
+                        .appendTo(tdlabel);
+                }
+                */
+                tdlabel.attr("colspan", "2");
+			    tr.append(tdlabel)
+            }
+			else
+            {
+                tr.append(tdlabel)
+                    .append($('<td>')
+                        .addClass("wizardvalue")
+                        .append($('<div>')
+                            .addClass("wizardvalue_inner")
+                            .append(displayDataType(value, options, name, key))));
+            }
+
 
             $(id).append(tr);
             if (options.optional == 'true' && groupChild == false) {
@@ -3658,6 +3680,20 @@ var EDITOR = (function ($, parent) {
                             triggerRedrawPage(event.data.key);
                         }
 					});
+				if (options.extraCheckBoxLabel !== undefined && options.extraCheckBoxLabel.length > 0)
+                {
+                    // It is rather difficult to add an element after anoth that is noyt yet in DOM
+                    // So create a dummy element, add eveerything to it and than get rid of it again
+                    // Ref: https://stackoverflow.com/questions/10489328/jquerys-after-method-not-working-with-newly-created-elements
+                    var div = $('<div>');
+                    html.attr("name", id);
+                    div.append(html);
+                    var label = $('<label>')
+                        .attr("for", name)
+                        .append(options.extraCheckBoxLabel);
+                    div.append(label);
+                    html = div.html();
+                }
 				break;
 			case 'combobox':
 				var id = 'select_' + form_id_offset;
@@ -4646,7 +4682,8 @@ var EDITOR = (function ($, parent) {
 				iconpickers.push({id: id + '_btn', iconList: options.iconList});
 				
 				break;
-			
+            case 'info':
+                break;
 			case 'webpage':  //Not used??
 			case 'xerteurl':
 			case 'xertelo':

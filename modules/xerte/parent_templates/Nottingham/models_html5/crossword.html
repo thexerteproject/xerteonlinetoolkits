@@ -1283,6 +1283,7 @@
 			    var coordinates = [];
                 var letters = [];
                 var coordinate = ""
+                var indices = [];
                 var table = document.getElementById('crossword-table');
                 var grid = cw.getSquareGrid(10);
 			    for(var d = 0; d < grid.length; d++){
@@ -1291,10 +1292,12 @@
                             coordinate = d + "," + c;
                             coordinates.push(coordinate)
                             letters.push(grid[d][c].char)
+                            indices.push(grid[d][c].across ? grid[d][c].across.index : grid[d][c].down.index);
                         }
                     }
                 }
 
+                var incorrectIndices = [];
 			    for(var coor = 0; coor < coordinates.length; coor++){
                     var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase()
                     if(letters[coor].toLowerCase() === inputValue){
@@ -1305,10 +1308,24 @@
                         //replace letter
                         document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
                         document.getElementById(coordinates[coor]).value = letters[coor];
+                        if (incorrectIndices.indexOf(indices[coor]) === -1) {
+                            incorrectIndices.push(indices[coor]);
+                        }
                     }
 					
 					document.getElementById(coordinates[coor]).readOnly = true;
                 }
+                var incorrectClues = [];
+                incorrectIndices.forEach(function(index){ incorrectClues.push(x_getAriaText(clues_in[index]).trim());});
+                $(".li-clue > p").each(function(index, element){
+                    var clue = x_getAriaText($(element).text()).trim();
+                    if (incorrectClues.indexOf(clue) !== -1) {
+                        $(element).addClass("incorrect");
+                    }
+                    else if (clue.length>0) {
+                        $(element).addClass("correct");
+                    }
+                });
 
                 document.getElementById("show_button").disabled = true;
 

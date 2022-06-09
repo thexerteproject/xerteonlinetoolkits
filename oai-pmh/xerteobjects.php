@@ -18,17 +18,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function get_meta_data($template_id, $creator_user_name="", $template_type_name="")
+
+require_once(dirname(__FILE__) . "/Html2Text.php");
+
+function get_meta_data($template_id, $creator_user_name="", $template_type_name="", $template_owner="")
 {
     global $config;
     global $xerte_toolkits_site;
 
     $xml = get_template_data_as_xml($template_id, $creator_user_name, $template_type_name);
     $xerteMetaObj = new stdClass();
-    $xerteMetaObj->name = (string)$xml['name'];
+
+    $html = new \Html2Text\Html2Text((string)$xml['name']);
+    $xerteMetaObj->name = $html->getText();
+
     if (isset($xml['educode']))
     {
         $xerteMetaObj->educode = (string)$xml['educode'];
+    }
+    else{
+        $xerteMetaObj->educode = "";
     }
     //if (isset($xml['metaLevel']))
     //{
@@ -42,6 +51,18 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     if (isset($xml['metaThumbnail']))
     {
         $xerteMetaObj->thumbnail = (string)$xml['metaThumbnail'];
+        if (strpos($xerteMetaObj->thumbnail, "FileLocation") >= 0)
+        {
+            // Construct file name
+            $template_dir = $xerte_toolkits_site->site_url . "USER-FILES/" . $template_id . "-" . $creator_user_name . "-" . $template_type_name . "/";
+            $xerteMetaObj->thumbnail = str_replace("FileLocation + ", $template_dir, $xerteMetaObj->thumbnail);
+            $xerteMetaObj->thumbnail = str_replace("'", "", $xerteMetaObj->thumbnail);
+        }
+        if (strpos($xerteMetaObj->thumbnail, "http") === false)
+        {
+            // No URL, invalid
+            $xerteMetaObj->thumbnail = $config['thumbnail'];
+        }
     }
     else
     {
@@ -64,10 +85,16 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->keywords = (string)$xml['metaKeywords'];
     else
         $xerteMetaObj->keywords = '';
-    if (isset($xml['metaAuthor']) && ((isset($xml['metaAuthorInclude']) && $xml['metaAuthorInclude'] == 'true') || !isset($xml['metaAuthorInclude'])))
-        $xerteMetaObj->author = (string)$xml['metaAuthor'];
-    else
+    if (isset($xml['metaAuthor']) && ((isset($xml['metaAuthorInclude']) && $xml['metaAuthorInclude'] == 'true') || !isset($xml['metaAuthorInclude']))) {
+        if ((string)$xml['metaAuthor'] == "") {
+            $xerteMetaObj->author = $template_owner;
+        } else {
+            $xerteMetaObj->author = (string)$xml['metaAuthor'];
+        }
+    }
+    else {
         $xerteMetaObj->author = $config['institute'];
+    }
     if (isset($xml['category']) || isset($xml['metaCategory'])) {
         if (isset($xml['metaCategory']))
         {
@@ -78,7 +105,7 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
             $cat = (string)$xml['category'];
         }
         // query oai_categories
-        $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}oai_categories where label=?";
+        $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_categories where label=?";
         $params = array($cat);
         $cat = db_query_one($q, $params);
         if ($cat !== false) {
@@ -96,7 +123,7 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
 
     if (isset($xml['metaEducation'])) {
         // query oai-education
-        $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}oai_education where label=?";
+        $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_education where label=?";
         $params = array((string)$xml["metaEducation"]);
         $cat = db_query_one($q, $params);
         if ($cat !== false) {
@@ -115,17 +142,27 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     $xerteMetaObj->publisher = $config['institute'];
 
     // Check syndication
-    $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}templatesyndication where template_id=?";
+    $q = "select * from {$xerte_toolkits_site->database_table_prefix}templatesyndication where template_id=?";
     $params = array($template_id);
     $syndication = db_query_one($q, $params);
     if ($syndication !== false && $syndication!= null)
     {
         $xerteMetaObj->rights = $syndication['license'];
         $xerteMetaObj->download = ($syndication['export'] == 'true' ? true : false);
+        $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_rights where label=?";
+        $params = array( $syndication['license']);
+        $rights = db_query_one($q, $params);
+        if ($rights !== false && $rights !== null) {
+            $xerteMetaObj->rightsId = $rights['term_id'];
+        }
+        else{
+            $xerteMetaObj->rightsId = 'yes';
+        }
     }
     else
     {
         $xerteMetaObj->rights = "";
+        $xerteMetaObj->rightsId = "";
         $xerteMetaObj->download = false;
     }
     return $xerteMetaObj;

@@ -1,4 +1,12 @@
-@import url("https://fonts.googleapis.com/css?family=Varela+Round");
+/* varela-round-regular - latin-ext_latin */
+@font-face {
+  font-family: 'Varela Round';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/varela-round-v19-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("../fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("../fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg");
+  /* Legacy iOS */ }
 /*define color pallette*/
 /*set background colors*/
 /*set font family*/
@@ -174,7 +182,7 @@ blockquote p {
 
 blockquote:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -185,7 +193,7 @@ blockquote:after {
 
 .bq1:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -204,7 +212,7 @@ blockquote:after {
 
 .bq2:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -223,7 +231,7 @@ blockquote:after {
 
 .bq3:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -242,7 +250,7 @@ blockquote:after {
 
 .bq4:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -261,7 +269,7 @@ blockquote:after {
 
 .bq5:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -280,7 +288,7 @@ blockquote:after {
 
 .bq6:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;

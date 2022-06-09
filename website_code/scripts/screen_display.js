@@ -413,6 +413,9 @@ function button_check(){
                         win = edit_window(false, "edithtml", "_blank");
                         win.focus();
                     }
+                    else if (e.altKey) {
+                        win = edit_window(false, "edithtml", "lightbox");
+                    }
                     else
                     {
                         edit_window(false, "edithtml");

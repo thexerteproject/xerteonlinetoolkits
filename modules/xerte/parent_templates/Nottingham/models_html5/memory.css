@@ -8,6 +8,10 @@
 		padding:	5px;
 	}
 	
+	#cardHolder {
+		position: relative;
+	}
+	
 	#cardTopHolder, #cardBottomHolder {
 		position:	absolute;
 	}
@@ -50,7 +54,6 @@
 	
 	#button {
 		position:	absolute;
-		right:		10px;
 		bottom:		10px;
 	}
 	

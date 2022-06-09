@@ -320,6 +320,11 @@ and (max-width :500px) {
 	max-width: 95vw;
 }
 
+.x_homePageLink, .x_homePageLink:visited, .x_homePageLink:hover, .x_homePageLink:focus {
+	color: inherit;
+	text-decoration: none;
+}
+
 .skip-link {
 	background: #000000;
 	color: #ffffff;
@@ -353,7 +358,7 @@ and (max-width :500px) {
 	caret-color: transparent;
 }
 /*gap fill: add ticks to correct answers*/
-.x_gapFill_page #targetHolder input[readonly].correct+span:before, .x_gapFill_page #targetHolder input[correct]+span:before, .x_gapFill_page #targetHolder .target.correct+span:before,.x_gapFill_page #targetHolder select[disabled].correct+span:before{
+.x_crossword_page .li-clue p.correct:after, .x_gapFill_page #targetHolder input[readonly].correct+span:before, .x_gapFill_page #targetHolder input[correct]+span:before, .x_gapFill_page #targetHolder .target.correct+span:before,.x_gapFill_page #targetHolder select[disabled].correct+span:before{
 	font-family: FontAwesome;
 	content: "\f00c";
 	color: green;
@@ -372,7 +377,7 @@ and (max-width :500px) {
 	padding:initial !important;
 }
 /*gap fill: show red crosses when incorrect and in tracking mode*/
-.x_gapFill_page #targetHolder select[disabled]+span:before,.x_gapFill_page #targetHolder .target.incorrect+span:before, .x_gapFill_page #pageContents input[readonly]+span:before{
+.x_crossword_page .li-clue p.incorrect:after, .x_gapFill_page #targetHolder select[disabled]+span:before,.x_gapFill_page #targetHolder .target.incorrect+span:before, .x_gapFill_page #pageContents input[readonly]+span:before{
 	font-family: FontAwesome;
 	content: "\f00d";
 	color: red;
@@ -392,4 +397,22 @@ and (max-width :500px) {
 /*gap fill: remove red crosses when show answers selected*/
 .x_gapFill_page #targetHolder .target.answerShown+span:before, .x_gapFill_page #targetHolder select[disabled].answerShown+span:before, .x_gapFill_page #targetHolder input.answerShown+span:before {
 	content:"";
+}
+
+#x_embed_overlay.embed-overlay-inactive {
+	display: none;
+}
+
+#x_embed_overlay.embed-overlay {
+	position: fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background-color: rgba(0,0,0,0.3);
+	color: #ffffff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 4em;
 }

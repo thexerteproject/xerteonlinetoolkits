@@ -43,16 +43,17 @@
             <navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true"/>
 		</navbarGroup>
 		
-		<socialGroup type="group" label="Social" optional="true" cols="3" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
-			<facebook label="Facebook" type="Checkbox" defaultValue="true" optional="true"/>
-			<twitter label="Twitter" type="Checkbox" defaultValue="true" optional="true"/>
-			<google label="Google+" type="Checkbox" defaultValue="true" optional="true"/>
-			<linkedin label="Linkedin" type="Checkbox" defaultValue="true" optional="true"/>
-			<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" optional="true"/>
-			<pinterest label="Pinterest" type="Checkbox" defaultValue="true" optional="true"/>
-			<email label="Email" type="Checkbox" defaultValue="true" optional="true"/>
-			<yammer label="Yammer" type="Checkbox" defaultValue="true" optional="true"/>
-			<addthis label="AddThis" type="Checkbox" defaultValue="true" optional="true"/>
+		<socialGroup type="group" label="Social" optional="true" cols="1" info="Select below which social media options you wish to enable (check) or disable (uncheck). Removing this group will enable them all unless that is disabled sitewide." tooltip="Hide all of the Social icons or check/uncheck specific icons.">
+		<hidesocial label="Hide all Social icons" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
+			<facebook label="Facebook" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<twitter label="Twitter" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<google label="Google+" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<linkedin label="Linkedin" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<pinterest label="Pinterest" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<email label="Email" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<yammer label="Yammer" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			<addthis label="AddThis" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
 		</socialGroup>
 		
         <footerGroup type="group" label="Footer" optional="true">

@@ -18,50 +18,56 @@
  * limitations under the License.
  */
 
-  String.prototype.replaceAll = function (search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, "g"), replacement);
-  };
 
-  this.createDiagram = function (data, identifier, showall_only, interaction) {
-    var importData = data;
-    var numSubmits = importData.length;
-    var latest_ts = "";
-    var mean_all = [];
-    var mean = [];
-    var latest = null;
-    var objlabel = null;
-    var classnames = [];
-    var classtitles = [];
-    var numUserSubmits = 0;
-    var xertelo = interaction.getAttribute("xertelo");
-    var textSize = Math.round(interaction.getAttribute("labelFontSize"));
+    String.prototype.replaceAll = function(search, replacement) {
+        var target = this;
+        return target.replace(new RegExp(search, 'g'), replacement);
+    };
 
-    if (textSize == null || textSize == 0) textSize = 12;
+    this.createDiagram = function(data, identifier, showall_only, interaction) {
+        var importData = data;
+        var numSubmits = importData.length;
+        var latest_ts = "";
+        var mean_all = [];
+        var mean = [];
+        var latest = null;
+        var objlabel = null;
+        var classnames = [];
+        var classtitles = [];
+        var numUserSubmits = 0;
+        var xertelo = interaction.getAttribute('xertelo');
+        var textSize = Math.round(interaction.getAttribute("labelFontSize"));
 
-    // We assume the data contains identical data sets
-    // TODO: Check this
-    if (numSubmits == 0) {
-      return;
-    }
+        if (textSize == null || textSize == 0) textSize = 12;
 
-    if (showall_only === "true") {
-      showall_only = true;
-    }
-    if (showall_only === "false") {
-      showall_only = false;
-    }
-    importData.forEach(function (obj) {
-      if (objlabel == null) {
-        objlabel = obj.graph.label;
-      }
-
-      for (var i = 0; i < obj.graph.classvalues.length; i++) {
-        if (mean_all[i] == null) {
-          mean_all[i] = obj.graph.classvalues[i];
-        } else {
-          mean_all[i] += obj.graph.classvalues[i];
+        // We assume the data contains identical data sets
+        // TODO: Check this
+        if (numSubmits == 0) {
+            return;
         }
+
+        if (showall_only === "true")
+        {
+            showall_only = true;
+        }
+        if (showall_only === "false")
+        {
+            showall_only = false;
+        }
+        importData.forEach(function(obj)
+        {
+            if (objlabel == null) {
+                objlabel = obj.graph.label;
+            }
+
+            for (var i = 0; i < obj.graph.classvalues.length; i++) {
+                if (mean_all[i] == null) {
+                    mean_all[i] = obj.graph.classvalues[i];
+                }
+                else
+                {
+                    mean_all[i] += obj.graph.classvalues[i];
+                }
 
         if (classnames[i] == null) {
           classnames[i] = obj.graph.classnames[i];
@@ -94,23 +100,19 @@
           }
           break;
         case 3:
-          if (
-            obj.actor.account != undefined &&
-            obj.actor.account.name == groupname
-          ) {
+          if (obj.actor.account != undefined &&
+              obj.actor.account.name == groupname) {
             matchactor = true;
           }
           break;
       }
-      if (
-        !matchactor &&
+      if (!matchactor &&
         xertelo == x_TemplateId &&
         obj.context != undefined &&
         obj.context.extensions != undefined &&
         obj.context.extension["http://xerte.org.uk/sessionId"] != undefined &&
         obj.context.extension["http://xerte.org.uk/sessionId"] ==
-          state.sessionId
-      ) {
+          state.sessionId) {
         matchactor = true;
       }
 
@@ -383,40 +385,37 @@
     );
   }
 
-  function matchActor(statement, xertelo) {
-    switch (studentidmode) {
-      case 0:
-      case 2:
-        if (statement.actor.mbox == "mailto:" + username) {
-          return true;
+    function matchActor(statement, xertelo)
+    {
+        switch (studentidmode) {
+            case 0:
+            case 2:
+                if (statement.actor.mbox == 'mailto:' + username) {
+                    return true;
+                }
+                break;
+            case 1:
+                if (statement.actor.mbox_sha1sum == mboxsha1) {
+                    return true;
+                }
+                break;
+            case 3:
+                if (statement.actor.account != undefined
+                            && statement.actor.account.name == groupname) {
+                    return true;
+                }
+                break;
         }
-        break;
-      case 1:
-        if (statement.actor.mbox_sha1sum == mboxsha1) {
-          return true;
+        if (xertelo != undefined && xertelo == x_TemplateId
+            && statement.context != undefined
+            && statement.context.extensions != undefined
+            && statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined
+            && statement.context.extensions['http://xerte.org.uk/sessionId'] == state.sessionId)
+        {
+            return true;
         }
-        break;
-      case 3:
-        if (
-          statement.actor.account != undefined &&
-          statement.actor.account.name == groupname
-        ) {
-          return true;
-        }
-        break;
+        return false;
     }
-    if (
-      xertelo != undefined &&
-      xertelo == x_TemplateId &&
-      statement.context != undefined &&
-      statement.context.extensions != undefined &&
-      statement.context.extensions["http://xerte.org.uk/sessionId"] != undefined &&
-      statement.context.extensions["http://xerte.org.uk/sessionId"] == state.sessionId
-    ) {
-      return true;
-    }
-    return false;
-  }
 
   function filterOwnStatements(data, xertelo) {
     var statements = [];

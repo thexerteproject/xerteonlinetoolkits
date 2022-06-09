@@ -9,7 +9,7 @@
  */
 
 $config = array(
-    'institute' => "DLearning",
-    'adminEmail' => "tom.reijnders@dlearing.nl",
+    'institute' => "Institute",
+    'adminEmail' => "mail@example.com",
     'thumbnail' => $xerte_toolkits_site->site_url . 'oai-pmh/xerteobject.png',
 );

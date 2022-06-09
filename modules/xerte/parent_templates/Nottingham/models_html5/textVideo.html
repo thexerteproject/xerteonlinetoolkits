@@ -107,7 +107,7 @@
 			}
 			
 			var $pageVideo = $("#pageVideo"),
-				videoSrc = x_currentPageXML.getAttribute("url");
+				videoSrc = x_fixYouTubeVimeo(x_currentPageXML.getAttribute("url"));
 			
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
