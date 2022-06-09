@@ -213,7 +213,7 @@ function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
 			url: "website_code/php/properties/remove_sharing_template.php",
 			data: {
 				template_id: template_id,
-				user_id: user_id,
+				id: id,
 				user_deleting_self: who_deleted_flag
 			}
 		})
