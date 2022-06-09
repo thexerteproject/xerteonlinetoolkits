@@ -280,6 +280,7 @@ optional: pauseMedia*
 							"padding" :       (size * 0.001) * hh + "px",
 							"border-radius" : (size / 2 + 1) * 0.01 * hh + "px",
 							"font-size" : 	  (size * 0.007) * hh + "px",
+							"text-align":     "center"
 						});
 						if(options.attrib.tooltip == "label") {	
 							// Cap the fontsize to reasonable values

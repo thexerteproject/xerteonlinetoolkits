@@ -24,20 +24,32 @@
 		var counter = 0;
 		var img = []
 		var items = []
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			setTimeout(function (){
+				SictTimeline.resizeImg();
+			}, 100);
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			SictTimeline.resizeImg();
+		}
+
 		this.loadJS = function () {
+			if(numLoaded == 0){
+				$('<link/>', {
+					rel: 'stylesheet',
+					type: 'text/css',
+					href:  x_templateLocation + 'common_html5/js/timeline/timeline3.css'
+				}).appendTo('head');
+			}
 
-			$('<link/>', {
-				rel: 'stylesheet',
-				type: 'text/css',
-				href:  x_templateLocation + 'common_html5/js/timeline/timeline3.css'
-			}).appendTo('head');
-
-			if (numLoaded < 1) {
-				var fileToLoad;
-				if (numLoaded == 0) {
-					fileToLoad = x_templateLocation + 'common_html5/js/timeline/timeline3.js';
-				}
-
+			var popLocation = "common_html5/js/popcorn/"
+			var scriptsToLoad = ["common_html5/js/timeline/timeline3.js", popLocation + "popcorn-complete.js", popLocation + "plugins/popcorn.mediaconstructor.js"];
+			if (numLoaded < scriptsToLoad.length) {
+				var fileToLoad = x_templateLocation + scriptsToLoad[numLoaded];
 				$.getScript(fileToLoad)
 						.done(function(script, textStatus) {
 							numLoaded++;
@@ -47,14 +59,57 @@
 							console.log('Failed to load chart scripts');
 						});
 
-			}else{
-				this.setup();
-
+			} else {
+				this.setUp();
 			}
 		}
 
-		this.setup = function (){
+		this.init = function() {
+			numLoaded = 0;
+			this.loadJS();
+			$('#x_pageHolder').append('<div class="spinnerHolder"></div>')
+			$('.spinnerHolder').append('<div class="spinner"></div>')
 
+			var imgMaxW = Math.round($x_pageHolder.width());
+			var imgMaxH = Math.round($x_pageHolder.height());
+
+			$('.spinnerHolder').css({
+				'background-color' : 'grey',
+				'position' : 'absolute',
+				'width': imgMaxW,
+				'height': imgMaxH,
+				'top' : 0,
+				'z-index': 100,
+				'opacity': 0.5
+
+			})
+			setTimeout(function (){
+
+				var str = x_currentPageXML.getAttribute("error")
+				$('.tl-message-content').html(str)
+
+			}, 100);
+			$('.tl-slidenav-next').attr("title","next")
+
+			$(document).on('keydown', e => {
+
+				var keyCode;
+				var amountOfItems = items.length-1
+				keyCode = e.originalEvent.keyCode;
+
+				if(keyCode == 9 && e.ctrlKey == false && counter<amountOfItems){
+					$('.tl-slidenav-next').click()
+					e.preventDefault();
+				}else if(e.ctrlKey && keyCode == 9 && counter>0) {
+					$('.tl-slidenav-previous').click()
+					e.preventDefault();
+				};
+			});
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+
+		this.setUp = function () {
 			var make_the_json = {
 				title: {
 					media: {
@@ -86,19 +141,12 @@
 						startDate = dateTime
 					}
 
-					// if(endDate === "Choose Date" || endDate === null || endDate === undefined){
-					// 	endDate = startDate
-					// }
-
 					var startTime = element.getAttribute("time");
 					var endTime = element.getAttribute("endTime")
 
 					var validStart = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(startTime)
 					var validEnd = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(endTime)
 
-					// if(startTime === null || !validStart){
-					// 	startTime = "00:00"
-					// }
 					if(endTime === null || !validEnd){
 						endTime = "00:00"
 					}
@@ -227,8 +275,6 @@
 				$('.tl-timemarker-content').mouseup(function (){
 					setTimeout(function() {
 						var itemBlocks = $('.tl-timemarker')
-						debugger
-
 						for (var i = 0; i < itemBlocks.length; i++) {
 							var className = itemBlocks.eq(i).attr('class')
 							if (className.includes('tl-timemarker-active')) {
@@ -263,79 +309,13 @@
 
 		}
 
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-
-			setTimeout(function (){
-				SictTimeline.resizeImg();
-			}, 100);
-		}
-
-		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-
-			SictTimeline.resizeImg();
-
-		}
-
 		this.leavePage = function() {
 			$('.spinnerHolder').remove();
 		}
 
-
-		this.init = function() {
-			numLoaded = 0;
-			this.loadJS();
-			$('#x_pageHolder').append('<div class="spinnerHolder"></div>')
-			$('.spinnerHolder').append('<div class="spinner"></div>')
-
-			var imgMaxW = Math.round($x_pageHolder.width());
-			var imgMaxH = Math.round($x_pageHolder.height());
-
-			$('.spinnerHolder').css({
-				'background-color' : 'grey',
-				'position' : 'absolute',
-				'width': imgMaxW,
-				'height': imgMaxH,
-				'top' : 0,
-				'z-index': 100,
-				'opacity': 0.5
-
-			})
-			setTimeout(function (){
-
-				var str = x_currentPageXML.getAttribute("error")
-				$('.tl-message-content').html(str)
-
-			}, 100);
-			debugger
-			$('.tl-slidenav-next').attr("title","next")
-
-			$(document).on('keydown', e => {
-
-				var keyCode;
-				var amountOfItems = items.length-1
-				keyCode = e.originalEvent.keyCode;
-
-				if(keyCode == 9 && e.ctrlKey == false && counter<amountOfItems){
-					$('.tl-slidenav-next').click()
-					e.preventDefault();
-				}else if(e.ctrlKey && keyCode == 9 && counter>0) {
-					$('.tl-slidenav-previous').click()
-					e.preventDefault();
-				};
-			});
-			// call this function in every model once everything's loaded
-			x_pageLoaded();
-
-		}
-
-
 		this.resizeImg = function() {
-
-
 			if(x_browserInfo.mobile === true){
-
+				// TODO mobile implementation
 			}else{
 
 				var pageHeight = $('#x_pageHolder').height();
@@ -374,11 +354,10 @@
 
 					var top = pageHeight -  footerHeight
 					//$(".tl-timenav").css("top", top)
-
-
 				}else{
 					//$(".tl-timenav").css("top", "auto")
 				}
+
 				imgMaxW = Math.round($slideContent.width() * 0.50 - 20);
 				imgMaxH = Math.round($pageContents.height() - 50);
 
@@ -404,14 +383,12 @@
 				arrow = arrow.toString()
 				imgH = imgH.toString()
 
-
 				var className = items.eq(counter).attr('class')
 
 				var imgPath = items.eq(counter).find('img')[0]
 				if(imgPath !== undefined){
 					imgPath = imgPath.src
 				}
-
 
 				if(imgPath !== "" && imgPath !== undefined){
 					//$("#timeline-embed").css("height", "unset")
@@ -434,7 +411,6 @@
 					$('.tl-caption').css("marginLeft", margT)
 					//$('.tl-caption').css("width", "100px")
 					$('.tl-caption').css("margin-top", "-" + margB+"px")
-
 				}
 
 				if(className === "tl-slide tl-slide-media-only"){
@@ -454,8 +430,7 @@
 						"align-items": "center",
 						"padding-left": "4%"
 					})
-
-				}else{
+				} else {
 					$('.tl-slide-content').css({
 						"display": "",
 						"flex-direction" : ''
@@ -489,9 +464,7 @@
 				panel = parseInt( panel.slice(0,  panel.length - 2))/2;
 				$('.tl-slidenav-next').css('top', panel+"px");
 				$('.tl-slidenav-previous').css('top', panel+"px");
-
-			};
-
+			}
 		}
 
 		var isoCountries = {
