@@ -163,6 +163,21 @@ if (is_user_admin()) {
                     }
                 }
                 echo "</div>";
+            }elseif($row['template_framework'] == "site"){
+                $subpages = array();
+                if ($row['template_sub_pages'] != "") {
+                    $template_sub_pages = $row['template_sub_pages'];
+                    $simple_lo_page = false;
+                    $pos = strpos($template_sub_pages, "simple_lo_page");
+                    if ($pos !== false) {
+                        $template_sub_pages = substr($template_sub_pages, 15); // Get rid of 'simple_lo_page,'
+                        $simple_lo_page = true;
+                    }
+                    $subpages = explode(",", $template_sub_pages);
+                }
+                echo "<p>" . TEMPLATE_SUB_PAGES_TITLEONLY . "<br><div class='sub_page_selection sub_page_title'>";
+                echo "<input class='sub_page_selection_titleonly' type='checkbox' " . ($simple_lo_page ? "checked" : "") . " id='sub_page_select_titleonly_" . $row['template_type_id'] . "' name='select_titleonly' >" . TEMPLATE_SUB_PAGES_SELECT_TITLEONLY . "</div></p>";
+
             }
         }
 		

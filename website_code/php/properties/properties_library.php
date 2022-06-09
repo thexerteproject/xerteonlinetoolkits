@@ -87,7 +87,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
     $_POST['template_id'] = (int) $_POST['template_id'];
 
-    if(is_user_creator_or_coauthor($_POST['template_id'])){
+    if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_admin()){
 
         $query_for_template_name = "select template_name from {$prefix}templatedetails where template_id= ?";
         $params = array($_POST['template_id']);

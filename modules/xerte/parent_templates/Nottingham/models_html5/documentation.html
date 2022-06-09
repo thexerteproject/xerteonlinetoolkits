@@ -765,10 +765,15 @@
 			temp.styles = $('#pageContents').data('downloadStyles');
 			temp.orientation = x_currentPageXML.getAttribute('fileOrientation') != '' && x_currentPageXML.getAttribute('fileOrientation') != undefined ? x_currentPageXML.getAttribute('fileOrientation') : 'portrait';
 			temp.size = x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt';
-			
+			temp.h1 = x_currentPageXML.getAttribute('h1') != null ? x_currentPageXML.getAttribute('h1') : 20  + "px";
+			temp.h2 = x_currentPageXML.getAttribute('h2') != null ? x_currentPageXML.getAttribute('h2') : 18  + "px";
+			temp.h3 = x_currentPageXML.getAttribute('h3') != null ? x_currentPageXML.getAttribute('h3') : 16  + "px";
+			temp.p = x_currentPageXML.getAttribute('p') != null ? x_currentPageXML.getAttribute('p') : 15  + "px";
+
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';
+			debugger
 			form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
 
 			$('<input type="hidden">') // IE compatibility

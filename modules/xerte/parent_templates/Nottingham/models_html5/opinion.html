@@ -454,8 +454,6 @@
 			{
 			    this.loadQuestions();
 			}
-
-			opinion.showPrintButton();
 		};
 
 		this.trackQuestion = function(currentQuestion)
@@ -528,6 +526,7 @@
 			{
 				this.trackOpinion();
 				$pageContents.data('resultShown', true);
+				opinion.showPrintButton();
 			}
 
             x_pageContentsUpdated();
@@ -584,7 +583,7 @@
             for(var i = 0; i< diagramLabels.length; i++){
                 var q = diagramLabels[i];
                 classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
-                if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title")) {
+                if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title") != "") {
                     classTitles[q.parentNode.classId] = q.parentNode.getAttribute("title");
                 }
                 else
@@ -791,9 +790,10 @@
 					label: submitBtnText
 				})
 				.click(function() {
+          $("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
-
+/*
 			// print button
             $("#printBtn")
 				.button({
@@ -823,7 +823,7 @@
 						afterPrint: null            // function called before iframe is removed
 					});
 				});
-
+*/
 			// reset button
             $("#resetBtn")
 				.button({
@@ -836,20 +836,39 @@
 							'diagramLabels': [],
 							'diagramAnswers': []
 						});
-						
+
 						opinion.showPrintButton(false);
 						opinion.startQuestions();
 					}
 				});
 
 			// Uses new loadjs with experimental .path() method
-			loadjs.path(x_templateLocation + 'common_html5/js/printThis/');
-			loadjs(['printThis.js'], {
+			loadjs.path(x_templateLocation + 'common_html5/js/');
+			loadjs(['html2pdf.bundle.min.js'], {
 				success: function() {
     				printAvailable = true;
 				}
 			});
 
+    	    $("#printBtn")
+				.button({
+					label: 'Print'
+				})
+				.click(function() {
+            $("#mainPanel").prepend(
+                `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+            );
+            $("#mainPanel #buttonHolder").hide();
+            let opt = {
+                filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+              };
+            html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
+              $("#print-title").remove();
+              $("#buttonHolder").show();
+            }).save();
+				});
+	        $("#printBtn").hide();
 			this.startQuestions();
 			this.sizeChanged();
 			x_pageLoaded();
@@ -866,6 +885,9 @@
 
 <div id="pageContents">
 
+  <!--div id="prnbuttonHolder" style="direction: rtl; float: none;">
+    <button id="printBtn" hidden></button>
+  </div-->
 	<div class="splitScreen">
 
 		<div id="textHolder" class="left"></div>

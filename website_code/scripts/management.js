@@ -397,7 +397,7 @@ function templates_list(){
 
 function update_template(){
 	//bababoeie
-
+	debugger
 	// Get selected pages of the active_section
 	// 1. First get non-selected boxes
 	var simple_lo_page_cb = $("#sub_page_select_titleonly_" + active_section + ":checked");
@@ -405,6 +405,9 @@ function update_template(){
 	var checkboxes_all = $(".sub_page_selection_model_" + active_section);
 	var checkboxes_selected = $(".sub_page_selection_model_" + active_section + ":checked");
 	var sub_pages = "";
+	if(simple_lo_page_cb.length > 0){
+		sub_pages = "simple_lo_page"
+	}
 	if (checkboxes_all.length != checkboxes_selected.length)
 	{
 		checkboxes_selected.each(function(index, checkbox){
@@ -412,10 +415,6 @@ function update_template(){
 				sub_pages += ",";
 			sub_pages += checkbox.name;
 		});
-		if (sub_pages.length > 0)
-		{
-			sub_pages = "simple_lo_page," + sub_pages;
-		}
 	}
 	$.ajax({
 		type: "POST",

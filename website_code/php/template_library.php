@@ -49,7 +49,7 @@ function get_template_type($template_id){
  * Get the sub pages of a template in an array. If the array is empty, show all subpages
  *
  */
-function get_template_pagelist($template_id)
+function  get_template_pagelist($template_id)
 {
     global $xerte_toolkits_site;
 
