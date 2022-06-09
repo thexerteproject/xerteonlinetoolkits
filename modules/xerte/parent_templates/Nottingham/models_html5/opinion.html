@@ -794,7 +794,7 @@
           $("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
-
+/*
 			// print button
             $("#printBtn")
 				.button({
@@ -824,7 +824,7 @@
 						afterPrint: null            // function called before iframe is removed
 					});
 				});
-
+*/
 			// reset button
             $("#resetBtn")
 				.button({
@@ -844,16 +844,16 @@
 				});
 
 			// Uses new loadjs with experimental .path() method
-			loadjs.path(x_templateLocation + 'common_html5/js/printThis/');
-			loadjs(['printThis.js'], {
+			loadjs.path(x_templateLocation + 'common_html5/js/');
+			loadjs(['html2pdf.bundle.min.js'], {
 				success: function() {
     				printAvailable = true;
 				}
 			});
-/* PDF
-        $("#printBtn")
+
+    	    $("#printBtn")
 				.button({
-					label: 'print'
+					label: 'Print'
 				})
 				.click(function() {
             $("#mainPanel").prepend(
@@ -869,8 +869,7 @@
               $("#buttonHolder").show();
             }).save();
 				});
-        $("#printBtn").hide();
-*/
+	        $("#printBtn").hide();
 			this.startQuestions();
 			this.sizeChanged();
 			x_pageLoaded();
@@ -887,9 +886,9 @@
 
 <div id="pageContents">
 
-  <div id="prnbuttonHolder" style="direction: rtl; float: none;">
+  <!--div id="prnbuttonHolder" style="direction: rtl; float: none;">
     <button id="printBtn" hidden></button>
-  </div>
+  </div-->
 	<div class="splitScreen">
 
 		<div id="textHolder" class="left"></div>
@@ -908,7 +907,7 @@
 					<div id="wrapper">
 						<div id="qHolder"></div>
 						<div id="buttonHolder">
-							<!--button id="printBtn"></button -->
+							<button id="printBtn"></button>
 							<button id="resetBtn"></button>
 							<button id="checkBtn"></button>
 						</div>
