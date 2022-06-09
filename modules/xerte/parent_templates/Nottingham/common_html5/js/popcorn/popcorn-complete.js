@@ -4664,7 +4664,7 @@
             elem.width="100%";
             elem.height="100%";
             //elem.src=aSrc + "?api=1";
-            elem.src=aSrc + "?start=54s&amp;api=1";
+            elem.src=aSrc + "?api=1";
             elem.frameborder="0";
             elem.allowfullscreen="";
             elem.sandbox="allow-same-origin allow-scripts allow-popups";
@@ -6921,6 +6921,7 @@
         return;
       }
       addYouTubeEvent( "pause", onFirstPause );
+      player.seekTo( 0 );
       player.pauseVideo();
     }
 
