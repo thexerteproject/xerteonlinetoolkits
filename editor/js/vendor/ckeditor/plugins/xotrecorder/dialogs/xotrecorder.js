@@ -47,9 +47,9 @@
       getElementById('audioPlayer').getElement().setAttribute('src', '');
 
       // Need to add the device id to the constraints
-      
       var constraints = { audio: { deviceId: /*{ exact:*/ getElementById('recordingDevicesSelect').getValue() /*}*/}, video:false };
-      navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+
+      media.getUserMedia(constraints).then(function(stream) {
 
         // Setup audio context and stream
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -126,7 +126,7 @@
     }
 
     //helper function
-    function __log(e, data) {//return;
+    function __log(e, data) {return;
       console.log(e + " " + (data || '') );
     }
  
@@ -144,6 +144,14 @@
       blob = undefined;
     }
 
+    function fixTimestamp() {
+      let cb = getElementById("timestamp").getElement();
+      let ch = cb.$.children;
+      ch[0].setAttribute('style', 'margin: 8px 0 0 25px;');
+      let newHtml = ch[1].outerHTML + '<br />' + ch[0].outerHTML;
+      cb.setHtml(newHtml);
+    }
+
     function setup() {
       // Load the WebAudioRecorder library
       CKEDITOR.scriptLoader.load([pluginPath + 'js/WebAudioRecorder.min.js'], function(completed, failed) {
@@ -153,10 +161,22 @@
       // Hack to use FA icons in tabs
       swapTabTitlesAndLabels();
 
+      // Make the timestamp look nicer
+      fixTimestamp();
+
+//exposeSomeData();
       // Initial state
       initialiseRecorder();
     }
 
+// Expose some data for debug - TODO: Revove for release
+function exposeSomeData(){
+  window.gebi = getElementById;
+  window.editor = editor;
+
+  // Rejig the timestamp layout
+  window.ts = getElementById('timestamp').getElement();
+}
     function getButtonById(id) {
       let currentDialog = CKEDITOR.dialog.getCurrent();
       if (!currentDialog) return;
@@ -196,7 +216,6 @@
 
     function resetInitialValue() {
         this._.initValue = this.getValue();
-        //this.resetInitValue();
     }
 
 		function uploadAndInsert(insert) {
@@ -238,8 +257,17 @@
 
     function getFilename() {
       let filename = getElementById('filename').getValue();
+      let cleansed = filename.replace(/[^a-zA-Z0-9_-\s]/g,'');
+      cleansed = cleansed.replace(/\s+/g,'_').replace(/_+/g,'_');
+      cleansed = cleansed.replace(/^_|_$/g,'');
+
+      if (filename !== cleansed) {
+        getElementById('filename').setValue(cleansed);
+        alert(editor.lang.xotrecorder.charactersAllowed);
+      }
+
       let timestamp = getElementById('timestamp').getValue() ? '_' + new Date().valueOf() : '';
-      return (filename + timestamp).replace(/\s/g, '_');
+      return (cleansed + timestamp).replace(/\s/g, '_');
     }
 
     function getEncodingType() {
