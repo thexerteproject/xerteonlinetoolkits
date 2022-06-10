@@ -24,6 +24,10 @@ define("INDEX_LOGON_FAIL", "Sorry that password combination was not correct");
 
 define("INDEX_LOGIN", "login area");
 
+define("INDEX_PSWD_LOGIN", "Log in to access content");
+
+define("INDEX_PSWD_TITLE", "Xerte login page");
+
 define("INDEX_USERNAME", "Username");
 
 define("INDEX_PASSWORD", "Password");
