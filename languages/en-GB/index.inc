@@ -28,11 +28,21 @@ define("INDEX_USERNAME", "Username");
 
 define("INDEX_PASSWORD", "Password");
 
+define("INDEX_LOGO_ALT", "Site logo");
+
+define("INDEX_WCAG_LOGO_ALT", "W3C logo");
+
+define("INDEX_OSI_LOGO_ALT", "Open Source Initiative logo");
+
+define("INDEX_APEREO_LOGO_ALT", "Apereo logo");
+
+define("INDEX_XERTE_LOGO_ALT", "Xerte logo");
+
 define("INDEX_HELP_TITLE", "Getting Started");
 
-define("INDEX_HELP_INTRODUCTION", "We've produced a short introduction to the Toolkits website.");
+define("INDEX_HELP_INTRODUCTION", "See the <a href='https://xerte.org.uk' target='_blank'>Xerte Project website</a> for <a href='https://xot.xerte.org.uk/play.php?template_id=150#page2' target='_blank'>guides</a>, examples and community forums.");
 
-define("INDEX_HELP_INTRO_LINK_TEXT","Show me!");
+define("INDEX_HELP_INTRO_LINK_TEXT","Quick start video");
 
 define("INDEX_NO_LDAP","PHP's LDAP library needs to be installed to use LDAP authentication. If you read the install guide other options are available");
 
@@ -62,7 +72,7 @@ define("INDEX_LOG_OUT","Log out");
 
 define("INDEX_LOGGED_IN_AS","Logged in as");
 
-define("INDEX_BUTTON_LOGIN","Login");
+define("INDEX_BUTTON_LOGIN","Log in");
 
 define("INDEX_BUTTON_LOGOUT","Logout");
 

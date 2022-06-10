@@ -230,7 +230,7 @@ function login_form($messages, $xerte_toolkits_site)
 
 <body>
 
-<div class="topbar">
+<header class="topbar">
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
     {
@@ -250,30 +250,30 @@ function login_form($messages, $xerte_toolkits_site)
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
     {
         ?>
-        <img src="branding/logo_left.png" style="margin-left:10px; float:left"/>
+        <img src="branding/logo_left.png" style="margin-left:10px; float:left" alt="<?php echo INDEX_LOGO_ALT; ?>"/>
     <?php
     }
     else {
         ?>
-        <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+        <img src="website_code/images/logo.png" style="margin-left:10px; float:left" alt="<?php echo INDEX_LOGO_ALT; ?>"/>
     <?php
     }
     ?>
-</div>
+</header>
 
-<div class="mainbody">
+<main class="mainbody">
     <div class="title_holder">
-        <div class="title_welcome">
+        <h1 class="title_welcome">
             <?PHP echo $xerte_toolkits_site->welcome_message; ?>
-        </div>
+        </h1>
         <div class="mainbody_holder">
             <div style="margin:0 7px 4px 0"><?php display_language_selectionform("");?></div>
             <form method="post" enctype="application/x-www-form-urlencoded" >
-                <p style="margin:4px"><?php echo INDEX_USERNAME; ?>:
+                <p style="margin:4px"><label for="login_box"><?php echo INDEX_USERNAME; ?>:</label>
                 <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
-                <p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>:
-                <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
-                <button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button>
+                <p style="margin:4px"><label for="password"><?PHP echo INDEX_PASSWORD; ?>:</label>
+                <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" id="password" /></p>
+                <button type="submit" class="xerte_button" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button>
             </form>
             <script>document.getElementById("login_box").focus();      </script>
         </div>
@@ -285,20 +285,27 @@ function login_form($messages, $xerte_toolkits_site)
         echo "</div>";
     } ?>
 
-</div>
+</main>
 <div class="bottompart">
-	<p class="news_title">
+<section>
+	<h1 class="news_title">
 		<?PHP echo INDEX_HELP_TITLE; ?>
-	</p>
+	</h1>
 	<p class="news_story">
-		<?php echo INDEX_HELP_INTRODUCTION; ?>
-		<button type="button" class="xerte_button_c" onClick="window.open('<?php echo $xerte_toolkits_site->demonstration_page; ?>','_blank');"><?php echo INDEX_HELP_INTRO_LINK_TEXT; ?></button>
+		<?php echo INDEX_HELP_INTRODUCTION; ?><br/><br/>
+		<button type="button" class="xerte_button" onClick="window.open('<?php echo $xerte_toolkits_site->demonstration_page; ?>','_blank');"><?php echo INDEX_HELP_INTRO_LINK_TEXT; ?></button>
 	</p>
+	</section>
 	<div class="border">
 	</div>
-	<p class="copyright">
-		<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
-	</p><div class="footerlogos"><a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" border="0"></a> <a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
+	<footer>
+		<p class="copyright">
+			<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
+		</p>
+		<div class="footerlogos">
+			<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
+		</div>
+	</footer>
 </div>
 </body>
 </html>
