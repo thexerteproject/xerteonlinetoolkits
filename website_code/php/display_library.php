@@ -541,7 +541,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
             $shared = 'shared';
         }
 
-        $item->type = ($newtype == "") ? strtolower($row['parent_template']) : strtolower($row['parent_template']) . "_" . $shared;
+        $item->type = ($shared == "") ? strtolower($row['parent_template']) : strtolower($row['parent_template']) . "_" . $shared;
         $item->xot_type = "file";
 
         $item->published = $row['access_to_whom'] != 'Private' || $row['tsugi_published'] == 1;
