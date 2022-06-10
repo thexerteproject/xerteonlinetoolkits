@@ -36,7 +36,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	$nodes = array();
 	$i = 0;
 
-	$filemapping = getFileMapping($source_folder . "/media/", $target_folder . "/media/");
+	$filemapping = getFileMapping($source_folder . "/media", $target_folder . "/media");
     $filesToCopy = array();
 
 	if($merge_glossary === "true")
@@ -136,8 +136,8 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 
 function getFileMapping($source_media_folder, $target_media_folder)
 {
-    $source_files = scandir($source_media_folder);
-    $target_files = scandir($target_media_folder);
+    $source_files = recursive_scanDir($source_media_folder);
+    $target_files = recursive_scanDir($target_media_folder);
 
     $mappings = array();
     foreach($source_files as $file)
@@ -146,12 +146,18 @@ function getFileMapping($source_media_folder, $target_media_folder)
             if (in_array($file, $target_files)) {
                 $new_file = $file;
                 while (in_array($new_file, $target_files) || in_array($new_file, $mappings) || isset($files[$new_file])) {
-                    $new_file_parts = explode("-", $new_file);
+
+                    $new_filepath_parts = explode('/', $new_file);
+                    $new_file_parts = explode("-", end($new_filepath_parts));
+
+                    array_pop($new_filepath_parts);
+                    $temp_filepath = implode('/', $new_filepath_parts);
+
                     if (is_numeric($new_file_parts[0])) {
                         $new_file_parts[0]++;
-                        $new_file = implode("-", $new_file_parts);
+                        $new_file = ($temp_filepath == "") ? implode("-", $new_file_parts) :  $temp_filepath . "/" . implode("-", $new_file_parts);
                     } else {
-                        $new_file = "1-" . $new_file;
+                        $new_file = ($temp_filepath == "") ? "1-" . implode("-", $new_file_parts) : $temp_filepath . "/" . "1-" . implode("-", $new_file_parts);
                     }
                 }
                 $mappings[$file] = $new_file;
@@ -164,6 +170,22 @@ function getFileMapping($source_media_folder, $target_media_folder)
 
     return $mappings;
 }
+
+function recursive_scanDir($dir){
+        $result = [];
+        foreach(scandir($dir) as $filename) {
+            if ($filename[0] === '.') continue;
+            $filePath = $dir . '/' . $filename;
+            if (is_dir($filePath)) {
+                foreach (recursive_scanDir($filePath) as $childFilename) {
+                    $result[] = $filename . "/" . $childFilename;
+                }
+            } else {
+                $result[] = $filename;
+            }
+        }
+        return $result;
+    }
 
 function doFileMapping($str, $filemapping, &$fileToCopy)
 {
@@ -183,7 +205,17 @@ function copyMediaFiles($source_media_folder, $target_media_folder, $filemapping
 {
     foreach($files as $file)
     {
-        copy($source_media_folder . $file, $target_media_folder . $filemapping[$file]);
+        copy_and_make_dir($source_media_folder . $file, $target_media_folder . $filemapping[$file]);
+    }
+}
+
+function copy_and_make_dir($s1, $s2) {
+    $path = pathinfo($s2);
+    if (!file_exists($path['dirname'])) {
+        mkdir($path['dirname'], 0777, true);
+    }
+    if (!copy($s1, $s2)) {
+        echo "copy failed \n";
     }
 }
 
