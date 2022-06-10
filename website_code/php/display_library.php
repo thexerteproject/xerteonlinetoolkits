@@ -541,7 +541,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
             $shared = 'shared';
         }
 
-        $item->type = ($newtype == "") ? strtolower($row['parent_template']) : strtolower($row['parent_template']) . "_" . $shared;
+        $item->type = ($shared == "") ? strtolower($row['parent_template']) : strtolower($row['parent_template']) . "_" . $shared;
         $item->xot_type = "file";
 
         $item->published = $row['access_to_whom'] != 'Private' || $row['tsugi_published'] == 1;
@@ -703,10 +703,10 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query = "select folder_id, folder_name, folder_parent from {$prefix}folderdetails fd where login_id = ? and folder_parent != 0";
-    $params = array($_SESSION['toolkits_logon_id']);
-
-    /*
+    //if ($type == "") {
+    //    $query = "select folder_id, folder_name, folder_parent from {$prefix}folderdetails where login_id = ? and folder_parent != 0";
+    //    $params = array($_SESSION['toolkits_logon_id']);
+    //}
     if ($type == "group_top") {
         $query = "select fd.folder_id, fd.folder_name, fd.folder_parent, fgr.role, from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr "
             . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
@@ -715,7 +715,7 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
         $query = "select fd.folder_id, fd.folder_name, fr.folder_parent, fr.role from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.login_id=? and fd.folder_parent != 0";
         $params = array($_SESSION['toolkits_logon_id']);
     }
-    */
+
     $top = false;
     $newtype = $type;
     if (str_contains($type, "_top")){
@@ -768,8 +768,14 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
         }
         else
         {
-            $unassigned_found = true;
+            if ($query_response[$index]['role'] == 'creator')
+                $unassigned_found = true;
         }
+        $shared = "";
+        if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
+            $shared = 'shared';
+        }
+        $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder_" .$shared;
     }
     while ($unassigned_found)
     {
@@ -782,10 +788,15 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
             {
                 $query_response[$index]['tree_id']  = $currlevel[$row['folder_parent']] . '_F' . $row['folder_id'];
                 $query_response[$index]['tree_parent_id'] = $currlevel[$row['folder_parent']];
+                $shared = "";
+                if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
+                    $shared = 'shared';
+                }
+                $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder_" .$shared;
                 $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id'];
             }
             else{
-                if (!isset($row['tree_id']))
+                if (!isset($row['tree_id']) && $query_response[$index]['role'] == 'creator')
                 {
                     $unassigned_found = true;
                 }
@@ -795,6 +806,7 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
 
     return $query_response;
 }
+
 
 /**
  * Builds an array with the files only of the folder suitable for jsTree

@@ -192,7 +192,7 @@
 	#mainTxt + #mediaPanel {
 		margin-top: 20px;
 		margin-bottom: 0;
-	}
+  	}
 	
 	#mediaPanel:not(.x_floatLeft) {
 		clear: right;
