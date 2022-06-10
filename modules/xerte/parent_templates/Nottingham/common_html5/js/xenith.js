@@ -4385,12 +4385,23 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					);
 				});
 
+			var $tooltip, escapeHandler = function (e) {
+				e = e || window.event;
+				if (e.keyCode === 27) { // Escape
+					$tooltip.trigger("mouseleave");
+					e.stopPropagation();
+					document.body.removeEventListener('keydown', escapeHandler);
+				}
+			}
+
 			$x_pageDiv
 				.on("mouseenter", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
+					$tooltip = $(this);
+					$tooltip.trigger("mouseleave");
+					
+					document.body.addEventListener('keydown', escapeHandler);
 
-					var $this = $(this),
-						myText = $this.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
+					var myText = $tooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 						myDefinition, i, len;
 
 					for (i=0, len=x_glossary.length; i<len; i++) {
@@ -4407,8 +4418,8 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					$x_glossaryHover
 						.html(myDefinition)
 						.css({
-						"left"	:$(this).offset().left + 20,
-						"top"	:$(this).offset().top + 20
+						"left"	:$tooltip.offset().left + 20,
+						"top"	:$tooltip.offset().top + 20
 					});
 					
 					// Queue reparsing of MathJax - fails if no network connection
