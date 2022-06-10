@@ -1,17 +1,17 @@
 (function() {
-
   CKEDITOR.dialog.add('xotrecorder', function(editor) {
-    window.gebi = getElementById;
+
     // Path to plugin - used for recording library and transcoding workers
     let pluginPath = CKEDITOR.plugins.getPath( 'xotrecorder' );
 
     // Variables required by the recording logic
     var gumStream; 						//stream from getUserMedia()
     var recorder; 						//WebAudioRecorder object
-    var input; 							//MediaStreamAudioSourceNode  we'll be recording
-    var audioContext; //new audio context to help us record
+    var input; 							  //MediaStreamAudioSourceNode  we'll be recording
+    var audioContext;         //new audio context to help us record
     var media = navigator.mediaDevices;
     var blob;
+    var lang = editor.lang.xotrecorder;
 
     var defaultLoadingMessage = '...loading...';
 
@@ -144,9 +144,13 @@
       blob = undefined;
     }
 
+    // Switch the checkbox and label to make them match other elements
     function fixTimestamp() {
       let cb = getElementById("timestamp").getElement();
       let ch = cb.$.children;
+
+      if (ch.length !== 2) return; // Already done it
+
       ch[0].setAttribute('style', 'margin: 8px 0 0 25px;');
       let newHtml = ch[1].outerHTML + '<br />' + ch[0].outerHTML;
       cb.setHtml(newHtml);
@@ -251,7 +255,6 @@ function exposeSomeData(){
           __log('Uploader didn\'t response. Download the file and upload later.');
         });
 			};
-
 			reader.readAsDataURL( blob );
 		}
 
@@ -263,7 +266,7 @@ function exposeSomeData(){
 
       if (filename !== cleansed) {
         getElementById('filename').setValue(cleansed);
-        alert(editor.lang.xotrecorder.charactersAllowed);
+        alert(lang.charactersAllowed);
       }
 
       let timestamp = getElementById('timestamp').getValue() ? '_' + new Date().valueOf() : '';
@@ -343,7 +346,7 @@ function exposeSomeData(){
     }
 
     return {
-      title: editor.lang.xotrecorder.dialogTitle,
+      title: lang.dialogTitle,
       minWidth: 500,
       minHeight: 100,
       contents: [
@@ -352,83 +355,66 @@ function exposeSomeData(){
 	        // Tab 1 Parameters
 	        // ****************************
           id: 'recordTab',
-          label: editor.lang.xotrecorder.recordTabLabel,
-          title: '<i class="fas fa-microphone"></i> ' + editor.lang.xotrecorder.recordTabLabel,
+          label: lang.recordTabLabel,
+          title: '<i class="fas fa-microphone"></i> ' + lang.recordTabLabel,
           accessKey: '1',
-          //title: editor.lang.xotrecorder.recordLabel,
           elements: [
 /*vbox*/  {
             type: 'vbox',
-            padding: 0,
             children: [
 /*hbox*/    {
               type: 'hbox',
-              //widths: ['335px', '110px'],
+              widths: ['10%', '10%'],
+              align: 'left',
               children: [
-/*vbox*/      {
-                type: 'vbox',
-                padding: 0,
-                widths: ['100%'],
-                children: [
-/*hbox*/        {
-                  type: 'hbox',
-                  widths: ['10%', '10%'],
-                  align: 'left',
-                  children: [
-/*recordButton*/  {
-                    type: 'button',
-                    id: 'recordButton',
-                    label: '<i class="fa fa-circle"></i>',
-                    title: editor.lang.xotrecorder.recordButton || 'Start Recording',
-                    setup: faButton,
-                    onClick: startRecording
-                  },
-/*stopButton*/    {
-                    type: 'button',
-                    id: 'stopButton',
-                    label: '<i class="fa fa-stop"></i>',
-                    title: editor.lang.xotrecorder.stopButton || 'Stop Recording',
-                    style: 'margin-right: 25px;',
-                    setup: faButton,
-                    onClick: stopRecording
-                  },
-/*tooltip*/       {
-                    type: 'html',
-                    html: editor.lang.xotrecorder.tooltip,
-                    id: 'tooltip',
-                    style: 'white-space: normal;'
-                  }]
-                },
-/*html*/        {
-                  type: 'html',
-                  id: 'audioPlayer',
-                  html: `<audio controls>Your browser does not support the audio element.</audio>`,
-                  style: 'padding-top:10px;height: revert; width: revert;',
-                  onShow: function() {
-                    this.disable();
-                  }
-                }] // End Children
+/*recordButton*/{
+                type: 'button',
+                id: 'recordButton',
+                label: '<i class="fa fa-circle"></i>',
+                title: lang.recordButton || 'Start Recording',
+                setup: faButton,
+                onClick: startRecording
+              },
+/*stopButton*/{
+                type: 'button',
+                id: 'stopButton',
+                label: '<i class="fa fa-stop"></i>',
+                title: lang.stopButton || 'Stop Recording',
+                style: 'margin-right: 25px;',
+                setup: faButton,
+                onClick: stopRecording
+              },
+/*tooltip*/   {
+                type: 'html',
+                html: lang.tooltip,
+                id: 'tooltip',
+                style: 'white-space: normal;'
               }]
-            }] // End Children
-          }] // End Elements
+            },
+/*html*/    {
+              type: 'html',
+              id: 'audioPlayer',
+              html: `<audio controls>Your browser does not support the audio element.</audio>`,
+              style: 'padding-top: 10px; height: revert; width: revert;'
+            }]
+          }]
         },
 /*tab2*/{
 	        // ****************************
 	        // Tab 2
 	        // ****************************
           id: 'settingsTab',
-          label: editor.lang.xotrecorder.settingsTabLabel,
-          title: '<i class="fas fa-cog"></i> ' + editor.lang.xotrecorder.settingsTabLabel,
+          label: lang.settingsTabLabel,
+          title: '<i class="fas fa-cog"></i> ' + lang.settingsTabLabel,
           accessKey: '2',
           elements: [
 /*vbox*/  {
             type: 'vbox',
-            padding: 0,
             children: [
 /*fieldset*/{
               type: 'fieldset',
               id: 'audioSettingsFieldset',
-              label: editor.lang.xotrecorder.audioSettings || 'Audio Settings',
+              label: lang.audioSettings || 'Audio Settings',
               children: [
 /*hbox*/      {
                 type: 'hbox',
@@ -437,7 +423,7 @@ function exposeSomeData(){
 /*devicesSelect*/{
                   type: 'select',
                   id: 'recordingDevicesSelect',
-                  label: editor.lang.xotrecorder.devicesSelect || 'Recording Device:',
+                  label: lang.devicesSelect || 'Recording Device:',
                   items: [[defaultLoadingMessage]],
                   'default': defaultLoadingMessage,
                   onShow: updateDevicesDropdown,
@@ -446,16 +432,14 @@ function exposeSomeData(){
 /*encodingTypeSel*/{
                   type: 'select',
                   id: 'encodingTypeSelect',
-                  label: editor.lang.xotrecorder.encodingTypeSelect || 'Encoding Type:',
+                  label: lang.encodingTypeSelect || 'Encoding Type:',
                   items: [
                     ['MP3 (MPEG-1 Audio Layer III) (.mp3)', 'mp3'],
                     ['Ogg Vorbis (.ogg)', 'ogg'],
                     ['Uncompressed Waveform Audio (.wav)', 'wav']
                   ],
                   'default': 'mp3',
-                  setup: function(widget) {
-                    setup();
-                  },
+                  setup: setup,
                   onChange: function () {
                     updateFilename.call(this);
                     resetInitialValue.call(this);
@@ -466,8 +450,8 @@ function exposeSomeData(){
 /*fieldset*/{
               type: 'fieldset',
               id: 'filenameFieldset',
-              label: editor.lang.xotrecorder.fileSettings || 'Upload File Settings',
-              style: 'margin-top: 15px;',
+              label: lang.fileSettings || 'Upload File Settings',
+              style: 'margin-top: 10px;',
               children: [
 /*vbox*/      {
                 type: 'vbox',
@@ -480,7 +464,7 @@ function exposeSomeData(){
 /*filename*/      {
                     type: 'text',
                     id: 'filename',
-                    label: editor.lang.xotrecorder.filenameTextbox || 'Filename:',
+                    label: lang.filenameTextbox || 'Filename:',
                     'default': defaultFilename || 'recording',
                     onChange: function () {
                       updateFilename.call(this);
@@ -493,7 +477,7 @@ function exposeSomeData(){
 /*timestamp*/     {
                     type: 'checkbox',
                     id: 'timestamp',
-                    label: editor.lang.xotrecorder.timestampCheckbox || 'Timestamp:',
+                    label: lang.timestampCheckbox || 'Timestamp:',
                     'default': defaultTimestamp || true,
                     onChange: function () {
                       updateFilename.call(this);
@@ -504,7 +488,7 @@ function exposeSomeData(){
 /*finalFilename*/{
                   type: 'html',
                   id: 'finalFilename',
-                  title: editor.lang.xotrecorder.finalFilename || 'This is only an example of the format, the timestamp, if selected, will be different.',
+                  title: lang.finalFilename || 'This is only an example of the format, the timestamp, if selected, will be different.',
                   html: ' ',
                   onShow: updateFilename
                 }]
@@ -513,17 +497,16 @@ function exposeSomeData(){
           }]
         }],
       onCancel: function(ev) { // Catch closing event so we can cancel if recordings left to upload
-        if (blob) {
-          return window.confirm(editor.lang.xotrecorder.closeMessage);
-        }
+        if (blob) return window.confirm(lang.closeMessage);
+
         return true;
       },
       buttons: [
 /*uploadButton*/{
         type: 'button',
         id: 'uploadButton',
-        label: editor.lang.xotrecorder.uploadButton,
-        title: editor.lang.xotrecorder.uploadButton,
+        label: lang.uploadButton,
+        title: lang.uploadButton,
         onClick: function() {
           uploadAndInsert(false);
         }
@@ -531,8 +514,8 @@ function exposeSomeData(){
 /*insertButton*/{
         type: 'button',
         id: 'insertButton',
-        label: editor.lang.xotrecorder.insertButton,
-        title: editor.lang.xotrecorder.insertButton,
+        label: lang.insertButton,
+        title: lang.insertButton,
         onClick: function() {
           uploadAndInsert(true);
         }
