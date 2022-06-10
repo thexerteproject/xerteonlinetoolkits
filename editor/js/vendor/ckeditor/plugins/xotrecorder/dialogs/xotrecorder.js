@@ -47,8 +47,8 @@
       getElementById('audioPlayer').getElement().setAttribute('src', '');
 
       // Need to add the device id to the constraints
-      var constraints = { audio: { deviceId: { exact: getElementById('recordingDevicesSelect').getValue() }}, video:false };
       
+      var constraints = { audio: { deviceId: /*{ exact:*/ getElementById('recordingDevicesSelect').getValue() /*}*/}, video:false };
       navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
 
         // Setup audio context and stream
