@@ -128,7 +128,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 							<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
 							<p style="margin:4px"><label for="password"><?PHP echo MANAGEMENT_PASSWORD; ?>:</label>
 							<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" id="password"/></p>
-							<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo MANAGEMENT_BUTTON_LOGIN; ?></button>
+							<button type="submit" class="xerte_button" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo MANAGEMENT_BUTTON_LOGIN; ?></button>
 						</form>
 						<script>document.getElementById("login_box").focus();</script>
 						<!--<p><?PHP echo $extra; ?></p>-->
