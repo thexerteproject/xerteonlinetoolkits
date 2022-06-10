@@ -262,6 +262,7 @@ Folder popup is the div that appears when creating a new folder
 </div>
 
 <div class="ui-layout-north">
+<header>
     <div class="content" id="mainHeader">
 
         <div class="topbar">
@@ -284,12 +285,12 @@ Folder popup is the div that appears when creating a new folder
             if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
             {
             ?>
-                <img src="branding/logo_left.png" style="margin-left:10px; float:left"/>
+                <img src="branding/logo_left.png" style="margin-left:10px; float:left" alt="<?php echo INDEX_LOGO_ALT; ?>"/>
             <?php
             }
             else {
             ?>
-                <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+                <img src="website_code/images/logo.png" style="margin-left:10px; float:left" alt="<?php echo INDEX_LOGO_ALT; ?>"/>
             <?php
             }
             ?>
@@ -332,15 +333,16 @@ Folder popup is the div that appears when creating a new folder
         </div>
 
     </div>
+	</header>
 </div>
 <!--
 
     Main part of the page
 
 -->
-<div class="ui-layout-center" id="pagecontainer">
+<div class="ui-layout-center" id="pagecontainer" role="main">
 
-    <div class="ui-layout-west" id="workspace_layout">
+    <div class="ui-layout-west" id="workspace_layout" >
         <div class="header" id="inner_left_header">
 			<div class="file_mgt_area_buttons">
 				<!--Workspace buttons-->
@@ -427,34 +429,35 @@ Folder popup is the div that appears when creating a new folder
 </div>
 
 
-<div  class="ui-layout-south">
+<div class="ui-layout-south">
     <div class="content">
         <!-- <div class="border" style="margin:10px"></div>  -->
 
-        <div class="help" style="width:31%;float:left;">
+        <section class="help" style="width:31%;float:left;">
             <?PHP echo apply_filters('editor_pod_one', $xerte_toolkits_site->pod_one); ?>
-        </div>
+        </section>
 
-        <div class="help" style="width:31%;float:left;">
+        <section class="help" style="width:31%;float:left;">
             <?PHP echo apply_filters('editor_pod_two', $xerte_toolkits_site->pod_two); ?>
-        </div>
-        <div class="highlightbox" style="width:31%;float:right;">
+        </section>
+        <section class="highlightbox" style="width:31%;float:right;">
             <?PHP
             //echo $xerte_toolkits_site->demonstration_page;
             echo $xerte_toolkits_site->news_text;
             //echo $xerte_toolkits_site->tutorial_text;
             //echo $xerte_toolkits_site->site_text;
             ?>
-        </div>
+        </section>
 
         <div class="border"></div>
-
-        <p class="copyright">
-            <!--<img src="website_code/images/lt_logo.gif" /><br/>-->
-            <?PHP
-            echo $xerte_toolkits_site->copyright;
-            ?> <i class="fa fa-info-circle xerte_info_button" aria-hidden="true" style=" cursor: help;" title="<?PHP echo $version;?>"></i></p><div class="footerlogos"><a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" border="0"></a> <a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
-
+		<footer>
+			<p class="copyright">
+				<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
+			</p>
+			<div class="footerlogos">
+				<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
+			</div>
+		</footer>
         <div style="clear:both;"></div>
     </div>
 </div>
