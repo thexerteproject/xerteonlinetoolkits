@@ -564,9 +564,19 @@
 				initIcon = x_currentPageXML.getAttribute('lockIcon') != undefined && x_currentPageXML.getAttribute('lockIcon') != '' ? x_currentPageXML.getAttribute('lockIcon') : 'fas fa-lock';
 				$hotspotDiv.addClass('lock');
 			}
-			
+
+			// Handle the closing of hotspot bubble with escape key
+			var escapeHandler = function(e) {
+				e = e || window.event; //IE
+				if ((e.keyCode ? e.keyCode : e.which) === 27) { // Escape
+					$hotspotDiv.mouseleave();
+					e.stopPropagation();
+				}
+			};
+
 			// add hotspot styles, icon etc.
 			$hotspotDiv
+				.on("mouseleave", function(){window.removeEventListener('keydown', escapeHandler);})
 				.attr({
 					'id': args.id,
 					'tabindex': 0
@@ -593,14 +603,8 @@
 							'z-index': 1000
 						});
 
-						document.body.addEventListener('keydown', function escapeHandler(e) {
-							e = e || window.event;
-							if (e.keyCode ? e.keyCode : e.which === 27) { // Escape
-								$this.mouseleave();
-								e.stopPropagation();
-								document.body.removeEventListener('keydown', escapeHandler);
-							}
-						});
+						window.removeEventListener('keydown', escapeHandler);
+						window.addEventListener('keydown', escapeHandler);
 						
 						$('.hotspot360Icon').find('.tip').not($this.find('.tip')).mouseleave();
 						
