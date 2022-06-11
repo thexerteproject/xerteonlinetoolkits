@@ -7,6 +7,7 @@ CKEDITOR.plugins.setLang('xotrecorder', 'en', {
   loadingMessage: 'Loading',
   //audioSettingsTitle: 'Audio Settings',
   //audioSource: 'Audio Source',
+  charactersAllowed: 'Only letters, numbers, underscore _ and hyphen - allowed in filenames.',
   closeMessage: 'You still have recordings that have not been uploaded to Xerte and will be lost. Click OK to proceed or Cancel to return to the record dialog.',
   recordButton: 'Start Recording',
   //playButton: 'Play Recording',

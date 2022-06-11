@@ -344,8 +344,7 @@ if ($tsugi_enabled) {
 
 					show_template($row_play, $xapi_enabled);
                 } else {
-                    html_headers();
-                    login_prompt($errors);
+                    login_prompt($errors, $xerte_toolkits_site);
                 }
                 /*
                  * Check the password
