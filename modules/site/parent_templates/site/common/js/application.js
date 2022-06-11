@@ -1805,7 +1805,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		var topBtnRoundColour=$(data).find('learningObject').attr('topBtnRoundColour');
 		var topBtnRoundHoverColour=$(data).find('learningObject').attr('topBtnRoundHoverColour');
 		var topBtnRoundIconColour=$(data).find('learningObject').attr('topBtnRoundIconColour');
-console.log("here");
+
 		if (topBtnRound == 'true') {
 			//add FA icon and make button round via .top-round class
 
@@ -1827,7 +1827,7 @@ console.log("here");
 				$button.focus(function() {
 				$(this).css("background-color",formatColour(topBtnRoundHoverColour));
 					});
-				$(".top-round").blur(function() {
+				$button.blur(function() {
 					$(this).css("background-color",formatColour(topBtnRoundColour));
 				});
 			}
@@ -1846,7 +1846,6 @@ console.log("here");
 			//original default button
 			section.append($('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
 		}
-		console.log($(".top-round"));
 	}
 
 	
