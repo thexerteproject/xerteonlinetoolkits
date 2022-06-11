@@ -1805,23 +1805,26 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		var topBtnRoundColour=$(data).find('learningObject').attr('topBtnRoundColour');
 		var topBtnRoundHoverColour=$(data).find('learningObject').attr('topBtnRoundHoverColour');
 		var topBtnRoundIconColour=$(data).find('learningObject').attr('topBtnRoundIconColour');
-
+console.log("here");
 		if (topBtnRound == 'true') {
 			//add FA icon and make button round via .top-round class
-			section.append($('<p><br><a class="btn btn-mini pull-right top-round" href="#"><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a></p>'));
+
+			//create button
+			var $button = $('<a class="btn btn-mini pull-right top-round" href="#"><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
+
 			if(topBtnRoundColour != '0x' && topBtnRoundColour != 'undefined') {
 				//change the background colour
-				$(".top-round").css('background-color', formatColour(topBtnRoundColour));
+				$button.css('background-color', formatColour(topBtnRoundColour));
 			}
 			if(topBtnRoundHoverColour != '0x' && topBtnRoundHoverColour != 'undefined') {
 				//change the hover background colour
-				$(".top-round").hover(function() {
+				$button.hover(function() {
 				$(this).css("background-color",formatColour(topBtnRoundHoverColour))
 				}, function(){
 					$(this).css("background-color", formatColour(topBtnRoundColour));
 					});
 				//also change the focus background colour
-				$(".top-round").focus(function() {
+				$button.focus(function() {
 				$(this).css("background-color",formatColour(topBtnRoundHoverColour));
 					});
 				$(".top-round").blur(function() {
@@ -1830,12 +1833,20 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 			}
 				//change the icon colour
 			if(topBtnRoundIconColour != '0x' && topBtnRoundIconColour != 'undefined') {
-				$(".top-round").css('color', formatColour(topBtnRoundIconColour));
-				}
+				$button.css('color', formatColour(topBtnRoundIconColour));
+			}
+
+			//attach the button
+			section.append(
+				$('<p>')
+					.append($('<br>'))
+					.append($button));
+
 		} else {
 			//original default button
 			section.append($('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
 		}
+		console.log($(".top-round"));
 	}
 
 	
