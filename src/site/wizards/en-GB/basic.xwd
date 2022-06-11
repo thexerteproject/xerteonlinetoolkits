@@ -102,6 +102,14 @@
 		</varGroup>
 		
 		<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
+		
+		<topBtnGroup type="group" label="Back to Top button" optional="true" tooltip="Hide or change the Back to Top button">
+		<topBtnHide label="Hide the button" type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Hide the Back to Top button on all pages"/>
+		<topBtnRound label="Change to a circle and Up Arrow" type="Checkbox" defaultValue="false" condition="topBtnHide=='false'" conditionTrigger="true" optional="true" tooltip="Change the default Back to Top button to a circle containing an Up Arrow"/>
+			<topBtnRoundColour type="ColourPicker" optional="true" condition="topBtnRound=='true'" label="Circle Background Colour" tooltip="Change the default colour of the circle (optional)"/>
+			<topBtnRoundHoverColour type="ColourPicker" optional="true" condition="topBtnRound=='true'" label="Circle Hover and Focus Colour" tooltip="Change the default hover and focus colour of the circle (optional)"/>
+			<topBtnRoundIconColour type="ColourPicker" optional="true" condition="topBtnRound=='true'" label="Up Arrow Colour" tooltip="Change the default colour of the Up Arrow (optional)"/>   
+		</topBtnGroup>
 
 		<twittercard type="group" label="Twitter card" optional="true">
         		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter." />

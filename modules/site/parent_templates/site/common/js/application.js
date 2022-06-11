@@ -1798,12 +1798,46 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		
 	}
 
-	//a return to top button
-	if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') {
+	//a back to top button (if not set to hidden)
+	if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither' && $(data).find('learningObject').attr('topBtnHide') != 'true') {
+		//back to top button optional properties
+		var topBtnRound=$(data).find('learningObject').attr('topBtnRound');
+		var topBtnRoundColour=$(data).find('learningObject').attr('topBtnRoundColour');
+		var topBtnRoundHoverColour=$(data).find('learningObject').attr('topBtnRoundHoverColour');
+		var topBtnRoundIconColour=$(data).find('learningObject').attr('topBtnRoundIconColour');
 
-		section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top')  + '</a></p>'));
-
+		if (topBtnRound == 'true') {
+			//add FA icon and make button round via .top-round class
+			section.append($('<p><br><a class="btn btn-mini pull-right top-round" href="#"><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a></p>'));
+			if(topBtnRoundColour != '0x' && topBtnRoundColour != 'undefined') {
+				//change the background colour
+				$(".top-round").css('background-color', formatColour(topBtnRoundColour));
+			}
+			if(topBtnRoundHoverColour != '0x' && topBtnRoundHoverColour != 'undefined') {
+				//change the hover background colour
+				$(".top-round").hover(function() {
+				$(this).css("background-color",formatColour(topBtnRoundHoverColour))
+				}, function(){
+					$(this).css("background-color", formatColour(topBtnRoundColour));
+					});
+				//also change the focus background colour
+				$(".top-round").focus(function() {
+				$(this).css("background-color",formatColour(topBtnRoundHoverColour));
+					});
+				$(".top-round").blur(function() {
+					$(this).css("background-color",formatColour(topBtnRoundColour));
+				});
+			}
+				//change the icon colour
+			if(topBtnRoundIconColour != '0x' && topBtnRoundIconColour != 'undefined') {
+				$(".top-round").css('color', formatColour(topBtnRoundIconColour));
+				}
+		} else {
+			//original default button
+			section.append($('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
+		}
 	}
+
 	
 	// lightbox image links might also need to be added
 	setUpLightBox(page, $(thisSection), section);
