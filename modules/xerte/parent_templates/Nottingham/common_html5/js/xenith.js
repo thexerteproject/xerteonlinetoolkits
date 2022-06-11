@@ -4385,21 +4385,20 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					);
 				});
 
-			var $tooltip, escapeHandler = function (e) {
-				e = e || window.event;
-				if (e.keyCode === 27) { // Escape
-					$tooltip.trigger("mouseleave");
-					e.stopPropagation();
-					document.body.removeEventListener('keydown', escapeHandler);
-				}
-			}
-
+			//var $tooltip;
 			$x_pageDiv
 				.on("mouseenter", ".x_glossary", function(e) {
 					$tooltip = $(this);
 					$tooltip.trigger("mouseleave");
 					
-					document.body.addEventListener('keydown', escapeHandler);
+					document.body.addEventListener('keydown', function escapeHandler(e) {
+						e = e || window.event;
+						if (e.keyCode ? e.keyCode : e.which === 27) { // Escape
+							$tooltip.trigger("mouseleave");
+							e.stopPropagation();
+							document.body.removeEventListener('keydown', escapeHandler);
+						}
+					});
 
 					var myText = $tooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 						myDefinition, i, len;
