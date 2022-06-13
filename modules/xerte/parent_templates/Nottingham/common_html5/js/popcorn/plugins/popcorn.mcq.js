@@ -602,10 +602,30 @@ optional: feedback page synch play enable
 							"height": 0
 						});
 					}
+					// Set position and max-height
+					let maxH;
+					const topMM = $(".mainMedia").offset().top;
+					const hMM = $(".mainMedia").height();
+					if (x_isMobileBrowser())
+					{
+						// Limit $target.parent() to pageContent height
+						const topPD = $("#x_pageDiv").offset().top;
+						const topP = topMM + options._y * hMM/100.0;
+						const hPC = $("#x_pageDiv").height() - $("#x_footerBlock").height() - (topMM-topPD);
+						maxH = hPC - (topP - topMM);
+					}
+					else
+					{
+						// Limit $target.parent() to main content
+						const topP = topMM + options._y * hMM/100.0;
+						maxH = hMM - (topP - topMM);
+					}
+					// Set max height
 					$target.parent().css({
 						"max-width": options._w + "%",
 						"top": options._y + "%",
-						"left": options._x + "%"
+						"left": options._x + "%",
+						"max-weight": maxH + "px",
 					}).show();
 				}
 				$target.show();

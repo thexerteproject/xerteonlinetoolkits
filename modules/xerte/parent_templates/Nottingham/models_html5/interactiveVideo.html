@@ -50,6 +50,7 @@
             if ($("#pageContents").data("audioBar") == true && $x_footerBlock.find(".mainMedia").length == 0) {
                 this.loadAudioInFooter();
             }
+
             this.setUp();
         };
 
@@ -216,6 +217,10 @@
             }
 
             $panelHolder.find(".panel .fullH").each(function() {
+                interactiveVideo.resizeContent($(this));
+            });
+
+            $panelHolder.find(".contentBlock.textplusHolder").each(function(){
                 interactiveVideo.resizeContent($(this));
             });
         }
@@ -471,7 +476,12 @@
                     $infoHolder.accordion("option", "active", false);
                 });
 
-                $contentCover.show();
+                // Check if the accordion is open (it might be closed if you return to this page
+                const $h3 = $("#infoHolder hr.ui-state-active");
+                if ($h3.length > 0){
+                    // infoHolder panel is open, show contentCover
+                    $("#contentCover").show();
+                }
 
             } else {
                 // no introduction text - remove accordion
@@ -1222,6 +1232,7 @@
                     }
                 }
             }
+
             x_pageContentsUpdated();
         }
 
