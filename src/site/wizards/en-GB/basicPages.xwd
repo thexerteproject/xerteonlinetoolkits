@@ -8,6 +8,7 @@
 		<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
 		<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
 		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
+		<headerBanner type="ComboBox" data="Jumbotron,Smaller banner" options="Jumbotron,Smaller banner" optional="true" label="Banner" defaultValue="Smaller banner" width="175"/>
 	</headerGroup>
 	
 	<pageLink label="Page Link" type="TextInput" wysiwyg="true" defaultValue="" optional="true" tooltip="The link text for the page menu (by default this will be the page title)"/>

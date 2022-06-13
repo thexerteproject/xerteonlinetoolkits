@@ -1312,6 +1312,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (tempPageIndex != undefined) {
 			parseContent({ type: "index", id: tempPageIndex });
 		}
+		this.CheckBanner(tempPageIndex)
 
 	// Then try to look them up by ID
 	} else {
@@ -1367,6 +1368,22 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (found == false) {
 			console.log("Page/section with ID *" + pageInfo.ID + "* not found");
 		}
+		this.CheckBanner(i)
+	}
+}
+
+function CheckBanner(index){
+	debugger
+	var banner = $(data).find('page').eq(index).attr('headerBanner');
+	if(banner == "Jumbotron"){
+		$(".jumbotron").addClass("scale");
+		var viewHeight = $(this).height();
+		$(".scale").height(viewHeight);
+	}else{
+		$(".jumbotron").removeClass("scale");
+		$(".jumbotron").css({
+			"height":"200px"
+		})
 	}
 }
 
@@ -1467,6 +1484,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 			// store current page
 			currentPage = pageIndex;
+			this.CheckBanner(currentPage)
 
 			//set the main page title and subtitle
 			$('#pageTitle').html(page.attr('name'));
