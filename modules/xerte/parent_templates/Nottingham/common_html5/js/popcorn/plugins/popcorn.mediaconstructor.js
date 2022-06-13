@@ -168,6 +168,11 @@ this.initVideoState = function()
 
 // sets the size of videos. width and height take precedence over ratio
 this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
+
+    if ($video.length == 0)
+    {
+        return;
+    }
     var $holder = $video.parent()
 
     var heightClaimed = 0;
@@ -299,6 +304,7 @@ this.addTrackingOnLeavePage = function(popcornInstance, videoState) {
         removeEvents(popcornInstance);
         popcornInstance.destroy();
     }
+    $("div.popcornMedia").remove();
 }
 
 /*___HELPER FUNCTIONS___*/

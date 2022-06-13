@@ -10,9 +10,23 @@
 	 * @package
 	 */
 	 
-	define("MANAGEMENT_LOGIN","login area for site administration");
+	define("MANAGEMENT_LOGIN","Site administrator login:");
 
-    define("MANAGEMENT_BUTTON_LOGIN","Login");
+    define("MANAGEMENT_BUTTON_LOGIN","Log in");
+	
+	define("MANAGEMENT_USERNAME", "Username");
+
+	define("MANAGEMENT_PASSWORD", "Password");
+
+	define("MANAGEMENT_LOGO_ALT", "Site logo");
+
+	define("MANAGEMENT_WCAG_LOGO_ALT", "W3C logo");
+
+	define("MANAGEMENT_OSI_LOGO_ALT", "Open Source Initiative logo");
+
+	define("MANAGEMENT_APEREO_LOGO_ALT", "Apereo logo");
+
+	define("MANAGEMENT_XERTE_LOGO_ALT", "Xerte logo");
 
     define("MANAGEMENT_NOT_ADMIN_USERNAME","This is the management panel. Only site administrators can access this resource");
 	

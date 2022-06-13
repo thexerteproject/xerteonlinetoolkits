@@ -52,6 +52,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
             <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
+			<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
             <!--
 
@@ -83,7 +84,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 
         <body>
 
-            <div class="topbar">
+            <header class="topbar">
                 <?php
                 if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
                 {
@@ -103,45 +104,50 @@ function mgt_page($xerte_toolkits_site, $extra)
                 if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
                 {
                 ?>
-                    <img src="<?php echo "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+                    <img src="<?php echo "branding/logo_left.png";?>" style="margin-left:10px; float:left" alt="<?php echo MANAGEMENT_LOGO_ALT; ?>"/>
                 <?php
                 }
                 else {
                 ?>
-                    <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+                    <img src="website_code/images/logo.png" style="margin-left:10px; float:left" alt="<?php echo MANAGEMENT_LOGO_ALT; ?>"/>
                 <?php
                 }
                 ?>
-            </div>
+            </header>
 
 
-						<div class="mainbody">
-								<div class="title_holder">
-									<div class="title_welcome">
-										<?PHP echo $xerte_toolkits_site->welcome_message; ?>
-									</div>
-									<div class="mainbody_holder">
-										<div style="margin:0 7px 4px 0"><?PHP echo MANAGEMENT_LOGIN; ?></div>
-										<form method="post" enctype="application/x-www-form-urlencoded" >
-										<p style="margin:4px">Username:
-										<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
-										<p style="margin:4px">Password:
-										<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
-										<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo "<i class=\"fa fa-sign-in\"></i> ".MANAGEMENT_BUTTON_LOGIN; ?></button>
-										</form>
-										<script>document.getElementById("login_box").focus();</script>
-										<!--<p><?PHP echo $extra; ?></p>-->
-									</div>
-								</div>
-								<div style="clear:both;"></div>
-						</div>
+			<main class="mainbody">
+				<div class="title_holder">
+					<h1 class="title_welcome">
+						<?PHP echo $xerte_toolkits_site->welcome_message; ?>
+					</h1>
+					<div class="mainbody_holder">
+						<div style="margin:0 7px 4px 0"><?PHP echo MANAGEMENT_LOGIN; ?></div>
+						<form method="post" enctype="application/x-www-form-urlencoded" >
+							<p style="margin:4px"><label for="login_box"><?PHP echo MANAGEMENT_USERNAME; ?>:</label>
+							<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+							<p style="margin:4px"><label for="password"><?PHP echo MANAGEMENT_PASSWORD; ?>:</label>
+							<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" id="password"/></p>
+							<button type="submit" class="xerte_button" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo MANAGEMENT_BUTTON_LOGIN; ?></button>
+						</form>
+						<script>document.getElementById("login_box").focus();</script>
+						<!--<p><?PHP echo $extra; ?></p>-->
+					</div>
+				</div>
+					<div style="clear:both;"></div>
+			</main>
 
-						<div class="bottompart">
-							<div class="border"></div>
-							<p class="copyright">
-								<?php echo $xerte_toolkits_site->copyright; ?>
-							</p><div class="footerlogos"><a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" border="0"></a> <a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
-						</div>
+			<div class="bottompart">
+				<div class="border"></div>
+				<footer>
+					<p class="copyright">
+						<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
+					</p>
+					<div class="footerlogos">
+						<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" border="0" alt="<?php echo MANAGEMENT_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_XERTE_LOGO_ALT; ?>"></a>
+					</div>
+				</footer>
+			</div>
         </body>
     </html>
 

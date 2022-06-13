@@ -76,7 +76,7 @@ var videoSynch = new function() {
 		    var	captionInfo = new Array();
 
 		// uses data from timedText file if there is one - otherwise use nested page info
-		iif (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
+		if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
 			$.ajax({
 				type: "GET",
 				url: x_evalURL(x_currentPageXML.getAttribute("timedText")),

@@ -4663,7 +4663,6 @@
             self.dispatchEvent("progress");
             elem.width="100%";
             elem.height="100%";
-            //elem.src=aSrc + "?api=1";
             elem.src=aSrc + "?api=1";
             elem.frameborder="0";
             elem.allowfullscreen="";

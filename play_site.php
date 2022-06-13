@@ -268,8 +268,7 @@ if($lti->valid) {
     show_template($row_play);
     //sucessfull authentication
   } else {
-    html_headers();
-    login_prompt($errors);
+    login_prompt($errors, xerte_toolkits_site);
   }
         /*
          * Check the password
