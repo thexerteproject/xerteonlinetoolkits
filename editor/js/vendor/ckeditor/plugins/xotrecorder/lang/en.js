@@ -1,0 +1,22 @@
+CKEDITOR.plugins.setLang('xotrecorder', 'en', {
+  editorButton: 'Record Audio',
+  dialogTitle: 'Record Audio',
+  //defaultMessage: 'Unfortunately your browser does not support in-browser recording. Please try using the latest Chrome, Firefox or Edge browser.',
+  recordTabLabel: 'Record',
+  settingsTabLabel: 'Settings',
+  loadingMessage: 'Loading',
+  //audioSettingsTitle: 'Audio Settings',
+  //audioSource: 'Audio Source',
+  charactersAllowed: 'Only letters, numbers, underscore _ and hyphen - allowed in filenames.',
+  closeMessage: 'You still have recordings that have not been uploaded to Xerte and will be lost. Click OK to proceed or Cancel to return to the record dialog.',
+  recordButton: 'Start Recording',
+  //playButton: 'Play Recording',
+  stopButton: 'Stop Recording',
+  uploadButton: 'Upload and Close',
+  insertButton: 'Upload, Insert Player and Close',
+  //mediaNotAllowedError: 'It looks like you have blocked permission to access your microphone and/or camera. Please check your browser settings.',
+  //mediaNotReadableError: 'Could not start video or audio source - it may be in use in another application.',
+  //mediaErrorUnhandled: 'Unhandled navigator.MediaDevices.getUserMedia error',
+  tooltip: 'Tip: You can change the format of the uploaded file in Settings<br />(mp3, ogg, wav) as well as the filename and bitrate.',
+
+});

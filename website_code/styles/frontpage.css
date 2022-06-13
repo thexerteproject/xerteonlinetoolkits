@@ -67,6 +67,9 @@ body{
   font-family:"Open Sans", sans-serif;;
 	line-height:98%
 }
+h1.title_welcome {
+	font-weight: normal;
+}
 .title{
 	border-bottom:#f3eee2 1px dotted;
 	color:#aa9d71;
@@ -232,6 +235,10 @@ body{
 	margin:0px;
 	font-size:150%;	
 }
+h1.news_title {
+	font-weight: normal;
+}
+
 
 .news_story{
 	padding:0 0 10px 10px; 
@@ -713,10 +720,7 @@ div#workspace{
 }
 
 #language-selector {
-	background-color:#f86718;	
-	color:#fff;
 	border-radius:4px;
-	border:#fff 1px solid; 
 	padding:2px;
 	margin:0;
 }

@@ -4385,12 +4385,23 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					);
 				});
 
+			// Handle the closing of glossary bubble with escape key
+			var $activeTooltip, escapeHandler = function(e) {
+				e = e || window.event; //IE
+				if ((e.keyCode ? e.keyCode : e.which) === 27) { // Escape
+					$activeTooltip.trigger("mouseleave");
+					e.stopPropagation();
+				}
+			};
+
 			$x_pageDiv
 				.on("mouseenter", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
+					$activeTooltip = $(this);
+					$activeTooltip.trigger("mouseleave");
+					
+					window.addEventListener('keydown', escapeHandler);
 
-					var $this = $(this),
-						myText = $this.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
+					var myText = $activeTooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 						myDefinition, i, len;
 
 					for (i=0, len=x_glossary.length; i<len; i++) {
@@ -4407,8 +4418,8 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					$x_glossaryHover
 						.html(myDefinition)
 						.css({
-						"left"	:$(this).offset().left + 20,
-						"top"	:$(this).offset().top + 20
+						"left"	:$activeTooltip.offset().left + 20,
+						"top"	:$activeTooltip.offset().top + 20
 					});
 					
 					// Queue reparsing of MathJax - fails if no network connection
@@ -4422,8 +4433,8 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-					
 					$x_glossaryHover.hide();
+					window.removeEventListener('keydown', escapeHandler);
 				})
 				.on("mousemove", ".x_glossary", function(e) {
 					var leftPos,
