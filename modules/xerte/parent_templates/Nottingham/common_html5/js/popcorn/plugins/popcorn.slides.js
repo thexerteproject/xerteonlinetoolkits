@@ -203,10 +203,30 @@ optional: caption captionPosV captionPosH
 							})
 						}
 					}
+					// Set position and max-height
+					let maxH;
+					const topMM = $(".mainMedia").offset().top;
+					const hMM = $(".mainMedia").height();
+					if (x_isMobileBrowser())
+					{
+						// Limit $target.parent() to pageContent height
+						const topPD = $("#x_pageDiv").offset().top;
+						const topP = topMM + options._y * hMM/100.0;
+						const hPC = $("#x_pageDiv").height() - $("#x_footerBlock").height() - (topMM-topPD);
+						maxH = hPC - (topP - topMM);
+					}
+					else
+					{
+						// Limit $target.parent() to main content
+						const topP = topMM + options._y * hMM/100.0;
+						maxH = hMM - (topP - topMM);
+					}
+					// Set max height
 					$target.parent().css({
 						"top": options._y + "%",
 						"left": options._x + "%",
-						"max-width": options._w + "%"
+						"max-width": options._w + "%",
+						"max-height": maxH + "px",
 					}).show();
 					
 					if (options.child == "false") {
