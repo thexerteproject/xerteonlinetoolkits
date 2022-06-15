@@ -122,6 +122,12 @@ $sql = "SELECT * FROM $config_table WHERE name = 'version'";
 $r = db_query_one($sql);
 if(!empty($r)) {
     $version = $r['value'];
+    // Fix jump if we are not already past 32
+    // Previously the messages were a bit strange with the counters.
+    if ($version <= 32)
+    {
+        $version -= 1;
+    }
     echo "Starting from $version\n";
 } else {
     db_query("INSERT INTO $config_table (name, value) VALUES ('version', '0')");
@@ -133,9 +139,7 @@ _do_upgrade($version);
 _do_cleanup();
 
 function _do_upgrade($current_version) {
-    $target_version = $current_version + 0; // changed this to add 0 not 1 as this looks like it causes issues as when done an upgrade you had to add an extra 1 to the upgrade_function
-  if($target_version ==0 ) $target_version=1; // fixed this for when the variable didnt exist;
-
+    $target_version = $current_version + 1;
 
     echo "<p>Current database version - $current_version</p>";
     if(!function_exists('upgrade_' . $target_version)) {
@@ -158,6 +162,8 @@ function _do_upgrade($current_version) {
         $target_version += 1;
     }
     echo "<p><b>Upgrade complete</b></p>\n";
+    // Last version is actually used is one less
+    $target_version -= 1;
     // Update config table so we don't run the same query twice in the future.
     $table = table_by_key('config');
     $sql = "UPDATE $table SET value = $target_version WHERE name = 'version'";
@@ -1095,10 +1101,9 @@ function upgrade_27()
 {
     $table = table_by_key('folderrights');
     $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
-        `id` bigint(20) NOT NULL AUTO_INCREMENT,
-        `folder_id` bigint(20) NOT NULL,
-        `user_id` bigint(20) NOT NULL,
-        `folder_parent` bigint(20) NOT NULL,
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `folder_id` int(11) NOT NULL,
+        `user_id` int(11) NOT NULL,
         `role` char(255) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
@@ -1198,5 +1203,40 @@ function upgrade_31()
     {
         return "Creating Social Icon settings fields already present - ok ? true". "<br>";
     }
+}
+
+function upgrade_32()
+{
+    // Fix corrupt or wrong folderrights table;
+    $frtable = table_by_key('folderrights');
+    if (_db_field_exists('folderrights', 'user_id')) {
+        // change this to login_id
+        $ok = db_query("alter table `$frtable` change user_id login_id int");
+    }
+    if (!_db_field_exists('folderrights', 'folder_parent')) {
+        $error = _db_add_field('folderrights', 'folder_parent', 'int', '-1', 'login_id');
+
+        if ($error !== false) {
+            // Fill folderrights table based on folderdetails
+            $fdtable = table_by_key('folderdetails');
+            $folders = db_query("select * from `$fdtable`;");
+            if ($folders !== false) {
+                foreach ($folders as $folder) {
+                    $ok = db_query("insert into `$frtable` set login_id=?, folder_id=?, folder_parent=?, role='creator'",
+                        array($folder['login_id'], $folder['folder_id'], $folder['folder_parent']));
+                    if ($ok === false) {
+                        return "Something went wrong with migrating folderrights table!";
+                    }
+                }
+            }
+        }
+        return "Creating folder_parent field in folderrights - ok ? " . ($error === false ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating folder_parent field in folderrights already present - ok ? ". "<br>";
+    }
+
+
 }
 
