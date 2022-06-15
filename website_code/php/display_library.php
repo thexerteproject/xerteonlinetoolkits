@@ -486,7 +486,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     } else {
         //select templates the same way as regularly, however, now check for group_id in template_group_rights
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
-            . " otd.parent_template, otd.template_framework, td.template_id, tgr.role, 2 as nrshared from {$prefix}templatedetails td, "
+            . " otd.parent_template, otd.template_framework, td.template_id, tgr.role, '' as creator_folder_name, 2 as nrshared from {$prefix}templatedetails td, "
             . " {$prefix}template_group_rights tgr, {$prefix}originaltemplatesdetails otd where td.template_id = tgr.template_id and tgr.group_id = ? "
             . " and otd.template_type_id = td.template_type_id ";
         if ($copy_only)

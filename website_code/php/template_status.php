@@ -401,7 +401,7 @@ function is_user_creator_or_coauthor($template_id){
     }else{
         //Only check implicit roles if no >=co-author already found, to limit queries
         $implicit = get_implicit_role($template_id, $user_id);
-        if($implicit=="creator" || $implicit=="co-author") {
+        if($implicit=="co-author") {
             return true;
         }else{
             $implicit_group = get_implicit_group_role($template_id, $user_id);
