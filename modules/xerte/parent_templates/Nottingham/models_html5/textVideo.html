@@ -30,9 +30,10 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			var $pageVideo = $("#pageVideo"),
-				ratio = $pageVideo.data('iframeRatio'),
+				iframeRatio = $pageVideo.data('iframeRatio'),
 				videoDimensions = $pageVideo.data('dimensions');
 			if (true) {
+				const ratio = iframeRatio[0] / iframeRatio[1];
 				// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
 				var iframeMax = x_currentPageXML.getAttribute("iframeMax");
 				if ($.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
@@ -109,6 +110,7 @@
 				ratio = x_currentPageXML.getAttribute("iframeRatio"),
 				iframeRatio = ratio ? ratio : '16:9';
 
+			debugger;
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
 				
@@ -125,7 +127,14 @@
 					iframeRatio = [16,9];
 				}
 				$pageVideo.data('iframeRatio', iframeRatio);
-				
+				/*
+				setTimeout(function(){
+					// Set the height of the $pageVideo container
+					const height = $pageVideo.width() / iframeRatio[0] * iframeRatio[1];
+					$pageVideo.height(height);
+				}, 250);
+				*/
+
 			} else {
 				var videoDimensions;// = [320,240];
 				
