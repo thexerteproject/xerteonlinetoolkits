@@ -68,14 +68,23 @@
 
 			//$(".listHolder ul:not(:first)").css('width', colWidth)
 
+			$("ul[class!='preview']").css("width", "");
+			$("ul[class!='preview']").css("height", "");
+			$("#gridHolder").css("width", "");
+			$("#gridHolder").css("height", "");
+			$("#gridBorders").css("width", "");
+			$("#gridBorders").css("height", "");
 			if (x_currentPageXML.getAttribute("constrain") == "col") {
+				debugger
 				var column = 0;
 				var maxW, maxH = 0;
+
 				$grid.find("ul[class!='preview']").each(function() {
 					maxW = 0;
 					$(this).find("li").each(function(i) {
 						$(this).css("width", "");
 						$(this).css("height", "");
+						$(this).css("max-width", $grid.width()-10 + "px");
 						maxW = Math.max(maxW, $(this).width());
 						if ($.inArray(i,fixedRows) == -1) {
 							maxH = Math.max(maxH, $(this).height());
@@ -90,7 +99,6 @@
 				for (i=0; i<fixedRows.length; i++) {
 					maxH = 0;
 					$grid.find("ul[class!='preview'] li.static").each(function() {
-						debugger
 						if ($(this).data("xy")[1] == fixedRows[i]) {
 							$(this).css("height", "");
 							maxH = Math.max(maxH, $(this).height());
@@ -99,7 +107,7 @@
 				}
 
 			} else if (x_currentPageXML.getAttribute("constrain") == "row") {
-
+				debugger
 				// labels on each row should be same height & all labels should be same width...
 				var maxW = 0, maxH;
 				$grid.find("ul[class!='preview']").each(function() {
@@ -111,6 +119,9 @@
 						if ($.inArray(i,fixedCols) == -1) {
 							maxW = Math.max(maxW, $(this).width());
 						}
+						/*if(maxW > ($grid.width()-24)){
+							maxW = $grid.width()-24;
+						}*/
 					}).height(maxH + "px");
 				}).find("li")
 						.width(maxW + 5 + "px");
@@ -126,6 +137,7 @@
 				}
 
 			}else{
+				debugger
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
 				$grid.find("ul:not(:first) li").each(function(i) {
@@ -137,6 +149,10 @@
 					if ($.inArray(i,fixedRows) == -1) {
 						maxH = Math.max(maxH, $(this).height());
 					}
+					/*debugger
+					if(maxW > ($grid.width()-24)){
+						maxW = $grid.width()-24;
+					}*/
 				})
 						.width(maxW + 5 + "px")
 						.height(maxH + "px");
@@ -198,8 +214,6 @@
 			$("#gridHolder").css({"height": gridHolderHeight})
 
 			var num = data[0].split(separator).length;
-
-			debugger
 
 			$("#gridBorders").find("tr").each(function(i) {
 				var $li = $grid.find("ul[class != 'preview']:eq(0) li:eq("+i+")")
