@@ -189,13 +189,13 @@ Folder popup is the div that appears when creating a new folder
         <p style="color:white"><?PHP echo INDEX_FOLDER_PROMPT; ?></p>
 
         <form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain">
+			<label for="foldername" class="sr-only"><?php echo INDEX_FOLDER_NAME ?></label>
             <input type="text" width="200" id="foldername" name="foldername"
                    style="margin:0px; margin-right:5px; padding:3px"/>
             <button type="submit" class="xerte_button_c">
-                <img src="website_code/images/Icon_Folder_15x12.gif"/>
                 <?php echo INDEX_BUTTON_NEWFOLDER_CREATE; ?>
             </button>
-            <button type="button" class="xerte_button_c"
+            <button type="button" class="xerte_button_c" style="margin-top:0.5em;"
                     onclick="javascript:popup_close()"><?php echo INDEX_BUTTON_CANCEL; ?>
             </button>
         </form>
@@ -228,7 +228,7 @@ Folder popup is the div that appears when creating a new folder
                     <input type="text" id="dp-end">
                 </div>
                 <div class="dash-col-1">
-                    <label for="dp-end">
+                    <label for="group-select">
                         <?php echo INDEX_XAPI_DASHBOARD_GROUP_SELECT; ?>
                     </label>
                     <select type="text" id="group-select">
@@ -321,7 +321,7 @@ Folder popup is the div that appears when creating a new folder
                 ';
                 }
                ?>
-               <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
+               <div style="display: inline-block"><?php display_language_selectionform("general", false); ?></div>
                <?PHP if($xerte_toolkits_site->authentication_method != "Guest") {
                ?><button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_button_c_no_width"
                         onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
@@ -379,7 +379,7 @@ Folder popup is the div that appears when creating a new folder
             <div class="file_mgt_area_bottom">
 				<div class="sorter">
 					<form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
-						<i class="fa  fa-sort xerte-icon"></i>&nbsp;<?PHP echo INDEX_SORT; ?>
+						<i class="fa  fa-sort xerte-icon"></i>&nbsp;<label for="sort-selector"><?PHP echo INDEX_SORT; ?></label>
 						<select id="sort-selector" name="type" onChange="refresh_workspace()">>
 							<option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
 							<option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
@@ -390,8 +390,8 @@ Folder popup is the div that appears when creating a new folder
 				</div>
 				<div class="workspace_search_outer">
 					<div class="workspace_search">
-						<i class="fa  fa-search"></i>&nbsp;<?PHP echo INDEX_SEARCH; ?>
-						<input type="text" id="workspace_search" label="Search" placeholder="<?php echo INDEX_SEARCH_PLACEHOLDER?>">
+						<i class="fa  fa-search"></i>&nbsp;<label for="workspace_search"><?PHP echo INDEX_SEARCH; ?></label>
+						<input type="text" id="workspace_search" placeholder="<?php echo INDEX_SEARCH_PLACEHOLDER?>">
 					</div>
 				</div>
 			</div>
