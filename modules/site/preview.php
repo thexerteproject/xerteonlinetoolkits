@@ -21,6 +21,25 @@
 
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
+
+function process_logos($tp, $page_content) {
+    $base_path = dirname(__FILE__) . '/../../' . $tp . 'common/img/';
+    $extensions = ['svg',  'png', 'jpg', 'gif'];
+
+    // Deal with both logos
+    foreach ([['L', '_left'], ['R', '']] as $suffix) {
+        foreach($extensions as $ext) {
+            if (file_exists($base_path . 'logo' . $suffix[1] . '.' . $ext)) {
+                $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo' . $suffix[0] . '" src="%TEMPLATEPATH%common/img/logo' . $suffix[1] . '.'. $ext . '"/>' , $page_content);
+                break;
+            }
+        }
+        $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo' . $suffix[0] . '" src="" />' , $page_content);
+    }
+
+    return $page_content;
+}
+
 function show_preview_code($row)
 {
 
@@ -58,6 +77,8 @@ function show_preview_code($row)
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
 
     $tracking = "<script type=\"text/javascript\" src=\"" . $template_path_string . "common/js/xttracking_noop.js?version=" . $version . "\"></script>";
+
+    $page_content = process_logos($template_path_string, $page_content);
 
     $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
     $page_content = str_replace("%VERSION_PARAM%", "?version" . $version , $page_content);

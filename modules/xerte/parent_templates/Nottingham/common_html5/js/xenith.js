@@ -1286,7 +1286,7 @@ function x_continueSetUp1() {
 		};
 
 		var type, fallback;
-		if (x_params.ic != undefined && x_params.ic != '') {
+		if (x_params.ic != undefined && x_params.ic != '' && x_params.ic !== 'Select an Image') {
 			$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
 			type = 'LO';
 			fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';

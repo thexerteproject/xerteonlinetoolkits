@@ -64,7 +64,7 @@ function display_property_engines($change,$msgtype){
 
 }
 
-function check_default_logo($tp, $page_content) {
+function process_logos($tp, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $tp . 'common_html5/';
     $extensions = ['svg',  'png', 'jpg', 'gif'];
 
