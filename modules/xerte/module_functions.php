@@ -74,7 +74,7 @@ function check_default_logo($tp, $page_content) {
         }
     }
 
-    return $page_content = str_replace("%LOGO%", '' , $page_content);
+    return $page_content = str_replace("%LOGO%", '<img class="x_icon" src alt=""/>' , $page_content);
 }
 
 function display_publish_engine(){
