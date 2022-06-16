@@ -566,7 +566,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  '<br/>' . PROJECT_INFO_EMBEDCODE . ":<br/><form><textarea rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
+        $info .=  '<br/><form><label for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
 
     }
     return $info;

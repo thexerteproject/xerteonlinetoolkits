@@ -23,7 +23,7 @@
 	
     define("DISPLAY_PROJECT_NAME", "Project name");
 
-    define("DISPLAY_CHOOSE_AND_NAME", "Choose a predifined template then enter a name for this project");
+    define("DISPLAY_CHOOSE_AND_NAME", "Choose a predefined template then enter a name for this project");
 	
 	define("DISPLAY_TEMPLATE", "Template");
 

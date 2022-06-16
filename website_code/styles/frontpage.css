@@ -369,6 +369,11 @@ h1.news_title {
     text-align:left;
 }
 
+h1.heading {
+	font-size: inherit;
+    margin: 10px 0px 1px 10px;
+}
+
 .file_mgt_area_middle{
 	float:left; 
 	position:relative; 

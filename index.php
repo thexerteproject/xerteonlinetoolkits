@@ -344,6 +344,7 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-west" id="workspace_layout" >
         <div class="header" id="inner_left_header">
+			<h1 class="heading sr-only"><?PHP echo INDEX_DETAILS; ?></h1>
 			<div class="file_mgt_area_buttons">
 				<!--Workspace buttons-->
 
@@ -400,7 +401,7 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-center">
         <div class="header" id="inner_center_header">
-			<p class="heading"><i class="fa  icon-info-sign xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></p>
+			<h1 class="heading"><i class="fa icon-info-sign xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></h1>
         </div>
         <div class="content">
             <div class="projectInformationContainer" id="project_information">
@@ -413,7 +414,7 @@ Folder popup is the div that appears when creating a new folder
     <div class="ui-layout-east">
 
         <div class="header" id="inner_right_header">
-            <p class="heading"><i class="fa  icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></p>
+            <h1 class="heading"><i class="fa icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></h1>
         </div>
 
         <div class="content">

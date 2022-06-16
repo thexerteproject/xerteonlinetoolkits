@@ -1118,7 +1118,7 @@ function list_blank_templates() {
 
           if ($template['display_id'] != 0) {
 
-              echo "</p><a href=\"javascript:example_window('" . $template['display_id'] . "' )\">" . DISPLAY_EXAMPLE . "</a>  ";
+              echo "</p><a href=\"javascript:example_window('" . $template['display_id'] . "')\">" . DISPLAY_EXAMPLE . "<span class='sr-only'> - " . $template['display_name'] . "</span></a> | ";
 
           } else {
 
@@ -1129,7 +1129,7 @@ function list_blank_templates() {
           ?>
           <button id="<?php echo $template['template_name'] ?>_button" type="button" class="xerte_button_c_no_width"
                   onclick="javascript:template_toggle('<?php echo $template['template_name'] ?>')">
-              <i class="fa  icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?>&nbsp;
+              <i class="fa icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
           </button>
           </div>
           <div id="<?php echo $template['template_name']; ?>" class="rename">
@@ -1163,9 +1163,9 @@ function list_blank_templates() {
                   <input type="text" width="200" id="<?php echo $template['template_name']; ?>_filename"
                          name="filename"/>
                   <p>
-                      <a id="<?php echo $template['template_name']; ?>_templatename" style="display:none;" href=#><?php echo DISPLAY_EXAMPLE;?></a>
-                      <button type="submit" class="xerte_button_c""><i
-                              class="fa  icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?></button>
+                      <button type="submit" class="xerte_button_c">
+						<i class="fa icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
+					  </button>
                   </p>
               </form>
           </div>
