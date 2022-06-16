@@ -220,6 +220,10 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
 
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
+
+        // Check for default logo
+        $page_content = check_default_logo($template_path, $page_content);
+        
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);

@@ -64,6 +64,19 @@ function display_property_engines($change,$msgtype){
 
 }
 
+function check_default_logo($tp, $page_content) {
+    $base_path = dirname(__FILE__) . '/../../' . $tp . 'common_html5/';
+    $extensions = ['svg',  'png', 'jpg', 'gif'];
+
+    foreach($extensions as $ext) {
+        if (file_exists($base_path . 'logo.' . $ext)) {
+            return str_replace("%LOGO%", '<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.'. $ext . '" alt=""/>' , $page_content);
+        }
+    }
+
+    return $page_content = str_replace("%LOGO%", '' , $page_content);
+}
+
 function display_publish_engine(){
     echo "<p><b>" . PROPERTIES_LIBRARY_PUBLISH_ENGINE  . "</b><br>";
     echo PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";

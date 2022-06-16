@@ -168,8 +168,13 @@ function show_preview_code2($row, $row_username){
     {
         $version = getVersion();
         $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
+
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+
+        // Check for default logo
+        $page_content = check_default_logo($template_path, $page_content);
+
         $page_content = str_replace("%VERSION%", $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
