@@ -52,6 +52,8 @@ define("INDEX_NO_LDAP","PHP's LDAP library needs to be installed to use LDAP aut
 
 define("INDEX_FOLDER_PROMPT","What would you like to call your folder?");
 
+define("INDEX_FOLDER_NAME","Folder name");
+
 define("INDEX_WORKSPACE_TITLE","My Projects");
 
 define("INDEX_CREATE","Project Templates");

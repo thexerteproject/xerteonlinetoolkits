@@ -354,7 +354,7 @@ function login_form($messages, $xerte_toolkits_site)
             <?PHP echo $xerte_toolkits_site->welcome_message; ?>
         </h1>
         <div class="mainbody_holder">
-            <div style="margin:0 7px 4px 0"><?php display_language_selectionform("");?></div>
+            <div style="margin:0 7px 4px 0"><?php display_language_selectionform("", true);?></div>
             <form method="post" enctype="application/x-www-form-urlencoded" >
                 <p style="margin:4px"><label for="login_box"><?php echo INDEX_USERNAME; ?>:</label>
                 <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>

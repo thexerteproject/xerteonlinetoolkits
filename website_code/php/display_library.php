@@ -1122,7 +1122,7 @@ function list_blank_templates() {
 
           } else {
 
-              echo "</p><br>";
+              echo "</p>";
 
           }
 
@@ -1144,6 +1144,7 @@ function list_blank_templates() {
                       <?php
                   } else {
                       ?>
+					  <label for="<?php echo $template['template_name']; ?>_templatename" class="sr-only"><?php echo DISPLAY_TEMPLATE; ?></label>
                       <select id="<?php echo $template['template_name']; ?>_templatename" name="templatename"
                               class="select_template" onchange="javascript:setup_example('<?php echo $template["template_name"]; ?>_templatename')">
 
@@ -1158,11 +1159,12 @@ function list_blank_templates() {
                       <?php
                   }
                   ?>
+				  <label for="<?php echo $template['template_name']; ?>_filename" class="sr-only"><?php echo DISPLAY_PROJECT_NAME; ?></label>
                   <input type="text" width="200" id="<?php echo $template['template_name']; ?>_filename"
                          name="filename"/>
                   <p>
                       <a id="<?php echo $template['template_name']; ?>_templatename" style="display:none;" href=#><?php echo DISPLAY_EXAMPLE;?></a>
-                      <button type="submit" class="xerte_button_c"><i
+                      <button type="submit" class="xerte_button_c""><i
                               class="fa  icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?></button>
                   </p>
               </form>
