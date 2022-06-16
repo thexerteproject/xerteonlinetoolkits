@@ -81,9 +81,10 @@
 	</mediaFile>
 	
 	<icon type="group" label="Icon/Logo" optional="true">
-		<ic optional="true" type="media" label="Image" defaultValue="Select an Image"/>
-		<icTip optional="true" type="TextInput" label="Description" defaultValue="Enter a Description for Accessibility"/>
-		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" label="Position" defaultValue="left" width="100"/>
+	<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger='true' tooltip="If a default logo is automatically added by this template, or by the theme you have chosen, then use this checkbox to hide that logo, or leave this unchecked and use the options below to load an alternative logo."/>
+		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="Select an Image"/>
+		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="Enter a Description for Accessibility"/>
+		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100"/>
 	</icon>
 
 	<wcagGroup type="group" label="Accessilibity logo and link" optional="true" tooltip="Hide the accessilibity logo and link or change the link.">
