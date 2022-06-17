@@ -64,12 +64,27 @@ function display_property_engines($change,$msgtype){
 
 }
 
-function check_default_logo($tp, $page_content) {
-    $base_path = dirname(__FILE__) . '/../../' . $tp . 'common_html5/';
-    $extensions = ['svg',  'png', 'jpg', 'gif'];
+function process_logos($LO_icon_path, $theme_path, $template_path, $page_content) {
+//    echo(nl2br($LO_icon_path . "\n"));
+//    echo(nl2br($theme_path . "\n"));
+//    echo(nl2br($template_path . "\n"));
 
+    $extensions = ['svg',  'png', 'jpg', 'gif'];
+    // First the author logo
+    if (file_exists($LO_icon_path)) { //echo(nl2br("Doing LO icon\n"));
+        return str_replace("%LOGO%", '<img class="x_icon" src="' . $LO_icon_path . '" alt=""/>' , $page_content);
+    }
+
+    // Secondly check the theme logo
     foreach($extensions as $ext) {
-        if (file_exists($base_path . 'logo.' . $ext)) {
+        if (file_exists($theme_path . '/logo.' . $ext)) { //echo(nl2br("Doing Theme icon\n"));
+            return str_replace("%LOGO%", '<img class="x_icon" src="' . $theme_path . '/logo.'. $ext . '" alt=""/>' , $page_content);
+        }
+    }
+
+    // Lastly check the default location
+    foreach($extensions as $ext) {
+        if (file_exists($template_path . 'common_html5/logo.' . $ext)) { //echo(nl2br("Doing Default icon\n"));
             return str_replace("%LOGO%", '<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.'. $ext . '" alt=""/>' , $page_content);
         }
     }
