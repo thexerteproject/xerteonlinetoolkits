@@ -221,8 +221,14 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
 
-        // Check for default logo
-        $page_content = process_logos($template_path, $page_content);
+        // Process which logo to use, if any
+        $LO_icon_path = $xmlFixer->getIcon()->url;
+        if (strpos($LO_icon_path, "FileLocation + '") !== false) {
+            $LO_icon_path = str_replace("FileLocation + '" , $string_for_flash, $LO_icon_path);
+            $LO_icon_path = rtrim($LO_icon_path, "'");
+        }
+        $theme_path = 'themes/' . $row['parent_template'] . '/' . $xmlFixer->getTheme();
+        $page_content = process_logos($LO_icon_path, $theme_path, $template_path, $page_content);
         
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
