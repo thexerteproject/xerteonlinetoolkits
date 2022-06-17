@@ -2506,10 +2506,10 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
-
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
+	debugger
 	if (node.attr('autoPlay') == 'true') {
-
+		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
 
 			carDiv.carousel({ interval: Number(node.attr('delaySecs')) * 1000 });
