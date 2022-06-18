@@ -72,20 +72,21 @@ function getWizardfile($langcode)
     return $wizardFile;
 }
 
-function display_language_selectionform($formclass)
+function display_language_selectionform($formclass, $showLabel)
 {
+	$cssClass = $showLabel == false ? "sr-only" : "";
     if ($formclass != "")
     {
         ?>
         <form action='' method='POST' class="<?php echo $formclass; ?>">
-        <label for="language-selector"></label>
+        <label for="language-selector" class="<?php echo $cssClass; ?>"><?PHP echo LANGUAGE_PROMPT; ?> </label>
         <?php
     }
     else
     {
         ?>
         <form action='' method='POST'>
-        <label for="language-selector"><?PHP echo LANGUAGE_PROMPT; ?> </label> 
+        <label for="language-selector" class="<?php echo $cssClass; ?>"><?PHP echo LANGUAGE_PROMPT; ?> </label> 
         <?php
     }
 ?>

@@ -25,6 +25,24 @@ require(dirname(__FILE__) . "/module_functions.php");
 // Set up the preview window for a xerte piece
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
+function process_logos($tp, $page_content) {
+    $base_path = dirname(__FILE__) . '/../../' . $tp . 'common/img/';
+    $extensions = ['svg',  'png', 'jpg', 'gif'];
+
+    // Deal with both logos
+    foreach ([['L', '_left'], ['R', '']] as $suffix) {
+        foreach($extensions as $ext) {
+            if (file_exists($base_path . 'logo' . $suffix[1] . '.' . $ext)) {
+                $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo' . $suffix[0] . '" src="%TEMPLATEPATH%common/img/logo' . $suffix[1] . '.'. $ext . '"/>' , $page_content);
+                break;
+            }
+        }
+        $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo' . $suffix[0] . '" src="" />' , $page_content);
+    }
+
+    return $page_content;
+}
+
 function show_template($row, $xapi_enabled=false){
     global $xerte_toolkits_site;
     global $youtube_api_key;
@@ -76,6 +94,9 @@ function show_template($row, $xapi_enabled=false){
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
     // $engine is assumed to be javascript if flash is NOT set
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+
+    $page_content = process_logos($template_path, $page_content);
+
     $page_content = str_replace("%VERSION%", $version , $page_content);
     $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
     $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);

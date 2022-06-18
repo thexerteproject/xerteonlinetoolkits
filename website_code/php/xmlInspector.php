@@ -229,6 +229,11 @@ class XerteXMLInspector
         {
             $this->theme = "default";
         }
+
+        $this->ic = (string) $this->xml['ic'];
+        $this->icHide = filter_var($this->xml['icHide'], FILTER_VALIDATE_BOOLEAN);
+
+
         if (PHP_VERSION < '8' && function_exists('libxml_disable_entity_loader'))
         {
             libxml_disable_entity_loader($original_el_setting);
@@ -249,6 +254,14 @@ class XerteXMLInspector
     public function getTheme()
     {
         return $this->theme;
+    }
+
+    public function getIcon()
+    {
+        $ic = new stdClass;
+        $ic->url = $this->ic;
+        $ic->hide = $this->icHide;
+        return $ic;
     }
 
     public function getLanguage()

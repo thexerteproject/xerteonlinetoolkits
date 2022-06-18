@@ -223,3 +223,14 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
   color: $whiteorlightest;
   background-color: $brightcolor;
 }
+
+//*round back to top button defaults*/
+.top-round {
+  color: #575757;
+  background: #e5e5e5;
+}
+.top-round:hover,
+.top-round:focus {
+  background: #e0e0e0;
+  color: #424242;
+}

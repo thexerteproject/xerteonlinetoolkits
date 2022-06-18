@@ -1242,8 +1242,8 @@ function x_continueSetUp1() {
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
 		// it's overridden by logo in theme folder
 		// default & theme logos can also be overridden by images uploaded via Icon optional property
-		$('#x_headerBlock img.x_icon').hide();
-		$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+		$('#x_headerBlock img.x_icon')[x_params.icHide === 'true' ? 'hide' : 'show']();
+		//$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
 
 		var icPosition = "x_floatLeft";
 		if (x_params.icPosition != undefined && x_params.icPosition != "") {
@@ -1251,7 +1251,18 @@ function x_continueSetUp1() {
 		}
 		$('#x_headerBlock img.x_icon').addClass(icPosition);
 
-		var checkExists = function(type, fallback) {
+		// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+		if ($('#x_headerBlock img.x_icon').attr('src').indexOf('themes/') > -1) {
+			$('#x_headerBlock img.x_icon').addClass('themeLogo');
+		}
+
+		if (x_params.icTip != undefined && x_params.icTip != "") {
+			$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+		} else {
+			$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+		}
+
+		/*var checkExists = function(type, fallback) {
 			if (type == 'LO' && xot_offline) {
 				$('#x_headerBlock img.x_icon').show();
 				return;
@@ -1283,10 +1294,10 @@ function x_continueSetUp1() {
 					}
 				}
 			});
-		};
+		};*/
 
-		var type, fallback;
-		if (x_params.ic != undefined && x_params.ic != '') {
+		/*var type, fallback;
+		if (x_params.ic != undefined && x_params.ic != '' && x_params.ic !== 'Select an Image') {
 			$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
 			type = 'LO';
 			fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
@@ -1294,7 +1305,7 @@ function x_continueSetUp1() {
 			type = 'theme';
 			$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
 		}
-		checkExists(type, fallback);
+		checkExists(type, fallback);*/
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
