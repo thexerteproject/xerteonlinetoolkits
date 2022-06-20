@@ -1680,6 +1680,12 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			$(".top-round").css('color', formatColour(topBtnRoundIconColour));
         }
 
+        //if alternating sections enabled add classes
+		if ($(data).find('learningObject').attr('alternatingSections') =='true'){
+			$("section:nth-child(2n+0)").addClass("evenSection");
+			$("section:nth-child(2n+1)").addClass("oddSection");
+		}
+
 	}
 }
 

@@ -672,6 +672,20 @@ img.centre {
 .top-round:hover::after {
     opacity: 1;
 }
+/*alternating section defaults*/
+.evenSection {
+    padding: 0.25rem 20px;
+    background: #fbfbfb;
+    border-radius:10px;
+    margin-top: 30px;
+}
+.oddSection {
+    padding: 0.25rem 20px;
+    background: #f7f7f7;
+    border-radius:10px;
+    margin-top: 30px;
+}
+
 @media only screen
 and (max-width :600px) {
     /*change logo position when viewed portrait on mobile*/
