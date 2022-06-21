@@ -934,8 +934,20 @@ function setup() {
 		$(".jumbotron").remove();
 
 	} else {
-
-		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
+		var $logo, LO = $(data).find('learningObject');
+		['logoL', 'logoR'].forEach(function(logo) {           
+			$('#overview div.' + logo).addClass(logo);
+			$('#overview div.' + logo).data('defaultLogo', $('#overview .' + logo + ' img').attr('src'));
+			$logo = $('#overview .' + logo + ' img');
+			$logo.attr('alt', LO.attr(logo + 'Alt'));
+			if (LO.attr('theme') != undefined && LO.attr('theme') != 'default') {
+				$logo.addClass('themeLogo');
+			}
+			// Hide logo if no src value or 'Hide' is ticked, otherwise show it
+			$('#overview div.' + logo)[  LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '' ? 'hide' : 'show'  ]();
+		});
+		
+/*		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
 		// they are overridden by any logos in theme folders
 		// they can also be overridden by images uploaded via Header Logo optional properties
 		$('#overview div.logoR, #overview div.logoL').hide();
@@ -1003,7 +1015,7 @@ function setup() {
 		} else {
 			checkExists('logoL', type, fallback);
 		}
-
+*/
 		// apply all the header css optional properties
 		var $jumbotron = $(".jumbotron");
 		if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '' && $(data).find('learningObject').attr('headerColour') != '0x') {

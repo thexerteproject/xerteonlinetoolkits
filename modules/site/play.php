@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -25,22 +28,55 @@ require(dirname(__FILE__) . "/module_functions.php");
 // Set up the preview window for a xerte piece
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
-function process_logos($tp, $page_content) {
-    $base_path = dirname(__FILE__) . '/../../' . $tp . 'common/img/';
+function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
+    $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
     $extensions = ['svg',  'png', 'jpg', 'gif'];
 
-    // Deal with both logos
     foreach ([['L', '_left'], ['R', '']] as $suffix) {
-        foreach($extensions as $ext) {
-            if (file_exists($base_path . 'logo' . $suffix[1] . '.' . $ext)) {
-                $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo' . $suffix[0] . '" src="%TEMPLATEPATH%common/img/logo' . $suffix[1] . '.'. $ext . '"/>' , $page_content);
-                break;
-            }
+        $path = get_logo_path($suffix, $LO_logo, $theme_path, $template_path);
+        if ($path) {
+            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="' . $path . '" alt=""/>' , $page_content);
         }
-        $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo' . $suffix[0] . '" src="" />' , $page_content);
+        else {
+            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src alt=""/>' , $page_content);
+        }
     }
 
     return $page_content;
+}
+
+function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
+    $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
+    $extensions = ['svg',  'png', 'jpg', 'gif'];
+
+    // First the author logo
+    if (file_exists($LO_logo->{$suffix[0] . '_path'})) {
+        return  $LO_logo->{$suffix[0] . '_path'};
+    }
+
+    // Secondly check the theme logo
+    foreach($extensions as $ext) {
+        if (file_exists($theme_path . '/logo'. $suffix[1] . '.' . $ext)) {
+            return $theme_path . '/logo'. $suffix[1] . '.' . $ext;
+        }
+    }
+
+    // Lastly check the default location
+    foreach($extensions as $ext) {
+        if (file_exists($template_path . 'common/img/logo'. $suffix[1] . '.' . $ext)) { 
+            return $template_path . 'common/img/logo' . $suffix[1] . '.'. $ext;
+        }
+    }
+
+    return; //null for not found
+}
+
+function fix_filelocation_path($path, $replacement) {
+    if (strpos($path, "FileLocation + '") !== false) {
+        $path = str_replace("FileLocation + '" , $replacement, $path);
+        $path = rtrim($path, "'");
+    }
+    return $path;
 }
 
 function show_template($row, $xapi_enabled=false){
@@ -95,7 +131,12 @@ function show_template($row, $xapi_enabled=false){
     // $engine is assumed to be javascript if flash is NOT set
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
 
-    $page_content = process_logos($template_path, $page_content);
+    // Process which logo to use, if any
+    $LO_logo = new stdClass;
+    $LO_logo->L_path = fix_filelocation_path($xmlFixer->getIcon()->logoL, $string_for_flash);
+    $LO_logo->R_path = fix_filelocation_path($xmlFixer->getIcon()->logoR, $string_for_flash);
+    $theme_path = 'themes/' . $row['parent_template'] . '/' . ($xmlFixer->getTheme() === 'default' ? 'apereo' : $xmlFixer->getTheme());
+    $page_content = process_logos($LO_logo, $theme_path, $template_path, $page_content);
 
     $page_content = str_replace("%VERSION%", $version , $page_content);
     $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);

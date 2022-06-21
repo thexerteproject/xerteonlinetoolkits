@@ -201,11 +201,11 @@ section {
 }
 
 /* --HEADER-------------------------------------------------------------- */
-
-#overview div.logoR, #overview div.logoL {
+/*#overview div.logoR, #overview div.logoL {
   //display:none;
-}
-#overview.logoR .logoR {
+}*/
+
+#overview div.logoR .logoR {
   float:right; 
   margin-top:20px;
 }
@@ -214,7 +214,7 @@ section {
  padding:20px 5px;
  text-align:left;
 }
-#overview.logoL .logoL {
+#overview div.logoL .logoL {
   float:left; 
   margin-top:20px;
 }

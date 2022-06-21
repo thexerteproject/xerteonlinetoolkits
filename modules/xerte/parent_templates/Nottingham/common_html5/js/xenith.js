@@ -1242,24 +1242,25 @@ function x_continueSetUp1() {
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
 		// it's overridden by logo in theme folder
 		// default & theme logos can also be overridden by images uploaded via Icon optional property
-		$('#x_headerBlock img.x_icon')[x_params.icHide === 'true' ? 'hide' : 'show']();
+		var $logo = $('#x_headerBlock img.x_icon');
+		$logo[x_params.icHide === 'true'  || $logo.attr('src') === '' ? 'hide' : 'show']();
 		//$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
 
 		var icPosition = "x_floatLeft";
 		if (x_params.icPosition != undefined && x_params.icPosition != "") {
 			icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 		}
-		$('#x_headerBlock img.x_icon').addClass(icPosition);
+		$logo.addClass(icPosition);
 
 		// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-		if ($('#x_headerBlock img.x_icon').attr('src').indexOf('themes/') > -1) {
-			$('#x_headerBlock img.x_icon').addClass('themeLogo');
+		if ($logo.attr('src').indexOf('themes/') > -1) {
+			$logo.addClass('themeLogo');
 		}
 
 		if (x_params.icTip != undefined && x_params.icTip != "") {
-			$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+			$logo.attr('alt', x_params.icTip);
 		} else {
-			$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+			$logo.attr('aria-hidden', 'true');
 		}
 
 		/*var checkExists = function(type, fallback) {

@@ -230,9 +230,17 @@ class XerteXMLInspector
             $this->theme = "default";
         }
 
-        $this->ic = (string) $this->xml['ic'];
-        $this->icHide = filter_var($this->xml['icHide'], FILTER_VALIDATE_BOOLEAN);
-
+        $this->target = (string) $this->xml['targetFolder'];
+        if ($this->target == 'site') { // Bootstrap
+            $this->logoL = (string) $this->xml['logoL'];
+            $this->logoR = (string) $this->xml['logoR'];
+            $this->logoLHide = filter_var($this->xml['logoLHide'], FILTER_VALIDATE_BOOLEAN);
+            $this->logoRHide = filter_var($this->xml['logoRHide'], FILTER_VALIDATE_BOOLEAN);
+        }
+        else { // XOT
+            $this->ic = (string) $this->xml['ic'];
+            $this->icHide = filter_var($this->xml['icHide'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         if (PHP_VERSION < '8' && function_exists('libxml_disable_entity_loader'))
         {
@@ -259,8 +267,17 @@ class XerteXMLInspector
     public function getIcon()
     {
         $ic = new stdClass;
-        $ic->url = $this->ic;
-        $ic->hide = $this->icHide;
+
+        if ($this->target == 'site') { //Bootstrap
+            $ic->logoL = $this->logoL;
+            $ic->logoR = $this->logoR;
+            $ic->logoLHide = $this->logoLHide;
+            $ic->logoRHide = $this->logoRHide;
+        }
+        else { // XOT
+            $ic->url = $this->ic;
+            $ic->hide = $this->icHide;
+        }
         return $ic;
     }
 
