@@ -546,6 +546,23 @@
 			
 			// _____ LOAD MEDIA _____
 			// Loading media is now handled by the mediaconstructor plugin. (22/12/2021)
+                                                                                   var mcqBool = true;
+                                                                                   this.isMCQ = (node) => {
+                                                                                   var childs = node.childNodes
+                                                                                   for (var i = 0; i < childs.length; i++) {
+                                                                                   if (childs[i].nodeName === 'synchMCQ') {
+                                                                                     mcqBool = false;
+                                                                                    console.log(childs[i].nodeName);
+                                                                                   }
+                                                                                    console.log(childs[i].nodeName);
+                                                                                    this.isMCQ(childs[i]);
+                                                                                   }
+                                                                                   }
+
+                                                                                   this.isMCQ(x_currentPageXML);
+      var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
+      x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
+      x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' &&  mcqBool;
 			var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
 			if (mediaPanelIndex != -1) {
 			    this.popcornInstance = loadMedia(
@@ -561,7 +578,7 @@
 						transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
 						audioImage: mediaPanelData.attr("audioImage"),
 						audioImageTip: mediaPanelData.attr("audioImageTip"),
-						trackMedia: true
+						trackMedia: trackVideo
 					},
 					true
 					);

@@ -223,8 +223,8 @@ this.addBasicTracking = function(popcornInstance, videoState) {
         videoState = addTrackingOnEnded(popcornInstance, videoState);
     });
 
-    document.addEventListener('leavepage', function () { 
-        addTrackingOnLeavePage(popcornInstance, videoState); 
+    document.addEventListener('leavepage', function () {
+        addTrackingOnLeavePage(popcornInstance, videoState);
     }, false);
 }
 
