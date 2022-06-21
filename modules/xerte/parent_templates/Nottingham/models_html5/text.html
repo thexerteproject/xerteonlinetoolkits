@@ -65,7 +65,6 @@
                 var colrulesize=x_currentPageXML.getAttribute("autoColumnsRulerW")+'px';
                 var colrule=x_currentPageXML.getAttribute("autoColumnsRuler");
                 var colcolour=formatColour(x_currentPageXML.getAttribute("autoColumnsRulerCol"));
-                var colcolour="green";
                 $(".autocolumnruler").css("column-rule",colrulesize + ' ' + colrule + ' '+colcolour);
                 $("[class^=autocolumns]").css("column-gap",x_currentPageXML.getAttribute("autoColumnsGap")+'em');
 
