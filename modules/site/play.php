@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -35,10 +32,10 @@ function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     foreach ([['L', '_left'], ['R', '']] as $suffix) {
         $path = get_logo_path($suffix, $LO_logo, $theme_path, $template_path);
         if ($path) {
-            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="' . $path . '" alt=""/>' , $page_content);
+            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="' . $path . '" alt="" />' , $page_content);
         }
         else {
-            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src alt=""/>' , $page_content);
+            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="" alt="" />' , $page_content);
         }
     }
 
@@ -50,7 +47,8 @@ function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
     $extensions = ['svg',  'png', 'jpg', 'gif'];
 
     // First the author logo
-    if (file_exists($LO_logo->{$suffix[0] . '_path'})) {
+    $logo_path = trim($LO_logo->{$suffix[0] . '_path'});
+    if (strlen($logo_path) > 0) {//(file_exists($LO_logo->{$suffix[0] . '_path'})) {
         return  $LO_logo->{$suffix[0] . '_path'};
     }
 
