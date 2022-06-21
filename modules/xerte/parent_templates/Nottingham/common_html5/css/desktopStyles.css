@@ -107,3 +107,35 @@
 .splitScreen .right {
 	margin-left: 1em;
 }
+
+.autocolumns2{
+	-webkit-columns: 2 250px;
+	-moz-columns: 2 250px;
+	columns: 2 250px;
+	column-gap: 4em;
+	column-rule: 4px solid lightgrey;
+  }
+.autocolumns3{
+	-webkit-columns: 3 250px;
+	-moz-columns: 3 250px;
+	columns: 3 250px;
+	column-gap: 4em;
+	/*column-rule: 4px solid lightgrey;*/
+}
+.autocolumns4{
+	-webkit-columns: 4 200px;
+	-moz-columns: 4 200px;
+	columns: 4 200px;
+	column-gap: 4em;
+	column-rule: 4px solid lightgrey;
+}
+.autocolumns5{
+	-webkit-columns: 4 150px;
+	-moz-columns: 4 150px;
+	columns: 4 150px;
+	column-gap: 4em;
+	column-rule: 4px solid lightgrey;
+}
+.autocolumnsruler{
+	column-rule: 4px solid lightgrey;
+}

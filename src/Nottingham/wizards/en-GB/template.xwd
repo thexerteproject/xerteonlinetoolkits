@@ -7120,7 +7120,18 @@
 
     <textWidth label="Text Width" options="Small,Medium,Large,Full" type="comboBox" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
     <subSuper label="Superscript Support" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated. Sub/Superscripts now work by default."/>
-    
+
+    <autoColumns type="group" label="Automatic columns" optional="true" tooltip="If you have long paragraphs of text the plain text page may look better displayed as columns rather than long lines, especially on higher resolution displays. Use these optional properties to enable/disable automatic responsive columns and use the additional options to control how many columns and ruler style etc. Alternatively use the multi-navigator page (instead of this plain text page) where in column mode you can manually control the number of columns.">
+    <autoColumnsEnable label="Enable Automatic Columns for this page" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
+    <autoColumnsNum optional="true" type="ComboBox" options="1,2,3,4,5" data="1,2,3,4,5" condition="autoColumnsEnable=='true'" label="Number of columns for this page" defaultValue="2" width="100" tooltip="Note: this represents the maximum number of columns you require but depending on device/screen resolution may display fewer columns if the number chosen will not fit. e.g. 5 may become 4 and then reduce further as resolution or window size is reduced."/>
+    <autoColumnsGap optional="true" type="NumericStepper" min="1" max="10" step="1" defaultValue="4" condition="autoColumnsEnable=='true'" label="Space between columns (em)" tooltip="Tip: when enabling rulers below you may also wish to increase this space between columns."/>
+    <autoColumnsRuler optional="true" type="ComboBox" options="none,solid,double,dotted" default="none" data="none,solid,double,dotted" condition="autoColumnsEnable=='true'" label="Ruler style" defaultValue="none" width="100"/>
+    <autoColumnsRulerW optional="true" type="NumericStepper" min="1" max="10" step="1" defaultValue="4" condition="autoColumnsEnable=='true'" label="Ruler thickness (px)"/>
+
+
+    <autoColumnsRulerCol type="ColourPicker" label="Ruler Colour" condition="autoColumnsEnable=='true'" defaultValue="0x000000" optional="true"/>
+    </autoColumns>
+
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>

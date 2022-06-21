@@ -30,19 +30,47 @@
 		this.sizeChanged = function() {
 
 		}
+        function formatColour(col) {
+            return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
+        }
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
 			$pageContents.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			// ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
-			
-			if (x_currentPageXML.getAttribute("textWidth") == "300") {
+
+            if (x_currentPageXML.getAttribute("textWidth") == "300") {
 				$pageContents.addClass("width40");
 			} else if (x_currentPageXML.getAttribute("textWidth") == "450") {
 				$pageContents.addClass("width60");
 			} else if (x_currentPageXML.getAttribute("textWidth") == "600") {
 				$pageContents.addClass("width80");
 			}
+            //if auto columns enabled
+            if (x_currentPageXML.getAttribute("autoColumnsEnable") == "true") {
+                if (x_currentPageXML.getAttribute("autoColumnsNum") == "2") {
+                    $pageContents.addClass("autocolumns2 autocolumnruler");
+                } else if (x_currentPageXML.getAttribute("autoColumnsNum") == "3") {
+                    $pageContents.addClass("autocolumns3 autocolumnruler");
+                } else if (x_currentPageXML.getAttribute("autoColumnsNum") == "4") {
+                    $pageContents.addClass("autocolumns4 autocolumnruler");
+                } else if (x_currentPageXML.getAttribute("autoColumnsNum") == "5") {
+                    $pageContents.addClass("autocolumns5 autocolumnruler");
+                } else if (x_currentPageXML.getAttribute("autoColumnsNum") == "1") {
+                    //do nothing leave at default 1 column
+                    //but include this option so that can return to 1 column
+                    //without disabling auto columns
+                }
+                //add ruler styles and column gap
+                var colrulesize=x_currentPageXML.getAttribute("autoColumnsRulerW")+'px';
+                var colrule=x_currentPageXML.getAttribute("autoColumnsRuler");
+                var colcolour=formatColour(x_currentPageXML.getAttribute("autoColumnsRulerCol"));
+                var colcolour="green";
+                $(".autocolumnruler").css("column-rule",colrulesize + ' ' + colrule + ' '+colcolour);
+                $("[class^=autocolumns]").css("column-gap",x_currentPageXML.getAttribute("autoColumnsGap")+'em');
+
+            }
+
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
