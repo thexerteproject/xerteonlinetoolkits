@@ -1253,9 +1253,7 @@ function x_continueSetUp1() {
 		$logo.addClass(icPosition);
 
 		// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-		if ($logo.attr('src').indexOf('themes/') > -1) {
-			$logo.addClass('themeLogo');
-		}
+		if (($logo.attr('src') || '').indexOf('themes/') > -1) $logo.addClass('themeLogo');
 
 		if (x_params.icTip != undefined && x_params.icTip != "") {
 			$logo.attr('alt', x_params.icTip);
