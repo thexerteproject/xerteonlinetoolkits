@@ -205,7 +205,7 @@ section {
   //display:none;
 }*/
 
-#overview img.logo {
+#overview img.logoL, #overview img.logoR {
 	margin-top:20px;
 }
 
