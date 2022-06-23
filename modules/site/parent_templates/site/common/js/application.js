@@ -937,6 +937,7 @@ function setup() {
 		var $logo, LO = $(data).find('learningObject');
 		['logoL', 'logoR'].forEach(function(logo) {
 			$('#overview').addClass(logo);
+			$('#overview .' + logo + ' img').addClass(logo);
 			$('#overview div.' + logo).data('defaultLogo', $('#overview .' + logo + ' img').attr('src'));
 			$logo = $('#overview .' + logo + ' img');
 			$logo.attr('alt', LO.attr(logo + 'Alt'));
