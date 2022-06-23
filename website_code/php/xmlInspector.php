@@ -142,6 +142,31 @@ class XerteXMLInspector
         return $ok;
     }
 
+    private function recognise_template($check) {
+        $probably = "decision";
+        $probably_weight = $this->test_unrecognised_template(["name", "displayMode", "newBtnLabel", "backBtn", "fwdBtn", "emailBtn", "printBtn", "viewThisBtn", "closeBtn", "moreInfoString", "lessInfoString", "helpString", "resultString", "overviewString", "posAnswerString", "fromRangeString", "viewAllString", "errorString", "sliderError", "noQ", "noA", "resultEndString", "theme"], $check);
+
+        $new_weight = $this->test_unrecognised_template(["name", "language", "navigation", "textSize", "theme", "displayMode", "responsive"], $check);
+        if ($new_weight > $probably_weight) {
+            $probably = "Nottingham";
+            $probably_weight = $new_weight;
+        }
+    
+        $new_weight = $this->test_unrecognised_template(["language", "name", "theme"], $check);
+        if ($new_weight > $probably_weight) {
+            $probably = "site";
+        }
+    
+        return $probably;
+    }
+    
+    private function test_unrecognised_template($test_array, $check) {
+        $count = 0;
+        foreach($test_array as $t)
+            if ( $check[$t] ) $count++;
+        return ($count / count($test_array)) * 100;
+    }
+
     public function loadTemplateXML($name)
     {
         _debug("Trying to simplexml_load_file : $name");
@@ -230,14 +255,20 @@ class XerteXMLInspector
             $this->theme = "default";
         }
 
-        $this->target = (string) $this->xml['targetFolder'];
+        if ($this->xml['targetFolder']) {
+            $this->target = (string) $this->xml['targetFolder'];
+        }
+        else { // Sniff the XML to figure out if Bootstrap or XOT
+            $this->target = $this->recognise_template($this->xml);
+        }
+
         if ($this->target == 'site') { // Bootstrap
             $this->logoL = (string) $this->xml['logoL'];
             $this->logoR = (string) $this->xml['logoR'];
             $this->logoLHide = filter_var($this->xml['logoLHide'], FILTER_VALIDATE_BOOLEAN);
             $this->logoRHide = filter_var($this->xml['logoRHide'], FILTER_VALIDATE_BOOLEAN);
         }
-        else { // XOT
+        else { // Assume XOT
             $this->ic = (string) $this->xml['ic'];
             $this->icHide = filter_var($this->xml['icHide'], FILTER_VALIDATE_BOOLEAN);
         }
