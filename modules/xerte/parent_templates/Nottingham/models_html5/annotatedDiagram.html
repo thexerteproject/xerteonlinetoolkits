@@ -150,15 +150,29 @@
 									
 								} else {
 									// arrow or line
+									debugger
+
 									var $hs = $($hsHolder.children()[$this.index()]);
+
 									if ($hs.hasClass("hsGroup")) {
 										$hs.children()
-											.each(function(){
-												annotatedDiagram.drawLine($(this), $this, shape);
-											});
+												.each(function(){
+													if(x_currentPageXML.getAttribute("link") == "true" || x_currentPageXML.getAttribute("link") == undefined){
+														annotatedDiagram.drawLine($(this), $this, shape);
+													}else{
+														annotatedDiagram.drawLineToText($(this), shape);
+													}
+
+												});
 									} else {
-										annotatedDiagram.drawLine($hs, $this, shape);
+										if(x_currentPageXML.getAttribute("link") == "true" || x_currentPageXML.getAttribute("link") == undefined){
+											annotatedDiagram.drawLine($hs, $this, shape);
+										}else{
+											annotatedDiagram.drawLineToText($hs, shape);
+										}
+
 									}
+
 								}
 							}
 							
@@ -201,6 +215,10 @@
 				// have had to add this in I found one old project where a swf was used instead of an image on this page
 				$("#imageHolder").html('<p>Flash files (.swf) are no longer supported</p>');
 				x_pageLoaded();
+			}
+			debugger
+			if(x_currentPageXML.getAttribute("link") == "false"){
+				$("#listHolder").css("display", "none")
 			}
 		}
 		
@@ -523,6 +541,7 @@
 		}
 		
 		this.drawLine = function($hs, $listItem, shape) {
+			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			
 			// startX/Y = centre of hotspot
@@ -538,6 +557,28 @@
 			context.lineTo(endX, endY);
 			context.stroke();
 			
+			if (shape == "Arrow") {
+				context.beginPath();
+				context.arc(startX, startY, 2, 0, 2 * Math.PI, false);
+				context.fill();
+			}
+		}
+
+		this.drawLineToText = function ($hs, shape){
+			debugger
+			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
+			var $panel = $("#panel");
+			var startX = $hs.offset().left - $(context.canvas).offset().left + ($hs.width() / 2);
+			var startY = $hs.offset().top - $(context.canvas).offset().top + ($hs.height() / 2);
+
+			var endX = $("#panel").offset().left - parseInt($panel.css("margin-left")) - parseInt($panel.css("padding-left"));
+			var endY = $("#panel").offset().top - $(context.canvas).offset().top + ($hs.height() / 2);
+
+			context.beginPath();
+			context.moveTo(startX, startY);
+			context.lineTo(endX, endY);
+			context.stroke();
+
 			if (shape == "Arrow") {
 				context.beginPath();
 				context.arc(startX, startY, 2, 0, 2 * Math.PI, false);
