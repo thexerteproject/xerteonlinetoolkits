@@ -205,7 +205,11 @@ section {
   //display:none;
 }*/
 
-#overview .logoR, #overview .logoR img.logo {
+#overview img.logo {
+	margin-top:20px;
+}
+
+#overview .logoR {
   float:right; 
   margin-top:20px;
 }
@@ -214,7 +218,7 @@ section {
  padding:20px 5px;
  text-align:left;
 }
-#overview .logoL, #overview .logoL img.logo {
+#overview .logoL {
   float:left; 
   margin-top:20px;
 }
