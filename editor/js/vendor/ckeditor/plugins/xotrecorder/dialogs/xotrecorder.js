@@ -67,8 +67,8 @@
         //input.connect(audioContext.destination)  //stop the input from playing back through the speakers
 
         //disable controls
-        getElementById('recordingDevicesSelect').disable();
-        getElementById('encodingTypeSelect').disable();
+        enableDisable('recordingDevicesSelect', 'disable');
+        enableDisable('encodingTypeSelect', 'disable');
         getButtonById('uploadButton').disable();
         getButtonById('insertButton').disable();
 
@@ -107,7 +107,7 @@
       }).catch(function(err) { console.log('The recorder stopped prematurely, with this error', err);
           //enable the record button if getUSerMedia() fails
           setRecordButton(permissionState.granted, false); //enabled??, but not red
-          getElementById('stopButton').disable();
+          enableDisable('stopButton', 'disable');
           recording = false;
           if (err.toString().indexOf('Permission denied')) {
             startUpdatingDevicesList();
@@ -116,22 +116,28 @@
 
       //disable the record button
       setRecordButton(false, true); //disable, red
-      getElementById('stopButton').enable();
+      enableDisable('stopButton', 'enable');
     }
 
-    function stopRecording() { console.log("stop recording");
+    function stopRecording() {
       //stop microphone access
-      gumStream.getAudioTracks()[0].stop();
+      if (gumStream && gumStream.getAudioTracks) gumStream.getAudioTracks()[0].stop();
       recording = false;
 
       //disable the stop button, enable record
-      getElementById('stopButton').disable();
+      enableDisable('stopButton', 'disable');
       setRecordButton(permissionState.granted, false); //enabled??, not red
-      getElementById('recordingDevicesSelect').enable();
-      getElementById('encodingTypeSelect').enable();
+      enableDisable('recordingDevicesSelect', 'enable');
+      enableDisable('encodingTypeSelect', 'enable');
       
       //tell the recorder to finish the recording (stop recording + encode the recorded audio)
       recorder.finishRecording();
+    }
+
+    function enableDisable(identifier, en_di) {
+      let element = getElementById(identifier);
+      let state = (en_di === true || en_di === 'enable') ? true : false;
+      if (element) element[state ? 'enable' : 'disable']();
     }
 
     function setupAudioPlayer() {
@@ -143,20 +149,20 @@
     }
 
     //helper function
-    function __log(e, data) {
+    function __log(e, data) { return;
       console.log(e + " " + (data || '') );
     }
  
     // *** Plugin Helper Functions ***
-    function initialiseRecorder() { console.log("initialise recorder")
-      getButtonById('insertButton').disable();
-      getButtonById('uploadButton').disable();
+    function initialiseRecorder() {
+      enableDisable('insertButton', 'disable');
+      enableDisable('uploadButton', 'disable');
       getElementById('audioPlayer').getElement().setAttribute('src', '');
 
       setRecordButton(permissionState.granted, false); //enable, not red
-      getElementById('stopButton').disable();
-      getElementById('recordingDevicesSelect').enable();
-      getElementById('encodingTypeSelect').enable();
+      enableDisable('stopButton', 'disable');
+      enableDisable('recordingDevicesSelect', 'enable');
+      enableDisable('encodingTypeSelect', 'enable');
 
       blob = undefined;
     }
@@ -232,9 +238,8 @@
     }
 
     function setRecordButton(enable, recording) {
-      let rec = getElementById('recordButton');
-      rec[enable ? 'enable' : 'disable']();
-      document.getElementById(rec.domId).classList[recording ? 'add' : 'remove']("recording");
+      enableDisable('recordButton', enable);
+      document.getElementById(getElementById('recordButton').domId).classList[recording ? 'add' : 'remove']("recording");
     }
 
     function swapTabTitlesAndLabels() {
