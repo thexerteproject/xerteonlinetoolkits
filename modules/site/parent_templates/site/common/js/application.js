@@ -935,8 +935,8 @@ function setup() {
 
 	} else {
 		var $logo, LO = $(data).find('learningObject');
-		['logoL', 'logoR'].forEach(function(logo) {           
-			$('#overview div.' + logo).addClass(logo);
+		['logoL', 'logoR'].forEach(function(logo) {
+			$('#overview').addClass(logo);
 			$('#overview div.' + logo).data('defaultLogo', $('#overview .' + logo + ' img').attr('src'));
 			$logo = $('#overview .' + logo + ' img');
 			$logo.attr('alt', LO.attr(logo + 'Alt'));
@@ -945,6 +945,10 @@ function setup() {
 			}
 			// Hide logo if no src value or 'Hide' is ticked, otherwise show it
 			$('#overview div.' + logo)[  LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '' ? 'hide' : 'show'  ]();
+			
+			if (LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '') {
+				$('#overview').removeClass(logo); 
+			}
 		});
 		
 /*		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
