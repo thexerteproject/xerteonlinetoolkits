@@ -29,6 +29,7 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			debugger;
 			var $pageVideo = $("#pageVideo"),
 				iframeRatio = $pageVideo.data('iframeRatio'),
 				videoDimensions = $pageVideo.data('dimensions');
@@ -153,20 +154,18 @@
 
 				iframeRatio = iframeRatio.split(':');
 				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
-					iframeRatio = 16/9;
-				}
-				else {
-					iframeRatio = iframeRatio[0] / iframeRatio[1];
+					iframeRatio = [16,9];
 				}
 				$pageVideo.data('iframeRatio', iframeRatio);
-				
+				const ratio = iframeRatio[0] / iframeRatio[1];
+
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
 					width: videoDimensions ? Number(videoDimensions[0]) : 0,
 					height: videoDimensions ? Number(videoDimensions[1]) : 0,
 					media: x_currentPageXML.getAttribute("url"),
 					autoplay: "false",
-					aspect: iframeRatio,
+					aspect: ratio,
 					transcript: x_currentPageXML.getAttribute("transcript"),
 					transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
 					audioImage: undefined,
