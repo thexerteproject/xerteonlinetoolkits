@@ -150,14 +150,13 @@
 									
 								} else {
 									// arrow or line
-									debugger
-
 									var $hs = $($hsHolder.children()[$this.index()]);
 
 									if ($hs.hasClass("hsGroup")) {
 										$hs.children()
 												.each(function(){
-													if(x_currentPageXML.getAttribute("link") == "true" || x_currentPageXML.getAttribute("link") == undefined){
+													debugger
+													if(x_currentPageXML.getAttribute("link") == "false" || x_currentPageXML.getAttribute("link") == undefined){
 														annotatedDiagram.drawLine($(this), $this, shape);
 													}else{
 														annotatedDiagram.drawLineToText($(this), shape);
@@ -165,7 +164,8 @@
 
 												});
 									} else {
-										if(x_currentPageXML.getAttribute("link") == "true" || x_currentPageXML.getAttribute("link") == undefined){
+										debugger
+										if(x_currentPageXML.getAttribute("link") == "false" || x_currentPageXML.getAttribute("link") == undefined){
 											annotatedDiagram.drawLine($hs, $this, shape);
 										}else{
 											annotatedDiagram.drawLineToText($hs, shape);
@@ -216,8 +216,9 @@
 				$("#imageHolder").html('<p>Flash files (.swf) are no longer supported</p>');
 				x_pageLoaded();
 			}
+
 			debugger
-			if(x_currentPageXML.getAttribute("link") == "false"){
+			if(x_currentPageXML.getAttribute("link") == "true"){
 				$("#listHolder").css("display", "none")
 			}
 		}
@@ -541,7 +542,6 @@
 		}
 		
 		this.drawLine = function($hs, $listItem, shape) {
-			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			
 			// startX/Y = centre of hotspot
@@ -572,7 +572,7 @@
 			var startY = $hs.offset().top - $(context.canvas).offset().top + ($hs.height() / 2);
 
 			var endX = $("#panel").offset().left - parseInt($panel.css("margin-left")) - parseInt($panel.css("padding-left"));
-			var endY = $("#panel").offset().top - $(context.canvas).offset().top + ($hs.height() / 2);
+			var endY = $("#infoHolder").offset().top;
 
 			context.beginPath();
 			context.moveTo(startX, startY);
