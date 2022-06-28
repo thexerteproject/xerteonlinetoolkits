@@ -102,6 +102,8 @@
 		</varGroup>
 		
 		<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
+
+				<alternatingSections type="CheckBox" label="Alternating Sections" defaultValue="false" optional="true" tooltip="Enable alternating sections on all pages. When enabled, extra padding, round corners and a subtle change of background colour shows for odd and even sections. Note: if you are using a custom theme the default background colours may not be suitable. These can be changed using .oddSection and .evenSection styles."/>
 		
 		<topBtnGroup type="group" label="Back to Top button" optional="true" tooltip="Hide or change the Back to Top button">
 		<topBtnHide label="Hide the button" type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Hide the Back to Top button on all pages"/>

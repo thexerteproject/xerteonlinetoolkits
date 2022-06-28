@@ -179,6 +179,12 @@ function move_folder($folder_id,$destination)
         $params = array($destination, $folder_id);
 
         $ok = db_query($query_folder, $params);
+
+        $query_folder = "UPDATE {$prefix}folderrights SET folder_parent = ? WHERE (folder_id = ?  )";
+        $params = array($destination, $folder_id);
+
+        $ok = $ok && db_query($query_folder, $params);
+
         if ($ok) {
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $folder_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x] . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
         } else {

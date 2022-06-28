@@ -297,10 +297,10 @@ CREATE TABLE `template_group_rights` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `folderrights` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `folder_id` bigint(20) NOT NULL,
-  `login_id` bigint(20) NOT NULL,
-  `folder_parent` bigint(20) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `folder_id` int(11) NOT NULL,
+  `login_id` int(11) NOT NULL,
+  `folder_parent` int(11) NOT NULL,
   `role` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

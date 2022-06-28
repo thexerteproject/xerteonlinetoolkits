@@ -392,14 +392,25 @@ function setup() {
 			if ($(data).find('learningObject').attr('glossaryHover') == undefined || $(data).find('learningObject').attr('glossaryHover') == "true") {
 
 				x_checkForText($(data).find('page'), 'glossary');
-
+				
+				// Handle the closing of glossary bubble with escape key
+				var $activeTooltip, escapeHandler = function(e) {
+					e = e || window.event; //IE
+					if ((e.keyCode ? e.keyCode : e.which) === 27) { // Escape
+						$activeTooltip.trigger("mouseleave");
+						e.stopPropagation();
+					}
+				};
+				
 				// add events to control what happens when you rollover glossary words
 				$("body > .container")
 					.on("mouseenter", ".glossary", function(e) {
-						$(this).trigger("mouseleave");
-
-						var $this = $(this),
-							myText = $this.text(),
+						$activeTooltip = $(this);
+						$activeTooltip.trigger("mouseleave");
+						
+						window.addEventListener('keydown', escapeHandler);
+						
+						var myText = $activeTooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 							myDefinition, i, len;
 
 						for (i=0, len=glossary.length; i<len; i++) {
@@ -409,11 +420,11 @@ function setup() {
 							}
 						}
 
-						$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
+						$activeTooltip.parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
 
 						$("#glossaryHover").css({
-							"left"	:$(this).offset().left + 20,
-							"top"	:$(this).offset().top + 20
+							"left"	:$activeTooltip.offset().left + 20,
+							"top"	:$activeTooltip.offset().top + 20
 						});
 						$("#glossaryHover").fadeIn("slow");
 					})
@@ -423,6 +434,7 @@ function setup() {
 						if ($("#glossaryHover") != undefined) {
 							$("#glossaryHover").remove();
 						}
+						window.removeEventListener('keydown', escapeHandler);
 					})
 					.on("mousemove", ".glossary", function(e) {
 						$("#glossaryHover").css({
@@ -922,8 +934,25 @@ function setup() {
 		$(".jumbotron").remove();
 
 	} else {
-
-		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
+		var $logo, LO = $(data).find('learningObject');
+		['logoL', 'logoR'].forEach(function(logo) {
+			$('#overview').addClass(logo);
+			$('#overview .' + logo + ' img').addClass(logo);
+			$('#overview div.' + logo).data('defaultLogo', $('#overview .' + logo + ' img').attr('src'));
+			$logo = $('#overview .' + logo + ' img');
+			$logo.attr('alt', LO.attr(logo + 'Alt'));
+			if (LO.attr('theme') != undefined && LO.attr('theme') != 'default') {
+				$logo.addClass('themeLogo');
+			}
+			// Hide logo if no src value or 'Hide' is ticked, otherwise show it
+			$('#overview div.' + logo)[  LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '' ? 'hide' : 'show'  ]();
+			
+			if (LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '') {
+				$('#overview').removeClass(logo); 
+			}
+		});
+		
+/*		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
 		// they are overridden by any logos in theme folders
 		// they can also be overridden by images uploaded via Header Logo optional properties
 		$('#overview div.logoR, #overview div.logoL').hide();
@@ -991,7 +1020,7 @@ function setup() {
 		} else {
 			checkExists('logoL', type, fallback);
 		}
-
+*/
 		// apply all the header css optional properties
 		var $jumbotron = $(".jumbotron");
 		if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '' && $(data).find('learningObject').attr('headerColour') != '0x') {
@@ -1685,7 +1714,11 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
         if(topBtnRoundIconColour != '0x' && topBtnRoundIconColour != 'undefined') {
 			$(".top-round").css('color', formatColour(topBtnRoundIconColour));
         }
-
+	}
+	//if alternating sections enabled add classes
+	if ($(data).find('learningObject').attr('alternatingSections') =='true'){
+		$("section:nth-child(2n+0)").addClass("evenSection");
+		$("section:nth-child(2n+1)").addClass("oddSection");
 	}
 }
 

@@ -11,6 +11,6 @@
 	 */
 	 
 
-	define("DUPLICATE_FOLDER_NOT_CREATOR", "Only project creators or co-authors can duplicate all projects in a folder. Make sure you have those rights on all the projects within the chosen folder");
-
+    define("COPY_OF", "Copy of ");
+    define("NO_PERMISSION_TO_DUPLICATE_TEMPLATE_OF_FOLDER", "You don't have permission to duplicate \"{0}\" of folder \"{1}\"");
 

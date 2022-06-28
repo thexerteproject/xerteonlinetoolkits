@@ -242,3 +242,22 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 .pswdError {
 	color: red;
 }
+
+/*round back to top button defaults*/
+.top-round {
+  color: #ffffff;
+  background: #575757;
+}
+.top-round:hover,
+.top-round:focus {
+  background: #4b4b4b;
+  color: #ffffff;
+}
+
+/*alternating section changes for this theme*/
+.evenSection {
+  background: #525252;
+}
+.oddSection {
+  background: #3e3c3c;
+}

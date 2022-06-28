@@ -12,11 +12,15 @@
     var media = navigator.mediaDevices;
     var blob;
     var lang = editor.lang.xotrecorder;
-
-    var defaultLoadingMessage = '...loading...';
+    var dialogOpen = false;
+    var recording = false;
+    var permissionState = {
+      counter: 0,
+      timer: null,
+      granted: false
+    };
 
     // Could possibly store/retrieve these using cookies in future
-    var defaultFilename = 'recording';
     var defaultTimestamp = true;
 
     // Add a style declaration for the faded buttons - https://ckeditor.com/docs/ckeditor4/latest/guide/plugin_sdk_styles.html
@@ -26,6 +30,9 @@
       color: lightgrey;
       cursor: pointer;
       pointer-events: none;
+    }
+    .recording i {
+      color:red !important;
     }`;
     document.head.appendChild(style);
 
@@ -33,6 +40,7 @@
     media.addEventListener('devicechange', updateDevicesDropdown);
 
     function startRecording() {
+      if (recording) return;
 
       // Do we still have a recording requiring attention?
       if (blob) {
@@ -59,8 +67,8 @@
         //input.connect(audioContext.destination)  //stop the input from playing back through the speakers
 
         //disable controls
-        getElementById('recordingDevicesSelect').disable();
-        getElementById('encodingTypeSelect').disable();
+        enableDisable('recordingDevicesSelect', 'disable');
+        enableDisable('encodingTypeSelect', 'disable');
         getButtonById('uploadButton').disable();
         getButtonById('insertButton').disable();
 
@@ -82,6 +90,7 @@
           setupAudioPlayer();
           getButtonById('insertButton').enable();
           getButtonById('uploadButton').enable();
+          recording = false;
         }
 
         recorder.setOptions({
@@ -92,29 +101,43 @@
           });
 
         //start the recording process
+        recording = true;
         recorder.startRecording();
 
-      }).catch(function(err) {
+      }).catch(function(err) { console.log('The recorder stopped prematurely, with this error', err);
           //enable the record button if getUSerMedia() fails
-          getElementById('recordButton').enable();
-          getElementById('stopButton').disable();
+          setRecordButton(permissionState.granted, false); //enabled??, but not red
+          enableDisable('stopButton', 'disable');
+          recording = false;
+          if (err.toString().indexOf('Permission denied')) {
+            startUpdatingDevicesList();
+          }
       });
 
       //disable the record button
-      getElementById('recordButton').disable();
-      getElementById('stopButton').enable();
+      setRecordButton(false, true); //disable, red
+      enableDisable('stopButton', 'enable');
     }
 
     function stopRecording() {
       //stop microphone access
-      gumStream.getAudioTracks()[0].stop();
+      if (gumStream && gumStream.getAudioTracks) gumStream.getAudioTracks()[0].stop();
+      recording = false;
 
       //disable the stop button, enable record
-      getElementById('stopButton').disable();
-      getElementById('recordButton').enable();
+      enableDisable('stopButton', 'disable');
+      setRecordButton(permissionState.granted, false); //enabled??, not red
+      enableDisable('recordingDevicesSelect', 'enable');
+      enableDisable('encodingTypeSelect', 'enable');
       
       //tell the recorder to finish the recording (stop recording + encode the recorded audio)
       recorder.finishRecording();
+    }
+
+    function enableDisable(identifier, en_di) {
+      let element = getElementById(identifier);
+      let state = (en_di === true || en_di === 'enable') ? true : false;
+      if (element) element[state ? 'enable' : 'disable']();
     }
 
     function setupAudioPlayer() {
@@ -126,20 +149,20 @@
     }
 
     //helper function
-    function __log(e, data) {return;
+    function __log(e, data) { return;
       console.log(e + " " + (data || '') );
     }
  
     // *** Plugin Helper Functions ***
     function initialiseRecorder() {
-      getButtonById('insertButton').disable();
-      getButtonById('uploadButton').disable();
+      enableDisable('insertButton', 'disable');
+      enableDisable('uploadButton', 'disable');
       getElementById('audioPlayer').getElement().setAttribute('src', '');
 
-      getElementById('recordButton').enable();
-      getElementById('stopButton').disable();
-      getElementById('recordingDevicesSelect').enable();
-      getElementById('encodingTypeSelect').enable();
+      setRecordButton(permissionState.granted, false); //enable, not red
+      enableDisable('stopButton', 'disable');
+      enableDisable('recordingDevicesSelect', 'enable');
+      enableDisable('encodingTypeSelect', 'enable');
 
       blob = undefined;
     }
@@ -165,22 +188,28 @@
       // Hack to use FA icons in tabs
       swapTabTitlesAndLabels();
 
+      // Flag used to prevent alerts if dialog has been closed
+      dialogOpen = true;
+      permissionState.counter = 0;
+
       // Make the timestamp look nicer
       fixTimestamp();
 
 //exposeSomeData();
       // Initial state
       initialiseRecorder();
+      setRecordButton(false, false); //disable, not red
     }
 
 // Expose some data for debug - TODO: Revove for release
-function exposeSomeData(){
+/*function exposeSomeData(){
   window.gebi = getElementById;
   window.editor = editor;
 
   // Rejig the timestamp layout
   window.ts = getElementById('timestamp').getElement();
-}
+}*/
+
     function getButtonById(id) {
       let currentDialog = CKEDITOR.dialog.getCurrent();
       if (!currentDialog) return;
@@ -206,6 +235,11 @@ function exposeSomeData(){
 						this.label.indexOf('<') > -1 ) {
 				document.getElementById(this.domId).children[0].innerHTML = this.label;
 			}
+    }
+
+    function setRecordButton(enable, recording) {
+      enableDisable('recordButton', enable);
+      document.getElementById(getElementById('recordButton').domId).classList[recording ? 'add' : 'remove']("recording");
     }
 
     function swapTabTitlesAndLabels() {
@@ -283,66 +317,98 @@ function exposeSomeData(){
       getElementById('finalFilename').getElement().setHtml( html );
     }
 
-    function updateDevicesDropdown() {
-      let recordingDevicesSelect = getElementById('recordingDevicesSelect');
-      if (!recordingDevicesSelect) return;
+    function startUpdatingDevicesList() {
 
-      // Preserve values currently set
-      let dropdown = recordingDevicesSelect.getElement().$.querySelectorAll('select')[0];
-      let currentList = dropdown.children;
-      let empty = (currentList.length === 1 && currentList[0].value === defaultLoadingMessage);
-
-      // Remove all current options
-      for (let i = 0; i < currentList.length; i++) currentList[i].remove();
-
-      let ids = [],
-          count = 0;
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then( devices => {
-          devices.forEach( device => {
-            const option = document.createElement('option');
-            option.value = device.deviceId;
-            if (!ids.includes(device.groupId)) {
-              ids.push(device.groupId);
-      
-              if (device.kind === 'audioinput') {
-                option.text = device.label || `Microphone ${count + 1}`;
-                dropdown.appendChild(option);
-              }
-            }
-          });
-        });
-
-        // Reset the default so that we don't get the 'something changed' method on cancel
-        // TODO - investigate why this needs to be run asynchronously
-        window.setTimeout(function () {
-          getElementById('recordingDevicesSelect').onChange();
-        }, 250);
-
-        // TODO - figure out this code so that the behavious was as before
-/*      let ids = [];
-      for (let i = 0; i !== devices.length; ++i) {
-        const deviceInfo = devices[i];
-        const option = document.createElement('option');
-        option.value = deviceInfo.deviceId;
-        if (ids.indexOf(deviceInfo.groupId) < 0) {
-          ids.push(deviceInfo.groupId);
-
-          if (deviceInfo.kind === 'audioinput') {
-            option.text = deviceInfo.label || `Microphone ${audioInputSelect.length + 1}`;
-            audioSelect.appendChild(option);
+      function triggerPermissionCheck() {
+        // Trigger the permission check
+        navigator.mediaDevices.getUserMedia({audio:true, video:false})
+        .then(function() {
+          mediaDevicesReturn(true);
+        })
+        .catch(function(e) {
+          if (e.toString().indexOf('Permission denied')) {
+            mediaDevicesReturn(false);
           }
-        }
+        });
       }
 
-      let changed = false;
-      selectors.forEach((select, selectorIndex) => {
-        if ([].slice.call(select.childNodes).some(n => n.value === values[selectorIndex]))
-          select.value = values[selectorIndex];
-        else
-          changed = true;
-      });*/
+      function mediaDevicesReturn(allowed) {
+        if (permissionState.granted != allowed) updateDevicesDropdown();
+        if (allowed) setRecordButton(allowed, recording); //enable, not red
+        if (!allowed && dialogOpen) {
+          if ((permissionState.counter++ % 60 === 0) && !permissionState.granted) alert(lang.permissionsInitial);
+          if (permissionState.granted) {
+            stopRecording();
+            alert(lang.permissionsRevoked);
+          }
+        }
+        permissionState.granted = allowed;
+        if (dialogOpen) permissionState.timer = setTimeout(triggerPermissionCheck, allowed ? 5000 : 1000);
+      }
+
+      triggerPermissionCheck();
+    }
+
+    function updateDevicesDropdown() {
+      var recordingDevicesSelect = getElementById('recordingDevicesSelect');
+      if (!recordingDevicesSelect) return;
+
+      // Setup some variables
+      var dropdown = recordingDevicesSelect.getElement().$.querySelectorAll('select')[0];
+      var currentRecordingDevices = dropdown.children;
+      var isLoadingMesage = (currentRecordingDevices === 1 && currentRecordingDevices[0].value === lang.defaultLoadingMessage);
+
+      // Iterate over media devices and make a list of all unique devices
+      navigator.mediaDevices
+        .enumerateDevices()
+        .then(function(devices) {
+          var count = 0, newDevices = [];
+          devices.forEach( function(device) {
+            if (
+              device.kind === 'audioinput' &&
+              !newDevices.some(function(d){return device.groupId === d.groupId;})
+            ) { // an audioinput device and not in newDevices already
+              newDevices.push({
+                deviceId: device.deviceId,
+                label: device.label || lang.microphone + ' ' + (++count),
+                groupId: device.groupId
+              });
+            }
+          });
+
+          // Loop through current recordingDevicesSelect and remove any new ones that are already present
+          for (let i = 0; i < currentRecordingDevices.length; i++) {
+            if (
+              newDevices.some(function(device) { return device.deviceId === currentRecordingDevices[i].value; })
+            ) { // current item is in new list so update text and then remove from new list
+//WRONG - Needs a loop and flag approach              currentRecordingDevices[i].text = device.label;
+// also a check to see if .dataset.groupId is set
+              newDevices = newDevices.filter(function(device) {
+                return device.deviceId !== currentRecordingDevices[i].value;
+              });
+            }
+            else currentRecordingDevices[i].remove();
+          }
+
+          // Loop through new list adding any new ones
+          var count = 0;
+          newDevices.forEach(function(device) { //console.log(device); debugger;
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            option.text = device.label || lang.microphone + ' ' + (++count);
+            option.dataset.groupId = device.groupId;
+            dropdown.appendChild(option);
+          });
+        })
+        .catch(function(e) {
+          console.log('error message', e);
+        })
+
+      // Reset the default so that we don't get the 'something changed' method on cancel
+      // TODO - investigate why this needs to be run asynchronously
+      window.setTimeout(function () {
+        getElementById('recordingDevicesSelect').onChange();
+      }, 250);
     }
 
     return {
@@ -371,7 +437,7 @@ function exposeSomeData(){
                 type: 'button',
                 id: 'recordButton',
                 label: '<i class="fa fa-circle"></i>',
-                title: lang.recordButton || 'Start Recording',
+                title: lang.recordButton,
                 setup: faButton,
                 onClick: startRecording
               },
@@ -379,7 +445,7 @@ function exposeSomeData(){
                 type: 'button',
                 id: 'stopButton',
                 label: '<i class="fa fa-stop"></i>',
-                title: lang.stopButton || 'Stop Recording',
+                title: lang.stopButton,
                 style: 'margin-right: 25px;',
                 setup: faButton,
                 onClick: stopRecording
@@ -394,7 +460,7 @@ function exposeSomeData(){
 /*html*/    {
               type: 'html',
               id: 'audioPlayer',
-              html: `<audio controls>Your browser does not support the audio element.</audio>`,
+              html: '<audio controls>' + lang.audioUnsupported + '</audio>',
               style: 'padding-top: 10px; height: revert; width: revert;'
             }]
           }]
@@ -414,7 +480,7 @@ function exposeSomeData(){
 /*fieldset*/{
               type: 'fieldset',
               id: 'audioSettingsFieldset',
-              label: lang.audioSettings || 'Audio Settings',
+              label: lang.audioSettings,
               children: [
 /*hbox*/      {
                 type: 'hbox',
@@ -423,20 +489,22 @@ function exposeSomeData(){
 /*devicesSelect*/{
                   type: 'select',
                   id: 'recordingDevicesSelect',
-                  label: lang.devicesSelect || 'Recording Device:',
-                  items: [[defaultLoadingMessage]],
-                  'default': defaultLoadingMessage,
-                  onShow: updateDevicesDropdown,
+                  label: lang.devicesSelect,
+                  items: [[lang.defaultLoadingMessage]],
+                  'default': lang.defaultLoadingMessage,
+                  onShow: function () {
+                    setTimeout(startUpdatingDevicesList, 100);
+                  },
                   onChange: resetInitialValue
                 },
 /*encodingTypeSel*/{
                   type: 'select',
                   id: 'encodingTypeSelect',
-                  label: lang.encodingTypeSelect || 'Encoding Type:',
+                  label: lang.encodingTypeSelect,
                   items: [
-                    ['MP3 (MPEG-1 Audio Layer III) (.mp3)', 'mp3'],
-                    ['Ogg Vorbis (.ogg)', 'ogg'],
-                    ['Uncompressed Waveform Audio (.wav)', 'wav']
+                    [lang.mp3Description, 'mp3'],
+                    [lang.oggDescription, 'ogg'],
+                    [lang.wavDescription, 'wav']
                   ],
                   'default': 'mp3',
                   setup: setup,
@@ -450,7 +518,7 @@ function exposeSomeData(){
 /*fieldset*/{
               type: 'fieldset',
               id: 'filenameFieldset',
-              label: lang.fileSettings || 'Upload File Settings',
+              label: lang.fileSettings,
               style: 'margin-top: 10px;',
               children: [
 /*vbox*/      {
@@ -464,8 +532,8 @@ function exposeSomeData(){
 /*filename*/      {
                     type: 'text',
                     id: 'filename',
-                    label: lang.filenameTextbox || 'Filename:',
-                    'default': defaultFilename || 'recording',
+                    label: lang.filenameTextbox,
+                    'default': lang.defaultFilename,
                     onChange: function () {
                       updateFilename.call(this);
                       resetInitialValue.call(this);
@@ -477,7 +545,7 @@ function exposeSomeData(){
 /*timestamp*/     {
                     type: 'checkbox',
                     id: 'timestamp',
-                    label: lang.timestampCheckbox || 'Timestamp:',
+                    label: lang.timestampCheckbox,
                     'default': defaultTimestamp || true,
                     onChange: function () {
                       updateFilename.call(this);
@@ -488,7 +556,7 @@ function exposeSomeData(){
 /*finalFilename*/{
                   type: 'html',
                   id: 'finalFilename',
-                  title: lang.finalFilename || 'This is only an example of the format, the timestamp, if selected, will be different.',
+                  title: lang.finalFilenameMessage,
                   html: ' ',
                   onShow: updateFilename
                 }]
@@ -497,9 +565,15 @@ function exposeSomeData(){
           }]
         }],
       onCancel: function(ev) { // Catch closing event so we can cancel if recordings left to upload
-        if (blob) return window.confirm(lang.closeMessage);
-
-        return true;
+        var returnValue = true;
+        if (blob) {
+          returnValue = window.confirm(lang.closeMessage);
+          if (returnValue) {
+            clearTimeout(permissionState.timer);
+          }
+        }
+        dialogOpen = !returnValue;
+        return returnValue;
       },
       buttons: [
 /*uploadButton*/{

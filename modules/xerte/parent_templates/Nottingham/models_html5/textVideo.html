@@ -29,10 +29,12 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			debugger;
 			var $pageVideo = $("#pageVideo"),
-				ratio = $pageVideo.data('iframeRatio'),
+				iframeRatio = $pageVideo.data('iframeRatio'),
 				videoDimensions = $pageVideo.data('dimensions');
 			if (true) {
+				const ratio = iframeRatio[0] / iframeRatio[1];
 				// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
 				var iframeMax = x_currentPageXML.getAttribute("iframeMax");
 				if ($.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
@@ -109,6 +111,7 @@
 				ratio = x_currentPageXML.getAttribute("iframeRatio"),
 				iframeRatio = ratio ? ratio : '16:9';
 
+			debugger;
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
 				
@@ -125,7 +128,14 @@
 					iframeRatio = [16,9];
 				}
 				$pageVideo.data('iframeRatio', iframeRatio);
-				
+				/*
+				setTimeout(function(){
+					// Set the height of the $pageVideo container
+					const height = $pageVideo.width() / iframeRatio[0] * iframeRatio[1];
+					$pageVideo.height(height);
+				}, 250);
+				*/
+
 			} else {
 				var videoDimensions;// = [320,240];
 				
@@ -144,20 +154,18 @@
 
 				iframeRatio = iframeRatio.split(':');
 				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
-					iframeRatio = 16/9;
-				}
-				else {
-					iframeRatio = iframeRatio[0] / iframeRatio[1];
+					iframeRatio = [16,9];
 				}
 				$pageVideo.data('iframeRatio', iframeRatio);
-				
+				const ratio = iframeRatio[0] / iframeRatio[1];
+
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
 					width: videoDimensions ? Number(videoDimensions[0]) : 0,
 					height: videoDimensions ? Number(videoDimensions[1]) : 0,
 					media: x_currentPageXML.getAttribute("url"),
 					autoplay: "false",
-					aspect: iframeRatio,
+					aspect: ratio,
 					transcript: x_currentPageXML.getAttribute("transcript"),
 					transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
 					audioImage: undefined,

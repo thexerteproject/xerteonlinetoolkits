@@ -65,6 +65,10 @@ ul, ol {
 	padding:	10px;
 }
 
+#x_headerBlock img {
+	max-height: 200px;
+}
+
 #x_pageHolder {
 	width:		100%;
 	overflow:	auto;
