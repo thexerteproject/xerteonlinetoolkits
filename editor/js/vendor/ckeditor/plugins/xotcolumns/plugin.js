@@ -64,6 +64,13 @@
     },*/
 
     init: function (editor) {
+
+      function getNearestWidgetAscendant(widgetName) {
+        return editor.getSelection().getStartElement().getAscendant(function (element) {
+          return element.hasAttribute && element.hasAttribute('data-widget') && element.getAttribute('data-widget') === widgetName;
+        }, true);
+      }
+
       // Register the editing dialog.
       CKEDITOR.dialog.add('xotcolumns', this.path + 'dialogs/xotcolumns.js');
 
@@ -90,13 +97,12 @@
 
         editables: {
           content: {
-            selector: 'div.autocolumns',
-            //disallowedContent: 'div(autocolumns2)'
+            selector: 'div.autocolumns'
           }
         },
 
         // Prevent the editor from removing these elements
-        allowedContent: 'div(autocolumns,autocolumns2)',
+        allowedContent: 'div(autocolumns)',
 
         // The minimum required for this to work
         requiredContent: 'div(!autocolumns)',
@@ -139,7 +145,7 @@
           // Remove any currently set classes and set new one (also remove 'undefined' just in case)
           for (let i=1; i<5; i++) 
             this.element.removeClass('autocolumns' + i);
-          this.element.removeClass('autocolumnsundefined');
+          this.element.removeClass('autocolumnsundefined'); // not sure why but this sometimes shows up...
           this.element.addClass('autocolumns' + this.data.columns);
 
           // Get the old style and merge with the new one
@@ -170,45 +176,23 @@
           //order: -10
         });
   
-        editor.contextMenu.addListener(function(element, selection, path) { //cWD('contextMenu', this, editor, element, selection, path);
-          /*if (!element || element.isReadOnly())
+        editor.contextMenu.addListener(function(element, selection, path) {
+          if (!element || element.isReadOnly())
             return null;
   
           var element = selection.getStartElement();
           if (element) {
-            element = element.getAscendant('a', true);
+            element = getNearestWidgetAscendant('xotcolumns');
           }
   
           if (element) {
-            var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
-            if (attr && attr.indexOf("(")) {
-              if (attr.split('(')[0] == 'x_navigateToPage') {
-                this.label = 'Edit Xerte Page Link';
-                return {xotlinkItem: CKEDITOR.TRISTATE_OFF};
-              }
-              else {
-                this.label = 'Insert Xerte Page Link';
-              }
-            }
-            else {
-              this.label = 'Insert Xerte Page Link';
-            }
+            editor.getMenuItem('editdiv').state = CKEDITOR.TRISTATE_DISABLED;
+            editor.getMenuItem('removediv').state = CKEDITOR.TRISTATE_DISABLED;
           }
-          else {*/
-          //return;
-            //this.label = "Renamed Autocolumns";
-            //return {xotcolumnsItem: CKEDITOR.TRISTATE_OFF, editdiv: null};
-            //delete editor.getMenuItem('editdiv').state;
-            //delete editor.getMenuItem('removediv').state;
 
-          //}
-
-          // WORKS - Now just need logic....
-          /*editor.getMenuItem('editdiv').state = CKEDITOR.TRISTATE_DISABLED;
-          editor.getMenuItem('removediv').state = CKEDITOR.TRISTATE_DISABLED;
           return { 
             xotcolumnsItem: CKEDITOR.TRISTATE_OFF
-          };*/
+          };
         });
       }      
     }

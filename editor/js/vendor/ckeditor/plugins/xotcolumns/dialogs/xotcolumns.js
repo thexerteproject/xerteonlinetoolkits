@@ -3,6 +3,22 @@
 CKEDITOR.dialog.add('xotcolumns', function (editor) {
   'use strict';
 
+    // Add a style declaration for the faded buttons - https://ckeditor.com/docs/ckeditor4/latest/guide/plugin_sdk_styles.html
+    var style = document.createElement('style');
+    style.innerHTML = `
+    a.cke_disabled, a.cke_disabled span, a.cke_disabled span i {
+      color: lightgrey;
+      cursor: pointer;
+      pointer-events: none;
+    }`;
+    document.head.appendChild(style);
+
+  function getNearestWidgetAscendant(widgetName) {
+    return editor.getSelection().getStartElement().getAscendant(function (element) {
+      return element.hasAttribute && element.hasAttribute('data-widget') && element.getAttribute('data-widget') === widgetName;
+    }, true);
+  }
+
   function cWD (name, ...params) {
     console.log(name, ...params);
     window[/*'widget_' + */name] = {...params};
@@ -75,16 +91,13 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
       //  }, true);
       //}*/
 
-      function getNearestWidgetAscendant(widgetName) {
-        return editor.getSelection().getStartElement().getAscendant(function (element) {
-          return element.hasAttribute && element.hasAttribute('data-widget') && element.getAttribute('data-widget') === widgetName;
-        }, true);
-      }
-
       var selection = editor.getSelection();
       var widgets = editor.widgets;
-      var nearestWidget =  getNearestWidgetAscendant('xotcolumns');
+      var nearestWidget = getNearestWidgetAscendant('xotcolumns');
 
+      // Toggle the Remove button status
+      this.getButton('remove')[nearestWidget ? 'enable' : 'disable']();
+  
       if (nearestWidget) { // Scenario 2, 3, 4 DONE
         // First we'll find the correct widget and focus it
         for (let inst in widgets.instances) {
@@ -94,7 +107,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
             break;
           }
         }
-
+  
         // Store a fragment with a clone of all the nodes
         let children = widgets.focused.element.getChildren();
         let fragment = document.createDocumentFragment();
@@ -102,17 +115,21 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
           fragment.append(node.cloneNode(true));
         });
         this._.selectedElements = fragment;
-
-        //cWD('onShow', this , editor, selection, widgets, nearestWidget, fragment, children);
-
+  
         // Setup the dialog data content with correct data
         this.setupContent(widgets.focused);
         
         // Cancel the default setup (wrong data)
         return false;
       }
-      else { // Scenario 1, 5, 6
-        if (selection?.getSelectedElement()?.$?.hasAttribute('data-cke-widget-wrapper')) { // Scenario 1 DONE
+      else { // Scenario 1, 5, 6, 7
+        // Check for existence of the widget class
+        if (
+            selection &&
+            selection.getSelectedElement() &&
+            selection.getSelectedElement().$ &&
+            selection.getSelectedElement().$.hasAttribute('data-cke-widget-wrapper')
+        ) { // Scenario 1 DONE
           return; // Just allow default behavious
         }
 
@@ -127,26 +144,24 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
       // MEGA MEGA HACKY but seems to be how anchor and link plugins do it too...
       if (editor.widgets.focused && editor.widgets.focused.element) {
         let widgetElement = editor.widgets.focused.element;
-        //cWD('onHide', this , editor, this._.selectedElements, widgetElement);
-        if (this._.selectedElements) {
-          
+        let widgetElementParent = widgetElement.$.parentElement;
 
+        // If we have content then put it back
+        if (this._.selectedElements) {
           // First remove <p> child node
           if (widgetElement.getChild(0)) widgetElement.getChild(0).remove();
 
-          //cWD('onHide', this , editor, this._.selectedElements, widgetElement);
-          // Then add the stored ones - OLD way using nodes
-          /*let storedNodes = this._.selectedElements;
-          let i = storedNodes.length;
-          while (i--) {
-            widgetElement.$.appendChild(storedNodes[0]);
-          }*/
-          
-          widgetElement.$.append(this._.selectedElements);
-
-          // Lastly, tidy up
-          delete this._.selectedElements;
+          if (this._.markForRemoval) {
+            widgetElementParent.parentNode.replaceChild(this._.selectedElements, widgetElementParent);
+          }
+          else {
+            widgetElement.$.append(this._.selectedElements);
+          }
         }
+
+        // Lastly, tidy up
+        if (this._.markForRemoval) delete this._.markForRemoval;
+        if (this._.selectedElements) delete this._.selectedElements;
       }
     },
     contents: [
@@ -337,6 +352,23 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
           }
         ]
       }
-    ]
+    ],
+    buttons: [
+/*removeButton*/{
+              type: 'button',
+              id: 'remove',
+              label: 'Remove', //lang.insertButton,
+              title: 'Remove Autocolumns Formatting', //lang.insertButton,
+              onClick: function() {
+                let returnValue = window.confirm('Are you sure you want to remove this Autocolumns box?');
+                if (returnValue) {
+                  this.getDialog()._.markForRemoval = true;
+                  this.getDialog().getButton('ok').click();
+                }
+              }
+            },
+            CKEDITOR.dialog.okButton,
+            CKEDITOR.dialog.cancelButton
+            ]
   };
 });
