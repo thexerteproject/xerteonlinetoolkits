@@ -41,7 +41,6 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
     $lti_def->tsugi_installed = $tsugi_installed;
     $lti_def->secret = (isset($_POST["tsugi_secret"]) ? htmlspecialchars($_POST["tsugi_secret"]) : "");
     $lti_def->key = (isset($_POST["tsugi_key"]) ? htmlspecialchars($_POST["tsugi_key"]) : "");
-    $lti_def->title = (isset($_POST["tsugi_title"]) ? htmlspecialchars($_POST["tsugi_title"]) : "");
     $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "true";
     $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
     $lti_def->tsugi_useglobal = isset($_POST["tsugi_useglobal"]) && $_POST["tsugi_useglobal"] == "true";
@@ -67,6 +66,8 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
         $lti_def->url .= "&group=groupname";
     }
 
+    // Get current temapltedetails record
+    $row = db_query_one('select * from templatedetails where template_id=?', array($_POST['template_id']));
     if ($tsugi_installed) {
         $PDOX = LTIX::getConnection();
         $p = $CFG->dbprefix;
@@ -92,8 +93,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
         */
 
         // Remove key from tsugi
-        $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE c.key_id = k.key_id and l.context_id=c.context_id and l.path = :URL", array(
-            ':URL' => $lti_def->tsugi_url));
+        $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k WHERE k.key_id = ?", array($row['tsugi_manage_key_id']));
         if (count($rows) > 0) {
             $sql = "delete from {$p}lti_key where key_id = ?";
             $params = array($rows[0]['key_id']);
@@ -110,58 +110,35 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
             $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
             $PDOX = LTIX::getConnection();
             $p = $CFG->dbprefix;
-            $context_row = $PDOX->rowDie("SELECT MAX(context_id) FROM {$p}lti_context;");
-            $context_id = ($context_row["MAX(context_id)"]) + 1;
-            $key_row = $PDOX->rowDie("SELECT MAX(key_id) FROM {$p}lti_key;");
-            $key_id = ($key_row["MAX(key_id)"]) + 1;
-            $link_row = $PDOX->rowDie("SELECT MAX(link_id) FROM {$p}lti_link;");
-            $link_id = ($link_row["MAX(link_id)"]) + 1;
+            // $context_row = $PDOX->rowDie("SELECT MAX(context_id) FROM {$p}lti_context;");
+            // $context_id = ($context_row["MAX(context_id)"]) + 1;
+            // $key_row = $PDOX->rowDie("SELECT MAX(key_id) FROM {$p}lti_key;");
+            // $key_id = ($key_row["MAX(key_id)"]) + 1;
+            // $link_row = $PDOX->rowDie("SELECT MAX(link_id) FROM {$p}lti_link;");
+            // $link_id = ($link_row["MAX(link_id)"]) + 1;
             $sql = "INSERT INTO {$p}lti_key
-        ( key_id, key_sha256, key_key, secret) VALUES
-            ( :key_id, :key_sha256, :key_key, :secret);";
+        ( key_sha256, key_key, secret) VALUES
+            ( :key_sha256, :key_key, :secret);";
 
             $param = array(
-                ':key_id' => $key_id,
                 ':key_sha256' => lti_sha256($lti_def->key),
                 ':key_key' => $lti_def->key,
                 ':secret' => $lti_def->secret
             );
             $res = $PDOX->queryDie($sql, $param);
-            unset($res);
-
-
-            $sql = "INSERT INTO {$p}lti_context
-            ( context_id, context_sha256, context_key, title, key_id, created_at, updated_at ) VALUES
-            ( :context_id, :context_sha256, :context_key, :title, :key_id, NOW(), NOW() );";
-            $res = $PDOX->queryDie($sql, array(
-                ':context_id' => $context_id,
-                ':context_sha256' => lti_sha256($context_id),
-                ':context_key' => $context_id,
-                ':title' => $lti_def->title,
-                ':key_id' => $key_id));
-            unset($res);
-            $sql = "INSERT INTO {$p}lti_link
-            ( link_id, link_sha256, link_key, title, context_id, path, created_at, updated_at ) VALUES
-                ( :link_id, :link_sha256, :link_key, :title, :context_id, :path, NOW(), NOW() );";
-
-            $params = array(
-                ':link_id' => $link_id,
-                ':link_sha256' => lti_sha256($link_id),
-                ':link_key' => $link_id,
-                ':title' => $lti_def->title,
-                ':context_id' => $context_id,
-                ':path' => $lti_def->tsugi_url
-            );
-            $link = $PDOX->queryDie($sql, $params);
-            unset($link);
-
+            // $res does NOT contains the inserted key_id
+            $lti_def->tsugi_key_id = $PDOX->lastInsertId();
+        }
+        else{
+            $lti_def->tsugi_key_id = -1;
         }
     }
-    $sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_usetsugikey = ?, tsugi_privatekeyonly = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
+    $sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_usetsugikey = ?, tsugi_manage_key_id = ?, tsugi_privatekeyonly = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
     db_query($sql,
         array(
             $lti_def->published ? "1" : "0",
             $lti_def->tsugi_useglobal ? "1" : "0",
+            $lti_def->tsugi_key_id,
             $lti_def->tsugi_privateonly ? "1" : "0",
             $lti_def->xapi_enabled ? "1" : "0",
             $lti_def->xapi_enabled ? ($lti_def->xapi_useglobal ? "1" : "0") : "1",

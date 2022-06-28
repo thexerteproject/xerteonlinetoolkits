@@ -1230,7 +1230,7 @@ function upgrade_32()
                 }
             }
         }
-        return "Creating folder_parent field in folderrights - ok ? " . ($error === false ? 'true' : 'false'). "<br>";
+        return "Creating folder_parent field in folderrights - ok ? " . ($error  ? 'true' : 'false'). "<br>";
     }
     else
     {
@@ -1240,3 +1240,54 @@ function upgrade_32()
 
 }
 
+function upgrade_33()
+{
+    global $xerte_toolkits_site;
+    $table = table_by_key('templatedetails');
+    if (!_db_field_exists('templatedetails', 'tsugi_manage_key_id')) {
+        $error = _db_add_field('templatedetails', 'tsugi_manage_key_id', 'int', '-1', 'tsugi_usetsugikey');
+        $mesg = "Creating tsugi_manage_key_id field in templatedetails - ok ? " . ($error ? 'true' : 'false'). "<br>";
+        if ($error && file_exists($xerte_toolkits_site->tsugi_dir) ) {
+            require_once($xerte_toolkits_site->tsugi_dir . "config.php");
+            $PDOX = \Tsugi\Core\LTIX::getConnection();            // migrate key id from tsugi tables to template_id
+            $p = $CFG->dbprefix;
+            $templates = db_query("select * from $table;");
+            foreach($templates as $template)
+            {
+                if ($template['tsugi_published'] === "1" && $template['tsugi_usetsugikey'] !== "1")
+                {
+                    // Try to get key_id from tsugi tables using old method and place it into templatedetails;
+                    $rows = $PDOX->allRowsDie("SELECT k.key_id FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE c.key_id = k.key_id and l.context_id=c.context_id and l.path = :URL",
+                        array(':URL' => $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template['template_id']));
+                    if (count($rows)>0)
+                    {
+                        if (count($rows) > 1) {
+                            $mesg .= "    WARNING: More than one key_id returned for template with id " . $template['template_id'] . "(this text should NOT be in release)<br>";
+                            foreach($rows as $row)
+                            {
+                                $mesg .= "        " . $row['key_id'] . "<br>";
+                            }
+                        }
+                        // get the first key
+                        $res = db_query("update $table set tsugi_manage_key_id=? where template_id=?",
+                            array($rows[0]['key_id'], $template['template_id']));
+                        if ($res === false)
+                        {
+                            $mesg .= "    Could not set key_id for template with id " . $template['template_id'] . "<br>";
+                        }
+                        else
+                        {
+                            $mesg .= "    Set key_id for template with id " . $template['template_id'] . " successfuly.<br>";
+                        }
+                    }
+                }
+            }
+        }
+
+        return $mesg;
+    }
+    else
+    {
+        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+    }
+}
