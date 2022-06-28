@@ -22,7 +22,9 @@
 		<shape label="Type" type="ComboBox" options="Line,Oval,Outline,Arrow" data="None,Oval,Rectangle,Arrow" defaultValue="Rectangle" width="120" />
 		<colour label="Colour" type="ColourPicker" defaultValue="0xFFFF00" />
 	</hs>
-	
+
+	<link label="Hide list" type="Checkbox" optional="true" defaultValue="false" tooltip="Enable or disable the list" />
+
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="320,240" optional="true" deprecated="This property is deprecated."/>
 
     <newNodes>

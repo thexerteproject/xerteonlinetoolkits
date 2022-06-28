@@ -1341,6 +1341,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (tempPageIndex != undefined) {
 			parseContent({ type: "index", id: tempPageIndex });
 		}
+		this.CheckBanner(tempPageIndex)
 
 	// Then try to look them up by ID
 	} else {
@@ -1396,6 +1397,22 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (found == false) {
 			console.log("Page/section with ID *" + pageInfo.ID + "* not found");
 		}
+		this.CheckBanner(i)
+	}
+}
+
+function CheckBanner(index){
+	debugger
+	var banner = $(data).find('page').eq(index).attr('headerBanner');
+	if(banner == "Jumbotron"){
+		$(".jumbotron").addClass("scale");
+		var viewHeight = $(this).height();
+		$(".scale").height(viewHeight);
+	}else{
+		$(".jumbotron").removeClass("scale");
+		$(".jumbotron").css({
+			"height":"200px"
+		})
 	}
 }
 
@@ -1496,6 +1513,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 			// store current page
 			currentPage = pageIndex;
+			this.CheckBanner(currentPage)
 
 			//set the main page title and subtitle
 			$('#pageTitle').html(page.attr('name'));
@@ -2521,10 +2539,10 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
-
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
+	debugger
 	if (node.attr('autoPlay') == 'true') {
-
+		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
 
 			carDiv.carousel({ interval: Number(node.attr('delaySecs')) * 1000 });
