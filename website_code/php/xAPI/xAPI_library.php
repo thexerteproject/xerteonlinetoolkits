@@ -17,7 +17,7 @@ function CheckLearningLocker($lrs)
     return $lrs;
 }
 
-function xAPI_html_page_create($id, $template_name, $type, $lo_name, $language, $date_modified) {
+function xAPI_html_page_create($id, $template_name, $type, $lo_name, $language, $date_modified, $logo='') {
 
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -30,6 +30,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
 	$xapi_html_page_content = str_replace("%VERSION%", $version , $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%VERSION_PARAM%", "", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TITLE%",$lo_name,$xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%LOGO%", $logo, $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TEMPLATEPATH%","",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%XMLPATH%","",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TEMPLATEID%", $id, $xapi_html_page_content);
