@@ -59,6 +59,9 @@ function backup_tables($tables = '*'){
         $tables = is_array($tables) ? $tables : explode(',',$tables);
     }
 
+    if (count($tables) == 0)
+        return false;
+
     $dbconn = database_connect();
     foreach($tables as $table){
         $data.= "\n/*---------------------------------------------------------------".
@@ -172,7 +175,6 @@ function require_auth() {
         $_SERVER['PHP_AUTH_USER'] != $xerte_toolkits_site->admin_username ||
         $_SERVER['PHP_AUTH_PW']   != $xerte_toolkits_site->admin_password);
     if ($is_not_authenticated) {
-        header('HTTP/1.1 401 Authorization Required');
         header('WWW-Authenticate: Basic realm="Setup TSUGI for ' . $xerte_toolkits_site->site_title . '"');
         header('HTTP/1.0 401 Unauthorized');
         echo '{"error" : "You do not have permission to continue"}';
@@ -214,7 +216,7 @@ $_SESSION['admin'] = true;
             <li class="title">TSUGI Setup</li>
         </ul>
         <div class="homepage"><br>
-            <h1>Welcome to the TSUGI Setup!</h1>
+            <h1>Welcome to TSUGI Setup!</h1>
             <p class="indextext">
                 Tsugi is a framework that handles much of the low-level detail of building multi-tenant tool that makes use of the IMS Learning Tools Interoperability® (LTI®) and other learning tool interoperability standards. The Tsugi Framework provides library and database code to receive and model all of the incoming LTI data in database tables and sets up a session with the important information about the LMS, user, and course.
             </p>
@@ -233,7 +235,7 @@ $_SESSION['admin'] = true;
                 <p>Installing TSUGI will do the following:</p>
                 <ol>
                     <li>Do a pre-flight check to see whether requirements are met</li>
-                    <li>Create a folder tsugi in your xerte installation</li>
+                    <li>Create a folder named tsugi in your Xerte installation</li>
                     <li>Retrieve the TSUGI install package and unzip it</li>
                     <li>Create a config.php for TSUGI</li>
                     <li>Create the TSUGI database (inside the Xerte database)</li>
@@ -251,10 +253,10 @@ $_SESSION['admin'] = true;
                 <p>Upgrading TSUGI will do the following:</p>
                 <ol>
                     <li>Do a pre-flight check to see whether requirements are met</li>
-                    <li>Create a backup of the tsugi folder and the mysql database</li>
-                    <li>Remove the old folder and create a new empty tsugi folder</li>
+                    <li>Create a backup of the tsugi folder and the MySQL database in the setuptsugi folder</li>
+                    <li>Remove the old folder and create a new empty folder named tsugi</li>
                     <li>Retrieve the TSUGI install package and unzip it</li>
-                    <li>Write the original config.php top the new installation</li>
+                    <li>Write the original config.php to the new installation</li>
                     <li>Upgrade the TSUGI database (inside the Xerte database)</li>
                 </ol>
                 </div>
@@ -306,7 +308,7 @@ $_SESSION['admin'] = true;
                 $phpversion = phpversion();
                 if ($phpversion < "7.2.0" || $phpversion >= "8.1.0")
                 {
-                    echo "<span style='color:#F41F15;'>Your PHP version (". $phpversion . ") is not supported by TSUGI. Please update to a verion >= 7.4 or lower than 8.1.</span> <br>\n";
+                    echo "<span style='color:#F41F15;'>Your PHP version (". $phpversion . ") is not supported by TSUGI. Please update to a PHP version 7.4 or higher but lower than PHP 8.1.</span> <br>\n";
                     echo "Aborting!";
                     exit(-1);
                 }
@@ -351,6 +353,12 @@ $_SESSION['admin'] = true;
                 echo "Create backup of TSUGI tables (this may take several minutes)<br>\n";
                 flush();
                 $sqlbackup = backup_tables($CFG->dbprefix . "*");
+                if ($sqlbackup === false)
+                {
+                    echo "<span style='color:#F41F15;'>Failed to create backup of SQL tables. No table were found in the Xerte database. This is not a TSUGI install previously done by setuptsugi. You have to upgrade your installation by hand.</span> <br>\n";
+                    echo "Aborting!";
+                    exit(-1);
+                }
                 $ok = file_put_contents("tsugidb_" . $date . ".sql", $sqlbackup);
                 if ($ok === false)
                 {
@@ -383,7 +391,7 @@ $_SESSION['admin'] = true;
                 global $xerte_toolkits_site;
 
                 // Download Tsugi bestanden
-                echo "<br>Download the tsugi installer package<br>\n";
+                echo "<br>Download the TSUGI installer package<br>\n";
                 flush();
                 //$url = "https://github.com/$u/$repo/archive/master.zip";
                 $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/master.zip";
@@ -424,7 +432,7 @@ $_SESSION['admin'] = true;
                         exit(-1);
                     }
                     $res = $zip->close();
-                    echo "<span style='color:#099E12;'>Tsugi package successfully extracted</span><br>\n";
+                    echo "<span style='color:#099E12;'>TSUGI package successfully extracted</span><br>\n";
                 } else {
                     echo "<span style='color:#F41F15;'>Couldn't open $tsugizip!</span><br>\n";
                     echo "Aborting!";
@@ -433,7 +441,7 @@ $_SESSION['admin'] = true;
 
                 rename($xerte_toolkits_site->root_file_path . "tsugi-master", $xerte_toolkits_site->root_file_path . "tsugi");
 
-                echo "<span style='color:#099E12;'>Tsugi package successfully installed</span><br>\n";
+                echo "<span style='color:#099E12;'>TSUGI package successfully installed</span><br>\n";
 
             }
             
@@ -479,7 +487,7 @@ $_SESSION['admin'] = true;
                 // Try to call commandline php
                 $ok = exec("cd ../tsugi/admin; php upgrade.php", $out, $result);
                 if ($ok === false || $result !== 0) {
-                    echo "<span style='color:#F41F15;'>upgrading databade failed, please navigate to the tsugi admin panel, and try from there!</span><br>\n";
+                    echo "<span style='color:#F41F15;'>upgrading database failed, please navigate to the TSUGI admin panel, and try from there!</span><br>\n";
                 }
                 else{
                     $upgrade_log = "<div><div class=\"log\">\n";
