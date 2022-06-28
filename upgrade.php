@@ -203,7 +203,14 @@ function _do_cleanup()
         'USER-FILES/*/.htaccess',
         'modules/xerte/templates/*/.htaccess',
         'modules/site/templates/*/.htaccess',
-        'modules/decision/templates/*/.htaccess'
+        'modules/decision/templates/*/.htaccess',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/*',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/examples/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/extra/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/lib/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
     );
 
     foreach ($filelist as $file)
@@ -211,13 +218,17 @@ function _do_cleanup()
         if (file_exists($file) || strpos($file, "*") !== false)
         {
             echo 'Removing ' . $file . '<br>';
-            if (strpos($file, "*") === false)
+            if (strpos($file, "*") === false && $file[strlen($file)-1] !==  "/")
             {
                 unlink($file);
             }
-            else
+            else if ($file[strlen($file)-1] !==  "/")  // wildcard
             {
                 system("rm " . $file);
+            }
+            else  // folder
+            {
+                system("rm -rf " . $file);
             }
         }
         else
