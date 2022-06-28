@@ -61,7 +61,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// SCAYT available languages
     var scayt_languages = ['da_DK', 'de_DE', 'el_GR', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_CA', 'fr_FR', 'it_IT', 'nb_NO', 'nl_NL', 'sv_SE'];
-    var loLanguageScayt = loLanguage.replace("-", "_");
+    var loLanguageScayt = (loLanguage || "").replace("-", "_");
     switch (loLanguageScayt)
     {
         case 'nl_BE':
