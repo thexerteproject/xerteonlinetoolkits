@@ -208,7 +208,7 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='') {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -218,11 +218,12 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 	
-   
+    $buffer = str_replace("%TWITTERCARD%", "",$buffer);
     $buffer = str_replace("%VERSION%", $version, $buffer);
     $buffer = str_replace("%LANGUAGE%", $language_ISO639_1code, $buffer);
     $buffer = str_replace("%VERSION_PARAM%", "", $buffer);
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
+    $buffer = str_replace("%LOGO%", $logo, $buffer);
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);
     $buffer = str_replace("%TEMPLATEID%", $id, $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
@@ -266,6 +267,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     array_push($delete_file_array, $dir_path . $index);
 }
 
+
 /**
  *
  * Function scorm html page create
@@ -275,7 +277,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false) {
+function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='') {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -288,6 +290,7 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%", $lo_name, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%LOGO%", $logo, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
