@@ -2331,7 +2331,7 @@ function x_passwordPage(pswds) {
 			
 			// Queue reparsing of MathJax - fails if no network connection
 			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-			
+
 			x_setUpPage();
 		}
 
@@ -2539,6 +2539,10 @@ function x_pageContentsUpdated() {
 	
 	// lightbox image links might also need to be added
 	x_setUpLightBox();
+
+	let codeblocks = $("pre code").each(function(){
+		hljs.highlightBlock(this);
+	});
 }
 
 // by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO & page level
@@ -2599,7 +2603,12 @@ function x_loadPage(response, status, xhr) {
     // Queue reparsing of MathJax - fails if no network connection
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
-    x_setUpPage();
+	// Activate highlighting
+	let codeblocks = $("pre code").each(function(){
+		hljs.highlightBlock(this);
+	});
+
+	x_setUpPage();
 }
 
 // get deep link info
@@ -4424,7 +4433,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-					
+
 					$x_glossaryHover.fadeIn("slow");
 					
 					if (x_browserInfo.touchScreen == true) {
