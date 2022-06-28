@@ -1,0 +1,36 @@
+div.autocolumns {
+  padding: 1rem;
+  border: 1px solid #FF0000;
+  background: #f2f2f2;
+  cursor:hand;
+}
+
+/*div.autocolumns1 {
+  columns: 1 250px;
+  column-gap: 4em;
+  column-rule: 4px solid lightgrey;
+}*/
+
+div.autocolumns2 {
+  columns: 2 250px;
+  column-gap: 4em;
+  column-rule: 4px solid lightgrey;
+}
+
+div.autocolumns3 {
+  columns: 3 250px;
+  column-gap: 4em;
+  column-rule: 4px solid lightgrey;
+}
+
+div.autocolumns4 {
+  columns: 4 200px;
+  column-gap: 4em;
+  column-rule: 4px solid lightgrey;
+}
+
+div.autocolumns5 {
+  columns: 5 150px;
+  column-gap: 4em;
+  column-rule: 4px solid lightgrey;
+}
