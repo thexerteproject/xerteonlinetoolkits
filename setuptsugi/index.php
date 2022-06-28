@@ -253,7 +253,8 @@ $_SESSION['admin'] = true;
                 <p>Upgrading TSUGI will do the following:</p>
                 <ol>
                     <li>Do a pre-flight check to see whether requirements are met</li>
-                    <li>Create a backup of the tsugi folder and the MySQL database in the setuptsugi folder</li>
+                    <li>Create a backup of the tsugi folder in the setuptsugi folder</li>
+                    <li>Create a backup of the MySQL database tables in the setuptsugi folder</li>
                     <li>Remove the old folder and create a new empty folder named tsugi</li>
                     <li>Retrieve the TSUGI install package and unzip it</li>
                     <li>Write the original config.php to the new installation</li>
