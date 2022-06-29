@@ -418,9 +418,9 @@ $export_logo = get_logo_file($LO_icon_path, $theme_base_path, $default_path);
 if ($export_logo) {
     copy($export_logo, $dir_path . basename($export_logo));
     array_push($delete_file_array, $dir_path . basename($export_logo));
-    $export_logo = $dir_path . basename($export_logo);
-    if (file_exists($dir_path . basename($export_logo) )) {
-        $export_logo = '<img class="x_icon" src="' . basename($export_logo) . '" alt="" />'; 
+
+    if (file_exists($export_logo)) {
+        $export_logo = '<img class="x_icon" src="' . basename($export_logo) . '" alt="" />';
     }
     else {
         $export_logo = '';

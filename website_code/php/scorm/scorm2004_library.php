@@ -39,7 +39,7 @@ function get_logo_file($LO_icon_path, $theme_path, $template_path) {
 
 	// First the author logo
 	if (strlen(trim($LO_icon_path)) > 0) {
-		return trim($LO_icon_path);
+		return '../../../' . trim($LO_icon_path);
 	}
 
 	// Secondly check the theme logo
