@@ -2445,6 +2445,8 @@ function x_changePageStep6() {
                 }
             }
         }
+
+		$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
 		
 		x_focusPageContents(false);
 
@@ -2802,9 +2804,10 @@ function x_pageLoaded() {
 		if (textCol != undefined && textCol != "") {
 			customHeaderStyle += 'color: ' + formatColour(x_currentPageXML.getAttribute('headerTextColor')) + ';';
 		}
-		customHeaderStyle = '<style type="text/css">#x_headerBlock {' + customHeaderStyle + '}</style>';
+		customHeaderStyle = '<style id="customHeaderStyle" type="text/css">#x_headerBlock {' + customHeaderStyle + '}</style>';
 		$('#x_page' + x_currentPage).append(customHeaderStyle);
 	}
+	$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
 
 	XENITH.VARIABLES.handleSubmitButton();
 

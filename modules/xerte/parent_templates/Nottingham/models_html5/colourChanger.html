@@ -206,7 +206,9 @@
                         colourChanger.applyFilter($(this).attr('value'));
                         x_specialTheme = 'blackonyellow';
                         break;
-				 }
+				}
+				 
+				$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
 
 				var pageTypesRequiringRefresh = ['chart', 'textDrawing'];
 
