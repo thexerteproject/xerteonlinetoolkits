@@ -130,7 +130,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
             selection.getSelectedElement().$ &&
             selection.getSelectedElement().$.hasAttribute('data-cke-widget-wrapper')
         ) { // Scenario 1 DONE
-          return; // Just allow default behavious
+          return; // Just allow default behaviours
         }
 
         // Scenario 5, 6 or 7 
