@@ -1063,9 +1063,13 @@ function setup() {
 		if ($(data).find('learningObject').attr('headerRepeat') != undefined) {
 			$jumbotron.css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
 		}
+		if ($(data).find('learningObject').attr('headerSize') != undefined && $(data).find('learningObject').attr('headerSize') != "not-set") {
+			$jumbotron.css('background-size', $(data).find('learningObject').attr('headersize'));
+		}
 		if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '' && $(data).find('learningObject').attr('headerTextColour') != '0x') {
 			$jumbotron.find('#pageTitle, #pageSubTitle').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		}
+
 
 	}
 
@@ -1075,6 +1079,7 @@ function setup() {
 		header: $jumbotron.css('background-image'),
 		headerPos: $jumbotron.css('background-position'),
 		headerRepeat: $jumbotron.css('background-repeat'),
+		headerSize: $jumbotron.css('background-size'),
 		headerColour: $jumbotron.css('background-color'),
 		headerTextColour: $jumbotron.find('#pageTitle').css('color')
 	};
@@ -1593,7 +1598,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					$(".jumbotron").hide();
 
 				} else {
-					setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
+					setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerSize'), page.attr('headerColour'), page.attr('headerTextColour'));
 					$(".jumbotron").show();
 				}
 			}
@@ -2225,7 +2230,7 @@ function goToSection(pageId) {
 }
 
 // LO level header background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
-function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour) {
+function setHeaderFormat(header, headerPos, headerRepeat, headerSize, headerColour, headerTextColour) {
 
 	var $overview = $('#overview'),
 		bgImg = '';
@@ -2289,6 +2294,8 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 
 	}
 
+
+
 	if (col != '' && col != '0x' && col != 'rgba(0, 0, 0, 0)') {
 
 		if (col.indexOf('rgb(') >= 0) {
@@ -2323,6 +2330,17 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 			'background': bgImg
 		});
 
+	}
+
+	let size = 'not-set';
+	if (headerSize != undefined && headerSize != '' && headerSize != 'not-set') {
+		size = headerSize;
+	} else if (defaultHeaderCss.headerSize != undefined && defaultHeaderCss.headerSize != '' && defaultHeaderCss.headerSize != 'not-set') {
+		size = defaultHeaderCss.headerSize;
+	}
+	if (size != 'not-set')
+	{
+		$overview.css('background-size', size);
 	}
 
 	var txtCol = '';
