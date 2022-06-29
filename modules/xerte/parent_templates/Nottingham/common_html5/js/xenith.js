@@ -2790,6 +2790,15 @@ function x_pageLoaded() {
 		}
 	}
 
+	// Check if page headerBgColour/headerTextColour has been set
+	if (x_currentPageXML.getAttribute('headerBgColor') != undefined && x_currentPageXML.getAttribute('headerBgColor') != '') {
+		let customHeaderStyle = 'background-image: none;';
+		customHeaderStyle += 'background-color: ' + formatColour(x_currentPageXML.getAttribute('headerBgColor')) + ';';
+		customHeaderStyle += 'color: ' + formatColour(x_currentPageXML.getAttribute('headerTextColor')) + ';';
+		customHeaderStyle = '<style type="text/css">#x_headerBlock {' + customHeaderStyle + '}</style>';
+		$('#x_page' + x_currentPage).append(customHeaderStyle);
+	}
+
 	XENITH.VARIABLES.handleSubmitButton();
 
     $("#x_page" + x_currentPage)
@@ -2805,19 +2814,8 @@ function x_pageLoaded() {
 	
 	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
-
-//check if page header background colour has been set need to deal with headerTextColour too
-	if (x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") {
-		//check when condition triggers with alert
-		//alert(formatColour(x_currentPageXML.getAttribute("headerBgColor")));
-		let style = $("<style>")
-			.attr("id", "customHeader")
-			.append("background-colour: " + formatColour(x_currentPageXML.getAttribute("headerBgColor")));
-		$("#x_headerBlock").append(style);
-	}else{
-		$("#customHeader").remove();
-	}
 }
+
 //convert picker color to #value
 function formatColour(col) {
 	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
