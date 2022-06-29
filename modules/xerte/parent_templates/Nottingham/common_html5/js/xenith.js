@@ -2805,6 +2805,22 @@ function x_pageLoaded() {
 	
 	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
+
+//check if page header background colour has been set need to deal with headerTextColour too
+	if (x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") {
+		//check when condition triggers with alert
+		//alert(formatColour(x_currentPageXML.getAttribute("headerBgColor")));
+		let style = $("<style>")
+			.attr("id", "customHeader")
+			.append("background-colour: " + formatColour(x_currentPageXML.getAttribute("headerBgColor")));
+		$("#x_headerBlock").append(style);
+	}else{
+		$("#customHeader").remove();
+	}
+}
+//convert picker color to #value
+function formatColour(col) {
+	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
 }
 
 // detect page loaded change and update progress bar
