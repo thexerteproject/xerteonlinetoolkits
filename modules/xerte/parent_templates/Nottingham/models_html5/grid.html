@@ -82,7 +82,6 @@
 				.css("width", "")
 				.css("height", "");
 			if (x_currentPageXML.getAttribute("constrain") == "col") {
-				debugger
 				var column = 0;
 				var maxW, maxH = 0;
 
@@ -111,7 +110,6 @@
 				}
 
 			} else if (x_currentPageXML.getAttribute("constrain") == "row") {
-				debugger
 				// labels on each row should be same height & all labels should be same width...
 				var maxW = 0, maxH;
 				$grid.find("ul[class!='preview']").each(function() {
@@ -139,7 +137,6 @@
 				}
 
 			}else{
-				debugger
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
 				$grid.find("ul:not(:first) li").each(function(i) {
@@ -149,10 +146,6 @@
 					if ($.inArray(i,fixedRows) == -1) {
 						maxH = Math.max(maxH, $(this).height());
 					}
-					/*debugger
-					if(maxW > ($grid.width()-24)){
-						maxW = $grid.width()-24;
-					}*/
 				})
 						.width(maxW + 5 + "px")
 						.height(maxH + "px");
@@ -318,32 +311,16 @@
 				$("#feedback").remove();
 			}
 
-			if (x_currentPageXML.getAttribute("align") == "top") {
-				$("#gridHolder")
-					.appendTo($pageContents)
-
-				$("#feedback").appendTo($pageContents);
-				$("#btnHolder").appendTo($pageContents);
-			} else if (x_currentPageXML.getAttribute("align") == "right") {
-				$("#gridHolder")
-					.addClass("x_floatLeft")
-			} else if (x_currentPageXML.getAttribute("align") == "left") {
-				$("#gridHolder")
-					.addClass("x_floatRight")
-				$("#btnHolder").appendTo($pageContents)
-			}
-
-
 			var $grid = $("#grid");
 			var $text = $("#otherContent");
 			if(x_currentPageXML.getAttribute("gridSize") == "small"){
 				$text.css("max-width", "75%");
-			}else if(x_currentPageXML.getAttribute("gridSize") == "medium"){
-				$text.css("max-width", "50%");
+			}else if(x_currentPageXML.getAttribute("gridSize") == "full"){
+				$text.remove();
 			}else if(x_currentPageXML.getAttribute("gridSize") == "large"){
 				$text.css("max-width", "25%");
-			}else{
-				$text.remove()
+			}else if (x_currentPageXML.getAttribute("align") != "top"){
+				$text.css("max-width", "50%");
 			}
 
 			var $content = $("#content");
@@ -418,36 +395,6 @@
 			x_pageLoaded();
 		}
 
-
-		/*this.gridSize = function (size){
-			var $grid = $("#grid"), $ul, $holder, row;
-			var $text = $("#otherContent");
-			var $content = $("#content");
-			if(x_currentPageXML.getAttribute("gridSize") == "small"){
-				$grid.width(size);
-				$text.css("max-width", "75%");
-			}else if(x_currentPageXML.getAttribute("gridSize") == "medium"){
-				$grid.width(size * 2);
-				$text.css("max-width", "50%");
-			}else if(x_currentPageXML.getAttribute("gridSize") == "large"){
-				$grid.width(size * 3);
-				$text.css("max-width", "25%");
-			}else{
-				$text.remove()
-			}
-
-
-			if(x_currentPageXML.getAttribute("align") == "left"){
-				$content.css("flex-direction", "row")
-			}else if(x_currentPageXML.getAttribute("align") == "right"){
-				$content.css("flex-direction", "row-reverse")
-			}else{
-				$content.css("flex-direction", "column")
-			}
-		}*/
-
-
-
 		this.sortData = function(data) {
 
 			var $grid = $("#grid"), $ul, $holder, row,
@@ -496,7 +443,6 @@
 
 			// create labels - each label is a li with its parent ul determining which labels it can be sorted/swapped with
 			// labels can be constrained to their row or column, or can be placed anywhere
-			debugger
 			if (x_currentPageXML.getAttribute("constrain") == "col") {
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
