@@ -119,8 +119,8 @@
 		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
 		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
 		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
-		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
-		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used." condition="oai_pmh_available"/>
+		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the creator and co-author names are used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the institution that runs the Xerte install will be used." condition="oai_pmh_available"/>
 		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
 		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata"/>
 		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agee to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" mandatory="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available"/>
@@ -286,7 +286,8 @@
              answerFieldLabel="Answer"
 	         checkBtnTxt="Submit"/>]]></topXQ><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Video" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><wordsearch><![CDATA[<wordsearch name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line" solveBtnTxt="Solve Puzzle" fillChars="" retryBtnTxt="Restart Puzzle"
 	  />]]></wordsearch><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter text for the page here" >Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter text for the page here" url="Enter Search Term" results="20" panelWidth="Medium" 
-	  resultsTxt="YouTube results for term"/>]]></youtuberss></newNodes>
+	  resultsTxt="YouTube results for term"
+	  apiErrorMesg="The Youtube API returned the following error: "{0}" <br>If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template)." />]]></youtuberss></newNodes>
 
   </learningObject>
 
@@ -8734,6 +8735,7 @@
 	
 	<resultsTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
+    <apiErrorMesg label="Google Youtube API error message" type="textInput" language="true"/>
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
