@@ -336,11 +336,22 @@
 
 			var $grid = $("#grid");
 			var $text = $("#otherContent");
-			if(x_currentPageXML.getAttribute("gridSize") == "small"){
+			var gridSize = x_currentPageXML.getAttribute("gridSize");
+			if (gridSize == undefined)
+			{
+				if (x_currentPageXML.getAttribute("text") == undefined)
+				{
+					gridSize = "full";
+				}
+				else {
+					gridSize = "medium";
+				}
+			}
+			if(gridSize == "small"){
 				$text.css("max-width", "75%");
-			}else if(x_currentPageXML.getAttribute("gridSize") == "medium"){
+			}else if(gridSize == "medium"){
 				$text.css("max-width", "50%");
-			}else if(x_currentPageXML.getAttribute("gridSize") == "large"){
+			}else if(gridSize == "large"){
 				$text.css("max-width", "25%");
 			}else{
 				$text.remove()

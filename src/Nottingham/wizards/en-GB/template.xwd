@@ -3129,7 +3129,7 @@
 	<constrain label="Constrain Labels" type="ComboBox" options="Off,On (Row),On (Column)" data="none,row,col"/>
 	<style label="Borders" type="ComboBox" options="None,Full Grid,Simple,Horizontal Only,Vertical Only,Outside Border" data="none,full,simple,horizontal,vertical,outside"/>
 	<align label="Text Align" type="ComboBox" options="Left,Right,Top" data="left,right,top" defaultValue="left" width="100"/>
-	<gridSize label="Grid Size" type="ComboBox" options="Small, Medium, Large, Full" data="small,medium,large,full" defaultValue="medium" width="100"/>
+	<gridSize label="Grid Size" type="ComboBox" options="Small, Medium, Large, Full" data="small,medium,large,full" defaultValue="medium" mandatory="true" width="100"/>
 	<drag label="Drop Label Action" type="ComboBox" options="Insert,Replace" data="insert,replace"/>
 	
 	<fix type="group" label="Fixed Cells" optional="true">
