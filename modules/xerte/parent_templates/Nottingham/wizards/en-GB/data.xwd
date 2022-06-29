@@ -285,9 +285,9 @@
 			 failed="Not all of the answers are correct"
              answerFieldLabel="Answer"
 	         checkBtnTxt="Submit"/>]]></topXQ><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Video" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><wordsearch><![CDATA[<wordsearch name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line" solveBtnTxt="Solve Puzzle" fillChars="" retryBtnTxt="Restart Puzzle"
-	  />]]></wordsearch><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter text for the page here" >Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter text for the page here" url="Enter Search Term" results="20" panelWidth="Medium" 
-	  resultsTxt="YouTube results for term"
-	  apiErrorMesg="The Youtube API returned the following error: "{0}" <br>If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template)." />]]></youtuberss></newNodes>
+	  />]]></wordsearch><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter text for the page here" >Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter text for the page here" url="Enter Search Term" results="20" panelWidth="Medium"
+                           	  resultsTxt="YouTube results for term"
+                           	  apiErrorMesg="The Youtube API returned the following error: '{0}'&lt;br&gt;If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template)." />]]></youtuberss></newNodes>
 
   </learningObject>
 
