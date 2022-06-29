@@ -120,7 +120,7 @@
 	-moz-columns: 3 250px;
 	columns: 3 250px;
 	column-gap: 4em;
-	/*column-rule: 4px solid lightgrey;*/
+	column-rule: 4px solid lightgrey;
 }
 .autocolumns4{
 	-webkit-columns: 4 200px;
