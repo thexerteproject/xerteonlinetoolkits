@@ -208,7 +208,6 @@ function _do_cleanup()
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/examples/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/extra/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/lib/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
     );
