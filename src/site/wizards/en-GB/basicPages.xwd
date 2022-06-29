@@ -8,7 +8,10 @@
 		<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
 		<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
 		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
-		<headerBanner type="ComboBox" data="Jumbotron,Smaller banner" options="Jumbotron,Smaller banner" optional="true" label="Banner" defaultValue="Smaller banner" width="175"/>
+		<headerBanner type="ComboBox" label="Banner" conditionTrigger="true" data="fullscreen,fixedheight" options="Full screen,Fixed height" optional="true" defaultValue="fixedheight" width="175" tooltip="Choose whether the banner needs to be full screen or fixed height when opening page"/>
+		<bannerHeight type="NumericStepper" label="Banner height" min="50" max="500" step="25" width="100" optional="true" defaultValue="200" tooltip="The height of the fixed height banner or the collapsed full height banner"/>
+		<bannerCollapse type="CheckBox" condition="headerBanner=='fullscreen'" label="Collapse banner"  optional="true" defaultValue="true" tooltip="Whether to collapse the full screen banner when scrolling down"  />
+		<bannerFullScrolldownInfo type="CheckBox" condition="headerBanner=='fullscreen'" label="Enable scroll down info" optional="true" defaultValue="true" tooltip="Show an arrow and a help text to scroll down when the banner is full screen" />
 	</headerGroup>
 	
 	<pageLink label="Page Link" type="TextInput" wysiwyg="true" defaultValue="" optional="true" tooltip="The link text for the page menu (by default this will be the page title)"/>

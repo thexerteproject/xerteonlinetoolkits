@@ -709,3 +709,55 @@ and (max-width :600px) {
         content: none !important;
     }
 }
+
+/* --SCROLL DOWN PROMPT STYLE AND ANIMATION-------------------------------------- */
+/*navigation promt arrow and text*/
+@keyframes x_bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    40% {
+        -moz-transform: translateY(-30px);
+        -ms-transform: translateY(-30px);
+        -webkit-transform: translateY(-30px);
+        transform: translateY(-30px);
+    }
+    60% {
+        -moz-transform: translateY(-15px);
+        -ms-transform: translateY(-15px);
+        -webkit-transform: translateY(-15px);
+        transform: translateY(-15px);
+    }
+}
+#x_clickableWrapper {
+    position: fixed;
+    width: 100vw;
+    left: calc(-50vw + 50%);
+    bottom: 0;
+    padding-bottom: 16px;
+    text-align: center;
+    color: #eaeaea;
+    cursor: pointer;
+    z-index: 1;
+}
+.x_arrow {
+    margin-bottom: 10px;
+}
+.x_arrow i {
+    text-shadow: 4px 6px 12px rgba(0, 0, 0, .7);
+}
+.x_promptText {
+    font: 400 15px 'Roboto Condensed', sans-serif;
+}
+.x_bounce {
+    -moz-animation: x_bounce 2s infinite;
+    -webkit-animation: x_bounce 2s infinite;
+    animation: x_bounce 2s infinite;
+}

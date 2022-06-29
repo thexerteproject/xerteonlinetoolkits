@@ -36,6 +36,8 @@ var defaultHeaderCss;
 var urlParams = {};
 var categories;
 var validPages = [];
+var collapseBanner = false;
+var collapseHeight = 200;
 
 function init(){
 	loadContent();
@@ -1341,7 +1343,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (tempPageIndex != undefined) {
 			parseContent({ type: "index", id: tempPageIndex });
 		}
-		this.CheckBanner(tempPageIndex)
+		this.x_CheckBanner(tempPageIndex)
 
 	// Then try to look them up by ID
 	} else {
@@ -1397,24 +1399,78 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (found == false) {
 			console.log("Page/section with ID *" + pageInfo.ID + "* not found");
 		}
-		this.CheckBanner(i)
+		this.x_CheckBanner(i)
 	}
 }
 
-function CheckBanner(index){
+function x_CheckBanner(index){
 	debugger
-	var banner = $(data).find('page').eq(index).attr('headerBanner');
-	if(banner == "Jumbotron"){
-		$(".jumbotron").addClass("scale");
+	const banner = $(data).find('page').eq(index).attr('headerBanner');
+	if(banner == "fullscreen"){
+		$(".jumbotron").addClass("x_scale");
 		var viewHeight = $(this).height();
-		$(".scale").height(viewHeight);
-	}else{
-		$(".jumbotron").removeClass("scale");
+		$(".x_scale").height(viewHeight);
+		// check collapse
+		const collapse = $(data).find('page').eq(index).attr('bannerCollapse');
+		if (collapse != undefined && collapse=="true")
+		{
+			collapseBanner = true;
+			let height=200;
+			if ($(data).find('page').eq(index).attr('bannerHeight') !== undefined)
+			{
+				height = $(data).find('page').eq(index).attr('bannerHeight');
+			}
+			collapseHeight = height;
+		}
+		else
+		{
+			collapseBanner = false;
+		}
+		// check info
+		const checkinfo = $(data).find('page').eq(index).attr('bannerFullScrolldownInfo');
+		if (checkinfo != undefined && checkinfo=="true")
+		{
+			// Add fullscreen info in clickableWrapper
+			// Get text from languageData
+			const label = (languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
+			setTimeout(function () {
+				if ($(".arrow").length) {
+					return false;
+				}
+				$("<div id='x_clickableWrapper'><div class='x_arrow x_bounce'><i class='fa fa-chevron-down fa-2x' aria-hidden='true'></i></div><div class='x_promptText'>" + label + "</div></div>").appendTo(".jumbotron .container").hide().fadeIn(1000);
+			}, 800);
+		}
+
+	}else if (banner == "fixedheight") {
+		let height=200;
+		if ($(data).find('page').eq(index).attr('bannerHeight') !== undefined)
+		{
+			height = $(data).find('page').eq(index).attr('bannerHeight');
+		}
+		collapseHeight = height;
+		$(".jumbotron").removeClass("x_scale");
 		$(".jumbotron").css({
-			"height":"200px"
-		})
+			"height":height + "px"
+		});
 	}
 }
+
+//this is the main scroll function
+$(window).scroll(function () {
+	if ($(document).scrollTop() > 20) {
+		if (collapseBanner) {
+			$(".x_scale").addClass("x_shrink");
+			$(".x_scale").css("height", collapseHeight + "px");
+			$("#x_clickableWrapper").remove();
+		}
+	} else {
+		if (collapseBanner) {
+			$(".x_scale").removeClass("x_shrink");
+			$(".x_scale").css("height", Math.max(document.documentElement.clientHeight, window.innerHeight || 0));
+		}
+	}
+});
+
 
 // function loads a new page
 function parseContent(pageRef, sectionNum, contentNum, addHistory) {
@@ -1513,7 +1569,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 			// store current page
 			currentPage = pageIndex;
-			this.CheckBanner(currentPage)
+			this.x_CheckBanner(currentPage)
 
 			//set the main page title and subtitle
 			$('#pageTitle').html(page.attr('name'));
