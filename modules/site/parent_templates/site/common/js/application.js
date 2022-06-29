@@ -188,6 +188,13 @@ function loadContent(){
 		
 		fixSideBar();
 	});
+
+	setTimeout(function() {
+		$('div.nav-collapse li a').click(function () {
+			$('.navbar-toggler').click();
+		});
+	}, 500);
+
 	x_xAPI_SessionId = new Date().getTime() + "" + Math.round(Math.random() * 1000000);
 }
 
@@ -1404,7 +1411,12 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 }
 
 function x_CheckBanner(index){
-	debugger
+	// This routine potentially breaks themes/customcode based on Cardiff's example
+	// if .scale is set on the jumbotron class, do nothing! Better would be to have a version in the xml of which version created the xml
+	if ($(".jumbotron").hasClass('scale'))
+	{
+		return;
+	}
 	const banner = $(data).find('page').eq(index).attr('headerBanner');
 	if(banner == "fullscreen"){
 		$(".jumbotron").addClass("x_scale");
@@ -1441,7 +1453,7 @@ function x_CheckBanner(index){
 			}, 800);
 		}
 
-	}else if (banner == "fixedheight") {
+	}else { //if (banner == "fixedheight") {
 		let height=200;
 		if ($(data).find('page').eq(index).attr('bannerHeight') !== undefined)
 		{
@@ -1452,6 +1464,7 @@ function x_CheckBanner(index){
 		$(".jumbotron").css({
 			"height":height + "px"
 		});
+		$("#x_clickableWrapper").remove();
 	}
 }
 
