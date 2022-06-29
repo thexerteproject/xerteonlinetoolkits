@@ -2520,6 +2520,7 @@ function x_changePageStep6() {
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
 	}
+
 }
 
 function x_focusPageContents(firstLoad) {
@@ -2791,10 +2792,16 @@ function x_pageLoaded() {
 	}
 
 	// Check if page headerBgColour/headerTextColour has been set
-	if (x_currentPageXML.getAttribute('headerBgColor') != undefined && x_currentPageXML.getAttribute('headerBgColor') != '') {
-		let customHeaderStyle = 'background-image: none;';
-		customHeaderStyle += 'background-color: ' + formatColour(x_currentPageXML.getAttribute('headerBgColor')) + ';';
-		customHeaderStyle += 'color: ' + formatColour(x_currentPageXML.getAttribute('headerTextColor')) + ';';
+	if ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != "")) {
+		const bgCol = x_currentPageXML.getAttribute("headerBgColor");
+		const textCol = x_currentPageXML.getAttribute("headerTextColor");
+		let customHeaderStyle = '';
+		if (bgCol != undefined && bgCol != "") {
+			customHeaderStyle += 'background-color: ' + formatColour(bgCol) + ';';
+		}
+		if (textCol != undefined && textCol != "") {
+			customHeaderStyle += 'color: ' + formatColour(x_currentPageXML.getAttribute('headerTextColor')) + ';';
+		}
 		customHeaderStyle = '<style type="text/css">#x_headerBlock {' + customHeaderStyle + '}</style>';
 		$('#x_page' + x_currentPage).append(customHeaderStyle);
 	}
