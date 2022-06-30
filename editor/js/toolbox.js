@@ -3743,13 +3743,18 @@ var EDITOR = (function ($, parent) {
 			case 'text':
 			case 'script':
 			case 'html':
-			case 'textarea':
+            case 'textarea':
 				var id = "textarea_" + form_id_offset;
 				var textvalue = "";
 
 				form_id_offset++;
 
-				if (value.toLowerCase().indexOf('<textarea') == -1) textvalue = value;
+				// Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
+                const lcvalue=value.toLowerCase();
+				if (lcvalue.indexOf('<textarea') == -1
+                    && lcvalue.indexOf('<pre>') == -1
+                    && lcvalue.indexOf('<code>') == -1)
+				    textvalue = value;
 
 				var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
 				if (options.height) textarea += "height:" + options.height + "px";
