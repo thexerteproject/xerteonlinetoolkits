@@ -1370,6 +1370,13 @@ function x_CheckBanner(index){
 			.css('float', 'none')
 			.css('text-align', alignment);
 	}
+	else
+	{
+		// remove
+		$(".jumbotron .titles")
+			.css('float', '')
+			.css('text-align', '');
+	}
 
 	const banner = $(data).find('page').eq(index).attr('headerBanner');
 	if(banner == "fullscreen"){
