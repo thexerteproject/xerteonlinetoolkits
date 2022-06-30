@@ -269,7 +269,7 @@ function show_template($row, $xapi_enabled=false){
     //twittercard
     $xml = new XerteXMLInspector();
     $xml->loadTemplateXML($xmlfile);
-    $tcoption = $xml->getLOAttribute('tcsite');
+    $tcoption = $xml->getLOAttribute('tcoption');
     $tcmode= $xml->getLOAttribute('tcmode');
     $tcsite= $xml->getLOAttribute('tcsite');
     $tccreator= $xml->getLOAttribute('tccreator');
