@@ -1367,7 +1367,7 @@ function x_CheckBanner(index){
 		{
 			collapseBanner = true;
 			let height=-1;
-			if ($(data).find('page').eq(index).attr('bannerFixedHeight' === 'true' )
+			if ($(data).find('page').eq(index).attr('bannerFixedHeight') === 'true'
 				&& $(data).find('page').eq(index).attr('bannerHeight') !== undefined)
 			{
 				height = $(data).find('page').eq(index).attr('bannerHeight');
@@ -1407,7 +1407,7 @@ function x_CheckBanner(index){
 
 	}else { //if (banner == "fixedheight") {
 		let height=-1;
-		if ($(data).find('page').eq(index).attr('bannerFixedHeight' === 'true' )
+		if ($(data).find('page').eq(index).attr('bannerFixedHeight') === 'true'
 			&& $(data).find('page').eq(index).attr('bannerHeight') !== undefined)
 		{
 			height = $(data).find('page').eq(index).attr('bannerHeight');
