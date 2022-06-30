@@ -1455,8 +1455,8 @@ $(window).scroll(function () {
 				$(".x_scale").css("height", "");
 			}
 			$(".jumbotron .titles").css("margin-top", "");
-			$("#x_clickableWrapper").remove();
 		}
+		$("#x_clickableWrapper").remove();
 	} else {
 		if (collapseBanner) {
 			$(".x_scale").removeClass("x_shrink");
