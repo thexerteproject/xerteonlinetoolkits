@@ -255,6 +255,10 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                     }
                   }
                 ]
+              },
+              {
+                type: 'html',
+                html: '<br>Note: this is the maximum number of columns. Fewer columns will<br />be displayed if device/screen resolution means this number will not fit.'
               }
             ]
           },
