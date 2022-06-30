@@ -3685,8 +3685,8 @@ var EDITOR = (function ($, parent) {
 					});
 				if (options.extraCheckBoxLabel !== undefined && options.extraCheckBoxLabel.length > 0)
                 {
-                    // It is rather difficult to add an element after anoth that is noyt yet in DOM
-                    // So create a dummy element, add eveerything to it and than get rid of it again
+                    // It is rather difficult to add an element after another that is not yet in DOM
+                    // So create a dummy element, add everything to it and than get rid of it again
                     // Ref: https://stackoverflow.com/questions/10489328/jquerys-after-method-not-working-with-newly-created-elements
                     var div = $('<div>');
                     html.attr("name", id);
@@ -3695,7 +3695,7 @@ var EDITOR = (function ($, parent) {
                         .attr("for", name)
                         .append(options.extraCheckBoxLabel);
                     div.append(label);
-                    html = div.html();
+                    html = div;
                 }
 				break;
 			case 'combobox':

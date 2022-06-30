@@ -187,7 +187,9 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
 
     var w = ww < hw ? ww : hw; 
     var h = ww < hw ? wh : hh;
-
+    console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
+    console.log("aspect    = " + ($video[0].getAttribute("aspect")?$video[0].getAttribute("aspect"):"UNDEF"));
+    console.log("mainMedia = " + ($video[0].getAttribute("mainMedia")?$video[0].getAttribute("mainMedia"):"UNDEF"));
     if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
     {
         w = "100%";
@@ -196,6 +198,7 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
             "height": "100%"
         });
     }
+    console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
 
     $video.css({
         "width":	width ? width : w,

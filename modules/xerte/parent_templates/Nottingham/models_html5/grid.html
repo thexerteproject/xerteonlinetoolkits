@@ -311,15 +311,42 @@
 				$("#feedback").remove();
 			}
 
+			if (x_currentPageXML.getAttribute("align") == "top") {
+				$("#gridHolder")
+					.appendTo($pageContents)
+
+				$("#feedback").appendTo($pageContents);
+				$("#btnHolder").appendTo($pageContents);
+			} else if (x_currentPageXML.getAttribute("align") == "right") {
+				$("#gridHolder")
+					.addClass("x_floatLeft")
+			} else if (x_currentPageXML.getAttribute("align") == "left") {
+				$("#gridHolder")
+					.addClass("x_floatRight")
+				$("#btnHolder").appendTo($pageContents)
+			}
+
+
 			var $grid = $("#grid");
 			var $text = $("#otherContent");
-			if(x_currentPageXML.getAttribute("gridSize") == "small"){
+			var gridSize = x_currentPageXML.getAttribute("gridSize");
+			if (gridSize == undefined)
+			{
+				if (x_currentPageXML.getAttribute("text") == undefined)
+				{
+					gridSize = "full";
+				}
+				else {
+					gridSize = "medium";
+				}
+			}
+			if(gridSize == "small"){
 				$text.css("max-width", "75%");
-			}else if(x_currentPageXML.getAttribute("gridSize") == "full"){
-				$text.remove();
-			}else if(x_currentPageXML.getAttribute("gridSize") == "large"){
+			}else if(gridSize == "large"){
 				$text.css("max-width", "25%");
-			}else if (x_currentPageXML.getAttribute("align") != "top"){
+			}else if(gridSize == "full"){
+				$text.remove()
+			}else if (gridSize != "top"){
 				$text.css("max-width", "50%");
 			}
 
@@ -394,6 +421,36 @@
 			//this.sizeChanged();
 			x_pageLoaded();
 		}
+
+
+		/*this.gridSize = function (size){
+			var $grid = $("#grid"), $ul, $holder, row;
+			var $text = $("#otherContent");
+			var $content = $("#content");
+			if(x_currentPageXML.getAttribute("gridSize") == "small"){
+				$grid.width(size);
+				$text.css("max-width", "75%");
+			}else if(x_currentPageXML.getAttribute("gridSize") == "medium"){
+				$grid.width(size * 2);
+				$text.css("max-width", "50%");
+			}else if(x_currentPageXML.getAttribute("gridSize") == "large"){
+				$grid.width(size * 3);
+				$text.css("max-width", "25%");
+			}else{
+				$text.remove()
+			}
+
+
+			if(x_currentPageXML.getAttribute("align") == "left"){
+				$content.css("flex-direction", "row")
+			}else if(x_currentPageXML.getAttribute("align") == "right"){
+				$content.css("flex-direction", "row-reverse")
+			}else{
+				$content.css("flex-direction", "column")
+			}
+		}*/
+
+
 
 		this.sortData = function(data) {
 

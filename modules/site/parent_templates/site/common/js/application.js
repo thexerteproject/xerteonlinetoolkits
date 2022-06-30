@@ -1353,6 +1353,8 @@ function x_CheckBanner(index){
 	{
 		return;
 	}
+	// Remove introtext if visible
+	$("#x_clickableWrapper").remove();
 	const banner = $(data).find('page').eq(index).attr('headerBanner');
 	if(banner == "fullscreen"){
 		$(".jumbotron").addClass("x_scale");

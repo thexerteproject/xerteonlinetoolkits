@@ -122,7 +122,7 @@
 		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the institution that runs the Xerte install will be used." condition="oai_pmh_available"/>
 		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
 		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
-		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agee to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" mandatory="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
+		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" mandatory="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
     </meta>
 	
 	<twittercard type="group" label="Twitter card" optional="true">
