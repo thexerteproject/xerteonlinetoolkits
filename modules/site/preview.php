@@ -146,8 +146,6 @@ function show_preview_code($row)
     }
 
     //twittercard
-    $xml = new XerteXMLInspector();
-    $xml->loadTemplateXML($xmlfile);
     $tcoption = $xml->getLOAttribute('tcoption');
     $tcmode= $xml->getLOAttribute('tcmode');
     $tcsite= $xml->getLOAttribute('tcsite');
