@@ -48,6 +48,7 @@
   CKEDITOR.plugins.add('xotcolumns', {
     requires: 'widget',
     icons: 'xotcolumns',
+    lang: 'en',
     hidpi: true,
 
     // Configure CKEditor DTD for custom drupal-entity element.
@@ -65,6 +66,8 @@
 
     init: function (editor) {
 
+      const lang = editor.lang.xotcolumns;
+
       function getNearestWidgetAscendant(widgetName) {
         return editor.getSelection().getStartElement().getAscendant(function (element) {
           return element.hasAttribute && element.hasAttribute('data-widget') && element.getAttribute('data-widget') === widgetName;
@@ -79,7 +82,7 @@
 
       // Add toolbar button for this plugin.
       editor.ui.addButton('xotcolumns', {
-        label: 'Autocolumns',
+        label: lang.toolbarButtonLabel,
         command: 'xotcolumns',
         toolbar: 'blocks,1',
         icon: this.path + 'icons/' + (CKEDITOR.env.hidpi ? 'hidpi/' : '') + 'xotcolumns.png'
@@ -169,11 +172,10 @@
 			
         editor.addMenuGroup('xotcolumnsGroup');
         editor.addMenuItem('xotcolumnsItem', {
-          label: 'Autocolumns',
+          label: lang.contextMenuLabel,
           icon: this.path + 'icons/xotcolumns.png',
           command: 'xotcolumns',
           group: 'xotcolumnsGroup',
-          //order: -10
         });
   
         editor.contextMenu.addListener(function(element, selection, path) {

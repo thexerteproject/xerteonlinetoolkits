@@ -3,15 +3,17 @@
 CKEDITOR.dialog.add('xotcolumns', function (editor) {
   'use strict';
 
-    // Add a style declaration for the faded buttons - https://ckeditor.com/docs/ckeditor4/latest/guide/plugin_sdk_styles.html
-    var style = document.createElement('style');
-    style.innerHTML = `
-    a.cke_disabled, a.cke_disabled span, a.cke_disabled span i {
-      color: lightgrey;
-      cursor: pointer;
-      pointer-events: none;
-    }`;
-    document.head.appendChild(style);
+  const lang = editor.lang.xotcolumns;
+
+  // Add a style declaration for the faded buttons - https://ckeditor.com/docs/ckeditor4/latest/guide/plugin_sdk_styles.html
+  var style = document.createElement('style');
+  style.innerHTML = `
+  a.cke_disabled, a.cke_disabled span, a.cke_disabled span i {
+    color: lightgrey;
+    cursor: pointer;
+    pointer-events: none;
+  }`;
+  document.head.appendChild(style);
 
   function getNearestWidgetAscendant(widgetName) {
     return editor.getSelection().getStartElement().getAscendant(function (element) {
@@ -96,7 +98,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
       var nearestWidget = getNearestWidgetAscendant('xotcolumns');
 
       // Toggle the Remove button status
-      this.getButton('remove')[nearestWidget ? 'enable' : 'disable']();
+      this.getButton('remove_button')[nearestWidget ? 'enable' : 'disable']();
   
       if (nearestWidget) { // Scenario 2, 3, 4 DONE
         // First we'll find the correct widget and focus it
@@ -173,7 +175,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
           {
             id: 'columnsFieldset',
             type: 'fieldset',
-            label: 'Column settings',
+            label: lang.columnsFieldsetLabel,
             children: [
               {
                 type: 'hbox',
@@ -182,7 +184,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                   {
                     id: 'columns',
                     type: 'number',
-                    label: 'Number of columns',
+                    label: lang.columnsLabel,
                     style: 'width: 58px; padding: 0 0 10px 30px;',
                     default: 2,
                     min: 1,
@@ -207,7 +209,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                   {
                     id: 'column_spacing',
                     type: 'number',
-                    label: 'Spacing between columns',
+                    label: lang.column_spacingLabel,
                     style: 'width: 58px;',
                     default: 1,
                     min: 0,
@@ -228,7 +230,6 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                   {
                     id: 'spacing_units',
                     type: 'select',
-                    //label: ' between columns',
                     default: 'em',
                     style: 'margin-top: 0; width: 58px;',
                     items: [
@@ -258,14 +259,14 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
               },
               {
                 type: 'html',
-                html: '<br>Note: this is the maximum number of columns. Fewer columns will<br />be displayed if device/screen resolution means this number will not fit.'
+                html: lang.tip
               }
             ]
           },
           {
             id: 'rulerStyleFieldset',
             type: 'fieldset',
-            label: 'Ruler style',
+            label: lang.rulerStyleFieldsetLabel,
             children: [
               {
                 type: 'hbox',
@@ -274,7 +275,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                   {
                     id: 'ruler_style',
                     type: 'select',
-                    label: 'Line style',
+                    label: lang.ruler_styleLabel,
                     default: 'none',
                     items: [
                       ['none'],
@@ -297,7 +298,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                       {
                         id: 'ruler_thickness',
                         type: 'number',
-                        label: 'Line thickness',
+                        label: lang.ruler_thicknessLabel,
                         style: 'width: 50px; margin-top: 0.35em;',
                         default: 1,
                         min: 0,
@@ -323,7 +324,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                       {
                         type: 'text',
                         id: 'ruler_colour',
-                        label: 'Line colour',
+                        label: lang.ruler_colourLabel,
                         default: '#000000',
                         onChange: function () {
                           this.getInputElement().setAttribute('style',
@@ -341,13 +342,14 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                       },
                       {
                         type: 'button',
-                        label: 'Pick',
+                        id: 'ruler_colour_button',
+                        label: lang.ruler_colour_buttonLabel,
                         style: 'margin-top: 1.66em;',
                         onClick: function() {
-                            editor.getColorFromDialog(function(colour) {
-                                const colour_box = this.getDialog().getContentElement('autocolumns','ruler_colour');
-                                colour_box.setValue(colour.toUpperCase());
-                            }, this, {'color': '#987654'}); // TODO figure this out
+                          editor.getColorFromDialog(function(colour) {
+                              const colour_box = this.getDialog().getContentElement('autocolumns','ruler_colour');
+                              colour_box.setValue(colour.toUpperCase());
+                          }, this, {'color': '#987654'}); // TODO figure this out
                         }
                       }
                     ]
@@ -360,21 +362,21 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
       }
     ],
     buttons: [
-/*removeButton*/{
-              type: 'button',
-              id: 'remove',
-              label: 'Remove', //lang.insertButton,
-              title: 'Remove Autocolumns Formatting', //lang.insertButton,
-              onClick: function() {
-                let returnValue = window.confirm('Are you sure you want to remove this Autocolumns box?');
-                if (returnValue) {
-                  this.getDialog()._.markForRemoval = true;
-                  this.getDialog().getButton('ok').click();
-                }
-              }
-            },
-            CKEDITOR.dialog.okButton,
-            CKEDITOR.dialog.cancelButton
-            ]
+      {
+        type: 'button',
+        id: 'remove_button',
+        label: lang.remove_buttonLabel,
+        title: lang.remove_buttonTitle,
+        onClick: function() {
+          let returnValue = window.confirm(lang.remove_buttonPromptMessage);
+          if (returnValue) {
+            this.getDialog()._.markForRemoval = true;
+            this.getDialog().getButton('ok').click();
+          }
+        }
+      },
+      CKEDITOR.dialog.okButton,
+      CKEDITOR.dialog.cancelButton
+    ]
   };
 });
