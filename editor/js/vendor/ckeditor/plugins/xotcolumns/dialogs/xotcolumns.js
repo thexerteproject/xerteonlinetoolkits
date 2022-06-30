@@ -143,19 +143,21 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
     onHide: function () {
       // MEGA MEGA HACKY but seems to be how anchor and link plugins do it too...
       if (editor.widgets.focused && editor.widgets.focused.element) {
-        let widgetElement = editor.widgets.focused.element;
-        let widgetElementParent = widgetElement.$.parentElement;
+        let widgetElement = editor.widgets.focused.element.$;
+        let widgetElementParent = widgetElement.parentElement;
 
         // If we have content then put it back
         if (this._.selectedElements) {
-          // First remove <p> child node
-          if (widgetElement.getChild(0)) widgetElement.getChild(0).remove();
+          // First remove all children
+          while (widgetElement.hasChildNodes()) {
+            widgetElement.removeChild(widgetElement.lastChild);
+          }
 
           if (this._.markForRemoval) {
             widgetElementParent.parentNode.replaceChild(this._.selectedElements, widgetElementParent);
           }
           else {
-            widgetElement.$.append(this._.selectedElements);
+            widgetElement.append(this._.selectedElements);
           }
         }
 
@@ -207,7 +209,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                     type: 'number',
                     label: 'Spacing between columns',
                     style: 'width: 58px;',
-                    default: 0,
+                    default: 1,
                     min: 0,
                     step: 0.1,
                     onChange: function () {
@@ -293,7 +295,7 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
                         type: 'number',
                         label: 'Line thickness',
                         style: 'width: 50px; margin-top: 0.35em;',
-                        default: 0,
+                        default: 1,
                         min: 0,
                         step: 1,
                         setup: function (element) {
