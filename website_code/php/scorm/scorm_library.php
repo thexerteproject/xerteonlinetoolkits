@@ -208,7 +208,7 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='') {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='', $logo_r='') {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -224,6 +224,8 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%VERSION_PARAM%", "", $buffer);
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
     $buffer = str_replace("%LOGO%", $logo, $buffer);
+    $buffer = str_replace("%LOGO_L%", $logo, $buffer);
+    $buffer = str_replace("%LOGO_R%", $logo_r, $buffer);
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);
     $buffer = str_replace("%TEMPLATEID%", $id, $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
