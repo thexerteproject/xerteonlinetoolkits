@@ -313,14 +313,7 @@
                             );
                         });
 
-						let answers = $pageContents.data('answeredValues');
-						let selected = -1;
-						if (answers[currentQuestion] !== undefined)
-						{
-							selected = (currentAnswers.length-1) * answers[currentQuestion]/100;
-						}
-
-						$.each(currentAnswers, function (index, value) {
+                        $.each(currentAnswers, function (index, value) {
                             var $thisOptionGroup, $thisOption, $thisOptionTxt;
 
                             if (index != 0) {
@@ -348,18 +341,11 @@
                                     opinion.checkButtonState();
                                 });
                             $thisOption[0].score = index;
-
                             $thisOptionTxt
                                 .attr("for", "option" + currentQuestion + "_" + index)
                                 .data("option", $thisOption)
                                 .html(x_addLineBreaks(value.text));
                         });
-
-						if (selected != -1)
-						{
-							let $thisOptions = $optionHolder.find("input");
-							$($thisOptions[selected]).prop('checked', true);
-						}
 
                         name = $thisQ.getAttribute("prompt");
 
@@ -777,8 +763,6 @@
 				$textHolder.append('<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
 			}
 
-			var backBtnText = "Back";
-
 			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
 			if (submitBtnText == undefined)
 			{
@@ -800,23 +784,6 @@
 				"onCompletionText"	:onCompletionText,
 			});
 
-			// BackBtn
-
-			$("#backBtn")
-				.button({
-					label:backBtnText
-				})
-				.click(function(){
-					debugger;
-					let pageSize = $pageContents.data('pageSize');
-					let currentQuestion = $pageContents.data('currentQuestion');
-					if (currentQuestion >= pageSize)
-					{
-						currentQuestion -= pageSize;
-						$pageContents.data('currentQuestion', currentQuestion);
-						opinion.loadQuestions();
-					}
-				});
             // submit button
             $("#checkBtn")
 				.button({
@@ -941,7 +908,6 @@
 						<div id="buttonHolder">
 							<button id="printBtn"></button>
 							<button id="resetBtn"></button>
-							<button id="backBtn"></button>
 							<button id="checkBtn"></button>
 						</div>
 					</div>
