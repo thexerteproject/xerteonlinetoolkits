@@ -1356,6 +1356,21 @@ function x_CheckBanner(index){
 	}
 	// Remove introtext if visible
 	$("#x_clickableWrapper").remove();
+
+	// Title alignment
+	const alignmentLO = $(data).find('learningObject').attr('headerTitleAlign');
+	let alignment = $(data).find('page').eq(index).attr('headerTitleAlign');
+	if (alignment == undefined)
+	{
+		alignment = alignmentLO;
+	}
+	if (alignment != undefined)
+	{
+		$(".jumbotron .titles")
+			.css('float', 'none')
+			.css('text-align', alignment);
+	}
+
 	const banner = $(data).find('page').eq(index).attr('headerBanner');
 	if(banner == "fullscreen"){
 		$(".jumbotron").addClass("x_scale");
