@@ -105,8 +105,84 @@ if ($theme != "" && $theme != "default")
 copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
 array_push($delete_file_array, $dir_path . "favicon.ico");
 
-export_folder_loop($dir_path);
+/*
+* export logo(s)
+*/
+function process_logos($LO_logo, $theme_path, $template_path) {
+    $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
+    $extensions = ['svg',  'png', 'jpg', 'gif'];
+    $logoUrls = new stdClass;
 
+    foreach ([['L', '_left'], ['R', '']] as $suffix) {
+        $path = get_logo_path($suffix, $LO_logo, $theme_path, $template_path);
+        if ($path) {
+            $logoUrls->{'logo_' . $suffix[0]} = $path; // . '" alt="" />' , $page_content);
+        }
+        /*else {
+            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="" alt="" />' , $page_content);
+        }*/
+    }
+    return $logoUrls;
+}
+
+function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
+    $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
+    $extensions = ['svg',  'png', 'jpg', 'gif'];
+
+    // First the author logo
+    $logo_path = trim($LO_logo->{$suffix[0] . '_path'});
+    if (strlen($logo_path) > 0) {
+        return  '../../../' . $LO_logo->{$suffix[0] . '_path'};
+    }
+
+    // Secondly check the theme logo
+    foreach($extensions as $ext) {
+        if (file_exists('../../../' . $theme_path . '/logo'. $suffix[1] . '.' . $ext)) {
+            return '../../../' . $theme_path . '/logo'. $suffix[1] . '.' . $ext;
+        }
+    }
+
+    // Lastly check the default location
+    foreach($extensions as $ext) {
+        if (file_exists('../../../' . $template_path . 'common/img/logo'. $suffix[1] . '.' . $ext)) { 
+            return '../../../' . $template_path . 'common/img/logo' . $suffix[1] . '.'. $ext;
+        }
+    }
+
+    return; //null for not found
+}
+
+$fileLocation = 'USER-FILES/' . $row['template_id'] . '-' . $row['username'] . '-' . $row['template_name'] . '/';
+function fixFileLocation($LO_icon_path, $fileLocation) {
+    if (strpos($LO_icon_path, "FileLocation + '") !== false) {
+        $LO_icon_path = str_replace("FileLocation + '" , $fileLocation, $LO_icon_path);
+        $LO_icon_path = rtrim($LO_icon_path, "'");
+    }
+    return $LO_icon_path;
+}
+$LO_logo = new stdClass;
+$LO_logo->L_path = fixFileLocation($xml->getIcon()->logoL, $fileLocation);
+$LO_logo->R_path = fixFileLocation($xml->getIcon()->logoR, $fileLocation);
+$theme_base_path = 'themes/' . $row['parent_template'] . '/' . ($xml->getTheme() === 'default' ? 'apereo' : $xml->getTheme());
+$default_path = 'modules/' . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . '/';
+
+$temp = process_logos($LO_logo, $theme_base_path, $default_path);
+
+$LO_logoL = '<img class="logo" src="" alt="" />';
+if (property_exists($temp, 'logo_L')) {
+    copy($xerte_toolkits_site->root_file_path . str_replace('../../../', '', $temp->logo_L), $dir_path . basename($temp->logo_L));
+    array_push($delete_file_array, $dir_path . basename($temp->logo_L));
+    $LO_logoL = '<img class="logo" src="' . basename($temp->logo_L) . '" alt="" />';
+}
+
+$LO_logoR = '<img class="logo" src="" alt="" />';
+if (property_exists($temp, 'logo_R')) {
+    copy($xerte_toolkits_site->root_file_path . str_replace('../../../', '', $temp->logo_R), $dir_path . basename($temp->logo_R));
+    array_push($delete_file_array, $dir_path . basename($temp->logo_R));
+    $LO_logoR = '<img class="logo" src="' . basename($temp->logo_R) . '" alt="" />';
+}
+
+export_folder_loop($dir_path);
 
 /*
  * Get the name of the learning object
@@ -116,7 +192,7 @@ $lo_name = $xml->getName();
 /*
  * Create basic HTML page
  */
-basic_html5_page_create($row['template_id'], $row['template_framework'], $row['template_framework'], $lo_name, $row['date_modified'], $row['date_created']);
+basic_html5_page_create($row['template_id'], $row['template_framework'], $row['template_framework'], $lo_name, $row['date_modified'], $row['date_created'], false, false, '', false, $LO_logoL, $LO_logoR);
 
 
 /*
