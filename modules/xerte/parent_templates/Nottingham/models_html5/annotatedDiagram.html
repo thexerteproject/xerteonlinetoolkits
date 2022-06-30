@@ -155,7 +155,6 @@
 									if ($hs.hasClass("hsGroup")) {
 										$hs.children()
 												.each(function(){
-													debugger
 													if(x_currentPageXML.getAttribute("link") == "false" || x_currentPageXML.getAttribute("link") == undefined){
 														annotatedDiagram.drawLine($(this), $this, shape);
 													}else{
@@ -164,7 +163,6 @@
 
 												});
 									} else {
-										debugger
 										if(x_currentPageXML.getAttribute("link") == "false" || x_currentPageXML.getAttribute("link") == undefined){
 											annotatedDiagram.drawLine($hs, $this, shape);
 										}else{
@@ -217,7 +215,6 @@
 				x_pageLoaded();
 			}
 
-			debugger
 			if(x_currentPageXML.getAttribute("link") == "true"){
 				$("#listHolder").css("display", "none")
 			}
@@ -565,7 +562,6 @@
 		}
 
 		this.drawLineToText = function ($hs, shape){
-			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			var $panel = $("#panel");
 			var startX = $hs.offset().left - $(context.canvas).offset().left + ($hs.width() / 2);

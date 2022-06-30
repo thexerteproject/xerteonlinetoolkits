@@ -24,12 +24,14 @@
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$("#pageVideo")
+					.width(0)
+					.height(0);
 			this.setUp();
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			debugger;
 			var $pageVideo = $("#pageVideo"),
 				iframeRatio = $pageVideo.data('iframeRatio'),
 				videoDimensions = $pageVideo.data('dimensions');
@@ -90,6 +92,7 @@
 		this.setUp = function() {
 			// Reset video for pageChanged
 			$("#pageVideo").html("");
+
 			// text align
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			var $panel = $("#pageContents .panel");
@@ -159,6 +162,7 @@
 				$pageVideo.data('iframeRatio', iframeRatio);
 				const ratio = iframeRatio[0] / iframeRatio[1];
 
+
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
 					width: videoDimensions ? Number(videoDimensions[0]) : 0,
@@ -187,7 +191,9 @@
 				}
 			}
 			
-			textVideo.sizeChanged();
+			setTimeout(function(){
+				textVideo.sizeChanged();
+			}, 100);
 			x_pageLoaded();
 		}
 

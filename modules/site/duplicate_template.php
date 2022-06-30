@@ -107,8 +107,8 @@ function duplicate_template_site($folder_name_id,$id_to_copy,$tutorial_id_from_p
     /*
      * Get the id of the folder we are looking to copy into
      */
-
-    $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/";
+    $newusername = get_template_creator_username($folder_name_id);
+    $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $newusername . "-" . $tutorial_id_from_post . "/";
 
     if(mkdir($new_path)){
 
@@ -116,12 +116,19 @@ function duplicate_template_site($folder_name_id,$id_to_copy,$tutorial_id_from_p
 
             if(create_folder_loop_site($dir_path, $new_path)){
 
-                if(file_exists($new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/lockfile.txt")){
-
-                    unlink($new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/lockfile.txt");
-
+                if(file_exists($new_path . "lockfile.txt")){
+                    unlink($new_path . "lockfile.txt");
                 }
-
+                // Remove oai-pmh consent flag if present from
+                if (file_exists($new_path . "preview.xml"))
+                {
+                    change_copied_xml_site($new_path . "preview.xml");
+                }
+                // Remove oai-pmh consent flag if present from
+                if (file_exists($new_path . "data.xml"))
+                {
+                    change_copied_xml_site($new_path . "data.xml");
+                }
 
                 return true;
 
@@ -149,4 +156,12 @@ function duplicate_template_site($folder_name_id,$id_to_copy,$tutorial_id_from_p
 
 }
 
-?>
+function change_copied_xml_site($xmlfile)
+{
+    $xml = simplexml_load_file($xmlfile);
+    if ((string)$xml['oaiPmhAgree'] === 'true')
+    {
+        $xml['oaiPmhAgree'] = 'false';
+    }
+    $xml->asXML($xmlfile);
+}
