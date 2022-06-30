@@ -1938,6 +1938,8 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 			//original default button
 			section.append($('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
 		}
+	} else if ($(data).find('learningObject').attr('topBtnHide') == 'true') {
+		section.append($('<p>').append($('<br>')));
 	}
 
 	// lightbox image links might also need to be added

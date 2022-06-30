@@ -110,11 +110,11 @@
 				<alternatingSections type="CheckBox" label="Alternating Sections" defaultValue="false" optional="true" tooltip="Enable alternating sections on all pages. When enabled, extra padding, round corners and a subtle change of background colour shows for odd and even sections. Note: if you are using a custom theme the default background colours may not be suitable. These can be changed using .oddSection and .evenSection styles."/>
 		
 		<topBtnGroup type="group" label="Back to Top button" optional="true" tooltip="Hide or change the Back to Top button">
-		<topBtnHide label="Hide the button" type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Hide the Back to Top button on all pages"/>
-		<topBtnRound label="Change to a circle and Up Arrow" type="Checkbox" defaultValue="false" condition="topBtnHide=='false'" conditionTrigger="true" optional="true" tooltip="Change the default Back to Top button to a circle containing an Up Arrow"/>
-			<topBtnRoundColour type="ColourPicker" optional="true" condition="topBtnRound=='true'" label="Circle Background Colour" tooltip="Change the default colour of the circle (optional)"/>
-			<topBtnRoundHoverColour type="ColourPicker" optional="true" condition="topBtnRound=='true'" label="Circle Hover and Focus Colour" tooltip="Change the default hover and focus colour of the circle (optional)"/>
-			<topBtnRoundIconColour type="ColourPicker" optional="true" condition="topBtnRound=='true'" label="Up Arrow Colour" tooltip="Change the default colour of the Up Arrow (optional)"/>   
+			<topBtnHide label="Hide Button" type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Hide the Back to Top button on all pages"/>
+			<topBtnRound label="Button Appearance" type="ComboBox" options="'Top' text,Circle with up arrow" data="false,true" defaultValue="false" condition="topBtnHide=='false'" conditionTrigger="true" optional="true" tooltip="Change the appearance of the back to top button"/>
+			<topBtnRoundColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Circle Background Colour" tooltip="Change the default colour of the circle (optional)"/>
+			<topBtnRoundHoverColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Circle Hover and Focus Colour" tooltip="Change the default hover and focus colour of the circle (optional)"/>
+			<topBtnRoundIconColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Up Arrow Colour" tooltip="Change the default colour of the Up Arrow (optional)"/>   
 		</topBtnGroup>
 
 		<twittercard type="group" label="Twitter card" optional="true">
