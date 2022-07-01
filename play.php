@@ -50,6 +50,12 @@ if (!isset($lti_enabled))
 }
 if ((!isset($x_embed)))
 {
+    $x_embed = false;
+}
+
+/*
+if ((!isset($x_embed)))
+{
     if (isset($_GET['embed']) && $_GET['embed'] === 'true') {
         $x_embed = true;
         if ($_GET['activated'] !== 'true')
@@ -61,6 +67,7 @@ if ((!isset($x_embed)))
         }
     }
 }
+*/
 
 //error_reporting(E_ALL);
 //ini_set('display_errors',"ON");
