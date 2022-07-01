@@ -1991,6 +1991,11 @@ function updateContent($section) {
 	
 	// Queue reparsing of MathJax - fails if no network connection
 	try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+
+	// update codesnippet code blocks
+	let codeblocks = $("pre code").each(function(){
+		hljs.highlightBlock(this);
+	});
 }
 
 function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {

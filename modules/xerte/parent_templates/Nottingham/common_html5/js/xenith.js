@@ -2508,6 +2508,7 @@ function x_pageContentsUpdated() {
 	// lightbox image links might also need to be added
 	x_setUpLightBox();
 
+	// update codesnippet code blocks
 	let codeblocks = $("pre code").each(function(){
 		hljs.highlightBlock(this);
 	});
