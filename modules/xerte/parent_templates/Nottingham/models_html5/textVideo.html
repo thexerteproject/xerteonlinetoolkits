@@ -24,9 +24,6 @@
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#pageVideo")
-					.width(0)
-					.height(0);
 			this.setUp();
 		}
 		
@@ -92,7 +89,6 @@
 		this.setUp = function() {
 			// Reset video for pageChanged
 			$("#pageVideo").html("");
-
 			// text align
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			var $panel = $("#pageContents .panel");
@@ -114,7 +110,6 @@
 				ratio = x_currentPageXML.getAttribute("iframeRatio"),
 				iframeRatio = ratio ? ratio : '16:9';
 
-			debugger;
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
 				
@@ -162,7 +157,6 @@
 				$pageVideo.data('iframeRatio', iframeRatio);
 				const ratio = iframeRatio[0] / iframeRatio[1];
 
-
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
 					width: videoDimensions ? Number(videoDimensions[0]) : 0,
@@ -191,9 +185,7 @@
 				}
 			}
 			
-			setTimeout(function(){
-				textVideo.sizeChanged();
-			}, 100);
+			textVideo.sizeChanged();
 			x_pageLoaded();
 		}
 

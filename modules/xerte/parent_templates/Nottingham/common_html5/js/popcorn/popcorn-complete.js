@@ -3216,9 +3216,9 @@
   Popcorn.fixYouTubeVimeo = function(url) {
     var path = url.trim();
     let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
-    if (result) return "www.youtube.com/watch?v=" + result[7];
+    if (result) return "https://www.youtube.com/watch?v=" + result[7] + (result[8] !== undefined ? result[8] : "");
     result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
-    if (result) return "vimeo.com/" + result[2];
+    if (result) return "https://vimeo.com/" + result[2];
     return url;
   }
 
@@ -6361,6 +6361,7 @@
           player.setVolume( 0 );
           // set subtitle to Xerte language
           player.enableTextTrack(x_params.language.substr(0,2));
+          /// TODO TOR
           player.play();
           break;
         case "loadProgress":
@@ -6935,8 +6936,8 @@
         return;
       }
       addYouTubeEvent( "pause", onFirstPause );
-      player.seekTo( 0 );
       player.pauseVideo();
+      player.seekTo( 0 );
     }
 
     function addYouTubeEvent( event, listener ) {

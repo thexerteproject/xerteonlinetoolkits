@@ -27,6 +27,8 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     
     if (mediaType == "video") {
         //load video - max dimensions set in mediaMetaData function below when dimensions received
+        // Normalize url
+        mediaData.media = Popcorn.fixYouTubeVimeo(mediaData.media);
         $mediaHolder = $holder;
         var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
 
@@ -60,7 +62,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
                     width		:"100%",
                     height		:"100%",
                     autoPlay	:mediaData.autoplay,
-                    pageName	:"mediaLesson"
+                    pageName	:mediaData.pageName ? mediaData.pageName : "mediaLesson"
                 });
 
             popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
