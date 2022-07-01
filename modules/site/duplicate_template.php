@@ -122,12 +122,12 @@ function duplicate_template_site($folder_name_id,$id_to_copy,$tutorial_id_from_p
                 // Remove oai-pmh consent flag if present from
                 if (file_exists($new_path . "preview.xml"))
                 {
-                    change_copied_xml_site($new_path . "preview.xml");
+                    change_copied_xml($new_path . "preview.xml");
                 }
                 // Remove oai-pmh consent flag if present from
                 if (file_exists($new_path . "data.xml"))
                 {
-                    change_copied_xml_site($new_path . "data.xml");
+                    change_copied_xml($new_path . "data.xml");
                 }
 
                 return true;
@@ -156,12 +156,3 @@ function duplicate_template_site($folder_name_id,$id_to_copy,$tutorial_id_from_p
 
 }
 
-function change_copied_xml_site($xmlfile)
-{
-    $xml = simplexml_load_file($xmlfile);
-    if ((string)$xml['oaiPmhAgree'] === 'true')
-    {
-        $xml['oaiPmhAgree'] = 'false';
-    }
-    $xml->asXML($xmlfile);
-}
