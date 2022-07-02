@@ -1553,7 +1553,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 		var page = $(data).find('page').eq(pageIndex);
 		var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
-		pageHash = pageHash.replace(/\./g, '_');
+		//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
 		
 		// Load page as normal as it's not opening in a new window
 		if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
