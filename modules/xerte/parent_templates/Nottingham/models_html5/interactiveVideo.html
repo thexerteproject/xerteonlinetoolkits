@@ -272,28 +272,70 @@
         };
 
         this.leavePage = function () {
+
+            $this = this;
+
             $x_pageHolder.css("overflow", '');
-            vidFullWatched.segment.end = vidFullWatched.lastTime || -1;
-            addSegment(vidFullWatched);
             $(".embed").each(function() {
                 $(this).data("popcornInstance").pause();
             });
-            if (this.popcornInstance != null) {
-                this.removeEvents();
-                this.popcornInstance.destroy();
+            // Finish tracking of video
+            // This will also account for last video segment, so there might be race conditions
+            // Also we do let popcorn handle the destruction (doNotCloseTrackiong parameter in loadMedia) of popcorn, so we need to do that hear at the end
+            vidFullWatched.segment.end = vidFullWatched.lastTime || -1;
+            // Calculate page score
+            var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+            var numOfQuestions = questions.length;
+            var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
+                x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
+                x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
+
+            score = 0;
+            for (var i = 0; i < numOfQuestions; i++) {
+                if ($this.questions[i]) {
+                    score++;
+                }
             }
-            if (vidFullWatched == undefined)
-            {
-                vidFullWatched = {
-                    duration: this.popcornInstance.duration() || 0,
-                    synchName: "video",
-                    watched: [],
-                    segments:[]
-                };
+            mcqScore = score / numOfQuestions;
+
+            let videoState = $this.popcornInstance.videoState;
+            let progress = 0;
+            if (videoState != undefined && trackVideo) {
+                // Calculate progress
+                progress = XThelperDetermineProgress(videoState);
             }
-            var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
-            XTSetPageScore(x_currentPage, progress);
-            //XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+            debugger;
+            switch (x_currentPageXML.getAttribute('trackVideo')) {
+                case 'yes':
+                    totalScore = (mcqScore + progress) / 2;
+                    break;
+                case 'only_video':
+                    totalScore = progress;
+                    break;
+                case 'no_mcqs':
+                    if (numOfQuestions == 0) {
+                        totalScore = progress;
+                    } else {
+                        totalScore = mcqScore;
+                    }
+                    break;
+                case 'no':
+                    if (numOfQuestions == 0) {
+                        // count as page with no interactions
+                        totalScore = 1;
+                    } else {
+                        totalScore = mcqScore;
+                    }
+            }
+            totalScore = Math.round(totalScore * 10000.0) / 100.0;
+            XTSetPageScore(x_currentPage, totalScore);
+
+            //Destroy popcornInstance
+            if ($this.popcornInstance) {
+                removeEvents($this.popcornInstance);
+                $this.popcornInstance.destroy();
+            }
+            $("div.popcornMedia").remove();
         };
 
         this.loadMedia = function($holder, type, data) {
@@ -610,23 +652,23 @@
 
             // _____ LOAD MEDIA _____
             // Loading media is now handled by the mediaconstructor plugin. (22/12/2021)
-                                                                                   var mcqBool = true;
-                                                                                   this.isMCQ = (node) => {
-                                                                                   var childs = node.childNodes
-                                                                                   for (var i = 0; i < childs.length; i++) {
-                                                                                   if (childs[i].nodeName === 'synchMCQ') {
-                                                                                     mcqBool = false;
-                                                                                    console.log(childs[i].nodeName);
-                                                                                   }
-                                                                                    console.log(childs[i].nodeName);
-                                                                                    this.isMCQ(childs[i]);
-                                                                                   }
-                                                                                   }
+            var mcqBool = true;
+            this.isMCQ = (node) => {
+               var childs = node.childNodes
+               for (var i = 0; i < childs.length; i++) {
+                   if (childs[i].nodeName === 'synchMCQ') {
+                       mcqBool = false;
+                       console.log(childs[i].nodeName);
+                   }
+                   console.log(childs[i].nodeName);
+                   this.isMCQ(childs[i]);
+               }
+            }
 
-                                                                                   this.isMCQ(x_currentPageXML);
-      var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
-      x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
-      x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' &&  mcqBool;
+            this.isMCQ(x_currentPageXML);
+            var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
+            x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
+            x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' &&  mcqBool;
             var mediaPanelData = $(x_currentPageXML).children("ivMediaPanel");
             if (mediaPanelIndex != -1) {
                 this.popcornInstance = loadMedia(
@@ -642,7 +684,9 @@
                         transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
                         audioImage: mediaPanelData.attr("audioImage"),
                         audioImageTip: mediaPanelData.attr("audioImageTip"),
-                        trackMedia: trackVideo
+                        pageName: "interactiveVideo",
+                        trackMedia: true,
+                        doNotCloseTracking: true
                     },
                     true
                     );

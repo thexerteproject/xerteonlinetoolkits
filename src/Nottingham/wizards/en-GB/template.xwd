@@ -659,7 +659,7 @@
           <showExplanation label="Show graph explanation" type="checkbox" optional="true" defaulValue="false" tooltip="Show a box with a legend or other explanation next to the graph"/>
           <graphExplanation label="Graph legend/explanation" type="textArea" height="120" optional="true" defaultValue="" wysiwyg="true" tooltip="The legend or other explanation shown next to the graph"/>
           <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
-          <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" tooltip="The number of bars in a bargraph, or the number of points in a line graph"/>
+          <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" condition="interactionType!='opinion'||opinionClass!=null" tooltip="The number of bars in a bargraph, or the number of points in a line graph"/>
         </graph>
         <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'||interactionType=='opinionclasses'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true"/>
@@ -3298,8 +3298,8 @@
     <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="where /c is the total number of correct answers available, /r is the number of right selections made and /w is the number of wrong selections made"/>
     <warning label="Warning Label" type="TextInput" wysiwyg="true" language="true"/>
     <again label="Try Again Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /a is the number of attempts remaining"/>
-    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" language="true"/>
-    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /c is the total number of correct answers available."/>
+    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" mandatory="true" language="true"/>
+    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" mandatory="true" language="true" tooltip="where /c is the total number of correct answers available."/>
 	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
 	<btnLabel label="Submit Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
@@ -4727,7 +4727,7 @@
 		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 		<hsSize label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
 	</hsAppearance>
-	
+
 	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
 	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
 	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true"/>
@@ -6076,6 +6076,7 @@
 		<playAll label="Include Play All Button" type="Checkbox" defaultValue="true" optional="true"/>
 		<playImgTime label="Image Play Time" type="NumericStepper" min="1" max="60" step="1" defaultValue="5" optional="true"/>
 	</play>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0"/>
 
     <newNodes>
 	  <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
@@ -6159,6 +6160,7 @@
 	<video type="group" label="Video">
 		<src label="File" type="media"/>
 		<mediaW label="Size" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	    <trackinglabel label="Tracking label" type="TextInput" optional="true" defaultValue="" wysiwyg="false"/>
 	</video>
 	
 	<movieSize label="Fixed Video Size" type="textInput" defaultValue="320,240" optional="true"/>
@@ -7924,6 +7926,7 @@
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
 	<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio of iframes when used instead of uploaded videos" optional="true"/>
 	<iframeMax label="iframe Max Size" type="TextInput" defaultValue="0.6" tooltip="The maximum width of the iframe in relation to the width of the whole page. Enter a number between 0.1 and 1" optional="true"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -8388,6 +8391,7 @@
 	
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 	<timedText label="Timed Text File" type="Media" optional="true"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
     <newNodes>
       <videoSynchPoint><![CDATA[<videoSynchPoint name="Enter Title Here" text="Content for the pane" align="Top" synch="0"/>]]></videoSynchPoint>
@@ -8670,6 +8674,7 @@
     <videoSize type="TextInput" label="Video Size" optional="true" defaultValue="420,315"/>
 
     <launchvideo label="Launch Video Link" type="textInput" divider="true" language="true" deprecated="This property is no longer required"/> 
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>

@@ -885,6 +885,17 @@ function x_GetTrackingTextFromHTML(html, fallback)
     return txt;
 }
 
+// Gets the trackinglabel of the current page.
+// This is either the page's name or (if set) a custom label.
+function x_GetTrackingLabelOfPage() {
+	var trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+	if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+	{
+		trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+	}
+	return trackinglabel;
+}
+
 // setup functions load interface buttons and events
 function x_setUp() {
 	

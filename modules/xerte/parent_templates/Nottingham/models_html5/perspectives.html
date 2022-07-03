@@ -203,7 +203,8 @@
 				
 				adjustIndex--;
 			}
-			
+
+			let videos = 0;
 			$(x_currentPageXML).children().each(function(i) {
 				if ((this.getAttribute("src") != undefined && this.getAttribute("src") != "") || this.nodeName == "mpText") {
 					var	$thisThumb = $(newThumb);
@@ -263,11 +264,13 @@
 									.data({
 										"src": this.getAttribute("src"),
 										"dimensions": [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5],
-										"trackMedia": false
+										"trackMedia": false,
+										"trackinglabel": (this.getAttribute('trackinglabel') ? this.getAttribute('trackinglabel') : videos + ""),
 									})
 									.attr("disabled", "disabled");
 
 								perspectives.loadVideo($thisVideo, $thisVideo);
+								videos++;
 							} else {
 								imgSrc = x_templateLocation + "common_html5/video.jpg";
 								if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
@@ -405,7 +408,8 @@
 									$thisVideo.data({
 										"src": thisData.getAttribute("src"),
 										"dimensions": videoDimensions,
-										"trackMedia": true
+										"trackMedia": true,
+										"trackinglabel": $this.data("trackinglabel"),
 									});
 									perspectives.loadVideo($thisVideo, $thisVideo, playAll);
 								}
@@ -631,7 +635,12 @@
 					height: $video.data("dimensions")[1],
 					media: $video.data("src"),
 					autoplay: "false",
-					trackMedia: $video.trackMedia || true
+					pageName: "perspectives",
+					trackMedia: $video.trackMedia || true,
+					doNotCloseTracking: true,
+					weighting: x_currentPageXML.getAttribute("trackingWeight"),
+					trackinglabel: $video.data('trackinglabel'),
+
 				}, true);
 
 			if ($video.data("trackMedia")) {

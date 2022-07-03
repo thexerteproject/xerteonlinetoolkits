@@ -44,8 +44,8 @@
     <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="where /c is the total number of correct answers available, /r is the number of right selections made and /w is the number of wrong selections made"/>
     <warning label="Warning Label" type="TextInput" wysiwyg="true" language="true"/>
     <again label="Try Again Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /a is the number of attempts remaining"/>
-    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" language="true" />
-    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /c is the total number of correct answers available."/>
+    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" mandatory="true" language="true" />
+    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" mandatory="true" language="true" tooltip="where /c is the total number of correct answers available."/>
 	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
 	<btnLabel label="Submit Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
