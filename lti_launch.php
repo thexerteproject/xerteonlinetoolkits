@@ -152,7 +152,7 @@ if(is_numeric($id) || $id == null)
         $_SESSION['XAPI_PROXY'] = $lrs;
     }
 
-    if ($_GET['embed'] === 'true') {
+    if ($_GET['x_embed'] === 'true') {
         $x_embed = true;
         if ($_GET['activated'] !== 'true') {
             $lti_enabled = false;
