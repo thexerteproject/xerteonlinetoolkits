@@ -140,9 +140,9 @@ function make_new_template($type, $zip_path)
 
             mkdir($new_path);
 
-            chmod($new_path);
+            chmod($new_path,0777);
 
-            copy_loop($zip_path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/");
+            copy_loop($zip_path, $new_path . "/");
 
             // Remove oai-pmh consent flag if present from
             if (file_exists($new_path . "/preview.xml"))
