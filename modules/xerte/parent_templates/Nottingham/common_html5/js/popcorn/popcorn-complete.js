@@ -6368,7 +6368,6 @@
           if( duration > 0 && !playerReady ) {
             playerReady = true;
             player.pause();
-            player.setCurrentTime(0);
           }
           break;
         case "pause":
