@@ -710,20 +710,35 @@
 				mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
 			} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "Vimeo") {
 				function onMessageReceived(event) {
-					if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)) {
+					if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)
+					     && !(/^https?:\/\/www.youtube.com/).test(event.origin)) {
 						return false;
 					}
 					
 					var data = JSON.parse(event.data);
 					if (data.event == "loadProgress") {
+						// Vimeo
 						$mediaDiv.data("duration", data.data.duration);
 						mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
 						window.removeEventListener("message", onMessageReceived, false);
 						// ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why.
 						// Possible issue in popcorn.js itself
 					}
+					if (data.event == "infoDelivery") {
+						// YouTube
+						//$mediaDiv.data("duration", data.info.duration);
+						//mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+						//window.removeEventListener("message", onMessageReceived, false);
+					}
 				}
 				window.addEventListener("message", onMessageReceived, false);
+			} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "YouTube") {
+				function doCallback()
+				{
+					document.removeEventListener('youtubemetadata', doCallback);
+					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+				}
+				document.addEventListener('youtubemetadata', doCallback);
 			} else {
 				popcornInstance.on("loadedmetadata", function() {
 					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
@@ -874,9 +889,9 @@
 			for (var j=0; j<data.length; j++) {
 				if (data[j].end == undefined && data[j].type != "synchEmpty" && data[j].type != "synchCue") {
 					if (popcornInstance.duration()) {
-						data[j].end = popcornInstance.duration() - 1;
+						data[j].end = popcornInstance.duration() - 0.1;
 					} else {
-						data[j].end = $mediaDiv.data("duration") - 1;
+						data[j].end = $mediaDiv.data("duration") - 0.1;
 					}
 					data[j].autoEnd = true;
 				}

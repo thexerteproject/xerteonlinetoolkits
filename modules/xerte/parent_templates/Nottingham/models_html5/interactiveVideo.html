@@ -979,6 +979,13 @@
                     }
                 }
                 window.addEventListener("message", onMessageReceived, false);
+            } else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "YouTube") {
+                function doCallback()
+                {
+                    document.removeEventListener('youtubemetadata', doCallback);
+                    interactiveVideo.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+                }
+                document.addEventListener('youtubemetadata', doCallback);
             } else {
                 popcornInstance.on("loadedmetadata", function() {
                     interactiveVideo.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);

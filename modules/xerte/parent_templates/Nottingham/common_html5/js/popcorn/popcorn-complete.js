@@ -6814,8 +6814,8 @@
       var onMuted = function() {
         if ( player.isMuted() ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
-          // addYouTubeEvent( "play", onFirstPlay );
-          player.pauseVideo();
+          addYouTubeEvent( "play", onFirstPlay );
+          addYouTubeEvent( "pause", onPause );
           onReady();
 
         } else {
@@ -6874,8 +6874,8 @@
 
     function onReady() {
 
-      addYouTubeEvent( "play", onPlay );
-      addYouTubeEvent( "pause", onPause );
+      // addYouTubeEvent( "play", onPlay );
+      // addYouTubeEvent( "pause", onPause );
       // Set initial paused state
       if( impl.autoplay || !impl.paused ) {
         removeYouTubeEvent( "play", onReady );
@@ -6938,9 +6938,9 @@
         setTimeout( onFirstPlay, 0 );
         return;
       }
-      addYouTubeEvent( "pause", onFirstPause );
-      player.pauseVideo();
-      player.seekTo( 0, true );
+      addYouTubeEvent( "play", onPlay );
+      onPlay();
+      document.dispatchEvent(new Event('youtubemetadata'));
     }
 
     function addYouTubeEvent( event, listener ) {
