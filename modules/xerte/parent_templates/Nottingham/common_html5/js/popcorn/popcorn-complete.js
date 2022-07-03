@@ -6916,7 +6916,6 @@
     }
 
     function onFirstPause() {
-      debugger;
       removeYouTubeEvent( "pause", onFirstPause );
       if ( player.getCurrentTime() > 0 ) {
         setTimeout( onFirstPause, 0 );

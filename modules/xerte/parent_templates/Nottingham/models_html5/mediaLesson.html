@@ -265,7 +265,6 @@
 				// Calculate progress
 				progress = XThelperDetermineProgress(videoState);
 			}
-			debugger;
 			switch (x_currentPageXML.getAttribute('trackVideo')) {
 				case 'yes':
 					totalScore = (mcqScore + progress) / 2;
@@ -358,7 +357,6 @@
             }
 
             window.correctQuestions = 0;
-            debugger;
             XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
             //XTVideo(x_currentPage, trackinglabel, "", "initialized", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 		};
