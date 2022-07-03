@@ -6361,7 +6361,6 @@
           player.setVolume( 0 );
           // set subtitle to Xerte language
           player.enableTextTrack(x_params.language.substr(0,2));
-          /// TODO TOR
           player.play();
           break;
         case "loadProgress":
@@ -6369,6 +6368,7 @@
           if( duration > 0 && !playerReady ) {
             playerReady = true;
             player.pause();
+            player.setCurrentTime(0);
           }
           break;
         case "pause":
@@ -6814,8 +6814,10 @@
       var onMuted = function() {
         if ( player.isMuted() ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
-          addYouTubeEvent( "play", onFirstPlay );
-          player.playVideo();
+          // addYouTubeEvent( "play", onFirstPlay );
+          player.pauseVideo();
+          onReady();
+
         } else {
           setTimeout( onMuted, 0 );
         }
@@ -6914,6 +6916,7 @@
     }
 
     function onFirstPause() {
+      debugger;
       removeYouTubeEvent( "pause", onFirstPause );
       if ( player.getCurrentTime() > 0 ) {
         setTimeout( onFirstPause, 0 );
@@ -6924,6 +6927,7 @@
         addYouTubeEvent( "play", onReady );
         player.playVideo();
       } else {
+        player.seekTo( 0, true );
         onReady();
       }
     }
@@ -6937,7 +6941,7 @@
       }
       addYouTubeEvent( "pause", onFirstPause );
       player.pauseVideo();
-      player.seekTo( 0 );
+      player.seekTo( 0, true );
     }
 
     function addYouTubeEvent( event, listener ) {
