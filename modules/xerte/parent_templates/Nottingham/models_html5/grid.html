@@ -206,14 +206,21 @@
 				$grid.css('width', gridWidth);
 			}
 			// limit #otherContent to what is left when alignment is right
-			if (x_currentPageXML.getAttribute('align') == 'right') {
+			const align = x_currentPageXML.getAttribute('align');
+			if (align == 'right') {
 				$('#otherContent').css('width', $('#pageContents').width() - $grid.width());
 			}
 
 			$("#gridBorders").css('width', gridWidth);
 
-			var gridHolderHeight = $("#grid").height();
-			$("#gridHolder").css({"height": gridHolderHeight})
+			$("#gridHolder")
+					.width($grid.width())
+					.height($grid.height());
+
+			if (align == 'top')
+			{
+				$("#gridHolder").css("margin", "10px auto auto");
+			}
 
 			var num = data[0].split(separator).length;
 
@@ -795,6 +802,11 @@
 			$("#gridHolder")
 				.width($grid.width())
 				.height($grid.height());
+
+			if (align == 'top')
+			{
+				$("#gridHolder").css("margin", "10px auto auto");
+			}
 
 			if (align == 'right')
 			{
