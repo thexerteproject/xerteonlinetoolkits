@@ -55,13 +55,14 @@
 				colWidth =  $("#pageContents").width()
 			}
 			colWidth = colWidth - (colWidth/6);
-
-
+			colWidth = colWidth/row.length;
+			/*
 			if(fixedCols.length>0){
 				colWidth = colWidth/(row.length-1);
 			}else{
 				colWidth = colWidth/row.length;
 			}
+			*/
 			var column;
 
 			$grid.css('width', colWidth)
@@ -106,7 +107,12 @@
 							$(this).css("height", "");
 							maxH = Math.max(maxH, $(this).height());
 						}
-					}).height(maxH);
+					});
+					$grid.find("ul[class!='preview'] li.static").each(function() {
+						if ($(this).data("xy")[1] == fixedRows[i]) {
+							$(this).css("height", maxH);
+						}
+					});
 				}
 
 			} else if (x_currentPageXML.getAttribute("constrain") == "row") {
@@ -199,7 +205,10 @@
 				}
 				$grid.css('width', gridWidth);
 			}
-
+			// limit #otherContent to what is left when alignment is right
+			if (x_currentPageXML.getAttribute('align') == 'right') {
+				$('#otherContent').css('width', $('#pageContents').width() - $grid.width());
+			}
 
 			$("#gridBorders").css('width', gridWidth);
 
@@ -329,7 +338,7 @@
 
 			var $grid = $("#grid");
 			var $text = $("#otherContent");
-			var gridSize = x_currentPageXML.getAttribute("gridSize");
+			let gridSize = x_currentPageXML.getAttribute("gridSize");
 			if (gridSize == undefined)
 			{
 				if (x_currentPageXML.getAttribute("text") == undefined)
@@ -500,6 +509,57 @@
 
 			// create labels - each label is a li with its parent ul determining which labels it can be sorted/swapped with
 			// labels can be constrained to their row or column, or can be placed anywhere
+			let gridSize = x_currentPageXML.getAttribute("gridSize");
+			if (gridSize == undefined)
+			{
+				if (x_currentPageXML.getAttribute("text") == undefined)
+				{
+					gridSize = "full";
+				}
+				else {
+					gridSize = "medium";
+				}
+			}
+			row = data[0].split(separator);
+			var colWidth = $("#pageContents").width() - $("#otherContent").width();
+			const align = x_currentPageXML.getAttribute("align");
+			switch(align)
+			{
+				case "top":
+					colWidth =  $("#pageContents").width();
+					break;
+				case "left":
+				case "right":
+					switch (gridSize)
+					{
+						case "small":
+							colWidth =  $("#pageContents").width() * 0.25;
+							break;
+						case "medium":
+							colWidth =  $("#pageContents").width() * 0.5;
+							break;
+						case "large":
+							colWidth =  $("#pageContents").width() * 0.75;
+							break;
+						case "full":
+							colWidth =  $("#pageContents").width();
+							break;
+					}
+					break;
+			}
+			/*
+			if(fixedCols.length>0){
+				colWidth = colWidth - (colWidth/6)
+				colWidth = colWidth/(row.length-1);
+			}else{
+				colWidth = colWidth - (colWidth/6)
+				colWidth = colWidth/row.length;
+			}
+			*/
+			colWidth = colWidth - (colWidth/6)
+			colWidth = colWidth/(row.length-1);
+			$grid.css('width', colWidth)
+
 			if (x_currentPageXML.getAttribute("constrain") == "col") {
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
@@ -518,22 +578,7 @@
 					}
 				}
 
-				row = data[0].split(separator);
-				var colWidth = $("#pageContents").width() - $("#otherContent").width();
-				if(x_currentPageXML.getAttribute("align") == "top"){
-					colWidth =  $("#pageContents").width()
-				}
-
-				if(fixedCols.length>0){
-					colWidth = colWidth - (colWidth/6)
-					colWidth = colWidth/(row.length-1);
-				}else{
-					colWidth = colWidth - (colWidth/6)
-					colWidth = colWidth/row.length;
-				}
-				$grid.css('width', colWidth)
 				// labels on each column should be same width & all labels should be same height...
-
 				var maxW, maxH = 0;
 				$grid.find("ul").each(function() {
 					maxW = 0;
@@ -555,7 +600,12 @@
 							$(this).css("height", "");
 							maxH = Math.max(maxH, $(this).height());
 						}
-					}).height(maxH);
+					});
+					$grid.find("ul li.static").each(function() {
+						if ($(this).data("xy")[1] == fixedRows[i]) {
+							$(this).css("height", maxH);
+						}
+					});
 					$labels.height(maxH);
 				}
 
@@ -574,22 +624,6 @@
 					}
 				}
 
-				row = data[0].split(separator);
-				var colWidth = $("#pageContents").width() - $("#otherContent").width();
-				if(x_currentPageXML.getAttribute("align") == "top"){
-					colWidth =  $("#pageContents").width()
-				}
-
-				if(fixedCols.length>0){
-					colWidth = colWidth - (colWidth/6)
-					colWidth = colWidth/(row.length-1);
-				}else{
-					colWidth = colWidth - (colWidth/6)
-					colWidth = colWidth/row.length;
-				}
-
-
-				$grid.css('width', colWidth)
 				// labels on each row should be same height & all labels should be same width...
 				var maxW = 0, maxH;
 				$grid.find("ul").each(function() {
@@ -627,22 +661,6 @@
 					}
 				}
 
-				row = data[0].split(separator);
-				var colWidth = $("#pageContents").width() - $("#otherContent").width();
-				if(x_currentPageXML.getAttribute("align") == "top"){
-					colWidth =  $("#pageContents").width()
-				}
-
-				if(fixedCols.length>0){
-					colWidth = colWidth - (colWidth/6)
-					colWidth = colWidth/(row.length-1);
-				}else{
-					colWidth = colWidth - (colWidth/6)
-					colWidth = colWidth/row.length;
-				}
-
-
-				$grid.css('width', colWidth)
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
 
@@ -777,6 +795,11 @@
 			$("#gridHolder")
 				.width($grid.width())
 				.height($grid.height());
+
+			if (align == 'right')
+			{
+				$('#otherContent').css('width', $('#pageContents').width() - $grid.width());
+			}
 
 			this.randomiseLabels();
 
