@@ -44,6 +44,30 @@ if(!isset($xapi_enabled))
 {
     $xapi_enabled = false;
 }
+if (!isset($lti_enabled))
+{
+    $lti_enabled = false;
+}
+if ((!isset($x_embed)))
+{
+    $x_embed = false;
+}
+
+/*
+if ((!isset($x_embed)))
+{
+    if (isset($_GET['embed']) && $_GET['embed'] === 'true') {
+        $x_embed = true;
+        if ($_GET['activated'] !== 'true')
+        {
+            $x_embed_activated = false;
+        }
+        else{
+            $x_embed_activated = true;
+        }
+    }
+}
+*/
 
 //error_reporting(E_ALL);
 //ini_set('display_errors',"ON");
@@ -327,8 +351,7 @@ if ($tsugi_enabled) {
 
 					show_template($row_play, $xapi_enabled);
                 } else {
-                    html_headers();
-                    login_prompt($errors);
+                    login_prompt($errors, $xerte_toolkits_site);
                 }
                 /*
                  * Check the password

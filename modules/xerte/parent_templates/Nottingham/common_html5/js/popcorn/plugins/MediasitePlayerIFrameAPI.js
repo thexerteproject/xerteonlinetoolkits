@@ -755,6 +755,8 @@
                 var presentationContainer = document.createElement('iframe');
                 presentationContainer.id = container.id;
                 presentationContainer.src = url;
+                presentationContainer.setAttribute('height', '100%');
+                presentationContainer.setAttribute('width', '100%');
                 presentationContainer.setAttribute('frameBorder', '0');
                 presentationContainer.setAttribute('marginHeight', '0');
                 presentationContainer.setAttribute('marginWidth', '0');

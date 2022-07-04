@@ -38,7 +38,6 @@ language: transcriptBtnTxt
 		return {
 			_setup: function(options) {
 				// setup code, fire on initialisation
-				
 				$target = $("#" + options.target);
 				
 				// get type of media (video/audio)
@@ -53,6 +52,8 @@ language: transcriptBtnTxt
 						$target.append('<h4>' + options.name + '</h4>');
 					}
 					
+					options.trackMedia = true;
+
 					// load media and then sort & set up popcorn synch points
 					var parentPageType = eval(x_currentPageXML.nodeName),
 						popcornInstance = parentPageType.loadMedia($target, mediaType, options);

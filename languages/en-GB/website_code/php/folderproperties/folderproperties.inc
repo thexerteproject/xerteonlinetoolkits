@@ -18,3 +18,5 @@
 	define("FOLDER_PROPERTIES_CHANGE","Change the name of the folder");
 
     define("FOLDER_PROPERTIES_BUTTON_SAVE","Rename");
+
+    define("FOLDER_PROPERTIES_FAIL","Sorry you do not have rights to this folder");

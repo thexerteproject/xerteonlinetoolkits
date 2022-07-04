@@ -104,42 +104,52 @@
 			});
 				
 			request.execute(function(response) {
-			
 				// if language attributes aren't in xml will have to use english fall back
 				var resultsTxt = x_currentPageXML.getAttribute("resultsTxt");
 				if (resultsTxt == undefined) {
 					resultsTxt = "Youtube results for term";
 				}
-				
+
+				var apiErrorMesg = x_currentPageXML.getAttribute("apiErrorMesg");
+				if (apiErrorMesg == undefined) {
+					apiErrorMesg = "The Youtube API returned the following error: \"{0}\" <br>If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template).";
+				}
 				clearTimeout(x_timer);
 				$("#loadingSpinner").hide();
-								
-				var resultsHolder = "";
-				
-				$pageContents.find("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
 
-				if (response.pageInfo && response.pageInfo.totalResults > 0) { //we have results
-
-					$.each(response.items, function (index, item) {
-
-						if (x_browserInfo.iOS == true || x_browserInfo.touchScreen || x_browserInfo.mobile) {
-							hyperlink = '<a href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + '</a>';
-						} else {
-							hyperlink = '<a target="_blank" href="https://www.youtube.com/watch?v=' +  item.id.videoId + '">' + item.snippet.title + '</a>';
-						}
-						
-						resultsHolder += '<div><img src="' + item.snippet.thumbnails.default.url + '" alt="' + item.snippet.description + ', thumbnail" />';
-						resultsHolder += '<p>' + hyperlink + '</br>';
-						resultsHolder += item.snippet.description + '</p></div>';
-
-					});
-
+				if (response.code !== undefined)
+				{
+					apiErrorMesg = apiErrorMesg.replace("{0}", response.message);
+					resultsHolder = '<div><p>' + apiErrorMesg + '</p></div>';
 				}
 				else {
 
-					resultsHolder = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
-					
-				} 
+					var resultsHolder = "";
+
+					$pageContents.find("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
+
+					if (response.pageInfo && response.pageInfo.totalResults > 0) { //we have results
+
+						$.each(response.items, function (index, item) {
+
+							if (x_browserInfo.iOS == true || x_browserInfo.mobile) {
+								hyperlink = '<a href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + '</a>';
+							} else {
+								hyperlink = '<a target="_blank" href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + '</a>';
+							}
+
+							resultsHolder += '<div><img src="' + item.snippet.thumbnails.default.url + '" alt="' + item.snippet.description + ', thumbnail" />';
+							resultsHolder += '<p>' + hyperlink + '</br>';
+							resultsHolder += item.snippet.description + '</p></div>';
+
+						});
+
+					} else {
+
+						resultsHolder = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
+
+					}
+				}
 				
 				$resultsHolder
 					.html(resultsHolder)

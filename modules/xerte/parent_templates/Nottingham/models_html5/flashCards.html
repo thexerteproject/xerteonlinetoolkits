@@ -229,11 +229,14 @@
 		
 		this.init = function () {
 			// Load in the required scripts before we can begin
-			$script.path(x_templateLocation + 'common_html5/js/');
-			$script('jquery.flip.min.js', function () {
-				flashCards.setUp();
-			});
-		}
+			// Uses new loadjs with experimental .path() method
+			loadjs.path(x_templateLocation + 'common_html5/js/');
+			loadjs(['jquery.flip.min.js'], {
+				success: function() {
+					flashCards.setUp();
+				}
+			})
+		};
 		
 		this.setUp = function() {
 			$pageContents = $('#pageContents');

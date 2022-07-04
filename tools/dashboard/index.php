@@ -61,7 +61,30 @@ if(is_numeric($id) || $id == null) {
     if ($islti13) {
         $msg = array();
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
+
+        _debug("Users found: " . print_r($nrps, true));
+        $users = array();
+        if ($role == 'Teacher')
+        {
+            // Convert list of students to array
+            for ($i = 0; $i < count($nrps->members); $i++) {
+                $u = new stdClass();
+                if ($nrps->members[$i]->status == 'Active' && in_array('Learner', $nrps->members[$i]->roles))
+                {
+                    $u->name = $nrps->members[$i]->name;
+                    $u->role = $nrps->members[$i]->roles[0];
+                    $u->email = $nrps->members[$i]->email;
+                    $u->sha1 = sha1("mailto:" . $u->email);
+                    $users[] = $u;
+                }
+            }
+        }
     }
+    else
+    {
+        die('Access denied. This dashboard requires LTI 1.3 to be used as a Teacher.');
+    }
+
 
     if ($id == null) {
         $id = $LAUNCH->ltiCustomGet('template_id');
@@ -75,12 +98,17 @@ if(is_numeric($id) || $id == null) {
     _debug("LTI user: " . print_r($USER, true));
     $xerte_toolkits_site->lti_user = $USER;
 
+    if (!isset($USER->email))
+    {
+        die('Access denied! Current user has no email');
+    }
+
     $group = $LAUNCH->ltiParameter('group');
     if ($group === false) {
         $group = $LAUNCH->ltiCustomGet('group');
     }
     if ($group === false && isset($_REQUEST['group'])) {
-        $group = $_REQUEST{'group'};
+        $group = $_REQUEST['group'];
     }
     if ($group !== false) {
         $xerte_toolkits_site->group = $group;
@@ -91,7 +119,7 @@ if(is_numeric($id) || $id == null) {
         $course = $LAUNCH->ltiCustomGet('course');
     }
     if ($course === false && isset($_REQUEST['course'])) {
-        $course = $_REQUEST{'course'};
+        $course = $_REQUEST['course'];
     }
     if ($course !== false) {
         $xerte_toolkits_site->course = $course;
@@ -101,7 +129,7 @@ if(is_numeric($id) || $id == null) {
         $module = $LAUNCH->ltiCustomGet('module');
     }
     if ($module === false && isset($_REQUEST['module'])) {
-        $module = $_REQUEST{'module'};
+        $module = $_REQUEST['module'];
     }
     if ($module !== false) {
         $xerte_toolkits_site->module = $module;
@@ -153,10 +181,13 @@ if(is_numeric($id) || $id == null) {
     $info->lrs = $statistics_available->lrs;
     $info->dashboard = $statistics_available->dashboard;
     $info->role = $role;
+    $info->users = $users;
     $info->actor = $USER->email;
     $info->displayname = $USER->displayname;
     $info->firstname = $USER->firstname;
     $info->lastname = $USER->lastname;
+    $info->unanonymous = 'true';
+    $info->dashboard->enable_nonanonymous = 'true';
 
     // Fix lrsproxy and add php session if needed
     $info->lrs->lrsendpoint = $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php");

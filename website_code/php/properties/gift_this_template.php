@@ -29,6 +29,10 @@ require_once("../user_library.php");
  * @package
  */
 
+require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/duplicate_template.php";
+require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "site/duplicate_template.php";
+require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "decision/duplicate_template.php";
+
 /**
  * 
  * Function copy loop
@@ -199,12 +203,15 @@ if(is_numeric($_POST['tutorial_id'])){
             db_query($create_rights_query, $params);
 
 
+
+
             $query_for_new_login = "select firstname, surname, username from {$prefix}logindetails where login_id= ?";
             $params = array($user_id);
 
 
             $row_new_login = db_query_one($query_for_new_login, $params);
 
+            /*
             $new_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short .
                 $new_template_id . "-" . $row_new_login['username'] . "-" . $row_currentdetails['template_name'] . "/";
 
@@ -219,10 +226,28 @@ if(is_numeric($_POST['tutorial_id'])){
             $current_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $tutorial_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_currentdetails['template_name'] . "/";
 
             copy_loop($current_directory, $new_directory);
+            */
+            duplicate_template($row_currentdetails['template_framework'], $new_template_id, $tutorial_id, $row_currentdetails['template_name']);
 
             echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
 
         }
     }
 
+}
+
+function duplicate_template($template_framework, $new_template_id, $org_template_id, $original_template_name){
+    switch($template_framework){
+        case 'xerte':
+            duplicate_template_xerte($new_template_id, $org_template_id, $original_template_name);
+            break;
+        case 'site':
+            duplicate_template_site($new_template_id, $org_template_id, $original_template_name);
+            break;
+        case 'decision':
+            duplicate_template_decision($new_template_id, $org_template_id, $original_template_name);
+            break;
+        default:
+            break;
+    }
 }

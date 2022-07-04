@@ -129,6 +129,7 @@ optional: end position* line
 							"padding" :       (size * 0.001) * hh + "px",
 							"border-radius" : (size / 2 + 1) * 0.01 * hh + "px",
 							"font-size" : 	  (size * 0.007) * hh + "px",
+							"text-align":     "center"
 						});
 						if(options.attrib.tooltip == "label") {	
 							// Cap the fontsize to reasonable values
@@ -160,10 +161,30 @@ optional: end position* line
 							"padding": 0
 						})
 					}
+					// Set position and max-height
+					let maxH;
+					const topMM = $(".mainMedia").offset().top;
+					const hMM = $(".mainMedia").height();
+					if (x_isMobileBrowser())
+					{
+						// Limit $target.parent() to pageContent height
+						const topPD = $("#x_pageDiv").offset().top;
+						const topP = topMM + options._y * hMM/100.0;
+						const hPC = $("#x_pageDiv").height() - $("#x_footerBlock").height() - (topMM-topPD);
+						maxH = hPC - (topP - topMM);
+					}
+					else
+					{
+						// Limit $target.parent() to main content
+						const topP = topMM + options._y * hMM/100.0;
+						maxH = hMM - (topP - topMM);
+					}
+					// Set max height
 					$target.parent().css({
 						"max-width": options._w + "%",
 						"top": options._y + "%",
-						"left": options._x + "%"
+						"left": options._x + "%",
+						"max-height": maxH + "px",
 					}).show();
 				}
 				$target.show();

@@ -11,7 +11,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns>
 	
 	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
@@ -29,6 +29,14 @@
 		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup>
+	
+	<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
+	</passwordGroup>
 	
 	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -73,5 +81,10 @@
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup>
+
+	<pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page.">
+    <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
+    <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
+    </pageHeaderGroup>
 	
 </commonNodes>

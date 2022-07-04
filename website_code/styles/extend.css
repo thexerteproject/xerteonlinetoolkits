@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-
+body {
+	background-color: white;
+}
 
 .extend #admin_area div{
 	

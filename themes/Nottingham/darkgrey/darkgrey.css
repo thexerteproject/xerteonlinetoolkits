@@ -180,3 +180,7 @@ background-image: none;
 #x_footerBlock .ui-button-text{
 	color:white;
 }
+.x_annotatedDiagram_page .listItem.highlight{
+	background-color: #cfcfcf;
+	color: #1c1c1c;
+}

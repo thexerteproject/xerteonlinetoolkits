@@ -206,3 +206,10 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
     color: $whiteorlightest;
     background-color: $contrastcolor;
 }
+/*alternating section changes for this theme*/
+.evenSection {
+  background: #fbfbfb;
+}
+.oddSection {
+  background: #f7f7f7;
+}

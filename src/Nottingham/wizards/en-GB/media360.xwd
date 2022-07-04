@@ -26,7 +26,7 @@
 		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 		<hsSize label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
 	</hsAppearance>
-	
+
 	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
 	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
 	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true"/>
@@ -47,11 +47,25 @@
 	<name label="Title" type="TextInput" wysiwyg="true"/>
   
 	<title label="Show Title" type="CheckBox" defaultValue="false"/>
+	
+	
   
-    <media type="group" label="Image">
-		<file label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+    <media type="group" label="Image" condition="cubemapcb!='true'">
+		<file label="File" type="media" condition="cubemapcb!='true'"/>
+		<tip label="Description" type="TextInput" condition="cubemapcb!='true'"/>
 	</media>
+	
+	<cubemapimages type="group" label="Cubemap Images" optional="true" tooltip="Upload and use 6 cube faces instead of a single image. All 6 faces are required. When including multiple Cubemap scenes be careful to use unique image names e.g. image1234_front.jpg, image1235_front.jpg etc or use subfolders for each Cubemap scene.">
+	<cubemapcb label="Cubemap" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
+		<cubemaptip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
+		<front label="Front" type="media" condition="cubemapcb!='false'"/>
+		<right label="Right" type="media" condition="cubemapcb!='false'"/>
+		<back label="Back" type="media" condition="cubemapcb!='false'"/>
+		<left label="Left" type="media" condition="cubemapcb!='false'"/>
+		<top label="Top" type="media" condition="cubemapcb!='false'"/>
+		<bottom label="Bottom" type="media" condition="cubemapcb!='false'"/>
+	</cubemapimages>
+
 	
 	<compass label="Compass" type="CheckBox" defaultValue="true" optional="true"/>
 	

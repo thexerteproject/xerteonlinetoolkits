@@ -95,6 +95,11 @@
 				docData.documentName = x_currentPageXML.getAttribute('name');
 				docData.orientation = x_currentPageXML.getAttribute('fileOrientation') != undefined ? x_currentPageXML.getAttribute('fileOrientation') : 'portrait';
 				docData.size = docData.orientation == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt';
+				docData.h1 = x_currentPageXML.getAttribute('h1') != null ? x_currentPageXML.getAttribute('h1') : 20  + "px";
+				docData.h2 = x_currentPageXML.getAttribute('h2') != null ? x_currentPageXML.getAttribute('h2') : 18  + "px";
+				docData.h3 = x_currentPageXML.getAttribute('h3') != null ? x_currentPageXML.getAttribute('h3') : 16  + "px";
+				docData.p = x_currentPageXML.getAttribute('p') != null ? x_currentPageXML.getAttribute('p') : 15  + "px";
+
 				
 				// styles used in downloaded word doc
 				var styles = '';
@@ -605,8 +610,9 @@
 					.click(function() {
 						textHighlight.postData($("#pageContents").data("docData"));
 					})
+					.prop('disabled', true)
 					.prop('disabled', true);
-				
+
 			} else {
 				$("#downloadBtn").remove();
 			}
@@ -649,10 +655,12 @@
 		
 		// function triggers the download of word document containing all the info on the screen
 		this.postData = function (data) {
+			debugger
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';
 			form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
 
 			$('<input type="hidden">') // IE compatibility
 				.attr({

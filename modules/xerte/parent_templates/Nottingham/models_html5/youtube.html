@@ -22,9 +22,10 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var youtube = new function() {
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-
+			this.setUp();
 		};
 
 		// function called every time the size of the LO is changed
@@ -33,8 +34,26 @@
 		};
 
 		this.init = function() {
+			var popLocation = "common_html5/js/popcorn/"
+			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
+			var i = 0;
+			scriptsToLoad.forEach(function(file){
+				$.getScript(x_templateLocation + popLocation + file + ".js")
+					.done(function(){
+							if (++i >= scriptsToLoad.length)
+								youtube.setUp();
+						})
+					.fail(function( jqxhr, settings, exception ) {
+							console.log("Failed to load plugin:" + exception);
+						});
+			});
+		}
+
+		this.setUp = function() {
 			var $textHolder = $("#textHolder"),
 				$panel = $("#pageContents .panel");
+
+			$("#pageVideo").html("");
 
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			$panel.addClass("x_floatRight");
@@ -101,48 +120,25 @@
 				}
 			}
 
-			$("#pageVideo").html(this.buildIframe(iframe));
+			this.popcornInstance = loadMedia($("#pageVideo"), "video",
+				{	tip: "", //Not set in editor
+					width: iframe.width,
+					height: iframe.height,
+					media: "https://www.youtube.com/embed/" + iframe.code,
+					autoplay: iframe.autoplay,
+					aspect: iframe.width / iframe.height,
+					transcript: undefined,
+					transcriptBtnTxt: "",
+					audioImage: undefined,
+					audioImageTip: "",
+					pageName: "yuotube",
+					trackMedia: true,
+					weighting: x_currentPageXML.getAttribute("trackingWeight"),
+				}, true);
+			resizeEmbededMedia($(".popcornMedia.embed"), {width: iframe.width, height: iframe.height})
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
-		};
-
-		this.buildIframe = function(iframe) {
-			if (iframe.code.length > 0) {
-				var html = "<iframe";
-				html += " width=\"" + iframe.width + "\"";
-				html += " height=\"" + iframe.height + "\"";
-				
-				if (xot_offline == true) {
-					html += " src=\"https://www.youtube.com/embed/" + iframe.code;
-				} else {
-					html += " src=\"//www.youtube.com/embed/" + iframe.code;
-				}
-				
-				var params = "?wmode=opaque";
-				if (iframe.time > 0) {
-					params += "&start=" + iframe.time;
-				}
-				if (iframe.related == 0) {
-					params += "&rel=0";
-				}
-				if (iframe.autoplay == 1) {
-					params += "&autoplay=1";
-				}
-				if (params.length > 1) {
-					html += params;
-				}
-				html += "\"";
-				html += " frameborder=\"0\"";
-				//if (iframe.allowfullscreen != false) {
-				html += " allowfullscreen";
-				//}
-				html += "></iframe>";
-				return html;
-			}
-			else {
-				return "<p>" + x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + "</p>";
-			}
 		};
 
 		this.parseIframeCode = function(code, params) {
@@ -172,6 +168,10 @@
 			}
 			return params;
 		};
+
+		this.leavePage = function() {
+			document.dispatchEvent(new Event('leavepage'));
+		}
 	};
 
 	youtube.init();

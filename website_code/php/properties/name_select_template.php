@@ -29,6 +29,7 @@
 
 require_once("../../../config.php");
 include "../template_status.php";
+include "../user_library.php";
 
 _load_language_file("/website_code/php/properties/name_select_template.inc");
 $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -39,7 +40,7 @@ if (!isset($_SESSION['toolkits_logon_username']))
     die("Session is invalid or expired");
 }
 
-if(is_numeric($_POST['template_id'])){
+if(is_numeric($_POST['template_id'])||is_user_admin()){
     if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
         $search = $_POST['search_string'];
 
@@ -53,6 +54,11 @@ if(is_numeric($_POST['template_id'])){
 
         if (strlen($search) != 0) {
 
+            $query_for_groups = "SELECT group_id, group_name from {$prefix}user_groups WHERE group_name like ? AND group_id NOT IN ( "
+                . "SELECT group_id from {$prefix}template_group_rights where template_id = ? ) ORDER BY group_name ASC";
+            $query_groups_response = db_query($query_for_groups, array("%$search%", $tutorial_id));
+
+
             $query_for_names = "select login_id, firstname, surname, username from {$prefix}logindetails WHERE "
                 . "((firstname like ?) or (surname like ?) or (username like ?)) AND login_id NOT IN ( "
                 . "SELECT user_id from {$prefix}templaterights where template_id = ? ) ORDER BY firstname ASC";
@@ -61,8 +67,12 @@ if(is_numeric($_POST['template_id'])){
 
             $query_names_response = db_query($query_for_names, $params);
 
-            if (sizeof($query_names_response) != 0) {
+            if (sizeof($query_names_response) != 0 || sizeof($query_groups_response)!=0) {
+                foreach($query_groups_response as $row){
 
+                    echo "<p>" . $row['group_name'] .  " - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['group_id'] . "', group=true)\"><i class=\"fas fa-users\"></i>&nbsp;" . NAME_SELECT_CLICK_GROUP . "</button></p>";
+
+                }
                 foreach ($query_names_response as $row) {
 
                     echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ")  - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_CLICK . "</button></p>";

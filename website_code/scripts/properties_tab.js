@@ -93,20 +93,6 @@ function screen_size_stateChanged(response){
 
  /**
 	 *
-	 * Function name share state changed
- 	 * This function handles the display for the drop down name list for the sharing tab
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-function name_share_stateChanged(response){
-	if(response!=""){
-		document.getElementById('area2').innerHTML = response;
-	}
-}
-
- /**
-	 *
 	 * Function share this state changed
  	 * This function handles the response from making a share request
 	 * @version 1.0
@@ -205,16 +191,16 @@ var after_sharing_deleted = false;
 	 * Function delete sharing template
  	 * This function handles the deletion of a share by a user
 	 * @param string template_id = window type to open
- 	 * @param string user_id = user we are removing
-  	 * @param string who_deleted_flag = obsolete ***** CHECK ******
+ 	 * @param string id = user or group we are removing
+  	 * @param string who_deleted_flag = obsolete ***** CHECK *******
+     * @group bool group = if we are removing a gorup
 	 * @version 1.0
-	 * @author Patrick Lockley
 	 */
 
-function delete_sharing_template(template_id,user_id,who_deleted_flag){
 
+function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
+	debugger
 	var answer = confirm(SHARING_CONFIRM);
-
 	if(answer){
 		if(who_deleted_flag){
 			var after_sharing_deleted = true;
@@ -227,7 +213,7 @@ function delete_sharing_template(template_id,user_id,who_deleted_flag){
 			url: "website_code/php/properties/remove_sharing_template.php",
 			data: {
 				template_id: template_id,
-				user_id: user_id,
+				id: id,
 				user_deleting_self: who_deleted_flag
 			}
 		})
@@ -266,7 +252,6 @@ function group_delete_sharing_template(template_id,group_id){
 		});
 	}
 }
-
 
      /**
 	 *
@@ -1071,7 +1056,7 @@ function gift_this_template(tutorial_id, user_id, action){
 	 */
 
 function name_select_gift_template(){
-
+	debugger;
 	if(setup_ajax()!=false){
 
 		search_string = document.getElementById('share_form').childNodes[0].value;
@@ -1090,11 +1075,11 @@ function name_select_gift_template(){
 				}
 			})
 			.done(function (response) {
-				name_share_stateChanged(response);
+				$('#area2').html(response);
 			});
 		}else{
 
-			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
+			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
 		}
 	}
 }
@@ -1108,7 +1093,7 @@ function name_select_gift_template(){
 	 */
 
 function name_select_template(){
-
+	debugger
 	if(setup_ajax()!=false){
 
 		search_string = document.getElementById('share_form').childNodes[0].value;
@@ -1122,15 +1107,15 @@ function name_select_template(){
 				type: "POST",
 				url: "website_code/php/properties/name_select_template.php",
 				data: {
-					search_string: search_string,
+					search_string : search_string,
 					template_id: window.name
-				}
+				},
 			})
-			.done(function (response) {
-				name_share_stateChanged(response);
-			});
+				.done(function(response){
+					$('#area2').html(response);
+				});
 		}else{
-			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
+			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
 		}
 	}
 }
@@ -1166,18 +1151,27 @@ function gift_template(){
 	 * @author Patrick Lockley
 	 */
 
-function share_this_template(template, user){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/properties/share_this_template.php",
-		 data: {
-			 template_id: template,
-			 user_id: user
-		 }
-	 })
-	 .done(function (response) {
-		 share_this_stateChanged(response);
-	 });
+function share_this_template(template, id, group=false){
+
+	 if(setup_ajax()!=false){
+		 var role = document.querySelector('input[name="role"]:checked').value;
+
+		 $.ajax({
+			 type: "POST",
+			 url: "website_code/php/properties/share_this_template.php",
+			 data: {
+				 template_id: template,
+				 id: id,
+				 role: role,
+				 group: group,
+			 },
+		 })
+		 .done(function(response){
+			 $('#area2').html("");
+			 $('#area3').html(response);
+			 sharing_status_template()
+		 });
+	 }
 }
 
      /**
@@ -1246,14 +1240,13 @@ function group_share_this_template(template){
 	});
 }
 
-
-     /**
-	 *
-	 * Function export template
- 	 * This function handles the display of the export page for a template
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /**
+ *
+ * Function export template
+ * This function handles the display of the export page for a template
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function export_template(){
 	 $.ajax({
@@ -1314,47 +1307,25 @@ function showOptions() {
 	 * @author Patrick Lockley
 	 */
 
-function set_sharing_rights_template(rights, template, user){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/properties/set_sharing_rights_template.php",
-		 data: {
-		 	 rights: rights,
-			 template_id: window.name,
-			 user_id: user
-		 }
-	 })
-	 .done(function (response) {
-		 share_rights_stateChanged(response);
-	 });
+function set_sharing_rights_template(role, template, id, group=false){
+
+	 if(setup_ajax()!=false){
+		 $.ajax({
+			 type: "POST",
+			 url: "website_code/php/properties/set_sharing_rights_template.php",
+			 data: {
+				 template_id: template,
+				 id: id,
+				 role: role,
+				 group: group,
+			 },
+		 })
+			 .done(function(response){
+				 //$('#area3').html(response);
+				 sharing_status_template()
+			 });
+	 }
 }
-
-	/**
-	 *
-	 * Function set sharing rights for groups
-	 * @param string rights = the rights to give
-	 * @param string template - the template
-	 * @param string group - the group id
-	 * @version 1.0
-	 * @author Noud Liefrink
-	 */
-
-function group_set_sharing_rights_template(rights, template, group){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/properties/group_set_sharing_rights_template.php",
-		data: {
-			rights: rights,
-			template_id: template,
-			group_id: group
-		}
-	})
-	.done(function (response) {
-		group_sharing_status_template(response);
-	});
-}
-
-
 
 var last_selected=null;
 

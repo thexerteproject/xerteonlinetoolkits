@@ -21,6 +21,7 @@ require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/user_groups.inc");
 _load_language_file("/website_code/php/management/users.inc");
+_load_language_file("/management.inc");
 
 require("../user_library.php");
 require("management_library.php");
@@ -42,10 +43,18 @@ if(is_user_admin()){
     $query="select * from " . $xerte_toolkits_site->database_table_prefix . "user_groups order by group_name";
     $user_groups = db_query($query);
 
-    echo "<span>";
-    echo "<h2>User Groups</h2>";
-    echo "<form name=\"user_groups\" action=\"javascript:list_group_members('group')\">";
-    echo "<label for=\"group\">" . USER_GROUPS_MANAGEMENT_SELECT_GROUP . "</label><br>";
+    echo "<h2>" . MANAGEMENT_MENUBAR_USER_GROUPS . "</h2>";
+	
+	echo "<div class=\"admin_block\">";
+	echo "<h3>" . USER_GROUPS_MANAGEMENT_ADD . "</h3>";
+	echo "<form><input type=\"textinput\" name=\"newgroup\" id=\"newgroup\" /><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:add_new_group('newgroup')\">" . USER_GROUPS_MANAGEMENT_ADD_GROUP . "</button></form>";
+	echo "</div>";
+	
+	echo "<div class=\"admin_block\">";
+	echo "<h3>" . USER_GROUPS_MANAGEMENT_MANAGE . "</h3>";
+	
+	echo "<form name=\"user_groups\" action=\"javascript:list_group_members('group')\">";
+    echo "<label for=\"group\"><p>" . USER_GROUPS_MANAGEMENT_SELECT_GROUP . "</p></label>";
     echo "<select id=\"group\" onchange=\"this.form.submit();\">";
     $firstgroup = null;
     foreach($user_groups as $group){
@@ -56,10 +65,8 @@ if(is_user_admin()){
     }
 
     echo "</select>";
-    echo "<button class=\"xerte_button\" onclick=\"javascript:delete_group('group')\">" . USER_GROUPS_MANAGEMENT_REMOVE_GROUP . "</button><br>";
-    echo "<input type=\"textinput\" name=\"newgroup\" id=\"newgroup\" /><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:add_new_group('newgroup')\">" . USER_GROUPS_MANAGEMENT_ADD_GROUP . "</button><br/>";
+    echo "<button class=\"xerte_button\" onclick=\"javascript:delete_group('group')\"><i class=\"fa fa-minus-circle\"></i> " . USER_GROUPS_MANAGEMENT_REMOVE_GROUP . "</button><br>";
     echo "</form>";
-    echo "</span>";
 
 //    $database_id = database_connect("user list connected","user list failed");
 
@@ -67,9 +74,8 @@ if(is_user_admin()){
 
     $logins = db_query($query);
 
-    echo "<span>";
-    echo "<form name=\"all_users\" action=\"javascript:add_member('list_user', 'group')\">";
-    echo "<label for=\"list_user\">" . USER_GROUPS_MANAGEMENT_ALL_USERS. "</label><br>";
+    echo "<br><form name=\"all_users\" action=\"javascript:add_member('list_user', 'group')\">";
+    echo "<label for=\"list_user\"><p>" . USER_GROUPS_MANAGEMENT_ALL_USERS. "</p></label>";
 
     echo "<select id=\"list_user\" multiple placeholder='". USER_GROUPS_MANAGEMENT_SELECT . "'>";
     foreach($logins as $row_users){
@@ -77,7 +83,7 @@ if(is_user_admin()){
     }
 
     echo "</select>";
-    echo "<button type=\"submit\" style=\"display:inline;\" class=\"xerte_button\">" . USER_GROUPS_MANAGEMENT_ADD_MEMBER . "</button>";
+    echo "<button type=\"submit\" style=\"display:inline;\" class=\"xerte_button\"><i class=\"fa fa-plus-circle\"></i> " . USER_GROUPS_MANAGEMENT_ADD_MEMBER . "</button>";
 
     /*
     foreach($query_response as $row) {
@@ -94,15 +100,11 @@ if(is_user_admin()){
 
     */
     echo "</form>";
-    echo "</span>";
+	echo "</div>";
 
-    echo "<span>";
-    echo "<div id=\"memberlist\">";
+    echo "<div id=\"memberlist\" class=\"admin_block\">";
     get_group_members($firstgroup);
-    echo "</div>";
-    echo "</span>";
-
-
+	echo "</div>";
 
 }else{
 

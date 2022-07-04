@@ -645,6 +645,10 @@ div.inputtext {
     box-sizing: border-box;
 }
 
+.inlinewysiwyg p span[style*="#ffffff"] {
+	text-shadow: 1px 1px 0px rgb(0, 0, 0);
+}
+
 input.inputtext{
     margin: 0;
     border: 1px solid lightgray;
@@ -1235,6 +1239,10 @@ i.tooltipIcon {
 .standaloneIcon {
 	margin-right: 5px;
 	color: #333366;
+}
+.passwordIcon {
+	margin-right: 5px;
+	color: #444;
 }
 .iconEnabled
 {

@@ -29,21 +29,25 @@
 
 require_once("../../../config.php");
 include "../template_status.php";
+include "../user_library.php";
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
+if(is_numeric($_POST['id'])&&is_numeric($_POST['template_id'])||is_user_admin()){
 
     if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
-        $new_rights = $_POST['rights'];
+        $new_role = $_POST['role'];
 
-        $user_id = $_POST['user_id'];
+        $id = $_POST['id'];
 
-        $tutorial_id = $_POST['template_id'];
-
+        $template_id = $_POST['template_id'];
+        $group = $_POST['group'] == "true";
         $database_id = database_connect("Template sharing rights database connect success", "Template sharing rights database connect failed");
-
-        $query_to_change_share_rights = "update {$prefix}templaterights set role = ? WHERE template_id = ? and user_id= ?";
-        $params = array($new_rights, $tutorial_id, $user_id);
+        if (!$group){
+            $query_to_change_share_rights = "update {$prefix}templaterights set role = ? WHERE template_id = ? and user_id= ?";
+        }else{
+            $query_to_change_share_rights = "update {$prefix}template_group_rights set role = ? WHERE template_id = ? and group_id = ?";
+        }
+        $params = array($new_role, $template_id, $id);
         db_query($query_to_change_share_rights, $params);
     }
 }

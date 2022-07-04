@@ -32,6 +32,10 @@ include "../user_library.php";
 include "../template_library.php";
 include "../template_status.php";
 
+require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/duplicate_template.php";
+require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "site/duplicate_template.php";
+require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "decision/duplicate_template.php";
+
 _load_language_file("/website_code/php/templates/duplicate_template.inc");
 
 if(empty($_SESSION['toolkits_logon_id'])) {
@@ -84,7 +88,7 @@ if(is_numeric($_POST['template_id'])){
             date('Y-m-d'), 
             date('Y-m-d'),
             "Private",
-            "Copy of " . htmlspecialchars($_POST['template_name']),
+            COPY_OF . htmlspecialchars($_POST['template_name']),
             $row_template_type['extra_flags']);
 
         $new_template_id = db_query($query_for_new_template, $params);
@@ -97,9 +101,7 @@ if(is_numeric($_POST['template_id'])){
 
                 receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
-                include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/duplicate_template.php";
-
-                duplicate_template($new_template_id,$_POST['template_id'],$row_template_type['template_name']);
+                duplicate_template($row_template_type['template_framework'], $new_template_id,$_POST['template_id'],$row_template_type['template_name']);
 
             }else{
 
@@ -123,4 +125,20 @@ if(is_numeric($_POST['template_id'])){
 
     }
 
+}
+
+function duplicate_template($template_framework, $new_template_id, $org_template_id, $original_template_name){
+    switch($template_framework){
+        case 'xerte':
+            duplicate_template_xerte($new_template_id, $org_template_id, $original_template_name);
+            break;
+        case 'site':
+            duplicate_template_site($new_template_id, $org_template_id, $original_template_name);
+            break;
+        case 'decision':
+            duplicate_template_decision($new_template_id, $org_template_id, $original_template_name);
+            break;
+        default:
+            break;
+    }
 }

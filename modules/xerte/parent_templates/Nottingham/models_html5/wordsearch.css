@@ -27,12 +27,6 @@
 		margin-left: 1em;
 	}
 
-	#pageContents{
-		height: 100%;
-		overflow: hidden;
-		position: fixed;
-	}
-
 	.stop-scrolling {
 		height: 100%;
 		overflow: hidden;

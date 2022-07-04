@@ -27,6 +27,11 @@ require $xerte_toolkits_site->php_library_path . "template_status.php";
 // Even if the file starts with a correct pattern (old implementation) the user could travers path
 // like 542-tom-Notingham/../database.php or like 542-tom-Notingham/../../../../etc/passwd
 $unsafe_file_path = $_GET['file'];
+
+// Account for Windows, because realpath changes / to \
+if(DIRECTORY_SEPARATOR !== '/') {
+    $unsafe_file_path = str_replace('/', DIRECTORY_SEPARATOR, $unsafe_file_path);
+}
 $full_unsafe_file_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $unsafe_file_path;
 // This gets the canonical file name, so in case of 542-tom-Notingham/../../../../etc/passwd -> /etc/passwd
 $realpath = realpath($full_unsafe_file_path);
@@ -44,7 +49,7 @@ if ($realpath !== false && $realpath === $full_unsafe_file_path) {
     if ($has_perms) {
         if (is_user_an_editor($template_id, $_SESSION['toolkits_logon_id'])) {
             // they're logged in, and hopefully have access to the media contents.
-            $file = dirname(__FILE__) . '/USER-FILES/' . $unsafe_file_path;
+            $file = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $unsafe_file_path;
             if (!is_file($file)) {
                 die("Fail: file not found on disk");
             }

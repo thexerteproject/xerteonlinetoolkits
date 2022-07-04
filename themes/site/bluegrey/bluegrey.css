@@ -540,4 +540,20 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
   color: #ffffff;
   background-color: #0098C3; }
 
+.top-round {
+  color: #575757;
+  background: #e5e5e5; }
+
+.top-round:hover,
+.top-round:focus {
+  background: #e0e0e0;
+  color: #424242; }
+
+/*alternating section changes for this theme*/
+.evenSection {
+  background: #fbfbfb; }
+
+.oddSection {
+  background: #e9e9e9; }
+
 /*# sourceMappingURL=bluegrey.css.map */

@@ -38,6 +38,9 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
 	global $youtube_api_key;
 	global $pedit_enabled;
 	global $lti_enabled;
+	global $xapi_enabled;
+	global $x_embed;
+	global $x_embed_activated;
 
     _load_language_file("/modules/xerte/preview.inc");
 
@@ -64,7 +67,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
     {
         $title = XERTE_PREVIEW_TITLE;
     }
-    $string_for_flash_xml = $xmlfile . "?time=" . time();
+    $string_for_flash_xml = $xmlfile;
 
     $flash_js_dir = "modules/" . $row['template_framework'] . "/";
     $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
@@ -190,6 +193,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         }
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+        $page_content = str_replace("%EMBED_SUPPORT%", "", $page_content);
     }
     else if ($engine == 'xml')
     {
@@ -216,6 +220,16 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
 
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
+
+        // Process which logo to use, if any
+        $LO_icon_path = $xmlFixer->getIcon()->url;
+        if (strpos($LO_icon_path, "FileLocation + '") !== false) {
+            $LO_icon_path = str_replace("FileLocation + '" , $string_for_flash, $LO_icon_path);
+            $LO_icon_path = rtrim($LO_icon_path, "'");
+        }
+        $theme_path = 'themes/' . $row['parent_template'] . '/' . $xmlFixer->getTheme();
+        $page_content = process_logos($LO_icon_path, $theme_path, $template_path, $page_content);
+        
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
@@ -225,7 +239,26 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
+        $page_content = str_replace("%USE_URL%", "", $page_content);
 
+        //twittercard
+        $xml = new XerteXMLInspector();
+        $xml->loadTemplateXML($xmlfile);
+        $tcoption = $xml->getLOAttribute('tcoption');
+        $tcmode= $xml->getLOAttribute('tcmode');
+        $tcsite= $xml->getLOAttribute('tcsite');
+        $tccreator= $xml->getLOAttribute('tccreator');
+        $tctitle= $xml->getLOAttribute('tctitle');
+        $tcdescription= $xml->getLOAttribute('tcdescription');
+        $tcimage= $xml->getLOAttribute('tcimage');
+        $tcimage = str_replace("FileLocation + '" , $xerte_toolkits_site->site_url . $string_for_flash, $tcimage);
+        $tcimage = str_replace("'", "", $tcimage);
+        $tcimagealt= $xml->getLOAttribute('tcimagealt');
+        if ($tcoption=="true"){
+            $page_content = str_replace("%TWITTERCARD%", '<meta name="twitter:card" content="'.$tcmode.'"><meta name="twitter:site" content="'.$tcsite.'"><meta name="twitter:creator" content="'.$tccreator.'"><meta name="twitter:title" content="'.$tctitle.'"><meta name="twitter:description" content="'.$tcdescription.'"><meta name="twitter:image" content="'.$tcimage.'"><meta name="twitter:image:alt" content="'.$tcimagealt.'">', $page_content);
+        }else{
+            $page_content = str_replace("%TWITTERCARD%", "", $page_content);
+        }
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
@@ -318,6 +351,25 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
 		$page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
 		$page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
+
+		if ($x_embed)
+        {
+            if ($x_embed_activated)
+            {
+                $embedsupport = "    var x_embed = true;\n";
+                $embedsupport .= "    var x_embed_activated = true;\n";
+            }
+            else{
+                $embedsupport = "    var x_embed = true;\n";
+                $embedsupport .= "    var x_embed_activated = false;\n";
+                $embedsupport .= "    var x_embed_activation_url = '" . $_SERVER['REQUEST_URI'] . "&activated=true';\n";
+            }
+        }
+		else
+		{
+            $embedsupport = "";
+        }
+        $page_content = str_replace("%EMBED_SUPPORT%", $embedsupport, $page_content);
     }
 
     return $page_content;

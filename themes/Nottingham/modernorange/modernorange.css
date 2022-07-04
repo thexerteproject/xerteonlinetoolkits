@@ -1,5 +1,14 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css?family=Varela+Round");
+/* varela-round-regular - latin-ext_latin */
+@font-face {
+  font-family: "Varela Round";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/varela-round-v19-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("../fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("../fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg");
+  /* Legacy iOS */
+}
 /* default #2196F3;*/
 /*start here and set the default values for all the variables*/
 #x_headerBlock {
@@ -204,6 +213,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 
 .x_annotatedDiagram_page .highlight {
   background: #B45819;
+  color: #ffffff;
 }
 
 .x_annotatedDiagram_page .hotspot {
@@ -211,8 +221,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_annotatedDiagram_page #infoHolder {
-  background: #B45819;
-  margin-left: 10px;
+  background: #ffffff;
 }
 
 .target.ui-droppable.border.highlight {
@@ -291,6 +300,10 @@ a.hotspot, a.hotspot.selected {
 
 .hsinfo {
   padding: 1%;
+}
+
+.x_hotspotImage_page #infoHolder {
+  background: none;
 }
 
 .x_interactiveText_page .highlight {
@@ -528,39 +541,39 @@ tr.alt td {
 }
 
 #x_nextBtn:after {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:after {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:after {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:after {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:after {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:after {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:after {
-  content: "";
+  content: "\f128";
 }
 
 #x_menuBtn:after {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:after {
-  content: "";
+  content: "\f0c7";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
 }

@@ -400,7 +400,6 @@
 				"groupInfo": groupInfo,
 				"subGroups": subGroups
 			});
-			//debugger;
 			this.setUpInteraction();
 
 			x_pageLoaded();
@@ -539,8 +538,8 @@
 						.addClass("listItem")
 						.html(groupInfo[i].name)
 						.attr({
-							"tabindex"	: $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
-							"href"		: "#group" + i
+							"tabindex": $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
+							"href": "#"
 							})
 						.data("index", i);
 
@@ -548,7 +547,9 @@
 				}
 
 				$btnHolder.find(".listItem")
-					.click(function() {
+					.click(function(e) {
+						e.preventDefault();
+						
 						var index = $(this).data("index");
 
 						if ($pageContents.data("currentGroup") != index) {
@@ -730,7 +731,9 @@
 					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt") != undefined ? x_currentPageXML.getAttribute("findTxt") : "Click a group to begin, then click the text to find all examples.") + '</p>');
 				}
 
-				$("#btnHolder .listItem").click(function() {
+				$("#btnHolder .listItem").click(function(e) {
+					e.preventDefault();
+					
 					var index = $(this).data("index"),
 						currentGroup = $pageContents.data("currentGroup");
 
@@ -837,8 +840,8 @@
 
 				// get all fixed strings used in quiz
 				var phrases = {},
-					langOptions = ["mcqText", "mcqQuesCount", "mcqCorrect", "mcqWrong", "mcqFeedback", "mcqMore", "mcqScore", "mcqBtnTxt", "mcqBtnTxt2", "mcqBtnTxt3", "mcqDialogClose"],
-					defaultText = ["What is highlighted in the text? Choose from the following options:", "Question {i} of {n}", "That's right.", "No, the correct answer is {i}.", "You have completed the quiz.", "More Information", "You scored {i} / {n}", "Check", "Next", "Restart", "Close"];
+					langOptions = ["mcqText", "mcqQuesCount", "mcqCorrect", "mcqWrong", "mcqFeedback", "mcqMore", "mcqScore", "mcqBtnTxt", "mcqBtnTxt2", "mcqBtnTxt3"],
+					defaultText = ["What is highlighted in the text? Choose from the following options:", "Question {i} of {n}", "That's right.", "No, the correct answer is {i}.", "You have completed the quiz.", "More Information", "You scored {i} / {n}", "Check", "Next", "Restart"];
 
 				for (var i=0; i<langOptions.length; i++) {
 					phrases[langOptions[i]] = x_currentPageXML.getAttribute(langOptions[i]) != undefined ? x_currentPageXML.getAttribute(langOptions[i]) : defaultText[i];
@@ -852,12 +855,14 @@
 					.html('<div id="marking"><a id="more" class="fa fa-x-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/></div>')
 					.appendTo($("#questionHolder"))
 					.attr("tabindex", tabIndex+3)
-					.on("click", "#more", function() {
+					.on("click", "#more", function(e) {
+						e.preventDefault();
+						
 						var mcqAnswers = $pageContents.data("mcqAnswers"),
 							mcqCurrentQ = $pageContents.data("mcqCurrentQ"),
 							correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref;
 
-						x_openDialog("interactiveText", groupInfo[correctGroup].name, $pageContents.data("phrases").mcqDialogClose, {left:"center", top:"middle", width:undefined, height:undefined}, x_addLineBreaks(groupInfo[correctGroup].text));
+						x_openDialog("interactiveText", groupInfo[correctGroup].name, x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"), {left:"center", top:"middle", width:undefined, height:undefined}, x_addLineBreaks(groupInfo[correctGroup].text));
 					});
 
 				$("#btnHolder")
@@ -1015,8 +1020,8 @@
 							.addClass("listItem")
 							.html(groupInfo[i].name)
 							.attr({
-								"tabindex"	: $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
-								"href"		: "#group" + i
+								"tabindex": $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
+								"href": "#"
 								})
 							.data("index", i);
 
@@ -1536,7 +1541,6 @@
 	<div id="questionHolder"/>
 
 	<div id="feedback" aria-live="polite"/>
-
 
 </div>
 

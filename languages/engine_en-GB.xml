@@ -14,6 +14,8 @@
   
   <homeButton label="Home" description="Home Button"/>
   
+  <homeLink label="Home" description="Go to Home page"/>
+
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
   
   <glossaryButton label="Glossary" description="Glossary Button"/>
@@ -234,8 +236,12 @@
   <submitConfirmMsg label="Your answers have been submitted"/>
   <closeBtnLabel label="Close"/>
   
+  <top label="Top"/>
+  <password label="Access code" pageSupport="In live projects, an access code must be entered to view this page" sectionSupport="In live projects, an access code must be entered to view this section"/>
   <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
   <print printBtn="Print page"/>
+
+  <fullScreenBannerInfo label="Scroll down for more information..."/>
 
   <scormTrackingAlert warning="Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt."/>
 

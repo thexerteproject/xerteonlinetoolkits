@@ -122,6 +122,12 @@ $sql = "SELECT * FROM $config_table WHERE name = 'version'";
 $r = db_query_one($sql);
 if(!empty($r)) {
     $version = $r['value'];
+    // Fix jump if we are not already past 32
+    // Previously the messages were a bit strange with the counters.
+    if ($version <= 32)
+    {
+        $version -= 1;
+    }
     echo "Starting from $version\n";
 } else {
     db_query("INSERT INTO $config_table (name, value) VALUES ('version', '0')");
@@ -133,9 +139,7 @@ _do_upgrade($version);
 _do_cleanup();
 
 function _do_upgrade($current_version) {
-    $target_version = $current_version + 0; // changed this to add 0 not 1 as this looks like it causes issues as when done an upgrade you had to add an extra 1 to the upgrade_function
-  if($target_version ==0 ) $target_version=1; // fixed this for when the variable didnt exist;
-
+    $target_version = $current_version + 1;
 
     echo "<p>Current database version - $current_version</p>";
     if(!function_exists('upgrade_' . $target_version)) {
@@ -158,6 +162,8 @@ function _do_upgrade($current_version) {
         $target_version += 1;
     }
     echo "<p><b>Upgrade complete</b></p>\n";
+    // Last version is actually used is one less
+    $target_version -= 1;
     // Update config table so we don't run the same query twice in the future.
     $table = table_by_key('config');
     $sql = "UPDATE $table SET value = $target_version WHERE name = 'version'";
@@ -193,21 +199,47 @@ function _do_cleanup()
         'themes/Nottingham/flatwhite/responsivetext.css',
         'themes/Nottingham/orangepurple/responsivetext.css',
         'themes/Nottingham/sketch/responsivetext.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt'
+        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt',
+        'USER-FILES/*/.htaccess',
+        'modules/xerte/templates/*/.htaccess',
+        'modules/site/templates/*/.htaccess',
+        'modules/decision/templates/*/.htaccess',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/*',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/examples/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/extra/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
     );
 
     foreach ($filelist as $file)
     {
-        if (file_exists($file))
+        if (file_exists($file) || strpos($file, "*") !== false)
         {
             echo 'Removing ' . $file . '<br>';
-            unlink($file);
+            if (strpos($file, "*") === false && $file[strlen($file)-1] !==  "/")
+            {
+                unlink($file);
+            }
+            else if ($file[strlen($file)-1] !==  "/")  // wildcard
+            {
+                system("rm " . $file);
+            }
+            else  // folder
+            {
+                system("rm -rf " . $file);
+            }
         }
         else
         {
             echo 'File ' . $file . ' not found (already deleted :-) )<br>';
         }
     }
+
+    // Turn off Rss template since it has no HTML engine
+    $table = table_by_key('originaltemplatesdetails');
+    $ok = db_query("update `$table` SET `active` = '0' WHERE `$table`.`template_type_id` = 8");
+    echo "Rss template " . ($ok ? 'set inactive' : 'already inactive :-)') . "<br>";
 
     echo 'Done<br>';
 }
@@ -1079,9 +1111,9 @@ function upgrade_27()
 {
     $table = table_by_key('folderrights');
     $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
-        `id` bigint(20) NOT NULL AUTO_INCREMENT,
-        `folder_id` bigint(20) NOT NULL,
-        `user_id` bigint(20) NOT NULL,
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `folder_id` int(11) NOT NULL,
+        `user_id` int(11) NOT NULL,
         `role` char(255) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
@@ -1125,4 +1157,147 @@ function upgrade_28()
     return $message;
 }
 
+function upgrade_29()
+{
+    $table = table_by_key('educationlevel');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+                `educationlevel_id` int(11) NOT NULL AUTO_INCREMENT,
+                `educationlevel_name` char(255) DEFAULT NULL,
+                PRIMARY KEY (`educationlevel_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
 
+    $message = "Creating educationlevel table - ok ? " . ($ok ? 'true' : 'false');
+
+    $ok = db_query("insert into `$table` (`educationlevel_id`,`educationlevel_name`) values (1,'University'),(2,'College'),(3,'Secondary Education'),(4,'Primary Educaton'),(5,'Vocational Education'),(6,'Adult Education'),(7,'All')");
+
+    $message .= "Filling default educationlevel into educationlevel table - ok ? " . ($ok ? 'true' : 'false');
+
+    return $message;
+}
+
+function upgrade_30()
+{
+    if (!_db_field_exists('templatedetails', 'tsugi_manage_key_id')) {
+        $error = _db_add_field('templatedetails', 'tsugi_manage_key_id', 'int', '-1', 'tsugi_usetsugikey');
+        return "Creating tsugi_manage_key_id field in templatedetails - ok ? " . ($error === false ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+    }
+}
+
+function upgrade_31()
+{
+    if (! _db_field_exists('sitedetails', 'globalhidesocial')) {
+        $error1 = _db_add_field('sitedetails', 'globalhidesocial', 'char(255)', 'false', 'tsugi_dir');
+        $error1_returned = true;
+
+        $error2 = _db_add_field('sitedetails', 'globalsocialauth', 'char(255)', 'true', 'globalhidesocial');
+        $error2_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+
+        return "Creating Social Icon settings fields - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating Social Icon settings fields already present - ok ? true". "<br>";
+    }
+}
+
+function upgrade_32()
+{
+    // Fix corrupt or wrong folderrights table;
+    $frtable = table_by_key('folderrights');
+    if (_db_field_exists('folderrights', 'user_id')) {
+        // change this to login_id
+        $ok = db_query("alter table `$frtable` change user_id login_id int");
+    }
+    if (!_db_field_exists('folderrights', 'folder_parent')) {
+        $error = _db_add_field('folderrights', 'folder_parent', 'int', '-1', 'login_id');
+
+        if ($error !== false) {
+            // Fill folderrights table based on folderdetails
+            $fdtable = table_by_key('folderdetails');
+            $folders = db_query("select * from `$fdtable`;");
+            if ($folders !== false) {
+                foreach ($folders as $folder) {
+                    $ok = db_query("insert into `$frtable` set login_id=?, folder_id=?, folder_parent=?, role='creator'",
+                        array($folder['login_id'], $folder['folder_id'], $folder['folder_parent']));
+                    if ($ok === false) {
+                        return "Something went wrong with migrating folderrights table!";
+                    }
+                }
+            }
+        }
+        return "Creating folder_parent field in folderrights - ok ? " . ($error  ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating folder_parent field in folderrights already present - ok ? ". "<br>";
+    }
+
+
+}
+
+function upgrade_33()
+{
+    global $xerte_toolkits_site;
+    $table = table_by_key('templatedetails');
+    if (!_db_field_exists('templatedetails', 'tsugi_manage_key_id')) {
+        $error = _db_add_field('templatedetails', 'tsugi_manage_key_id', 'int', '-1', 'tsugi_usetsugikey');
+        $mesg = "Creating tsugi_manage_key_id field in templatedetails - ok ? " . ($error ? 'true' : 'false'). "<br>";
+        if ($error && file_exists($xerte_toolkits_site->tsugi_dir) ) {
+            require_once($xerte_toolkits_site->tsugi_dir . "config.php");
+            $PDOX = \Tsugi\Core\LTIX::getConnection();            // migrate key id from tsugi tables to template_id
+            $p = $CFG->dbprefix;
+            $templates = db_query("select * from $table;");
+            foreach($templates as $template)
+            {
+                if ($template['tsugi_published'] === "1" && $template['tsugi_usetsugikey'] !== "1")
+                {
+                    // Try to get key_id from tsugi tables using old method and place it into templatedetails;
+                    $rows = $PDOX->allRowsDie("SELECT k.key_id FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE c.key_id = k.key_id and l.context_id=c.context_id and l.path = :URL",
+                        array(':URL' => $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template['template_id']));
+                    if (count($rows)>0)
+                    {
+                        if (count($rows) > 1) {
+                            $mesg .= "    WARNING: More than one key_id returned for template with id " . $template['template_id'] . "(this text should NOT be in release)<br>";
+                            foreach($rows as $row)
+                            {
+                                $mesg .= "        " . $row['key_id'] . "<br>";
+                            }
+                        }
+                        // get the first key
+                        $res = db_query("update $table set tsugi_manage_key_id=? where template_id=?",
+                            array($rows[0]['key_id'], $template['template_id']));
+                        if ($res === false)
+                        {
+                            $mesg .= "    Could not set key_id for template with id " . $template['template_id'] . "<br>";
+                        }
+                        else
+                        {
+                            $mesg .= "    Set key_id for template with id " . $template['template_id'] . " successfuly.<br>";
+                        }
+                    }
+                }
+            }
+        }
+
+        return $mesg;
+    }
+    else
+    {
+        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+    }
+}

@@ -65,6 +65,10 @@ ul, ol {
 	padding:	10px;
 }
 
+#x_headerBlock img {
+	max-height: 200px;
+}
+
 #x_pageHolder {
 	width:		100%;
 	overflow:	auto;
@@ -623,7 +627,33 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	text-align: center;
 }
 
-/* Specifiaclly for grayscale handling on IE browsers */
+/* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
+
+.x_pswdInput {
+	margin-top: 1em;
+	padding: 0.3em;
+}
+
+input#x_pagePswd {
+	margin-bottom: 0;
+}
+
+#x_pagePswdBtn {
+	margin-left: 1em;
+}
+
+#x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
+	text-decoration: underline;
+	background-color: #0088cc;
+}
+
+.x_pswdError {
+	margin-top: 1em;
+	font-size: 0.9em;
+	color: #c0392b;
+}
+
+/* Specifically for grayscale handling on IE browsers */
 body > svg
 {
 	width: 0px;

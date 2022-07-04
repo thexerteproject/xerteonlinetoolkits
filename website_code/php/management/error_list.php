@@ -20,17 +20,21 @@
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/error_list.inc");
+_load_language_file("/management.inc");
 
 require("../user_library.php");
 require("management_library.php");
 
 if(is_user_admin()){
+	
+	echo "<h2>" . MANAGEMENT_MENUBAR_LOGS . "</h2>";
+	echo "<div class=\"admin_block\">";
 
     $path = $xerte_toolkits_site->error_log_path;
 
     $error_file_list = opendir($path);
 
-    echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\"><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_error_logs()\"><i class=\"fa fa-trash-o\"></i> " . DELETE_ALL_LOGS . "</button></div>";
+    echo "<div style=\"margin:5px; width:100%; position:relative;\"><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_error_logs()\"><i class=\"fa fa-trash-o\"></i> " . DELETE_ALL_LOGS . "</button></div>";
 
     while($file = readdir($error_file_list)){
 
@@ -62,6 +66,8 @@ if(is_user_admin()){
         }
 
     }
+	
+	echo "</div>";
 
 }else{
 

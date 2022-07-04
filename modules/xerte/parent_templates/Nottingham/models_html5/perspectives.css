@@ -62,6 +62,14 @@
 		overflow: hidden;
 		text-align: center;
 		white-space: nowrap;
+		/* hide scrollbar IE, Edge, FF */
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	/* hide scrollbar Chrome, Safari, Opera */
+	#thumbHolder::-webkit-scrollbar {
+		display: none;
 	}
 	
 	#thumbBar.grid #thumbHolder {
@@ -184,7 +192,7 @@
 	#mainTxt + #mediaPanel {
 		margin-top: 20px;
 		margin-bottom: 0;
-	}
+  	}
 	
 	#mediaPanel:not(.x_floatLeft) {
 		clear: right;

@@ -26,6 +26,7 @@
  *
  * This must be done before loading config.php
 */
+global $lti_enabled;
 if (!isset($lti_enabled))
 {
     $lti_enabled = false;
@@ -38,12 +39,13 @@ if (!$lti_enabled)
     ini_set('session.use_trans_sid', 1);
 }
 
-
 require_once(dirname(__FILE__) . "/config.php");
 require_once(dirname(__FILE__) . "/website_code/php/xAPI/xAPI_library.php");
 
 global $xerte_toolkits_site;
 global $xapi_enabled;
+global $x_embed;
+global $x_embed_activated;
 
 $id = $_GET["template_id"];
 if(is_numeric($id))
@@ -105,8 +107,18 @@ if(is_numeric($id))
     if (isset($_REQUEST['module'])) {
         $xerte_toolkits_site->course = $_REQUEST['module'];
     }
+    _debug("xapi_launch: SESSION=" . print_r($_SESSION, true));
 
+
+    if ($_GET['x_embed'] === 'true') {
+        $x_embed = true;
+        if ($_GET['activated'] !== 'true') {
+            $xapi_enabled = false;
+            $x_embed_activated = false;
+        } else {
+            $x_embed_activated = true;
+        }
+    }
 	require("play.php");
-
 }
 ?>

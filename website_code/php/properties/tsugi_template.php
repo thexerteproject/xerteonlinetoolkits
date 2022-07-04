@@ -43,7 +43,7 @@
             $template_id = $id;
             $safe_template_id = (int)$id;
             $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.template_name as name, td.access_to_whom, td.extra_flags,";
-            $query_for_preview_content .= "td.tsugi_published, td.tsugi_usetsugikey, td.tsugi_privatekeyonly, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links";
+            $query_for_preview_content .= "td.tsugi_published, td.tsugi_usetsugikey, td.tsugi_manage_key_id, td.tsugi_privatekeyonly, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links";
             $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
             $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=? and (role='creator' || role='co-author')";
 
@@ -52,7 +52,6 @@
 
             $lti_def = new stdClass();
             $lti_def->tsugi_installed = $tsugi_installed;
-            $lti_def->title = str_replace('_', ' ', $row['name']);
             $lti_def->xapi_enabled = $row["tsugi_xapi_enabled"];
             $lti_def->key = $row['name'] . "_" . $id;
             $lti_def->secret = generatePwd(16);
@@ -74,14 +73,12 @@
                 if ($lti_def->published == 1) {
                     $PDOX = LTIX::getConnection();
                     $tsugirow = $PDOX->rowDie(
-                        "	SELECT l.title, k.key_key, k.secret
-						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, {$CFG->dbprefix}lti_link AS l
-							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
-                        array(':DPATH' => $lti_def->tsugi_url));
+                        "	SELECT k.key_key, k.secret
+						FROM {$CFG->dbprefix}lti_key k WHERE k.key_id = :key_id",
+                        array(':key_id' => $row['tsugi_manage_key_id']));
                     if ($tsugirow !== false) {
                         $lti_def->key = $tsugirow["key_key"];
                         $lti_def->secret = $tsugirow["secret"];
-                        $lti_def->title = $tsugirow["title"];
                     }
                 }
             }

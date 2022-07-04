@@ -49,6 +49,7 @@ if (!$lti_enabled)
 
 
 require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/website_code/php/xAPI/xAPI_library.php");
 require_once(dirname(__FILE__) . "/pedit_config.php");
 
 _load_language_file("/play.inc");
@@ -63,7 +64,9 @@ require_once $xerte_toolkits_site->php_library_path . "template_library.php";
 
 
 global $tsugi_enabled, $pedit_enabled;
-
+global $xapi_enabled;
+global $x_embed;
+global $x_embed_activated;
 
 if (!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
 
@@ -194,7 +197,7 @@ if (is_numeric($id))
     $xapi_enabled = true;
     if (isset($_REQUEST['group']) && !isset($xerte_toolkits_site->group))
     {
-        $xerte_toolkits_site->group = $_REQUEST{'group'};
+        $xerte_toolkits_site->group = $_REQUEST['group'];
     }
     if (isset($_REQUEST['course'])) {
         $xerte_toolkits_site->course = $_REQUEST['course'];
@@ -231,8 +234,17 @@ if (is_numeric($id))
             'lrssecret' => $row['tsugi_xapi_secret'],
         );
     }
-
+    $lrs = CheckLearningLocker($lrs);
     $_SESSION['XAPI_PROXY'] = $lrs;
 
+    if ($_GET['x_embed'] === 'true') {
+        $x_embed = true;
+        if ($_GET['activated'] !== 'true') {
+            $xapi_enabled = false;
+            $x_embed_activated = false;
+        } else {
+            $x_embed_activated = true;
+        }
+    }
     require(dirname(__FILE__) . "/play.php");
 }

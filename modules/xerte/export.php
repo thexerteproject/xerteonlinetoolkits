@@ -403,6 +403,30 @@ if ($xml->mediaIsUsed()) {
     export_folder_loop($xerte_toolkits_site->root_file_path . "mediaViewer/");
     copy_extra_files();
 }
+/*
+* export logo
+*/
+$LO_base_path = 'USER-FILES/' . $row['template_id'] . '-' . $row['username'] . '-' . $row['template_name'] . '/';
+$LO_icon_path = $xml->getIcon()->url;
+if (strpos($LO_icon_path, "FileLocation + '") !== false) {
+    $LO_icon_path = str_replace("FileLocation + '" , $LO_base_path, $LO_icon_path);
+    $LO_icon_path = rtrim($LO_icon_path, "'");
+}
+$theme_base_path = 'themes/' . $row['parent_template'] . '/' . $xml->getTheme();
+$default_path = 'modules/' . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . '/';
+$export_logo = get_logo_file($LO_icon_path, $theme_base_path, $default_path);
+if ($export_logo) {
+    copy($export_logo, $dir_path . basename($export_logo));
+    array_push($delete_file_array, $dir_path . basename($export_logo));
+
+    if (file_exists($export_logo)) {
+        $export_logo = '<img class="x_icon" src="' . basename($export_logo) . '" alt="" />';
+    }
+    else {
+        $export_logo = '';
+    }
+}
+
 /* 
  * documentation
  */
@@ -443,7 +467,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $need_download_url);
+            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -451,18 +475,18 @@ if ($scorm == "true") {
     if ($export_flash && !$export_html5) {
         scorm2004_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $need_download_url);
+        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo);
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $row['date_modified']);
+		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $row['date_modified'], false, false, '', false, $export_logo);
 	}
 else {
     if ($export_flash) {
         basic_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $tsugi, $export_offline, $offline_includes,  $need_download_url);
+        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $row['date_created'], $tsugi, $export_offline, $offline_includes, $need_download_url, $export_logo);
     }
 }
 

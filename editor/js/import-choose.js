@@ -128,7 +128,12 @@ function CheckAll() {
 
 function getIcon(nodetype)
 {
-    switch(nodetype)
+    var nodetypetemp = nodetype;
+    if (nodetype){
+        nodetypetemp = nodetype.replace("_group", "");
+        nodetypetemp = nodetypetemp.replace("_shared", "");
+    }
+    switch(nodetypetemp)
     {
         case "workspace":
             icon = "website_code/images/folder_workspace.gif";
@@ -137,10 +142,19 @@ function getIcon(nodetype)
             icon = "website_code/images/rb_empty.gif";
             break;
         case "folder":
-            icon = "website_code/images/Icon_Folder.gif";
+            if (nodetype == "folder_group"){
+                icon = "website_code/images/Icon_Folder_Group.gif";
+            }else if (nodetype == "folder_shared"){
+                icon = "website_code/images/Icon_Folder_Shared.gif";
+            }else{
+                icon = "website_code/images/Icon_Folder.gif";
+            }
+            break;
+        case "group":
+            icon = "website_code/images/Icon_Shared.gif";
             break;
         default:
-            icon = "website_code/images/Icon_Page_" + nodetype + ".gif";
+            icon = "website_code/images/Icon_Page_" + nodetypetemp + ".gif";
     }
     return icon;
 }
@@ -229,9 +243,29 @@ function init_workspace()
     folder_children = folder_children.concat(workspace.templates);
     node_types["folder"] = create_node_type("folder", folder_children);
 
+    //shared folder
+    var shared_children = workspace.sharedtemplates;
+    node_types["folder_shared"] = create_node_type("folder_shared", shared_children);
+
+    //group
+    var group_children = workspace.grouptemplates;
+    node_types["group"] = create_node_type("group", group_children);
+
+    //group folder
+    node_types["folder_group"] = create_node_type("folder_group", group_children);
+
     $.each(workspace.templates, function () {
         node_types[this] = create_node_type(this, [""]);
     });
+
+    $.each(workspace.grouptemplates, function () {
+        node_types[this] = create_node_type(this, [""]);
+    });
+
+    $.each(workspace.sharedtemplates, function () {
+        node_types[this] = create_node_type(this, [""]);
+    });
+
 
     // Remove _ from project names
     $.each(workspace.items, function () {
@@ -276,42 +310,43 @@ function init_workspace()
             lastTreeItemTimestamp = e.timeStamp;
 
             xot_id = treenode.node.original.xot_id;
+            var temptype = treenode.node.type.replace("_group", "");
+            temptype = temptype.replace("_shared", "");
+            if (temptype == 'folder' || temptype == 'workspace' || temptype == 'group') {
 
-						if (treenode.node.type == 'folder' || treenode.node.type == 'workspace') {
+                if (treenode.node.children.length > 0) {
+                    // WE CAN OPEN FOLDER HERE
+                }
 
-							if (treenode.node.children.length > 0) {
-								// WE CAN OPEN FOLDER HERE
-							}
-							
-							$("#mergeGlossaryCheck").prop("checked", false);
-							$("#mergeGlossary").hide();
-							$("#pages").html("");
-							$("#merge").hide();
-							$(".merge_title").show();
-							
-							$("#pages").html("Select project on left.");
-						}
-						else {
-							var data = jsonData[xot_id];
-							if(data != undefined){
+                $("#mergeGlossaryCheck").prop("checked", false);
+                $("#mergeGlossary").hide();
+                $("#pages").html("");
+                $("#merge").hide();
+                $(".merge_title").show();
 
-									showPageData(xot_id, data);
+                $("#pages").html("Select project on left.");
+            }
+            else {
+                var data = jsonData[xot_id];
+                if(data != undefined){
 
-	  					}
-	  					else { // haven't loaded that page yet
-									var url="editor/importpages/import-pagedata.php?id=" + xot_id;
-									var now = new Date().getTime();
-									$.ajax({
-											type: "GET",
-											url: url + "&t=" + now,
-											dataType: "html",
-											success: function (response) {
-													jsonData[xot_id] = JSON.parse(response);
-													showPageData(xot_id, jsonData[xot_id]);
-											}
-									});
-							}
-						}
+                        showPageData(xot_id, data);
+
+            }
+            else { // haven't loaded that page yet
+                        var url="editor/importpages/import-pagedata.php?id=" + xot_id;
+                        var now = new Date().getTime();
+                        $.ajax({
+                                type: "GET",
+                                url: url + "&t=" + now,
+                                dataType: "html",
+                                success: function (response) {
+                                        jsonData[xot_id] = JSON.parse(response);
+                                        showPageData(xot_id, jsonData[xot_id]);
+                                }
+                        });
+                }
+            }
         });
     }
 }

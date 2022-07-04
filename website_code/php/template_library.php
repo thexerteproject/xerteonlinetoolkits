@@ -49,7 +49,7 @@ function get_template_type($template_id){
  * Get the sub pages of a template in an array. If the array is empty, show all subpages
  *
  */
-function get_template_pagelist($template_id)
+function  get_template_pagelist($template_id)
 {
     global $xerte_toolkits_site;
 
@@ -192,4 +192,14 @@ function get_template_data_as_xml($template_id, $creator_user_name="", $template
         $xml = simplexml_load_string($dataXml);
     }
     return $xml;
+}
+
+function change_copied_xml($xmlfile)
+{
+    $xml = simplexml_load_file($xmlfile);
+    if ((string)$xml['oaiPmhAgree'] === 'true')
+    {
+        $xml['oaiPmhAgree'] = 'false';
+    }
+    $xml->asXML($xmlfile);
 }

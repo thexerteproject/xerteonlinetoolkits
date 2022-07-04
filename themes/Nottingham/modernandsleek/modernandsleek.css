@@ -1,5 +1,14 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css?family=Libre+Franklin");
+/* libre-franklin-regular - latin-ext_latin */
+@font-face {
+  font-family: "Libre Franklin";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff") format("woff"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.svg#LibreFranklin") format("svg");
+  /* Legacy iOS */
+}
 /*---colours to use - sleek and modern:  #2f2E33, #D5D6D2, #FFFF, #3A5199---*/
 /*define color pallette*/
 /*set background colors*/
@@ -228,8 +237,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_annotatedDiagram_page #infoHolder {
-  background: #D5D6D2;
-  margin-left: 10px;
+  background: #ffffff;
 }
 
 .target.ui-droppable.border.highlight {
@@ -315,6 +323,10 @@ a.hotspot, a.hotspot.selected {
 
 .hsinfo {
   padding: 1%;
+}
+
+.x_hotspotImage_page #infoHolder {
+  background: none;
 }
 
 .x_interactiveText_page .highlight {
@@ -602,39 +614,39 @@ div#shorturltodisplay a {
 }
 
 #x_nextBtn:after {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:after {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:after {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:after {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:after {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:after {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:after {
-  content: "";
+  content: "\f128";
 }
 
 #x_menuBtn:after {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:after {
-  content: "";
+  content: "\f0c7";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
 }

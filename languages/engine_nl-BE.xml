@@ -219,6 +219,8 @@
 	<search title="Zoek" searchBtn="Zoek" goBtn="Zoek" newBtn="Nieuwe Zoekopdracht" resultTitle="Resultaten" matchTitle1="Gevonden" matchTitle2="Beste resultaten" matchTitle3="Gedeeltelijk gevoden" showMatch="Laat gedeeltelijke resultaten zien" noMatch1="Geen enkele pagina of sectie voldoet aan de zoekopdracht" noMatch2="Geen enkele pagina of sectie voldoet volledig aan uw zoekopdracht. Gedeeltelijke resultaten staan hieronder." />
 	<print printBtn="Print pagina"/>
 
+	<fullScreenBannerInfo label="Scroll naar beneden voor meer informatie..."/>
+
 	<scormTrackingAlert warning="Let op: de SCORM mode is '{0}'. Dat betekent dat je voortgang, interacties en resulaten van deze sessie niet getracked of opgeslagen worden. Start een nieuwe poging om tracking mogelijk te maken."/>
 
 </language>

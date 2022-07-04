@@ -198,7 +198,7 @@
 			
             for (var i=0; i<passageArray.length; i++) {
 				if (markedWord == false) {
-					gapFillStr += '<span tabindex="0">' + passageArray[i] + '</span>';
+					gapFillStr += '<span class="staticTxt" tabindex="0">' + passageArray[i] + '</span>';
 					markedWord = true;
 				} else {
 					decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
@@ -223,7 +223,7 @@
 						var dropDownSort = x_currentPageXML.getAttribute("dropDownSort");
 						if (dropDownSort != undefined && dropDownSort != "" && dropDownSort != "alphabetic") // must be random
 						    allAnswers.sort(
-						        function() { return 0.5 - Math.random(); }
+						        function() { return Math.random() - 0.5; }
 						    );
 						else
 						    allAnswers.sort();
@@ -264,6 +264,17 @@
 			}
 			
 			var $gapFillTxt = $('<div>' + gapFillStr + '</div>').appendTo($targetHolder);
+			
+			// remove any staticTxt tags that have other staticTxt tags in them - in FF these can make you get stuck in loop when tabbing and unable to reach draggable labels
+			// these tags are added when layout uses tables
+			$gapFillTxt.find('.staticTxt').each(function() {
+				var $parent = $(this).parents('.staticTxt');
+				if ($parent.length > 0) {
+					$parent[0].removeAttribute('tabindex');
+					$parent.removeClass('staticTxt');
+				}
+			});
+			
 			$gapFillTxt.find("span.target, input").each(function(i) {
 				var $this = $(this);
 				if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
@@ -337,6 +348,13 @@
 					correctOptions.push(correctOption);
 				}
                 XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
+				/* fill-in
+				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
+					name = "interaction number" + " " + interactionNumber;
+					correctAnswer = answerData[interactionNumber];
+					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("grouping"));
+				}
+				*/
             }
 			else{ // drop down menu
                 for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
@@ -1159,7 +1177,36 @@
 					if (!correct) { feedback = "Incorrect"; }
 
 					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, feedback);
-					
+
+
+					/* fill-in
+					// track before moving back labels or else results page looks like you haven't attempted to answer
+					total = 0;
+					correct_answers = 0;
+
+					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
+						var feedback = "Correct",
+							correct = false,
+							correctAnswer = answerData[interactionNumber][0],
+							labelSource = labelAnswers[correctAnswer] == undefined ? '' : labelAnswers[correctAnswer],
+							option = {source: labelSource, target: correctAnswer};
+
+						if (option.source == option.target) {
+							correct_answers++;
+							correct = true;
+						}
+
+						var result = {
+							success: correct,
+							score: (correct ? 100.0 : 0.0)
+						};
+						if (!correct) { feedback = "Incorrect"; }
+
+						total++;
+						XTExitInteraction(x_currentPage, interactionNumber, result, [], labelSource, feedback, x_currentPageXML.getAttribute("trackinglabel"));
+					}
+					var allCorrect = (total == correct_answers);
+					 */
 					gapFill.finishTracking();
 					
 					if (!this.isTracked) {
@@ -1203,7 +1250,8 @@
 						$incorrectTargets.addClass("incorrect");
 						$("#submitBtn").hide();
 						finished = true;
-						
+
+						// if (allCorrect !== true) {
 						if (correct !== true) {
 							$("#showBtn").show();
 						}

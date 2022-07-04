@@ -179,6 +179,8 @@ xAPIDashboard.prototype.setStatisticsValues = function(base, learningObjectIndex
             eventCount += curUser['statementidxs'].length;
         }
     }
+    this.userCount = numberOfUsers;
+    this.sessionCount = sessionCount;
     /*
     for(var i in this.data.groupedData){
         var curUser = this.data.groupedData[i];
@@ -1395,8 +1397,7 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
             column.hide();
         }
     }
-    $('#model-' + learningObjectIndex + '-' + interactionIndex)
-        .on('show.bs.modal', function() {
+    $(document).on('show.bs.modal', '#model-' + learningObjectIndex + '-' + interactionIndex, function() {
             var contentDiv =
                 $('#model-' + learningObjectIndex + '-' + interactionIndex + ' .modal-body');
             contentDiv.html("");
@@ -1426,8 +1427,9 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
                 {
                     var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
                     if (pausedStatements.length > 0) {
-                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
-                        $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
+                        //$this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+                        $this.displayOverviewRetention(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements, $this.sessionCount);
                     }
                 }
                 $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
@@ -1456,6 +1458,200 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
 
         });
 };
+
+xAPIDashboard.prototype.consolidateSegments = function(stringRanges)
+{
+    let csegments = stringRanges.map(function(s) {
+        var segments = s.split("[,]");
+        if (segments[0] == "") {
+            return [];
+        }
+        return segments.map(function(segment) {
+            return {
+                start: parseFloat(segment.split("[.]")[0]),
+                end: parseFloat(segment.split("[.]")[1])
+            };
+        });
+    });
+    var segments = [];
+    csegments.forEach(function(segment) {
+        segment.forEach(function(seg) {
+            segments.push(seg);
+        });
+    });
+    segments.sort(function(a, b) {
+        return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : a.end - b.end);
+    });
+    // 2. Combine the segments
+    csegments = [];
+    var i = 0;
+    while (i < segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i < segments.length && segment.end >= segments[i].start) {
+            if (segment.end <= segments[i].end) {
+                segment.end = segments[i].end;
+            }
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+};
+
+
+/**
+ * Displays a graph of the video showing how many students watched a specific part of a video in a learningObject.
+ * @param {String} contentDiv The element you want to place the retention graph in (if null then element is heatmapData).
+ * @param {int} learningObjectIndex Is the index of the object containing information about the learningObject.
+ * @param {int} interactionIndex Is the index of the interaction within the object.
+ * @param {[statement]} pausedStatements A list of statements from the learningObject that is given.
+ * @param {int} height The number displayed on the y-axis.
+ */
+xAPIDashboard.prototype.displayOverviewRetention = function(contentDiv, learningObjectIndex, interactionIndex, pausedStatements, height = 10) {
+    if (contentDiv == null) {
+        contentDiv = 'heatmapData';
+    }
+    //var pausedStatements = getStatementsList(pausedstatementmap, 'https://w3id.org/xapi/video/verbs/paused');
+    var times = [];
+    var data = [
+        []
+    ];
+    var total = 200;
+    var videoLength = Math.max(...pausedStatements.map(s => s.context.extensions["https://w3id.org/xapi/video/extensions/length"]));
+
+    // Gets all the ranges from the data.
+    // groupedPausedStatements
+    var stringRanges = [];
+    for (var i=0; i<pausedStatements.length; i++)
+    {
+        var session = pausedStatements[i].context.extensions["https://w3id.org/xapi/video/extensions/session-id"];
+        if (stringRanges[session] != undefined)
+        {
+            stringRanges[session].push(pausedStatements[i].result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]);
+        }
+        else
+        {
+            stringRanges[session] = [pausedStatements[i].result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]];
+        }
+    }
+    //var stringRanges = pausedStatements.map(s => s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]);
+    var totalViewed = [];
+    for (var i = 0; i < total; i++) {
+        totalViewed.push(0);
+    }
+    var totalFound = 0;
+    for (var sRangeIndex in stringRanges) {
+        var segments = this.consolidateSegments(stringRanges[sRangeIndex]);
+        for (var i in segments) {
+            var segment = segments[i];
+            totalFound++;
+            //sanitize
+            if (segment.start < 0)
+            {
+                segment.start = 0;
+            }
+            if (segment.start > videoLength)
+            {
+                segment.start = videoLength;
+            }
+            if (segment.end < 0)
+            {
+                segment.end = 0;
+            }
+            if (segment.end > videoLength)
+            {
+                segment.end = videoLength;
+            }
+
+            for (var j = Math.floor(segment.start/videoLength * total); j <= Math.ceil(segment.end/videoLength * total); j++) {
+                var t = j*videoLength/total;
+                if (t>=segment.start && i<=segment.end) {
+                    totalViewed[j]++;
+                }
+            }
+        }
+    }
+
+    for (var i = 0; i < total; i++) {
+        times.push(i / total);
+        data[0].push(totalViewed[i]);
+    }
+    var data = [{
+        y: data[0],
+        x: times,
+        fill: 'tonexty',
+        type: 'scatter',
+        fillcolor: '#358B3D',
+        line: {
+            color: '#217729'
+        },
+        zmin: 0,
+        zmax: height
+    }];
+
+    var vals = [];
+    var valtexts = [];
+
+    if (pausedStatements.length > 0) {
+        // Divide in 5 blocks
+        if (videoLength > 0) {
+            var blocks = Math.floor(videoLength/150);
+            var blockLength = (blocks * 30) / videoLength;
+            for (var i = 0; i <= 1; i += blockLength) {
+                vals.push(i / 1);
+                var seconds = Math.round(100 * i * videoLength) / 100;
+                if (videoLength > 60) {
+                    var minutes = Math.round(seconds / 60);
+                    seconds = Math.round(seconds % 60);
+                    if (seconds < 10) {
+                        seconds = "0" + seconds;
+                    }
+                    var time = minutes + ":" + seconds;
+                } else {
+                    time = seconds + " seconds";
+                }
+                valtexts.push(time);
+            }
+        }
+    }
+
+    var layout = {
+        annotations: [],
+        //height: 120,
+        margin: {
+            t: 40,
+            l: 40,
+            b: 20,
+            r: 20
+        },
+        xaxis: {
+            tickmode: 'array',
+            tickvals: vals,
+            ticktext: valtexts,
+            range: [0, 1]
+        },
+        yaxis: {
+            title: '',
+            ticks: '',
+            width: 700,
+            height: 700,
+            autosize: false,
+            range: [0, height]
+        },
+        hovermode: false,
+    };
+
+    if (pausedStatements.length > 0) {
+        layout['title'] = pausedStatements[0].object.definition.name["en-US"];
+    }
+    contentDiv.attr('id', 'heatmap-' + learningObjectIndex + '-' + interactionIndex);
+    Plotly.newPlot(contentDiv.attr('id'), data, layout, {
+        staticPlot: true
+    });
+};
+
+
 
 // Function that creates a heatmap for the given data.
 xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectIndex, interactionIndex, pausedstatements) {
@@ -2277,17 +2473,26 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
     });
 
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
-        $(".unanonymous-view").show();
-        this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
-        $("#dp-unanonymous-view").change(function(event) {
-            $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
-            $("#dp-start").prop("disabled", true);
-            $("#dp-end").prop("disabled", true);
-            $("#dp-unanonymous-view").prop("disabled", true);
+        debugger;
+        if (this.data.info.unanonymous == 'true')
+        {
+            $("#dp-unanonymous-view").prop("checked", true);
+            $("#dp-unanonymous-view").hide();
+            this.data.info.dashboard.anonymous = false;
+        }
+        else {
+            $(".unanonymous-view").show();
+            this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
+            $("#dp-unanonymous-view").change(function (event) {
+                $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
+                $("#dp-start").prop("disabled", true);
+                $("#dp-end").prop("disabled", true);
+                $("#dp-unanonymous-view").prop("disabled", true);
 
-            $this.regenerate_dashboard();
+                $this.regenerate_dashboard();
 
-        });
+            });
+        }
     }
 
     this.regenerate_dashboard();

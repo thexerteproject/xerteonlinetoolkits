@@ -58,8 +58,8 @@ function auth($update = false) {
     login_processing2();
     //sucessfull authentication
   } else {
-    html_headers();
-    login_prompt($errors, '../');
+    html_headers_lti();
+    login_prompt_lti($errors, '../');
   }
 }
 
@@ -115,8 +115,8 @@ if ($returned === false) {
     login_processing2();
     //sucessfull authentication
   } else {
-    html_headers();
-    login_prompt($errors, '../');
+    html_headers_lti();
+    login_prompt_lti($errors, '../');
     exit();
   }
 
@@ -204,7 +204,7 @@ if (!$lti->isInstructor()) {
 
 
     // display xerte object so a new one can be selected
-    html_headers();
+    html_headers_lti();
 
     print <<<END
 

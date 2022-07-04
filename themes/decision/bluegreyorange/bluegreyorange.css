@@ -1,4 +1,13 @@
-@import url("https://fonts.googleapis.com/css?family=Varela+Round");
+/* varela-round-regular - latin-ext_latin */
+@font-face {
+  font-family: "Varela Round";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/varela-round-v19-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("../fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("../fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg");
+  /* Legacy iOS */
+}
 /*define color pallette*/
 /*set background colors*/
 /*set font family*/
@@ -7,7 +16,8 @@
 /*start here and set the default values for all the variables*/
 tt a, samp a, var a, .marker a {
   color: white !important;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 /*****editor styles*****/
 .marker {
@@ -16,7 +26,8 @@ tt a, samp a, var a, .marker a {
   color: #ffffff;
   border-radius: 1vmin;
   display: table;
-  padding: 10px; }
+  padding: 10px;
+}
 
 var {
   font-family: "Varela Round", sans-serif;
@@ -25,7 +36,8 @@ var {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 kbd {
   font-family: "Varela Round", sans-serif;
@@ -34,7 +46,8 @@ kbd {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 samp {
   font-family: "Varela Round", sans-serif;
@@ -43,7 +56,8 @@ samp {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 q {
   border-bottom: 1px solid #ccc;
@@ -52,7 +66,8 @@ q {
   display: block;
   /*margin-left:20px;
   margin-right:20px;*/
-  padding: 10px; }
+  padding: 10px;
+}
 
 cite {
   font-family: "Varela Round", sans-serif;
@@ -60,7 +75,8 @@ cite {
   font-style: normal;
   /*font-weight:400;
   margin-left:20px;*/
-  padding: 10px; }
+  padding: 10px;
+}
 
 tt {
   font-family: "Varela Round", sans-serif;
@@ -69,28 +85,33 @@ tt {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 /***** scrollbars *****/
 ::-webkit-scrollbar {
-  width: 12px; }
+  width: 12px;
+}
 
 /* Track */
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   -webkit-border-radius: 10px;
-  border-radius: 10px; }
+  border-radius: 10px;
+}
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.8);
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); }
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
 
 ::-webkit-scrollbar-thumb:window-inactive {
-  background: rgba(255, 255, 255, 0.4); }
+  background: rgba(255, 255, 255, 0.4);
+}
 
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
@@ -118,141 +139,182 @@ tt {
 body {
   font-family: "Varela Round", sans-serif;
   font-size: 12pt;
-  color: #005172; }
+  color: #005172;
+}
 
 #mainHolder {
-  border: none; }
+  border: none;
+}
 
 .bgColour {
-  background-color: #F4F4F4; }
+  background-color: #F4F4F4;
+}
 
 .ui-widget {
-  font-family: "Varela Round", sans-serif; }
+  font-family: "Varela Round", sans-serif;
+}
 
 .stepImg {
-  background-color: #ffffff; }
+  background-color: #ffffff;
+}
 
 #submitBtn {
   background: #0098C3;
   color: #ffffff;
-  border-color: #0098C3; }
+  border-color: #0098C3;
+}
 
 /* _____HEADER_&_TITLES_____ */
 #headerBlock {
-  background: #005172; }
+  background: #005172;
+}
 
 #headerBlock #titles {
-  color: #F4F4F4; }
+  color: #F4F4F4;
+}
 
 #btnHolder {
   border-top: 2px solid #f0f0f0;
-  background-color: #f9f9f9; }
+  background-color: #f9f9f9;
+}
 
 #btnHolder button, #overviewBtnHolder button {
-  color: #0098C3; }
+  color: #0098C3;
+}
 
 #btnHolder button:hover, #btnHolder button:focus, #overviewBtnHolder button:hover, #overviewBtnHolder button:focus {
-  color: #ffa500; }
+  color: #ffa500;
+}
 
 #btnHolder button:active, #overviewBtnHolder button:active {
-  color: #999999; }
+  color: #999999;
+}
 
 #btnHolder button:disabled:hover, #btnHolder button:disabled:focus, #overviewBtnHolder button:disabled:hover, #overviewBtnHolder button:disabled:focus {
-  color: #cccccc; }
+  color: #cccccc;
+}
 
 #btnHolder #group2 button {
-  border-left: 2px solid #F4F4F4; }
+  border-left: 2px solid #F4F4F4;
+}
 
 a[href="#"]:visited {
-  color: #0000EE; }
+  color: #0000EE;
+}
 
 .light {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .dark {
-  color: #000000; }
+  color: #000000;
+}
 
 /* _____STEPS_____ */
 #stepHolder .step .fa-border {
   background-color: #ffa500;
   border-color: #ffffff;
   color: #ffffff;
-  border-radius: 1vmin; }
+  border-radius: 1vmin;
+}
 
 #labelHolder input {
-  border: 1px solid #e0e0e0; }
+  border: 1px solid #e0e0e0;
+}
 
 #amount {
-  color: #ffa500; }
+  color: #ffa500;
+}
 
 /* _____OVERVIEW_____ */
 #overviewHolder .decisionInfo .fa {
-  border-radius: 1vmin; }
+  border-radius: 1vmin;
+}
 
 #overviewHolder .overviewStep {
   background-color: #ffffff;
-  border-radius: 2vmin; }
+  border-radius: 2vmin;
+}
 
 #overviewHolder .extraInfo {
-  color: gray; }
+  color: gray;
+}
 
 /* _____FOOTER_____ */
 #footerBlock {
-  background: #ffffff; }
+  background: #ffffff;
+}
 
 .highlight {
-  background-color: #ffffff; }
+  background-color: #ffffff;
+}
 
 .hint {
   color: red;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
 .alert {
   font-weight: bold;
-  color: red; }
+  color: red;
+}
 
 @media (min-width: 768px) {
   body {
-    font-size: 2vmin; }
+    font-size: 2vmin;
+  }
 
   .optionTxt {
-    font-size: 2vmin; }
+    font-size: 2vmin;
+  }
 
   #headerBlock #titles h1 {
-    font-size: 2.5vmin; }
+    font-size: 2.5vmin;
+  }
 
   #headerBlock #titles h2 {
-    font-size: 3.5vmin; }
+    font-size: 3.5vmin;
+  }
 
   h1 {
-    font-size: 1.5vmin; }
+    font-size: 1.5vmin;
+  }
 
   h2 {
-    font-size: 2.2vmin; }
+    font-size: 2.2vmin;
+  }
 
   h3 {
-    font-size: 2vmin; }
+    font-size: 2vmin;
+  }
 
   #btnHolder button, #overviewBtnHolder button {
-    font-size: 2.0vmin; }
+    font-size: 2vmin;
+  }
 
   #overviewHolder .stepImg {
     max-width: 30%;
-    max-height: 30%; }
+    max-height: 30%;
+  }
 
   .stepImg {
     max-width: 40%;
-    max-height: 40%; }
+    max-height: 40%;
+  }
 
-  input[type="radio" i] {
+  input[type=radio i] {
     margin: 10px 10px 0px 20px;
     width: 2vmin;
-    height: 2vmin; }
+    height: 2vmin;
+  }
 
   #amount {
-    font-size: 2.0vmin; }
+    font-size: 2vmin;
+  }
 
   #overviewHolder .decisionInfo .fa {
-    font-size: 3.0vmin; } }
+    font-size: 3vmin;
+  }
+}
 
 /*# sourceMappingURL=bluegreyorange.css.map */

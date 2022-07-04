@@ -79,6 +79,10 @@ img {
 .featherlight .featherlight-content {
 	background-color: $defaultpagebackground;
 }
+/*code snippet*/
+.hljs {
+	background: #f0f179;
+}
 
 /******@media changes******/
 @media (min-width: 1366px) {

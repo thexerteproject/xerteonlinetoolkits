@@ -39,44 +39,47 @@ optional: feedback page synch play enable
 
 		// define plugin wide variables / functions here
 		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showHs, $showLbl, $showHsActive, $learningObjectParent;
-		
+
 		// Score tracking Manager
 		var finishTracking = function(options) {
+		    if(x_currentPageXML.getAttribute('trackVideo') === 'only_video') {
+			    return
+		    }
 			// Check the exercise and all individual questions
-            var allValid = true;
-            var ia_nr = Number(options.tracking_nr);
-            var numOfQuestions = Number(options.total_questions);
-            for (var i = 0; i < options.childNodes.length; i++) {
-                var curValid = false;
-                for (var j = 0; j < selected.length; j++) {
-                    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") {
-                        allValid = false;
-                    }
-                    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") {
-                        curValid = true;
-                    }
-                }
-                if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
-                    allValid = false;
-                }
-			}
-			
-			// Xerte Tracking setup
-            var l_options = [];
-            var l_answers = [];
-            var l_feedback = [];
-            $(selected).each(function (i, v) {
-                l_options.push({
-					id: (v + 1) + "",
-					answer: x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""),
-					result: options.childNodes[i].getAttribute("correct") === "true"
-            	});
+		    var allValid = true;
+		    var ia_nr = Number(options.tracking_nr);
+		    var numOfQuestions = Number(options.total_questions);
+		    for (var i = 0; i < options.childNodes.length; i++) {
+			    var curValid = false;
+			    for (var j = 0; j < selected.length; j++) {
+				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") {
+					    allValid = false;
+				    }
+				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") {
+					    curValid = true;
+				    }
+			    }
+			    if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
+				    allValid = false;
+			    }
+		    }
 
-                l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
-                l_feedback.push("");
-            });
-            $learningObjectParent.questions[ia_nr] = true;
-            var scormScore = 0;
+		    // Xerte Tracking setup
+		    var l_options = [];
+		    var l_answers = [];
+		    var l_feedback = [];
+		    $(selected).each(function (i, v) {
+				l_options.push({
+							id: (v + 1) + "",
+							answer: x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""),
+							result: options.childNodes[i].getAttribute("correct") === "true"
+				});
+
+				l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
+				l_feedback.push("");
+  		    });
+		    $learningObjectParent.questions[ia_nr] = allValid;
+		    var scormScore = 0;
 			var score = 0;
 			for (var i=0; i<numOfQuestions; i++)
 			{
@@ -89,14 +92,15 @@ optional: feedback page synch play enable
 			var result =
 			{
 				success: allValid,
-				score: scormScore
+				score: (allValid ? 100.0 : 0.0)
 			};
+
 			//Push results
-			XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
-			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+			XTSetPageScore(x_currentPage, scormScore);
+			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback);
             $learningObjectParent.enableControls(media.media, true);
         }
-		
+
 		// Feedback Manager
 		var answerSelected = function() {
 			// put together feedback string;
@@ -569,6 +573,7 @@ optional: feedback page synch play enable
 							"padding" :       (size * 0.001) * hh + "px",
 							"border-radius" : (size / 2 + 1) * 0.01 * hh + "px",
 							"font-size" : 	  (size * 0.007) * hh + "px",
+							"text-align":     "center"
 						});
 						if(options.attrib.tooltip == "label") {	
 							// Cap the fontsize to reasonable values
@@ -601,10 +606,30 @@ optional: feedback page synch play enable
 							"height": 0
 						});
 					}
+					// Set position and max-height
+					let maxH;
+					const topMM = $(".mainMedia").offset().top;
+					const hMM = $(".mainMedia").height();
+					if (x_isMobileBrowser())
+					{
+						// Limit $target.parent() to pageContent height
+						const topPD = $("#x_pageDiv").offset().top;
+						const topP = topMM + options._y * hMM/100.0;
+						const hPC = $("#x_pageDiv").height() - $("#x_footerBlock").height() - (topMM-topPD);
+						maxH = hPC - (topP - topMM);
+					}
+					else
+					{
+						// Limit $target.parent() to main content
+						const topP = topMM + options._y * hMM/100.0;
+						maxH = hMM - (topP - topMM);
+					}
+					// Set max height
 					$target.parent().css({
 						"max-width": options._w + "%",
 						"top": options._y + "%",
-						"left": options._x + "%"
+						"left": options._x + "%",
+						"max-weight": maxH + "px",
 					}).show();
 				}
 				$target.show();

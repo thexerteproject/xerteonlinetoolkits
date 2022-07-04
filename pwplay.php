@@ -139,7 +139,7 @@ if(!empty($query_for_peer_response)) {
              *  Output the code
              */
             $_SESSION['template_id'] = $template_id;
-            show_peer_template_form($row_play, $retouremail);
+            show_template($row_play, false);
         }else{
             show_peer_login_form(PWPLAY_LOGON_FAIL);
         }

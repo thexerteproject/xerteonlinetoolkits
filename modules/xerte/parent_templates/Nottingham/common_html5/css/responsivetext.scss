@@ -80,11 +80,14 @@ h5 {
     font-size: $pagecontentslarge;
 }
 #pageContents .question input {
-  font-size: $pagecontentslarge;
-}
-  #pageContents #mainText {
     font-size: $pagecontentslarge;
-  }
+}
+input#x_pagePswd {
+	font-size: $pagecontentslarge;
+}
+#pageContents #mainText {
+    font-size: $pagecontentslarge;
+}
 #labelHolder {
     font-size: $pagecontentslarge;
 }

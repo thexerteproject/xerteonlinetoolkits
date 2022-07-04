@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
+      <decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
     </newNodes>
   </pageWizard>
 
@@ -31,11 +31,9 @@
 	<helpString label="Question Help Label" type="TextInput" wysiwyg="true" language="true"/>
 	<btnLabel label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	
-	<closeBtn label="Close Button" type="TextInput" wysiwyg="true" language="true"/>
-	
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
-		<infoStep><![CDATA[<infoStep name="e.g. I1" target="e.g. Q2" text="Enter text here"/>]]></infoStep>
+		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text="Enter text here"/>]]></infoStep>
 		<sliderStep><![CDATA[<sliderStep name="e.g. Q1" text="Enter question here" unit="e.g. £" min="0" max="100" step="1" value="0"/>]]></sliderStep>
 		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="Enter question here" format="radio"/>]]></mcqStep>
 	</newNodes>
@@ -52,14 +50,15 @@
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 
 	<newNodes>
-		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" target="e.g. Q2"/>]]></mcqStepOption>
+		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" targetNew=""/>]]></mcqStepOption>
 	</newNodes>
 	
   </mcqStep>
 
   <mcqStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
 	<name label="Answer Option" type="TextInput" wysiwyg="true"/>
-	<target label="Target ID" type="TextInput"/>
+	<target label="Target ID" type="TextInput" optional="true" deprecated="This property has been deprecated - use the Target ID drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
+	<targetNew label="Target ID" type="pageList" listTarget="1" defaultValue="" mandatory="true"/>
 	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
@@ -81,7 +80,7 @@
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<newNodes>
-		<sliderStepOption><![CDATA[<sliderStepOption min="0" max="1" target="e.g. Q2"/>]]></sliderStepOption>
+		<sliderStepOption><![CDATA[<sliderStepOption min="0" max="1" targetNew=""/>]]></sliderStepOption>
 	</newNodes>
 	
   </sliderStep>
@@ -89,7 +88,8 @@
   <sliderStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
 	<min label="Range minimum" type="TextInput"/>
 	<max label="Range maximum" type="TextInput"/>
-	<target label="Target ID" type="TextInput"/>
+	<target label="Target ID" type="TextInput" optional="true" deprecated="This property has been deprecated. Use the Target ID drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
+	<targetNew label="Target ID" type="pageList" listTarget="1" defaultValue="" mandatory="true"/>
 	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
@@ -100,7 +100,8 @@
   <infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
 	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
-	<target label="Target ID" type="TextInput"/>
+	<target label="Target ID" type="TextInput" optional="true" deprecated="This property has been deprecated. Use the Target ID drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
+	<targetNew label="Target ID" type="pageList" listTarget="0" defaultValue="" mandatory="true"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
