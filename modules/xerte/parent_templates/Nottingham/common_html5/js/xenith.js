@@ -133,7 +133,7 @@ $(document).ready(function() {
     {
         x_browserInfo.Android = true;
     }
-
+	
 	// detect touchscreen function (https://patrickhlauke.github.io/touch/touchscreen-detection/)
 	function detectTouchscreen() {
 		var result = false;
@@ -154,7 +154,7 @@ $(document).ready(function() {
 		}
 		return result;
 	}
-
+	
 	x_browserInfo.touchScreen = detectTouchscreen();
 	if (x_browserInfo.touchScreen == true) {
 		$x_mainHolder.addClass("x_touchScreen");
@@ -898,10 +898,10 @@ function x_GetTrackingLabelOfPage() {
 
 // setup functions load interface buttons and events
 function x_setUp() {
-
+	
 	// prevent flashes of css body tag colours before the main interface has loaded
 	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');
-
+	
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
 	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
 
@@ -1754,24 +1754,24 @@ function x_dialog(text){
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
     var page,
 		inclHistory = false;
-
+	
 	// if it's first page then we've already found x_deepLink
 	if (x_firstLoad == false || addHistory == false) {
 		var deepLinkInfo = getDeepLink(pageInfo.ID);
 		pageInfo.ID = deepLinkInfo[0];
-
+		
 		if (deepLinkInfo.length > 1) {
 			x_deepLink = deepLinkInfo[1];
 		} else {
 			x_deepLink = '';
 		}
 	}
-
+	
 	if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
 		// relative links added from WYSIWYG xerte page links button
 		if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
 			var pageIndex = $.inArray(x_currentPage, x_normalPages);
-
+			
 			switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
 				case "next":
 					// won't change if this is a standalone page
@@ -1800,13 +1800,13 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 		else {
 			// could be the linkID generated automatically in XML or a custom ID added in editor
 			page = x_lookupPage(pageInfo.type, pageInfo.ID);
-
+			
 			// id was a deeplink so info about page & deeplink has been returned
 			if ($.isArray(page)) {
 				x_deepLink = page.slice(1, page.length);
 				page = page[0];
 			}
-
+			
 			if (page !== false) {
 				if (page != x_currentPage) {
 					inclHistory = true;
@@ -1824,7 +1824,7 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 	else if (pageInfo.type == "index") {
 		page = pageInfo.ID;
 		inclHistory = true;
-
+		
 	} else {
 		page = parseInt(pageInfo.ID);
 		if (page > 0 && page <= x_pages.length) {
@@ -1839,16 +1839,16 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 			}
 		}
 	}
-
+	
 	var resumeLO = XTStartPage();
-
+	
 	// this is a resumed tracked LO, go to the page saved by the LO - unless it's currently trying to show a standalone page in a lightbox
-	if (force && resumeLO >= 0 && (x_pageInfo[page].standalone != true || x_pages[page].getAttribute('linkTarget') == 'new' || x_pages[page].getAttribute('linkTarget') == 'same')) {
+	if (force && resumeLO >= 0 && (x_pageInfo[page].standalone != true || x_pages[page].getAttribute('linkTarget') == 'new' || x_pages[page].getAttribute('linkTarget') == 'same')) { 
 		x_changePage(resumeLO, addHistory);
-
+		
 	} else if (inclHistory == true) {
 		x_changePage(page, addHistory);
-
+		
 	} else {
 		x_changePage(page);
 	}
@@ -2118,7 +2118,7 @@ function x_changePageStep5(x_gotoPage) {
 }
 
 function x_changePageStep5a(x_gotoPage) {
-
+	
     var prevPage = x_currentPage;
 
     // disable onload of #special_theme_css
@@ -2227,14 +2227,14 @@ function x_changePageStep5a(x_gotoPage) {
 		var pswds = [];
 		if ($.trim(x_currentPageXML.getAttribute('password')).length > 0) {
 			var temp = $.trim(x_currentPageXML.getAttribute('password')).split(',');
-
+			
 			for (var i=0; i<temp.length; i++) {
 				if (temp[i] != '') {
 					pswds.push(x_currentPageXML.getAttribute('passwordCase') != 'true' ? $.trim(temp[i].toLowerCase()) : $.trim(temp[i]));
 				}
 			}
 		}
-
+		
 		if (pswds.length > 0) {
 			x_passwordPage(pswds);
 		} else {
@@ -2246,46 +2246,46 @@ function x_changePageStep5a(x_gotoPage) {
 
 function x_passwordPage(pswds) {
 	if (x_pageInfo[x_currentPage].passwordPass != true) {
-
+		
 		if (x_params.authorSupport == "true") {
-
+			
 			x_pageInfo[x_currentPage].passwordPass = true;
-
+			
 			pageTitle += ' <span class="alert">' + x_getLangInfo(x_languageData.find("password")[0], "pageSupport", "In live projects, an access code must be entered to view this page") + ': ' + pswds + '</span>';
-
+			
 			x_addCountdownTimer();
 			x_addNarration('x_changePageStep6', '');
-
+			
 		} else {
-
+		
 			// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
 			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 				x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
 			} else {
 				x_findText(x_currentPageXML);
 			}
-
+			
 			x_pageInfo[x_currentPage].passwordPass = false;
-
+			
 			$("#x_headerBlock h2").html(pageTitle);
 			$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
-
+			
 			x_updateCss(false);
-
+			
 			$("#x_pageDiv").show();
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
-
+			
 			var $pswdBlock = $('#x_page' + x_currentPage);
 			$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
 			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
 			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
 			$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
-
+			
 			$pswdBlock.find('#x_pagePswdBtn')
 				.button()
 				.on('click', function() {
 					var pswdEntered = x_currentPageXML.getAttribute('passwordCase') != 'true' ? $pswdBlock.find('#x_pagePswd').val().toLowerCase() : $pswdBlock.find('#x_pagePswd').val();
-
+					
 					if ($.inArray(pswdEntered, pswds) >= 0) {
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						x_pageInfo[x_currentPage].passwordPass = true;
@@ -2296,7 +2296,7 @@ function x_passwordPage(pswds) {
 						$pswdBlock.find('.x_pswdError').show();
 					}
 				});
-
+			
 			$pswdBlock.find('#x_pagePswd').keypress(function (e) {
 				if (e.which == 13) {
 					$pswdBlock.find('#x_pagePswdBtn').click();
@@ -2304,7 +2304,7 @@ function x_passwordPage(pswds) {
 					$pswdBlock.find('.x_pswdError').hide();
 				}
 			});
-
+			
 			// Queue reparsing of MathJax - fails if no network connection
 			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 
@@ -2412,10 +2412,8 @@ function x_changePageStep6() {
             }
         }
 
-		x_focusPageContents(false);
-
 		$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
-
+		
 		x_focusPageContents(false);
 
     // x_currentPage hasn't been viewed previously - load model file
@@ -2544,7 +2542,7 @@ function x_setUpLightBox() {
 		
 		$.featherlight.prototype.afterContent = function () {
 			if (this.$currentTarget != undefined) {
-
+				
 				var caption = this.$currentTarget.find('img').attr('alt');
 				
 				if (this.$currentTarget[0].nodeName === 'A' && this.$currentTarget.attr('data-image-alt') != undefined) {
@@ -2790,7 +2788,7 @@ function x_pageLoaded() {
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
-
+	
 	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
 }
@@ -3626,9 +3624,9 @@ function x_hexToRgb(hex, opa) {
 }
 
 // function randomises the order of items in an array
-function x_shuffleArray(array) {
+function x_shuffleArray(array) { 
     return array.sort(function() {return Math.random()-0.5})
-}
+} 
 
 // function returns whether string is a url to a youtube or vimeo video
 function x_isYouTubeVimeo(url) {
@@ -4410,7 +4408,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				.on("mouseenter", ".x_glossary", function(e) {
 					$activeTooltip = $(this);
 					$activeTooltip.trigger("mouseleave");
-
+					
 					window.addEventListener('keydown', escapeHandler);
 
 					var myText = $activeTooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
@@ -4536,7 +4534,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	getTextNodes = function (fragment) {
 		let textNodes = [];
 		(function R(node) {
-
+			
 		  if (node = node.firstChild)
 			  while (node != null) {
 				  if (node.nodeType == 3) {
@@ -4548,7 +4546,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		})(fragment);
 		return textNodes;
 	},
-
+	
 	touchStartHandler = function() {
 		$x_mainHolder.off("click.glossary");
 		if ($x_glossaryHover != undefined) {
