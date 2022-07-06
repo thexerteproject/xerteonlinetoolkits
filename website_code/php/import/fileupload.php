@@ -27,6 +27,9 @@ require_once(dirname(__FILE__) . "/../../../plugins.php");
  * Provided by 'John V' at https://stackoverflow.com/questions/11807115/php-convert-kb-mb-gb-tb-etc-to-bytes
  */
 
+ini_set("upload_max_filesize", "128M");
+ini_set("post_max_size", "128M");
+
 function convertToBytes(string $from): ?int {
     $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
