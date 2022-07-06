@@ -29,7 +29,6 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			debugger;
 			var $pageVideo = $("#pageVideo"),
 				iframeRatio = $pageVideo.data('iframeRatio'),
 				videoDimensions = $pageVideo.data('dimensions');
@@ -111,7 +110,6 @@
 				ratio = x_currentPageXML.getAttribute("iframeRatio"),
 				iframeRatio = ratio ? ratio : '16:9';
 
-			debugger;
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
 				
@@ -170,7 +168,9 @@
 					transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
 					audioImage: undefined,
 					audioImageTip: "",
-					trackMedia: true
+					pageName: "textVideo",
+					trackMedia: true,
+					weighting: x_currentPageXML.getAttribute("trackingWeight"),
 				}, true);
 
 				//controls toggle

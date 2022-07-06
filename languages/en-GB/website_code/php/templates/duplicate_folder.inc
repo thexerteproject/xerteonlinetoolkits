@@ -12,5 +12,5 @@
 	 
 
     define("COPY_OF", "Copy of ");
-    define("NO_PERMISSION_TO_DUPLICATE_TEMPLATE_OF_FOLDER", "You don't have permission to duplicate \"{0}\" of folder \"{1}\"");
+    define("NO_PERMISSION_TO_DUPLICATE_TEMPLATE_OF_FOLDER", "You don't have permission to duplicate '{0}' of folder '{1}'");
 

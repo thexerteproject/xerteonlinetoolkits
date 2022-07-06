@@ -135,13 +135,25 @@ function make_new_template($type, $zip_path)
              * Make the folders and copy the files in
              */
 
+            $new_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type;
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
-            mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type);
+            mkdir($new_path);
 
-            chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type, 0777);
+            chmod($new_path,0777);
 
-            copy_loop($zip_path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/");
+            copy_loop($zip_path, $new_path . "/");
+
+            // Remove oai-pmh consent flag if present from
+            if (file_exists($new_path . "/preview.xml"))
+            {
+                change_copied_xml($new_path . "/preview.xml");
+            }
+            // Remove oai-pmh consent flag if present from
+            if (file_exists($new_path . "/data.xml"))
+            {
+                change_copied_xml($new_path . "/data.xml");
+            }
 
             echo IMPORT_SUCCESS . "****";
 

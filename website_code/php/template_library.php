@@ -193,3 +193,13 @@ function get_template_data_as_xml($template_id, $creator_user_name="", $template
     }
     return $xml;
 }
+
+function change_copied_xml($xmlfile)
+{
+    $xml = simplexml_load_file($xmlfile);
+    if ((string)$xml['oaiPmhAgree'] === 'true')
+    {
+        $xml['oaiPmhAgree'] = 'false';
+    }
+    $xml->asXML($xmlfile);
+}

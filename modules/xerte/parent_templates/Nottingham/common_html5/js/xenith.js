@@ -885,6 +885,17 @@ function x_GetTrackingTextFromHTML(html, fallback)
     return txt;
 }
 
+// Gets the trackinglabel of the current page.
+// This is either the page's name or (if set) a custom label.
+function x_GetTrackingLabelOfPage() {
+	var trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+	if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+	{
+		trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+	}
+	return trackinglabel;
+}
+
 // setup functions load interface buttons and events
 function x_setUp() {
 	
@@ -1260,51 +1271,6 @@ function x_continueSetUp1() {
 		} else {
 			$logo.attr('aria-hidden', 'true');
 		}
-
-		/*var checkExists = function(type, fallback) {
-			if (type == 'LO' && xot_offline) {
-				$('#x_headerBlock img.x_icon').show();
-				return;
-			}
-			$.ajax({
-				url: $('#x_headerBlock img.x_icon').attr('src'),
-				success: function() {
-					$('#x_headerBlock img.x_icon').show();
-					if (x_firstLoad == false) {x_updateCss();};
-
-					// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-					if (type == 'theme') {
-						$('#x_headerBlock img.x_icon').addClass('themeLogo');
-					}
-
-					if (x_params.icTip != undefined && x_params.icTip != "") {
-						$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
-					} else {
-						$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
-					}
-				},
-				error: function() {
-					if (fallback == 'theme') {
-						$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
-						checkExists('theme', 'default');
-					} else if (fallback == 'default') {
-						$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
-						checkExists();
-					}
-				}
-			});
-		};*/
-
-		/*var type, fallback;
-		if (x_params.ic != undefined && x_params.ic != '' && x_params.ic !== 'Select an Image') {
-			$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
-			type = 'LO';
-			fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
-		} else if (x_params.theme != undefined && x_params.theme != "default") {
-			type = 'theme';
-			$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
-		}
-		checkExists(type, fallback);*/
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
@@ -2445,6 +2411,8 @@ function x_changePageStep6() {
                 }
             }
         }
+
+		$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
 		
 		x_focusPageContents(false);
 
@@ -2520,6 +2488,7 @@ function x_changePageStep6() {
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
 	}
+
 }
 
 function x_focusPageContents(firstLoad) {
@@ -2550,6 +2519,7 @@ function x_pageContentsUpdated() {
 	// lightbox image links might also need to be added
 	x_setUpLightBox();
 
+	// update codesnippet code blocks
 	let codeblocks = $("pre code").each(function(){
 		hljs.highlightBlock(this);
 	});
@@ -2790,6 +2760,22 @@ function x_pageLoaded() {
 		}
 	}
 
+	// Check if page headerBgColour/headerTextColour has been set
+	if ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != "")) {
+		const bgCol = x_currentPageXML.getAttribute("headerBgColor");
+		const textCol = x_currentPageXML.getAttribute("headerTextColor");
+		let customHeaderStyle = '';
+		if (bgCol != undefined && bgCol != "") {
+			customHeaderStyle += 'background-color: ' + formatColour(bgCol) + ';';
+		}
+		if (textCol != undefined && textCol != "") {
+			customHeaderStyle += 'color: ' + formatColour(x_currentPageXML.getAttribute('headerTextColor')) + ';';
+		}
+		customHeaderStyle = '<style id="customHeaderStyle" type="text/css">#x_headerBlock {' + customHeaderStyle + '}</style>';
+		$('#x_page' + x_currentPage).append(customHeaderStyle);
+	}
+	$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
+
 	XENITH.VARIABLES.handleSubmitButton();
 
     $("#x_page" + x_currentPage)
@@ -2805,6 +2791,11 @@ function x_pageLoaded() {
 	
 	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
+}
+
+//convert picker color to #value
+function formatColour(col) {
+	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
 }
 
 // detect page loaded change and update progress bar
@@ -3654,7 +3645,7 @@ function x_isYouTubeVimeo(url) {
 function x_fixYouTubeVimeo(url) {
 	var path = url.trim();
 	let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
-	if (result) return "www.youtube.com/watch?v=" + result[7];
+	if (result) return "www.youtube.com/watch?v=" + result[7] + (result[8] !== undefined ? result[8] : "");
 	result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
 	if (result) return "vimeo.com/" + result[2];
 	return url;

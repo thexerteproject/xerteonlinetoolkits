@@ -3685,8 +3685,8 @@ var EDITOR = (function ($, parent) {
 					});
 				if (options.extraCheckBoxLabel !== undefined && options.extraCheckBoxLabel.length > 0)
                 {
-                    // It is rather difficult to add an element after anoth that is noyt yet in DOM
-                    // So create a dummy element, add eveerything to it and than get rid of it again
+                    // It is rather difficult to add an element after another that is not yet in DOM
+                    // So create a dummy element, add everything to it and than get rid of it again
                     // Ref: https://stackoverflow.com/questions/10489328/jquerys-after-method-not-working-with-newly-created-elements
                     var div = $('<div>');
                     html.attr("name", id);
@@ -3695,7 +3695,7 @@ var EDITOR = (function ($, parent) {
                         .attr("for", name)
                         .append(options.extraCheckBoxLabel);
                     div.append(label);
-                    html = div.html();
+                    html = div;
                 }
 				break;
 			case 'combobox':
@@ -3743,13 +3743,18 @@ var EDITOR = (function ($, parent) {
 			case 'text':
 			case 'script':
 			case 'html':
-			case 'textarea':
+            case 'textarea':
 				var id = "textarea_" + form_id_offset;
 				var textvalue = "";
 
 				form_id_offset++;
 
-				if (value.toLowerCase().indexOf('<textarea') == -1) textvalue = value;
+				// Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
+                const lcvalue=value.toLowerCase();
+				if (lcvalue.indexOf('<textarea') == -1
+                    && lcvalue.indexOf('<pre>') == -1
+                    && lcvalue.indexOf('<code>') == -1)
+				    textvalue = value;
 
 				var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
 				if (options.height) textarea += "height:" + options.height + "px";

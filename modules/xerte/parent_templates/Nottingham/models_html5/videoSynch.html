@@ -181,7 +181,9 @@ var videoSynch = new function() {
 			transcriptBtnTxt: "",
 			audioImage: undefined,
 			audioImageTip: "",
-			trackMedia: true
+			pageName: "videoSynch",
+			trackMedia: true,
+			weighting: x_currentPageXML.getAttribute("trackingWeight"),
 		}, true);
 
 		this.addEvents(this.popcornInstance);

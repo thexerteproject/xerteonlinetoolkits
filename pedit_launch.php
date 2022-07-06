@@ -237,7 +237,7 @@ if (is_numeric($id))
     $lrs = CheckLearningLocker($lrs);
     $_SESSION['XAPI_PROXY'] = $lrs;
 
-    if ($_GET['embed'] === 'true') {
+    if ($_GET['x_embed'] === 'true') {
         $x_embed = true;
         if ($_GET['activated'] !== 'true') {
             $xapi_enabled = false;

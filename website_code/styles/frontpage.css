@@ -21,7 +21,7 @@
 html{
 	margin:0px;
 	padding:0px;
-	font-family:"Open Sans", sans-serif;;
+	font-family: Arial, sans-serif;;
 
 }
 
@@ -64,7 +64,7 @@ body{
 	color:white;
 	width:450px;
 	margin:10px 0 0 0;
-  font-family:"Open Sans", sans-serif;;
+  font-family: Arial, sans-serif;
 	line-height:98%
 }
 h1.title_welcome {

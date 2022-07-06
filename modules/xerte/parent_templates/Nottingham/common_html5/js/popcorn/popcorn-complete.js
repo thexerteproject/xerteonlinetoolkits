@@ -3216,9 +3216,9 @@
   Popcorn.fixYouTubeVimeo = function(url) {
     var path = url.trim();
     let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
-    if (result) return "www.youtube.com/watch?v=" + result[7];
+    if (result) return "https://www.youtube.com/watch?v=" + result[7] + (result[8] !== undefined ? result[8] : "");
     result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
-    if (result) return "vimeo.com/" + result[2];
+    if (result) return "https://vimeo.com/" + result[2];
     return url;
   }
 
@@ -6814,7 +6814,9 @@
         if ( player.isMuted() ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
           addYouTubeEvent( "play", onFirstPlay );
-          player.playVideo();
+          addYouTubeEvent( "pause", onPause );
+          onReady();
+
         } else {
           setTimeout( onMuted, 0 );
         }
@@ -6871,8 +6873,8 @@
 
     function onReady() {
 
-      addYouTubeEvent( "play", onPlay );
-      addYouTubeEvent( "pause", onPause );
+      // addYouTubeEvent( "play", onPlay );
+      // addYouTubeEvent( "pause", onPause );
       // Set initial paused state
       if( impl.autoplay || !impl.paused ) {
         removeYouTubeEvent( "play", onReady );
@@ -6923,6 +6925,7 @@
         addYouTubeEvent( "play", onReady );
         player.playVideo();
       } else {
+        player.seekTo( 0, true );
         onReady();
       }
     }
@@ -6934,9 +6937,9 @@
         setTimeout( onFirstPlay, 0 );
         return;
       }
-      addYouTubeEvent( "pause", onFirstPause );
-      player.seekTo( 0 );
-      player.pauseVideo();
+      addYouTubeEvent( "play", onPlay );
+      onPlay();
+      document.dispatchEvent(new Event('youtubemetadata'));
     }
 
     function addYouTubeEvent( event, listener ) {

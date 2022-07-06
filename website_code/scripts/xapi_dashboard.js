@@ -2473,17 +2473,26 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
     });
 
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
-        $(".unanonymous-view").show();
-        this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
-        $("#dp-unanonymous-view").change(function(event) {
-            $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
-            $("#dp-start").prop("disabled", true);
-            $("#dp-end").prop("disabled", true);
-            $("#dp-unanonymous-view").prop("disabled", true);
+        debugger;
+        if (this.data.info.unanonymous == 'true')
+        {
+            $("#dp-unanonymous-view").prop("checked", true);
+            $("#dp-unanonymous-view").hide();
+            this.data.info.dashboard.anonymous = false;
+        }
+        else {
+            $(".unanonymous-view").show();
+            this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
+            $("#dp-unanonymous-view").change(function (event) {
+                $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
+                $("#dp-start").prop("disabled", true);
+                $("#dp-end").prop("disabled", true);
+                $("#dp-unanonymous-view").prop("disabled", true);
 
-            $this.regenerate_dashboard();
+                $this.regenerate_dashboard();
 
-        });
+            });
+        }
     }
 
     this.regenerate_dashboard();

@@ -64,7 +64,6 @@
         __log("Format: 2 channel " + getElementById('encodingTypeSelect').getValue() + ' @ ' + audioContext.sampleRate/1000 + 'kHz');
         gumStream = stream;
         input = audioContext.createMediaStreamSource(stream);
-        //input.connect(audioContext.destination)  //stop the input from playing back through the speakers
 
         //disable controls
         enableDisable('recordingDevicesSelect', 'disable');
@@ -143,7 +142,10 @@
     function setupAudioPlayer() {
       //webkitURL is deprecated but nevertheless
       var url = (window.URL || window.webkitURL).createObjectURL(blob);
-      var au = getElementById('audioPlayer').getElement();
+      var player = getElementById('audioPlayer');
+      if (!player) return;
+
+      var au = player.getElement();
       au.setAttribute('src', url);
       au.disableContextMenu();
     }
@@ -195,20 +197,10 @@
       // Make the timestamp look nicer
       fixTimestamp();
 
-//exposeSomeData();
       // Initial state
       initialiseRecorder();
       setRecordButton(false, false); //disable, not red
     }
-
-// Expose some data for debug - TODO: Revove for release
-/*function exposeSomeData(){
-  window.gebi = getElementById;
-  window.editor = editor;
-
-  // Rejig the timestamp layout
-  window.ts = getElementById('timestamp').getElement();
-}*/
 
     function getButtonById(id) {
       let currentDialog = CKEDITOR.dialog.getCurrent();
@@ -221,12 +213,15 @@
       let currentDialog = CKEDITOR.dialog.getCurrent();
       if (!currentDialog) return;
 
-      let contents = currentDialog._.contents;
+      let el = currentDialog.getContentElement('recordTab', id) || currentDialog.getContentElement('settingsTab', id) || currentDialog.getButton(id);
+      return el;
+
+      /*let contents = currentDialog._.contents;
       for (const tab in contents) {
         for (const element in contents[tab]) {
           if (element === id) return contents[tab][element];
         }
-      }
+      }*/
     }
 
     function faButton() {
@@ -239,7 +234,14 @@
 
     function setRecordButton(enable, recording) {
       enableDisable('recordButton', enable);
-      document.getElementById(getElementById('recordButton').domId).classList[recording ? 'add' : 'remove']("recording");
+
+      let recButton = getElementById('recordButton');
+      if (!getElementById('recordButton')) return;
+
+      let domId = recButton.domId;
+      if(!domId) return;
+
+      document.getElementById(domId).classList[recording ? 'add' : 'remove']("recording");
     }
 
     function swapTabTitlesAndLabels() {
@@ -345,61 +347,62 @@
         permissionState.granted = allowed;
         if (dialogOpen) permissionState.timer = setTimeout(triggerPermissionCheck, allowed ? 5000 : 1000);
       }
-
       triggerPermissionCheck();
+    }
+
+    function updateDevices(devices) {
+      // Setup some variables
+      var recordingDevicesSelect = getElementById('recordingDevicesSelect');
+      var dropdown = recordingDevicesSelect.getElement().$.querySelectorAll('select')[0];
+      var currentRecordingDevices = dropdown.children;
+      var count = 0, newDevices = [];
+
+      devices.forEach( function(device) {
+        if (
+          device.kind === 'audioinput' &&
+          !newDevices.some(function(d){return device.groupId === d.groupId;})
+        ) { // an audioinput device and not in newDevices already
+          newDevices.push({
+            deviceId: device.deviceId,
+            label: device.label || lang.microphone + ' ' + (++count),
+            groupId: device.groupId
+          });
+        }
+      });
+
+      // Loop through current recordingDevicesSelect and remove any new ones that are already present
+      for (let i = 0; i < currentRecordingDevices.length; i++) {
+        if (
+          newDevices.some(function(device) { return device.deviceId === currentRecordingDevices[i].value; })
+        ) { // current item is in new list so update text and then remove from new list
+    //WRONG - Needs a loop and flag approach              currentRecordingDevices[i].text = device.label;
+    // also a check to see if .dataset.groupId is set
+          newDevices = newDevices.filter(function(device) {
+            return device.deviceId !== currentRecordingDevices[i].value;
+          });
+        }
+        else currentRecordingDevices[i].remove();
+      }
+
+      // Loop through new list adding any new ones
+      var count = 0;
+      newDevices.forEach(function(device) { //console.log(device); debugger;
+        const option = document.createElement('option');
+        option.value = device.deviceId;
+        option.text = device.label || lang.microphone + ' ' + (++count);
+        option.dataset.groupId = device.groupId;
+        dropdown.appendChild(option);
+      });
     }
 
     function updateDevicesDropdown() {
       var recordingDevicesSelect = getElementById('recordingDevicesSelect');
       if (!recordingDevicesSelect) return;
 
-      // Setup some variables
-      var dropdown = recordingDevicesSelect.getElement().$.querySelectorAll('select')[0];
-      var currentRecordingDevices = dropdown.children;
-      var isLoadingMesage = (currentRecordingDevices === 1 && currentRecordingDevices[0].value === lang.defaultLoadingMessage);
-
       // Iterate over media devices and make a list of all unique devices
       navigator.mediaDevices
         .enumerateDevices()
-        .then(function(devices) {
-          var count = 0, newDevices = [];
-          devices.forEach( function(device) {
-            if (
-              device.kind === 'audioinput' &&
-              !newDevices.some(function(d){return device.groupId === d.groupId;})
-            ) { // an audioinput device and not in newDevices already
-              newDevices.push({
-                deviceId: device.deviceId,
-                label: device.label || lang.microphone + ' ' + (++count),
-                groupId: device.groupId
-              });
-            }
-          });
-
-          // Loop through current recordingDevicesSelect and remove any new ones that are already present
-          for (let i = 0; i < currentRecordingDevices.length; i++) {
-            if (
-              newDevices.some(function(device) { return device.deviceId === currentRecordingDevices[i].value; })
-            ) { // current item is in new list so update text and then remove from new list
-//WRONG - Needs a loop and flag approach              currentRecordingDevices[i].text = device.label;
-// also a check to see if .dataset.groupId is set
-              newDevices = newDevices.filter(function(device) {
-                return device.deviceId !== currentRecordingDevices[i].value;
-              });
-            }
-            else currentRecordingDevices[i].remove();
-          }
-
-          // Loop through new list adding any new ones
-          var count = 0;
-          newDevices.forEach(function(device) { //console.log(device); debugger;
-            const option = document.createElement('option');
-            option.value = device.deviceId;
-            option.text = device.label || lang.microphone + ' ' + (++count);
-            option.dataset.groupId = device.groupId;
-            dropdown.appendChild(option);
-          });
-        })
+        .then(updateDevices)
         .catch(function(e) {
           console.log('error message', e);
         })
@@ -407,7 +410,8 @@
       // Reset the default so that we don't get the 'something changed' method on cancel
       // TODO - investigate why this needs to be run asynchronously
       window.setTimeout(function () {
-        getElementById('recordingDevicesSelect').onChange();
+        let devices = getElementById('recordingDevicesSelect');
+        if (devices) devices.onChange();
       }, 250);
     }
 
@@ -564,27 +568,43 @@
             }]
           }]
         }],
-      onCancel: function(ev) { // Catch closing event so we can cancel if recordings left to upload
-        var returnValue = true;
-        if (blob) {
-          returnValue = window.confirm(lang.closeMessage);
-          if (returnValue) {
-            clearTimeout(permissionState.timer);
+        onShow: function () {
+          const rDS = this.getContentElement('settingsTab', 'recordingDevicesSelect');
+          if (!rDS) return;
+          const rDSIE = rDS.getInputElement();
+          if (!rDSIE) return;
+
+          if (rDSIE.$.selectedIndex < 0 && rDSIE.getChildCount() > 0 && rDSIE.getChild(0).text !== rDS.default) {
+            rDSIE.$.selectedIndex = 0;
           }
-        }
-        dialogOpen = !returnValue;
-        return returnValue;
-      },
-      buttons: [
-/*uploadButton*/{
-        type: 'button',
-        id: 'uploadButton',
-        label: lang.uploadButton,
-        title: lang.uploadButton,
-        onClick: function() {
-          uploadAndInsert(false);
-        }
-      },
+        },
+        onCancel: function(ev) { // Catch closing event so we can cancel if recordings left to upload
+          let wasRecording = false;
+          if (recording) {
+            stopRecording();
+            wasRecording = true;
+          }
+
+          var returnValue = true;
+          if (blob || wasRecording) {
+            returnValue = window.confirm(lang.closeMessage);
+            if (returnValue) {
+              clearTimeout(permissionState.timer);
+            }
+          }
+          dialogOpen = !returnValue;
+          return returnValue;
+        },
+        buttons: [
+  /*uploadButton*/{
+          type: 'button',
+          id: 'uploadButton',
+          label: lang.uploadButton,
+          title: lang.uploadButton,
+          onClick: function() {
+            uploadAndInsert(false);
+          }
+        },
 /*insertButton*/{
         type: 'button',
         id: 'insertButton',
