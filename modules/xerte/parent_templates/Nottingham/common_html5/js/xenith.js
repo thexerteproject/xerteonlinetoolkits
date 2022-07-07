@@ -2761,7 +2761,7 @@ function x_pageLoaded() {
 	}
 
 	// Check if page headerBgColour/headerTextColour has been set
-	if ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != "")) {
+	if (!x_isMenu() && ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != ""))) {
 		const bgCol = x_currentPageXML.getAttribute("headerBgColor");
 		const textCol = x_currentPageXML.getAttribute("headerTextColor");
 		let customHeaderStyle = '';
