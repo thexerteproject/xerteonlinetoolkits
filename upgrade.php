@@ -1265,13 +1265,6 @@ function upgrade_33()
                         array(':URL' => $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template['template_id']));
                     if (count($rows)>0)
                     {
-                        if (count($rows) > 1) {
-                            $mesg .= "    WARNING: More than one key_id returned for template with id " . $template['template_id'] . "(this text should NOT be in release)<br>";
-                            foreach($rows as $row)
-                            {
-                                $mesg .= "        " . $row['key_id'] . "<br>";
-                            }
-                        }
                         // get the first key
                         $res = db_query("update $table set tsugi_manage_key_id=? where template_id=?",
                             array($rows[0]['key_id'], $template['template_id']));
