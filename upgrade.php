@@ -1178,14 +1178,8 @@ function upgrade_29()
 
 function upgrade_30()
 {
-    if (!_db_field_exists('templatedetails', 'tsugi_manage_key_id')) {
-        $error = _db_add_field('templatedetails', 'tsugi_manage_key_id', 'int', '-1', 'tsugi_usetsugikey');
-        return "Creating tsugi_manage_key_id field in templatedetails - ok ? " . ($error === false ? 'true' : 'false'). "<br>";
-    }
-    else
-    {
-        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
-    }
+    // Oops, this is also done in upgrade_33... but better! So skip this one!
+    return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
 }
 
 function upgrade_31()
