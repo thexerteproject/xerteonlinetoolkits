@@ -1179,7 +1179,7 @@ function upgrade_29()
 function upgrade_30()
 {
     // Oops, this is also done in upgrade_33... but better! So skip this one!
-    return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+    return "Skip step 30 - Done by 33 - ok ? true". "<br>";
 }
 
 function upgrade_31()
@@ -1238,7 +1238,7 @@ function upgrade_32()
     }
     else
     {
-        return "Creating folder_parent field in folderrights already present - ok ? ". "<br>";
+        return "Creating folder_parent field in folderrights already present - ok ? true". "<br>";
     }
 
 
@@ -1285,6 +1285,6 @@ function upgrade_33()
     }
     else
     {
-        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? true". "<br>";
     }
 }
