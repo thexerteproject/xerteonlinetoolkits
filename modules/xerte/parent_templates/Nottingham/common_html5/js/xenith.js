@@ -4342,7 +4342,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			multiple_terms = false, // link all terms on page or just the first - default is FIRST ONLY
 			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including &nbsp; - default is IGNORE AND REMOVE
 									// we always remove leading and trailing whitespace
-
+	// TODO Revert all changes in 3.11 to Glossary, because it breaks ol LO's
+	// Keep new code so we can try to fix it later
+    /*
 	init = function () {
 		
 		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
@@ -4477,6 +4479,130 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				});
 		}
 	},
+
+     */
+
+	init = function () {
+
+		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
+			.appendTo($x_mainHolder)
+			.hide();
+
+		x_dialogInfo.push({type:'glossary', built:false});
+
+		var i, len, item, word,
+			items = x_params.glossary.split("||");
+
+		for (i=0, len=items.length; i<len; i++) {
+			item = items[i].split("|"),
+				word = {word:item[0], definition:item[1]};
+
+			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+				x_glossary.push(word);
+			}
+		}
+		if (x_glossary.length > 0) {
+			x_glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
+			});
+
+			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
+			$("#x_glossaryBtn")
+				.button({
+					icons: {
+						primary: "x_glossary"
+					},
+					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
+					text:	false
+				})
+				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
+				.click(function() {
+					x_openDialog(
+						"glossary",
+						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
+						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
+						null,
+						null,
+						function () {
+							$("#x_glossaryBtn")
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				});
+
+			$x_pageDiv
+				.on("mouseenter", ".x_glossary", function(e) {
+					$(this).trigger("mouseleave");
+
+					var $this = $(this),
+						myText = $this.text().trim(),
+						myDefinition, i, len;
+
+					for (i=0, len=x_glossary.length; i<len; i++) {
+						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
+							myDefinition = "<b>" + myText + ":</b><br/>"
+							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
+								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
+							} else {
+								myDefinition += x_glossary[i].definition;
+							}
+						}
+					}
+
+					$x_glossaryHover
+						.html(myDefinition)
+						.css({
+							"left"	:$(this).offset().left + 20,
+							"top"	:$(this).offset().top + 20
+						});
+
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+
+					$x_glossaryHover.fadeIn("slow");
+
+					if (x_browserInfo.touchScreen == true) {
+						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
+					}
+				})
+				.on("mouseleave", ".x_glossary", function(e) {
+					$x_mainHolder.off("click.glossary");
+
+					$x_glossaryHover.hide();
+				})
+				.on("mousemove", ".x_glossary", function(e) {
+					var leftPos,
+						topPos = e.pageY + 20;
+
+					if (x_browserInfo.mobile == false) {
+						leftPos = e.pageX + 20;
+						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
+							leftPos = e.pageX - $x_glossaryHover.width() - 20;
+						}
+						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
+							topPos = e.pageY - $x_glossaryHover.height() - 20;
+						}
+					} else {
+						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
+						if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
+							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
+						}
+					}
+					$x_glossaryHover.css({
+						"left"	:leftPos,
+						"top"	:topPos
+					});
+				})
+				.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
+					$(this).trigger("mouseenter");
+				})
+				.on("focusout", ".x_glossary", function(e) {
+					$(this).trigger("mouseleave");
+				});
+		}
+	},
 	
 	// glossary page generation
 	buildPage = function() {
@@ -4499,7 +4625,11 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		// add class for shaded rows rather than using css selector as doesn't work for IE8 & below
 		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
 	},
-	
+
+	// TODO Revert all changes in 3.11 to Glossary, because it breaks ol LO's
+	// Keep new code so we can try to fix it later
+
+	/*
 	insertText = function(tempText, exclude, list) {
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
@@ -4530,11 +4660,28 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 
 		return tempText;
 	},
+	*/
 
+	insertText = function(tempText, exclude, list) {
+		// check text for glossary words - if found replace with a link
+		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
+			for (var k=0, len=x_glossary.length; k<len; k++) {
+				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+			}
+			for (var k=0, len=x_glossary.length; k<len; k++) {
+				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
+			}
+		}
+
+		return tempText;
+	},
+		
 	getTextNodes = function (fragment) {
 		let textNodes = [];
 		(function R(node) {
-			
+
 		  if (node = node.firstChild)
 			  while (node != null) {
 				  if (node.nodeType == 3) {
@@ -4546,14 +4693,14 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		})(fragment);
 		return textNodes;
 	},
-	
+
 	touchStartHandler = function() {
 		$x_mainHolder.off("click.glossary");
 		if ($x_glossaryHover != undefined) {
 			$x_glossaryHover.hide();
 		}
 	};
-		
+
 	// make some public methods
 	self.init = init;
     self.buildPage = buildPage;
@@ -4568,7 +4715,7 @@ return parent; })(jQuery, XENITH || {});
 // allows surfacing of any global variables
 
 var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
-	
+
 	var	replaceGlobalVars = function (tempText) {
 		var matches = tempText.match(/\{(.*?)\}/g);
 		if (matches != null) {
@@ -4580,7 +4727,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
 		}
 		return tempText;
 	};
-	
+
 	// make some public methods
 	self.replaceGlobalVars = replaceGlobalVars;
 
