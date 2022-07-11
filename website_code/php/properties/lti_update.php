@@ -7,7 +7,7 @@ require_once("../template_status.php");
 
 global $xerte_toolkits_site;
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");

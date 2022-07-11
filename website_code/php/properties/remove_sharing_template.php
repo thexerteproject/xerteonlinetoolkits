@@ -31,7 +31,7 @@ require_once("../../../config.php");
 include "../template_status.php";
 include "../user_library.php";
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
