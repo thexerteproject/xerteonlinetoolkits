@@ -238,9 +238,7 @@ function addNode($index, $node, $root)
 		$count = count($root->childNodes);
 		if($count == 0)
 		{
-			echo "First";
 			$root->appendChild($node);
-			echo "Last";
 		}
 		if($index == 0)
 		{
