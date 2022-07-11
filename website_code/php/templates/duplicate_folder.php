@@ -50,12 +50,6 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if (!isset($_SESSION['toolkits_logon_username']))
-{
-    _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
-}
-
 if(is_numeric($_POST['folder_id'])){
     $folder_id = $_POST['folder_id'];
 
