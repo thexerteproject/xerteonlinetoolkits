@@ -78,12 +78,19 @@
         var x_youtube_api_key = "%YOUTUBEAPIKEY%";
         var x_Version = "%VERSION%";
         var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
-		var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
         var x_lastUpdated = new Date("%LASTUPDATED%");
         var x_dateCreated = new Date("%DATECREATED%");
         var x_numPlays = String("%NUMPLAYS%");
-        var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
-        var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+        var localeoptions = { year: 'numeric', month: 'short', day: 'numeric' };
+        try {
+            var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
+            var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+        }
+        catch(e) {
+            var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString();
+            var x_dateCreatedLocale = x_dateCreated.toLocaleDateString();
+        }
+
         var globalhidesocial="%GLOBALHIDESOCIAL%";
         var globalsocialauth="%GLOBALSOCIALAUTH%";
 		%USE_URL%
