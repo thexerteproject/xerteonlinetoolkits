@@ -5,7 +5,8 @@ require_once("../../config.php");
 require( "../../" . $xerte_toolkits_site->php_library_path . "screen_size_library.php" );
 require( "../../" . $xerte_toolkits_site->php_library_path . "template_status.php" );
 require( "../../" . $xerte_toolkits_site->php_library_path . "display_library.php" );
-require( "../../" . $xerte_toolkits_site->php_library_path . "user_library.php" );
+
+require( "../../" . $xerte_toolkits_site->php_library_path . "xmlInspector.php" );
 
 function merge_pages_to_project($source_project_id, $source_pages, $target_project, $target_page_location, $merge_glossary)
 {
@@ -31,8 +32,11 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	
 	$xmlTarget = new DOMDocument();
 	$xmlTarget->load($target_file);
-	$xmlSource = new DOMDocument();
-	$xmlSource->load($source_file);
+    $xmlSource = new DOMDocument();
+    $xmlSource->load($source_file);
+	$xmlSourceInspector = new XerteXMLInspector();
+	$xmlSourceInspector->loadTemplateXML($source_file);
+
 	$nodes = array();
 	$i = 0;
 
@@ -112,7 +116,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 
         // Convert to text, do filemapping, go back to xml
         $nodeXmlStr = $xmlSource->saveXML($node);
-        $nodeXmlStr = doFileMapping($nodeXmlStr, $filemapping, $filesToCopy);
+        $nodeXmlStr = doFileMapping($nodeXmlStr, $filemapping, $filesToCopy, $page, $xmlSourceInspector);
         $fragment = $xmlTarget->createDocumentFragment();
         $fragment->appendXml($nodeXmlStr);
 
@@ -172,26 +176,32 @@ function getFileMapping($source_media_folder, $target_media_folder)
 }
 
 function recursive_scanDir($dir){
-        $result = [];
-        foreach(scandir($dir) as $filename) {
-            if ($filename[0] === '.') continue;
-            $filePath = $dir . '/' . $filename;
-            if (is_dir($filePath)) {
-                foreach (recursive_scanDir($filePath) as $childFilename) {
-                    $result[] = $filename . "/" . $childFilename;
-                }
-            } else {
-                $result[] = $filename;
+    $result = [];
+    foreach(scandir($dir) as $filename) {
+        if ($filename[0] === '.') continue;
+        $filePath = $dir . '/' . $filename;
+        if (is_dir($filePath)) {
+            foreach (recursive_scanDir($filePath) as $childFilename) {
+                $result[] = $filename . "/" . $childFilename;
             }
+        } else {
+            $result[] = $filename;
         }
-        return $result;
     }
+    return $result;
+}
 
-function doFileMapping($str, $filemapping, &$fileToCopy)
+function doFileMapping($str, $filemapping, &$fileToCopy, $page=null, $xmlSourceInspector=null)
 {
     foreach ($filemapping as $file => $mapping) {
-        $pos = strpos($str, 'media/' . $file);
-        if ($pos !== false)
+        if ($page !== null) {
+            $found = $xmlSourceInspector->fileIsUsed($file, $page);
+        }
+        else {
+            $pos = strpos($str, 'media/' . $file);
+            $found = $pos !== false;
+        }
+        if ($found)
         {
             array_push($fileToCopy, $file);
             $str = str_replace('media/' . $file, 'media/' . $mapping, $str);

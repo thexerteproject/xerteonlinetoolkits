@@ -27,6 +27,7 @@
  */
 
 require_once("../../../config.php");
+require_once("../xmlInspector.php");
 
 _load_language_file("/website_code/php/properties/media_and_quota_template.inc");
 _load_language_file("/properties.inc");
@@ -86,7 +87,7 @@ $delete_string = array();
 
 function media_folder_loop($folder_name){
 
-    global $dir_path, $new_path, $temp_dir_path, $temp_new_path, $quota, $result_string, $delete_string, $xerte_toolkits_site, $end_of_path;
+    global $dir_path, $new_path, $temp_dir_path, $temp_new_path, $quota, $result_string, $delete_string, $xerte_toolkits_site, $end_of_path, $dataInspector, $previewInspector;
 
     $result = "";
 
@@ -104,7 +105,7 @@ function media_folder_loop($folder_name){
             $path = $xerte_toolkits_site->site_url . "USER-FILES/" . $end_of_path . "/media/" . $folder_name . $f;
             $buttonlbl = MEDIA_AND_QUOTA_DOWNLOAD;
 
-            if(in_use('media/' . $folder_name . $f)){
+            if($dataInspector->fileIsUsed($folder_name . $f) || $previewInspector->fileIsUsed($folder_name . $f)){
                 $result = "<div class=\"filename found\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">" . MEDIA_AND_QUOTA_USE . " </span>";
 
             }else{
@@ -155,6 +156,12 @@ if(is_numeric($_POST['template_id'])) {
         $xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
 
         $previewpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml";
+
+        $dataInspector = new XerteXMLInspector();
+        $dataInspector->loadTemplateXML($xmlpath);
+
+        $previewInspector = new XerteXMLInspector();
+        $previewInspector->loadTemplateXML($previewpath);
 
         if(file_exists($xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml")){
 

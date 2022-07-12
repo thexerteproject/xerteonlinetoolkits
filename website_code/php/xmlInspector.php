@@ -17,10 +17,95 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+class XertePage
+{
+    private $pageFiles = null;
+    public $name;
+    public $node;
+    public $type;
+    public $index;
+
+    private function getImgNum($fileName) {
+        $info = pathinfo($fileName);
+        $name = $info['filename'];
+        $num = '';
+
+        // extract the number from the end of the file name
+        for ($k=strlen($name)-1; $k>-1; $k--) {
+            if (is_numeric($name[$k]))
+            {
+			    $num = $name[$k] . $num;
+            } else {
+                $name = substr($name, 0, strlen($name) - strlen($num));
+                break;
+            }
+        }
+
+        // return the file name (without number) & number separately
+        $ret = new stdClass();
+        $ret->name = $name;
+        $ret->num = ($num != '' ? intval($num) : $num);
+        $ret->addZeros = strlen($num) - strlen((string)((int)$num));
+        return $ret;
+    }
+
+
+    public function getImageSequenceFiles()
+    {
+        if ($this->type != "imageSequence")
+        {
+            return array();
+        }
+        if ($this->pageFiles === null)
+        {
+            $this->pageFiles = array();
+            // This piece of code know way too much of the structure of the XML of imageSequence
+            // Create sequence structure for all cases
+            $cases = $this->node->xpath("case");
+            foreach ($cases as $case)
+            {
+                $series = $case->xpath("imgSeries");
+                foreach ($series as $seq)
+                {
+                    $thisSeries = new stdClass();
+                    // Build sequence structure like in page
+                    $firstImg = str_replace("FileLocation + 'media/", "", (string)$seq['firstImg']);
+                    $lastImg = str_replace("FileLocation + 'media/", "", (string)$seq['lastImg']);
+                    // Remove last character
+                    $firstImg = substr($firstImg, 0, strlen($firstImg) - 1);
+                    $lastImg = substr($lastImg, 0, strlen($lastImg) - 1);
+                    $firstImgInfo = pathinfo($firstImg);
+                    $lastImgInfo = pathinfo($lastImg);
+
+                    $thisSeries->firstImg = $this->getImgNum($firstImgInfo['basename']);
+                    $thisSeries->lastImg = $this->getImgNum($lastImgInfo['basename']);
+
+                    // first & last images must be in the same folder & have same file name except for number at the end & have same file extension
+                    // first image should be the image with the lowest number and last image should be the image with the highest number
+                    $thisSeries->imgFolder = $firstImgInfo['dirname'];
+                    $thisSeries->imgExt = $firstImgInfo['extension'];
+                    if ($thisSeries->firstImg->addZeros > 0)
+                    {
+                        $thisSeries->numLength = strlen((string)($thisSeries->firstImg->num)) + $thisSeries->firstImg->addZeros;
+                    }
+                    // Generate filenames and add to file array
+                    for ($i=$thisSeries->firstImg->num; $i<=$thisSeries->lastImg->num; $i++)
+                    {
+                        $this->pageFiles[] = $thisSeries->imgFolder . "/" . $thisSeries->firstImg->name .  str_pad($i, $thisSeries->numLength, "0", STR_PAD_LEFT) . "." . $thisSeries->imgExt;
+                    }
+                }
+            }
+        }
+        return $this->pageFiles;
+    }
+}
+
 class XerteXMLInspector
 {
 
     private $fname;
+    private $xmlstr;
     private $xml;
     private $name;
     private $models;
@@ -44,7 +129,7 @@ class XerteXMLInspector
 
     private function addPage($node, $i)
     {
-        $page = new stdClass();
+        $page = new XertePage();
         $name = (string)$node['name'];
         // This may contain HTML tags, convert to plain text
         // Remove the HTML tags
@@ -54,6 +139,7 @@ class XerteXMLInspector
         // encode
         $name = base64_encode($name);
         $page->name = $name;
+        $page->node = $node;
         $page->type = $node->getName();
         $page->index = $i;
 
@@ -190,6 +276,9 @@ class XerteXMLInspector
         }
 
         $xml = file_get_contents($name);
+        // decode filenames in the XML
+        $xml = rawurldecode($xml);
+        $xml = html_entity_decode($xml);
         if (!$this->isValidXml($xml)) {
             // Try and  fix it ?
             _debug("Invalid XML found; trying to repair");
@@ -204,6 +293,7 @@ class XerteXMLInspector
                 $xml = file_get_contents($name);
             }
         }
+        $this->xmlstr = $xml;
 
         $this->xml = simplexml_load_string($xml);
         if (strlen((string)$this->xml['glossary'])>0)
@@ -337,6 +427,11 @@ class XerteXMLInspector
         return $this->glossary;
     }
 
+    public function getPage($page)
+    {
+        return $this->pages[$page];
+    }
+
     public function getPages()
     {
         return $this->pages;
@@ -351,6 +446,69 @@ class XerteXMLInspector
         else
         {
             return false;
+        }
+    }
+    /**
+     * @par $filename is supposed to be the filename with media (so do NOT include media)
+     * @return bool
+     */
+    public function fileIsUsed($filename, $pagenr=null)
+    {
+        if ($pagenr != null)
+        {
+            // get the page and check if the file is used
+            $page = $this->getPage($pagenr);
+            $node = $page->node;
+            $nodeXmlStr = $node->asXML();
+            $pos = strpos($nodeXmlStr, 'media/' . $filename);
+            if ($pos !== false)
+            {
+                return true;
+            }
+            else
+            {
+                if ($page->type === 'imageSequence')
+                {
+                    $files = $page->getImageSequenceFiles();
+                    // find filename in files
+                    foreach ($files as $file)
+                    {
+                        if ($file == $filename)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+        else
+        {
+            // check if the file is used
+            $pos = strpos($this->xmlstr, 'media/' . $filename);
+            if ($pos !== false)
+            {
+                return true;
+            }
+            else
+            {
+                foreach($this->pages as $page)
+                {
+                    if ($page->type === 'imageSequence')
+                    {
+                        $files = $page->getImageSequenceFiles();
+                        // find filename in files
+                        foreach ($files as $file)
+                        {
+                            if ($file == $filename)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
         }
     }
 }
