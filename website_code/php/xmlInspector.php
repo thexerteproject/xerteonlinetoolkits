@@ -89,6 +89,9 @@ class XertePage
                     {
                         $thisSeries->numLength = strlen((string)($thisSeries->firstImg->num)) + $thisSeries->firstImg->addZeros;
                     }
+                    else{
+                        $thisSeries->numLength = 0;
+                    }
                     // Generate filenames and add to file array
                     for ($i=$thisSeries->firstImg->num; $i<=$thisSeries->lastImg->num; $i++)
                     {
@@ -276,9 +279,6 @@ class XerteXMLInspector
         }
 
         $xml = file_get_contents($name);
-        // decode filenames in the XML
-        $xml = rawurldecode($xml);
-        $xml = html_entity_decode($xml);
         if (!$this->isValidXml($xml)) {
             // Try and  fix it ?
             _debug("Invalid XML found; trying to repair");
