@@ -325,7 +325,7 @@ var EDITOR = (function ($, parent) {
         }
     },
 
-    // ** Recursive function to traverse the xml and build
+    // Recursive function to traverse the xml and build
     build_lo_data = function (xmlData, parent_id) {
 
         // First lets generate a unique key
@@ -650,15 +650,6 @@ var EDITOR = (function ($, parent) {
 			}
 
 			if (options.type.toLowerCase() === "info") {
-			    /*
-                var tdlabel = $('<td colspan="2" class="wizardparameter explanation">')
-                    .append('<p>' + label + '</p>');
-                if (options.tooltip) {
-                    $('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
-                        .attr('title', options.tooltip)
-                        .appendTo(tdlabel);
-                }
-                */
                 tdlabel.attr("colspan", "2");
 			    tr.append(tdlabel)
             }
@@ -700,14 +691,18 @@ var EDITOR = (function ($, parent) {
 				.attr('title', options.deprecated)
 				.addClass("deprecated"));
 
-			if (options.optional == 'true') {
-				legend.prepend($('<i>')
-					.attr('id', 'optbtn_' + name)
-					.addClass('fa')
-					.addClass('fa-trash')
-					.addClass("xerte-icon")
-					.height(14)
-					.addClass("optional"));
+			if (options.optional == 'true' && options.group == undefined) { // nested groups don't have delete btn
+				legend
+					.addClass('noindent')
+					.prepend($('<i>')
+						.attr('id', 'optbtn_' + name)
+						.addClass('fa')
+						.addClass('fa-trash')
+						.addClass("xerte-icon")
+						.height(14)
+						.addClass("optional"));
+			} else {
+				group.addClass("wizardnestedgroup");
 			}
 
 			legend.append('<span class="legend_label">' + options.label + '</span>');
@@ -717,16 +712,22 @@ var EDITOR = (function ($, parent) {
 				.addClass("wizarddeprecated")
 
 		} else if (options.optional == 'true') {
+			
 			group.addClass("wizardoptional")
-
-			legend
-				.append($('<i>')
-				.attr('id', 'optbtn_' + name)
-				.addClass('fa')
-				.addClass('fa-trash')
-				.addClass("xerte-icon")
-				.height(14)
-				.addClass("optional"));
+			
+			if (options.group == undefined) { // nested groups don't have delete btn
+				legend
+					.addClass('noindent')
+					.append($('<i>')
+						.attr('id', 'optbtn_' + name)
+						.addClass('fa')
+						.addClass('fa-trash')
+						.addClass("xerte-icon")
+						.height(14)
+						.addClass("optional"));
+			} else {
+				group.addClass("wizardnestedgroup");
+			}
 
 			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
 
@@ -748,31 +749,33 @@ var EDITOR = (function ($, parent) {
 				.appendTo(legend.find('.legend_label'));
 		}
 
-		$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+		if (options.group == undefined) { // nested groups aren't collapsible
+			$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+			
+			legend.find('.legend_label').click(function() {
+				var $icon = $(this).find('i.minMaxIcon');
+				var $fieldset = $(this).parents('fieldset');
 
-		legend.find('.legend_label').click(function() {
-			var $icon = $(this).find('i.minMaxIcon');
-			var $fieldset = $(this).parents('fieldset');
+				if ($fieldset.find('.table_holder').is(':visible')) {
+					$fieldset.find('.table_holder').slideUp(400, function() {
+						$icon
+							.removeClass('fa-caret-up')
+							.addClass('fa-caret-down');
 
-			if ($fieldset.find('.table_holder').is(':visible')) {
-				$fieldset.find('.table_holder').slideUp(400, function() {
+						$fieldset.addClass('collapsed');
+					});
+
+				} else {
+					$fieldset.find('.table_holder').slideDown(400);
+
 					$icon
-						.removeClass('fa-caret-up')
-						.addClass('fa-caret-down');
+						.removeClass('fa-caret-down')
+						.addClass('fa-caret-up');
 
-					$fieldset.addClass('collapsed');
-				});
-
-			} else {
-				$fieldset.find('.table_holder').slideDown(400);
-
-				$icon
-					.removeClass('fa-caret-down')
-					.addClass('fa-caret-up');
-
-				$fieldset.removeClass('collapsed');
-			}
-		});
+					$fieldset.removeClass('collapsed');
+				}
+			});
+		}
 
 		var info = "";
 		if (options.info) info = '<div class="group_info">' + options.info + '</div>';
@@ -793,8 +796,12 @@ var EDITOR = (function ($, parent) {
 					.append(group_table)
 			);
 		}
-
-		$(id).append(tr);
+		
+		if (options.group == undefined) {
+			$(id).append(tr);
+		} else {
+			$('#groupTable_' + options.group).append(tr);
+		}
 
 		if (options.optional == 'true') {
 			$("#optbtn_" + name).on("click", function () {
@@ -822,6 +829,7 @@ var EDITOR = (function ($, parent) {
     },
 
     removeOptionalProperty = function (name, children) {
+		
         if (!confirm('Are you sure?')) {
             return;
         }
@@ -829,10 +837,26 @@ var EDITOR = (function ($, parent) {
 		var toDelete = [];
 
 		// if it's a group being deleted then remove all of its children
+		// including children of nested groups
 		if (children) {
-			for (var i=0; i<children.length; i++) {
-				toDelete.push(children[i].name);
+			
+			function getChildren(groupChildren) {
+				for (var i=0; i<groupChildren.length; i++) {
+					
+					if (groupChildren[i].value.type == "group") {
+						
+						getChildren(groupChildren[i].value.children);
+						
+					} else {
+						
+						toDelete.push(groupChildren[i].name);
+						
+					}
+				}
 			}
+			
+			getChildren(children);
+			
 		} else {
 			toDelete.push(name);
 		}
@@ -2124,9 +2148,9 @@ var EDITOR = (function ($, parent) {
         if (actvalue.indexOf('FileLocation +') >=0)
         {
             // Make sure the &#39; is translated to a '
-            console.log("Convert " + actvalue);
+            //console.log("Convert " + actvalue);
             actvalue = $('<textarea/>').html(actvalue).val();
-            console.log("    ..to " + actvalue);
+            //console.log("    ..to " + actvalue);
         }
         setAttributeValue(key, [name], [actvalue]);
     },
@@ -2181,9 +2205,9 @@ var EDITOR = (function ($, parent) {
         if (actvalue.indexOf('FileLocation +') >=0)
         {
             // Make sure the &#39; is translated to a '
-            console.log("Convert " + actvalue);
+            //console.log("Convert " + actvalue);
             actvalue = $('<textarea/>').html(actvalue).val();
-            console.log("    ..to " + actvalue);
+            //console.log("    ..to " + actvalue);
         }
         setAttributeValue(key, [name], [actvalue]);
     },
@@ -2289,11 +2313,11 @@ var EDITOR = (function ($, parent) {
     },
 
     editDrawing = function(id, key, name, value){
-        console.log('Edit drawing: ' + id + ': ' + key + ', ' +  name);
+        //console.log('Edit drawing: ' + id + ': ' + key + ', ' +  name);
         window.XOT = {};
         window.XOT.callBack = function(key, name, xmldata) {
             // Actions with url parameter here
-            console.log('Save drawing file: ' + key + ', ' + name);
+            //console.log('Save drawing file: ' + key + ', ' + name);
             setAttributeValue(key, [name], [xmldata]);
             // Refresh form, otherwise the value passed by the Edit button to the drawingEditor when the button is paused again
             parent.tree.showNodeData(key);
@@ -2425,11 +2449,10 @@ var EDITOR = (function ($, parent) {
 			
 			$.each(lo_node.children, function(i, key){
 					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-					/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
 					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
 					var hidden = lo_data[key]['attributes'].hidePage;
 					
-					if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
+					if (linkID.found && linkID.value != "")
 					{
 						
 						var page = [];

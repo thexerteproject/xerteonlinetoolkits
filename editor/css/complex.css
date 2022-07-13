@@ -727,6 +727,10 @@ td.wizardlabel {
     min-width: 155px;
 }
 
+.wizardgroup .column_table td.wizardlabel {
+	min-width: auto;
+}
+
 td.wizardvalue {
 }
 
@@ -740,12 +744,12 @@ fieldset.wizardgroup.collapsed {
 	border-top-color: #ccc;
 }
 
-fieldset.wizardgroup legend {
+fieldset.wizardgroup legend.noindent {
 	padding-right: 10px;
 	cursor: pointer;
 }
 
-fieldset.wizardgroup.wizardoptional legend {
+fieldset.wizardgroup.wizardoptional legend.noindent {
 	margin-left: -17px;
 }
 
