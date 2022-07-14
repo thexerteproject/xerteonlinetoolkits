@@ -1678,13 +1678,14 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 				//add a TOC entry
 				var tocName = $(this).attr('name');
-
+				
 				// remove size & background color styles from links on toc
-				if ($('<p>' + tocName + '</p>').children().length > 0 && tocName.indexOf("sup") < 0) {
-					tocName = $(tocName);
+				if ($('<p>' + tocName + '</p>').children().length > 0) {
+					tocName = $('<p>'+tocName+'</p>');
 					tocName.css({ 'font-size': '', 'background-color': 'transparent' });
 					tocName.find('[style*="font-size"]').css('font-size', '');
 					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+					tocName = tocName.html();
 				}
 
 				var $link = $('<li' + (sectionVisibleIndex==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
