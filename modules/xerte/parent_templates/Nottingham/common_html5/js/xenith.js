@@ -974,12 +974,18 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
+	
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
+		
 		$("#x_cssBtn")
 			.button({
-				icons:	{primary: "x_maximise"},
-				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+				icons:	{
+					// icon can now be set up in editor but fall back to default if not set
+					primary: x_params.fullScreenIcons == 'true' ? x_params.maxIcon : "x_maximise"
+				},
+				// label can now be set in editor but fall back to language file if not set
+				label: x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
 				text:	false
 			})
             .attr("aria-label", $("#x_cssBtn").attr("title"))
@@ -990,7 +996,9 @@ function x_desktopSetUp() {
 				}
 
 				if (x_fillWindow == false) {
+					
 					x_setFillWindow();
+					
 				} else {
 					for (var i=0; i<x_responsive.length; i++) {
 						$x_mainHolder.removeClass("x_responsive");
@@ -1011,11 +1019,18 @@ function x_desktopSetUp() {
 							});
 					}
 					$x_body.css("overflow", "auto");
+					
 					$(this).button({
-						icons:	{primary: "x_maximise"},
-						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+						icons:	{ primary: x_params.fullScreenIcons == 'true' ? x_params.maxIcon : "x_maximise" },
+						label:	x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
 					});
-					$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
+					
+					if (x_params.fullScreenIcons == 'true') {
+						$("#x_cssBtn").addClass("customIconBtn");
+					} else {
+						$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
+					}
+					
 					x_fillWindow = false;
 					x_updateCss();
 				}
@@ -1024,8 +1039,10 @@ function x_desktopSetUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
-		$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
+		
+		if (x_params.fullScreenIcons != 'true') {
+			$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
+		}
 	}
 
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
@@ -1157,12 +1174,15 @@ function x_continueSetUp1() {
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
 			$x_footerL.prepend('<button id="x_helpBtn"></button>');
+			
 			$("#x_helpBtn")
 				.button({
 					icons: {
-						primary: "x_help"
+						// icon can now be set up in editor but fall back to default if not set
+						primary: x_params.helpIc == 'true' ? x_params.helpIcon : "x_help"
 					},
-					label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.helpLabel != undefined && x_params.helpLabel != "" ? x_params.helpLabel : x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 					text:	false
 				})
 				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
@@ -1178,6 +1198,10 @@ function x_continueSetUp1() {
 						.removeClass("ui-state-focus")
 						.removeClass("ui-state-hover");
 				});
+			
+			if (x_params.helpIc == 'true') {
+				$("#x_helpBtn").addClass("customIconBtn");
+			}
 		}
 
 		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
@@ -1218,25 +1242,71 @@ function x_continueSetUp1() {
 				$("#x_pageNo").remove();
 			}
 		}
+		
+		x_dialogInfo.push({type:'colourChanger', built:false});
+		
+		if (x_params.accessibilityHide != 'true') {
+			
+			$x_colourChangerBtn
+				.button({
+					icons: {
+						// icon can now be set up in editor but fall back to default if not set
+						primary: x_params.accessibilityIc == 'true' ? x_params.accessibilityIcon : "x_colourChanger"
+					},
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
+					text:	false
+				})
+				.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
+				.click(function() {
+					x_openDialog(
+						"colourChanger",
+						x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
+						x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
+						null,
+						null,
+						function () {
+							$x_colourChangerBtn
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				});
+				
+			if (x_params.accessibilityIc == 'true') {
+				$("#x_colourChangerBtn").addClass("customIconBtn");
+			}
+			
+		} else {
+			$x_colourChangerBtn.remove();
+		}
 
 		//add show/hide footer tools
-		if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
-			var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
-			var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
-			//add a div for the show/hide chevron
-			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
+		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
+			
+			// labels can now be set in editor but fall back to language file if not set
+			var hideMsg = x_params.hideToolsLabel != undefined && x_params.hideToolsLabel != "" ? x_params.hideToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools"),
+				showMsg = x_params.showToolsLabel != undefined && x_params.showToolsLabel != "" ? x_params.showToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+			
+			// icons can new be set up in editor but fall back to default if not set
+			var hideIcon = x_params.footerToolIcons == 'true' ? x_params.hideToolsIcon : "fa fa-angle-double-left fa-lg",
+				showIcon = x_params.footerToolIcons == 'true' ? x_params.showToolsIcon : "fa fa-angle-double-right fa-lg";
+			
+			// add a div for the show/hide chevron
+			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="' + hideIcon + '" aria-hidden="true"></i></button></div>');
 			$('#x_footerChevron').prop('title', hideMsg);
 			$("#x_footerChevron").attr("aria-label", hideMsg);
 
-			//chevron to show/hide function
+			// chevron to show/hide function
 			$('#x_footerChevron').click(function(){
 				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
 						if($(this).is(':visible')){
-							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
+							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="' + hideIcon + '" aria-hidden="true"></i></div>');
 							$('#x_footerChevron').prop('title', hideMsg);
 							$("#x_footerChevron").attr("aria-label", hideMsg);
 						}else{
-							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon + '" aria-hidden="true"></i></div>');
 							$('#x_footerChevron').prop('title', showMsg);
 							$("#x_footerChevron").attr("aria-label", showMsg);
 						}
@@ -1245,7 +1315,7 @@ function x_continueSetUp1() {
 			});
 			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
 				$('#x_footerBlock .x_floatLeft').hide();
-				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon + '" aria-hidden="true"></i></div>');
 				$('#x_footerChevron').prop('title', showMsg);
 			}
 		}
@@ -1296,17 +1366,20 @@ function x_continueSetUp1() {
 			document.title = strippedText;
 		}
 
+		// icon can now be set up in editor but fall back to default if not set
 		var prevIcon = "x_prev";
 		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 			prevIcon = "x_prev_hist";
 		}
-
+		prevIcon = x_params.navIcons == 'true' ? x_params.prevIcon : prevIcon;
+		
 		$x_prevBtn
 			.button({
 				icons: {
 					primary: prevIcon
 				},
-				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+				// label can now be set in editor but fall back to language file if not set
+				label: x_params.prevLabel != undefined && x_params.prevLabel != "" ? x_params.prevLabel : x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 				text:	false
 			})
 			.attr("aria-label", $("#x_prevBtn").attr("title"))
@@ -1343,13 +1416,15 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
+		
 		$x_nextBtn
 			.button({
 				icons: {
-					primary: "x_next"
+					// icon can now be set up in editor but fall back to default if not set
+					primary: x_params.navIcons == 'true' ? x_params.nextIcon : "x_next"
 				},
-				label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
+				// label can now be set in editor but fall back to language file if not set
+				label: x_params.nextLabel != undefined && x_params.nextLabel != "" ? x_params.nextLabel : x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
 				text:	false
 			})
 			.attr("aria-label", $("#x_nextBtn").attr("title"))
@@ -1359,15 +1434,16 @@ function x_continueSetUp1() {
 				if (pageIndex != -1) {
 					if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 						//when moving forward history is generated so ensure button is historic style
-						prevIcon = "x_prev_hist";
-							$x_prevBtn
-								.button({
-									icons: {
-										primary: prevIcon
-									},
-									label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-									text:	false
-								});
+						prevIcon = x_params.navIcons == 'true' ? x_params.prevIcon : "x_prev_hist";
+						
+						$x_prevBtn
+							.button({
+								icons: {
+									primary: prevIcon
+								},
+								label: x_params.prevLabel != undefined && x_params.prevLabel != "" ? x_params.prevLabel : x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+								text: false
+							});
 					}
 					
 					x_changePage(x_normalPages[pageIndex+1]);
@@ -1378,15 +1454,16 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 
-		var	menuIcon = "x_info",
-			menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+		// icon & label can new be set up in editor but fall back to default if not set
+		var	menuIcon = x_params.navIcons == 'true' ? x_params.tocIcon : "x_info";
+			menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
 		if (x_params.navigation == "Historic") {
-			menuIcon = "x_home";
-			menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
-			$x_menuBtn.addClass("x_home");
+			menuIcon = x_params.navIcons == 'true' ? x_params.homeIcon : "x_home";
+			menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+			$x_menuBtn.addClass("x_home");	
 		}
-
+		
 		$x_menuBtn
 			.button({
 				icons: {
@@ -1400,7 +1477,7 @@ function x_continueSetUp1() {
 				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
 					x_openDialog(
 						"menu",
-						x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+						x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
 						x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
 						null,
 						null,
@@ -1418,44 +1495,26 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
-		x_dialogInfo.push({type:'colourChanger', built:false});
-		$x_colourChangerBtn
-			.button({
-				icons: {
-					primary: "x_colourChanger"
-				},
-				label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
-				text:	false
-			})
-			.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
-			.click(function() {
-				x_openDialog(
-					"colourChanger",
-					x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
-					x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
-					null,
-					null,
-					function () {
-						$x_colourChangerBtn
-							.blur()
-							.removeClass("ui-state-focus")
-							.removeClass("ui-state-hover");
-					}
-				);
-			});
+		
+		if (x_params.navIcons == 'true') {
+			$("#x_prevBtn, #x_nextBtn, #x_menuBtn").addClass("customIconBtn");
+		}
 
 		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
 			x_dialogInfo.push({type:'saveSession', built:false});
-			var tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
+			
+			// labels can now be set in editor but fall back to language file if not set
+			var tooltip = x_params.saveSessionLabel != undefined && x_params.saveSessionLabel != "" ? x_params.saveSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
 			if (typeof lti_enabled != "undefined" && lti_enabled)
 			{
-				tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
 			}
+			
 			$x_saveSessionBtn
 				.button({
 					icons: {
-						primary: "x_saveSession"
+						// icon can now be set up in editor but fall back to default if not set
+						primary: x_params.saveSessionIc == 'true' ? x_params.saveSessionIcon : "x_saveSession"
 					},
 					label: tooltip,
 					text: false
@@ -1476,11 +1535,16 @@ function x_continueSetUp1() {
 						}
 					);
 				});
+			
+			if (x_params.saveSessionIc == 'true') {
+				$("#x_saveSessionBtn").addClass("customIconBtn");
+			}
 		}
 		else
 		{
 			$x_saveSessionBtn.remove();
 		}
+		
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
 			{
@@ -2656,9 +2720,9 @@ function x_setUpPage() {
 		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 			// should the normal back or historic back button be used?
 			if (x_pageHistory.length > 1) {
-				$x_prevBtn.button({ icons: { primary: 'x_prev_hist' } });
+				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev_hist' } });
 			} else {
-				$x_prevBtn.button({ icons: { primary: 'x_prev' } });
+				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev' } });
 			}
 		}
 		
@@ -3332,13 +3396,21 @@ function x_setFillWindow(updatePage) {
     $x_body.css("overflow", "hidden");
     x_updateCss(updatePage);
     window.scrolling = false;
-
+	
     $("#x_cssBtn").button({
-        icons:  {primary: "x_minimise"},
-        label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
+        icons:  {
+			// icon can now be set up in editor but fall back to default if not set
+			primary: x_params.fullScreenIcons == 'true' ? x_params.minIcon : "x_minimise"
+		},
+		// label can now be set in editor but fall back to language file if not set
+		label: x_params.minLabel != undefined && x_params.minLabel != "" ? x_params.minLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
     });
-
-	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
+	
+	if (x_params.fullScreenIcons == 'true') {
+		$("#x_cssBtn").addClass("customIconBtn");
+	} else {
+		$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
+	}
 }
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
@@ -4180,8 +4252,8 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			if (dataInfo == true) {
 				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
 				// replace with the variable text
-				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');console.log(tempText);
-				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));console.log(tempText);
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));
 				
 			} else {
 				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
@@ -4510,16 +4582,18 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			$("#x_glossaryBtn")
 				.button({
 					icons: {
-						primary: "x_glossary"
+						// icon can now be set up in editor but fall back to default if not set
+						primary: x_params.glossaryIc == 'true' ? x_params.glossaryIcon : "x_glossary"
 					},
-					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 					text:	false
 				})
 				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
 					x_openDialog(
 						"glossary",
-						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
+						x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
 						null,
 						null,
@@ -4531,6 +4605,10 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 						}
 					);
 				});
+			
+			if (x_params.glossaryIc == 'true') {
+				$("#x_glossaryBtn").addClass("customIconBtn");
+			}
 
 			$x_pageDiv
 				.on("mouseenter", ".x_glossary", function(e) {

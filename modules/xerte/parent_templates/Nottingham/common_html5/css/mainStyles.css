@@ -671,3 +671,26 @@ textarea {
 #pageContents:focus,#adaptiveContentMain:focus{
 	outline:none;
 }
+
+/* --INTERFACE BUTTONS WITH CUSTOM FONT AWESOME ICONS SET IN EDITOR-------------------------------------------------------------- */
+
+.customIconBtn:after {
+	content: none !important;
+}
+
+
+#x_footerBlock > div:not(#x_pageNarration) button.customIconBtn span {
+	display: block;
+}
+.x_responsive #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn,
+#x_footerBlock button.customIconBtn {
+	font-size: 1.9em;
+}
+
+#x_footerBlock #x_footerChevron i {
+	font-size: 1.3em;
+}
+
+#x_footerBlock button.customIconBtn .ui-icon {
+    transform: translate(25%,25%);
+}

@@ -728,7 +728,7 @@ td.wizardlabel {
 }
 
 .wizardgroup .column_table td.wizardlabel {
-	min-width: auto;
+	/*min-width: auto;*/
 }
 
 td.wizardvalue {
