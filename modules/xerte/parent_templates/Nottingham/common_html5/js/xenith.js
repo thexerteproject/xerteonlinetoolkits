@@ -2829,6 +2829,7 @@ function x_pageLoaded() {
 		const textCol = x_currentPageXML.getAttribute("headerTextColor");
 		let customHeaderStyle = '';
 		if (bgCol != undefined && bgCol != "") {
+			customHeaderStyle += 'background: ' + formatColour(bgCol) + ';';
 			customHeaderStyle += 'background-color: ' + formatColour(bgCol) + ';';
 		}
 		if (textCol != undefined && textCol != "") {
