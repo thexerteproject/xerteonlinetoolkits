@@ -2488,7 +2488,6 @@ function x_changePageStep6() {
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
 	}
-
 }
 
 function x_focusPageContents(firstLoad) {
@@ -3108,6 +3107,10 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     {
                         $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function () {
                             x_setDialogSize($x_popupDialog, position);
+							
+							if (type == "menu") {
+								menu.showCurrent();
+							}
                         });
                     }
 
