@@ -18,7 +18,7 @@
   background-image: none;
   width: 100%;
   border-top-right-radius: 3px;
-  background: #000000;
+  background: #000000 !important;
   box-shadow: none; }
 
 .titlePageTxt {
