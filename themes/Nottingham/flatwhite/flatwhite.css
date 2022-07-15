@@ -10,7 +10,7 @@ body {
 
 #x_headerBlock, h2, h1 {
 	color:			#000000;
-	background:		#ffffff;
+	/*background:		#ffffff;*/
 	background-repeat:no-repeat;
 	background-position:right; 
 	background-image:	none; 
