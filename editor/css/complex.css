@@ -737,6 +737,8 @@ td.wizardvalue {
 fieldset.wizardgroup {
 	border: 1px solid #ccc;
 	margin-top: 10px;
+	border-top: #ffffff solid 2px;
+	border-bottom: #b9b8b8 solid 2px;
 }
 
 fieldset.wizardgroup.collapsed {
