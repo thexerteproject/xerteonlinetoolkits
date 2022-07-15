@@ -3132,7 +3132,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
 function x_setDialogSize($x_popupDialog, position) {
     var width = $x_mainHolder.width()/2,
         height = undefined,
-        left = $x_mainHolder.width()/4,
+        left = $x_mainHolder.width()/4 + $x_mainHolder.position.left,
         top = $x_mainHolder.height()/4;
 
     if (x_browserInfo.mobile == true) {
