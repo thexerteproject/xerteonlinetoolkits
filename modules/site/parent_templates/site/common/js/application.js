@@ -522,10 +522,11 @@ function setup() {
 
 			// remove size & background color styles from links on nav bar
 			if ($('<p>' + name + '</p>').children().length > 0) {
-				name = $(name);
+				name = $('<p>' + name + '</p>');
 				name.css({ 'font-size': '', 'background-color': 'transparent' });
 				name.find('[style*="font-size"]').css('font-size', '');
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
+				name = name.html();
 			}
 
 			if ($(this).attr('pageLink') != undefined && $(this).attr('pageLink') != '') {
