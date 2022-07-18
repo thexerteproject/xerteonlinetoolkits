@@ -4350,7 +4350,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	var 	x_glossary      = [],
 			$x_glossaryHover,
 			multiple_terms = false, // link all terms on page or just the first - default is FIRST ONLY
-			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including   - default is IGNORE AND REMOVE
+			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including - default is IGNORE AND REMOVE
 									// we always remove leading and trailing whitespace
 
 	init = function () {
@@ -4366,11 +4366,11 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 
 		for (i=0, len=items.length; i<len; i++) {
 			item = items[i].split("|");
-			item[0] = item[0].replace(/^(\s| )+|(\s| )+$/g, "");
-			if (ignore_space) item[0] = item[0].replace(/(\s| )+/g, " ");
+			item[0] = item[0].replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "");
+			if (ignore_space) item[0] = item[0].replace(/(\s|&nbsp;)+/g, " ");
 			word = { word : item[0], definition : item[1] };
 
-			if (word.word.replace(/^(\s| )+|(\s| )+$/g, "") != "" && word.definition.replace(/^(\s| )+|(\s| )+$/g, "") != "") {
+			if (word.word.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "" && word.definition.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "") {
 				x_glossary.push(word);
 			}
 		}
@@ -4421,7 +4421,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					
 					window.addEventListener('keydown', escapeHandler);
 
-					var myText = $activeTooltip.text().replace(/(\s| )+/g, " ").trim(),
+					var myText = $activeTooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 						myDefinition, i, len;
 
 					for (i=0, len=x_glossary.length; i<len; i++) {
@@ -4520,7 +4520,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			let index = 'textContent' in document.body ? 'textContent' : 'innerText';
 			for (var k=0, len=x_glossary.length; k<len; k++) {
 				nodes.some(function(node) { // .some exits after true is returned - after first find unless multiple terms selected
-					let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s| )+') : x_glossary[k].word;
+					let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word;
 					let regExp = new RegExp('\\b(' + term + ')\\b', multiple_terms ? 'ig' : 'i');
 					let found = regExp.test(node[index]);
 
