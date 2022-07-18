@@ -4493,7 +4493,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
-							if (x_glossary[i].definition.indexOf("https://xottest.dlearning.nl/USER-FILES/100-inge-Nottingham/") != -1) {
+							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
 								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
 							} else {
 								myDefinition += x_glossary[i].definition;
