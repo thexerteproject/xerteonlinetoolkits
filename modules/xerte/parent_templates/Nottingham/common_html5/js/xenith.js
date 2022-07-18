@@ -974,8 +974,10 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
+	
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
+		
 		$("#x_cssBtn")
 			.button({
 				icons:	{primary: "x_maximise"},
@@ -990,7 +992,9 @@ function x_desktopSetUp() {
 				}
 
 				if (x_fillWindow == false) {
+					
 					x_setFillWindow();
+					
 				} else {
 					for (var i=0; i<x_responsive.length; i++) {
 						$x_mainHolder.removeClass("x_responsive");
@@ -1011,6 +1015,7 @@ function x_desktopSetUp() {
 							});
 					}
 					$x_body.css("overflow", "auto");
+					
 					$(this).button({
 						icons:	{primary: "x_maximise"},
 						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
@@ -1157,6 +1162,7 @@ function x_continueSetUp1() {
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
 			$x_footerL.prepend('<button id="x_helpBtn"></button>');
+			
 			$("#x_helpBtn")
 				.button({
 					icons: {
@@ -1228,7 +1234,7 @@ function x_continueSetUp1() {
 			$('#x_footerChevron').prop('title', hideMsg);
 			$("#x_footerChevron").attr("aria-label", hideMsg);
 
-			//chevron to show/hide function
+			// chevron to show/hide function
 			$('#x_footerChevron').click(function(){
 				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
 						if($(this).is(':visible')){
@@ -2655,9 +2661,9 @@ function x_setUpPage() {
 		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 			// should the normal back or historic back button be used?
 			if (x_pageHistory.length > 1) {
-				$x_prevBtn.button({ icons: { primary: 'x_prev_hist' } });
+				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev_hist' } });
 			} else {
-				$x_prevBtn.button({ icons: { primary: 'x_prev' } });
+				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev' } });
 			}
 		}
 		
@@ -3336,13 +3342,21 @@ function x_setFillWindow(updatePage) {
     $x_body.css("overflow", "hidden");
     x_updateCss(updatePage);
     window.scrolling = false;
-
+	
     $("#x_cssBtn").button({
-        icons:  {primary: "x_minimise"},
-        label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
+        icons:  {
+			// icon can now be set up in editor but fall back to default if not set
+			primary: x_params.fullScreenIcons == 'true' ? x_params.minIcon : "x_minimise"
+		},
+		// label can now be set in editor but fall back to language file if not set
+		label: x_params.minLabel != undefined && x_params.minLabel != "" ? x_params.minLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
     });
-
-	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
+	
+	if (x_params.fullScreenIcons == 'true') {
+		$("#x_cssBtn").addClass("customIconBtn");
+	} else {
+		$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
+	}
 }
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
@@ -4344,11 +4358,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	var 	x_glossary      = [],
 			$x_glossaryHover,
 			multiple_terms = false, // link all terms on page or just the first - default is FIRST ONLY
-			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including &nbsp; - default is IGNORE AND REMOVE
+			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including   - default is IGNORE AND REMOVE
 									// we always remove leading and trailing whitespace
-	// TODO Revert all changes in 3.11 to Glossary, because it breaks ol LO's
-	// Keep new code so we can try to fix it later
-    /*
+
 	init = function () {
 		
 		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
@@ -4362,11 +4374,11 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 
 		for (i=0, len=items.length; i<len; i++) {
 			item = items[i].split("|");
-			item[0] = item[0].replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "");
-			if (ignore_space) item[0] = item[0].replace(/(\s|&nbsp;)+/g, " ");
+			item[0] = item[0].replace(/^(\s| )+|(\s| )+$/g, "");
+			if (ignore_space) item[0] = item[0].replace(/(\s| )+/g, " ");
 			word = { word : item[0], definition : item[1] };
 
-			if (word.word.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "" && word.definition.replace(/^(\s|&nbsp;)+|(\s|&nbsp;)+$/g, "") != "") {
+			if (word.word.replace(/^(\s| )+|(\s| )+$/g, "") != "" && word.definition.replace(/^(\s| )+|(\s| )+$/g, "") != "") {
 				x_glossary.push(word);
 			}
 		}
@@ -4417,13 +4429,13 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					
 					window.addEventListener('keydown', escapeHandler);
 
-					var myText = $activeTooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
+					var myText = $activeTooltip.text().replace(/(\s| )+/g, " ").trim(),
 						myDefinition, i, len;
 
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
-							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
+							if (x_glossary[i].definition.indexOf("https://xottest.dlearning.nl/USER-FILES/100-inge-Nottingham/") != -1) {
 								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
 							} else {
 								myDefinition += x_glossary[i].definition;
@@ -4450,131 +4462,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
 					$x_glossaryHover.hide();
-					window.removeEventListener('keydown', escapeHandler);
-				})
-				.on("mousemove", ".x_glossary", function(e) {
-					var leftPos,
-						topPos = e.pageY + 20;
-
-					if (x_browserInfo.mobile == false) {
-						leftPos = e.pageX + 20;
-						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
-							leftPos = e.pageX - $x_glossaryHover.width() - 20;
-						}
-						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
-							topPos = e.pageY - $x_glossaryHover.height() - 20;
-						}
-					} else {
-						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
-						if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
-							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
-						}
-					}
-					$x_glossaryHover.css({
-						"left"	:leftPos,
-						"top"	:topPos
-					});
-				})
-				.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
-					$(this).trigger("mouseenter");
-				})
-				.on("focusout", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-				});
-		}
-	},
-
-     */
-
-	init = function () {
-
-		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
-			.appendTo($x_mainHolder)
-			.hide();
-
-		x_dialogInfo.push({type:'glossary', built:false});
-
-		var i, len, item, word,
-			items = x_params.glossary.split("||");
-
-		for (i=0, len=items.length; i<len; i++) {
-			item = items[i].split("|"),
-				word = {word:item[0], definition:item[1]};
-
-			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
-				x_glossary.push(word);
-			}
-		}
-		if (x_glossary.length > 0) {
-			x_glossary.sort(function(a, b){ // sort by size
-				return a.word.length > b.word.length ? -1 : 1;
-			});
-
-			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
-			$("#x_glossaryBtn")
-				.button({
-					icons: {
-						primary: "x_glossary"
-					},
-					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
-					text:	false
-				})
-				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
-				.click(function() {
-					x_openDialog(
-						"glossary",
-						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
-						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
-						null,
-						null,
-						function () {
-							$("#x_glossaryBtn")
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
-				});
-
-			$x_pageDiv
-				.on("mouseenter", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-
-					var $this = $(this),
-						myText = $this.text().trim(),
-						myDefinition, i, len;
-
-					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
-							myDefinition = "<b>" + myText + ":</b><br/>"
-							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
-								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
-							} else {
-								myDefinition += x_glossary[i].definition;
-							}
-						}
-					}
-
-					$x_glossaryHover
-						.html(myDefinition)
-						.css({
-							"left"	:$(this).offset().left + 20,
-							"top"	:$(this).offset().top + 20
-						});
-
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-
-					$x_glossaryHover.fadeIn("slow");
-
-					if (x_browserInfo.touchScreen == true) {
-						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
-					}
-				})
-				.on("mouseleave", ".x_glossary", function(e) {
-					$x_mainHolder.off("click.glossary");
-
-					$x_glossaryHover.hide();
+					window.removeEventListener("keydown", escapeHandler);
 				})
 				.on("mousemove", ".x_glossary", function(e) {
 					var leftPos,
@@ -4616,7 +4504,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
 		});
 
-		var tableData = '<table class="glossary">';
+		var tableData = "<table class=\"glossary\">";
 		for (var i=0; i<x_glossary.length; i++) {
 			tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
 		}
@@ -4626,14 +4514,10 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		
 		x_pageContentsUpdated();
 		
-		// add class for shaded rows rather than using css selector as doesn't work for IE8 & below
+		// add class for shaded rows rather than using css selector as doesnt work for IE8 & below
 		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
 	},
 
-	// TODO Revert all changes in 3.11 to Glossary, because it breaks ol LO's
-	// Keep new code so we can try to fix it later
-
-	/*
 	insertText = function(tempText, exclude, list) {
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
@@ -4643,8 +4527,8 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			let nodes = getTextNodes(fragment);
 			let index = 'textContent' in document.body ? 'textContent' : 'innerText';
 			for (var k=0, len=x_glossary.length; k<len; k++) {
-				nodes.some(function(node) {
-					let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s|&nbsp;)+') : x_glossary[k].word;
+				nodes.some(function(node) { // .some exits after true is returned - after first find unless multiple terms selected
+					let term = ignore_space ? x_glossary[k].word.replace(/\s/g, '(?:\\s| )+') : x_glossary[k].word;
 					let regExp = new RegExp('\\b(' + term + ')\\b', multiple_terms ? 'ig' : 'i');
 					let found = regExp.test(node[index]);
 
@@ -4652,8 +4536,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					return found && !multiple_terms;
 				});
 			}
+
 			// Need to treat single text node differently but rebuild from fragmant
-			tempText = nodes.length === 1 ? nodes[0].textContent : Array.from(fragment.childNodes).map(function(x) {return x.outerHTML;}).join('');
+			tempText = Array.from(fragment.childNodes).length === 1 ? nodes[0].textContent : Array.from(fragment.childNodes).map(function(x) {return x.outerHTML || x.textContent;}).join('');
 
 			// Replace all our tokens with the glossary tag
 			for (var k=0, len=x_glossary.length; k<len; k++) {
@@ -4664,34 +4549,17 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 
 		return tempText;
 	},
-	*/
 
-	insertText = function(tempText, exclude, list) {
-		// check text for glossary words - if found replace with a link
-		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
-			for (var k=0, len=x_glossary.length; k<len; k++) {
-				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-				tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
-			}
-			for (var k=0, len=x_glossary.length; k<len; k++) {
-				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
-			}
-		}
-
-		return tempText;
-	},
-		
 	getTextNodes = function (fragment) {
 		let textNodes = [];
-		(function R(node) {
+		(function recurse(node) {
 
 		  if (node = node.firstChild)
 			  while (node != null) {
-				  if (node.nodeType == 3) {
+				  if (node.nodeType === Node.TEXT_NODE) {
 						if (node && node.parentNode && node.parentNode.nodeName !== "A") textNodes.push(node);
 				  }
-				  else if (node.nodeType == 1) R(node);
+				  else if (node.nodeType === Node.ELEMENT_NODE) recurse(node);
 				  node = node.nextSibling;
 			  }
 		})(fragment);
@@ -4709,6 +4577,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	self.init = init;
     self.buildPage = buildPage;
 	self.insertText = insertText;
+	self.getTextNodes = getTextNodes;
 	self.touchStartHandler = touchStartHandler;
 
 return parent; })(jQuery, XENITH || {});
