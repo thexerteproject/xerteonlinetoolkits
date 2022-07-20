@@ -3327,8 +3327,7 @@ function x_setFillWindow(updatePage) {
     }
 
     $x_mainHolder.css({
-        // The right border is cut off when embedding if setting to 100%
-		"width"     :"99.8%",
+		"width"     :"100%",
         "height"    :"100%"
     });
 
