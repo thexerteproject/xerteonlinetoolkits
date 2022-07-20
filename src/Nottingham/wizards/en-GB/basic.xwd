@@ -7,7 +7,7 @@
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" conditionTrigger="true" defaultValue="default" />
-	<themeIcons type="CheckBox" label="Update Theme Icons" mandatory="true" defaultValue="false" condition="theme=='default'||theme=='darkgrey'||theme=='flatblue'||theme=='orangepurple'||theme=='flatred'||theme=='flatwhite'||theme=='sketch'||theme=='django'||theme=='blackround'" tooltip="The selected theme uses images for the navigation and footer tool buttons. Most newer themes use Font Awesome icons instead, which give you greater flexibility in their appearance. Checking this box will automatically update interface buttons to use Font Awesome icons. It is recommended that you check this if you use are using any of the Customise Button Icon options so that all buttons appear consistent." />
+	<themeIcons type="CheckBox" label="Update Theme Icons" mandatory="true" defaultValue="false" condition="theme==undefined||theme=='default'||theme=='darkgrey'||theme=='flatblue'||theme=='orangepurple'||theme=='flatred'||theme=='flatwhite'||theme=='sketch'||theme=='django'||theme=='blackround'" tooltip="The selected theme uses images for the navigation and footer tool buttons. Most newer themes use Font Awesome icons instead, which give you greater flexibility in their appearance. Checking this box will automatically update interface buttons to use Font Awesome icons. It is recommended that you check this if you use are using any of the Customise Button Icon options so that all buttons appear consistent." />
 	<displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100" conditionTrigger="true"/>
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
 	
@@ -187,6 +187,7 @@
     <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	<forcePage1 type="CheckBox" label="Force First Page" defaultValue="true" optional="true" tooltip="Force projects to open on first page even if the URL contains specific page information. Useful when creating projects, such as escape rooms, where you don't want users to be able to jump ahead."/>
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
+	
 	
 	<!-- DEPRECATED PROPERTIES -->
 	
