@@ -151,7 +151,7 @@
 	
 	<glossaryGroup type="group" label="Glossary" optional="true" tooltip="A glossary of words/terms and their definitions. Hovering over a word/term in the project text will reveal the associated definition in a tooltip. A glossary button will also be added to the footer tools, which opens the full glossary in a dialog box when clicked.">
 		<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" wysiwyg="false,true" optional="true"/>
-		<glossaryLabel label="Title" type="TextInput" defaultValue="Glossary" optional="true" tooltip="The tooltip description for the Glossary button. This text also appears as the title of the dialog box that opens when the button is clicked."/>
+		<glossaryLabel label="Tooltip" type="TextInput" defaultValue="Glossary" optional="true" tooltip="The tooltip description for the Glossary button. This text also appears as the title of the dialog box that opens when the button is clicked."/>
 		<glossaryIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Glossary button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<glossaryIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-book" condition="glossaryIc=='true'" optional="true"/>
 	</glossaryGroup>
@@ -187,7 +187,6 @@
     <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	<forcePage1 type="CheckBox" label="Force First Page" defaultValue="true" optional="true" tooltip="Force projects to open on first page even if the URL contains specific page information. Useful when creating projects, such as escape rooms, where you don't want users to be able to jump ahead."/>
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
-	
 	
 	<!-- DEPRECATED PROPERTIES -->
 	

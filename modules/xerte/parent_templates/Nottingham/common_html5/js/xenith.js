@@ -43,7 +43,26 @@ var x_languageData  = [],
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [],
 	x_specialTheme = '',
-	x_pageLoadPause = false;
+	x_pageLoadPause = false,
+	x_btnIcons = [
+	// default interface buttons icons can be overriden:
+	// x_params[custom] = should a custom btn icon be used (FA icon selected in editor)? true/false
+	// x_params[name+'Icon'] = the icon to use if custom is true
+	// defaultFA = old themes that use images for buttons can have all btns set to use these default FA icons using themeIcons checkbox
+	// iconClass = if icon isn't customised via icon selectors in editor or themeIcons checkbox, fallback to use this css style (this will mean btn icons/images set in theme will be used)
+		{name: 'max',			iconClass:'x_maximise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-expand-arrows-alt'}, 	// full screen on
+		{name: 'min',			iconClass:'x_minimise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-compress-arrows-alt'},	// full screen off
+		{name: 'prev',			iconClass:'x_prev',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-left'},	// previous page
+		{name: 'next',			iconClass:'x_next',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-right'},	// next page
+		{name: 'toc',			iconClass:'x_info',							custom: 'navIcons',			defaultFA: 'fas fa-bars'},					// table of contents
+		{name: 'home',			iconClass:'x_home',							custom: 'navIcons',			defaultFA: 'fas fa-home'},					// home page
+		{name: 'hideTools',		iconClass:'fa fa-angle-double-left fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-left'},		// footer tools hide
+		{name: 'showTools',		iconClass:'fa fa-angle-double-right fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-right'},	// footer tools show
+		{name: 'accessibility',	iconClass:'x_colourChanger',				custom: 'accessibilityIc',	defaultFA: 'fas fa-eye-slash'},				// accessibility options
+		{name: 'help',			iconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
+		{name: 'saveSession',	iconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
+		{name: 'glossary',		iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'}					// glossary
+	];
 
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
@@ -670,6 +689,27 @@ x_projectDataLoaded = function(xmlData) {
     {
         x_params.theme = x_urlParams.theme;
     }
+	
+	
+	// what icons / images will be used on interface?
+	// these older themes use images for interface buttons (not FontAwesome icons) - it's only these themes that can fall back to use the defaultFA (all others should have FA icons set in theme)
+	const oldThemes = ['default', 'darkgrey', 'flatblue', 'orangepurple', 'flatred', 'flatwhite', 'sketch', 'django', 'blackround'];
+	if (x_params.themeIcons != 'true' || $.inArray(x_params.theme, oldThemes) == -1) {
+		x_params.themeIcons = false;
+	}
+	
+	for (let i=0; i<x_btnIcons.length; i++) {
+		x_btnIcons[i].customised = false;
+		if (x_params[x_btnIcons[i].custom] == 'true') {
+			// a custom icon has individually been selected in editor for this button
+			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
+			x_btnIcons[i].customised = true;
+		} else if (x_params.themeIcons == 'true') {
+			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
+			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
+			x_btnIcons[i].customised = true;
+		}
+	}
 
     x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
 
@@ -974,20 +1014,21 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
+		
+		const maxBtnIcon = x_btnIcons.filter(icon => icon.name === 'max')[0];
 		
 		$("#x_cssBtn")
 			.button({
 				icons:	{
-					// icon can now be set up in editor but fall back to default if not set
-					primary: x_params.fullScreenIcons == 'true' ? x_params.maxIcon : "x_maximise"
+					primary: maxBtnIcon.iconClass
 				},
 				// label can now be set in editor but fall back to language file if not set
 				label: x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
 				text:	false
 			})
+			.addClass('x_maximise')
             .attr("aria-label", $("#x_cssBtn").attr("title"))
 			.click(function() {
 				// Post flag to containing page for iframe resizing
@@ -1020,16 +1061,12 @@ function x_desktopSetUp() {
 					}
 					$x_body.css("overflow", "auto");
 					
-					$(this).button({
-						icons:	{ primary: x_params.fullScreenIcons == 'true' ? x_params.maxIcon : "x_maximise" },
-						label:	x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
-					});
-					
-					if (x_params.fullScreenIcons == 'true') {
-						$("#x_cssBtn").addClass("customIconBtn");
-					} else {
-						$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
-					}
+					$(this)
+						.button({
+							icons:	{ primary: maxBtnIcon.iconClass },
+							label:	x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+						})
+						.addClass('x_maximise').removeClass("x_minimise");
 					
 					x_fillWindow = false;
 					x_updateCss();
@@ -1040,8 +1077,8 @@ function x_desktopSetUp() {
 					.removeClass("ui-state-hover");
 			});
 		
-		if (x_params.fullScreenIcons != 'true') {
-			$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
+		if (maxBtnIcon.customised == true) {
+			$("#x_cssBtn").addClass("customIconBtn");
 		}
 	}
 
@@ -1175,11 +1212,12 @@ function x_continueSetUp1() {
 		if (x_params.nfo != undefined && trimmedNfo != '') {
 			$x_footerL.prepend('<button id="x_helpBtn"></button>');
 			
+			const helpIcon = x_btnIcons.filter(icon => icon.name === 'help')[0];
+			
 			$("#x_helpBtn")
 				.button({
 					icons: {
-						// icon can now be set up in editor but fall back to default if not set
-						primary: x_params.helpIc == 'true' ? x_params.helpIcon : "x_help"
+						primary: helpIcon.iconClass
 					},
 					// label can now be set in editor but fall back to language file if not set
 					label: x_params.helpLabel != undefined && x_params.helpLabel != "" ? x_params.helpLabel : x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
@@ -1199,11 +1237,11 @@ function x_continueSetUp1() {
 						.removeClass("ui-state-hover");
 				});
 			
-			if (x_params.helpIc == 'true') {
+			if (helpIcon.customised == true) {
 				$("#x_helpBtn").addClass("customIconBtn");
 			}
 		}
-
+		
 		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
 
 		if (x_params.media != undefined) {
@@ -1247,11 +1285,12 @@ function x_continueSetUp1() {
 		
 		if (x_params.accessibilityHide != 'true') {
 			
+			const accessibilityIcon = x_btnIcons.filter(icon => icon.name === 'accessibility')[0];
+			
 			$x_colourChangerBtn
 				.button({
 					icons: {
-						// icon can now be set up in editor but fall back to default if not set
-						primary: x_params.accessibilityIc == 'true' ? x_params.accessibilityIcon : "x_colourChanger"
+						primary: accessibilityIcon.iconClass
 					},
 					// label can now be set in editor but fall back to language file if not set
 					label: x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
@@ -1274,50 +1313,12 @@ function x_continueSetUp1() {
 					);
 				});
 				
-			if (x_params.accessibilityIc == 'true') {
+			if (accessibilityIcon.customised == true) {
 				$("#x_colourChangerBtn").addClass("customIconBtn");
 			}
 			
 		} else {
 			$x_colourChangerBtn.remove();
-		}
-
-		//add show/hide footer tools
-		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
-			
-			// labels can now be set in editor but fall back to language file if not set
-			var hideMsg = x_params.hideToolsLabel != undefined && x_params.hideToolsLabel != "" ? x_params.hideToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools"),
-				showMsg = x_params.showToolsLabel != undefined && x_params.showToolsLabel != "" ? x_params.showToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
-			
-			// icons can new be set up in editor but fall back to default if not set
-			var hideIcon = x_params.footerToolIcons == 'true' ? x_params.hideToolsIcon : "fa fa-angle-double-left fa-lg",
-				showIcon = x_params.footerToolIcons == 'true' ? x_params.showToolsIcon : "fa fa-angle-double-right fa-lg";
-			
-			// add a div for the show/hide chevron
-			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="' + hideIcon + '" aria-hidden="true"></i></button></div>');
-			$('#x_footerChevron').prop('title', hideMsg);
-			$("#x_footerChevron").attr("aria-label", hideMsg);
-
-			// chevron to show/hide function
-			$('#x_footerChevron').click(function(){
-				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
-						if($(this).is(':visible')){
-							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="' + hideIcon + '" aria-hidden="true"></i></div>');
-							$('#x_footerChevron').prop('title', hideMsg);
-							$("#x_footerChevron").attr("aria-label", hideMsg);
-						}else{
-							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon + '" aria-hidden="true"></i></div>');
-							$('#x_footerChevron').prop('title', showMsg);
-							$("#x_footerChevron").attr("aria-label", showMsg);
-						}
-					});
-				return(false);
-			});
-			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
-				$('#x_footerBlock .x_floatLeft').hide();
-				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon + '" aria-hidden="true"></i></div>');
-				$('#x_footerChevron').prop('title', showMsg);
-			}
 		}
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
@@ -1366,17 +1367,15 @@ function x_continueSetUp1() {
 			document.title = strippedText;
 		}
 
-		// icon can now be set up in editor but fall back to default if not set
-		var prevIcon = "x_prev";
-		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-			prevIcon = "x_prev_hist";
+		const prevIcon = x_btnIcons.filter(icon => icon.name === 'prev')[0];
+		if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && prevIcon.customised === false) {
+			prevIcon.iconClass = "x_prev_hist";
 		}
-		prevIcon = x_params.navIcons == 'true' ? x_params.prevIcon : prevIcon;
 		
 		$x_prevBtn
 			.button({
 				icons: {
-					primary: prevIcon
+					primary: prevIcon.iconClass
 				},
 				// label can now be set in editor but fall back to language file if not set
 				label: x_params.prevLabel != undefined && x_params.prevLabel != "" ? x_params.prevLabel : x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
@@ -1420,8 +1419,7 @@ function x_continueSetUp1() {
 		$x_nextBtn
 			.button({
 				icons: {
-					// icon can now be set up in editor but fall back to default if not set
-					primary: x_params.navIcons == 'true' ? x_params.nextIcon : "x_next"
+					primary: x_btnIcons.filter(icon => icon.name === 'next')[0].iconClass
 				},
 				// label can now be set in editor but fall back to language file if not set
 				label: x_params.nextLabel != undefined && x_params.nextLabel != "" ? x_params.nextLabel : x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
@@ -1432,20 +1430,6 @@ function x_continueSetUp1() {
 				// if it's a standalone page then nothing will happen
 				var pageIndex = $.inArray(x_currentPage, x_normalPages);
 				if (pageIndex != -1) {
-					if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-						//when moving forward history is generated so ensure button is historic style
-						prevIcon = x_params.navIcons == 'true' ? x_params.prevIcon : "x_prev_hist";
-						
-						$x_prevBtn
-							.button({
-								icons: {
-									primary: prevIcon
-								},
-								label: x_params.prevLabel != undefined && x_params.prevLabel != "" ? x_params.prevLabel : x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-								text: false
-							});
-					}
-					
 					x_changePage(x_normalPages[pageIndex+1]);
 				}
 				
@@ -1455,11 +1439,11 @@ function x_continueSetUp1() {
 			});
 
 		// icon & label can new be set up in editor but fall back to default if not set
-		var	menuIcon = x_params.navIcons == 'true' ? x_params.tocIcon : "x_info";
+		let	menuIcon = x_btnIcons.filter(icon => icon.name === 'toc')[0];
 			menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
 		if (x_params.navigation == "Historic") {
-			menuIcon = x_params.navIcons == 'true' ? x_params.homeIcon : "x_home";
+			menuIcon = x_btnIcons.filter(icon => icon.name === 'home')[0];
 			menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
 			$x_menuBtn.addClass("x_home");	
 		}
@@ -1467,7 +1451,7 @@ function x_continueSetUp1() {
 		$x_menuBtn
 			.button({
 				icons: {
-					primary: menuIcon
+					primary: menuIcon.iconClass
 				},
 				label:	menuLabel,
 				text:	false
@@ -1496,7 +1480,7 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 		
-		if (x_params.navIcons == 'true') {
+		if (menuIcon.customised == true) {
 			$("#x_prevBtn, #x_nextBtn, #x_menuBtn").addClass("customIconBtn");
 		}
 
@@ -1510,11 +1494,12 @@ function x_continueSetUp1() {
 				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
 			}
 			
+			const saveSessionIcon = x_btnIcons.filter(icon => icon.name === 'saveSession')[0];
+			
 			$x_saveSessionBtn
 				.button({
 					icons: {
-						// icon can now be set up in editor but fall back to default if not set
-						primary: x_params.saveSessionIc == 'true' ? x_params.saveSessionIcon : "x_saveSession"
+						primary: saveSessionIcon.iconClass
 					},
 					label: tooltip,
 					text: false
@@ -1536,13 +1521,50 @@ function x_continueSetUp1() {
 					);
 				});
 			
-			if (x_params.saveSessionIc == 'true') {
+			if (saveSessionIcon.customised == true) {
 				$("#x_saveSessionBtn").addClass("customIconBtn");
 			}
 		}
 		else
 		{
 			$x_saveSessionBtn.remove();
+		}
+		
+		//add show/hide footer tools
+		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
+			
+			// labels can now be set in editor but fall back to language file if not set
+			var hideMsg = x_params.hideToolsLabel != undefined && x_params.hideToolsLabel != "" ? x_params.hideToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools"),
+				showMsg = x_params.showToolsLabel != undefined && x_params.showToolsLabel != "" ? x_params.showToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+			
+			const hideIcon = x_btnIcons.filter(icon => icon.name === 'hideTools')[0];
+			const showIcon = x_btnIcons.filter(icon => icon.name === 'showTools')[0];
+			
+			// add a div for the show/hide chevron
+			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="' + hideIcon.iconClass + '" aria-hidden="true"></i></button></div>');
+			$('#x_footerChevron').prop('title', hideMsg);
+			$("#x_footerChevron").attr("aria-label", hideMsg);
+
+			// chevron to show/hide function
+			$('#x_footerChevron').click(function(){
+				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
+						if($(this).is(':visible')){
+							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="' + hideIcon.iconClass + '" aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', hideMsg);
+							$("#x_footerChevron").attr("aria-label", hideMsg);
+						}else{
+							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon.iconClass + '" aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', showMsg);
+							$("#x_footerChevron").attr("aria-label", showMsg);
+						}
+					});
+				return(false);
+			});
+			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
+				$('#x_footerBlock .x_floatLeft').hide();
+				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon.iconClass + '" aria-hidden="true"></i></div>');
+				$('#x_footerChevron').prop('title', showMsg);
+			}
 		}
 		
 		if (x_params.kblanguage != undefined) {
@@ -2716,15 +2738,6 @@ function x_setUpPage() {
     if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
         $x_prevBtn.button("enable");
 		
-		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-			// should the normal back or historic back button be used?
-			if (x_pageHistory.length > 1) {
-				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev_hist' } });
-			} else {
-				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev' } });
-			}
-		}
-		
     } else {
         $x_prevBtn
             .button("disable")
@@ -2783,7 +2796,8 @@ function x_setUpPage() {
 			}
 		}
 		$('#preventFlash').remove();
-        x_firstLoad = false;
+		
+		x_firstLoad = false;
     }
 }
 
@@ -3401,20 +3415,15 @@ function x_setFillWindow(updatePage) {
     x_updateCss(updatePage);
     window.scrolling = false;
 	
-    $("#x_cssBtn").button({
-        icons:  {
-			// icon can now be set up in editor but fall back to default if not set
-			primary: x_params.fullScreenIcons == 'true' ? x_params.minIcon : "x_minimise"
-		},
-		// label can now be set in editor but fall back to language file if not set
-		label: x_params.minLabel != undefined && x_params.minLabel != "" ? x_params.minLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
-    });
-	
-	if (x_params.fullScreenIcons == 'true') {
-		$("#x_cssBtn").addClass("customIconBtn");
-	} else {
-		$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
-	}
+    $("#x_cssBtn")
+		.button({
+			icons:  {
+				primary: x_btnIcons.filter(icon => icon.name === 'min')[0].iconClass
+			},
+			// label can now be set in editor but fall back to language file if not set
+			label: x_params.minLabel != undefined && x_params.minLabel != "" ? x_params.minLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
+		})
+		.addClass('x_minimise').removeClass("x_maximise");
 }
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
@@ -4418,7 +4427,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			multiple_terms = false, // link all terms on page or just the first - default is FIRST ONLY
 			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including - default is IGNORE AND REMOVE
 									// we always remove leading and trailing whitespace
-
+	
 	init = function () {
 		
 		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
@@ -4444,14 +4453,17 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			x_glossary.sort(function(a, b){ // sort by size
 				return a.word.length > b.word.length ? -1 : 1;
 			});
+			
+			const glossaryIcon = x_btnIcons.filter(icon => icon.name === 'glossary')[0];
 
 			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
 			$("#x_glossaryBtn")
 				.button({
 					icons: {
-						primary: "x_glossary"
+						primary: glossaryIcon.iconClass
 					},
-					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 					text:	false
 				})
 				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
@@ -4470,6 +4482,10 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 						}
 					);
 				});
+			
+			if (glossaryIcon.customised == true) {
+				$("#x_glossaryBtn").addClass("customIconBtn");
+			}
 
 			// Handle the closing of glossary bubble with escape key
 			var $activeTooltip, escapeHandler = function(e) {
@@ -4575,7 +4591,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		// add class for shaded rows rather than using css selector as doesnt work for IE8 & below
 		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
 	},
-	
+
 	insertText = function(tempText, exclude, list) {
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
@@ -4594,7 +4610,6 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					return found && !multiple_terms;
 				});
 			}
-
 			// Need to treat single text node differently but rebuild from fragmant
 			tempText = Array.from(fragment.childNodes).length === 1 && nodes.length > 0 ? nodes[0].textContent : Array.from(fragment.childNodes).map(function(x) {return x.outerHTML || x.textContent;}).join('');
 
@@ -4607,11 +4622,11 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 
 		return tempText;
 	},
-
+		
 	getTextNodes = function (fragment) {
 		let textNodes = [];
 		(function recurse(node) {
-			
+
 		  if (node = node.firstChild)
 			  while (node != null) {
 				  if (node.nodeType === Node.TEXT_NODE) {
