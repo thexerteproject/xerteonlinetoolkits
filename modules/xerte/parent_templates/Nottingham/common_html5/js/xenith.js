@@ -3747,7 +3747,7 @@ function x_saveSessionBtnIsStyled() {
 	// Offline doesn't use save session anyway, so return true
 	if (xot_offline)
 		return true;
-	if (x_params.theme != undefined && x_params.theme == "default")
+	if (x_params.theme == undefined || x_params.theme == "default") // old projects might not have a theme so fall back to using default
 		return true;
 	var files = $.map(document.styleSheets, function(s) {
 		// All css files in the themes folders except responsivetext.css
