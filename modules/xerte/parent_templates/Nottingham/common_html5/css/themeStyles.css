@@ -26,6 +26,7 @@ body {
 
 #x_mainHolder {
 	border:		1px solid #010101;
+	box-sizing: border-box;
 }
 
 #x_headerBlock {
