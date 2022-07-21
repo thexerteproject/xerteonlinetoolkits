@@ -2661,9 +2661,9 @@ function x_setUpPage() {
 		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 			// should the normal back or historic back button be used?
 			if (x_pageHistory.length > 1) {
-				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev_hist' } });
+				$x_prevBtn.button({ icons: { primary: 'x_prev_hist' } });
 			} else {
-				$x_prevBtn.button({ icons: { primary: x_params.navIcons == 'true' ? x_params.prevIcon : 'x_prev' } });
+				$x_prevBtn.button({ icons: { primary: 'x_prev' } });
 			}
 		}
 		
@@ -3344,19 +3344,11 @@ function x_setFillWindow(updatePage) {
     window.scrolling = false;
 	
     $("#x_cssBtn").button({
-        icons:  {
-			// icon can now be set up in editor but fall back to default if not set
-			primary: x_params.fullScreenIcons == 'true' ? x_params.minIcon : "x_minimise"
-		},
-		// label can now be set in editor but fall back to language file if not set
-		label: x_params.minLabel != undefined && x_params.minLabel != "" ? x_params.minLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
-    });
+		icons:  {primary: "x_minimise"},
+		label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
+	});
 	
-	if (x_params.fullScreenIcons == 'true') {
-		$("#x_cssBtn").addClass("customIconBtn");
-	} else {
-		$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
-	}
+	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
 }
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
