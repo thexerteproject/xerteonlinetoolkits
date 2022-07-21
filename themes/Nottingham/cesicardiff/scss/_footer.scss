@@ -60,8 +60,8 @@
 #x_footerChevron {
   color: $whiteorlightest;
 }
-#x_footerChevron:hover {
-  color: $brightcolor;
+#x_footerChevron:hover, #x_footerChevron:focus {
+  color: red;
 }
 
 /*****TOC****/

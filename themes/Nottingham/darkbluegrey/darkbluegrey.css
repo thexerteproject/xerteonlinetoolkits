@@ -581,39 +581,39 @@ div#shorturltodisplay a {
 }
 
 #x_nextBtn:after {
-  content: "\f138";
+  content: "";
 }
 
 #x_prevBtn:after {
-  content: "\f137";
+  content: "";
 }
 
 #x_cssBtn:after {
-  content: "\f066";
+  content: "";
 }
 
 #x_colourChangerBtn:after {
-  content: "\f042";
+  content: "";
 }
 
 #x_mediaBtn:after {
-  content: "\f16a";
+  content: "";
 }
 
 #x_glossaryBtn:after {
-  content: "\f02d";
+  content: "";
 }
 
 #x_helpBtn:after {
-  content: "\f128";
+  content: "";
 }
 
 #x_menuBtn:after {
-  content: "\f0c9";
+  content: "";
 }
 
 #x_saveSessionBtn:after {
-  content: "\f0c7";
+  content: "";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
 }
@@ -654,7 +654,7 @@ div#shorturltodisplay a {
   color: #ffffff;
 }
 
-#x_footerChevron:hover {
+#x_footerChevron:hover, #x_footerChevron:focus {
   color: #FCBC2B;
 }
 
@@ -666,7 +666,7 @@ div#shorturltodisplay a {
 }
 
 .fa-x-close:before {
-  content: "\f00d";
+  content: "";
 }
 
 .ui-dialog .ui-dialog-titlebar-close {
@@ -1427,19 +1427,19 @@ img {
 }
 /* chevron */
 .fa-x-next:before {
-  content: "\f054";
+  content: "";
 }
 
 .fa-x-prev:before {
-  content: "\f053";
+  content: "";
 }
 
 .fa-x-next-circle:before {
-  content: "\f138";
+  content: "";
 }
 
 .fa-x-prev-circle:before {
-  content: "\f137";
+  content: "";
 }
 
 /* arrow */
@@ -1450,51 +1450,51 @@ img {
 .fa-x-prev-circle:before { content: "\f0a8"; }
 */
 .fa-x-refresh:before {
-  content: "\f021";
+  content: "";
 }
 
 .fa-x-acc-hide:before {
-  content: "\f0da";
+  content: "";
 }
 
 .fa-x-acc-show:before {
-  content: "\f0d7";
+  content: "";
 }
 
 .fa-x-btn-hide:before {
-  content: "\f0d8";
+  content: "";
 }
 
 .fa-x-btn-show:before {
-  content: "\f0d7";
+  content: "";
 }
 
 .fa-x-zoom-in:before {
-  content: "\f00e";
+  content: "";
 }
 
 .fa-x-zoom-out:before {
-  content: "\f010";
+  content: "";
 }
 
 .fa-x-download:before {
-  content: "\f019";
+  content: "";
 }
 
 .fa-x-info-circle:before {
-  content: "\f05a";
+  content: "";
 }
 
 .fa-x-info:before {
-  content: "\f129";
+  content: "";
 }
 
 .fa-x-question:before {
-  content: "\f128";
+  content: "";
 }
 
 .fa-x-lightbulb:before {
-  content: "\f0eb";
+  content: "";
 }
 
 .fa-x-copy:before {

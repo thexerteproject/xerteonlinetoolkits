@@ -67,7 +67,7 @@
 #x_footerChevron {
   color: $whiteorlightest;
 }
-#x_footerChevron:hover {
+#x_footerChevron:hover, #x_footerChevron:focus {
   color: $brightcolor;
 }
 

@@ -1,1 +1,8 @@
-/* empty file in order to let colourchanger work */
+
+#x_footerBlock button.customIconBtn {
+	color: white;
+}
+
+#x_footerBlock button.customIconBtn:not(.ui-state-disabled):hover, #x_footerBlock button.customIconBtn:not(.ui-state-disabled):focus {
+	color: #FF9900;
+}

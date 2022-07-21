@@ -678,7 +678,6 @@ textarea {
 	content: none !important;
 }
 
-
 #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn span {
 	display: block;
 }
@@ -693,4 +692,9 @@ textarea {
 
 #x_footerBlock button.customIconBtn .ui-icon {
     transform: translate(25%,25%);
+}
+
+#x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+	padding-right: 0;
+	width: 1.5em;
 }

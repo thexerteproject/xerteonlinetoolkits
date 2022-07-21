@@ -325,6 +325,14 @@ h3 {
   background-position: -84px 0px;
 }
 
+#x_footerBlock button.customIconBtn {
+  color: #D3D7CF;
+}
+
+#x_footerBlock button.customIconBtn:not(.ui-state-disabled):hover, #x_footerBlock button.customIconBtn:not(.ui-state-disabled):focus {
+  color: #000000;
+}
+
 .ui-dialog .ui-widget-header {
   border: 1px solid #164883;
   background: #ffffff;

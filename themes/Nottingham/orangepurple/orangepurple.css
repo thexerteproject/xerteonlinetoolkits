@@ -125,6 +125,14 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -84px 0px; }
 
+#x_footerBlock button.customIconBtn {
+	color: #FF9900;
+}
+
+#x_footerBlock button.customIconBtn:not(.ui-state-disabled):hover, #x_footerBlock button.customIconBtn:not(.ui-state-disabled):focus {
+	color: #7c097d;
+}
+
 .ui-dialog .ui-widget-header {
 border: 1px solid #7c097d;
 background: #7c097d;
