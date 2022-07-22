@@ -229,15 +229,32 @@ a:-webkit-any-link {
   background-position: 0px 0px;
 }
 
-.ui-button.ui-state-hover .ui-icon.x_colourChanger {
+.ui-button.ui-state-hover .ui-icon.x_saveSession {
   background-position: -42px 0px;
 }
 
-.ui-button.ui-state-focus .ui-icon.x_colourChanger {
+.ui-button.ui-state-focus .ui-icon.x_saveSession {
   background-position: -42px 0px;
 }
 
-.ui-button.ui-state-active .ui-icon.x_colourChanger {
+.ui-button.ui-state-active .ui-icon.x_saveSession {
+  background-position: -84px 0px;
+}
+
+.ui-button .ui-icon.x_projectIntro {
+  background-image: url("project_intro.svg");
+  background-position: 0px 0px;
+}
+
+.ui-button.ui-state-hover .ui-icon.x_projectIntro {
+  background-position: -42px 0px;
+}
+
+.ui-button.ui-state-focus .ui-icon.x_projectIntro {
+  background-position: -42px 0px;
+}
+
+.ui-button.ui-state-active .ui-icon.x_projectIntro {
   background-position: -84px 0px;
 }
 

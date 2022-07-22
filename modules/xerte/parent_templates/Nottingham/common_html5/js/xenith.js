@@ -61,14 +61,16 @@ var x_languageData  = [],
 		{name: 'accessibility',	iconClass:'x_colourChanger',				custom: 'accessibilityIc',	defaultFA: 'fas fa-eye-slash'},				// accessibility options
 		{name: 'help',			iconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
 		{name: 'saveSession',	iconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
-		{name: 'glossary',		iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'}					// glossary
+		{name: 'glossary',		iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
+		{name: 'intro',			iconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'}					// project introduction
 	];
 
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
+	$x_introBtn, $x_helpBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
@@ -1208,13 +1210,15 @@ function x_continueSetUp1() {
 			x_dialogInfo.push({type:'menu', built:false});
 		}
 
+		
+		// add project help button to footer bar that opens file (or URL) in new window or lightbox
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
-			$x_footerL.prepend('<button id="x_helpBtn"></button>');
 			
 			const helpIcon = x_btnIcons.filter(icon => icon.name === 'help')[0];
+			$x_helpBtn = $('<button id="x_helpBtn"></button>').prependTo($x_footerL);
 			
-			$("#x_helpBtn")
+			$x_helpBtn
 				.button({
 					icons: {
 						primary: helpIcon.iconClass
@@ -1223,7 +1227,7 @@ function x_continueSetUp1() {
 					label: x_params.helpLabel != undefined && x_params.helpLabel != "" ? x_params.helpLabel : x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 					text:	false
 				})
-				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
+				.attr("aria-label", $x_helpBtn.attr("title") + " " + x_params.newWindowTxt)
 				.click(function() {
 					if (x_params.helpTarget != 'lightbox') {
 						window.open(x_evalURL(x_params.nfo), "_blank");
@@ -1238,12 +1242,60 @@ function x_continueSetUp1() {
 				});
 			
 			if (helpIcon.customised == true) {
-				$("#x_helpBtn").addClass("customIconBtn");
+				$x_helpBtn.addClass("customIconBtn");
 			}
 		}
 		
 		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
+		
+		// add project intro button to footer bar that opens lightbox
+		if (x_params.intro != undefined && $.trim(x_params.intro) != '') {
+			
+			const introIcon = x_btnIcons.filter(icon => icon.name === 'intro')[0];
+			$x_introBtn = $('<button id="x_introBtn"></button>').prependTo($x_footerL);
+			
+			const $introHolder = $('<div id="x_introHolder"></div>');
+			const $introTxt = $('<div id="x_introTxt">' + x_params.intro + '</div>').appendTo($introHolder);
+			
+			// include project title
+			if (x_params.introTitle == 'true') {
+				$introTxt.prepend('<h1 id="x_introH1">' + x_params.name + '</h1>');
+			}
+			
+			// include start button to close lightbox
+			if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
+				$introTxt.append('<button id="x_introStartBtn"></button>');
+				
+				$introTxt.find('#x_introStartBtn')
+					.button({
+						label: $.trim(x_params.introBtnTxt)
+					})
+					.click(function() {
+						parent.window.$.featherlight.current().close();
+					});
+			}
+		
+			$x_introBtn
+				.button({
+					icons: {
+						primary: introIcon.iconClass
+					},
+					// label can be set in editor but fall back to language file if not set
+					label: x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction"),
+					text: false
+				})
+				.click(function() {
+					$.featherlight($(this).data('projectIntro'), { variant: 'lightbox' + (x_browserInfo.mobile != true || x_params.introWidth == 'Full' ? x_params.introWidth : 'Auto' ) });
+				})
+				.data('projectIntro', $introHolder);
+			
+			if (introIcon.customised == true) {
+				$x_introBtn.addClass("customIconBtn");
+			}
+		}
 
+		
+		// media is deprecated but might still be in old projects
 		if (x_params.media != undefined) {
 			x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
 				if (mediaExists) {
@@ -1269,7 +1321,8 @@ function x_continueSetUp1() {
 			});
 		}
 
-		//add optional progress bar
+
+		// add optional progress bar
 		if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
 			//add a div for the progress bar
 			$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
@@ -2784,7 +2837,13 @@ function x_setUpPage() {
     }
 
     if (x_firstLoad == true) {
+        // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
+		if ($x_introBtn != undefined && x_params.introShow == 'open' && (x_params.introFirst == 'true' || x_currentPage == 0)) {
+			$x_introBtn.click();
+		}
+		
         $x_mainHolder.css("visibility", "visible");
+		
 		if (x_params.backgroundGrey == "true") {
 			$("#x_mainBg").show();
 			$("#x_mainBg").gray(); // won't work properly if called when hidden
@@ -3406,7 +3465,6 @@ function x_setFillWindow(updatePage) {
     }
 
     $x_mainHolder.css({
-        // The right border is cut off when embedding if setting to 100%
 		"width"     :"100%",
         "height"    :"100%"
     });
@@ -4455,9 +4513,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			});
 			
 			const glossaryIcon = x_btnIcons.filter(icon => icon.name === 'glossary')[0];
-
-			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
-			$("#x_glossaryBtn")
+			$x_glossaryBtn = $('<button id="x_glossaryBtn"></button>').prependTo($x_footerL);
+			
+			$x_glossaryBtn
 				.button({
 					icons: {
 						primary: glossaryIcon.iconClass
@@ -4466,7 +4524,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					label: x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 					text:	false
 				})
-				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_glossaryBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
 					x_openDialog(
 						"glossary",
@@ -4475,7 +4533,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 						null,
 						null,
 						function () {
-							$("#x_glossaryBtn")
+							$x_glossaryBtn
 								.blur()
 								.removeClass("ui-state-focus")
 								.removeClass("ui-state-hover");
@@ -4484,7 +4542,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				});
 			
 			if (glossaryIcon.customised == true) {
-				$("#x_glossaryBtn").addClass("customIconBtn");
+				$x_glossaryBtn.addClass("customIconBtn");
 			}
 
 			// Handle the closing of glossary bubble with escape key

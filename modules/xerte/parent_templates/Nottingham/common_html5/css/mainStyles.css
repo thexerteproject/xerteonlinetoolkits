@@ -186,12 +186,12 @@ button.ui-button-icon-only {
 	 float:		none;
  }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
 	height:					40px;
 	background-position:	center;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
 	width:	41px;
 }
 
@@ -697,4 +697,66 @@ textarea {
 #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
 	padding-right: 0;
 	width: 1.5em;
+}
+
+/* --PROJECT INTRODUCTION-------------------------------------------------------------- */
+
+#x_introH1 {
+	padding: 0.3em;
+}
+
+#x_introStartBtn {
+	float: right;
+}
+
+/* --LIGHTBOX-------------------------------------------------------------- */
+
+.featherlight.lightboxSmall .featherlight-content {
+	width: 50%;
+	height: 50%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxMedium .featherlight-content {
+	width: 70%;
+	height: 70%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxLarge .featherlight-content {
+	width: 90%;
+	height: 90%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxFull .featherlight-content {
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight:not(.lightboxAuto) #x_introHolder {
+	top: 25px;
+	bottom: 25px;
+	left: 25px;
+	right: 25px;
+	overflow: auto;
+	position: absolute;
+	display: flex;
+}
+
+.featherlight #x_introTxt {
+	margin: auto;
 }

@@ -540,6 +540,10 @@ tr.alt td {
   background-image: none;
 }
 
+.ui-button .ui-icon.x_projectIntro {
+  background-image: none;
+}
+
 #x_nextBtn:after {
   content: "";
 }
@@ -566,6 +570,10 @@ tr.alt td {
 
 #x_helpBtn:after {
   content: "";
+}
+
+#x_introBtn:after {
+  content: "";
 }
 
 #x_menuBtn:after {

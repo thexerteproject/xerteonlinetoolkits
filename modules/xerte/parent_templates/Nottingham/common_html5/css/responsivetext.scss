@@ -146,6 +146,9 @@ input#x_pagePswd {
 #x_headerBlock h1 {
   font-size:$pagecontentsmedium;
 }
+h1#x_introH1 {
+  font-size:$pagecontentslarge;
+}
 .ui-accordion .ui-accordion-header a {
     font-size: $pagecontentslarge;
 }

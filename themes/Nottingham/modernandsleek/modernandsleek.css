@@ -613,6 +613,10 @@ div#shorturltodisplay a {
   background-image: none;
 }
 
+.ui-button .ui-icon.x_projectIntro {
+  background-image: none;
+}
+
 #x_nextBtn:after {
   content: "";
 }
@@ -639,6 +643,10 @@ div#shorturltodisplay a {
 
 #x_helpBtn:after {
   content: "";
+}
+
+#x_introBtn:after {
+  content: "";
 }
 
 #x_menuBtn:after {

@@ -20,6 +20,8 @@
   
   <glossaryButton label="Glossary" description="Glossary Button"/>
   
+  <projectIntroButton label="Introduction"/>
+  
   <continueButton label="Continue" description="Continue Button"/>
   
   <progressBar label="COMPLETE"/>
