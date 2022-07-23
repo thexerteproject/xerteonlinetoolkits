@@ -1019,7 +1019,7 @@ function x_desktopSetUp() {
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
 		
-		const maxBtnIcon = x_btnIcons.filter(icon => icon.name === 'max')[0];
+		const maxBtnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
 		
 		$("#x_cssBtn")
 			.button({
@@ -1215,7 +1215,7 @@ function x_continueSetUp1() {
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
 			
-			const helpIcon = x_btnIcons.filter(icon => icon.name === 'help')[0];
+			const helpIcon = x_btnIcons.filter(function(icon){return icon.name === 'help';})[0];
 			$x_helpBtn = $('<button id="x_helpBtn"></button>').prependTo($x_footerL);
 			
 			$x_helpBtn
@@ -1251,7 +1251,7 @@ function x_continueSetUp1() {
 		// add project intro button to footer bar that opens lightbox
 		if (x_params.intro != undefined && $.trim(x_params.intro) != '') {
 			
-			const introIcon = x_btnIcons.filter(icon => icon.name === 'intro')[0];
+			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'intro';})[0];
 			$x_introBtn = $('<button id="x_introBtn"></button>').prependTo($x_footerL);
 			
 			const $introHolder = $('<div id="x_introHolder"></div>');
@@ -1338,7 +1338,7 @@ function x_continueSetUp1() {
 		
 		if (x_params.accessibilityHide != 'true') {
 			
-			const accessibilityIcon = x_btnIcons.filter(icon => icon.name === 'accessibility')[0];
+			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
 			
 			$x_colourChangerBtn
 				.button({
@@ -1420,7 +1420,7 @@ function x_continueSetUp1() {
 			document.title = strippedText;
 		}
 
-		const prevIcon = x_btnIcons.filter(icon => icon.name === 'prev')[0];
+		const prevIcon = x_btnIcons.filter(function(icon){return icon.name === 'prev';})[0];
 		if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && prevIcon.customised === false) {
 			prevIcon.iconClass = "x_prev_hist";
 		}
@@ -1472,7 +1472,7 @@ function x_continueSetUp1() {
 		$x_nextBtn
 			.button({
 				icons: {
-					primary: x_btnIcons.filter(icon => icon.name === 'next')[0].iconClass
+					primary: x_btnIcons.filter(function(icon){return icon.name === 'next';})[0].iconClass
 				},
 				// label can now be set in editor but fall back to language file if not set
 				label: x_params.nextLabel != undefined && x_params.nextLabel != "" ? x_params.nextLabel : x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
@@ -1492,11 +1492,11 @@ function x_continueSetUp1() {
 			});
 
 		// icon & label can new be set up in editor but fall back to default if not set
-		let	menuIcon = x_btnIcons.filter(icon => icon.name === 'toc')[0];
+		let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
 			menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
 		if (x_params.navigation == "Historic") {
-			menuIcon = x_btnIcons.filter(icon => icon.name === 'home')[0];
+			menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
 			menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
 			$x_menuBtn.addClass("x_home");	
 		}
@@ -1547,7 +1547,7 @@ function x_continueSetUp1() {
 				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
 			}
 			
-			const saveSessionIcon = x_btnIcons.filter(icon => icon.name === 'saveSession')[0];
+			const saveSessionIcon = x_btnIcons.filter(function(icon){return icon.name === 'saveSession';})[0];
 			
 			$x_saveSessionBtn
 				.button({
@@ -1590,8 +1590,8 @@ function x_continueSetUp1() {
 			var hideMsg = x_params.hideToolsLabel != undefined && x_params.hideToolsLabel != "" ? x_params.hideToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools"),
 				showMsg = x_params.showToolsLabel != undefined && x_params.showToolsLabel != "" ? x_params.showToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
 			
-			const hideIcon = x_btnIcons.filter(icon => icon.name === 'hideTools')[0];
-			const showIcon = x_btnIcons.filter(icon => icon.name === 'showTools')[0];
+			const hideIcon = x_btnIcons.filter(function(icon){return icon.name === 'hideTools';})[0];
+			const showIcon = x_btnIcons.filter(function(icon){return icon.name === 'showTools';})[0];
 			
 			// add a div for the show/hide chevron
 			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="' + hideIcon.iconClass + '" aria-hidden="true"></i></button></div>');
@@ -3476,7 +3476,7 @@ function x_setFillWindow(updatePage) {
     $("#x_cssBtn")
 		.button({
 			icons:  {
-				primary: x_btnIcons.filter(icon => icon.name === 'min')[0].iconClass
+				primary: x_btnIcons.filter(function(icon){return icon.name === 'min';})[0].iconClass
 			},
 			// label can now be set in editor but fall back to language file if not set
 			label: x_params.minLabel != undefined && x_params.minLabel != "" ? x_params.minLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
@@ -4512,7 +4512,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				return a.word.length > b.word.length ? -1 : 1;
 			});
 			
-			const glossaryIcon = x_btnIcons.filter(icon => icon.name === 'glossary')[0];
+			const glossaryIcon = x_btnIcons.filter(function(icon){return icon.name === 'glossary';})[0];
 			$x_glossaryBtn = $('<button id="x_glossaryBtn"></button>').prependTo($x_footerL);
 			
 			$x_glossaryBtn
@@ -4669,7 +4669,8 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				});
 			}
 			// Need to treat single text node differently but rebuild from fragmant
-			tempText = Array.from(fragment.childNodes).length === 1 && nodes.length > 0 ? nodes[0].textContent : Array.from(fragment.childNodes).map(function(x) {return x.outerHTML || x.textContent;}).join('');
+			let arr = Array.prototype.slice.call(fragment.childNodes);
+			tempText = arr.length === 1 && nodes.length > 0 ? nodes[0].textContent : arr.map(function(x) {return x.outerHTML || x.textContent;}).join('');
 
 			// Replace all our tokens with the glossary tag
 			for (var k=0, len=x_glossary.length; k<len; k++) {
