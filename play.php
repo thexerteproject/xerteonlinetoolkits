@@ -48,6 +48,10 @@ if (!isset($lti_enabled))
 {
     $lti_enabled = false;
 }
+if(!isset($pedit_enabled))
+{
+    $pedit_enabled = false;
+}
 if ((!isset($x_embed)))
 {
     $x_embed = false;
@@ -246,7 +250,7 @@ db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SE
  * Start to check the access_to_whom settings from templatedetails for this template
  */
 
-if ($tsugi_enabled) {
+if ($tsugi_enabled || $pedit_enabled) {
     /* Tsugi enabled */
     if ($row_play["tsugi_published"] == 1) {
         // Actually published for Tsugi

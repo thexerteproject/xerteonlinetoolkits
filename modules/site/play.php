@@ -183,10 +183,10 @@ function show_template($row, $xapi_enabled=false){
             $tracking .= "  var lrsUsername = '';\n";
             $tracking .= "  var lrsPassword  = '';\n";
             $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-            $tracking .= "  var ltiEndpoint = '" .  (function_exists('addSession') ? addSession("lti_launch.php") . "&tsugisession=1&" : "lti_launch.php?") . "';\n";
-            $tracking .= "  var lti13Endpoint = '" .  (function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
-            $tracking .= "  var peditEndpoint = '" . (function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
-            $tracking .= "  var xapiEndpoint = '" . (function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
+            $tracking .= "  var ltiEndpoint = '" .  (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("lti_launch.php") . "&tsugisession=1&" : "lti_launch.php?") . "';\n";
+            $tracking .= "  var lti13Endpoint = '" .  (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
+            $tracking .= "  var peditEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
+            $tracking .= "  var xapiEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
 
             if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                 _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
