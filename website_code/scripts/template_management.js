@@ -796,7 +796,7 @@ function remove_template(template_id) {
         type: "POST",
         url: "website_code/php/templates/remove_template.php",
         data: {
-            template_id: template_id.substr(template_id.indexOf("_") + 1, template_id.length)
+            template_id: template_id
         }
     })
     .done(function(response){
@@ -821,7 +821,7 @@ function recycle_bin_remove_all_template(template_id) {
         type: "POST",
         url: "website_code/php/templates/remove_template.php",
         data: {
-            template_id: template_id.substr(template_id.indexOf("_") + 1, template_id.length)
+            template_id: template_id
         }
     })
     .done(function(response){
@@ -847,7 +847,7 @@ function delete_template(template_id) {
         type: "POST",
         url: "website_code/php/templates/delete_template.php",
         data: {
-            template_id: template_id.substr(template_id.indexOf("_") + 1, template_id.length)
+            template_id: template_id
         }
     })
     .done(function(response){
