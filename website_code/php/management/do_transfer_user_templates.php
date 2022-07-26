@@ -210,6 +210,11 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id)
                 $params = array($newuserid, $parent_folder_id, $folder_structure[$i]['folder_name'], date('Y-m-d'));
                 $folder_id = db_query($q, $params);
                 $folder_structure[$i]['newid'] = $folder_id;
+                if ($folder_id !== false){
+                    $query = "INSERT INTO {$prefix}folderrights (folder_id, login_id, folder_parent, role) values (?,?,?,?)";
+                    $params = array($folder_id, $newuserid, $parent_folder_id, "creator");
+                    $ok = db_query($query, $params);
+                }
                 return $folder_id;
             }
         }
