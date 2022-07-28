@@ -41,7 +41,6 @@
 	<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
 
 	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css?version=unstable - installed from github" type="text/css" />
-	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css?version=unstable - installed from github" type="text/css" />
 	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css?version=unstable - installed from github" type="text/css" />
 	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaelementplayer.min.css?version=unstable - installed from github" />
 	

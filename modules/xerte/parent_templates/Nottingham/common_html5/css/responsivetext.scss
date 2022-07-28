@@ -263,3 +263,20 @@ table {
 //@media (max-width: 480px) {
 
 //}
+
+
+@media only screen
+and (max-width :500px) {
+	/*hide progress bar by default when viewed in portrait mode on mobiles*/
+	/*if required change to display:block on themes where FA buttons are used*/
+	#x_footerProgress {
+		display: none;
+	}
+	.wcagLogo{
+		position:relative !important;
+		display:block;
+		margin-bottom:10px;
+		margin-top:10px;
+		width:80px;
+	}
+}
