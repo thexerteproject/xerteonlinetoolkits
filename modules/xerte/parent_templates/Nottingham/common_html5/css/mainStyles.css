@@ -638,6 +638,10 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	width:25px !important;
 }
 
+#x_footerBlock #x_footerChevron i {
+	font-size: 1.3em;
+}
+
 #x_footerShowHide{
     float:left;
 }
@@ -721,29 +725,28 @@ textarea {
 
 /* --INTERFACE BUTTONS WITH CUSTOM FONT AWESOME ICONS SET IN EDITOR-------------------------------------------------------------- */
 
-.customIconBtn:after {
+#x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+	font-size: 1.9em;
+	width: 1.5em;
+}
+
+#x_footerBlock .customIconBtn:after {
 	content: none !important;
 }
 
-#x_footerBlock > div:not(#x_pageNarration) button.customIconBtn span {
+#x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary {
 	display: block;
 }
-.x_responsive #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn,
-#x_footerBlock button.customIconBtn {
-	font-size: 1.9em;
-}
-
-#x_footerBlock #x_footerChevron i {
-	font-size: 1.3em;
+.x_responsive #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary:before,
+#x_footerBlock button.customIconBtn .ui-button-icon-primary:before {
+/* 	icons used in themes are generally 1.9em with font-family: FontAwesome
+	icons selected in editor icon picker use font-family "Font Awesome 5 Free" which appears larger - this reduces the customIcons to match theme icon size */
+	font-size: .9em;
 }
 
 #x_footerBlock button.customIconBtn .ui-icon {
-    transform: translate(25%,25%);
-}
-
-#x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
-	padding-right: 0;
-	width: 1.5em;
+    left: 50%;
+    transform: translate(-50%, 25%);
 }
 
 /* --PROJECT INTRODUCTION-------------------------------------------------------------- */
