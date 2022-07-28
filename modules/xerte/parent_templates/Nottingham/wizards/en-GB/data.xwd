@@ -107,8 +107,7 @@
 		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Include a 'start' button below the introduction text that closes the lightbox when clicked"/>
 		<introBtnTxt label="Button Text" type="TextInput" defaultValue="Get Started" condition="introBtn=='true'" wysiwyg="true" optional="true"/>
 		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" width="100" optional="true"/>
-		<introShow type="ComboBox" label="Default State" defaultValue="open" options="Open,Closed" data="open,closed" conditionTrigger="true" optional="true"/>
-		<introFirst type="CheckBox" label="Auto-open when resumed" defaultValue="false" condition="introShow!='closed'" optional="true" tooltip="Specify whether the introduction will automatically open if the project is not loaded from the beginning"/>
+		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="When project loads,When project loads on first page,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the project first loads"/>
 		<introLabel label="Tooltip" type="TextInput" defaultValue="Introduction" tooltip="The tooltip description for the Project Introduction button" optional="true"/>
 		<introIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Project Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<introIcon label="Icon" type="FontAwesome" iconList="hotspot" condition="introIc!='false'" defaultValue="fas fa-info" optional="true"/>

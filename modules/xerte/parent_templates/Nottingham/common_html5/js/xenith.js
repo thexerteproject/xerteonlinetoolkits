@@ -2838,7 +2838,7 @@ function x_setUpPage() {
 
     if (x_firstLoad == true) {
         // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
-		if ($x_introBtn != undefined && x_params.introShow == 'open' && (x_params.introFirst == 'true' || x_currentPage == 0)) {
+		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
 			$x_introBtn.click();
 		}
 		
