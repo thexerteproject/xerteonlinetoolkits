@@ -38,6 +38,20 @@
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
 	</passwordGroup>
 	
+	<introGroup type="group" label="Introduction" optional="true" tooltip="Add a Page Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the page first loads.">
+		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" optional="true"/>
+		<introTitle type="CheckBox" label="Include Title" defaultValue="true" optional="true" tooltip="Include the page title above the introduction text"/>
+		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Include a 'start' button below the introduction text that closes the lightbox when clicked"/>
+		<introBtnTxt label="Button Text" type="TextInput" defaultValue="Start" condition="introBtn=='true'" wysiwyg="true" optional="true"/>
+		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" width="100" optional="true"/>
+		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="Every time this page is viewed,The first time this page is viewed,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the page is viewed"/>
+	</introGroup>
+	
+	<helpGroup type="group" label="Help File" optional="true" tooltip="Add a Page Help button to the footer tools, which opens a file or URL when clicked">
+		<nfo label="File" type="media" optional="true" tooltip="Upload a file (e.g. pdf) or enter a URL"/>
+		<helpTarget type="ComboBox" label="Open in" defaultValue="new" options="New Window,Lightbox" data="new,lightbox" tooltip="Where the help file will open - by default it will open in a new browser tab/window" optional="true"/>
+	</helpGroup>
+	
 	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup>

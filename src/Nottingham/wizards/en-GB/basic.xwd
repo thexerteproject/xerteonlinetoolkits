@@ -112,6 +112,20 @@
 		<introIcon label="Icon" type="FontAwesome" iconList="hotspot" condition="introIc!='false'" defaultValue="fas fa-info" optional="true"/>
 	</introGroup>
 	
+	<pageHelpGroup type="group" label="Page Help File Button" optional="true" tooltip="An extra button will appear in the interface if you have added help files to any of your pages. Use these properties to control the location and appearance of this button.">
+		<pageHelpLocation label="Button Location" type="ComboBox" options="Footer,Header" data="footer,header" defaultValue="footer" optional="true"/>
+		<pageHelpLabel label="Tooltip" type="TextInput" defaultValue="Page Help" optional="true"/>
+		<pageHelpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<pageHelpIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-question" condition="pageHelpIc=='true'" optional="true"/>
+	</pageHelpGroup>
+	
+	<pageIntroGroup type="group" label="Page Introduction Button" optional="true" tooltip="An extra button will appear in the interface if you have added an introduction to any of your pages. Use these properties to control the location and appearance of this button.">
+		<pageIntroLocation label="Button Location" type="ComboBox" options="Footer,Header" data="footer,header" defaultValue="footer" optional="true"/>
+		<pageIntroLabel label="Tooltip" type="TextInput" defaultValue="Page Introduction" optional="true"/>
+		<pageIntroIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
+	</pageIntroGroup>
+	
 	<icon type="group" label="Header Icon/Logo" optional="true">
 		<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger='true' tooltip="If a default logo is automatically added by this template, or by the theme you have chosen, then use this checkbox to hide that logo, or leave this unchecked and use the options below to load an alternative logo."/>
 		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="Select an Image"/>
