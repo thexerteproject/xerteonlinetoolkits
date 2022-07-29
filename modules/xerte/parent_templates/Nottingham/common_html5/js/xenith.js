@@ -2979,7 +2979,7 @@ function x_addNarration(funct, arguments) {
 // function adds timer bar above main controls on interface - optional property that can be added to any interactivity page
 function x_addCountdownTimer() {
     var x_timerLangInfo = [
-		x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"),
+		x_currentPageXML.getAttribute("timerText") != null && x_currentPageXML.getAttribute("timerText") != "" ? x_currentPageXML.getAttribute("timerText") : x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"),
 		x_currentPageXML.getAttribute("timerLabel") != null && x_currentPageXML.getAttribute("timerLabel") != "" ? x_currentPageXML.getAttribute("timerLabel") : x_getLangInfo(x_languageData.find("timer").find("timeUp")[0], "name", "Time up"),
 		x_getLangInfo(x_languageData.find("timer").find("seconds")[0], "name", "seconds")
 	];

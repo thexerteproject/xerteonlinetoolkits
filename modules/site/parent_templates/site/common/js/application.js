@@ -1406,8 +1406,9 @@ function x_CheckBanner(index){
 		if (checkinfo != undefined && checkinfo=="true")
 		{
 			// Add fullscreen info in clickableWrapper
-			// Get text from languageData
-			const label = (languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
+			// Get text from bannerFullScrolldownText property or fall back to use languageData string
+			const label = $(data).find('page').eq(index).attr('bannerFullScrolldownText') != undefined && $(data).find('page').eq(index).attr('bannerFullScrolldownText') != '' ? $(data).find('page').eq(index).attr('bannerFullScrolldownText') :
+			(languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
 			setTimeout(function () {
 				if ($(".arrow").length) {
 					return false;

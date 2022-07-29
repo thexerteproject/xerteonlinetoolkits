@@ -68,6 +68,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true" />
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer>
 	
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project."/>

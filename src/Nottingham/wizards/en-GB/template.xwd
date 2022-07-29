@@ -432,6 +432,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -503,6 +504,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -609,6 +611,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -715,6 +718,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -879,6 +883,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -961,6 +966,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1057,6 +1063,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1122,6 +1129,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1188,6 +1196,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1254,6 +1263,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1319,6 +1329,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1395,6 +1406,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1458,6 +1470,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1528,6 +1541,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1606,6 +1620,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1675,6 +1690,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1766,6 +1782,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1894,6 +1911,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -1980,6 +1998,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2083,6 +2102,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2169,6 +2189,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2303,6 +2324,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2376,6 +2398,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2465,6 +2488,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2553,6 +2577,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2753,6 +2778,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2818,6 +2844,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2897,6 +2924,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -2973,6 +3001,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3040,6 +3069,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3135,6 +3165,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3196,6 +3227,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3280,6 +3312,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3344,6 +3377,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3437,6 +3471,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3526,6 +3561,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3593,6 +3629,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3689,6 +3726,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3801,6 +3839,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3912,6 +3951,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -3986,6 +4026,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4238,6 +4279,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4320,6 +4362,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4406,6 +4449,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4476,6 +4520,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4550,6 +4595,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4625,6 +4671,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4693,6 +4740,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4781,6 +4829,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -4869,6 +4918,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5058,6 +5108,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5398,6 +5449,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5491,6 +5543,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5554,6 +5607,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5622,6 +5676,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5697,6 +5752,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5773,6 +5829,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5862,6 +5919,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -5955,6 +6013,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6061,6 +6120,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6129,6 +6189,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6215,6 +6276,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6382,6 +6444,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6464,6 +6527,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6556,6 +6620,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6620,6 +6685,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6695,6 +6761,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6789,6 +6856,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -6987,6 +7055,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7053,6 +7122,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7115,6 +7185,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7183,6 +7254,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7250,6 +7322,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7321,6 +7394,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7399,6 +7473,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7481,6 +7556,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7566,6 +7642,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7627,6 +7704,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7706,6 +7784,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7827,6 +7906,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7907,6 +7987,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -7980,6 +8061,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8058,6 +8140,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8126,6 +8209,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8216,6 +8300,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8299,6 +8384,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8382,6 +8468,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8452,6 +8539,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8527,6 +8615,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8601,6 +8690,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8678,6 +8768,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8740,6 +8831,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8806,6 +8898,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
@@ -8871,6 +8964,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
