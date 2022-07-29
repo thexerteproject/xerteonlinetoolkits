@@ -2,52 +2,42 @@
 
   <noPages label="This project does not contain any pages."/>
 
-  <nextButton label="Next" description="Next Page Button"/>
+  <nextButton label="Next"/>
   
-  <backButton label="Back" description="Previous Page Button"/>
+  <backButton label="Back"/>
   
-  <tocButton label="Contents" description="Table of Contents Button"/>
+  <tocButton label="Contents"/>
   
-  <helpButton label="Help" description="Help Button"/>
+  <helpButton label="Help"/>
 
-  <mediaButton label="Media" description="Media Button"/>
+  <mediaButton label="Media"/>
   
-  <homeButton label="Home" description="Home Button"/>
+  <homeButton label="Home"/>
   
-  <homeLink label="Home" description="Go to Home page"/>
+  <homeLink description="Go to Home page"/>
   
-  <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
-  
-  <glossaryButton label="Glossary" description="Glossary Button"/>
+  <glossaryButton label="Glossary"/>
   
   <projectIntroButton label="Introduction"/>
-  
-  <continueButton label="Continue" description="Continue Button"/>
   
   <progressBar label="COMPLETE"/>
   
   <footerTools hide="Hide footer tools" show="Show footer tools"/>
   
-  <toc label="Table of Contents" description="Table of contents. Use the arrow keys to select a page. Press space to go to that page." htmlDescription="Use the tab key to select a page. Press space to go to that page.">
-	  <contentsList label="" description=""/>
-	  <closeButton label="" description="Close Table of Contents"/>
-	  <gotoPageButton label="Go to Page" description="Go to Page Button"/>
+  <toc label="Table of Contents" htmlDescription="Use the tab key to select a page. Press space to go to that page.">
+	  <closeButton description="Close Table of Contents"/>
   </toc>
   
   <mediaWindow label="Media Viewer"/>
   
-  <glossary label="Glossary" description="A list of words and their definitions.">
-	  <closeButton label="" description="Close Glossary"/>
+  <glossary label="Glossary">
+	  <closeButton description="Close Glossary"/>
   </glossary>
   
-  <kbLanguage label="Special Characters" description="A list of buttons which add special characters to text areas">
-	  <closeButton label="" description="Close Special Characters"/>
+  <kbLanguage label="Special Characters">
+	  <closeButton description="Close Special Characters"/>
 	  <dialog instruction="Use CAPS and SHIFT" on="ON" off="OFF" caps="Caps"/>
   </kbLanguage>
-  
-  <textToSpeech label="null" description="Text to Speech"/>
-  
-  <errorProject label="The project data has not loaded."/>
   
   <errorPage label="No template is currently available for this page type."/>
   
@@ -70,20 +60,8 @@
   <tick label="Tick"/>
   
   <cross label="Cross"/>
-
-  <themes label="--Colour Schemes--" description="Colour Scheme Options">
-    <item>default</item>
-    <item>blue</item>
-    <item>green</item>
-    <item>red</item>
-    <item>orange</item>
-    <item>purple</item>
-    <item>grey</item>
-    <item>high contrast 1</item>
-    <item>high contrast 2</item>
-  </themes>
  
-  <sizes label="--Screen Size--" description="Screen Size Options">
+  <sizes>
 	<item>Default</item>
 	<item>large</item>
 	<item>larger</item>
