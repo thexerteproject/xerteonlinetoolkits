@@ -3625,10 +3625,10 @@
 		<reset label="Reset" type="checkbox" defaultValue="true" optional="true" tooltip="A button to reset to the first image in the series"/>
 		
 		<play label="Play" type="checkbox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A button to play the series"/>
-		<playSpeed label="Play Speed" type="NumericStepper" min="0.01" max="1" step="0.01" defaultValue="0.1" condition="play!='false'" optional="true" tooltip="Speed of the play animation"/>
+		<playSpeed label="Play Speed" type="NumericStepper" min="0.01" max="5" step="0.01" defaultValue="0.1" condition="play!='false'" optional="true" tooltip="The length of time (in seconds) each image is shown on screen during the play animation"/>
 
 		<magnifier label="Magnifier" type="checkbox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A button to show the magnifier which zooms an area as the mouse is moved across the image"/>
-		<magnifierSize label="Magnifier Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
+		<magnifierSize label="Magnifier Size" type="NumericStepper" min="50" max="500" step="10" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
 		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
 		
 	</controlsGroup>

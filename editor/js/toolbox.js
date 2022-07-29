@@ -3793,10 +3793,10 @@ var EDITOR = (function ($, parent) {
 				textareas_options.push({id: id, key: key, name: name, options: options});
 				break;
 			case 'numericstepper':
-				var min = parseInt(options.min);
-				var max = parseInt(options.max);
-				var step = parseInt(options.step);
-				var intvalue = parseInt(value);
+				var min = Number(options.min);
+				var max = Number(options.max);
+				var step = Number(options.step);
+				var intvalue = Number(value);
 				if (!Modernizr.inputtypes.number)
 				{
 					var id = 'select_' + form_id_offset;
