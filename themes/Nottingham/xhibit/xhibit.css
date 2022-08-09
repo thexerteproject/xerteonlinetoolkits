@@ -68,6 +68,10 @@
     content: "\f128"; 
 }
 
+#x_introBtn:after {
+    content: "\f129"; 
+}
+
 #x_menuBtn:after {
     content: "\f0c9"; 
 }

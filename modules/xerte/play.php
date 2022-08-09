@@ -146,11 +146,11 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         {
             $tracking .= "<script>\n";
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-                if ($row["tsugi_published"] == 1) {
+                if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
                     $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
@@ -287,7 +287,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 $tracking .= "  var lti_enabled=false;\n";
             }
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";

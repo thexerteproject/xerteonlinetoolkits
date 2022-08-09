@@ -265,7 +265,12 @@
 				// Calculate progress
 				progress = XThelperDetermineProgress(videoState);
 			}
-			switch (x_currentPageXML.getAttribute('trackVideo')) {
+			let trackVideoSetting = 'no_mcqs';
+			if (x_currentPageXML.getAttribute('trackVideo') != undefined)
+			{
+				trackVideoSetting = x_currentPageXML.getAttribute('trackVideo');
+			}
+			switch (trackVideoSetting) {
 				case 'yes':
 					totalScore = (mcqScore + progress) / 2;
 					break;

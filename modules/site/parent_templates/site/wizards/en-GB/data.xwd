@@ -46,17 +46,19 @@
             <navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true"/>
 		</navbarGroup>
 		
-		<socialGroup type="group" label="Social" optional="true" cols="1" info="Select below which social media options you wish to enable (check) or disable (uncheck). Removing this group will enable them all unless that is disabled sitewide." tooltip="Hide all of the Social icons or check/uncheck specific icons.">
-		<hidesocial label="Hide all Social icons" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
-			<facebook label="Facebook" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<twitter label="Twitter" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<google label="Google+" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<linkedin label="Linkedin" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<pinterest label="Pinterest" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<email label="Email" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<yammer label="Yammer" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-			<addthis label="AddThis" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+		<socialGroup type="group" label="Social" optional="true" info="Select below which social media options you wish to enable (check) or disable (uncheck). Removing this group will enable them all unless that is disabled sitewide." tooltip="Hide all of the Social icons or check/uncheck specific icons.">
+			<hidesocial label="Hide all Social icons" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
+			<socialBtnsGroup type="group" label="Buttons" cols="3" optional="true">
+				<facebook label="Facebook" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<twitter label="Twitter" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<google label="Google+" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<linkedin label="Linkedin" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<pinterest label="Pinterest" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<email label="Email" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<yammer label="Yammer" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<addthis label="AddThis" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+			</socialBtnsGroup>
 		</socialGroup>
 		
         <footerGroup type="group" label="Footer" optional="true">
@@ -156,6 +158,7 @@
 		<bannerFixedHeight type="CheckBox" conditionTrigger="true" condition="headerBanner=='fixedheight' || bannerCollapse=='true'" label="Fixed height" optional="true" defaultValue="false" tooltip="Whether the 'Fixed height' banner is just the height needed for the titles, or actually a given set height."/>
 		<bannerHeight type="NumericStepper" condition="bannerFixedHeight=='true' &amp;&amp; (headerBanner=='fixedheight' || bannerCollapse=='true')" label="Banner height" min="10" max="100" step="1" width="100" optional="true" defaultValue="20" tooltip="The height (in %) of the fixed height banner or the collapsed full height banner"/>
 		<bannerFullScrolldownInfo type="CheckBox" condition="headerBanner=='fullscreen'" label="Enable scroll down info" optional="true" defaultValue="true" tooltip="Show an arrow and a help text to scroll down when the banner is full screen"/>
+		<bannerFullScrolldownText type="TextInput" wysiwyg="true" condition="headerBanner=='fullscreen'&amp;&amp;bannerFullScrolldownInfo=='true'" label="Scroll down text" optional="true" defaultValue="" tooltip="Leave blank to use the default scroll down text or add your own text here to replace it"/>
 	</headerGroup><pageLink label="Page Link" type="TextInput" wysiwyg="true" defaultValue="" optional="true" tooltip="The link text for the page menu (by default this will be the page title)" common="true"/><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -170,7 +173,7 @@
 	</linkGroup><sectionGroup type="group" label="Section Menu Options" optional="true" tooltip="Hide the table of contents for this page and set whether or not to expand the main contents to the width of the page" common="true">
         <sectionMenu label="Hide Menu" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="Hide the table of contents for this page"/>
         <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
-    </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+    </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs" common="true">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>

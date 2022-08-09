@@ -1178,14 +1178,8 @@ function upgrade_29()
 
 function upgrade_30()
 {
-    if (!_db_field_exists('templatedetails', 'tsugi_manage_key_id')) {
-        $error = _db_add_field('templatedetails', 'tsugi_manage_key_id', 'int', '-1', 'tsugi_usetsugikey');
-        return "Creating tsugi_manage_key_id field in templatedetails - ok ? " . ($error === false ? 'true' : 'false'). "<br>";
-    }
-    else
-    {
-        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
-    }
+    // Oops, this is also done in upgrade_33... but better! So skip this one!
+    return "Skip step 30 - Done by 33 - ok ? true". "<br>";
 }
 
 function upgrade_31()
@@ -1244,7 +1238,7 @@ function upgrade_32()
     }
     else
     {
-        return "Creating folder_parent field in folderrights already present - ok ? ". "<br>";
+        return "Creating folder_parent field in folderrights already present - ok ? true". "<br>";
     }
 
 
@@ -1271,13 +1265,6 @@ function upgrade_33()
                         array(':URL' => $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template['template_id']));
                     if (count($rows)>0)
                     {
-                        if (count($rows) > 1) {
-                            $mesg .= "    WARNING: More than one key_id returned for template with id " . $template['template_id'] . "(this text should NOT be in release)<br>";
-                            foreach($rows as $row)
-                            {
-                                $mesg .= "        " . $row['key_id'] . "<br>";
-                            }
-                        }
                         // get the first key
                         $res = db_query("update $table set tsugi_manage_key_id=? where template_id=?",
                             array($rows[0]['key_id'], $template['template_id']));
@@ -1298,6 +1285,6 @@ function upgrade_33()
     }
     else
     {
-        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? ". "<br>";
+        return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? true". "<br>";
     }
 }

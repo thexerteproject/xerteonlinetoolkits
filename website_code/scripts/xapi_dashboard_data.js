@@ -172,7 +172,7 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
 };
 
 DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
-    var role = this.data.info.role;
+    var role = (this.info ? this.info.role : "");
     var matchLaunched = '{"statement.verb.id" : { "$eq" : "http://adlnet.gov/expapi/verbs/launched" } }';
     var matchCourse = '';
     if (typeof q['activities'] != "undefined")
@@ -262,7 +262,7 @@ DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
 
 DashboardState.prototype.retrieveDataThroughAggregate = function(q, dashboard_state, data, callback)
 {
-    var role = this.data.info.role;
+    var role = (this.info ? this.info.role : "");
     var startDate = moment(q['since']);
     var endDate = moment(q['until']);
 

@@ -127,6 +127,19 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -84px 0px; }
 
+.ui-button .ui-icon.x_projectIntro { background-image: url("project_intro.png");background-position: 0px 0px;}
+.ui-button.ui-state-hover .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_projectIntro {	background-position: -84px 0px; }
+
+#x_footerBlock button.customIconBtn {
+	color: #EEEEEE;
+}
+
+#x_footerBlock button.customIconBtn:not(.ui-state-disabled):hover, #x_footerBlock button.customIconBtn:not(.ui-state-disabled):focus {
+	color: #CCCCCC;
+}
+
 .ui-dialog .ui-widget-header {
 border: 1px solid #010101;
 background: #010101 url(ui-bg_highlight-soft_75_2d2a2a_1x100.png) 50% 50% repeat-x;

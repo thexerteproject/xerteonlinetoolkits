@@ -522,10 +522,11 @@ function setup() {
 
 			// remove size & background color styles from links on nav bar
 			if ($('<p>' + name + '</p>').children().length > 0) {
-				name = $(name);
+				name = $('<p>' + name + '</p>');
 				name.css({ 'font-size': '', 'background-color': 'transparent' });
 				name.find('[style*="font-size"]').css('font-size', '');
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
+				name = name.html();
 			}
 			
 			if ($(this).attr('pageLink') != undefined && $(this).attr('pageLink') != '') {
@@ -1405,8 +1406,9 @@ function x_CheckBanner(index){
 		if (checkinfo != undefined && checkinfo=="true")
 		{
 			// Add fullscreen info in clickableWrapper
-			// Get text from languageData
-			const label = (languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
+			// Get text from bannerFullScrolldownText property or fall back to use languageData string
+			const label = $(data).find('page').eq(index).attr('bannerFullScrolldownText') != undefined && $(data).find('page').eq(index).attr('bannerFullScrolldownText') != '' ? $(data).find('page').eq(index).attr('bannerFullScrolldownText') :
+			(languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
 			setTimeout(function () {
 				if ($(".arrow").length) {
 					return false;
@@ -1678,13 +1680,14 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 				//add a TOC entry
 				var tocName = $(this).attr('name');
-
+				
 				// remove size & background color styles from links on toc
-				if ($('<p>' + tocName + '</p>').children().length > 0 && tocName.indexOf("sup") < 0) {
-					tocName = $(tocName);
+				if ($('<p>' + tocName + '</p>').children().length > 0) {
+					tocName = $('<p>'+tocName+'</p>');
 					tocName.css({ 'font-size': '', 'background-color': 'transparent' });
 					tocName.find('[style*="font-size"]').css('font-size', '');
 					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+					tocName = tocName.html();
 				}
 
 				var $link = $('<li' + (sectionVisibleIndex==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
