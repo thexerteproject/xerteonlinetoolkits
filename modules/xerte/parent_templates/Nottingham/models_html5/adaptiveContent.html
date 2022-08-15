@@ -70,7 +70,7 @@
                 }
 
         if (classnames[i] == null) {
-          classnames[i] = obj.graph.classnames[i];
+          classnames[i] = x_GetTrackingTextFromHTML(obj.graph.classnames[i], obj.graph.classnames[i]);
         }
         if (classtitles[i] == null) {
           if (
@@ -78,7 +78,7 @@
             typeof obj.graph.classtitles[i] != "undefined" &&
             obj.graph.classtitles[i] != ""
           ) {
-            classtitles[i] = obj.graph.classtitles[i];
+            classtitles[i] = x_GetTrackingTextFromHTML(obj.graph.classtitles[i], obj.graph.classtitles[i]);
           } else {
             classtitles[i] = classnames[i];
           }
@@ -186,19 +186,24 @@
       1
     );
 
-    var avgAllLabelText = interaction.getAttribute("AvgLabel");
+    var avgAllLabelText = interaction.getAttribute("avgAllLabelText");
     if (avgAllLabelText == undefined) {
       avgAllLabelText = "Avg. of all attempts";
     }
 
-    var personalLabelText = interaction.getAttribute("PersonalLastLabel");
+    var personalLabelText = interaction.getAttribute("personalLabelText");
     if (personalLabelText == undefined) {
       personalLabelText = "Your last attempt";
     }
 
-    var personalAvgLabelText = interaction.getAttribute("PersonalAvgLabel");
+    var personalAvgLabelText = interaction.getAttribute("personalAvgLabelText");
     if (personalAvgLabelText == undefined) {
       personalAvgLabelText = "Avg. of your attempts";
+    }
+
+    var groupAverageLabelText = interaction.getAttribute("groupAverageLabelText");
+    if (groupAverageLabelText == undefined) {
+        groupAverageLabelText = "Group Average";
     }
 
     var datasets = [];
@@ -250,12 +255,23 @@
             r: {
               beginAtZero: true,
               max: 100,
-              fontSize: textSize - 10,
+              pointLabels: {
+                  font: {
+                      size: textSize
+                  },
+              },
+              ticks: {
+                  font: {
+                      size: textSize - 4
+                  },
+              }
             },
           },
           legend: {
             labels: {
-              fontSize: textSize,
+              font: {
+                  size: textSize
+              },
             },
           },
           responsive: true,
@@ -280,74 +296,113 @@
 
       let labelCounter = 0;
       let data = [];
-      datasets[0].data.forEach((val, key) => {
-        data.push({
-          x: classtitles[key],
-          y: Math.round(val, 2),
-          goals: [
-            {
-              name: "Group average",
-              value: datasets[2].data[key],
-              strokeWidth: 5,
-              strokeColor: "#775DD0",
-            },
-          ],
-        });
-        labelCounter += 1;
-      });
-      var options = {
-        series: [
-          {
-            data,
-          },
-        ],
-        chart: {
-          toolbar: {
-            show: false,
-          },
-          height: 350,
-          type: "bar",
-        },
-        plotOptions: {
-          bar: {
-            horizontal: true,
-            distributed: true,
-          },
-        },
-        colors: [
-          "#FF6384",
-          "#4BC0C0",
-          "#FFCD56",
-          "#C9CBCF",
-          "#36A2EB",
-          "#B284BE",
-        ],
-        dataLabels: {
-          formatter: function (val, opt) {
-            const goals =
-              opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
-                .goals;
+      if (datasets.length < 2)
+      {
+          var insufficientDataText = interaction.getAttribute("insufficientDataText");
+          if (insufficientDataText == undefined) {
+              insufficientDataText = "There is insufficient data for this graph";
+          }
+          $(ctx).parent().append('<p><em>' + insufficientDataText + '</em></p>');
+      }
+      else {
+          const avgDataSet = datasets.length - 1;
 
-            if (goals && goals.length) {
-              return `${val}%`;
-            }
-            return val;
-          },
-        },
-        legend: {
-          show: true,
-          showForSingleSeries: true,
-          customLegendItems: ["Group Average"],
-          markers: {
-            fillColors: ["#775DD0"],
-          },
-        },
-      };
-      var chart = new ApexCharts(
-        document.querySelector(`${ctx}`),
-        options
-      );
-      chart.render();
+          datasets[0].data.forEach((val, key) => {
+              data.push({
+                  x: classtitles[key],
+                  y: Math.round(val, 2),
+                  goals: [
+                      {
+                          name: groupAverageLabelText,
+                          value: datasets[avgDataSet].data[key],
+                          strokeWidth: 5,
+                          strokeColor: "#775DD0",
+                      },
+                  ],
+              });
+              labelCounter += 1;
+          });
+          let colors = [
+              "#FF6384",
+              "#4BC0C0",
+              "#FFCD56",
+              "#C9CBCF",
+              "#36A2EB",
+              "#B284BE",
+          ];
+          if (interaction.getAttribute('graphColorScale') != null && interaction.getAttribute('graphColorScale') != "") {
+              colors = interaction.getAttribute('graphColorScale').split(",");
+          }
+          var options = {
+              series: [
+                  {
+                      data,
+                  },
+              ],
+              chart: {
+                  toolbar: {
+                      show: false,
+                  },
+                  height: 350,
+                  type: "bar",
+              },
+              plotOptions: {
+                  bar: {
+                      horizontal: true,
+                      distributed: true,
+                  },
+              },
+              colors: colors,
+              dataLabels: {
+                  formatter: function (val, opt) {
+                      const goals =
+                          opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
+                              .goals;
+
+                      if (goals && goals.length) {
+                          return `${val}%`;
+                      }
+                      return val;
+                  },
+                  style: {
+                      fontSize: textSize + 'px',
+                  }
+              },
+              legend: {
+                  show: true,
+                  showForSingleSeries: true,
+                  customLegendItems: [groupAverageLabelText],
+                  markers: {
+                      fillColors: ["#775DD0"],
+                  },
+                  style: {
+                      fontSize: textSize + 'px',
+                  }
+              },
+              xaxis: {
+                  position: 'bottom',
+                  labels: {
+                      offsetY: 1,
+                      style: {
+                          fontSize: textSize + 'px',
+                      },
+                  },
+              },
+              yaxis: {
+                  labels: {
+                      style: {
+                          fontSize: textSize + 'px',
+                      },
+                  },
+              },
+          };
+          var chart = new ApexCharts(
+              document.querySelector(`${ctx}`),
+              options
+          );
+          chart.render();
+          $(ctx + ' svg text').css('font-size', textSize + 'px');
+      }
     }
   };
 
@@ -558,8 +613,8 @@
     secondHandler
   ) {
     var url;
-    var q = {};
-    if (type != "grouping") {
+    var q = {}
+    if (type != "grouping" && type != "opinionclasses") {
       url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
     } else {
       url = getUrl(xerteurl, xertelo);
@@ -795,18 +850,13 @@
 
             for (var i = 0; i < data.length; i++) {
               if (
-                data[i].context != undefined &&
-                data[i].context.extensions != undefined &&
-                data[i].context.extensions[
-                  "http://xerte.org.uk/learningObjectLevel"
-                ] != undefined &&
-                data[i].context.extensions[
-                  "http://xerte.org.uk/learningObjectLevel"
-                ] == "interactivity" &&
-                data[i].context.extensions[
-                  "http://xerte.org.uk/opinionClass"
-                ] != undefined &&
-                data[i].context.contextActivities != undefined
+                  data[i].context != undefined &&
+                  data[i].context.extensions != undefined &&
+                  data[i].context.extensions["http://xerte.org.uk/learningObjectLevel"] != undefined &&
+                  data[i].context.extensions["http://xerte.org.uk/learningObjectLevel"] == "interactivity" &&
+                  data[i].context.extensions["http://xerte.org.uk/opinionClass"] != undefined &&
+                  data[i].context.contextActivities != undefined &&
+                  data[i].object.id.indexOf(url + '/' + xertelabel) != -1
               ) {
                 statements.push(data[i]);
               }
@@ -999,6 +1049,7 @@
     };
 
     this.init = function () {
+      debugger;
       var loadFiles = true;
       for (var i = 0; i < x_pageInfo.length; i++) {
         if (
@@ -1060,7 +1111,7 @@
         nrParticipantsText = "The number of participants is {0}";
       }
 
-      if (interactionType != "grouping") {
+      if (interactionType != "grouping" && interactionType != "opinionclasses") {
         url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
       } else {
         url = getUrl(xerteurl, xertelo);
@@ -1334,6 +1385,7 @@
         }
       } else if (interactionType == "opinionclasses") {
         // check open question special options
+        debugger;
         var verb = "http://adlnet.gov/expapi/verbs/answered";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -1642,10 +1694,10 @@
         //.attr('preserveAspectRatio','xMinYMin')
         }
         if (showExplanation == "true" && Explanation != "") {
+          var textSize = Math.round(interaction.getAttribute("labelFontSize"));
+          if (textSize == null || textSize == 0) textSize = 12;
           div.append(
-            '<div class="panel legend" style="width: ' +
-              ExplanationPanelWidth +
-              ';">' +
+            '<div class="panel legend" style="width: ' + ExplanationPanelWidth + '; font-size: ' + textSize + 'px;">' +
               Explanation +
               "</div>"
           );
@@ -2008,6 +2060,9 @@
             "#36A2EB",
             "#B284BE",
           ];
+          if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "") {
+            backgroundColors = interaction.getAttribute("graphColorScale").split(",");
+          }
           let visitedGroups = {};
           for (let statement in statements) {
             let group =
@@ -2044,7 +2099,9 @@
               let singleQuestion = questionsGroup[index];
               labels.push(singleQuestion[0][0]);
               dataValues.push(singleQuestion[1]);
-              backgroundColor.push(backgroundColors[labelCounter]);
+              if (labelCounter < backgroundColors.length) {
+                backgroundColor.push(backgroundColors[labelCounter]);
+              }
             }
             labelCounter += 1;
           }
@@ -2126,6 +2183,18 @@
             });
             labelCounter += 1;
           }
+          let colors = [
+              "#FF6384",
+              "#4BC0C0",
+              "#FFCD56",
+              "#C9CBCF",
+              "#36A2EB",
+              "#B284BE",
+          ];
+          if (interaction.getAttribute('graphColorScale') != null && interaction.getAttribute('graphColorScale') != '')
+          {
+              colors = interaction.getAttribute('graphColorScale').split(",");
+          }
           var options = {
             series: [
               {
@@ -2145,14 +2214,7 @@
                 distributed: true,
               },
             },
-            colors: [
-              "#FF6384",
-              "#4BC0C0",
-              "#FFCD56",
-              "#C9CBCF",
-              "#36A2EB",
-              "#B284BE",
-            ],
+            colors: colors,
             dataLabels: {
               formatter: function (val, opt) {
                 const goals =
@@ -2261,10 +2323,11 @@
             "-graph'></svg></div>"
         );
         if (showExplanation == "true" && Explanation != "") {
-          div.append(
-            '<div class="panel legend" style="width: ' +
-              ExplanationPanelWidth +
-              ';" >' +
+            var textSize = Math.round(interaction.getAttribute("labelFontSize"));
+            if (textSize == null || textSize == 0) textSize = 12;
+
+            div.append(
+            '<div class="panel legend" style="width: ' + ExplanationPanelWidth + '; font-size: ' + textSize + 'px;" >' +
               Explanation +
               "</div>"
           );
@@ -2509,6 +2572,7 @@
       jsonData = jsonData.filter(function (x) {
         return x != undefined;
       });
+      debugger;
       div = $(
         "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
       );
@@ -2526,10 +2590,10 @@
         );
       }
       if (showExplanation == "true" && Explanation != "") {
+        var textSize = Math.round(interaction.getAttribute("labelFontSize"));
+        if (textSize == null || textSize == 0) textSize = 12;
         div.append(
-          '<div class="panel legend" style="width: ' +
-            ExplanationPanelWidth +
-            ';" >' +
+          '<div class="panel legend" style="width: ' + ExplanationPanelWidth + '; font-size: ' + textSize + 'px;" >' +
             Explanation +
             "</div>"
         );
@@ -3183,6 +3247,11 @@
           label: 'print'
         })
         .click(async function() {
+            $("#adaptiveContentMain").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
+            let filename = 'xerte-adaptive-content.pdf';
+            if (x_currentPageXML.getAttribute('name') != null) {
+                filename = x_currentPageXML.getAttribute('name').replace('\/ ', '_') + '.pdf';
+            }
             $(".panel-print").prepend(
                 `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
             );
@@ -3204,26 +3273,26 @@
             $(".graph-container .panel").addClass("panel-legend");
             $(".graph-container .panel").removeClass("panel");
             $(".panel-legend").css("padding-left", "0px");
-            $(".panel-legend").css("width", "90px");
+            //$(".panel-legend").css("width", "90px");
             $(".panel-legend").css("height", "90px");
 
 
             $("#adaptiveContent .panel").addClass("panel-print");
             $("#adaptiveContent .panel").removeClass("panel");
             $(".panel-print").css("width", "794px");
-            $(".panel-print").css("height", "210px");
+            //$(".panel-print").css("height", "210px");
             $(".panel-print").css("padding", "79.4px");
 
            /* $(".graph-container").css("float", "unset");*/
             $(".graph-container").css("width", "635px");
-            $(".graph-container").css("height", "365px");
+            //$(".graph-container").css("height", "365px");
             $(".graph-panel canvas").css("min-width", "400px");
             $(".graph-panel canvas").css("min-height", "270px");
             $(".graph-panel canvas").css("max-width", "535px");
             $(".graph-panel canvas").css("max-height", "365px");
             $(".graph-panel").css({
                 'width' : '535px',
-                'height' : '295px'
+                //'height' : '295px'
             });
             $(".graph-no-panel").css("width", "635px");
             $(".introduction").css("width", "635px");
@@ -3231,7 +3300,7 @@
             $("ul").css("font-size", "16px");
             await new Promise(resolve => setTimeout(resolve, 1000));
             let opt = {
-                filename: 'xerte-adaptive-content.pdf',
+                filename: filename,
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
               };
             html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
@@ -3247,19 +3316,26 @@
                 $("#adaptiveContent .panel-print").addClass("panel");
                 $("#adaptiveContent .panel").removeClass("panel-print");
 
-                $(".panel").css("width", "100%");
-                $(".panel").css("height", "fit-content");
+                $(".graph-panel canvas").css("min-width", "");
+                $(".graph-panel canvas").css("min-height", "");
+                $(".graph-panel canvas").css("max-width", "");
+                $(".graph-panel canvas").css("max-height", "");
+                $(".graph-panel").css("width", "").removeClass("graph-panel");
+                $(".graph-no-panel").css("width", "").removeClass("graph-no-panel");
 
-                $(".graph-container").css("width", "45%");
-                $(".graph-container").css("float", "graph");
+                $(".panel").css("width", "");
+                $(".panel").css("height", "");
 
-                $(".graph").css("width", "100%");
+                $(".graph-container").css("width", "");
+                $(".graph-container").css("float", "");
 
-                $(".introduction").css("width", "100%");
+                $(".graph").css("width", "");
 
-                $("p").css("font-size", "2.5vmin");
-                $("ul").css("font-size", "2.5vmin");
-                $(".panel .legend p").css("font-size", "1.75vmin");
+                $(".introduction").css("width", "");
+
+                $("p").css("font-size", "");
+                $("ul").css("font-size", "");
+                $(".panel .legend p").css("font-size", "");
 
                 $(".html2pdf__page-break").each(function (index){
                     $(this).css({'height' : canvasWidthHeights[index].parentHeight, 'padding' : "20px"})
@@ -3273,6 +3349,7 @@
                         $(this).find('.graph-container').find('.graph-no-panel').removeClass("graph-no-panel")
                     }
                 })
+                $("#print-overlay").remove();
             }).save();
         });
       }

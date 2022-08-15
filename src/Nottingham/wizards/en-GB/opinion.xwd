@@ -6,6 +6,7 @@
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
 	  resetBtnText="Reset"
+	  backBtnText="Back"
 	  />]]></opinion>
     </newNodes>
   </pageWizard>
@@ -24,6 +25,7 @@
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <resetBtnText label="Reset Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Reset" language="true" />
+    <backBtnText label="Back Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Back" language="true" />
 
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
