@@ -209,9 +209,9 @@ DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
     }
     if (role == "Teacher") {
         matchActor = '{"statement.actor.mbox" :  { "$in": [';
-        this.data.info.users.forEach(function (user,i){
+        this.info.users.forEach(function (user,i){
             matchActor += '"mailto:' + user.email + '"';
-            if (i < this.data.info.users.length - 1)
+            if (i < this.info.users.length - 1)
             {
                 matchActor += ', ';
             }
@@ -318,9 +318,9 @@ DashboardState.prototype.retrieveDataThroughAggregate = function(q, dashboard_st
     }
     if (role == "Teacher") {
         matchActor = '{"statement.actor.mbox" :  { "$in": [';
-        this.data.info.users.forEach(function (user,i){
+        this.info.users.forEach(function (user,i){
             matchActor += '"mailto:' + user.email + '"';
-            if (i < this.data.info.users.length - 1)
+            if (i < this.info.users.length - 1)
             {
                 matchActor += ', ';
             }
