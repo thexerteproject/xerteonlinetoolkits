@@ -120,6 +120,27 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             }
         }
     }
+
+    // Get plugins
+    $pluginfiles = scandir($template_path . "plugins/");
+    $plugins = array();
+    foreach($pluginfiles as $pluginfile) {
+        // get base name of plugin
+        $plugininfo = pathinfo($pluginfile);
+        if ($plugininfo['basename'] == '.' || $plugininfo['basename'] == '..') {
+            continue;
+        }
+        if (!isset($plugins[$plugininfo['filename']]))
+        {
+            $plugins[$plugininfo['filename']] = new stdClass();
+        }
+        if ($plugininfo['extension'] == 'js') {
+            $plugins[$plugininfo['filename']]->script = file_get_contents($template_path . "plugins/" . $pluginfile);
+        }
+        if ($plugininfo['extension'] == 'css') {
+            $plugins[$plugininfo['filename']]->css = file_get_contents($template_path . "plugins/" . $pluginfile);
+        }
+    }
     $rlo_object_file = "rloObject.htm";
     if ($engine == 'flash')
     {
@@ -240,6 +261,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
         $page_content = str_replace("%USE_URL%", "", $page_content);
+        $page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $page_content);
 
         //twittercard
         $xml = new XerteXMLInspector();
