@@ -98,6 +98,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             $xwd_file_url = $xwd_url . "data.xwd";
         }
     }
+    $xwd_file_url = $xwd_url . "wizards/getXwd.php";
+
     $module_url = "modules/" . $row_edit['template_framework'] . "/";
 
     $jqgridlangfile = "editor/js/vendor/jqgrid/js/i18n/grid.locale-en.js";

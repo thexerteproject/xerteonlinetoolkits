@@ -2610,6 +2610,10 @@ function x_changePageStep6() {
         builtPage.hide();
         builtPage.fadeIn();
 
+		// get short page type var
+		var pt = x_pageInfo[x_currentPage].type;
+		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+
 		if (!x_isMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
@@ -2635,10 +2639,6 @@ function x_changePageStep6() {
 		}
 
         x_setUpPage();
-
-        // get short page type var
-        var pt = x_pageInfo[x_currentPage].type;
-        if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
 
         // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
         if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
@@ -3019,13 +3019,24 @@ function x_pageLoaded() {
 
 	if (!x_isMenu()) {
 		x_setUpLightBox();
-		
+
+		// plugin files are loaded after page is loaded
+		if (plugins[pt] != undefined) {
+			if (plugins[pt].script != undefined && plugins[pt].script != "" && $("#x_pagePluginScript").length == 0) {
+				$("#x_page" + x_currentPage).append('<script id="x_pagePluginScript">' +  plugins[pt].script + '</script>');
+				// calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
+				if (typeof window[pt].initPlugin === "function") window[pt].initPlugin();
+			}
+			if (plugins[pt].css != undefined && plugins[pt].css != "" && $("#x_pagePluginCSS").length == 0) {
+				$("#x_page" + x_currentPage).append('<style type="text/css" id="x_pagePluginCSS">' +  plugins[pt].css + '</style>');
+			}
+		}
 		// script & style optional properties for each page added after page is otherwise set up
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
-		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
-			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "" && $("#x_pageCSS").length == 0) {
+			$("#x_page" + x_currentPage).append('<style type="text/css" id="x_pageCSS">' +  x_currentPageXML.getAttribute("styles") + '</style>');
 		}
 	}
 
