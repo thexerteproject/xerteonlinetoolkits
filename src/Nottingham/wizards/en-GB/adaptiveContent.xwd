@@ -54,7 +54,7 @@
         <label label="Tracking Label of source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false" />
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used" />
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on score and the score comes from an opinion class" />
-        <graph type="group" label="Graph" condition="interactionType!='open'" optional="true">
+        <graphgroup type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
           <graphType label="Graph type" type="combobox" conditionTrigger="true" condition="interactionType!='opinion'||opinionClass!=null" data="bar_answers,bar_marks,bar_comb_marks,hor_bar_comb_marks,pie_marks,line_own_marks,line_average_marks,polar_area_per_category" options="Bar graph for given answers,Bar graph for received marks,Bar graph for combined received marks,Horizontal bar graph for combined received marks,Pie chart for received marks,Line graph for own received marks,Line graph for average marks of others,Polar chart for subject overview" defaultValue="bar_answers" optional="true" />
           <opinionGraphType label="Graph type" type="combobox" conditionTrigger="true" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" data="radar,hor_bar_comb_marks_avg" options="Radar diagram,Horizontal bar graph with averages" defaultValue="radar" optional="true" />
@@ -67,7 +67,7 @@
           <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
           <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" condition="interactionType!='opinion'||opinionClass!=null" tooltip="The number of bars in a bargraph, or the number of points in a line graph" />
           <graphColorScale label="Color scale" type="textInput" wysiwyg="false" defaultValue="#FF6384,#4BC0C0,#FFCD56,#C9CBCF,#36A2EB,#B284BE" optional="true" condition="graphType=='polar_area_per_category'||opinionGraphType=='hor_bar_comb_marks_avg'" tooltip="The color scale for the bars in a bargraph, or the color scale for the points in a polar graph" />
-        </graph>
+        </graphgroup>
         <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'||interactionType=='opinionclasses'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based" />
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true" />
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true" />
