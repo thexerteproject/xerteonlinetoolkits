@@ -1,5 +1,8 @@
 /* opinion.html */
 
+#canvas-container {
+  margin: 0 auto;
+}
 
     .qPanel {
     overflow:	auto;
