@@ -36,7 +36,7 @@ include "../url_library.php";
 include "../user_library.php";
 include "properties_library.php";
 
-if (!isset($_SESSION['toolkits_logon_ide']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
