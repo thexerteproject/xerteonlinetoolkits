@@ -325,7 +325,7 @@ if ($tsugi_enabled || $pedit_enabled) {
                     unset($errors);
                 } else
                 {
-                    if (in_array($xerte_toolkits_site->authentication_method, ['Saml2', 'OAuth2'], true))
+                    if (in_array($xerte_toolkits_site->authentication_method, array('Saml2', 'OAuth2'), true))
                     {
                         if (isset($_SESSION['toolkits_logon_username']))
                         {

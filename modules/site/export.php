@@ -110,10 +110,10 @@ array_push($delete_file_array, $dir_path . "favicon.ico");
 */
 function process_logos($LO_logo, $theme_path, $template_path) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
-    $extensions = ['svg',  'png', 'jpg', 'gif'];
+    $extensions = array('svg',  'png', 'jpg', 'gif');
     $logoUrls = new stdClass;
 
-    foreach ([['L', '_left'], ['R', '']] as $suffix) {
+    foreach (array(array('L', '_left'), array('R', '')) as $suffix) {
         $path = get_logo_path($suffix, $LO_logo, $theme_path, $template_path);
         if ($path) {
             $logoUrls->{'logo_' . $suffix[0]} = $path; // . '" alt="" />' , $page_content);
@@ -127,7 +127,7 @@ function process_logos($LO_logo, $theme_path, $template_path) {
 
 function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
-    $extensions = ['svg',  'png', 'jpg', 'gif'];
+    $extensions = array('svg',  'png', 'jpg', 'gif');
 
     // First the author logo
     $logo_path = trim($LO_logo->{$suffix[0] . '_path'});
