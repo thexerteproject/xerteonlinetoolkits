@@ -176,7 +176,7 @@ if ($full_access && isset($_REQUEST['list']))
         $template_dir = $xerte_toolkits_site->users_file_area_full . $templates[$i]['template_id'] . "-" . $templates[$i]['owner_username'] . "-" . $templates[$i]['template_type'] . "/";
         $dataFilename = $template_dir . "data.xml";
         $decoder = new XerteProjectDecoder($dataFilename);
-        $template->data = $decoder->detailedTemplateDecode($templates[$i]['template_id'], false);
+        $template->data = $decoder->detailedTemplateDecode($templates[$i]['template_id'], $templates[$i]);
         $tmptemplates[] = $template;
     }
     $response->count = count($tmptemplates);
