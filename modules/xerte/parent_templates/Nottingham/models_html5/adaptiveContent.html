@@ -1135,7 +1135,7 @@
           "</div>";
       }
       let adviceHeader = "";
-      if (interaction.children.length !== 0 && !adaptiveContent.dashboardMode) {
+      if (interaction.children.length !== 0 && adaptiveContent.dashboardMode !== 'true') {
         adviceHeader = `<h4>${interaction.getAttribute("AdviceText")}</h4>`;
       }
 
@@ -1170,10 +1170,7 @@
           '<div class="score">' +
           '<div class="stats-div"><ul class="stats"></ul></div>' +
           specificationDiv +
-          '<div class="advice">' +
-          adviceHeader +
-          '<div class="message"></div>' +
-          "</div>" +
+
           "</div>" +
           "</div>";
       }
@@ -1182,14 +1179,18 @@
       if (summaryDiv == '') {
           graphContainer = '<div class="graph-container graph-container-wide"></div>';
         }
-
+      let adviceDiv = '<div class="advice">' +
+          adviceHeader +
+          '<div class="message"></div>' +
+          "</div>";
       div.html(
         `<h2><p>${name}</p></h2>` +
           `<div class='introduction'>${introductionText}</div>` +
           '<div class="summary-container">' +
           summaryDiv +
           graphContainer +
-          "</div>"
+          "</div>" +
+          adviceDiv
       );
       //}
       //else
@@ -1799,14 +1800,18 @@
           let ldPassing = [];
           let visitedGroups = {};
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              try {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              } catch (e) {
+                  //console.log(e);
+              }
           }
           const sortObject = (obj) =>
             Object.keys(obj)
@@ -3254,6 +3259,7 @@
             }
             $(".panel-print").prepend(
                 `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+
             );
           /*  $("#adaptiveContent").addClass("hide-screen");
             $(".hide-screen").css("background-color", "black");
