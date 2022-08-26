@@ -27,9 +27,9 @@ require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
-    $extensions = ['svg',  'png', 'jpg', 'gif'];
+    $extensions = array('svg',  'png', 'jpg', 'gif');
 
-    foreach ([['L', '_left'], ['R', '']] as $suffix) {
+    foreach (array(array('L', '_left'), array('R', '')) as $suffix) {
         $path = get_logo_path($suffix, $LO_logo, $theme_path, $template_path);
         if ($path) {
             $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="' . $path . '" alt="" />' , $page_content);
@@ -44,7 +44,7 @@ function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
 
 function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
-    $extensions = ['svg',  'png', 'jpg', 'gif'];
+    $extensions = array('svg',  'png', 'jpg', 'gif');
 
     // First the author logo
     $logo_path = trim($LO_logo->{$suffix[0] . '_path'});
