@@ -1499,8 +1499,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     success: result.success,
                                     completion: true,
                                     extensions: {
-                                        "http://xerte.org.uk/result/text": this
-                                            .learnerAnswers
+                                        "http://xerte.org.uk/result/text": this.learnerAnswers
                                     }
                                 };
                                 statement.object.definition = {

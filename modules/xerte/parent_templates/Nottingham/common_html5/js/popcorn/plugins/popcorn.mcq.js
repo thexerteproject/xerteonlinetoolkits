@@ -504,9 +504,9 @@ optional: feedback page synch play enable
 					correctFeedback.push(v.getAttribute("correct") == "true" ? "Correct" : "Incorrect");
 				});
 				var label=ia_nr+"";
-				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+				if (options.name != "")
 				{
-					label = x_currentPageXML.getAttribute("trackinglabel");
+					label = x_GetTrackingTextFromHTML(options.name, ia_nr + "");
 				}
 				else
 				{

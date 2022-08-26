@@ -342,9 +342,9 @@
 				}
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
 					correctAnswer = answerData[interactionNumber][0];
-					correctAnswer = correctAnswer + "-->" + correctAnswer;
+					correctAnswer = correctAnswer + "-->" + interactionNumber;
 					correctAnswers.push(correctAnswer);
-					correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
+					correctOption = {source: answerData[interactionNumber][0], target: interactionNumber}
 					correctOptions.push(correctOption);
 				}
                 XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
