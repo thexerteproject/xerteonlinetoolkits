@@ -706,6 +706,27 @@ function statistics_prepare($template_id, $force=false)
     return $info;
 }
 
+function folder_size($dir_path)
+{
+    $quota = 0;
+    $d = opendir($dir_path);
+
+    while ($f = readdir($d)) {
+        $full = $dir_path . "/" . $f;
+        if (!is_dir($full)) {
+            $quota += filesize($full);
+        }
+        else
+        {
+            if ($f != "." && $f != "..") {
+                $quota += folder_size($full);
+            }
+        }
+    }
+    closedir($d);
+    return $quota;
+}
+
 function media_quota_info($template_id)
 {
     global $xerte_toolkits_site;
@@ -744,14 +765,7 @@ function media_quota_info($template_id)
 
         if (file_exists($dir_path))
         {
-            $d = opendir($dir_path);
-
-            while ($f = readdir($d)) {
-                $full = $dir_path . "/" . $f;
-                if (!is_dir($full)) {
-                    $quota += filesize($full);
-                }
-            }
+            $quota += folder_size($dir_path);
             $info =  PROJECT_INFO_MEDIA . ": ";
             $info .=  (round($quota/10000, 0)/100) . " MB<br/>";
             return $info;
