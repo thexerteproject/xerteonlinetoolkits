@@ -159,15 +159,24 @@
 
 if (isset($_GET['tsugisession']))
 {
-    $tsugi_disable_xerte_session=true;
-    require_once ("config.php");
-    $contents = "";
+    $tsugi_disable_xerte_session = true;
+    require_once("config.php");
+    if ($_GET['tsugisession'] == "1") {
+        $contents = "";
 
-    _debug("TSUGI session");
-    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
-        require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+        _debug("TSUGI session");
+        if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+            require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+        }
+        session_start();
     }
-    session_start();
+    else
+    {
+        ini_set('session.use_cookies', 0);
+        ini_set('session.use_only_cookies', 0);
+        ini_set('session.use_trans_sid', 1);
+        session_start();
+    }
 }
 else
 {
@@ -282,7 +291,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
 
         $pos = strpos($_SERVER["REQUEST_URI"], "xapi_proxy.php");
 	    // Skip the possible php session paramaters
-        $slashpos = strpos($_SERVER["REQUEST_URI"], "tsugisession=1");
+        $slashpos = strpos($_SERVER["REQUEST_URI"], "tsugisession=");
 
         if ($slashpos !== false)
         {

@@ -121,4 +121,3 @@ if(is_numeric($id))
     }
 	require("play.php");
 }
-?>
