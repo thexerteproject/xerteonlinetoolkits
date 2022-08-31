@@ -72,7 +72,7 @@
 			}
 			
 			var width = $("#mainPanel").width(),
-				height = $("#mainPanel").height(),
+				height = $("#mainPanel").height() - $("#qNo").height() - $("#feedback").height() - $("#buttonHolder").height(),
 				textSize;
 			
 			if(width > height) {
@@ -937,19 +937,43 @@
 				.button({
 					label: 'Print'
 				})
-				.click(function() {
-            $("#mainPanel").prepend(
-                `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
-            );
-            $("#mainPanel #buttonHolder").hide();
-            let opt = {
-                filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-              };
-            html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
-              $("#print-title").remove();
-              $("#buttonHolder").show();
-            }).save();
+				.click(async function() {
+					$("#pageContents").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
+					$("#mainPanel").prepend(
+							`<div id="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+					);
+					startHeight = $("#mainPanel")[0].style.height;
+					startWidth = $("#mainPanel")[0].style.width;
+					startPadding = $("#mainPanel")[0].style.padding;
+					canvasStartHeight = $("#canvas-container")[0].style.height;
+					canvasStartWidth = $("#canvas-container")[0].style.width;
+					$("#mainPanel #buttonHolder").hide();
+					$("#mainPanel").css("width", "794px");
+					$("#mainPanel").css("height", "500px");
+					$("#mainPanel").css("padding", "79.4px");
+					$("#canvas-container").css("width", "794px");
+					$("#canvas-container").css("height", "450px");
+					$("p").css("font-size", "16px");
+					$("h3").css("font-size", "18px");
+
+					await new Promise(resolve => setTimeout(resolve, 1000));
+					let opt = {
+						filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
+						html2canvas: { scale: 2 },
+						jsPDF: {unit: 'in', format: 'a4', orientation: 'portrait'}
+					};
+					html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
+						$("#mainPanel").css("width", "");
+						$("#mainPanel").css("height", "");
+						$("#mainPanel").css("padding", "");
+						$("#canvas-container").css("width", canvasStartWidth);
+						$("#canvas-container").css("height", canvasStartHeight);
+						$("#print-title").remove();
+						$("#print-overlay").remove();
+						$("#buttonHolder").show();
+						$("p").css("font-size", "");
+						$("h3").css("font-size", "");
+					}).save();
 				});
 	        $("#printBtn").hide();
 			this.startQuestions();
