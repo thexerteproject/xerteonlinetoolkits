@@ -295,7 +295,7 @@
 					
 					// audio
 					if (fileExt == "mp3") {
-						$media = $('<div class="navMedia audio"></div>');
+						$media = $('<div id="navAudio"+i class="navMedia audio"></div>');
 						
 						$media.data({
 							source: this.getAttribute("url"),

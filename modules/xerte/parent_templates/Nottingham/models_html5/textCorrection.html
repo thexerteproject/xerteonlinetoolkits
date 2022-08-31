@@ -199,8 +199,12 @@
 						if ($attempts.length > 0) {
 							$attempts.html('<p>' + attemptLabel + ": " + $pageContents.data('triesLeft') + '</p>');
 						}
-						
-                        XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",$pageContents.data('answer'), FurtherClarification);
+                        var label=x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), "");
+                        if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+                        {
+                            label = x_currentPageXML.getAttribute("trackinglabel");
+                        }
+                        XTEnterInteraction(x_currentPage, 0, "text", label, "",$pageContents.data('answer'), FurtherClarification);
 						
 						var $correctOrNot = $("#correctOrNot");
                         $correctOrNot.html("");

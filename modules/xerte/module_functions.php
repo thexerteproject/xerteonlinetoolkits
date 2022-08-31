@@ -65,7 +65,7 @@ function display_property_engines($change,$msgtype){
 }
 
 function process_logos($LO_icon_path, $theme_path, $template_path, $page_content) {
-    $extensions = ['svg',  'png', 'jpg', 'gif'];
+    $extensions = array('svg',  'png', 'jpg', 'gif');
 
     // First the author logo
     if (strlen(trim($LO_icon_path)) > 0) {

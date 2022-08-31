@@ -50,7 +50,6 @@ class XertePage
         return $ret;
     }
 
-
     public function getImageSequenceFiles()
     {
         if ($this->type != "imageSequence")
@@ -107,18 +106,18 @@ class XertePage
 class XerteXMLInspector
 {
 
-    private $fname;
-    private $xmlstr;
-    private $xml;
-    private $name;
-    private $models;
-    private $mediaIsUsed;
-    private $language;
-    private $theme;
-    private $glossary;
-    private $resultpageEnabled;
-    private $hasResultPage;
-    private $pages;
+    protected $fname;
+    protected $xmlstr;
+    protected $xml;
+    protected $name;
+    protected $models;
+    protected $mediaIsUsed;
+    protected $language;
+    protected $theme;
+    protected $glossary;
+    protected $resultpageEnabled;
+    protected $hasResultPage;
+    protected $pages;
 
     private function addModel($model)
     {
@@ -233,28 +232,29 @@ class XerteXMLInspector
 
     private function recognise_template($check) {
         $probably = "decision";
-        $probably_weight = $this->test_unrecognised_template(["name", "displayMode", "newBtnLabel", "backBtn", "fwdBtn", "emailBtn", "printBtn", "viewThisBtn", "closeBtn", "moreInfoString", "lessInfoString", "helpString", "resultString", "overviewString", "posAnswerString", "fromRangeString", "viewAllString", "errorString", "sliderError", "noQ", "noA", "resultEndString", "theme"], $check);
+        $probably_weight = $this->test_unrecognised_template(array("name", "displayMode", "newBtnLabel", "backBtn", "fwdBtn", "emailBtn", "printBtn", "viewThisBtn", "closeBtn", "moreInfoString", "lessInfoString", "helpString", "resultString", "overviewString", "posAnswerString", "fromRangeString", "viewAllString", "errorString", "sliderError", "noQ", "noA", "resultEndString", "theme"), $check);
 
-        $new_weight = $this->test_unrecognised_template(["name", "language", "navigation", "textSize", "theme", "displayMode", "responsive"], $check);
+        $new_weight = $this->test_unrecognised_template(array("name", "language", "navigation", "textSize", "theme", "displayMode", "responsive"), $check);
         if ($new_weight > $probably_weight) {
             $probably = "Nottingham";
             $probably_weight = $new_weight;
         }
     
-        $new_weight = $this->test_unrecognised_template(["language", "name", "theme"], $check);
+        $new_weight = $this->test_unrecognised_template(array("language", "name", "theme"), $check);
         if ($new_weight > $probably_weight) {
             $probably = "site";
         }
     
         return $probably;
     }
-    
+
     private function test_unrecognised_template($test_array, $check) {
         $count = 0;
         foreach($test_array as $t)
             if ( $check[$t] ) $count++;
         return ($count / count($test_array)) * 100;
     }
+
 
     public function loadTemplateXML($name)
     {

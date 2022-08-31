@@ -372,7 +372,7 @@
 							$pageContents.data('radioButtonQuestions', radioButtonQuestions);
 						}
 
-                        name = $thisQ.getAttribute("prompt");
+                        name = x_GetTrackingTextFromHTML($thisQ.getAttribute("prompt"), "");
 
                         if ($thisQ.getAttribute("name")) {
                             name = $thisQ.getAttribute("name");
@@ -439,7 +439,7 @@
                         $("#slider" + currentQuestion).css("width", 100-cellWidth + 2 +"%");
                         $("#slider" + currentQuestion).css("margin-left", cellWidth/2 - 1 + "%");
 
-                        name = $thisQ.getAttribute("prompt");
+						name = x_GetTrackingTextFromHTML($thisQ.getAttribute("prompt"), "");
 
                         if ($thisQ.getAttribute("name"))
                         {
