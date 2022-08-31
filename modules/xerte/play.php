@@ -357,6 +357,14 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 {
                     $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
                 }
+                if (isset($xerte_toolkits_site->lti_context_id))
+                {
+                    $tracking .= "   var lti_context_id = '" . $xerte_toolkits_site->lti_context_id . "';\n";
+                }
+                if (isset($xerte_toolkits_site->lti_context_name))
+                {
+                    $tracking .= "   var lti_context_name = '" . $xerte_toolkits_site->lti_context_name . "';\n";
+                }
             }
             $tracking .= "</script>\n";
             _debug("Tracking script: " . $tracking);

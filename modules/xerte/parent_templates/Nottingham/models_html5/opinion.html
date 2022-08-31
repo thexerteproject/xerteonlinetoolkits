@@ -72,19 +72,19 @@
 			}
 			
 			var width = $("#mainPanel").width(),
-				height = $("#mainPanel").height(),
+				height = $("#mainPanel").height() - $("#qNo").height() - $("#feedback").height() - $("#buttonHolder").height(),
 				textSize;
 			
 			if(width > height) {
-				$("#diagram")
+				$("#canvas-container")
 					.width(height*0.90)
 					.height(height*0.90);
-				textSize = (width - height) / 10;
+				textSize = (height - width) / 10;
 			}
 			else {
-				$("#diagram")
-					.width(width*0.90)
-					.height(width*0.90);
+				$("#canvas-container")
+					.width(width)
+					.height(width);
 				textSize = (height - width) / 10;
 			}
 			if (textSize > 20) {
@@ -129,7 +129,7 @@
             }
 			$pageContents.data('showfeedback', showfeedback);
 
-			$("#diagram").hide();
+			$("#canvas-container").hide();
             $("#qHolder").show();
 			$("#checkBtn")
 				.show()
@@ -398,7 +398,6 @@
 						{
 							selected = max * answers[currentQuestion]/100;
 						}
-						debugger;
 
 						$rangeHolder.html('<form id="form' + currentQuestion + '"> <input id="slider' + currentQuestion + '" aria-label="slider' + currentQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
 
@@ -574,8 +573,13 @@
             // Last question answered - show results
             var JSONGraph = this.createGraphObject();
             if (x_currentPageXML.getAttribute("diagram") !== "true"){
-                this.createDiagram(JSONGraph);
-				this.sizeChanged();
+            if (x_currentPageXML.getAttribute("diagram") !== "true"){
+              $("#canvas-container").show();
+            } else {
+              $('#canvas-container').hide();
+            }
+            this.sizeChanged();
+            this.createDiagram(JSONGraph);
 			}
 
             $("#qNo").html($pageContents.data("onCompletionText"));
@@ -596,11 +600,6 @@
 			}
             $("#questionAudio").empty();
 
-			if (x_currentPageXML.getAttribute("diagram") !== "true"){
-				$("#diagram").show();
-			} else {
-				$('#diagram').hide();
-			}
             $("#qHolder").hide();
             $("#checkBtn").hide();
 
@@ -685,6 +684,14 @@
                     }]
                 },
 				options: {
+          layout: {
+              padding: {
+                  left: 10,
+                  right: 10,
+                  top: 10,
+                  bottom: 10
+                }
+            },
 					scale: {
 						ticks: {
 							suggestedMin: 0,
@@ -702,7 +709,7 @@
 						display: x_currentPageXML.getAttribute("key") == 'false' ? false : true,
 					},
 					responsive: true,
-					maintainAspectRatio: true
+					maintainAspectRatio: false
 				}
             });
 		};
@@ -710,7 +717,6 @@
 		this.init = function()
 		{
 
-			debugger;
 			$("#printBtn").hide();
 
 			$pageContents = $('#pageContents');
@@ -840,7 +846,6 @@
 					label:backBtnText
 				})
 				.click(function(){
-					debugger;
 					let pageSize = $pageContents.data('pageSize');
 					let currentQuestion = $pageContents.data('currentQuestion');
 					if (currentQuestion >= pageSize)
@@ -933,23 +938,53 @@
 				}
 			});
 
+        let startHeight;
+        let startWidth;
+        let startPadding;
+        let canvasStartHeight;
+        let canvasStartWidth;
+        let canvasStartPadding;
     	    $("#printBtn")
 				.button({
 					label: 'Print'
 				})
-				.click(function() {
-            $("#mainPanel").prepend(
-                `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
-            );
-            $("#mainPanel #buttonHolder").hide();
-            let opt = {
-                filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-              };
-            html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
-              $("#print-title").remove();
-              $("#buttonHolder").show();
-            }).save();
+				.click(async function() {
+					$("#pageContents").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
+					$("#mainPanel").prepend(
+							`<div id="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+					);
+					startHeight = $("#mainPanel")[0].style.height;
+					startWidth = $("#mainPanel")[0].style.width;
+					startPadding = $("#mainPanel")[0].style.padding;
+					canvasStartHeight = $("#canvas-container")[0].style.height;
+					canvasStartWidth = $("#canvas-container")[0].style.width;
+					$("#mainPanel #buttonHolder").hide();
+					$("#mainPanel").css("width", "794px");
+					$("#mainPanel").css("height", "500px");
+					$("#mainPanel").css("padding", "79.4px");
+					$("#canvas-container").css("width", "794px");
+					$("#canvas-container").css("height", "450px");
+					$("p").css("font-size", "16px");
+					$("h3").css("font-size", "18px");
+
+					await new Promise(resolve => setTimeout(resolve, 1000));
+					let opt = {
+						filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
+						html2canvas: { scale: 2 },
+						jsPDF: {unit: 'in', format: 'a4', orientation: 'portrait'}
+					};
+					html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
+						$("#mainPanel").css("width", "");
+						$("#mainPanel").css("height", "");
+						$("#mainPanel").css("padding", "");
+						$("#canvas-container").css("width", canvasStartWidth);
+						$("#canvas-container").css("height", canvasStartHeight);
+						$("#print-title").remove();
+						$("#print-overlay").remove();
+						$("#buttonHolder").show();
+						$("p").css("font-size", "");
+						$("h3").css("font-size", "");
+					}).save();
 				});
 	        $("#printBtn").hide();
 			this.startQuestions();
@@ -967,7 +1002,7 @@
 			// Reset feedbak and diagram
 
 			$("#feedback").remove();
-			$("#diagram").hide();
+			$("#canvas-container").hide();
 
 			$("#mainPanel fieldset").prepend(
 					"<div id=\"feedback\" aria-live=\"polite\"></div>\n"
@@ -997,7 +1032,9 @@
 				<fieldset class="noStyle">
 
 					<div id="feedback" aria-live="polite"></div>
-					<canvas id="diagram" aria-live="polite"></canvas>
+          <div id="canvas-container">
+            <canvas id="diagram" aria-live="polite"></canvas>
+          </div>
 
 					<div id="wrapper">
 						<div id="qHolder"></div>

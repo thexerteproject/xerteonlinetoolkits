@@ -608,6 +608,7 @@
     retrieveAll,
     interactionIndex,
     group,
+    filter_context_id,
     fullWidth,
     handler,
     secondHandler
@@ -663,6 +664,9 @@
     q["verb"] = verb;
     if (group != "") {
       q["group"] = group;
+    }
+    if (filter_context_id) {
+      q["lti_context_id"] = (typeof lti_context_id != "undefined" ? lti_context_id : "");
     }
     if (startDate != "") {
       var date = moment(startDate).toISOString();
@@ -946,6 +950,7 @@
     var url = "";
     var divUrl = "";
     var group = "";
+    var filter_context_id = false;
     var dashboardMode = "false";
 
     this.loadJS = function () {
@@ -1242,6 +1247,7 @@
             hasToRetrieveAll(interaction),
             interactionIndex,
             group,
+            filter_context_id,
             fullWidth,
             this.drawScore
           );
@@ -1269,6 +1275,7 @@
             hasToRetrieveAll(interaction),
             interactionIndex,
             group,
+            filter_context_id,
             fullWidth,
             this.drawAnswer
           );
@@ -1296,6 +1303,7 @@
             hasToRetrieveAll(interaction),
             interactionIndex,
             group,
+            filter_context_id,
             fullWidth,
             this.drawOpinion
           );
@@ -1324,6 +1332,7 @@
             hasToRetrieveAll(interaction),
             interactionIndex,
             group,
+            filter_context_id,
             fullWidth,
             this.drawOpen
           );
@@ -1352,6 +1361,7 @@
             hasToRetrieveAll(interaction),
             interactionIndex,
             group,
+            filter_context_id,
             fullWidth,
             this.drawGroupedScore
           );
@@ -1380,6 +1390,7 @@
             hasToRetrieveAll(interaction),
             interactionIndex,
             group,
+            filter_context_id,
             fullWidth,
             this.drawGroupedScores
           );
@@ -1409,6 +1420,7 @@
             hasToRetrieveAll(interaction),
             interactionIndex,
             group,
+            filter_context_id,
             fullWidth,
             this.drawGroupedScores
           );
@@ -2321,11 +2333,10 @@
         div = $(
           "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
         );
-
         div.append(
-          "<div class='x_floatLeft'><svg id='" +
-            escapeUrl(url, type, interactionIndex) +
-            "-graph'></svg></div>"
+          "<div class='graph'><svg id='" +
+          escapeUrl(url, type, interactionIndex) +
+          "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
         );
         if (showExplanation == "true" && Explanation != "") {
             var textSize = Math.round(interaction.getAttribute("labelFontSize"));
@@ -2338,8 +2349,33 @@
           );
         }
         if (interaction.getAttribute("graphType") == "bar_answers") {
+          // Check if data has responses with multiple answers
+          var multipleAnswers = false;
+          data.forEach(function(s){
+            if (s.result.response.indexOf('[,]') >= 0) {
+              multipleAnswers = true;
+            }
+          });
+          if (multipleAnswers)
+          {
+            // Create pseudo dataset with statement for each answer
+            var dataset = [];
+            data.forEach(function(s){
+              const answers = s.result.response.split('[,]');
+              answers.forEach(function(a){
+                // clone statement
+                var statement = JSON.parse(JSON.stringify(s));
+                statement.result.response = a;
+                dataset.push(statement);
+              });
+            });
+          }
           var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
+          if (!multipleAnswers) {
+            dash.addStatements(data);
+          } else {
+            dash.addStatements(dataset);
+          }
           var xAxisLabelBarAnswers = interaction.getAttribute(
             "xAxisLabelBarAnswers"
           );
@@ -3009,6 +3045,7 @@
             group = "";
           }
         }
+        filter_context_id = (interaction.getAttribute("contextFilter") == 'true'? true : false);
         promises.push(
           new Promise(function (resolve, reject) {
             var verb = "http://adlnet.gov/expapi/verbs/scored";
@@ -3028,6 +3065,7 @@
               hasToRetrieveAll(interaction),
               interactionIndex,
               group,
+              filter_context_id,
               false,
               function (
                 data,
@@ -3255,12 +3293,32 @@
             $("#adaptiveContentMain").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
             let filename = 'xerte-adaptive-content.pdf';
             if (x_currentPageXML.getAttribute('name') != null) {
-                filename = x_currentPageXML.getAttribute('name').replace('\/ ', '_') + '.pdf';
+                filename = $("<div>").html(x_currentPageXML.getAttribute('name')).text().replace('\/ ', '_') + '.pdf';
             }
-            $(".panel-print").prepend(
-                `<div class="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
-
-            );
+            if (x_params['ic'] != null) {
+                logoimg = x_params['ic'];
+                // Determine the type of image and set the correct header
+                if (logoimg.indexOf('.png') > -1) {
+                    logoImgType = 'PNG';
+                } else if (logoimg.indexOf('.jpg') > -1) {
+                    logoImgType = 'JPEG';
+                } else if (logoimg.indexOf('.gif') > -1) {
+                    logoImgType = 'GIF';
+                } else if (logoimg.indexOf('.svg') > -1) {
+                    logoImgType = 'SVG';
+                }
+                else {
+                    logoImgType = '';
+                }
+                logoImg = new Image();
+                logoImg.src = logoimg;
+                //logo = '<img class="print-logo" src="' + logoimg + '" style="float:right; height: 20px; margin-top: -40px; padding-right:80px; margin-right:80px;">';
+            }
+            else
+            {
+                logoImg = '';
+            }
+            let pageTitle = $("<div>").html(x_currentPageXML.getAttribute('name')).text();
           /*  $("#adaptiveContent").addClass("hide-screen");
             $(".hide-screen").css("background-color", "black");
             $(".hide-screen").css("z-index", "999");*/
@@ -3288,6 +3346,14 @@
             $(".panel-print").css("width", "794px");
             //$(".panel-print").css("height", "210px");
             $(".panel-print").css("padding", "79.4px");
+            //$(".panel-print").prepend(
+            //    `<div class="print-title" style="font-size: 20px"><div style="width:500px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>` + logo + `</div>`
+            //);
+
+            $("#adaptiveContent .advice").addClass("advice-print");
+            $("#adaptiveContent .advice").removeClass("advice");
+            $(".advice-print").css("width", "635px");
+
 
            /* $(".graph-container").css("float", "unset");*/
             $(".graph-container").css("width", "635px");
@@ -3302,12 +3368,21 @@
             });
             $(".graph-no-panel").css("width", "635px");
             $(".introduction").css("width", "635px");
-            $("p").css("font-size", "16px");
-            $("ul").css("font-size", "16px");
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            $("p").css("font-size", "14px");
+            $("ul").css("font-size", "14px");
+            adaptiveContent.sizeChanged();
+            debugger;
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
             let opt = {
                 filename: filename,
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                margin: [10, 0, 10, 0],
+                pagebreak: {
+                    mode: ['css', 'legacy'],
+                    avoid: [ 'p', 'li', 'table', 'thead', 'tfoot', 'tbody', 'tr', 'th', 'td', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+                },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
               };
             html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
 
@@ -3318,9 +3393,16 @@
 
                 $("#print-title").remove();
               /*  $("#adaptiveContent .panel").css({'padding' : "0", 'padding-bottom' : "20px"});*/
-                $(".panel-print").css("padding", "0px");
+                $(".panel-print").css("padding", "");
                 $("#adaptiveContent .panel-print").addClass("panel");
                 $("#adaptiveContent .panel").removeClass("panel-print");
+                $(".panel").css("width", "");
+                $(".panel").css("height", "");
+
+                $("#adaptiveContent .advice-print").addClass("advice");
+                $("#adaptiveContent .advice-print").removeClass("advice-print");
+                $(".advice").css("width", "");
+                $(".advice").css("padding", "");
 
                 $(".graph-panel canvas").css("min-width", "");
                 $(".graph-panel canvas").css("min-height", "");
@@ -3328,9 +3410,6 @@
                 $(".graph-panel canvas").css("max-height", "");
                 $(".graph-panel").css("width", "").removeClass("graph-panel");
                 $(".graph-no-panel").css("width", "").removeClass("graph-no-panel");
-
-                $(".panel").css("width", "");
-                $(".panel").css("height", "");
 
                 $(".graph-container").css("width", "");
                 $(".graph-container").css("float", "");
@@ -3356,6 +3435,37 @@
                     }
                 })
                 $("#print-overlay").remove();
+                $(".print-title").remove();
+
+                // Add the page header and footer
+                const totalPages = pdf.internal.getNumberOfPages();
+
+                for (let i = 1; i <= totalPages; i++) {
+                    // set footer to every page
+                    pdf.setPage(i);
+                    // set footer font
+                    pdf.setFontSize(12);  //12pt
+
+                    // Set title in the header
+                    pdf.text(21, 14, pageTitle);
+                    // Add Logo to the right of the header
+                    if (logoImg != '')
+                    {
+                        const imgWidth = logoImg.naturalWidth;
+                        const imgHeight = logoImg.naturalHeight;
+                        const imgRatio = imgWidth / imgHeight;
+                        const logoHeight = 5.3;  //mm = 20px
+                        const logoWidth = logoHeight * imgRatio;
+                        pdf.addImage(logoImg, logoImgType, pdf.internal.pageSize.getWidth() - logoWidth - 21, 10, logoWidth, logoHeight);
+                    }
+                    // Add the footer text
+                    // this example gets internal pageSize just as an example to locate your text near the borders in case you want to do something like "Page 3 out of 4"
+                    const pagenr = x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "") + " " + (i) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "-") + " " + totalPages
+                    const textwidth = pdf.getTextWidth(pagenr);
+                    pdf.setFontSize(10);  //10pt
+                    pdf.text(pdf.internal.pageSize.getWidth() - textwidth - 21, pdf.internal.pageSize.getHeight() - 7, pagenr);
+
+                }
             }).save();
         });
       }
@@ -3413,6 +3523,7 @@
             group = "";
           }
         }
+        filter_context_id = (interaction.getAttribute("contextFilter") == 'true'? true : false);
 
         url = xerteurl + xertelo + "/" + xertelabel;
         if (opinionClass != "") {
