@@ -858,9 +858,10 @@
         </openAnswerOptions>
         <myOpenAnswerText label="My Open Answers text" type="TextInput" wysiwyg="true" language="true"/>
         <allOpenAnswerText label="All Open Answers text" type="TextInput" wysiwyg="true" language="true"/>
-        <group type="group" label="Group filtering" optional="true">
+        <group type="group" label="Filtering" optional="true">
              <groupFromUrl label="Filter on group from URL" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on groupname, where the groupname is extracted from the URL (group=groupname)"/>
-             <groupName label="Filter group name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" tooltip="Filter on groupname, use this groupname, if the group is not specified on the URL (group=groupname)"/>
+             <groupName label="Filter group name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" tooltip="Filter on groupname, use this groupname, if the group is not specified on the URL (group=groupname). You have to enable filter on group from URL as well."/>
+             <contextFilter label="Filter on LTI context" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on LTI context, where the LTI context retrieved from the LTI launch or the URL (lti_context_id=id)"/>
         </group>
 
       <newNodes>
