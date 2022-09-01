@@ -1017,12 +1017,7 @@
     // Function called every time the page is viewed after it has initially loaded.
     this.pageChanged = function () {
       $("#adaptiveContentMain").html("");
-      var displayMode = x_currentPageXML.getAttribute("displayMode");
-      if (displayMode == "Listed") {
-        this.setUpListed();
-      } else {
-        this.setUpUnlisted();
-      }
+      this.init();
     };
 
     // Function called every time the size of the LO is changed.
@@ -2289,7 +2284,8 @@
         var givenAnswer = statements[0].result.response;
         if (interaction.getAttribute("showScore") == "true") {
           var txt = answerLabelText;
-          txt = txt.replace(/\{0\}/, givenAnswer);
+          const givenAnswerCleanedUp = givenAnswer.replace(/\[\,\]/g, ",<br>").replace(/\[\.\]/g, " ==> ");
+          txt = txt.replace(/\{0\}/, givenAnswerCleanedUp);
           $(
             "#" + escapeUrl(url, type, interactionIndex) + " .score .stats"
           ).append("<li>" + txt + "</li>");
