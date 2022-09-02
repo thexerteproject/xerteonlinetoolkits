@@ -1231,7 +1231,7 @@ function x_continueSetUp1() {
 					label: x_params.helpLabel != undefined && x_params.helpLabel != "" ? x_params.helpLabel : x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 					text:	false
 				})
-				.attr("aria-label", $x_helpBtn.attr("title") + " " + x_params.newWindowTxt)
+				.attr("aria-label", $x_helpBtn.attr("title") + x_params.newWindowTxt)
 				.click(function() {
 					if (x_params.helpTarget != 'lightbox') {
 						window.open(x_evalURL(x_params.nfo), "_blank");
@@ -1356,7 +1356,7 @@ function x_continueSetUp1() {
 					label: x_params.pageHelpLabel != undefined && x_params.pageHelpLabel != "" ? x_params.pageHelpLabel : x_getLangInfo(x_languageData.find("pageHelpButton")[0], "label", "Page Help"),
 					text:	false
 				})
-				.attr("aria-label", $x_pageHelpBtn.attr("title") + " " + x_params.newWindowTxt)
+				.attr("aria-label", $x_pageHelpBtn.attr("title") + x_params.newWindowTxt)
 				.click(function() {
 					if (x_currentPageXML.getAttribute('helpTarget') != 'lightbox') {
 						window.open(x_evalURL(x_currentPageXML.getAttribute('nfo')), "_blank");
@@ -2609,7 +2609,7 @@ function x_changePageStep6() {
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
-
+		
 		// get short page type var
 		var pt = x_pageInfo[x_currentPage].type;
 		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
@@ -2972,6 +2972,17 @@ function x_setUpPage() {
     if (x_firstLoad == true) {
         // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
 		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
+			
+			// open page intro after project intro has closed if it's also set to auto-open
+			if ($x_pageIntroBtn != undefined && x_currentPageXML.getAttribute('pageIntro') != undefined && $.trim(x_currentPageXML.getAttribute('pageIntro')) != '' && x_currentPageXML.getAttribute("introShow") != 'never') {
+				$.featherlight.prototype.beforeClose = function () {
+					if (this.$content[0].id == "x_introHolder") {
+						$x_pageIntroBtn.click();
+						$.featherlight.prototype.beforeClose = function () {};
+					}
+				};
+			}
+			
 			$x_introBtn.click();
 		}
 		
@@ -3019,7 +3030,7 @@ function x_pageLoaded() {
 
 	if (!x_isMenu()) {
 		x_setUpLightBox();
-
+		
 		// plugin files are loaded after page is loaded
 		if (plugins[pt] != undefined) {
 			if (plugins[pt].script != undefined && plugins[pt].script != "" && $("#x_pagePluginScript").length == 0) {
@@ -3031,6 +3042,7 @@ function x_pageLoaded() {
 				$("#x_page" + x_currentPage).append('<style type="text/css" id="x_pagePluginCSS">' +  plugins[pt].css + '</style>');
 			}
 		}
+		
 		// script & style optional properties for each page added after page is otherwise set up
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
@@ -3074,8 +3086,8 @@ function x_pageLoaded() {
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
 	
 	// show page introduction immediately on page load if set to auto open - unless the project intro is also set to auto-open at this time
-	if ($x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") != 'never') {
-		var projectIntroOpening = x_firstLoad == true && $x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0)) ? true : false;
+	if ($x_pageIntroBtn != undefined && x_currentPageXML.getAttribute('pageIntro') != undefined && $.trim(x_currentPageXML.getAttribute('pageIntro')) != '' && x_currentPageXML.getAttribute("introShow") != 'never') {
+		var projectIntroOpening = x_firstLoad == true && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0)) ? true : false;
 		if (projectIntroOpening != true) {
 			$x_pageIntroBtn.click();
 		}
