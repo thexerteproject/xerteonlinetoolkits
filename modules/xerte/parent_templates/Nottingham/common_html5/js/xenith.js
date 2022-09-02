@@ -64,8 +64,7 @@ var x_languageData  = [],
 		{name: 'glossary',		iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
 		{name: 'intro',			iconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
 		
-		// ** TO DO: choose different icons for the page level help/intro buttons to those used at project level:
-		{name: 'pageHelp',		iconClass:'x_help',							custom: 'pageHelpIc',		defaultFA: 'fas fa-question'},				// page help file
+		// ** TO DO: choose different icon for the page level intro button to that used at project level:
 		{name: 'pageIntro',		iconClass:'x_projectIntro',					custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
 	];
 
@@ -74,7 +73,7 @@ var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
-	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_pageHelpBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
@@ -1325,53 +1324,12 @@ function x_continueSetUp1() {
 		}
 		
 		
-		// if any of the pages in this project have an intro or help file - add a button to the footer bar that will open file/intro when clicked
-		let pageHelp = false,
-			pageIntro = false;
+		// if any of the pages in this project have an intro - add a button to the footer bar that will open intro when clicked
+		let pageIntro = false;
 		for (let i=0; i<x_pages.length; i++) {
-			if (pageHelp != true && x_pages[i].getAttribute('nfo') != undefined && $.trim(x_pages[i].getAttribute('nfo')) != '') {
-				pageHelp = true;
-			}
-			if (pageIntro != true && x_pages[i].getAttribute('pageIntro') != undefined && $.trim(x_pages[i].getAttribute('pageIntro')) != '') {
+			if (pageIntro != true && x_getPageIntro(x_pages[i]) != false) {
 				pageIntro = true;
-			}
-			if (pageHelp && pageIntro) {
 				break;
-			}
-		}
-		
-		// add page help button to footer bar that opens file (or URL) in new window or lightbox
-		if (pageHelp == true) {
-			
-			// ** TO DO: use x_params.pageHelpLocation to determine whether the button should be on footer or header bar
-			const helpIcon = x_btnIcons.filter(function(icon){return icon.name === 'pageHelp';})[0];
-			$x_pageHelpBtn = $('<button id="x_pageHelpBtn"></button>').prependTo($x_footerL);
-			
-			$x_pageHelpBtn
-				.button({
-					icons: {
-						primary: helpIcon.iconClass
-					},
-					// label can be set in editor but fall back to language file if not set
-					label: x_params.pageHelpLabel != undefined && x_params.pageHelpLabel != "" ? x_params.pageHelpLabel : x_getLangInfo(x_languageData.find("pageHelpButton")[0], "label", "Page Help"),
-					text:	false
-				})
-				.attr("aria-label", $x_pageHelpBtn.attr("title") + x_params.newWindowTxt)
-				.click(function() {
-					if (x_currentPageXML.getAttribute('helpTarget') != 'lightbox') {
-						window.open(x_evalURL(x_currentPageXML.getAttribute('nfo')), "_blank");
-					} else {
-						$.featherlight({iframe: x_evalURL(x_currentPageXML.getAttribute('nfo')), iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
-					}
-					
-					$(this)
-						.blur()
-						.removeClass("ui-state-focus")
-						.removeClass("ui-state-hover");
-				});
-			
-			if (helpIcon.customised == true) {
-				$x_pageHelpBtn.addClass("customIconBtn");
 			}
 		}
 		
@@ -1382,14 +1340,12 @@ function x_continueSetUp1() {
 			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'pageIntro';})[0];
 			$x_pageIntroBtn = $('<button id="x_pageIntroBtn"></button>').prependTo($x_footerL);
 			
-			const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><h1 id="x_introH1"></h1><div id="x_pageIntroTxtInner"></div><button id="x_introStartBtn"></button></div></div>');
-			
-			$introHolder.find('#x_introStartBtn')
+			const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 				.button()
 				.click(function() {
 					parent.window.$.featherlight.current().close();
 				});
-		
+			
 			$x_pageIntroBtn
 				.button({
 					icons: {
@@ -1400,32 +1356,88 @@ function x_continueSetUp1() {
 					text: false
 				})
 				.click(function() {
-					const $lightboxContent =  $(this).data('pageIntro');
-					$lightboxContent.find('#x_pageIntroTxtInner').html(x_currentPageXML.getAttribute('pageIntro'));
+					const thisPageIntro = x_getPageIntro(x_currentPageXML);
+					const $thisBtn = $(this);
 					
-					// include page title
-					if (x_currentPageXML.getAttribute('introTitle') == 'true') {
-						$lightboxContent.find('#x_introH1')
-							.html(x_currentPageXML.getAttribute('name'))
-							.show();
-					} else {
-						$lightboxContent.find('#x_introH1').hide();
+					// there are different types on content that might appear in page intro lightbox
+					if (thisPageIntro.type == 'img') {
+						
+						$.featherlight({
+							image: thisPageIntro.info.img,
+							afterOpen: function() {
+								this.$content.attr('alt', thisPageIntro.info.tip);
+								
+								const $holder = this.$content.parent('.featherlight-content');
+								
+								// include page title
+								if (x_currentPageXML.getAttribute('introTitle') == 'true') {
+									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
+										.prependTo($holder)
+										.html(x_currentPageXML.getAttribute('name'));
+								}
+								
+								// include start button to close lightbox
+								if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
+									$thisBtn.data('introStartBtn')
+										.appendTo($holder)
+										.addClass('x_introImgBtn')
+										.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
+								}
+								
+							}
+						});
+						
+					} else if (thisPageIntro.type == 'video') {
+						
+						$.featherlight($('<div id="pageIntroVideo"></div>'));
+						
+						$('.featherlight-content').addClass('pageIntroVideo');
+						
+						if (thisPageIntro.info.video.indexOf("www.youtube.com") != -1 || thisPageIntro.info.video.indexOf("//youtu") != -1) {
+							$('.featherlight-content').addClass('max youTube');
+						}
+						
+						$('#pageIntroVideo')
+							.attr('title', thisPageIntro.info.tip)
+							.mediaPlayer({
+								type: 'video',
+								source: thisPageIntro.info.video,
+								width: '100%',
+								height: '100%'
+							});
+						
+					} else if (thisPageIntro.type == 'url' || thisPageIntro.type == 'file') {
+						
+						$.featherlight({
+							iframe: x_evalURL(thisPageIntro.info),
+							iframeMaxWidth: $x_mainHolder.width()*0.8,
+							iframeMaxHeight: $x_mainHolder.height()*0.8
+						});
+						
+					} else if (thisPageIntro.type == 'text') {
+						
+						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
+						
+						$introHolder.find('#x_pageIntroTxtInner').html(thisPageIntro.info);
+						
+						// include page title
+						if (x_currentPageXML.getAttribute('introTitle') == 'true') {
+							$('<h1 id="x_introH1"></h1>')
+								.prependTo($introHolder.find('#x_pageIntroTxt'))
+								.html(x_currentPageXML.getAttribute('name'));
+						}
+						
+						// include start button to close lightbox
+						if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
+							$thisBtn.data('introStartBtn')
+								.appendTo($introHolder.find('#x_pageIntroTxt'))
+								.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
+						}
+						
+						$.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_currentPageXML.getAttribute('introWidth') == 'Full' ? x_currentPageXML.getAttribute('introWidth') : 'Auto' ) });
 					}
-					
-					// include start button to close lightbox
-					if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
-						$lightboxContent.find('#x_introStartBtn')
-							.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) })
-							.show();
-					} else {
-						$lightboxContent.find('#x_introStartBtn').hide();
-					}
-					
-					
-					
-					$.featherlight($lightboxContent, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_currentPageXML.getAttribute('introWidth') == 'Full' ? x_currentPageXML.getAttribute('introWidth') : 'Auto' ) });
 				})
-				.data('pageIntro', $introHolder);
+				.data('introStartBtn', $introStartBtn);
 			
 			if (introIcon.customised == true) {
 				$x_pageIntroBtn.addClass("customIconBtn");
@@ -1848,6 +1860,23 @@ function x_continueSetUp1() {
 		} else {
 			x_continueSetUp2();
 		}
+	}
+}
+
+// returns page intro info - could be text, image, url or file
+function x_getPageIntro(pageXML) {
+	if (pageXML.getAttribute('introType') == 'image' && pageXML.getAttribute('introImg') != undefined && $.trim(pageXML.getAttribute('introImg')) != '') {
+		return {type: 'img', info: {img: pageXML.getAttribute('introImg'), tip: pageXML.getAttribute('introTip')}};
+	} else if (pageXML.getAttribute('introType') == 'video' && pageXML.getAttribute('introVideo') != undefined && $.trim(pageXML.getAttribute('introVideo')) != '') {
+		return {type: 'video', info: {video: pageXML.getAttribute('introVideo'), tip: pageXML.getAttribute('introTip')}};
+	} else if (pageXML.getAttribute('introType') == 'url' && pageXML.getAttribute('introURL') != undefined && $.trim(pageXML.getAttribute('introURL')) != '') {
+		return {type: 'url', info: pageXML.getAttribute('introURL')};
+	} else if (pageXML.getAttribute('introType') == 'file' && pageXML.getAttribute('introFile') != undefined && $.trim(pageXML.getAttribute('introFile')) != '') {
+		return {type: 'file', info: pageXML.getAttribute('introFile')};
+	} else if (pageXML.getAttribute('pageIntro') != undefined && $.trim(pageXML.getAttribute('pageIntro')) != '') {
+		return {type: 'text', info: pageXML.getAttribute('pageIntro')};
+	} else {
+		return false;
 	}
 }
 
@@ -2575,17 +2604,9 @@ function x_changePageStep6() {
 
 	$("#x_pageDiv").show();
 	
-	// enable page help / page intro buttons depending on whether this info exists for the current page
-	if ($x_pageHelpBtn != undefined) {
-		if (!x_isMenu() && x_currentPageXML.getAttribute('nfo') != undefined && $.trim(x_currentPageXML.getAttribute('nfo')) != '') {
-			$x_pageHelpBtn.button("enable");
-		} else {
-			$x_pageHelpBtn.button("disable");
-		}
-	}
-	
+	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
-		if (!x_isMenu() && x_currentPageXML.getAttribute('pageIntro') != undefined && $.trim(x_currentPageXML.getAttribute('pageIntro')) != '') {
+		if (!x_isMenu() && x_getPageIntro(x_currentPageXML) != false) {
 			$x_pageIntroBtn.button("enable");
 		} else {
 			$x_pageIntroBtn.button("disable");
@@ -2974,7 +2995,7 @@ function x_setUpPage() {
 		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
 			
 			// open page intro after project intro has closed if it's also set to auto-open
-			if ($x_pageIntroBtn != undefined && x_currentPageXML.getAttribute('pageIntro') != undefined && $.trim(x_currentPageXML.getAttribute('pageIntro')) != '' && x_currentPageXML.getAttribute("introShow") != 'never') {
+			if ($x_pageIntroBtn != undefined && x_getPageIntro(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
 				$.featherlight.prototype.beforeClose = function () {
 					if (this.$content[0].id == "x_introHolder") {
 						$x_pageIntroBtn.click();
@@ -3086,7 +3107,7 @@ function x_pageLoaded() {
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
 	
 	// show page introduction immediately on page load if set to auto open - unless the project intro is also set to auto-open at this time
-	if ($x_pageIntroBtn != undefined && x_currentPageXML.getAttribute('pageIntro') != undefined && $.trim(x_currentPageXML.getAttribute('pageIntro')) != '' && x_currentPageXML.getAttribute("introShow") != 'never') {
+	if ($x_pageIntroBtn != undefined && x_getPageIntro(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
 		var projectIntroOpening = x_firstLoad == true && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0)) ? true : false;
 		if (projectIntroOpening != true) {
 			$x_pageIntroBtn.click();

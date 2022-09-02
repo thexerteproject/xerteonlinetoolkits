@@ -759,6 +759,40 @@ textarea {
 	float: right;
 }
 
+#x_introH1.x_introImgH1 {
+	background: white;
+	position: absolute;
+}
+
+#x_introStartBtn.x_introImgBtn {
+	position: absolute;
+	bottom: 10px;
+	right: 35px;
+}
+
+@media only screen and (max-width: 1024px) {
+	#x_introStartBtn.x_introImgBtn {
+		right: 20px;
+	}
+}
+
+.featherlight-content.pageIntroVideo.max {
+	width: 90vw;
+	height: 90vh;
+}
+
+.featherlight-content.pageIntroVideo.hidden {
+	opacity: 0;
+}
+
+.featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls {
+	display: none;
+}
+
+.featherlight .featherlight-content.pageIntroVideo.max.youTube iframe {
+	width: 100%;
+}
+
 /* --LIGHTBOX-------------------------------------------------------------- */
 
 .featherlight.lightboxSmall .featherlight-content {
