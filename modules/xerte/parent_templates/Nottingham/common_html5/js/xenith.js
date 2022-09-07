@@ -1252,31 +1252,11 @@ function x_continueSetUp1() {
 		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
 		
 		// add project intro button to footer bar that opens lightbox
-		if (x_params.intro != undefined && $.trim(x_params.intro) != '') {
+		if (x_getIntroInfo('project') != false) {
 			
+			const introInfo = x_getIntroInfo('project');
 			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'intro';})[0];
 			$x_introBtn = $('<button id="x_introBtn"></button>').prependTo($x_footerL);
-			
-			const $introHolder = $('<div id="x_introHolder"></div>');
-			const $introTxt = $('<div id="x_introTxt">' + x_params.intro + '</div>').appendTo($introHolder);
-			
-			// include project title
-			if (x_params.introTitle == 'true') {
-				$introTxt.prepend('<h1 id="x_introH1">' + x_params.name + '</h1>');
-			}
-			
-			// include start button to close lightbox
-			if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
-				$introTxt.append('<button id="x_introStartBtn"></button>');
-				
-				$introTxt.find('#x_introStartBtn')
-					.button({
-						label: $.trim(x_params.introBtnTxt)
-					})
-					.click(function() {
-						parent.window.$.featherlight.current().close();
-					});
-			}
 		
 			$x_introBtn
 				.button({
@@ -1288,9 +1268,102 @@ function x_continueSetUp1() {
 					text: false
 				})
 				.click(function() {
-					$.featherlight($(this).data('projectIntro'), { variant: 'lightbox' + (x_browserInfo.mobile != true || x_params.introWidth == 'Full' ? x_params.introWidth : 'Auto' ) });
-				})
-				.data('projectIntro', $introHolder);
+					const $thisBtn = $(this);
+					let lb;
+					
+					// set up close btn
+					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
+						.button({ label: $.trim(x_params.introBtnTxt) })
+						.click(function() {
+							parent.window.$.featherlight.current().close();
+						});
+					
+					// there are different types of content that might appear in project intro lightbox
+					if (introInfo.type == 'img') {
+						
+						lb = $.featherlight({
+							image: introInfo.info.img,
+							afterOpen: function() {
+								this.$content.attr('alt', introInfo.info.tip);
+								
+								const $holder = this.$content.parent('.featherlight-content');
+								
+								// include project title
+								if (x_params.introTitle == 'true') {
+									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
+										.prependTo($holder)
+										.html(x_params.name);
+								}
+								
+								// include start button to close lightbox
+								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
+									$introStartBtn
+										.appendTo($holder)
+										.addClass('x_introImgBtn');
+								}
+								
+							}
+						});
+						
+					} else if (introInfo.type == 'video') {
+						
+						lb = $.featherlight($('<div id="pageIntroVideo"></div>'));
+						
+						$('.featherlight-content').addClass('pageIntroVideo');
+						
+						if (introInfo.info.video.indexOf("www.youtube.com") != -1 || introInfo.info.video.indexOf("//youtu") != -1) {
+							$('.featherlight-content').addClass('max youTube');
+						}
+						
+						$('#pageIntroVideo')
+							.attr('title', introInfo.info.tip)
+							.mediaPlayer({
+								type: 'video',
+								source: introInfo.info.video,
+								width: '100%',
+								height: '100%'
+							});
+						
+					} else if (introInfo.type == 'url' || introInfo.type == 'file') {
+						
+						lb = $.featherlight({
+							iframe: x_evalURL(introInfo.info),
+							iframeMaxWidth: $x_mainHolder.width()*0.8,
+							iframeMaxHeight: $x_mainHolder.height()*0.8
+						});
+						
+					} else if (introInfo.type == 'text') {
+						
+						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
+						
+						$introHolder.find('#x_pageIntroTxtInner').html(introInfo.info);
+						
+						// include project title
+						if (x_params.introTitle == 'true') {
+							$('<h1 id="x_introH1"></h1>')
+								.prependTo($introHolder.find('#x_pageIntroTxt'))
+								.html(x_params.name);
+						}
+						
+						// include start button to close lightbox
+						if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
+							$introStartBtn.appendTo($introHolder.find('#x_pageIntroTxt'));
+						}
+						
+						lb = $.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_params.introWidth == 'Full' ? x_params.introWidth : 'Auto' ) });
+					}
+					
+					// open page intro after project intro has closed if it's also set to auto-open
+					if (lb != undefined && $x_pageIntroBtn != undefined && x_getIntroInfo(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
+						lb.beforeClose = function() {
+							if ($thisBtn.data('autoOpen') == true) {
+								$x_pageIntroBtn.click();
+								$thisBtn.data('autoOpen', false);
+							}
+						};
+					}
+					
+				});
 			
 			if (introIcon.customised == true) {
 				$x_introBtn.addClass("customIconBtn");
@@ -1327,7 +1400,7 @@ function x_continueSetUp1() {
 		// if any of the pages in this project have an intro - add a button to the footer bar that will open intro when clicked
 		let pageIntro = false;
 		for (let i=0; i<x_pages.length; i++) {
-			if (pageIntro != true && x_getPageIntro(x_pages[i]) != false) {
+			if (pageIntro != true && x_getIntroInfo(x_pages[i]) != false) {
 				pageIntro = true;
 				break;
 			}
@@ -1340,12 +1413,6 @@ function x_continueSetUp1() {
 			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'pageIntro';})[0];
 			$x_pageIntroBtn = $('<button id="x_pageIntroBtn"></button>').prependTo($x_footerL);
 			
-			const $introStartBtn = $('<button id="x_introStartBtn"></button>')
-				.button()
-				.click(function() {
-					parent.window.$.featherlight.current().close();
-				});
-			
 			$x_pageIntroBtn
 				.button({
 					icons: {
@@ -1356,10 +1423,17 @@ function x_continueSetUp1() {
 					text: false
 				})
 				.click(function() {
-					const thisPageIntro = x_getPageIntro(x_currentPageXML);
+					const thisPageIntro = x_getIntroInfo(x_currentPageXML);
 					const $thisBtn = $(this);
 					
-					// there are different types on content that might appear in page intro lightbox
+					// set up close btn
+					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
+						.button()
+						.click(function() {
+							parent.window.$.featherlight.current().close();
+						});
+					
+					// there are different types of content that might appear in page intro lightbox
 					if (thisPageIntro.type == 'img') {
 						
 						$.featherlight({
@@ -1378,7 +1452,7 @@ function x_continueSetUp1() {
 								
 								// include start button to close lightbox
 								if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
-									$thisBtn.data('introStartBtn')
+									$introStartBtn
 										.appendTo($holder)
 										.addClass('x_introImgBtn')
 										.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
@@ -1429,15 +1503,14 @@ function x_continueSetUp1() {
 						
 						// include start button to close lightbox
 						if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
-							$thisBtn.data('introStartBtn')
+							$introStartBtn
 								.appendTo($introHolder.find('#x_pageIntroTxt'))
 								.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
 						}
 						
 						$.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_currentPageXML.getAttribute('introWidth') == 'Full' ? x_currentPageXML.getAttribute('introWidth') : 'Auto' ) });
 					}
-				})
-				.data('introStartBtn', $introStartBtn);
+				});
 			
 			if (introIcon.customised == true) {
 				$x_pageIntroBtn.addClass("customIconBtn");
@@ -1863,18 +1936,30 @@ function x_continueSetUp1() {
 	}
 }
 
-// returns page intro info - could be text, image, url or file
-function x_getPageIntro(pageXML) {
-	if (pageXML.getAttribute('introType') == 'image' && pageXML.getAttribute('introImg') != undefined && $.trim(pageXML.getAttribute('introImg')) != '') {
-		return {type: 'img', info: {img: pageXML.getAttribute('introImg'), tip: pageXML.getAttribute('introTip')}};
-	} else if (pageXML.getAttribute('introType') == 'video' && pageXML.getAttribute('introVideo') != undefined && $.trim(pageXML.getAttribute('introVideo')) != '') {
-		return {type: 'video', info: {video: pageXML.getAttribute('introVideo'), tip: pageXML.getAttribute('introTip')}};
-	} else if (pageXML.getAttribute('introType') == 'url' && pageXML.getAttribute('introURL') != undefined && $.trim(pageXML.getAttribute('introURL')) != '') {
-		return {type: 'url', info: pageXML.getAttribute('introURL')};
-	} else if (pageXML.getAttribute('introType') == 'file' && pageXML.getAttribute('introFile') != undefined && $.trim(pageXML.getAttribute('introFile')) != '') {
-		return {type: 'file', info: pageXML.getAttribute('introFile')};
-	} else if (pageXML.getAttribute('pageIntro') != undefined && $.trim(pageXML.getAttribute('pageIntro')) != '') {
-		return {type: 'text', info: pageXML.getAttribute('pageIntro')};
+// returns intro info - could be text, image, url or file
+function x_getIntroInfo(xml) {
+	function getInfo(attr) {
+		if (xml == 'project') {
+			return x_params[attr];
+		} else {
+			if (attr == 'intro') {
+				return xml.getAttribute('pageIntro');
+			} else {
+				return xml.getAttribute(attr);
+			}
+		}
+	}
+	 
+	if (getInfo('introType') == 'image' && getInfo('introImg') != undefined && $.trim(getInfo('introImg')) != '') {
+		return {type: 'img', info: {img: getInfo('introImg'), tip: getInfo('introTip')}};
+	} else if (getInfo('introType') == 'video' && getInfo('introVideo') != undefined && $.trim(getInfo('introVideo')) != '') {
+		return {type: 'video', info: {video: getInfo('introVideo'), tip: getInfo('introTip')}};
+	} else if (getInfo('introType') == 'url' && getInfo('introURL') != undefined && $.trim(getInfo('introURL')) != '') {
+		return {type: 'url', info: getInfo('introURL')};
+	} else if (getInfo('introType') == 'file' && getInfo('introFile') != undefined && $.trim(getInfo('introFile')) != '') {
+		return {type: 'file', info: getInfo('introFile')};
+	} else if (getInfo('intro') != undefined && $.trim(getInfo('intro')) != '') {
+		return {type: 'text', info: getInfo('intro')};
 	} else {
 		return false;
 	}
@@ -2606,7 +2691,7 @@ function x_changePageStep6() {
 	
 	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
-		if (!x_isMenu() && x_getPageIntro(x_currentPageXML) != false) {
+		if (!x_isMenu() && x_getIntroInfo(x_currentPageXML) != false) {
 			$x_pageIntroBtn.button("enable");
 		} else {
 			$x_pageIntroBtn.button("disable");
@@ -2993,18 +3078,9 @@ function x_setUpPage() {
     if (x_firstLoad == true) {
         // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
 		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
-			
-			// open page intro after project intro has closed if it's also set to auto-open
-			if ($x_pageIntroBtn != undefined && x_getPageIntro(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
-				$.featherlight.prototype.beforeClose = function () {
-					if (this.$content[0].id == "x_introHolder") {
-						$x_pageIntroBtn.click();
-						$.featherlight.prototype.beforeClose = function () {};
-					}
-				};
-			}
-			
-			$x_introBtn.click();
+			$x_introBtn
+				.data('autoOpen', true)
+				.click();
 		}
 		
         $x_mainHolder.css("visibility", "visible");
@@ -3107,7 +3183,7 @@ function x_pageLoaded() {
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
 	
 	// show page introduction immediately on page load if set to auto open - unless the project intro is also set to auto-open at this time
-	if ($x_pageIntroBtn != undefined && x_getPageIntro(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
+	if ($x_pageIntroBtn != undefined && x_getIntroInfo(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
 		var projectIntroOpening = x_firstLoad == true && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0)) ? true : false;
 		if (projectIntroOpening != true) {
 			$x_pageIntroBtn.click();
