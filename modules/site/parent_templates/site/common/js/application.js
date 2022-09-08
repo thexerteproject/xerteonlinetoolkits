@@ -1797,9 +1797,9 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 	//add the section contents
 	$(thisSection).children().each( function(itemIndex, value){
-		if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+		if ($(this).attr('name') != '' && $(this).attr('name') != undefined && ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true')) {
 
-			if ($(this).attr('showTitle') == 'true') {
+			if ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true') {
 				var subLinkName = $(this).attr('name');
 
 				// remove size & background color styles from links on toc
@@ -2397,9 +2397,9 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		var i = index;
 
 		$(this).children().each( function(x, value){
-
-			if ($(this).attr('showTitle') == 'true' || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
-				tab.append('<p><b>' + $(this).attr('name') + '</b></p>');
+			
+			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true')) {
+				tab.append('<h3>' + $(this).attr('name') + '</h3>');
 			}
 
 			if (this.nodeName == 'text'){
@@ -2548,6 +2548,12 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		var inner = $('<div class="accordion-inner" tabindex="0">');
 
 		$(this).children().each( function(i, value){
+			
+			// there was a bug in versions before 3.12 which meant audio & video on accordion always showed title & other content never did (regardless of whether show titles ticked or not)
+			// fix here for new content added to accordions - it doesn't fix for old content as then titles may unexpectedly appear / disappear after upgrade without the author editing
+			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && (($(this).attr('showTitle') == 'true' && (this.nodeName == 'audio' || this.nodeName == 'video')) || $(this).attr('showTitleFix') == 'true' || ($(this).attr('showTitleFix') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video')))) {
+				inner.append('<h3>' + $(this).attr('name') + '</h3>');
+			}
 
 			if (this.nodeName == 'text'){
 				inner.append( '<p>' + $(this).text() + '</p>');
@@ -2558,12 +2564,12 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				inner.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 
 			if (this.nodeName == 'video'){
 				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				inner.append('<p>' + videoInfo[0] + '</p>');
 
 				if (videoInfo[1] != undefined) {
 					inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
@@ -2622,7 +2628,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	var itemIndex = itemIndex;
 
 	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
-	debugger
+	
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
@@ -2658,6 +2664,12 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 		}
 
 		$(this).children().each( function(i, value){
+			
+			// there was a bug in versions before 3.12 which meant audio & video on carousel always showed title & other content never did (regardless of whether show titles ticked or not)
+			// fix here for new content added to carousel - it doesn't fix for old content as then titles may unexpectedly appear / disappear after upgrade without the author editing
+			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && (($(this).attr('showTitle') == 'true' && (this.nodeName == 'audio' || this.nodeName == 'video')) || $(this).attr('showTitleFix') == 'true' || ($(this).attr('showTitleFix') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video')))) {
+				pane.append('<h3>' + $(this).attr('name') + '</h3>');
+			}
 
 			if (this.nodeName == 'text'){
 				pane.append( '<p>' + $(this).text() + '</p>');
@@ -2668,12 +2680,12 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 
 			if (this.nodeName == 'video'){
 				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				pane.append('<p>' + videoInfo[0] + '</p>');
 
 				if (videoInfo[1] != undefined) {
 					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
@@ -2737,7 +2749,6 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-	debugger;
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
