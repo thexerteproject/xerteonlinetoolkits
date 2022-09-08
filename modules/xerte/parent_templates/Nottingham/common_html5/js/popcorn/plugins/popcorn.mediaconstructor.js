@@ -147,7 +147,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
         
         if (mediaType == "video") {
             $mediaHolder.find(".transcriptHolder")
-                .width($mediaHolder.find(".popcornMedia").width())
+                //.width($mediaHolder.find(".popcornMedia").width())
                 .css("margin", "0 auto");
         }
     }
