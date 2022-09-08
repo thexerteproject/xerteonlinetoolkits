@@ -4929,9 +4929,15 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					return found && !multiple_terms;
 				});
 			}
-			// Need to treat single text node differently but rebuild from fragmant
-			let arr = Array.prototype.slice.call(fragment.childNodes);
-			tempText = arr.length === 1 && nodes.length > 0 ? nodes[0].textContent : arr.map(function(x) {return x.outerHTML || x.textContent;}).join('');
+			// Need to treat single text node differently but rebuild from fragmant OLD WAY
+			//let arr = Array.prototype.slice.call(fragment.childNodes);
+			//tempText = arr.length === 1 && nodes.length > 0 ? nodes[0].textContent : [].map.call(fragment.childNodes, x => x.nodeType === x.TEXT_NODE ? x.textContent : x.outerHTML).join('');
+
+			// Instead we'll just let the DOM do the heavy lifting
+			let div = document.createElement("div");
+			div.appendChild(fragment);
+			tempText = div.innerHTML;
+			div.remove();
 
 			// Replace all our tokens with the glossary tag
 			for (var k=0, len=x_glossary.length; k<len; k++) {
