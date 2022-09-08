@@ -28,7 +28,8 @@
 			scenes,
 			lockedHs,
 			currentScene,
-			videoResize = true;
+			videoResize = true,
+			firstLoad;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -56,11 +57,10 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
 			// if this has been triggered from window.resize() called manually for video sizing then skip all this
 			if (videoResize == true) {
 				
-				if (window.$.featherlight.current() != null) {
+				if (window.$.featherlight.current() != null && firstLoad != true) {
 					window.$.featherlight.current().close();
 				}
 				
@@ -102,6 +102,7 @@
 		}
 		
 		this.begin = function() {
+			firstLoad = true;
 			var $mainText = $("#mainText");
 		
 			var panelWidth = x_currentPageXML.getAttribute('size') == undefined ? 'large' : x_currentPageXML.getAttribute('size');
@@ -548,6 +549,7 @@
 			}
 			
 			this.sizeChanged();
+			firstLoad = false;
 			x_pageLoaded();
 		}
 		
