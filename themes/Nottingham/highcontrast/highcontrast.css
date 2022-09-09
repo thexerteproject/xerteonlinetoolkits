@@ -264,9 +264,14 @@ a.hotspot, a.hotspot.selected {
 .x_interactiveText_page .optionGroup.highlight {
   background: #333333; }
 
-.x_list_page .highlight {
-  background: #4d4d4d;
-  color: #ffffff; }
+.x_list_page a.listItem.highlight:link {
+  background: #333333 !important;
+  color: #ffffff;
+}
+
+.x_list_page a.listItem:link {
+  background: #4d4d4d !important;
+}
 
 .x_list_page #pageContents a.listItem:link, #passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {
   color: #ffffff !important; }

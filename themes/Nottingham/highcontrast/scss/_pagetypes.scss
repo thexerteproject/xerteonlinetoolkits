@@ -287,10 +287,15 @@ a.hotspot, a.hotspot.selected {
   background: lighten($blackordarkest, 20%);
 }
 //******Interactive lists*******/
-.x_list_page .highlight{
-  background: $selectedbutton;
+.x_list_page a.listItem.highlight:link {
+  background: lighten($blackordarkest, 20%) !important;
   color:$whiteorlightest;
 }
+
+.x_list_page a.listItem:link {
+	background: $selectedbutton !important;
+}
+
 //******Interactive text*******/
 .x_list_page #pageContents a.listItem:link, #passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {
   color: $whiteorlightest !important;

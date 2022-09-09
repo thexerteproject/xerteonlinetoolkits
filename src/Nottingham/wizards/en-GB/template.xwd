@@ -4417,9 +4417,11 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100"/>
 	<openFirst label="Show First Item" type="Checkbox" defaultValue="false" mandatory="true" tooltip="Show first item when page is first viewed"/>
 	
-	<hicol label="Text colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the text"/>
-    <hicolback label="Background Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The background colour of the button"/>
-    <hicolHover label="Hover Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the button when the mouse is hovering over the button"/>
+	<btnColours type="group" label="List Buttons" optional="true">
+		<hicol label="Text Colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The colour of the text"/>
+		<hicolback label="Background Colour" type="ColourPicker" optional="true" defaultValue="0xEEEEEE" tooltip="The background colour of the button"/>
+		<hicolHover label="Hover Background Colour" type="ColourPicker" optional="true" defaultValue="0xCCCCCC" tooltip="The colour of the button when the mouse is hovering over the button"/>
+	</btnColours>
 
     <newNodes>
       <listItem><![CDATA[<listItem name="Enter Item Title Here" text="Enter text for the list item here"/>]]></listItem>
