@@ -211,19 +211,36 @@
 				var $currentSlide = $("#infoHolder .slide:visible");
 				if ($currentSlide.length > 0) {
 					if ($currentSlide.is($visibleSlide) == false && currentTime != 0) {
-						$currentSlide.fadeOut({
-							complete:
-								function() {
-									if (x_browserInfo.mobile != true) {
-										$("#infoHolder").scrollTop(0);
+						if (x_currentPageXML.getAttribute("fadeSpeed") == '0') {
+							$currentSlide.hide();
+							$visibleSlide.show();
+							audioSlideshow.scaleImages();
+							
+						} else {
+							
+							const speed = x_currentPageXML.getAttribute("fadeSpeed") != undefined ? Number(x_currentPageXML.getAttribute("fadeSpeed"))*1000 : 800;
+							$currentSlide.fadeOut({
+								speed: speed/2,
+								complete:
+									function() {
+										if (x_browserInfo.mobile != true) {
+											$("#infoHolder").scrollTop(0);
+										}
+										$visibleSlide.fadeIn(speed/2);
+										audioSlideshow.scaleImages();
 									}
-									$visibleSlide.fadeIn();
-									audioSlideshow.scaleImages();
-								}
 							});
+						}
 					};
 				} else if ($visibleSlide != undefined) {
-					$visibleSlide.fadeIn();
+					if (x_currentPageXML.getAttribute("fadeSpeed") == '0') {
+						$visibleSlide.show();
+						
+					} else {
+						const speed = x_currentPageXML.getAttribute("fadeSpeed") != undefined ? Number(x_currentPageXML.getAttribute("fadeSpeed"))*1000 : 800;
+						$visibleSlide.fadeIn(speed/2);
+					}
+					
 					audioSlideshow.scaleImages();
 				}
 			});
