@@ -132,7 +132,7 @@
             }
 			$pageContents.data('showfeedback', showfeedback);
 
-			$("#diagram").hide();
+			$("#canvas-container").hide();
             $("#qHolder").show();
 			$("#checkBtn")
 				.show()
@@ -401,7 +401,6 @@
 						{
 							selected = max * answers[currentQuestion]/100;
 						}
-						debugger;
 
 						$rangeHolder.html('<form id="form' + currentQuestion + '"> <input id="slider' + currentQuestion + '" aria-label="slider' + currentQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
 
@@ -604,11 +603,6 @@
 			}
             $("#questionAudio").empty();
 
-			if (x_currentPageXML.getAttribute("diagram") !== "true"){
-				$("#diagram").show();
-			} else {
-				$('#diagram').hide();
-			}
             $("#qHolder").hide();
             $("#checkBtn").hide();
 
@@ -693,6 +687,14 @@
                     }]
                 },
 				options: {
+          layout: {
+              padding: {
+                  left: 10,
+                  right: 10,
+                  top: 10,
+                  bottom: 10
+                }
+            },
 					scale: {
 						ticks: {
 							suggestedMin: 0,
@@ -710,7 +712,7 @@
 						display: x_currentPageXML.getAttribute("key") == 'false' ? false : true,
 					},
 					responsive: true,
-					maintainAspectRatio: true
+					maintainAspectRatio: false
 				}
             });
 		};
@@ -718,7 +720,6 @@
 		this.init = function()
 		{
 
-			debugger;
 			$("#printBtn").hide();
 
 			$pageContents = $('#pageContents');
@@ -848,7 +849,6 @@
 					label:backBtnText
 				})
 				.click(function(){
-					debugger;
 					let pageSize = $pageContents.data('pageSize');
 					let currentQuestion = $pageContents.data('currentQuestion');
 					if (currentQuestion >= pageSize)
@@ -1029,7 +1029,7 @@
 			// Reset feedbak and diagram
 
 			$("#feedback").remove();
-			$("#diagram").hide();
+			$("#canvas-container").hide();
 
 			$("#mainPanel fieldset").prepend(
 					"<div id=\"feedback\" aria-live=\"polite\"></div>\n"
@@ -1059,9 +1059,9 @@
 				<fieldset class="noStyle">
 
 					<div id="feedback" aria-live="polite"></div>
-					<div id="canvas-container">
-					    <canvas id="diagram" aria-live="polite"></canvas>
-					</div>
+          <div id="canvas-container">
+            <canvas id="diagram" aria-live="polite"></canvas>
+          </div>
 
 					<div id="wrapper">
 						<div id="qHolder"></div>
