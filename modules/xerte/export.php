@@ -225,7 +225,7 @@ if ($fullArchive) {
             // Extra include files normally loaded dynamically
             $offline_includes .= "   <!-- extra files, normally loaded dynamically -->\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/script.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/popcorn-complete.min.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/popcorn-complete.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.textplus.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.subtitleplus.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.xot.js\"></script>\n";
@@ -235,6 +235,9 @@ if ($fullArchive) {
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/MediasitePlayerControls.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.slides.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.sortholder.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.mediaconstructor.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/timeline/timeline3.js\"></script>\n";
+
 
             // Offline theme js file
             $offline_includes .= "   <!-- theme file, normally loaded dynamically -->\n";
@@ -440,6 +443,29 @@ export_folder_loop($dir_path);
  */
 $lo_name = $xml->getName();
 
+
+// Get plugins
+$pluginfiles = scandir($parent_template_path . "plugins/");
+$plugins = array();
+foreach($pluginfiles as $pluginfile) {
+    // get base name of plugin
+    $plugininfo = pathinfo($pluginfile);
+    if ($plugininfo['basename'] == '.' || $plugininfo['basename'] == '..') {
+        continue;
+    }
+    if (!isset($plugins[$plugininfo['filename']]))
+    {
+        $plugins[$plugininfo['filename']] = new stdClass();
+    }
+    if ($plugininfo['extension'] == 'js') {
+        $plugins[$plugininfo['filename']]->script = file_get_contents($parent_template_path . "plugins/" . $pluginfile);
+    }
+    if ($plugininfo['extension'] == 'css') {
+        $plugins[$plugininfo['filename']]->css = file_get_contents($parent_template_path . "plugins/" . $pluginfile);
+    }
+}
+
+
 /*
  * Create scorm manifests or a basic HTML page
  */
@@ -467,7 +493,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo);
+            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $plugins);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -475,18 +501,18 @@ if ($scorm == "true") {
     if ($export_flash && !$export_html5) {
         scorm2004_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo);
+        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $plugins);
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $row['date_modified'], false, false, '', false, $export_logo);
+		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $row['date_modified'], false, false, '', false, $export_logo, $plugins);
 	}
 else {
     if ($export_flash) {
         basic_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $row['date_created'], $tsugi, $export_offline, $offline_includes, $need_download_url, $export_logo);
+        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $row['date_created'], $tsugi, $export_offline, $offline_includes, $need_download_url, $export_logo, $plugins);
     }
 }
 

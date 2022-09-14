@@ -208,13 +208,15 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='', $logo_r='') {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='', $logo_r='', $plugins='') {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
     $version = getVersion();
     $language = $_SESSION['toolkits_language'];
     $language_ISO639_1code = substr($language, 0, 2);
+
+
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 	
@@ -255,6 +257,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%USE_URL%", "var use_url=true;", $buffer);
     $buffer = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $buffer);
     $buffer = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $buffer);
+    $buffer = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $buffer);
 
     $index = "index.htm";
 
@@ -279,7 +282,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='') {
+function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='', $plugins='') {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -307,6 +310,7 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $scorm_html_page_content);
 
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";

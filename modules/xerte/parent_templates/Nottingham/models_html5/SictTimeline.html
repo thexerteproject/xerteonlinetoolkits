@@ -45,9 +45,12 @@
 					href:  x_templateLocation + 'common_html5/js/timeline/timeline3.css'
 				}).appendTo('head');
 			}
-
 			var popLocation = "common_html5/js/popcorn/"
 			var scriptsToLoad = ["common_html5/js/timeline/timeline3.js", popLocation + "popcorn-complete.js", popLocation + "plugins/popcorn.mediaconstructor.js"];
+			if (xot_offline)
+			{
+				numLoaded = scriptsToLoad.length;
+			}
 			if (numLoaded < scriptsToLoad.length) {
 				var fileToLoad = x_templateLocation + scriptsToLoad[numLoaded];
 				$.getScript(fileToLoad)
