@@ -147,3 +147,23 @@ color: #ffffff;
 font-weight: bold;
 }
 .ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -84px 0px; }
+
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: black;
+	background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #eeeeee;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: black;
+	background-color: #eeeeee;
+}

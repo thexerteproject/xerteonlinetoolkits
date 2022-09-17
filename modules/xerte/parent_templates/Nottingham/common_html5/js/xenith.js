@@ -63,9 +63,7 @@ var x_languageData  = [],
 		{name: 'saveSession',	iconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
 		{name: 'glossary',		iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
 		{name: 'intro',			iconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
-		
-		// ** TO DO: choose different icon for the page level intro button to that used at project level:
-		{name: 'pageIntro',		iconClass:'x_projectIntro',					custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
+		{name: 'pageIntro',		iconClass:'fas fa-info',					custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
 	];
 
 // Determine whether offline mode or not
@@ -978,6 +976,8 @@ function x_setUp() {
 			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
 			$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 		}
+		
+		$x_headerBlock.find('h2').append('<span id="x_pageTitle"></span>');
 
 		// calculate author set variables
 		if (x_params.variables != undefined) {
@@ -1321,7 +1321,8 @@ function x_continueSetUp1() {
 								type: 'video',
 								source: introInfo.info.video,
 								width: '100%',
-								height: '100%'
+								height: '100%',
+								pageName: 'introVideo'
 							});
 						
 					} else if (introInfo.type == 'url' || introInfo.type == 'file') {
@@ -1409,9 +1410,13 @@ function x_continueSetUp1() {
 		// add page intro button to footer bar that opens lightbox if any of the pages in this project have the introduction optional property added
 		if (pageIntro == true) {
 			
-			// ** TO DO: use x_params.pageIntroLocation to determine whether the button should be on footer or header bar
 			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'pageIntro';})[0];
-			$x_pageIntroBtn = $('<button id="x_pageIntroBtn"></button>').prependTo($x_footerL);
+			
+			$x_pageIntroBtn = $('<button id="x_pageIntroBtn"></button>').appendTo($('#x_headerBlock h2'));
+			
+			if (x_params.pageIntroBg != 'icon') {
+				$x_pageIntroBtn.addClass('pageIntroBg');
+			}
 			
 			$x_pageIntroBtn
 				.button({
@@ -1424,7 +1429,6 @@ function x_continueSetUp1() {
 				})
 				.click(function() {
 					const thisPageIntro = x_getIntroInfo(x_currentPageXML);
-					const $thisBtn = $(this);
 					
 					// set up close btn
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
@@ -1477,7 +1481,8 @@ function x_continueSetUp1() {
 								type: 'video',
 								source: thisPageIntro.info.video,
 								width: '100%',
-								height: '100%'
+								height: '100%',
+								pageName: 'introVideo'
 							});
 						
 					} else if (thisPageIntro.type == 'url' || thisPageIntro.type == 'file') {
@@ -1511,10 +1516,6 @@ function x_continueSetUp1() {
 						$.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_currentPageXML.getAttribute('introWidth') == 'Full' ? x_currentPageXML.getAttribute('introWidth') : 'Auto' ) });
 					}
 				});
-			
-			if (introIcon.customised == true) {
-				$x_pageIntroBtn.addClass("customIconBtn");
-			}
 		}
 
 
@@ -1595,7 +1596,7 @@ function x_continueSetUp1() {
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
 		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
-			$("#x_headerBlock h1").append(
+			$("#x_headerBlock h1").prepend(
 				$("<a>")
 					.html(x_params.name)
 					.attr("href", "#")
@@ -1606,7 +1607,7 @@ function x_continueSetUp1() {
 				);
 		}
 		else {
-			$("#x_headerBlock h1").html(x_params.name);
+			$("#x_headerBlock h1").prepend(x_params.name);
 		}
 
 		// strips code out of page title
@@ -2631,7 +2632,7 @@ function x_passwordPage(pswds) {
 			
 			x_pageInfo[x_currentPage].passwordPass = false;
 			
-			$("#x_headerBlock h2").html(pageTitle);
+			$("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 			$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 			
 			x_updateCss(false);
@@ -2682,7 +2683,7 @@ function x_passwordPage(pswds) {
 }
 
 function x_changePageStep6() {
-    $("#x_headerBlock h2").html(pageTitle);
+    $("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
     x_updateCss(false);
@@ -2692,9 +2693,9 @@ function x_changePageStep6() {
 	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
 		if (!x_isMenu() && x_getIntroInfo(x_currentPageXML) != false) {
-			$x_pageIntroBtn.button("enable");
+			$x_pageIntroBtn.show();
 		} else {
-			$x_pageIntroBtn.button("disable");
+			$x_pageIntroBtn.hide();
 		}
 	}
 
@@ -4079,6 +4080,26 @@ function x_saveSessionBtnIsStyled() {
 		}, false) || a;
 	}, false);
 	return isStyled;
+}
+
+
+// video has loaded to intro lightbox - make sure it's sized correctly (MP4 only)
+function x_introMediaMetadata($video, wh) {
+	$video.data({
+		width: wh[0],
+		height: wh[1]
+	});
+	
+	$video.closest(".mejs-video").css({
+		"maxWidth": wh[0] + 'px',
+		"maxHeight": wh[1] + 'px'
+	});
+	
+	// resize if the media is the wrong size for its holder
+	// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
+	$('.featherlight-content').addClass('max');
+	$x_window.resize();
+	$('.featherlight-content').removeClass('max');
 }
 
 

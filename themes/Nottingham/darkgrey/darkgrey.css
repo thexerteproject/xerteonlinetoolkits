@@ -197,3 +197,22 @@ background-image: none;
 	background-color: #cfcfcf;
 	color: #1c1c1c;
 }
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: #cfcfcf;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: #1c1c1c;
+	background-color: #cfcfcf;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #FFFFFF;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: #1c1c1c;
+	background-color: #FFFFFF;
+}

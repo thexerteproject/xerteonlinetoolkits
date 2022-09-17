@@ -31,6 +31,24 @@
   box-shadow: 3px 3px 5px grey;
 }
 
+#x_headerBlock #x_pageIntroBtn {
+  color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+  color: #2f2E33;
+  background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+  color: #D5D6D2;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+  color: #2f2E33;
+  background-color: #D5D6D2;
+}
+
 .titlePageTxt {
   width: 98% !important;
   overflow: hidden;

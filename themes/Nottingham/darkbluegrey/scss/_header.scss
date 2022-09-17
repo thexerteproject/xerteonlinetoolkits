@@ -1,12 +1,30 @@
 //******Header******/
 #x_headerBlock {
-  color:			$whiteorlightest;
+  color: $whiteorlightest;
   background-repeat:no-repeat;
   background-position:right;
   background-image:	none;
   width: 100%;
   border-top-right-radius: $largeroundedcorners;
   border-bottom-right-radius: $largeroundedcorners;
-  background: #3F4957;
+  background: $defaultpagebackground;
   box-shadow: $interfaceboxshadow;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+	color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: $defaultpagebackground;
+	background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: $lightestcolor;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: $defaultpagebackground;
+	background-color: $lightestcolor;
 }

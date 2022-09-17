@@ -22,6 +22,24 @@
   box-shadow: none;
 }
 
+#x_headerBlock #x_pageIntroBtn {
+  color: #FFFF99;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+  color: #000000;
+  background-color: #FFFF99;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+  color: yellow;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+  color: #000000;
+  background-color: yellow;
+}
+
 .titlePageTxt {
   width: 96% !important;
   overflow: hidden;

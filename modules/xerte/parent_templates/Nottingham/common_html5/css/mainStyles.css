@@ -749,7 +749,7 @@ textarea {
     transform: translate(-50%, 25%);
 }
 
-/* --PROJECT INTRODUCTION-------------------------------------------------------------- */
+/* --PROJECT & PAGE INTRODUCTION-------------------------------------------------------------- */
 
 #x_introH1 {
 	padding: 0.3em;
@@ -760,7 +760,7 @@ textarea {
 }
 
 #x_introH1.x_introImgH1 {
-	background: white;
+	background: inherit;
 	position: absolute;
 }
 
@@ -791,6 +791,42 @@ textarea {
 
 .featherlight .featherlight-content.pageIntroVideo.max.youTube iframe {
 	width: 100%;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+	font-family: FontAwesome, sans-serif;
+	width: 0.7em;
+	height: 0.7em;
+	color: white;
+	background: none;
+	border: none;
+	border-radius: .35em;
+	margin-left: .2em;
+	margin-bottom: .1em;
+	vertical-align: middle;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: black;
+	background-color: white;
+	margin-left: .5em;
+}
+
+#x_headerBlock #x_pageIntroBtn .ui-button-icon-primary {
+	position: relative;
+	margin: auto;
+	left: auto;
+	top: -.5em;
+	font-size: 0.5em;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #FF9900;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: black;
+	background-color: #FF9900;
 }
 
 /* --LIGHTBOX-------------------------------------------------------------- */

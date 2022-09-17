@@ -21,6 +21,24 @@
   box-shadow: none;
 }
 
+#x_headerBlock #x_pageIntroBtn {
+  color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+  color: #3F4957;
+  background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+  color: #FCBC2B;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+  color: #3F4957;
+  background-color: #FCBC2B;
+}
+
 .titlePageTxt {
   width: 98% !important;
   overflow: hidden;
