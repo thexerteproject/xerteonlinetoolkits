@@ -742,9 +742,13 @@ window.onhashchange = function() {
 	}
 	
 	// force lightbox to close
-	if (parent.window.$.featherlight.current()) {
-		parent.window.$.featherlight.current().close();
+	// catch error  - in case we're in an iframe, i.e. bootstrap or LMS LTI link
+	try {
+		if (parent.window.$.featherlight.current()) {
+			parent.window.$.featherlight.current().close();
+		}
 	}
+	catch(e) {}
 }
 
 // Get the page info from the URL (called on project load & when page changed via browser fwd/back btns)
@@ -1943,11 +1947,15 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 	
 	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
-	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
-		parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
-		standAlonePage = false;
-		addHistory = false;
+	// catch error - when in iframe, i.e. in bootstrap or LMS LTI
+	try {
+		if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
+			parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
+			standAlonePage = false;
+			addHistory = false;
+		}
 	}
+	catch(e) {}
 	
 	if (x_params.forcePage1 == 'true') {
 		addHistory = false;
