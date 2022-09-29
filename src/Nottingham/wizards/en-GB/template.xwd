@@ -128,6 +128,35 @@
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
 	
+	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing buttons which would normally be found on the footer bar.">
+		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
+		<sideBarShow type="ComboBox" label="Default State" defaultValue="open" options="Open,Closed" data="open,closed" condition="sideBar!='false'" optional="true"/>
+		<sideBarBtns type="group" label="Side Bar Buttons" condition="sideBar!='false'" cols="2" optional="true">
+			<sbGlossary label="Glossary" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbAccessibility label="Accessibility" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbToC label="Table of Contents" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbProjectHelp label="Project Help" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbProjectIntro label="Project Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+		</sideBarBtns>
+		<sideBarBtnTxt type="CheckBox" label="Display Button Title" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'" optional="true"/>
+		<sideBarHideShowGroup type="group" label="Show / Hide Side Bar Buttons" optional="true">
+			<sideBarBtnIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="sideBar!='false'" optional="true" tooltip="Override the default icons used on the show / hide side bar button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
+			<sideBarHideGroup type="group" label="Hide Side Bar" optional="true">
+				<sideBarHideLabel label="Tooltip" type="TextInput" defaultValue="Hide side bar" condition="sideBar!='false'" optional="true"/>
+				<sideBarHideLeftIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-left" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='left'" optional="true"/>
+				<sideBarHideRightIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-right" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='right'" optional="true"/>
+			</sideBarHideGroup>
+			<sideBarShowGroup type="group" label="Show Side Bar" optional="true">
+				<sideBarShowLabel label="Tooltip" type="TextInput" defaultValue="Show side bar" condition="sideBar!='false'" optional="true"/>
+				<sideBarShowLeftIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-right" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='left'" optional="true"/>
+				<sideBarShowRightIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-left" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='right'" optional="true"/>
+			</sideBarShowGroup>
+		</sideBarHideShowGroup>
+	</sideBarGroup>
+	
 	<icon type="group" label="Header Icon/Logo" optional="true">
 		<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="If a default logo is automatically added by this template, or by the theme you have chosen, then use this checkbox to hide that logo, or leave this unchecked and use the options below to load an alternative logo."/>
 		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="Select an Image"/>
@@ -209,7 +238,6 @@
 	</twittercard>
 	
 	<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-	<!--<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue="" />-->
 	<kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
 	<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
     <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>

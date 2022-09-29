@@ -50,22 +50,27 @@ var x_languageData  = [],
 	// x_params[name+'Icon'] = the icon to use if custom is true
 	// defaultFA = old themes that use images for buttons can have all btns set to use these default FA icons using themeIcons checkbox
 	// iconClass = if icon isn't customised via icon selectors in editor or themeIcons checkbox, fallback to use this css style (this will mean btn icons/images set in theme will be used)
-		{name: 'max',			iconClass:'x_maximise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-expand-arrows-alt'}, 	// full screen on
-		{name: 'min',			iconClass:'x_minimise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-compress-arrows-alt'},	// full screen off
-		{name: 'prev',			iconClass:'x_prev',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-left'},	// previous page
-		{name: 'next',			iconClass:'x_next',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-right'},	// next page
-		{name: 'toc',			iconClass:'x_info',							custom: 'navIcons',			defaultFA: 'fas fa-bars'},					// table of contents
-		{name: 'home',			iconClass:'x_home',							custom: 'navIcons',			defaultFA: 'fas fa-home'},					// home page
-		{name: 'hideTools',		iconClass:'fa fa-angle-double-left fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-left'},		// footer tools hide
-		{name: 'showTools',		iconClass:'fa fa-angle-double-right fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-right'},	// footer tools show
-		{name: 'accessibility',	iconClass:'x_colourChanger',				custom: 'accessibilityIc',	defaultFA: 'fas fa-eye-slash'},				// accessibility options
-		{name: 'help',			iconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
-		{name: 'saveSession',	iconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
-		{name: 'glossary',		iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
-		{name: 'intro',			iconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
-		{name: 'pageIntro',		iconClass:'fas fa-info',					custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
-	];
-
+		{name: 'max',				iconClass:'x_maximise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-expand-arrows-alt'}, 	// full screen on
+		{name: 'min',				iconClass:'x_minimise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-compress-arrows-alt'},	// full screen off
+		{name: 'prev',				iconClass:'x_prev',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-left'},	// previous page
+		{name: 'next',				iconClass:'x_next',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-right'},	// next page
+		{name: 'toc',				iconClass:'x_info',							custom: 'navIcons',			defaultFA: 'fas fa-bars'},					// table of contents
+		{name: 'home',				iconClass:'x_home',							custom: 'navIcons',			defaultFA: 'fas fa-home'},					// home page
+		{name: 'hideTools',			iconClass:'fa fa-angle-double-left fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-left'},		// footer tools hide
+		{name: 'showTools',			iconClass:'fa fa-angle-double-right fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-right'},	// footer tools show
+		{name: 'accessibility',		iconClass:'x_colourChanger',				custom: 'accessibilityIc',	defaultFA: 'fas fa-eye-slash'},				// accessibility options
+		{name: 'help',				iconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
+		{name: 'saveSession',		iconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
+		{name: 'glossary',			iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
+		{name: 'intro',				iconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
+		{name: 'pageIntro',			iconClass:'fas fa-info',					custom: 'pageIntroIc',		defaultFA: 'fas fa-info'},					// page introduction
+		{name: 'sideBarHideLeft',	iconClass:'fa fa-angle-double-left',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
+		{name: 'sideBarHideRight',	iconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
+		{name: 'sideBarShowLeft',	iconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
+		{name: 'sideBarShowRight',	iconClass:'fa fa-angle-double-left',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
+	],
+	x_sideBarBtns = [];
+	
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
@@ -701,18 +706,23 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.themeIcons = false;
 	}
 	
+	// buttons on side bar will always use icons & not images
+	x_sideBarBtnInfo();
+	
 	for (let i=0; i<x_btnIcons.length; i++) {
 		x_btnIcons[i].customised = false;
 		if (x_params[x_btnIcons[i].custom] == 'true') {
 			// a custom icon has individually been selected in editor for this button
 			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
 			x_btnIcons[i].customised = true;
-		} else if (x_params.themeIcons == 'true') {
+		} else if (x_params.themeIcons == 'true' || ($.inArray(x_params.theme, oldThemes) != -1 && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
 			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
+			// either because update theme icons is checked or button is on side bar
 			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
 			x_btnIcons[i].customised = true;
 		}
 	}
+	
 
     x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
 
@@ -1443,7 +1453,6 @@ function x_continueSetUp1() {
 					
 					// there are different types of content that might appear in page intro lightbox
 					if (thisPageIntro.type == 'img') {
-						
 						$.featherlight({
 							image: thisPageIntro.info.img,
 							afterOpen: function() {
@@ -1465,7 +1474,6 @@ function x_continueSetUp1() {
 										.addClass('x_introImgBtn')
 										.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
 								}
-								
 							}
 						});
 						
@@ -1691,7 +1699,7 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
+		
 		// icon & label can new be set up in editor but fall back to default if not set
 		let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
 			menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
@@ -1783,6 +1791,9 @@ function x_continueSetUp1() {
 		{
 			$x_saveSessionBtn.remove();
 		}
+		
+		// create side bar
+		x_setUpSideBar();
 		
 		//add show/hide footer tools
 		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
@@ -1955,7 +1966,9 @@ function x_getIntroInfo(xml) {
 		}
 	}
 	 
-	if (getInfo('introType') == 'image' && getInfo('introImg') != undefined && $.trim(getInfo('introImg')) != '') {
+	if (xml == 'menu') {
+		return false;
+	} else if (getInfo('introType') == 'image' && getInfo('introImg') != undefined && $.trim(getInfo('introImg')) != '') {
 		return {type: 'img', info: {img: getInfo('introImg'), tip: getInfo('introTip')}};
 	} else if (getInfo('introType') == 'video' && getInfo('introVideo') != undefined && $.trim(getInfo('introVideo')) != '') {
 		return {type: 'video', info: {video: getInfo('introVideo'), tip: getInfo('introTip')}};
@@ -1967,6 +1980,204 @@ function x_getIntroInfo(xml) {
 		return {type: 'text', info: getInfo('intro')};
 	} else {
 		return false;
+	}
+}
+
+function x_sideBarBtnInfo() {
+	// work out what buttons will show on side bar
+	if (x_params.sideBar == 'true') {
+		
+		// project level buttons
+		if (x_params.sbToC == 'true') {
+			x_sideBarBtns.push('toc');
+		}
+		if (x_params.sbProjectIntro == 'true' && x_params.intro != undefined && $.trim(x_params.intro) != '') {
+			x_sideBarBtns.push('intro');
+		}
+		if (x_params.sbProjectHelp == 'true' && x_params.nfo != undefined && $.trim(x_params.nfo) != '') {
+			x_sideBarBtns.push('help');
+		}
+		
+		if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
+			x_sideBarBtns.push('glossary');
+		}
+		if (x_params.sbAccessibility == 'true' && x_params.accessibilityHide != 'true') {
+			x_sideBarBtns.push('accessibility');
+		}
+		
+		// page level buttons (what the button does will change on each page)
+		// does at least one page in project have some page info added?
+		if (x_params.sbPageIntro == 'true') {
+			for (let i=0; i<x_pages.length; i++) {
+				if (x_pageInfo[i].type != "menu") {
+					if (x_params.sbPageIntro == 'true' && (
+							(x_pages[i].getAttribute('introType') == 'text' && $.trim(x_pages[i].getAttribute('pageIntro')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'image' && $.trim(x_pages[i].getAttribute('introImg')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'video' && $.trim(x_pages[i].getAttribute('introVideo')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'url' && $.trim(x_pages[i].getAttribute('introURL')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'file' && $.trim(x_pages[i].getAttribute('introFile')) != '')
+					)) {
+						x_sideBarBtns.push('pageIntro');
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+function x_setUpSideBar() {
+	// only create side bar if there are some buttons that will appear on it
+	if (x_sideBarBtns.length > 0) {
+		
+		const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
+		
+		const $x_sideBar = $('<div id="x_sideBar"><button id="x_sideBarToggleBtn"></button><div id="x_sideBarBtnHolder"></div></div>'),
+			$x_sideBarBtnHolder = $x_sideBar.find('#x_sideBarBtnHolder'),
+			$x_sideBarToggleBtn = $x_sideBar.find('#x_sideBarToggleBtn');
+		
+		const minW = 30, borderW = 1;
+		let maxW = 100;
+		
+		if (x_params.sideBarSize == 'large') {
+			$x_sideBar.addClass('sideBarLarge');
+		} else {
+			$x_sideBar.addClass('sideBarSmall');
+			
+			if (x_params.sideBarBtnTxt != 'true') {
+				maxW = 60;
+			}
+		}
+		
+		// labels can be set in editor but fall back to language file if not set
+		const closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar"),
+			openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar"),
+			closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideLeft';})[0].iconClass,
+			openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowLeft';})[0].iconClass;
+		
+		if (x_params.sideBarPosition == 'right') {
+			$x_sideBar.insertAfter($x_mainHolder);
+			$x_body.addClass('sb_right');
+		} else {
+			$x_sideBar.insertBefore($x_mainHolder);
+			$x_body.addClass('sb_left');
+		}
+		
+		// side bar open / close
+		$x_sideBar.data('state', x_params.sideBarShow);
+		
+		$x_sideBarToggleBtn
+			.button({
+				icons: { primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon },
+				label: x_params.sideBarShow == 'closed' ? openLabel : closeLabel,
+				text: false
+			})
+			.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
+			.click(function() {
+				
+				if ($x_sideBar.data('state') == 'open') {
+					$x_sideBar
+						.animate({width: minW + 'px'})
+						.data('state', 'closed');
+					
+					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+						.animate({'width': $x_body.width() - minW + borderW});
+					
+					$x_mainHolder
+						.animate({['padding-' + x_params.sideBarPosition]: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
+					
+					$(this).button({ icons: { primary: openIcon }, label: openLabel, text: false });
+					
+				} else {
+					if (overlay) {
+						$x_sideBar
+							.animate({width: maxW})
+							.data('state', 'open');
+							
+					} else {
+						$x_sideBar
+							.animate({width: maxW + 'px'})
+							.data('state', 'open');
+						
+						$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+							.animate({'width': $x_body.width() - maxW + borderW});
+						
+						$x_mainHolder
+							.animate({['padding-' + x_params.sideBarPosition]: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
+					}
+						
+					$(this).button({ icons: { primary: closeIcon }, label: closeLabel, text: false });
+					
+					$x_sideBarBtnHolder.show();
+				}
+			});
+		
+		// add buttons to side bar
+		const btnTxt = x_params.sideBarBtnTxt == 'true' ? true : false;
+		
+		if ($.inArray('toc', x_sideBarBtns) != -1) {
+			$x_menuBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('intro', x_sideBarBtns) != -1) {
+			$x_introBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('help', x_sideBarBtns) != -1) {
+			$x_helpBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('glossary', x_sideBarBtns) != -1) {
+			$x_glossaryBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('accessibility', x_sideBarBtns) != -1) {
+			$x_colourChangerBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
+			$x_pageIntroBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		
+		if (x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') {
+			let widestBtn = 0;
+			
+			$x_sideBarBtnHolder.find('button').each(function() {
+				widestBtn = Math.max(widestBtn, $(this).outerWidth());
+			});
+			
+			maxW = widestBtn + 30;
+			
+			$x_sideBarBtnHolder.find('button').width('90%');
+		}
+		
+		if (overlay) {
+			maxW = '100%';
+		}
+		
+		if (x_params.sideBarShow == 'closed') {
+			$x_sideBar.width(minW + 'px');
+			$x_sideBarBtnHolder.hide();
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
+			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
+		} else {
+			if (overlay) {
+				$x_sideBar.width(maxW);
+				$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
+				$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
+			} else {
+				$x_sideBar.width(maxW + 'px');
+				$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
+				$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
+			}
+		}
 	}
 }
 
@@ -2374,6 +2585,12 @@ function x_changePage(x_gotoPage, addHistory) {
 		}
 		
 		x_pageInfo[x_gotoPage].viewedLightBox = true;
+	}
+	
+	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
+	const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
+	if (overlay && !x_firstLoad && $('#x_sideBar').length > 0 && $('#x_sideBar').data('state') == 'open') {
+		$('#x_sideBar #x_sideBarToggleBtn').click();
 	}
 }
 
@@ -2799,7 +3016,7 @@ function x_changePageStep6() {
 		x_focusPageContents(false);
 		
 		// show page introduction immediately if set to always auto open
-		if ($x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
+		if (!x_isMenu() && $x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
 			$x_pageIntroBtn.click();
 		}
 
@@ -3406,6 +3623,12 @@ function x_loadPageBg(loadModel) {
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
 	if (updatePage != false) {
+		
+		if ($('#x_sideBar') != undefined) {
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+				.width($x_body.width() - $('#x_sideBar').width() + 1);
+		}
+		
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
 		if ($("#x_pageNarration").length > 0) {
 			if ($("#x_pageNarration audio").css("display") == "none") { // flash

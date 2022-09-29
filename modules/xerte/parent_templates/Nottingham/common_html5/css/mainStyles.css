@@ -1032,3 +1032,132 @@ a:focus .wcagLogo {
 .circleBtn.ui-button-icon-only {
 	height: 2.4em;
 }
+
+
+/* --SIDE BAR-------------------------------------------------------------- */
+
+#x_sideBar {
+	height: 100%;
+	position: absolute;
+	background-color: #ccc;
+	box-shadow: inset 0 0.5em 1.5em rgb(0 0 0 / 10%), inset 0 0.125em 0.5em rgb(0 0 0 / 50%);
+}
+
+.sb_right #x_sideBar {
+	right: 0;
+}
+
+#x_sideBarToggleBtn {
+	width: 100%;
+	height: 30px;
+	font-size: 20px;
+	background: none;
+	border: none;
+	border-bottom: 1px #666 solid;
+	border-radius: 0;
+	color: #212121;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: white;
+	background-color: #212121;
+}
+
+.sb_left #x_sideBarToggleBtn .ui-button-icon-primary {
+	text-align: right;
+	right: 5px;
+}
+
+.sb_right #x_sideBarToggleBtn .ui-button-icon-primary {
+	text-align: left;
+	left: 13px;
+}
+
+#x_sideBarBtnHolder {
+	padding-top: 1em;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+#x_sideBarBtnHolder button {
+	color: #212121;
+	background: none;
+	border: none;
+	border-radius: 0px;
+	display: block;
+	margin-bottom: 1em;
+	height: auto !important;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
+	width: auto !important;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button {
+	white-space: nowrap;
+	width: auto;
+	box-sizing: border-box;
+	text-align: left;
+	padding: 1em 5px 1em;
+	margin-bottom: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-bottom: 1px solid #666;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button.ui-button-icon-only {
+	width: auto;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button span.ui-button-text {
+	display: inline-block;
+}
+
+#x_sideBarBtnHolder button span.ui-icon {
+	position: static;
+	margin-top: 0;
+	box-sizing: border-box;
+	margin-left: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button span.ui-icon {
+	width: 20px;
+	height: 20px;
+	font-size: 15px;
+	vertical-align: bottom;
+	margin-right: 10px;
+	text-align: center;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button.ui-button-icon-only span.ui-icon {
+	margin-right: 0;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border: 1px solid #212121;
+	border-radius: 35px;
+	width: 70px;
+	height: 70px;
+	padding-top: 16px;
+	font-size: 34px;
+}
+
+#x_sideBarBtnHolder button span.ui-button-text {
+	font-size: 1em;
+	padding: 0;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button.ui-button-icon-only span.ui-button-text {
+	display: inline-block;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: #212121;
+	color: white;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: #212121;
+	color: white;
+}
