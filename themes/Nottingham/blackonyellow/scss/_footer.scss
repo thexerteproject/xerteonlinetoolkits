@@ -97,6 +97,44 @@
   border: 2px solid darken($lightestcolor,40);
 }
 
+//*****SIDE BAR****/
+
+#x_sideBar {
+	background-color: lighten($blackordarkest, 30%);
+}
+
+#x_sideBarToggleBtn {
+	border-color: lighten($blackordarkest, 10%);
+	color: $bodybackgroundcolor;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: $bodybackgroundcolor;
+	background-color: lighten($blackordarkest, 10%);
+}
+
+#x_sideBarBtnHolder button {
+	color: $bodybackgroundcolor;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-color: lighten($blackordarkest, 10%);
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border-color: lighten($blackordarkest, 10%);
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: lighten($blackordarkest, 10%);
+	color: $bodybackgroundcolor;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: lighten($blackordarkest, 10%);
+	color: $bodybackgroundcolor;
+}
+
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen
 and (max-width :500px) {

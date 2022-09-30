@@ -163,3 +163,39 @@ font-weight: bold;
 	color: #fffff0;
 	background-color: #7c097d;
 }
+
+#x_sideBar {
+	background-color: #fffff0;
+}
+
+#x_sideBarToggleBtn {
+	border-color: #ffab38;
+	color: #7c097d;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: #7c097d;
+	background-color: #ffab38;
+}
+
+#x_sideBarBtnHolder button {
+	color: #7c097d;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-color: #ffab38;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border-color: #ffab38;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: #ffab38;
+	color: #7c097d;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: #ffab38;
+	color: #7c097d;
+}
