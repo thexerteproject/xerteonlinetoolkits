@@ -1089,6 +1089,10 @@ a:focus .wcagLogo {
 	height: auto !important;
 }
 
+#x_sideBarBtnHolder button:after {
+	content: none;
+}
+
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
 	width: auto !important;
 }
