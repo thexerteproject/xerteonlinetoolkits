@@ -5049,19 +5049,29 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				})
 				.attr("aria-label", $x_glossaryBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
-					x_openDialog(
-						"glossary",
-						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
-						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
-						null,
-						null,
-						function () {
-							$x_glossaryBtn
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
+					if (x_params.glossaryTarget == "lightbox") {
+						
+						$.featherlight($(), {
+							contentFilters: 'ajax',
+							ajax: x_templateLocation + 'models_html5/glossary.html',
+							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
+						});
+						
+					} else {
+						x_openDialog(
+							"glossary",
+							x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
+							x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
+							null,
+							null,
+							function () {
+								$x_glossaryBtn
+									.blur()
+									.removeClass("ui-state-focus")
+									.removeClass("ui-state-hover");
+							}
+						);
+					}
 				});
 			
 			if (glossaryIcon.customised == true) {
@@ -5164,13 +5174,27 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
 		}
 		tableData += "</table>";
-
+		
+		if ($("#glossaryItems").parents('.featherlight').length > 0) {
+			tableData = '<div class="glossaryHolder">' + tableData + '</div>';
+		}
+		
 		$("#glossaryItems").append(tableData);
 		
 		x_pageContentsUpdated();
 		
 		// add class for shaded rows rather than using css selector as doesnt work for IE8 & below
 		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
+		
+		// lightbox
+		if ($("#glossaryItems").parents('.featherlight').length > 0) {
+			
+			$('#glossaryItems').prepend('<h1 id="x_introH1">' + (x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary")) + '</h1>');
+			
+			$('#glossaryItems .glossaryHolder')
+				.height($('.featherlight-content').height() - $('#x_introH1').outerHeight())
+				.css('overflow', 'auto');
+		}
 	},
 
 	insertText = function(tempText, exclude, list) {
