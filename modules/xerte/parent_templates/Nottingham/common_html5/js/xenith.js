@@ -1560,19 +1560,29 @@ function x_continueSetUp1() {
 				})
 				.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
-					x_openDialog(
-						"colourChanger",
-						x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
-						x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
-						null,
-						null,
-						function () {
-							$x_colourChangerBtn
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
+					if (x_params.accessibilityTarget == "lightbox") {
+						
+						$.featherlight($(), {
+							contentFilters: 'ajax',
+							ajax: x_templateLocation + 'models_html5/colourChanger.html',
+							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
+						});
+						
+					} else {
+						x_openDialog(
+							"colourChanger",
+							x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
+							x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
+							null,
+							null,
+							function () {
+								$x_colourChangerBtn
+									.blur()
+									.removeClass("ui-state-focus")
+									.removeClass("ui-state-hover");
+							}
+						);
+					}
 				});
 				
 			if (accessibilityIcon.customised == true) {

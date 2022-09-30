@@ -42,6 +42,18 @@
 		}
 
 		this.init = function() {
+			
+			// opened in lightbox
+			if ($('#colourChangerHolder').parents('.featherlight').length > 0) {
+				$('#colourChangerHolder').wrap('<div id="x_colourChanger"></div>');
+				
+				$('#x_colourChanger').prepend('<h1 id="x_introH1">' + (x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour")) + '</h1>');
+				
+				$('#colourChangerHolder')
+					.height($('.featherlight-content').height() - $('#x_introH1').outerHeight())
+					.css('overflow', 'auto');
+			}
+			
 			// get language strings
 			$("#p1").html(x_getLangInfo(x_languageData.find("colourChanger").find("selectTxt")[0], "label", "Please select from the options below") + ":");
 			$("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Need more advice? Visit the <a target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=151'>Xerte Online Toolkits guide to accessibility</a>.")+' <a class=\'wcagLink\' target=\'_blank\' href=\'https://xot.xerte.org.uk/play.php?template_id=214#home\'><img class="wcagLogo" src="'+ x_templateLocation + 'common_html5/wcag2.1AA-blue-v.png" alt="'+x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo and link to Xerte accessibility statement")+'" title="'+x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement")+'"> </a>');

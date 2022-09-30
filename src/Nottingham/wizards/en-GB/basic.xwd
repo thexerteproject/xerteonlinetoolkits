@@ -82,6 +82,7 @@
 	
 	<accessibilityGroup type="group" label="Accessibility" optional="true" tooltip="Options related to the Accessibility Options button">
 		<accessibilityLabel label="Tooltip" type="TextInput" defaultValue="Accessibility Options" condition="accessibilityHide!='true'" optional="true" tooltip="The tooltip description for the Accessibility Options button. This text also appears as the title of the dialog box that opens when the button is clicked."/>
+		<accessibilityTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="accessibilityHide!='true'" optional="true" tooltip="Determines where the accessibility options information opens"/>
 		<accessibilityIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" condition="accessibilityHide!='true'" optional="true" tooltip="Override the default icon used on the Accessibility Options button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<accessibilityIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-eye-slash" condition="accessibilityHide!='true'&amp;&amp;accessibilityIc=='true'" optional="true"/>
 		<wcagGroup type="group" label="Logo and Link" optional="true" tooltip="The Accessibility Options dialog contains a WCAG logo which links to the Xerte Accessibility statement">
