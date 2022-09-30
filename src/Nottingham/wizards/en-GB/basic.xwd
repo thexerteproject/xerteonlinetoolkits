@@ -53,10 +53,11 @@
 	</navGroup>
 	
 	<toc type="group" label="Table of Contents" optional="true">
-		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
-		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true"/>
-		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
-		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
+		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
+		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" condition="navigation!='Historic'"/>
+		<tocTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="navigation=='Linear'||navigation=='LinearWithHistoric'||navigation==undefined" optional="true" tooltip="Determines where the table of contents opens"/>
+		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
+		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
 	</toc>
 	
 	<homePageGroup type="group" label="Home Page" optional="true">

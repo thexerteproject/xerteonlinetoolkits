@@ -1721,19 +1721,29 @@ function x_continueSetUp1() {
 			.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
 			.click(function() {
 				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
-					x_openDialog(
-						"menu",
-						x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
-						x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
-						null,
-						null,
-						function () {
-							$x_menuBtn
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
+					if (x_params.tocTarget == "lightbox") {
+						
+						$.featherlight($(), {
+							contentFilters: 'ajax',
+							ajax: x_templateLocation + 'models_html5/menu.html',
+							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
+						});
+						
+					} else {
+						x_openDialog(
+							"menu",
+							x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+							x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+							null,
+							null,
+							function () {
+								$x_menuBtn
+									.blur()
+									.removeClass("ui-state-focus")
+									.removeClass("ui-state-hover");
+							}
+						);
+					}
 				} else x_goHome();
 				
 				$(this)
