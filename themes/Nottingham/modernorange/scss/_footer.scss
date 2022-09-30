@@ -88,6 +88,46 @@
   border: 2px solid $brightcolor;
 }
 
+//*****SIDE BAR****/
+
+#x_sideBar {
+	background-color: $contrastcolor;
+}
+
+#x_sideBarToggleBtn {
+	border-color: $whiteorlightest;
+	color: $whiteorlightest;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: $whiteorlightest;
+	background-color: $brightcolor;
+}
+
+#x_sideBarBtnHolder button {
+	color: $whiteorlightest;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-color: $whiteorlightest;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border-color: $accent1;
+	background-color: $accent1;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: $accent1;
+	color: $whiteorlightest;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: $brightcolor;
+	border-color: $brightcolor;
+	color: $whiteorlightest;
+}
+
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen
 and (max-width :500px) {

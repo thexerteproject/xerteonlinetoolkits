@@ -794,6 +794,44 @@ div#shorturltodisplay a {
   border: 2px solid #117BAD;
 }
 
+#x_sideBar {
+  background-color: #222222;
+}
+
+#x_sideBarToggleBtn {
+  border-color: #BFBFBF;
+  color: #ffffff;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+  color: #222222;
+  background-color: orange;
+}
+
+#x_sideBarBtnHolder button {
+  color: #ffffff;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+  border-color: #BFBFBF;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+  background-color: #117BAD;
+  border-color: #117BAD;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+  background-color: #117BAD;
+  color: #ffffff;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+  background-color: orange;
+  border-color: orange;
+  color: #ffffff;
+}
+
 @media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block;

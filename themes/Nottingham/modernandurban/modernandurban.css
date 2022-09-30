@@ -698,6 +698,45 @@ tr.alt td {
   border: 2px solid #ffffff;
 }
 
+#x_sideBar {
+  background-color: #426E86;
+}
+
+#x_sideBarToggleBtn {
+  border-color: #F8F1E5;
+  color: #ffffff;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+  color: #ffffff;
+  background-color: #2F3131;
+}
+
+#x_sideBarBtnHolder button {
+  color: #ffffff;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+  border-color: #F8F1E5;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+  background-color: #ffffff;
+  border-color: #ffffff;
+  color: #426E86;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+  background-color: #2F3131;
+  color: #ffffff;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+  background-color: #2F3131;
+  border-color: #2F3131;
+  color: #ffffff;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
