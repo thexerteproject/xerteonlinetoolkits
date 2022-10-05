@@ -93,6 +93,7 @@
 	<muteButton label="Mute Toggle" description="Toggle Mute Button"/>
 	<fullscreenButton label="Fullscreen" description="Fullscreen Movie Button"/>
 	<captionsButton label="Captions/Subtitles" description="Show/Hide Captions Button"/>
+	<transcriptButton label="Transcript"/>
   </mediaElementControls>
   
   <interactions>
