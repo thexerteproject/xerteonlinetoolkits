@@ -2115,6 +2115,7 @@
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
 		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an MP3 File"/>
 		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" conditionTrigger="true" data="player,auto" defaultValue="player" width="200" optional="true"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" condition="playerType!='auto'" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</sound>
 	
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
@@ -6709,9 +6710,10 @@
     <text label="Text" type="TextArea" height="250"/>
 	
 	<mediaInfo type="group" label="Media" optional="true">
-		<url label="Media" type="media" defaultValue="Select Media" optional="true"/>
+		<url label="File" type="media" defaultValue="Select Media" optional="true"/>
 		<tip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		<align label="Media Position" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" optional="true"/>
+		<transcript label="Audio Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</mediaInfo>
 
   </navPage><newWindow menu="Links / Feeds" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#newwindow" remove="true">
@@ -6935,7 +6937,11 @@
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox"/>  
-    <sound label="Sound" type="Media" optional="true"/>
+	
+	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
+		<sound label="File" type="Media" optional="true"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+	</soundGroup>
 		
     <newNodes>
       <opinionOption><![CDATA[<opinionOption name="Answer" text="Here is an option" />]]></opinionOption>
@@ -7273,6 +7279,8 @@
 		<pageLink label="Page" type="pageList" optional="true"/>
 		<pageLinkTxt label="Text" type="textInput" wysiwyg="true" defaultValue="Enter Text for Link" optional="true"/>
 	</linkInfo>
+	
+	<transcript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
   </sound><image menuItem="Image" icon="icImage" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>

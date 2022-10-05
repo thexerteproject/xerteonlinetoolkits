@@ -304,7 +304,8 @@
 						
 						$media.data({
 							source: this.getAttribute("url"),
-							title: this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? this.getAttribute("tip") : ''
+							title: this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? this.getAttribute("tip") : '',
+							transcript: this.getAttribute("transcript") != undefined && this.getAttribute("transcript") != "" ? this.getAttribute("transcript") : false
 						});
 						
 					// image
@@ -366,6 +367,11 @@
 								pageName: "nav",
 								trackMedia: false
 							}, 	true);
+							
+							// manually add a transcript button to the end of the audio bar
+							if ($media.data('transcript') !== false) {
+								x_addAudioTranscript($media, $media.data('transcript'));
+							}
 						}
 					}
 				}

@@ -381,7 +381,8 @@
 										var $thisAudio = $mediaPanel.find("#pageAudio");
 										$thisAudio.data({
 											"src": thisData.getAttribute("src"),
-											"width": $mediaPanel.find("#audioImage").width()
+											"width": $mediaPanel.find("#audioImage").width(),
+											"transcript": thisData.getAttribute('transcript') != undefined && thisData.getAttribute('transcript') != '' ? thisData.getAttribute('transcript') : false
 										});
 										perspectives.loadAudio($thisAudio, playAll);
 									});
@@ -629,6 +630,11 @@
 				width: $audio.data("width"),
 				pageName: "perspectives"
 			});
+			
+			// manually add a transcript button to the end of the audio bar
+			if ($audio.data('transcript') !== false) {
+				x_addAudioTranscript($audio, $audio.data('transcript'));
+			}
 			
 			if (playAll) perspectives.playAll($audio);
 		}

@@ -3489,7 +3489,11 @@ function x_addNarration(funct, arguments) {
 }
 
 // function adds transcript button to the end of audio bars, e.g. page narration - but also called from page models
-function x_addAudioTranscript($audioHolder, transcriptTxt) {
+function x_addAudioTranscript($audioHolder, transcriptTxt, decode) {
+	
+	if (decode == true) {
+		transcriptTxt = $("<div/>").html(transcriptTxt).text();
+	}
 	
 	$audioHolder.addClass('audioTranscript');
 	
