@@ -960,18 +960,18 @@ a:focus .wcagLogo {
     width: 16px !important;
 }
 
-#x_footerBlock #x_pageNarration.narrationTranscript .mejs-container .mejs-controls {
+.audioTranscript .mejs-container .mejs-controls {
 	box-sizing: border-box;
 	padding-right: 31px;
 }
 
-#x_footerBlock #x_pageNarration.narrationTranscript .mejs-container .mejs-controls .audioTranscriptBtn {
+.audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn {
 	height: 100%;
 	position: absolute;
 	right: 5px;
 }
 
-#x_footerBlock #x_pageNarration.narrationTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
+.audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button, #x_footerBlock .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
 	background-image: none;
 	font-size: 15px !important;
 	color: #eee;

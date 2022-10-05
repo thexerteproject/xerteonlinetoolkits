@@ -219,6 +219,11 @@
 					source	:soundFile,
 					width	:width
 				});
+				
+				// manually add a transcript button to the end of the narration bar
+				if (x_currentPageXML.getAttribute('soundTranscript') != undefined && x_currentPageXML.getAttribute('soundTranscript') != '') {
+					x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute('soundTranscript'));
+				}
 			}
 		}
 		

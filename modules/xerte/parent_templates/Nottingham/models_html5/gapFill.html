@@ -309,6 +309,11 @@
 					width	:"100%"
 				});
 				
+				// manually add a transcript button to the end of the audio bar
+				if (x_currentPageXML.getAttribute('audioTranscript') != undefined && x_currentPageXML.getAttribute('audioTranscript') != '') {
+					x_addAudioTranscript($audioHolder, x_currentPageXML.getAttribute('audioTranscript'));
+				}
+				
 				$audioHolder.hide();
 				
 			} else {

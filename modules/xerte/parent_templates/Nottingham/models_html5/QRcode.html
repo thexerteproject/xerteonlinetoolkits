@@ -165,6 +165,11 @@
 					source		:soundFile,
 					width		:$("#pageImg").width()
 				});
+				
+				// manually add a transcript button to the end of the audio bar
+				if (x_currentPageXML.getAttribute('soundTranscript') != undefined && x_currentPageXML.getAttribute('soundTranscript') != '') {
+					x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute('soundTranscript'));
+				}
 			}
 			if (firstLoad == true) {
 				x_pageLoaded();

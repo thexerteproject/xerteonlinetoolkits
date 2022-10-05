@@ -3473,16 +3473,7 @@ function x_addNarration(funct, arguments) {
 				
 				// manually add a transcript button to the end of the narration bar
 				if (x_currentPageXML.getAttribute("narrationTranscript") != undefined && x_currentPageXML.getAttribute("narrationTranscript") != '') {
-					
-					$("#x_footerBlock #x_pageNarration").addClass('narrationTranscript');
-					
-					const transcriptLabel = x_getLangInfo(x_languageData.find("mediaElementControls").find('transcriptButton')[0], 'label', 'Transcript');
-					
-					$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
-						.appendTo('#x_footerBlock #x_pageNarration .mejs-container .mejs-controls')
-						.click(function() {
-							$.featherlight(x_currentPageXML.getAttribute("narrationTranscript"));
-						});
+					x_addAudioTranscript($("#x_footerBlock #x_pageNarration"), x_currentPageXML.getAttribute("narrationTranscript"));
 				}
 			}
 			
@@ -3495,6 +3486,20 @@ function x_addNarration(funct, arguments) {
 			window[funct](arguments);
 		}
 	}
+}
+
+// function adds transcript button to the end of audio bars, e.g. page narration - but also called from page models
+function x_addAudioTranscript($audioHolder, transcriptTxt) {
+	
+	$audioHolder.addClass('audioTranscript');
+	
+	const transcriptLabel = x_getLangInfo(x_languageData.find('mediaElementControls').find('transcriptButton')[0], 'label', 'Transcript');
+	
+	$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
+		.appendTo($audioHolder.find('.mejs-container .mejs-controls'))
+		.click(function() {
+			$.featherlight(transcriptTxt);
+		});
 }
 
 // function adds timer bar above main controls on interface - optional property that can be added to any interactivity page

@@ -430,7 +430,10 @@
     <tip label="QR Code Description" type="TextInput"/>
 	<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" type="ComboBox" width="100" mandatory="true"/>
 
-    <sound label="Sound" type="media" optional="true"/>
+	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the QR code">
+		<sound label="File" type="media" optional="true"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+	</soundGroup>
 	
     <align label="Align Text" options="Left,Right,Hide Text" type="ComboBox" data="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
     
@@ -1039,6 +1042,7 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" data="Small,Medium,Large,Full" defaultValue="Small" type="ComboBox" width="100"/>
 	
 	<fadeSpeed label="Fade Speed" type="NumericStepper" min="0" max="2" step="0.1" defaultValue="0.8" optional="true" tooltip="The speed of the image change fade (in seconds). Set as 0 to change immediately to the next image with no fade animation."/>
+	<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 
     <newNodes>
       <synchPoint><![CDATA[<synchPoint name="Enter Slide Title" text="Content for the slide" align="Top" synch="0"/>]]></synchPoint>
@@ -1143,7 +1147,10 @@
 		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
 	</magnifierGroup>
 	
-    <sound label="Sound" type="media" optional="true" tooltip="Add an audio player below the image"/>
+	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the image">
+		<sound label="File" type="media" optional="true"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+	</soundGroup>	
 	
 	<linkInfo type="group" label="Link" optional="true">
 		<link label="URL" type="textInput" optional="true" defaultValue="Enter Link Address"/>
@@ -3583,7 +3590,12 @@
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
-	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
+	
+	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Include an audio player below the written feedback">
+		<audioFeedback label="File" type="media" optional="true"/>
+		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+	</audioGroup>
+	
 	<spaceLines label="Space Lines Evenly" type="CheckBox" defaultValue="true" optional="true"/>
 
     <hints type="group" label="Hints" optional="true">
