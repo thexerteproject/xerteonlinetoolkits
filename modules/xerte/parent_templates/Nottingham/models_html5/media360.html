@@ -336,7 +336,8 @@
 									type: 'lightbox',
 									sound: this.getAttribute('hotspotSound'),
 									start: this.getAttribute('soundStart'),
-									end: this.getAttribute('soundEnd')
+									end: this.getAttribute('soundEnd'),
+									transcript: this.getAttribute('soundTranscript')
 								};
 							}
 							
@@ -799,6 +800,11 @@
 									width: '100%',
 									startEndFrame: [Number(args.start), Number(args.end)]
 								});
+							
+							// manually add a transcript button to the end of the audio bar
+							if (args.transcript != undefined && args.transcript != '') {
+								x_addAudioTranscript($("#pageAudio"), args.transcript);
+							}
 							
 						} else if (args.video != undefined) {
 							var $pageVideo = $('<div id="pageVideo"></div>');

@@ -102,7 +102,7 @@
 			}
 			
 			// transcript stuff
-			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "") {
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "" && x_currentPageXML.getAttribute("transcriptPos") != "lightbox") {
 				$imgCaption.addClass("transcript");
 				
 				$transcript
@@ -207,6 +207,11 @@
 					source: soundFile,
 					width: $("#pageImg").width()
 				});
+			}
+			
+			// manually add a transcript button to the end of the audio bar
+			if (x_currentPageXML.getAttribute('transcript') != undefined && x_currentPageXML.getAttribute('transcript') != '' && x_currentPageXML.getAttribute("transcriptPos") == "lightbox") {
+				x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute('transcript'));
 			}
 		}
 		

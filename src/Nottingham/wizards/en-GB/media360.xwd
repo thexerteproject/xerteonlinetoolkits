@@ -123,7 +123,8 @@
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
 		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an MP3 File"/>
-		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" data="player,auto" defaultValue="player" width="200" optional="true"/>
+		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" data="player,auto" defaultValue="player" conditionTrigger="true" width="200" optional="true"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" condition="playerType!='auto'" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</sound>
 	
 	<soundTiming type="group" label="Sound Start &amp; End Times" condition="hotspotSound!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole audio will play">
