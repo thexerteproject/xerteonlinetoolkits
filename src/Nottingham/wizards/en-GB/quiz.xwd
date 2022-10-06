@@ -79,9 +79,9 @@
 		<tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	</imgInfo>
 	
-	<soundGroup type="group" label="Audio" optional="true">
+	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
 		<sound label="File" type="media" optional="true"/>
-		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="When a transcript is added, an extra button will be added to the end of the audio player which opens the transcript text in a lightbox"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>
 	
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
@@ -98,9 +98,9 @@
     <feedback label="Feedback" type="TextArea"  height="100" tooltip="Feedback shown when this answer is submitted"/>
     <correct label="Correct" options="True,False" type="ComboBox"  data="true,false" defaultValue="false" width="100" />
 	
-	<audioGroup type="group" label="Audio Feedback" optional="true">
+	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player below the feedback text">
 		<audioFB label="File" defaultValue="" type="media" optional="true" />
-		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="When a transcript is added, an extra button will be added to the end of the audio player which opens the transcript text in a lightbox"/>
+		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</audioGroup>
   </option>
   

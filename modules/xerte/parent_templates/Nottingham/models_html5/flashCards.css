@@ -103,6 +103,7 @@
 		overflow: auto;
 		backface-visibility: hidden;
 		margin: 1em 1em 0;
+		height: 100%;
 	}
 	
 	#cards.hideOverflow .cardInner {

@@ -28,17 +28,25 @@
 
 #dragDropHolder .audioHolder {
 	float: left;
+	margin-right: .5em;
 }
 
-#dragDropHolder .audioHolder .mejs-controls div:not (.mejs-playpause-button
-	) {
+#dragDropHolder .audioHolder .mejs-controls div:not(.mejs-playpause-button):not(.audioTranscriptBtn) {
 	display: none;
+}
+
+#dragDropHolder .audioHolder.audioTranscript .mejs-container {
+	width: 60px !important;
 }
 
 #dragDropHolder .tick {
 	position: absolute;
 	top: 0.5em;
-	right: 0.5em;
+	right: 0em;
+}
+
+#dragDropHolder .audioFB .tick {
+	right: -1.5em;
 }
 
 #labelHolder {
