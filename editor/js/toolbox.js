@@ -1528,8 +1528,9 @@ var EDITOR = (function ($, parent) {
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript', 'rubytext' ],
-                        [ 'Sourcedialog' ],
-                        [ 'FontAwesome']
+						[ 'FontAwesome'],
+						[ 'RemoveFormat'],
+                        [ 'Sourcedialog' ]
                     ],
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
