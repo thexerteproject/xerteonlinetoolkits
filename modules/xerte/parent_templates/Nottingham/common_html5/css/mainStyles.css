@@ -972,6 +972,7 @@ a:focus .wcagLogo {
 }
 
 .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button, #x_footerBlock .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
+	font-family: "Font Awesome 5 Free";
 	background-image: none;
 	font-size: 15px !important;
 	color: #eee;
