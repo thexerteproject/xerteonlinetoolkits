@@ -1806,10 +1806,11 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 				// remove size & background color styles from links on toc
 				if ($('<p>' + subLinkName + '</p>').children().length > 0) {
-					subLinkName = $(subLinkName);
+					subLinkName = $("<div>").html(subLinkName);
 					subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
 					subLinkName.find('[style*="font-size"]').css('font-size', '');
 					subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
+					subLinkName = subLinkName.html();
 				}
 				
 				var tempLink = validPages.indexOf(pageIndex) != -1 ? 'page' + (validPages.indexOf(pageIndex)+1) : (page.attr("customLinkID") != "" && page.attr("customLinkID") != undefined ? page.attr("customLinkID") : page.attr('linkID'));
