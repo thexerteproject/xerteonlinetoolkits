@@ -28,10 +28,14 @@
   background-repeat: no-repeat;
   background-position: right;
   background-image: none;
-  width: 100%;
-  border-top-right-radius: 3vmin;
   background: #222222;
   box-shadow: none;
+}
+
+body:not(.sb_right):not(.sb_left) #x_headerBlock {
+  width: 100%;
+  border-top-right-radius: 3vmin;
+  border-top-left-radius: 3vmin;
 }
 
 #x_headerBlock #x_pageIntroBtn {
@@ -622,10 +626,15 @@ div#shorturltodisplay a {
   font-size: 1em;
   color: #000000;
   background-image: none;
-  width: 100%;
   margin-bottom: 1%;
   background: #ffffff;
   box-shadow: none;
+}
+
+body:not(.sb_right):not(.sb_left) #x_footerBlock {
+  width: 100%;
+  border-bottom-left-radius: 3vmin;
+  border-bottom-right-radius: 3vmin;
 }
 
 #x_footerBg {
@@ -1567,15 +1576,16 @@ a:hover {
 
 #x_mainHolder {
   background: #ffffff;
-  border-top-right-radius: 3vmin;
-  border-bottom-left-radius: 3vmin;
   border: none !important;
   /*remove this to restore the default border*/
 }
 
-#x_mainHolder {
+body:not(.sb_right):not(.sb_left) #x_mainHolder {
+  border-radius: 3vmin;
   max-width: 98%;
-  max-height: 98%;
+}
+
+#x_mainHolder {
   margin: auto;
   position: absolute;
   top: 0;
@@ -1596,20 +1606,6 @@ a:hover {
   background: orange;
 }
 
-#x_headerBlock {
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
-}
-
-#x_mainHolder {
-  border-radius: 20px;
-}
-
-#x_footerBlock {
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-}
-
 .panel {
   border-radius: 2vmin;
   background: orange;
@@ -1627,7 +1623,7 @@ img {
 
 @media (min-width: 1366px) {
   /*tablet and above css below here*/
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 90%;
     max-height: 92%;
     margin: auto;
@@ -1639,7 +1635,7 @@ img {
   }
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 98%;
     max-height: 98%;
     margin: auto;

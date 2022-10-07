@@ -3667,7 +3667,7 @@ function x_loadPageBg(loadModel) {
 function x_updateCss(updatePage) {
 	if (updatePage != false) {
 		
-		if ($('#x_sideBar') != undefined) {
+		if ($('#x_sideBar').length > 0) {
 			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 				.width($x_body.width() - $('#x_sideBar').width() + 1);
 		}

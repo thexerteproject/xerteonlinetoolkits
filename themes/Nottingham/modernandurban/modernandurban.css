@@ -16,12 +16,15 @@
   background-repeat: no-repeat;
   background-position: right;
   background-image: none;
-  width: 98%;
-  border-top-right-radius: 6vmin;
-  border-bottom-right-radius: 6vmin;
   margin-top: 5px;
   background: #426E86;
   box-shadow: 3px 3px 5px grey;
+}
+
+body:not(.sb_right):not(.sb_left) #x_headerBlock {
+  width: 98%;
+  border-top-right-radius: 6vmin;
+  border-bottom-right-radius: 6vmin;
 }
 
 #x_headerBlock #x_pageIntroBtn {
@@ -526,13 +529,16 @@ tr.alt td {
   font-size: 1em;
   color: #ffffff;
   background-image: none;
-  width: 98%;
-  border-top-left-radius: 6vmin;
-  border-bottom-left-radius: 6vmin;
-  margin-left: 2%;
   margin-bottom: 1%;
   background: #426E86;
   box-shadow: 3px 3px 5px grey;
+}
+
+body:not(.sb_right):not(.sb_left) #x_footerBlock {
+  width: 98%;
+  margin-left: 2%;
+  border-top-left-radius: 6vmin;
+  border-bottom-left-radius: 6vmin;
 }
 
 #x_footerBg {
@@ -1420,10 +1426,13 @@ h3 {
 
 #x_mainHolder {
   background: #ffffff;
-  border-top-right-radius: 6vmin;
-  border-bottom-left-radius: 6vmin;
   border: none !important;
   /*remove this to restore the default border*/
+}
+
+body:not(.sb_right):not(.sb_left) #x_mainHolder {
+  border-top-right-radius: 6vmin;
+  border-bottom-left-radius: 6vmin;
 }
 
 #x_pageDiv {
@@ -1455,7 +1464,7 @@ img {
 
 @media (min-width: 1366px) {
   /*tablet and above css below here*/
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 90%;
     max-height: 92%;
     margin: auto;
@@ -1467,7 +1476,7 @@ img {
   }
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 98%;
     max-height: 98%;
     margin: auto;

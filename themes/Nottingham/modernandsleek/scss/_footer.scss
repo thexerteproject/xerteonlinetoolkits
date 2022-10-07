@@ -2,13 +2,15 @@
   font-size:		1em;
   color:			$whiteorlightest;
   background-image:	none;
-  width: 98%;
-  border-top-left-radius: $largeroundedcorners;
-  border-bottom-left-radius: $largeroundedcorners;
-  margin-left: 2%;
   margin-bottom:1%;
   background: $contrastcolor;
   box-shadow: $interfaceboxshadow;
+}
+body:not(.sb_right):not(.sb_left) #x_footerBlock {
+  width: 98%;
+  margin-left: 2%;
+  border-top-left-radius: $largeroundedcorners;
+  border-bottom-left-radius: $largeroundedcorners;
 }
 #x_footerBg {
   background-image:none;
