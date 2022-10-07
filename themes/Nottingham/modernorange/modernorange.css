@@ -568,46 +568,44 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   background-image: none;
 }
 
-#x_nextBtn:after {
+#x_nextBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_prevBtn:after {
+#x_prevBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_cssBtn:after {
+#x_cssBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_colourChangerBtn:after {
+#x_colourChangerBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_mediaBtn:after {
+#x_mediaBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_glossaryBtn:after {
+#x_glossaryBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_helpBtn:after {
+#x_helpBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_introBtn:after {
+#x_introBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_menuBtn:after {
+#x_menuBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
 }
 
-#x_saveSessionBtn:after {
+#x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {
   content: "";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
 }
 
 #x_footerBlock button {
@@ -627,14 +625,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 }
 
 #x_footerBlock button {
-  font-family: FontAwesome, sans-serif;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
   font-size: 1.9em;
   width: 1.5em;
   padding-right: 0;
   margin-left: 5px;
 }
 
-#x_footerBlock button span {
+#x_footerBlock button span.ui-button-text {
   display: none;
 }
 

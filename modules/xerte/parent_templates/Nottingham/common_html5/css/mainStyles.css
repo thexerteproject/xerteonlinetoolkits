@@ -295,14 +295,14 @@ button.ui-button-icon-only {
 
 /* GLOSSARY */
 
-span.x_glossary {
+#x_pageDiv span.x_glossary {
 	font-weight:		bold;
 	text-decoration:	none;
 	color:				#010101;
 	border-bottom:		1px dotted;
 }
 
-span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
+#x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
 	color:	#010101;
 }
 
@@ -730,10 +730,6 @@ textarea {
 	width: 1.5em;
 }
 
-#x_footerBlock .customIconBtn:after {
-	content: none !important;
-}
-
 #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary {
 	display: block;
 }
@@ -747,6 +743,11 @@ textarea {
 #x_footerBlock button.customIconBtn .ui-icon {
     left: 50%;
     transform: translate(-50%, 25%);
+}
+
+#x_footerBlock button:not(.customIconBtn):not(.imgIconBtn) .ui-icon {
+	text-indent: 0;
+	margin-top: 15%;
 }
 
 /* --PROJECT & PAGE INTRODUCTION-------------------------------------------------------------- */
@@ -1108,8 +1109,11 @@ a:focus .wcagLogo {
 	height: auto !important;
 }
 
-#x_sideBarBtnHolder button:after {
-	content: none;
+#x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	text-indent: 0;
+	float: left;
 }
 
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button {

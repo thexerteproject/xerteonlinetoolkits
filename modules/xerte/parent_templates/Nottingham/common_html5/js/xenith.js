@@ -720,6 +720,8 @@ x_projectDataLoaded = function(xmlData) {
 			// either because update theme icons is checked or button is on side bar
 			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
 			x_btnIcons[i].customised = true;
+		} else if ($.inArray(x_params.theme, oldThemes) != -1) {
+			x_btnIcons[i].btnImgs = true;
 		}
 	}
 	
@@ -1099,6 +1101,9 @@ function x_desktopSetUp() {
 		if (maxBtnIcon.customised == true) {
 			$("#x_cssBtn").addClass("customIconBtn");
 		}
+		if (maxBtnIcon.btnImgs == true) {
+			$("#x_cssBtn").addClass("imgIconBtn");
+		}
 	}
 
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
@@ -1261,6 +1266,9 @@ function x_continueSetUp1() {
 			if (helpIcon.customised == true) {
 				$x_helpBtn.addClass("customIconBtn");
 			}
+			if (helpIcon.btnImgs == true) {
+				$x_helpBtn.addClass("imgIconBtn");
+			}
 		}
 		
 		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
@@ -1382,6 +1390,9 @@ function x_continueSetUp1() {
 			
 			if (introIcon.customised == true) {
 				$x_introBtn.addClass("customIconBtn");
+			}
+			if (introIcon.btnImgs == true) {
+				$x_introBtn.addClass("imgIconBtn");
 			}
 		}
 		
@@ -1588,6 +1599,9 @@ function x_continueSetUp1() {
 			if (accessibilityIcon.customised == true) {
 				$("#x_colourChangerBtn").addClass("customIconBtn");
 			}
+			if (accessibilityIcon.btnImgs == true) {
+				$("#x_colourChangerBtn").addClass("imgIconBtn");
+			}
 			
 		} else {
 			$x_colourChangerBtn.remove();
@@ -1688,10 +1702,19 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 		
+		if (prevIcon.customised == true) {
+			$x_prevBtn.addClass("customIconBtn");
+		}
+		if (prevIcon.btnImgs == true) {
+			$x_prevBtn.addClass("imgIconBtn");
+		}
+		
+		const nextIcon = x_btnIcons.filter(function(icon){return icon.name === 'next';})[0];
+		
 		$x_nextBtn
 			.button({
 				icons: {
-					primary: x_btnIcons.filter(function(icon){return icon.name === 'next';})[0].iconClass
+					primary: nextIcon.iconClass
 				},
 				// label can now be set in editor but fall back to language file if not set
 				label: x_params.nextLabel != undefined && x_params.nextLabel != "" ? x_params.nextLabel : x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
@@ -1709,6 +1732,13 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
+		
+		if (nextIcon.customised == true) {
+			$x_nextBtn.addClass("customIconBtn");
+		}
+		if (nextIcon.btnImgs == true) {
+			$x_nextBtn.addClass("imgIconBtn");
+		}
 		
 		// icon & label can new be set up in editor but fall back to default if not set
 		let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
@@ -1763,7 +1793,10 @@ function x_continueSetUp1() {
 			});
 		
 		if (menuIcon.customised == true) {
-			$("#x_prevBtn, #x_nextBtn, #x_menuBtn").addClass("customIconBtn");
+			$x_menuBtn.addClass("customIconBtn");
+		}
+		if (menuIcon.btnImgs == true) {
+			$x_menuBtn.addClass("imgIconBtn");
 		}
 
 		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
@@ -1805,6 +1838,9 @@ function x_continueSetUp1() {
 			
 			if (saveSessionIcon.customised == true) {
 				$("#x_saveSessionBtn").addClass("customIconBtn");
+			}
+			if (saveSessionIcon.btnImgs == true) {
+				$("#x_saveSessionBtn").addClass("imgIconBtn");
 			}
 		}
 		else
@@ -5109,6 +5145,9 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			
 			if (glossaryIcon.customised == true) {
 				$x_glossaryBtn.addClass("customIconBtn");
+			}
+			if (glossaryIcon.btnImgs == true) {
+				$x_glossaryBtn.addClass("imgIconBtn");
 			}
 
 			// Handle the closing of glossary bubble with escape key
