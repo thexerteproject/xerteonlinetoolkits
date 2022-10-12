@@ -18,18 +18,18 @@
 
 /* Use FontAwesome icons for buttons */
 
-#x_footerBlock button span {
+#x_footerBlock button span, #x_sideBarBtnHolder button .ui-icon {
     background: none; /* Hide any PNG buttons */
 }
 
-.ui-button:after { /* Setup for FontAwesome icons */
+#x_footerBlock button.ui-button { /* Setup for FontAwesome icons */
     font-family: FontAwesome;
+}
+
+#x_footerBlock button.ui-button .ui-icon:before { /* Setup for FontAwesome icons */
     color: white;
-    position: absolute;
-    top: 0;
     width: 100%;
     font-size: 1.9em;
-    line-height: 1.5em;
 }
 
 .filter_inv .ui-button:after {
