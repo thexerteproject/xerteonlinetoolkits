@@ -698,37 +698,7 @@ x_projectDataLoaded = function(xmlData) {
         x_params.theme = x_urlParams.theme;
     }
 	
-	
-	// what icons / images will be used on interface?
-	// these older themes use images for interface buttons (not FontAwesome icons) - it's only these themes that can fall back to use the defaultFA (all others should have FA icons set in theme)
-	const oldThemes = ['default', 'darkgrey', 'flatblue', 'orangepurple', 'flatred', 'flatwhite', 'sketch', 'django', 'blackround'];
-	if (x_params.themeIcons != 'true' || $.inArray(x_params.theme, oldThemes) == -1) {
-		x_params.themeIcons = false;
-	}
-	
-	// buttons on side bar will always use icons & not images
-	x_sideBarBtnInfo();
-	
-	for (let i=0; i<x_btnIcons.length; i++) {
-		x_btnIcons[i].customised = false;
-		if (x_params[x_btnIcons[i].custom] == 'true') {
-			// a custom icon has individually been selected in editor for this button
-			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
-			x_btnIcons[i].customised = true;
-		} else if (x_params.themeIcons == 'true' || ($.inArray(x_params.theme, oldThemes) != -1 && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
-			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
-			// either because update theme icons is checked or button is on side bar
-			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
-			x_btnIcons[i].customised = true;
-		} else if ($.inArray(x_params.theme, oldThemes) != -1) {
-			x_btnIcons[i].btnImgs = true;
-		}
-	}
-	
-
-    x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
-
-    // Setup nr of pages for tracking
+	// Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
 	XTSetOption('toComplete', markedPages);
 	XTSetOption('templateId', x_TemplateId);
@@ -778,6 +748,60 @@ x_projectDataLoaded = function(xmlData) {
 			})
 			.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
 	}
+	
+	// what icons / images will be used on interface buttons?
+	// some older themes use images for interface buttons (not FontAwesome icons) - it's only these themes that can fall back to use the defaultFA (all others should have FA icons set in theme)
+	// these themes should have imgbtns: true in the theme info file
+	if (x_params.theme == undefined || x_params.theme == "default") {
+		x_themeInfo({ imgbtns: 'true' });
+		
+	} else {
+		$.ajax({
+			type: "GET",
+			url: x_themePath + x_params.theme + '/' + x_params.theme + '.info',
+			dataType: "text",
+			success: function (text) {
+				const temp = text.split('\n'),
+					themeInfo = {};
+				
+				for (let i=0; i<temp.length; i++) {
+					themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+				}
+				
+				x_themeInfo(themeInfo);
+			},
+			error: function() {
+				x_themeInfo({});
+			}
+		});
+	}
+}
+
+function x_themeInfo(themeInfo) {
+	if (x_params.themeIcons != 'true' || themeInfo.imgbtns != 'true') {
+		x_params.themeIcons = false;
+	}
+	
+	// buttons on side bar will always use icons & not images
+	x_sideBarBtnInfo();
+	
+	for (let i=0; i<x_btnIcons.length; i++) {
+		x_btnIcons[i].customised = false;
+		if (x_params[x_btnIcons[i].custom] == 'true') {
+			// a custom icon has individually been selected in editor for this button
+			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
+			x_btnIcons[i].customised = true;
+		} else if (x_params.themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
+			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
+			// either because update theme icons is checked or button is on side bar
+			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
+			x_btnIcons[i].customised = true;
+		} else if (themeInfo.imgbtns == 'true') {
+			x_btnIcons[i].btnImgs = true;
+		}
+	}
+
+	x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
 }
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX

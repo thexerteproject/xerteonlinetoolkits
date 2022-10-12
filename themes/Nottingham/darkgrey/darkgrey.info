@@ -3,3 +3,4 @@ display name: Dark: Grey
 description: Dark grey background, off-white text, simple buttons
 enabled: yes
 preview: darkgrey.jpg
+imgbtns: true
