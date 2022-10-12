@@ -2216,6 +2216,30 @@ function x_setUpSideBar() {
 		
 		if (overlay) {
 			maxW = '100%';
+			$x_sideBar.width(maxW);
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
+			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
+		} else {
+			$x_sideBar.width(maxW + 'px');
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
+			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
+			
+			// the text may overlap side bar - make sure sidebar expands but without text forced to be on a single line
+			if (x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') {
+				
+				let widestBtn = 0;
+				$x_sideBarBtnHolder.find('button').each(function() {
+					widestBtn = Math.max(widestBtn, $(this).outerWidth());
+				});
+				
+				if ($x_sideBarBtnHolder.innerWidth() < widestBtn) {
+					$x_sideBar.width('min-content');
+					
+					maxW = $x_sideBar.width();
+					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
+					$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
+				}
+			}
 		}
 		
 		if (x_params.sideBarShow == 'closed') {
@@ -2223,16 +2247,6 @@ function x_setUpSideBar() {
 			$x_sideBarBtnHolder.hide();
 			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
 			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
-		} else {
-			if (overlay) {
-				$x_sideBar.width(maxW);
-				$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
-				$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
-			} else {
-				$x_sideBar.width(maxW + 'px');
-				$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
-				$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
-			}
 		}
 	}
 }

@@ -740,7 +740,7 @@ textarea {
 	font-size: .9em;
 }
 
-#x_footerBlock button.customIconBtn .ui-icon {
+#x_footerBlock button.customIconBtn .ui-icon, #x_mainHolder.x_mobile #x_footerBlock button:not(.imgIconBtn) .ui-icon {
     left: 50%;
     transform: translate(-50%, 25%);
 }
@@ -1105,7 +1105,6 @@ a:focus .wcagLogo {
 	border: none;
 	border-radius: 0px;
 	display: block;
-	margin-bottom: 1em;
 	height: auto !important;
 }
 
@@ -1113,11 +1112,15 @@ a:focus .wcagLogo {
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
 	text-indent: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
 	float: left;
 }
 
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
 	width: auto !important;
+	margin: 0 auto 1em auto;
 }
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button {
@@ -1143,8 +1146,8 @@ a:focus .wcagLogo {
 
 #x_sideBarBtnHolder button span.ui-icon {
 	position: static;
-	margin-top: 0;
 	box-sizing: border-box;
+	margin-top: 0;
 	margin-left: 0;
 }
 
@@ -1168,6 +1171,7 @@ a:focus .wcagLogo {
 	height: 70px;
 	padding-top: 16px;
 	font-size: 34px;
+	margin: 0 auto;
 }
 
 #x_sideBarBtnHolder button span.ui-button-text {
