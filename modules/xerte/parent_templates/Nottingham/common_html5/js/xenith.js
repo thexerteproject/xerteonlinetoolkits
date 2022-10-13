@@ -49,25 +49,25 @@ var x_languageData  = [],
 	// x_params[custom] = should a custom btn icon be used (FA icon selected in editor)? true/false
 	// x_params[name+'Icon'] = the icon to use if custom is true
 	// defaultFA = old themes that use images for buttons can have all btns set to use these default FA icons using themeIcons checkbox
-	// iconClass = if icon isn't customised via icon selectors in editor or themeIcons checkbox, fallback to use this css style (this will mean btn icons/images set in theme will be used)
-		{name: 'max',				iconClass:'x_maximise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-expand-arrows-alt'}, 	// full screen on
-		{name: 'min',				iconClass:'x_minimise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-compress-arrows-alt'},	// full screen off
-		{name: 'prev',				iconClass:'x_prev',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-left'},	// previous page
-		{name: 'next',				iconClass:'x_next',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-right'},	// next page
-		{name: 'toc',				iconClass:'x_info',							custom: 'navIcons',			defaultFA: 'fas fa-bars'},					// table of contents
-		{name: 'home',				iconClass:'x_home',							custom: 'navIcons',			defaultFA: 'fas fa-home'},					// home page
-		{name: 'hideTools',			iconClass:'fa fa-angle-double-left fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-left'},		// footer tools hide
-		{name: 'showTools',			iconClass:'fa fa-angle-double-right fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-right'},	// footer tools show
-		{name: 'accessibility',		iconClass:'x_colourChanger',				custom: 'accessibilityIc',	defaultFA: 'fas fa-eye-slash'},				// accessibility options
-		{name: 'help',				iconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
-		{name: 'saveSession',		iconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
-		{name: 'glossary',			iconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
-		{name: 'intro',				iconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
-		{name: 'pageIntro',			iconClass:'fas fa-info',					custom: 'pageIntroIc',		defaultFA: 'fas fa-info'},					// page introduction
-		{name: 'sideBarHideLeft',	iconClass:'fa fa-angle-double-left',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
-		{name: 'sideBarHideRight',	iconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
-		{name: 'sideBarShowLeft',	iconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
-		{name: 'sideBarShowRight',	iconClass:'fa fa-angle-double-left',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
+	// defaultIconClass = if icon isn't customised via icon selectors in editor or themeIcons checkbox, fallback to use this css style (this will mean btn icons/images set in theme will be used)
+		{name: 'max',				defaultIconClass:'x_maximise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-expand-arrows-alt'}, 	// full screen on
+		{name: 'min',				defaultIconClass:'x_minimise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-compress-arrows-alt'},	// full screen off
+		{name: 'prev',				defaultIconClass:'x_prev',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-left'},	// previous page
+		{name: 'next',				defaultIconClass:'x_next',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-right'},	// next page
+		{name: 'toc',				defaultIconClass:'x_info',							custom: 'navIcons',			defaultFA: 'fas fa-bars'},					// table of contents
+		{name: 'home',				defaultIconClass:'x_home',							custom: 'navIcons',			defaultFA: 'fas fa-home'},					// home page
+		{name: 'hideTools',			defaultIconClass:'fa fa-angle-double-left fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-left'},		// footer tools hide
+		{name: 'showTools',			defaultIconClass:'fa fa-angle-double-right fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-right'},	// footer tools show
+		{name: 'accessibility',		defaultIconClass:'x_colourChanger',					custom: 'accessibilityIc',	defaultFA: 'fas fa-eye-slash'},				// accessibility options
+		{name: 'help',				defaultIconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
+		{name: 'saveSession',		defaultIconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
+		{name: 'glossary',			defaultIconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
+		{name: 'intro',				defaultIconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
+		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'},					// page introduction
+		{name: 'sideBarHideLeft',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
+		{name: 'sideBarHideRight',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
+		{name: 'sideBarShowLeft',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
+		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
 	],
 	x_sideBarBtns = [];
 	
@@ -76,7 +76,7 @@ var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
-	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
@@ -749,16 +749,20 @@ x_projectDataLoaded = function(xmlData) {
 			.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
 	}
 	
+	x_getThemeInfo(x_params.theme);
+}
+
+function x_getThemeInfo(thisTheme, themeChg) {
 	// what icons / images will be used on interface buttons?
 	// some older themes use images for interface buttons (not FontAwesome icons) - it's only these themes that can fall back to use the defaultFA (all others should have FA icons set in theme)
 	// these themes should have imgbtns: true in the theme info file
-	if (x_params.theme == undefined || x_params.theme == "default") {
-		x_themeInfo({ imgbtns: 'true' });
+	if (thisTheme == undefined || thisTheme == "default") {
+		x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
 		
 	} else {
 		$.ajax({
 			type: "GET",
-			url: x_themePath + x_params.theme + '/' + x_params.theme + '.info',
+			url: x_themePath + thisTheme + '/' + thisTheme + '.info',
 			dataType: "text",
 			success: function (text) {
 				const temp = text.split('\n'),
@@ -768,40 +772,95 @@ x_projectDataLoaded = function(xmlData) {
 					themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
 				}
 				
-				x_themeInfo(themeInfo);
+				x_setUpThemeBtns(themeInfo, themeChg);
 			},
 			error: function() {
-				x_themeInfo({});
+				x_setUpThemeBtns({}, themeChg);
 			}
 		});
 	}
 }
 
-function x_themeInfo(themeInfo) {
-	if (x_params.themeIcons != 'true' || themeInfo.imgbtns != 'true') {
-		x_params.themeIcons = false;
+function x_setUpThemeBtns(themeInfo, themeChg) {
+	let themeIcons = x_params.themeIcons;
+	if (themeIcons != 'true' || themeInfo.imgbtns != 'true') {
+		themeIcons = false;
 	}
 	
 	// buttons on side bar will always use icons & not images
-	x_sideBarBtnInfo();
+	if (themeChg !== true) {
+		x_sideBarBtnInfo();
+	}
 	
 	for (let i=0; i<x_btnIcons.length; i++) {
 		x_btnIcons[i].customised = false;
+		x_btnIcons[i].btnImgs = false;
+		x_btnIcons[i].iconClass = x_btnIcons[i].defaultIconClass;
+		
 		if (x_params[x_btnIcons[i].custom] == 'true') {
 			// a custom icon has individually been selected in editor for this button
 			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
 			x_btnIcons[i].customised = true;
-		} else if (x_params.themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
+		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
 			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
 			// either because update theme icons is checked or button is on side bar
 			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
 			x_btnIcons[i].customised = true;
 		} else if (themeInfo.imgbtns == 'true') {
 			x_btnIcons[i].btnImgs = true;
-		}
+		
 	}
 
-	x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
+	if (themeChg !== true) {
+		x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
+		
+	} else {
+		// theme has been changed sometime after the project has already loaded
+		// change classes on interface buttons as new theme may use a different type of btn (FontAwesome / image)
+		var btns = [ { btn: $x_helpBtn, name: 'help' }, { btn: $x_introBtn, name: 'intro' }, { btn: $x_colourChangerBtn, name: 'accessibility' }, { btn: $x_nextBtn, name: 'next' }, { btn: $x_saveSessionBtn, name: 'saveSession' }, { btn: $x_glossaryBtn, name: 'glossary' } ];
+		
+		for (let i=0; i<btns.length; i++) {
+			if (btns[i].btn != undefined) {
+				const btnIcon = x_btnIcons.filter(function(icon){return icon.name === btns[i].name;})[0];
+				btns[i].btn.button({ icons: { primary: btnIcon.iconClass } });
+				if (btnIcon.customised == true) { btns[i].btn.addClass("customIconBtn"); } else { btns[i].btn.removeClass("customIconBtn");  };
+				if (btnIcon.btnImgs == true) { btns[i].btn.addClass("imgIconBtn"); } else { btns[i].btn.removeClass("imgIconBtn"); };
+			}
+		}
+		
+		// now do btns where icon works slightly differently
+		if ($x_cssBtn != undefined) {
+			let btnIcon;
+			if (x_fillWindow == false) {
+				btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
+			} else {
+				btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'min';})[0];
+			}
+			$x_cssBtn.button({ icons: { primary: btnIcon.iconClass } });
+			if (btnIcon.customised == true) { $x_cssBtn.addClass("customIconBtn"); } else { $x_cssBtn.removeClass("customIconBtn");  };
+			if (btnIcon.btnImgs == true) { $x_cssBtn.addClass("imgIconBtn"); } else { $x_cssBtn.removeClass("imgIconBtn"); };
+		}
+		
+		if ($x_prevBtn != undefined) {
+			const btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'prev';})[0];
+			if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && btnIcon.customised === false) {
+				btnIcon.iconClass = "x_prev_hist";
+			}
+			$x_prevBtn.button({ icons: { primary: btnIcon.iconClass } });
+			if (btnIcon.customised == true) { $x_prevBtn.addClass("customIconBtn"); } else { $x_prevBtn.removeClass("customIconBtn");  };
+			if (btnIcon.btnImgs == true) { $x_prevBtn.addClass("imgIconBtn"); } else { $x_prevBtn.removeClass("imgIconBtn"); };
+		}
+		
+		if ($x_menuBtn != undefined) {
+			const btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
+			if (x_params.navigation == "Historic") {
+				btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
+			}
+			$x_menuBtn.button({ icons: { primary: btnIcon.iconClass } });
+			if (btnIcon.customised == true) { $x_menuBtn.addClass("customIconBtn"); } else { $x_menuBtn.removeClass("customIconBtn");  };
+			if (btnIcon.btnImgs == true) { $x_menuBtn.addClass("imgIconBtn"); } else { $x_menuBtn.removeClass("imgIconBtn"); };
+		}
+	}
 }
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
@@ -1060,11 +1119,11 @@ function x_setUp() {
 
 function x_desktopSetUp() {
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
-		$x_footerL.prepend('<button id="x_cssBtn"></button>');
+		$x_cssBtn = $('<button id="x_cssBtn"></button>').prependTo($x_footerL);
 		
 		const maxBtnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
 		
-		$("#x_cssBtn")
+		$x_cssBtn
 			.button({
 				icons:	{
 					primary: maxBtnIcon.iconClass
@@ -1074,7 +1133,7 @@ function x_desktopSetUp() {
 				text:	false
 			})
 			.addClass('x_maximise')
-            .attr("aria-label", $("#x_cssBtn").attr("title"))
+            .attr("aria-label", $x_cssBtn.attr("title"))
 			.click(function() {
 				// Post flag to containing page for iframe resizing
 				if (window && window.parent && window.parent.postMessage) {
@@ -1108,7 +1167,7 @@ function x_desktopSetUp() {
 					
 					$(this)
 						.button({
-							icons:	{ primary: maxBtnIcon.iconClass },
+							icons:	{ primary: x_btnIcons.filter(function(icon){return icon.name === 'max';})[0].iconClass },
 							label:	x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
 						})
 						.addClass('x_maximise').removeClass("x_minimise");
@@ -1123,10 +1182,10 @@ function x_desktopSetUp() {
 			});
 		
 		if (maxBtnIcon.customised == true) {
-			$("#x_cssBtn").addClass("customIconBtn");
+			$x_cssBtn.addClass("customIconBtn");
 		}
 		if (maxBtnIcon.btnImgs == true) {
-			$("#x_cssBtn").addClass("imgIconBtn");
+			$x_cssBtn.addClass("imgIconBtn");
 		}
 	}
 
@@ -1593,7 +1652,7 @@ function x_continueSetUp1() {
 					label: x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
 					text:	false
 				})
-				.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_colourChangerBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.accessibilityTarget == "lightbox") {
 						
@@ -1621,10 +1680,10 @@ function x_continueSetUp1() {
 				});
 				
 			if (accessibilityIcon.customised == true) {
-				$("#x_colourChangerBtn").addClass("customIconBtn");
+				$x_colourChangerBtn.addClass("customIconBtn");
 			}
 			if (accessibilityIcon.btnImgs == true) {
-				$("#x_colourChangerBtn").addClass("imgIconBtn");
+				$x_colourChangerBtn.addClass("imgIconBtn");
 			}
 			
 		} else {
@@ -1843,7 +1902,7 @@ function x_continueSetUp1() {
 					label: tooltip,
 					text: false
 				})
-				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_saveSessionBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function () {
 					x_openDialog(
 						"saveSession",
@@ -1861,15 +1920,16 @@ function x_continueSetUp1() {
 				});
 			
 			if (saveSessionIcon.customised == true) {
-				$("#x_saveSessionBtn").addClass("customIconBtn");
+				$x_saveSessionBtn.addClass("customIconBtn");
 			}
 			if (saveSessionIcon.btnImgs == true) {
-				$("#x_saveSessionBtn").addClass("imgIconBtn");
+				$x_saveSessionBtn.addClass("imgIconBtn");
 			}
 		}
 		else
 		{
 			$x_saveSessionBtn.remove();
+			$x_saveSessionBtn = undefined;
 		}
 		
 		// create side bar
