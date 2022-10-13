@@ -769,7 +769,9 @@ function x_getThemeInfo(thisTheme, themeChg) {
 					themeInfo = {};
 				
 				for (let i=0; i<temp.length; i++) {
-					themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+					if (temp[i].split(':').length > 1) {
+						themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+					}
 				}
 				
 				x_setUpThemeBtns(themeInfo, themeChg);
