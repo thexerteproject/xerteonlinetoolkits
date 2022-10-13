@@ -808,6 +808,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 			x_btnIcons[i].customised = true;
 		} else if (themeInfo.imgbtns == 'true') {
 			x_btnIcons[i].btnImgs = true;
+		}
 		
 	}
 
