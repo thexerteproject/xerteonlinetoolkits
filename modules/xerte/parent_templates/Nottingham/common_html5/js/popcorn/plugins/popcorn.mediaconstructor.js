@@ -173,43 +173,54 @@ this.initVideoState = function(mediaData)
 // sets the size of videos. width and height take precedence over ratio
 this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
 
-    if ($video.length == 0)
-    {
+    if ($video.length == 0) {
         return;
     }
     var $holder = $video.parent()
 
+
     var heightClaimed = 0;
-    $holder.children().not($video).each(function() {
+    $holder.children().not($video).each(function () {
         heightClaimed += $(this).outerHeight(true);
     });
 
     var ww = $holder.width(),                   // max width
         wh = Math.floor(ww / ratio);            // height from widths perspective
-        hh = $holder.height() - heightClaimed,  // max height
+    hh = $holder.height() - heightClaimed,  // max height
         hw = Math.floor(hh * ratio);            // width from heights perspective
 
-    var w = ww < hw ? ww : hw; 
+    var w = ww < hw ? ww : hw;
     var h = ww < hw ? wh : hh;
-    console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
-    console.log("aspect    = " + ($video[0].getAttribute("aspect")?$video[0].getAttribute("aspect"):"UNDEF"));
-    console.log("mainMedia = " + ($video[0].getAttribute("mainMedia")?$video[0].getAttribute("mainMedia"):"UNDEF"));
-    if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
-    {
+    console.log("width,height,ww,wh,hh,hw,w,h=" + (width ? width : "UNDEF") + "," + (height ? height : "UNDEF") + "," + ww + "," + wh + "," + hh + "," + hw + "," + w + "," + h);
+    console.log("aspect    = " + ($video[0].getAttribute("aspect") ? $video[0].getAttribute("aspect") : "UNDEF"));
+    console.log("mainMedia = " + ($video[0].getAttribute("mainMedia") ? $video[0].getAttribute("mainMedia") : "UNDEF"));
+    if (!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia")) {
         w = "100%";
         h = "100%";
         $video.parent().css({
             "height": "100%"
         });
     }
-    console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
+    console.log("width,height,ww,wh,hh,hw,w,h=" + (width ? width : "UNDEF") + "," + (height ? height : "UNDEF") + "," + ww + "," + wh + "," + hh + "," + hw + "," + w + "," + h);
+    if ($video.hasClass("embed")) {
+        $video.css({
+            "width": width ? width : w,
+            "height": height ? height : h,
+            "min-width": 150,
+            "min-height": 120
+        });
+    } else if ($video.find(".mejs-container").length > 0) {
 
-    $video.css({
-        "width":	width ? width : w,
-        "height":	height ? height : h,
-        "min-width" : 150,
-        "min-height": 120
-    });
+        var $mediaHolder = $video.find(".mejs-container");
+        $mediaHolder.css({
+            "width": width ? width : w,
+            "height": height ? height : h,
+        });
+        $mediaHolder.find(".mejs-overlay-play").css({
+            "width": width ? width : w,
+            "height": height ? height : h,
+        });
+    }
 };
 
 // Adds XAPI tracking to the popcornInstance.
