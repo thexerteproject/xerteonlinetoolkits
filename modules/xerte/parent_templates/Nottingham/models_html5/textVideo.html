@@ -30,43 +30,54 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			var $pageVideo = $("#pageVideo"),
-				iframeRatio = $pageVideo.data('iframeRatio'),
-				videoDimensions = $pageVideo.data('dimensions');
-			if (true) {
-				const ratio = iframeRatio[0] / iframeRatio[1];
-				// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
-				var iframeMax = x_currentPageXML.getAttribute("iframeMax");
-				if ($.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
-					iframeMax = Number(x_currentPageXML.getAttribute("iframeMax"));
-					iframeMax = Math.max(iframeMax, 0.1);
-					iframeMax = Math.min(iframeMax, 1);
-				} else {
-					iframeMax = 0.6;
-				}
-				
-				var maxW = x_browserInfo.mobile == true ? 1 : iframeMax,
+					iframeRatio = $pageVideo.data('iframeRatio'),
+					videoDimensions = $pageVideo.data('dimensions');
+			const ratio = iframeRatio[0] / iframeRatio[1];
+			console.log("Ratio: " + iframeRatio);
+			console.log("Dimension: " + videoDimensions);
+
+			// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
+			var iframeMax = x_currentPageXML.getAttribute("iframeMax");
+			if ($.isNumeric(iframeMax)) {
+				iframeMax = Number(iframeMax);
+				iframeMax = Math.max(iframeMax, 0.1);
+				iframeMax = Math.min(iframeMax, 1);
+			} else {
+				iframeMax = 0.6;
+			}
+			console.log("iframeMax: " + iframeMax);
+
+			var maxW = x_browserInfo.mobile == true ? 1 : iframeMax,
 					maxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($('.x_floatRight').outerHeight() - $('.x_floatRight').height());
-				
-				var width = $x_pageDiv.width() * maxW;
-				var height = (width / ratio) + 35;
-				
-				if (x_browserInfo.mobile != true && height > maxH) {
-					height = maxH;
-					width = ((height - 35) * ratio);
-				}
-				$pageVideo
+
+			var width = $x_pageDiv.width() * maxW;
+			var height = (width / ratio) + 35;
+
+			if (x_browserInfo.mobile != true && height > maxH) {
+				height = maxH;
+				width = ((height - 35) * ratio);
+			}
+			console.log("maxW: " + maxW);
+			console.log("maxH: " + maxH);
+			console.log("width: " + width);
+			console.log("height: " + height);
+			$pageVideo
 					.width(width)
 					.height(height);
 
-				$(".popcornMedia.embed").each(function(i) {
+			// Race conditions can cause the video to not be the correct size, so use a timeout to make sure it's the right size
+			setTimeout(function () {
+				$(".popcornMedia").each(function (i) {
+					console.log("PopcornMedia: " + i);
 					if (videoDimensions) {
+						console.log("resizeEmbededMedia: wxh=" + videoDimensions[0] + "x" + videoDimensions[1]);
 						resizeEmbededMedia($(this), {width: videoDimensions[0], height: videoDimensions[1]}) //popcorn mediaconstructor
-					}
-					else {
+					} else {
+						console.log("resizeEmbededMedia: ratio=" + ratio);
 						resizeEmbededMedia($(this), {ratio: ratio}) //popcorn mediaconstructor
 					}
 				});
-			}
+			}, 100);
 		}
 		
 		this.init = function()
@@ -163,6 +174,8 @@
 				$pageVideo.data('iframeRatio', iframeRatio);
 				const ratio = iframeRatio[0] / iframeRatio[1];
 
+				console.log("#pageVideo: " + $pageVideo.width() + "x" + $pageVideo.height());
+				console.log("loadMedia: w=" + (videoDimensions ? Number(videoDimensions[0]) : 0) + ", h=" + (videoDimensions ? Number(videoDimensions[1]) : 0) + ", ratio=" + ratio);
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
 					width: videoDimensions ? Number(videoDimensions[0]) : 0,
@@ -199,6 +212,8 @@
 
 		this.leavePage = function() {
 			document.dispatchEvent(new Event('leavepage'));
+			// Destroy popcorn instance
+			$("#pageVideo").html("");
 		}
 	}
 	
