@@ -257,13 +257,16 @@
 				if (x_currentPageXML.getAttribute('magnifierForce') == 'true' || ($pageImg.data("origSize") != undefined && $pageImg.width() / $pageImg.data("origSize")[0] < 0.8)) {
 					$pageImg.imageLens(imageLensInfo);
 					
+					$(".magnifiedImg")
+						.attr('alt', x_currentPageXML.getAttribute("tip"))
+						.addClass('x_noLightBox');
 				}
 			}
 		}
 	}
 
 	textGraphics.init();
-$(".magnifiedImg").attr("Alt",x_currentPageXML.getAttribute("tip"));
+	
 </script>
 
 
