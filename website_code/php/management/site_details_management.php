@@ -66,11 +66,11 @@ if(is_user_admin()) {
         $_POST['flash_preview_check_path'], $_POST['flash_flv_skin'], $_POST['site_email_account'], $_POST['headers'], $_POST['email_to_add_to_username'], $_POST['proxy1'], $_POST['port1'],
         $_POST['site_session_name'], $_POST['synd_publisher'], $_POST['synd_rights'], $_POST['synd_license'], str_replace("\\", "/", $_POST['import_path']), $_POST['apache'],
         $enable_mime_check, str_replace(' ', '', $_POST['mimetypes']), $enable_file_ext_check, str_replace(' ', '', $_POST['file_extensions']), $enable_clamav_check, str_replace("\\", "/", $clamav_cmd), $clamav_opts,
-        $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'], $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret'],
+        $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], hash('sha256', $_POST['admin_password']), $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret'],
         $_POST['site_xapi_dashboard_enable'], $_POST['site_xapi_dashboard_nonanonymous'], $_POST['xapi_dashboard_minrole'], $_POST['site_xapi_dashboard_period'], $_POST['xapi_dashboard_urls'], $_POST['globalhidesocial'], $_POST['globalsocialauth']);
 
     $res = db_query($query, $data);
-
+    #TODO update salt
     if ($res!==false) {
         $query = "UPDATE {$xerte_toolkits_site->database_table_prefix}ldap SET ldap_knownname = 'from_sitedetails', ldap_host = ?, ldap_port = ?, ldap_username = ?, ldap_password = ?, ldap_basedn = ?, ldap_filter = ?, ldap_filter_attr = ? where ldap_id=1";
 

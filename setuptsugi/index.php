@@ -164,7 +164,7 @@ function generateRandomString($length = 10) {
     }
     return $randomString;
 }
-
+#TODO use hash function
 function require_auth() {
     global $xerte_toolkits_site;
 

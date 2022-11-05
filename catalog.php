@@ -40,7 +40,7 @@ require $xerte_toolkits_site->php_library_path  . "XerteProjectDecoder.php";
 
 function require_auth() {
     global $xerte_toolkits_site;
-
+#TODO use hash for authentication
     header('Cache-Control: no-cache, must-revalidate, max-age=0');
     $has_supplied_credentials = !(empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']));
     $is_not_authenticated = (

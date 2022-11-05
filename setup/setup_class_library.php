@@ -376,7 +376,7 @@ class SetupPage extends Setup {
     }
 
     protected function getSettingsPage() {
-
+    #If used change to use hash of password
         if (($this->login->getUsername() == $this->settings->admin_username) 
             && ($this->login->getPassword() == $this->settings->admin_password)) {
 
