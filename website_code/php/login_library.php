@@ -445,7 +445,6 @@ function login_processing($exit = true) {
       $errors[] = INDEX_PASSWORD_EMPTY;
     }
 
-#TODO use hash, this is the login for users not admin
     if (!empty($_POST['login']) && ($_POST["login"] == $xerte_toolkits_site->admin_username) && (!empty($_POST['password']) && hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) {
       $errors[] = INDEX_SITE_ADMIN;
     }

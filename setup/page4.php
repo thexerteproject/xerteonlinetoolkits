@@ -76,7 +76,7 @@ foreach(array('site_url', 'apache', 'enable_mime_check', 'mimetypes', 'enable_fi
     'php_library_path', 'error_log_path', 'email_error_list', 'error_log_message', 'max_error_size', 'max_error_size', 'error_email_message', 'authentication_method',
     'ldap_host', 'ldap_port', 'bind_pwd', 'basedn', 'bind_dn', 'flash_save_path', 'flash_upload_path', 'flash_preview_check_path', 'flash_flv_skin',
     'site_email_account', 'headers', 'email_to_add_to_username', 'proxy1', 'port1', 'feedback_list', 'play_edit_preview_query', 'LRS_Endpoint', 'LRS_Key', 'LRS_Secret') as $field) {
-    #TODO test
+
     #usecase for admin password
     if($field=='admin_password') {
         $res = db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}sitedetails SET $field = ? WHERE site_id = ?", array(hash('sha256', $_POST[$field]), '1'));

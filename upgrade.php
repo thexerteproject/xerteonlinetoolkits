@@ -1288,3 +1288,12 @@ function upgrade_33()
         return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? true". "<br>";
     }
 }
+
+function upgrade_34(){
+    global $xerte_toolkits_site;
+    $res = db_query_one("SELECT admin_password FROM toolkits_data.sitedetails");
+    if (strlen($res['admin_password']) != 64) {
+        db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}sitedetails SET admin_password = ?", array(hash('sha256', $res['admin_password'])));
+    }
+    return "hashed password if needed";
+}

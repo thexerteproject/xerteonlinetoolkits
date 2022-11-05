@@ -187,7 +187,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
         $xerte_toolkits_site->authentication_method = 'Db';
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-#TODO test
     if (($_POST["login"] == $xerte_toolkits_site->admin_username) && (hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) {
 
         $_SESSION['toolkits_logon_id'] = "site_administrator";
