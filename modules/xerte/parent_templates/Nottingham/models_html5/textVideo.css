@@ -4,12 +4,12 @@
 		padding-bottom:	20px;
 	}
 	
-	#transcriptHolder {
-		margin-top:	10px;
+	.transcriptHolder {
+		margin-top:	10px !important;
 		text-align:	right;
 	}
 	
-	#transcript {
+	.transcript {
 		text-align:		left;
 		min-width:100%;
 	}

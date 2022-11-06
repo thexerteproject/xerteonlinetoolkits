@@ -125,8 +125,8 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     
     // add transcript to media panel if required
     if (mediaData.transcript) {
-        $mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' 
-            + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
+        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">' 
+            + x_addLineBreaks(mediaData.transcript) + '</div></div>');
         $mediaHolder.find(".transcript").hide();
         $mediaHolder.find(".transcriptBtn")
             .button({
@@ -135,7 +135,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             })
             .click(function() {
                 // transcript slides in and out of view on click
-                var $transcript = $(this).prev(".transcript");
+                var $transcript = $(this).next(".transcript");
                 if ($transcript.is(":hidden") == true) {
                     $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
                     $transcript.slideDown();
@@ -186,22 +186,24 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
 
     var ww = $holder.width(),                   // max width
         wh = Math.floor(ww / ratio);            // height from widths perspective
-    hh = $holder.height() - heightClaimed,  // max height
+        hh = $holder.height() - heightClaimed,  // max height
         hw = Math.floor(hh * ratio);            // width from heights perspective
 
-    var w = ww < hw ? ww : hw;
+    var w = ww < hw ? ww : hw; 
     var h = ww < hw ? wh : hh;
-    console.log("width,height,ww,wh,hh,hw,w,h=" + (width ? width : "UNDEF") + "," + (height ? height : "UNDEF") + "," + ww + "," + wh + "," + hh + "," + hw + "," + w + "," + h);
-    console.log("aspect    = " + ($video[0].getAttribute("aspect") ? $video[0].getAttribute("aspect") : "UNDEF"));
-    console.log("mainMedia = " + ($video[0].getAttribute("mainMedia") ? $video[0].getAttribute("mainMedia") : "UNDEF"));
-    if (!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia")) {
+    //console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
+    //console.log("aspect    = " + ($video[0].getAttribute("aspect")?$video[0].getAttribute("aspect"):"UNDEF"));
+    //console.log("mainMedia = " + ($video[0].getAttribute("mainMedia")?$video[0].getAttribute("mainMedia"):"UNDEF"));
+    if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
+    {
         w = "100%";
         h = "100%";
         $video.parent().css({
             "height": "100%"
         });
     }
-    console.log("width,height,ww,wh,hh,hw,w,h=" + (width ? width : "UNDEF") + "," + (height ? height : "UNDEF") + "," + ww + "," + wh + "," + hh + "," + hw + "," + w + "," + h);
+    //console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
+
     if ($video.hasClass("embed")) {
         $video.css({
             "width": width ? width : w,
