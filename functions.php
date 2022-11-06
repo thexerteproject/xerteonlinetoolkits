@@ -128,13 +128,9 @@ function _load_language_file($file_path) {
     }
     if (file_exists($en_gb_file_path)) {
         // prevent notices from redefines of other languages
-        if ($development) {
-            $prev_el = error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
-        }
+        $prev_el = error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
         require_once($en_gb_file_path);
-        if ($development) {
-            error_reporting($prev_el);
-        }
+        error_reporting($prev_el);
     } else {
         // stuff will break at this point.
         //die("Where was $real_file_path?");
