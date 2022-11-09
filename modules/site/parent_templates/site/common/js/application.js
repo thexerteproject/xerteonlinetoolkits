@@ -1492,10 +1492,9 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 	//assign active class for current navbar
 	$("#nav li").not(':first-child').each(function(i, el){
-		if ($(el).hasClass("active")) {
+		if ($(el).hasClass("active") && i !== pageID){
 			$(el).removeClass("active")
-		}
-		if (i == pageID) {
+		} else if (i == pageID){
 			$(el).addClass("active")
 		}
 	})
