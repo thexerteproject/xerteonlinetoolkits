@@ -788,19 +788,41 @@ function change_notes(template_id, form_tag){
 	});
 }
 
+/**
+ *
+ * Function to delete all unused files
+ *
+ */
+
+function delete_unused_files(delete_path, delete_string){
+	if (delete_string.length <= 0){
+		confirm(DELETE_UNUSED_FILES_EMPTY);
+	} else {
+		//TODO currently does all ajax calls sequentially. better for performance if concurrent can also add a indicator that the server is working. (similar to upload)
+		var answer = confirm(DELETE_UNUSED_FILES_CONFIRM);
+		if (answer) {
+			for (var i = 0; i < delete_string.length; i++) {
+				var item_to_delete = delete_path + delete_string[i];
+				delete_file(item_to_delete, true);
+			}
+		}
+	}
+}
+
      /**
 	 *
 	 * Function delete file
  	 * This function handles the changing of notes on a template
  	 * @param string file = id of the file to delete
-	 * @version 1.0
-	 * @author Patrick Lockley
+	  * @param boolean answer = false, set to true to skip confirmation
+	 * @version 1.1
+	 * @author Timo Boer
 	 */
 
-function delete_file(file){
-
-	var answer = confirm(DELETE_FILE_CONFIRM);
-
+function delete_file(file, answer = false){
+	if (!answer) {
+		answer = confirm(DELETE_FILE_CONFIRM);
+	}
 	if(answer){
 		$.ajax({
 			type: "POST",
