@@ -1492,7 +1492,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 	//assign active class for current navbar
 	$("#nav li").not(':first-child').each(function(i, el){
-		true
 		if ($(el).hasClass("active")) {
 			$(el).removeClass("active")
 		}
