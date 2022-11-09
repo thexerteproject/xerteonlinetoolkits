@@ -1490,6 +1490,16 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// check if pageIndex exists & can be shown
 	var pageIndex;
 
+	//assign active class for current navbar
+	$("#nav li").not(':first-child').each(function(i, el){
+		if ($(el).hasClass("active")) {
+			$(el).removeClass("active")
+		}
+		if (i == pageID) {
+			$(el).addClass("active")
+		}
+	})
+
 	// pageID might be an ID - see if it matches either a linkID or a customLinkID
 	if (pageRefType != 'index') {
 		$(data).find('page').each(function(index, value) {
