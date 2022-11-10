@@ -1489,15 +1489,8 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 	// check if pageIndex exists & can be shown
 	var pageIndex;
-
-	//assign active class for current navbar
-	$("#nav li").not(':first-child').each(function(i, el){
-		if ($(el).hasClass("active") && i !== pageID){
-			$(el).removeClass("active")
-		} else if (i == pageID){
-			$(el).addClass("active")
-		}
-	})
+	// used to set active on nav item.
+	var activeIndex = pageID;
 
 	// pageID might be an ID - see if it matches either a linkID or a customLinkID
 	if (pageRefType != 'index') {
@@ -1506,6 +1499,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
 				// an ID match has been found
 				pageIndex = index;
+				activeIndex = index;
 				found = true;
 				pageRefType = 'id';
 
@@ -1513,6 +1507,14 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			}
 		});
 	}
+	//assign active class for current navbar
+	$("#nav li").not(':first-child').each(function(i, el){
+		if ($(el).hasClass("active") && i !== activeIndex){
+			$(el).removeClass("active")
+		} else if (i == activeIndex){
+			$(el).addClass("active")
+		}
+	})
 
 	// check if it's a valid page index
 	if (pageRefType != 'id') {
