@@ -798,15 +798,40 @@ function delete_unused_files(delete_path, delete_string){
 	if (delete_string.length <= 0){
 		confirm(DELETE_UNUSED_FILES_EMPTY);
 	} else {
-		//TODO currently does all ajax calls sequentially. better for performance if concurrent can also add a indicator that the server is working. (similar to upload)
 		var answer = confirm(DELETE_UNUSED_FILES_CONFIRM);
 		if (answer) {
-			for (var i = 0; i < delete_string.length; i++) {
-				var item_to_delete = delete_path + delete_string[i];
-				delete_file(item_to_delete, true);
-			}
+			delete_unused_files_ajax(delete_path, delete_string);
 		}
 	}
+}
+
+/**
+ *
+ * Function delete unused files
+ * This function handles the changing of notes on a template
+ * @param string file = id of the file to delete
+ * @version 1.0
+ * @author Timo Boer
+ */
+
+function delete_unused_files_ajax(delete_path, delete_string){
+
+	var files = new Array()
+	for (let i = 0; i < delete_string.length; i++) {
+		files.push(encodeURIComponent(delete_path + delete_string[i]));
+	}
+	files = JSON.stringify(files)
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/delete_unused_files_template.php",
+		data: {
+			data: files
+		}
+	})
+		.done(function (response) {
+			delete_file_stateChanged(response);
+		});
+
 }
 
      /**
