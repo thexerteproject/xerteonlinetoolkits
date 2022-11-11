@@ -379,7 +379,6 @@
 						} else if (feedbackOrder[i] == 'A') {
 							if(selectedOption !== undefined && selectedOption !== null){
 								thisFeedback = selectedOption.feedback;
-								
 								if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
 									thisFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
 								}
@@ -417,8 +416,7 @@
 								for(var j = 0; j < thisQ.children.length; j++){
 									if(multipleFeedback[l] === thisQ.children[j].attributes.text.value){
 										feedback += thisQ.children[j].attributes.feedback.value;
-										
-										if (thisQ.children[j].attributes.audioFB.value != undefined && thisQ.children[j].attributes.audioFB.value != "") {
+										if (thisQ.children[j].attributes.audioFB != undefined && thisQ.children[j].attributes.audioFB.value != undefined && thisQ.children[j].attributes.audioFB.value != "") {
 											var transcriptInfo = thisQ.children[j].attributes.audioTranscript != undefined ? 'data-transcript="' + thisQ.children[j].attributes.audioTranscript.value + '"' : '';
 											feedback += '<div class="audioHolder" data-audio="' + thisQ.children[j].attributes.audioFB.value + '" ' + transcriptInfo + '></div>';
 										}
