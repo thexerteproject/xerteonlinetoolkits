@@ -407,7 +407,7 @@ function button_check(){
                 editbtn.className = "xerte_workspace_button";
                 editbtn.onclick = function (e) {
                     if (e.shiftKey) {
-                        edit_window(false, "edit");
+                        edit_window(false, "edithtml");
                     }
                     else if (e.ctrlKey) {
                         win = edit_window(false, "edithtml", "_blank");
