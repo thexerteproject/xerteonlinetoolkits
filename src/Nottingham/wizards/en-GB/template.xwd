@@ -6623,18 +6623,18 @@
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
-	<type label="Navigator Type" options="Accordion,Buttons,Columns,Slideshow,Tabs" type="ComboBox" data="Acc,Button,Col,Slide,Tab" width="100"/>
+	<type label="Navigator Type" options="Accordion,Buttons,Columns,Slideshow,Tabs" type="ComboBox" conditionTrigger="true" data="Acc,Button,Col,Slide,Tab" width="100"/>
 	
 	<nextBtnTip label="Slideshow Button Tip (Next)" type="TextInput" language="true"/>
     <prevBtnTip label="Slideshow Button Tip (Previous)" type="TextInput" language="true"/>
     <slideCount label="Slide {i} of {n}" type="TextInput" wysiwyg="true" language="true"/>
     
 	<panelInfo type="group" label="Panel Layout" optional="true">
-		<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" optional="true"/>
-		<panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" width="100" optional="true"/>
-		<panelPos label="Panel Position" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Right" width="100" optional="true"/>
-		<buttonPos label="Button Position" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" optional="true"/>
-		<collapsible label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true"/>
+		<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" optional="true" condition="type!='Col'"/>
+		<panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" width="100" optional="true" condition="type!='Col'"/>
+		<panelPos label="Panel Position" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Right" width="100" optional="true" condition="type!='Col'"/>
+		<buttonPos label="Button Position" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" optional="true" condition="type=='Button'||type=='Slide'"/>
+		<collapsible label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true" condition="type=='Acc'"/>
 	</panelInfo>
 	
     <newNodes>
