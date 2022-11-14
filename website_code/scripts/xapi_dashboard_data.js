@@ -83,17 +83,31 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
         function getmorestatements(err, res, body) {
             for (x = 0; x < body.statements.length; x++) {
                 var statement = body.statements[x];
+                if ($this.info.role == "Teacher") {
+                    if (statement.actor.mbox != undefined) {
+                        if ($this.info.users.findIndex(u => 'email:' + u.email === statement.actor.mbox) === -1) {
+                            // Skip this user
+                            continue;
+                        }
+                    }
+                    else if (statement.actor.mbox_sha1sum != undefined) {
+                        if ($this.info.users.findIndex(u => u.sha1 === statement.actor.mbox.mbox_sha1sum) === -1) {
+                            // Skip this user
+                            continue;
+                        }
+                    }
+                }
                 if ($this.info.dashboard.anonymous) {
                     if (statement.actor.mbox != undefined) {
                         // Key is email
                         // cutoff mailto: and calc sha1:
-                        var key = statement.actor.mbox.substr(7).trim();
-                        var sha1 = toSHA1(key);
+                        var sha1 = toSHA1(statement.actor.mbox);
                         statement.actor.mbox_sha1sum = sha1;
                         delete statement.actor.mbox;
                         if (statement.actor.name) {
                             delete statement.actor.name;
                         }
+
                     } else if (statement.actor.mbox_sha1sum != undefined) {
                         // Nothing to do
 
@@ -106,7 +120,7 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
                         if (key != undefined) {
                             delete statement.actor;
 
-                            var sha1 = toSHA1(key);
+                            var sha1 = toSHA1('mailto:' + key + '@example.com');
                             statement.actor = {
                                 'mbox_sha1sum': sha1
                             };
@@ -158,7 +172,7 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
 };
 
 DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
-    var role = "teacher";
+    var role = (this.info ? this.info.role : "");
     var matchLaunched = '{"statement.verb.id" : { "$eq" : "http://adlnet.gov/expapi/verbs/launched" } }';
     var matchCourse = '';
     if (typeof q['activities'] != "undefined")
@@ -192,6 +206,17 @@ DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
     if (typeof q['actor'] != "undefined")
     {
         matchActor = '{"statement.actor.mbox" : "mailto:' + q['actor'] + '"}';
+    }
+    if (role == "Teacher") {
+        matchActor = '{"statement.actor.mbox" :  { "$in": [';
+        this.info.users.forEach(function (user,i){
+            matchActor += '"mailto:' + user.email + '"';
+            if (i < this.info.users.length - 1)
+            {
+                matchActor += ', ';
+            }
+        });
+        matchActor += '] } }';
     }
     var matchDateRange = '';
     if (typeof q['since'] != "undefined" && typeof q['until'] != "undefined") {
@@ -237,7 +262,7 @@ DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
 
 DashboardState.prototype.retrieveDataThroughAggregate = function(q, dashboard_state, data, callback)
 {
-    var role = "teacher";
+    var role = (this.info ? this.info.role : "");
     var startDate = moment(q['since']);
     var endDate = moment(q['until']);
 
@@ -290,6 +315,17 @@ DashboardState.prototype.retrieveDataThroughAggregate = function(q, dashboard_st
     if (typeof q['actor'] != "undefined")
     {
         matchActor = '{"statement.actor.mbox" : "mailto:' + q['actor'] + '"}';
+    }
+    if (role == "Teacher") {
+        matchActor = '{"statement.actor.mbox" :  { "$in": [';
+        this.info.users.forEach(function (user,i){
+            matchActor += '"mailto:' + user.email + '"';
+            if (i < this.info.users.length - 1)
+            {
+                matchActor += ', ';
+            }
+        });
+        matchActor += '] } }';
     }
 
     var matchVerb = '';

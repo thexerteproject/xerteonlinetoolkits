@@ -235,7 +235,72 @@
         };
 
 		this.leavePage = function () {
+
+			$this = this;
+			$(".embed").each(function() {
+				$(this).data("popcornInstance").pause();
+			});
+			// Finish tracking of video
+			// This will also account for last video segment, so there might be race conditions
+			// Also we do let popcorn handle the destruction (doNotCloseTrackiong parameter in loadMedia) of popcorn, so we need to do that hear at the end
 			document.dispatchEvent(new Event('leavepage'));
+			// Calculate page score
+			var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+			var numOfQuestions = questions.length;
+			var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
+					x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
+					x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
+
+			score = 0;
+			for (var i = 0; i < numOfQuestions; i++) {
+				if ($this.questions[i]) {
+					score++;
+				}
+			}
+			mcqScore = score / numOfQuestions;
+
+			let videoState = $this.popcornInstance.videoState;
+			let progress = 0;
+			if (videoState != undefined && trackVideo) {
+				// Calculate progress
+				progress = XThelperDetermineProgress(videoState);
+			}
+			let trackVideoSetting = 'no_mcqs';
+			if (x_currentPageXML.getAttribute('trackVideo') != undefined)
+			{
+				trackVideoSetting = x_currentPageXML.getAttribute('trackVideo');
+			}
+			switch (trackVideoSetting) {
+				case 'yes':
+					totalScore = (mcqScore + progress) / 2;
+					break;
+				case 'only_video':
+					totalScore = progress;
+					break;
+				case 'no_mcqs':
+					if (numOfQuestions == 0) {
+						totalScore = progress;
+					} else {
+						totalScore = mcqScore;
+					}
+					break;
+				case 'no':
+					if (numOfQuestions == 0) {
+						// count as page with no interactions
+						totalScore = 1;
+					} else {
+						totalScore = mcqScore;
+					}
+			}
+			totalScore = Math.round(totalScore * 10000.0) / 100.0;
+			XTSetPageScore(x_currentPage, totalScore);
+
+			//Destroy popcornInstance
+			if ($this.popcornInstance) {
+				removeEvents($this.popcornInstance);
+				$this.popcornInstance.destroy();
+			}
+			$("div.popcornMedia").remove();
 		};
 
 		this.loadMedia = function($holder, type, data) {
@@ -546,6 +611,21 @@
 			
 			// _____ LOAD MEDIA _____
 			// Loading media is now handled by the mediaconstructor plugin. (22/12/2021)
+		    var mcqBool = true;
+		    this.isMCQ = (node) => {
+			   var childs = node.childNodes
+			   for (var i = 0; i < childs.length; i++) {
+				   if (childs[i].nodeName === 'synchMCQ') {
+					   mcqBool = false;
+					   console.log(childs[i].nodeName);
+				   }
+				   console.log(childs[i].nodeName);
+				   this.isMCQ(childs[i]);
+			   }
+		    }
+
+		    this.isMCQ(x_currentPageXML);
+
 			var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
 			if (mediaPanelIndex != -1) {
 			    this.popcornInstance = loadMedia(
@@ -561,7 +641,9 @@
 						transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
 						audioImage: mediaPanelData.attr("audioImage"),
 						audioImageTip: mediaPanelData.attr("audioImageTip"),
-						trackMedia: true
+						pageName: "mediaLesson",
+						trackMedia: true,
+						doNotCloseTracking: true
 					},
 					true
 					);
@@ -633,20 +715,35 @@
 				mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
 			} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "Vimeo") {
 				function onMessageReceived(event) {
-					if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)) {
+					if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)
+					     && !(/^https?:\/\/www.youtube.com/).test(event.origin)) {
 						return false;
 					}
 					
 					var data = JSON.parse(event.data);
 					if (data.event == "loadProgress") {
+						// Vimeo
 						$mediaDiv.data("duration", data.data.duration);
 						mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
 						window.removeEventListener("message", onMessageReceived, false);
 						// ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why.
 						// Possible issue in popcorn.js itself
 					}
+					if (data.event == "infoDelivery") {
+						// YouTube
+						//$mediaDiv.data("duration", data.info.duration);
+						//mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+						//window.removeEventListener("message", onMessageReceived, false);
+					}
 				}
 				window.addEventListener("message", onMessageReceived, false);
+			} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "YouTube") {
+				function doCallback()
+				{
+					document.removeEventListener('youtubemetadata', doCallback);
+					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+				}
+				document.addEventListener('youtubemetadata', doCallback);
 			} else {
 				popcornInstance.on("loadedmetadata", function() {
 					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
@@ -797,9 +894,9 @@
 			for (var j=0; j<data.length; j++) {
 				if (data[j].end == undefined && data[j].type != "synchEmpty" && data[j].type != "synchCue") {
 					if (popcornInstance.duration()) {
-						data[j].end = popcornInstance.duration() - 1;
+						data[j].end = popcornInstance.duration() - 0.1;
 					} else {
-						data[j].end = $mediaDiv.data("duration") - 1;
+						data[j].end = $mediaDiv.data("duration") - 0.1;
 					}
 					data[j].autoEnd = true;
 				}

@@ -11,6 +11,8 @@
 	 */
 	 
 
+	define("COPY_OF", "Copy of ");
 	define("DUPLICATE_TEMPLATE_NOT_CREATOR", "Only project creators or co-authors can duplicate a project");
+	define("NO_PERMISSION_TO_DUPLICATE_TEMPLATE_OF_FOLDER", "You don't have permission to duplicate '{0}' of folder '{1}'");
 
 

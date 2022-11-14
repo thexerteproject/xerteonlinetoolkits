@@ -135,13 +135,25 @@ function make_new_template($type, $zip_path)
              * Make the folders and copy the files in
              */
 
+            $new_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type;
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
-            mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type);
+            mkdir($new_path);
 
-            chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type, 0777);
+            chmod($new_path,0777);
 
-            copy_loop($zip_path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/");
+            copy_loop($zip_path, $new_path . "/");
+
+            // Remove oai-pmh consent flag if present from
+            if (file_exists($new_path . "/preview.xml"))
+            {
+                change_copied_xml($new_path . "/preview.xml");
+            }
+            // Remove oai-pmh consent flag if present from
+            if (file_exists($new_path . "/data.xml"))
+            {
+                change_copied_xml($new_path . "/data.xml");
+            }
 
             echo IMPORT_SUCCESS . "****";
 
@@ -442,23 +454,39 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
 
         foreach ($zip->compressedList as $x) {
 
-            foreach ($x as $y) {
-                if (!(strpos($y, "media/") === false)) {
-                    $string = $zip->unzip($y, false, 0777);
-                    $temp_array = array($y, $string, "media");
-                    array_push($file_data, $temp_array);
-                }
+            $y = $x['file_name'];
+            if (!(strpos($y, "media/") === false)) {
+                $string = $zip->unzip($y, false, 0777);
+                $file_to_create = array($y, $string, "media");
+                if ($file_to_create[0] != "") {
+                    $pos = strrpos($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], '/');
+                    if ($pos > 0) {
+                        $dir = substr($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0, $pos);
 
-                if ((strpos($y, ".rlt") !== false)) {
-                    $string = $zip->unzip($y, false, 0777);
-                    $rlt_name = $y;
-                    $temp_array = array($y, $string, "rlt");
-                    array_push($file_data, $temp_array);
-                    if (!(strpos($string, "templateData=") === false)) {
-                        $temp = substr($string, strpos($string, "templateData=\"FileLocation + '") + strlen("templateData=\"FileLocation + '"));
-                        $temp = substr($temp, 0, strpos($temp, "'"));
-                        $template_data_equivalent = $temp;
+                        if (!file_exists($dir)) {
+                            mkdir($dir, 0777, true);
+                        }
                     }
+
+                    $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], "w");
+
+                    fwrite($fp, $file_to_create[1]);
+
+                    fclose($fp);
+
+                    chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0777);
+                }
+            }
+
+            if ((strpos($y, ".rlt") !== false)) {
+                $string = $zip->unzip($y, false, 0777);
+                $rlt_name = $y;
+                $temp_array = array($y, $string, "rlt");
+                array_push($file_data, $temp_array);
+                if (!(strpos($string, "templateData=") === false)) {
+                    $temp = substr($string, strpos($string, "templateData=\"FileLocation + '") + strlen("templateData=\"FileLocation + '"));
+                    $temp = substr($temp, 0, strpos($temp, "'"));
+                    $template_data_equivalent = $temp;
                 }
             }
         }
@@ -471,16 +499,15 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
         $preview_xml = '';
 
         foreach ($zip->compressedList as $x) {
-            foreach ($x as $y) {
-                if ($y === $template_data_equivalent || $y === "template.xml") {
-                    $data_xml = $zip->unzip($y, false, 0777);
-                    $temp_array = array("data.xml", $data_xml, null);
-                    array_push($file_data, $temp_array);
-                } else if ($y === "preview.xml") {
-                    $preview_xml = $zip->unzip($y, false, 0777);
-                    $temp_array = array("preview.xml", $preview_xml, null);
-                    array_push($file_data, $temp_array);
-                }
+            $y = $x['file_name'];
+            if ($y === $template_data_equivalent || $y === "template.xml") {
+                $data_xml = $zip->unzip($y, false, 0777);
+                $temp_array = array("data.xml", $data_xml, null);
+                array_push($file_data, $temp_array);
+            } else if ($y === "preview.xml") {
+                $preview_xml = $zip->unzip($y, false, 0777);
+                $temp_array = array("preview.xml", $preview_xml, null);
+                array_push($file_data, $temp_array);
             }
         }
 

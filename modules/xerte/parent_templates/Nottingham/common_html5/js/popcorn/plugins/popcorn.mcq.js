@@ -39,44 +39,47 @@ optional: feedback page synch play enable
 
 		// define plugin wide variables / functions here
 		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showHs, $showLbl, $showHsActive, $learningObjectParent;
-		
+
 		// Score tracking Manager
 		var finishTracking = function(options) {
+		    if(x_currentPageXML.getAttribute('trackVideo') === 'only_video') {
+			    return
+		    }
 			// Check the exercise and all individual questions
-            var allValid = true;
-            var ia_nr = Number(options.tracking_nr);
-            var numOfQuestions = Number(options.total_questions);
-            for (var i = 0; i < options.childNodes.length; i++) {
-                var curValid = false;
-                for (var j = 0; j < selected.length; j++) {
-                    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") {
-                        allValid = false;
-                    }
-                    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") {
-                        curValid = true;
-                    }
-                }
-                if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
-                    allValid = false;
-                }
-			}
-			
-			// Xerte Tracking setup
-            var l_options = [];
-            var l_answers = [];
-            var l_feedback = [];
-            $(selected).each(function (i, v) {
-                l_options.push({
-					id: (v + 1) + "",
-					answer: x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""),
-					result: options.childNodes[i].getAttribute("correct") === "true"
-            	});
+		    var allValid = true;
+		    var ia_nr = Number(options.tracking_nr);
+		    var numOfQuestions = Number(options.total_questions);
+		    for (var i = 0; i < options.childNodes.length; i++) {
+			    var curValid = false;
+			    for (var j = 0; j < selected.length; j++) {
+				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") {
+					    allValid = false;
+				    }
+				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") {
+					    curValid = true;
+				    }
+			    }
+			    if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
+				    allValid = false;
+			    }
+		    }
 
-                l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
-                l_feedback.push("");
-            });
-            $learningObjectParent.questions[ia_nr] = true;
-            var scormScore = 0;
+		    // Xerte Tracking setup
+		    var l_options = [];
+		    var l_answers = [];
+		    var l_feedback = [];
+		    $(selected).each(function (i, v) {
+				l_options.push({
+							id: (v + 1) + "",
+							answer: x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""),
+							result: options.childNodes[i].getAttribute("correct") === "true"
+				});
+
+				l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
+				l_feedback.push("");
+  		    });
+		    $learningObjectParent.questions[ia_nr] = allValid;
+		    var scormScore = 0;
 			var score = 0;
 			for (var i=0; i<numOfQuestions; i++)
 			{
@@ -89,14 +92,15 @@ optional: feedback page synch play enable
 			var result =
 			{
 				success: allValid,
-				score: scormScore
+				score: (allValid ? 100.0 : 0.0)
 			};
+
 			//Push results
-			XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
-			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+			XTSetPageScore(x_currentPage, scormScore);
+			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback);
             $learningObjectParent.enableControls(media.media, true);
         }
-		
+
 		// Feedback Manager
 		var answerSelected = function() {
 			// put together feedback string;
@@ -500,9 +504,9 @@ optional: feedback page synch play enable
 					correctFeedback.push(v.getAttribute("correct") == "true" ? "Correct" : "Incorrect");
 				});
 				var label=ia_nr+"";
-				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+				if (options.name != "")
 				{
-					label = x_currentPageXML.getAttribute("trackinglabel");
+					label = x_GetTrackingTextFromHTML(options.name, ia_nr + "");
 				}
 				else
 				{

@@ -566,7 +566,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  '<br/>' . PROJECT_INFO_EMBEDCODE . ":<br/><form><textarea rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
+        $info .=  '<br/><form><label for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
 
     }
     return $info;
@@ -706,6 +706,27 @@ function statistics_prepare($template_id, $force=false)
     return $info;
 }
 
+function folder_size($dir_path)
+{
+    $quota = 0;
+    $d = opendir($dir_path);
+
+    while ($f = readdir($d)) {
+        $full = $dir_path . "/" . $f;
+        if (!is_dir($full)) {
+            $quota += filesize($full);
+        }
+        else
+        {
+            if ($f != "." && $f != "..") {
+                $quota += folder_size($full);
+            }
+        }
+    }
+    closedir($d);
+    return $quota;
+}
+
 function media_quota_info($template_id)
 {
     global $xerte_toolkits_site;
@@ -744,14 +765,7 @@ function media_quota_info($template_id)
 
         if (file_exists($dir_path))
         {
-            $d = opendir($dir_path);
-
-            while ($f = readdir($d)) {
-                $full = $dir_path . "/" . $f;
-                if (!is_dir($full)) {
-                    $quota += filesize($full);
-                }
-            }
+            $quota += folder_size($dir_path);
             $info =  PROJECT_INFO_MEDIA . ": ";
             $info .=  (round($quota/10000, 0)/100) . " MB<br/>";
             return $info;
@@ -1219,7 +1233,6 @@ function tsugi_display($id, $lti_def, $mesg = "")
         <label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>><br>
         <label for="tsugi_useprivateonly"><?php echo PROPERTIES_LIBRARY_TSUGI_USEPRIVATEONLY; ?></label><input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useprivateonly" id="tsugi_useprivateonly" <?php echo ($lti_def->tsugi_privateonly ? "checked" : "");?>><br>
         <table>
-            <tr><td><label for="tsugi_title"><?php echo PROPERTIES_LIBRARY_TSUGI_NAME; ?></label></td><td><input id="tsugi_title"  name="tsugi_title" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" . $lti_def->title . "\"");?>></td></tr>
             <tr><td><label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label></td><td><input id="tsugi_key" name="tsugi_key" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->key . "\"");?>></td></tr>
             <tr><td><label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label></td><td><input id="tsugi_secret" name="tsugi_secret" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->secret . "\"");?>></td></tr>
         </table>

@@ -25,6 +25,58 @@ require(dirname(__FILE__) . "/module_functions.php");
 // Set up the preview window for a xerte piece
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
+function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
+    $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
+    $extensions = array('svg',  'png', 'jpg', 'gif');
+
+    foreach (array(array('L', '_left'), array('R', '')) as $suffix) {
+        $path = get_logo_path($suffix, $LO_logo, $theme_path, $template_path);
+        if ($path) {
+            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="' . $path . '" alt="" />' , $page_content);
+        }
+        else {
+            $page_content = str_replace("%LOGO_" . $suffix[0] . "%", '<img class="logo" src="" alt="" />' , $page_content);
+        }
+    }
+
+    return $page_content;
+}
+
+function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
+    $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
+    $extensions = array('svg',  'png', 'jpg', 'gif');
+
+    // First the author logo
+    $logo_path = trim($LO_logo->{$suffix[0] . '_path'});
+    if (strlen($logo_path) > 0) {//(file_exists($LO_logo->{$suffix[0] . '_path'})) {
+        return  $LO_logo->{$suffix[0] . '_path'};
+    }
+
+    // Secondly check the theme logo
+    foreach($extensions as $ext) {
+        if (file_exists($theme_path . '/logo'. $suffix[1] . '.' . $ext)) {
+            return $theme_path . '/logo'. $suffix[1] . '.' . $ext;
+        }
+    }
+
+    // Lastly check the default location
+    foreach($extensions as $ext) {
+        if (file_exists($template_path . 'common/img/logo'. $suffix[1] . '.' . $ext)) { 
+            return $template_path . 'common/img/logo' . $suffix[1] . '.'. $ext;
+        }
+    }
+
+    return; //null for not found
+}
+
+function fix_filelocation_path($path, $replacement) {
+    if (strpos($path, "FileLocation + '") !== false) {
+        $path = str_replace("FileLocation + '" , $replacement, $path);
+        $path = rtrim($path, "'");
+    }
+    return $path;
+}
+
 function show_template($row, $xapi_enabled=false){
     global $xerte_toolkits_site;
     global $youtube_api_key;
@@ -76,6 +128,14 @@ function show_template($row, $xapi_enabled=false){
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
     // $engine is assumed to be javascript if flash is NOT set
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+
+    // Process which logo to use, if any
+    $LO_logo = new stdClass;
+    $LO_logo->L_path = fix_filelocation_path($xmlFixer->getIcon()->logoL, $string_for_flash);
+    $LO_logo->R_path = fix_filelocation_path($xmlFixer->getIcon()->logoR, $string_for_flash);
+    $theme_path = 'themes/' . $row['parent_template'] . '/' . ($xmlFixer->getTheme() === 'default' ? 'apereo' : $xmlFixer->getTheme());
+    $page_content = process_logos($LO_logo, $theme_path, $template_path, $page_content);
+
     $page_content = str_replace("%VERSION%", $version , $page_content);
     $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
     $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
@@ -123,10 +183,10 @@ function show_template($row, $xapi_enabled=false){
             $tracking .= "  var lrsUsername = '';\n";
             $tracking .= "  var lrsPassword  = '';\n";
             $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-            $tracking .= "  var ltiEndpoint = '" .  (function_exists('addSession') ? addSession("lti_launch.php") . "&tsugisession=1&" : "lti_launch.php?") . "';\n";
-            $tracking .= "  var lti13Endpoint = '" .  (function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
-            $tracking .= "  var peditEndpoint = '" . (function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
-            $tracking .= "  var xapiEndpoint = '" . (function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
+            $tracking .= "  var ltiEndpoint = '" .  (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("lti_launch.php") . "&tsugisession=1&" : "lti_launch.php?") . "';\n";
+            $tracking .= "  var lti13Endpoint = '" .  (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
+            $tracking .= "  var peditEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
+            $tracking .= "  var xapiEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
 
             if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                 _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
@@ -195,21 +255,19 @@ function show_template($row, $xapi_enabled=false){
 
 
     //remove socialicons script
-        $xml = new XerteXMLInspector();
-        $xml->loadTemplateXML($xmlfile);
-        $hidesocial = $xml->getLOAttribute('hidesocial');
-        $footerhide = $xml->getLOAttribute('footerHide');
-        $footerpos = $xml->getLOAttribute('footerPos');
-        if ($hidesocial != 'true' && $footerhide != 'true' && $footerpos != 'replace' && ($xerte_toolkits_site->globalhidesocial != 'true' || $xerte_toolkits_site->globalsocialauth != 'false')) {
-            $page_content = str_replace("%ADDTHISSCRIPT%", '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>', $page_content);
-        } else {
-            $page_content = str_replace("%ADDTHISSCRIPT%", '', $page_content);
-        }
-
-    //twittercard
     $xml = new XerteXMLInspector();
     $xml->loadTemplateXML($xmlfile);
-    $tcoption = $xml->getLOAttribute('tcsite');
+    $hidesocial = $xml->getLOAttribute('hidesocial');
+    $footerhide = $xml->getLOAttribute('footerHide');
+    $footerpos = $xml->getLOAttribute('footerPos');
+    if ($hidesocial != 'true' && $footerhide != 'true' && $footerpos != 'replace' && ($xerte_toolkits_site->globalhidesocial != 'true' || $xerte_toolkits_site->globalsocialauth != 'false')) {
+        $page_content = str_replace("%ADDTHISSCRIPT%", '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>', $page_content);
+    } else {
+        $page_content = str_replace("%ADDTHISSCRIPT%", '', $page_content);
+    }
+
+    //twittercard
+    $tcoption = $xml->getLOAttribute('tcoption');
     $tcmode= $xml->getLOAttribute('tcmode');
     $tcsite= $xml->getLOAttribute('tcsite');
     $tccreator= $xml->getLOAttribute('tccreator');

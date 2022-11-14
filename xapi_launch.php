@@ -110,7 +110,7 @@ if(is_numeric($id))
     _debug("xapi_launch: SESSION=" . print_r($_SESSION, true));
 
 
-    if ($_GET['embed'] === 'true') {
+    if ($_GET['x_embed'] === 'true') {
         $x_embed = true;
         if ($_GET['activated'] !== 'true') {
             $xapi_enabled = false;
@@ -121,4 +121,3 @@ if(is_numeric($id))
     }
 	require("play.php");
 }
-?>

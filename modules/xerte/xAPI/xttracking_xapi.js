@@ -1499,8 +1499,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     success: result.success,
                                     completion: true,
                                     extensions: {
-                                        "http://xerte.org.uk/result/text": this
-                                            .learnerAnswers
+                                        "http://xerte.org.uk/result/text": this.learnerAnswers
                                     }
                                 };
                                 statement.object.definition = {
@@ -1844,10 +1843,16 @@ function getStatements(q, one, callback)
 {
     var search = ADL.XAPIWrapper.searchParams();
     var group = "";
+    var context_id = "";
     if (q['group'] != undefined)
     {
         group = q['group'];
         delete q['group'];
+    }
+    if (q['lti_context_id'] != undefined)
+    {
+        context_id = q['lti_context_id'];
+        delete q['lti_context_id'];
     }
     $.each(q, function(i, value) {
         search[i] = value;
@@ -1863,10 +1868,16 @@ function getStatements(q, one, callback)
         var tmp=ADL.XAPIWrapper.getStatements(search);
         for (x = 0; x < tmp.statements.length; x++) {
             if (group != ""
-                && tmp.statements[x].context.team != undefined
-                && tmp.statements[x].context.team.account != undefined
-                && tmp.statements[x].context.team.account.name != undefined
-                && tmp.statements[x].context.team.account.name != group) {
+                && (tmp.statements[x].context.team == undefined
+                || tmp.statements[x].context.team.account == undefined
+                || tmp.statements[x].context.team.account.name == undefined
+                || tmp.statements[x].context.team.account.name != group)) {
+                continue;
+            }
+            if (context_id != ""
+                && (tmp.statements[x].context.extensions == undefined
+                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                 continue;
             }
             statements.push(tmp.statements[x]);
@@ -1883,10 +1894,16 @@ function getStatements(q, one, callback)
                     //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                     //}
                     if (group != ""
-                        && body.statements[x].context.team != undefined
-                        && body.statements[x].context.team.account != undefined
-                        && body.statements[x].context.team.account.name != undefined
-                        && body.statements[x].context.team.account.name != group) {
+                        && (body.statements[x].context.team == undefined
+                            || body.statements[x].context.team.account == undefined
+                            || body.statements[x].context.team.account.name == undefined
+                            || body.statements[x].context.team.account.name != group)) {
+                        continue;
+                    }
+                    if (context_id != ""
+                        && (body.statements[x].context.extensions == undefined
+                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                         continue;
                     }
                     statements.push(body.statements[x]);
@@ -1985,6 +2002,24 @@ function XTInitialise(category) {
         else {
             state.module = "";
             state.modulename = "";
+        }
+        if (typeof lti_context_id != "undefined" && lti_context_id != "") {
+            state.lti_context_id = lti_context_id;
+        }
+        else if (typeof x_params['lti_context_id'] != "undefined" && x_params['lti_context_id'] != "") {
+            state.lti_context_id = x_params['lti_context_id'];
+        }
+        else {
+            state.lti_context_id = "";
+        }
+        if (typeof lti_context_name != "undefined" && lti_context_name != "") {
+            state.lti_context_name = lti_context_name;
+        }
+        else if (typeof x_params['lti_context_name'] != "undefined" && x_params['lti_context_name'] != "") {
+            state.lti_context_name = x_params['lti_context_name'];
+        }
+        else {
+            state.lti_context_name = "";
         }
         switch (studentidmode) {
             case 0: //mbox
@@ -3423,6 +3458,12 @@ function SaveStatement(statement, async) {
     }
     if (state.modulename != "") {
         extension["http://xerte.org.uk/module"] = state.modulename;
+    }
+    if (state.lti_context_id != "") {
+        extension["http://xerte.org.uk/lti_context_id"] = state.lti_context_id;
+    }
+    if (state.lti_context_name != "") {
+        extension["http://xerte.org.uk/lti_context_name"] = state.lti_context_name;
     }
     if (typeof statement.context == "undefined") {
         statement.context = {

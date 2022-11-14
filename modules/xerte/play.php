@@ -120,6 +120,27 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             }
         }
     }
+
+    // Get plugins
+    $pluginfiles = scandir($template_path . "plugins/");
+    $plugins = array();
+    foreach($pluginfiles as $pluginfile) {
+        // get base name of plugin
+        $plugininfo = pathinfo($pluginfile);
+        if ($plugininfo['basename'] == '.' || $plugininfo['basename'] == '..') {
+            continue;
+        }
+        if (!isset($plugins[$plugininfo['filename']]))
+        {
+            $plugins[$plugininfo['filename']] = new stdClass();
+        }
+        if ($plugininfo['extension'] == 'js') {
+            $plugins[$plugininfo['filename']]->script = file_get_contents($template_path . "plugins/" . $pluginfile);
+        }
+        if ($plugininfo['extension'] == 'css') {
+            $plugins[$plugininfo['filename']]->css = file_get_contents($template_path . "plugins/" . $pluginfile);
+        }
+    }
     $rlo_object_file = "rloObject.htm";
     if ($engine == 'flash')
     {
@@ -146,11 +167,11 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         {
             $tracking .= "<script>\n";
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-                if ($row["tsugi_published"] == 1) {
+                if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
                     $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
@@ -220,6 +241,16 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
 
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
+
+        // Process which logo to use, if any
+        $LO_icon_path = $xmlFixer->getIcon()->url;
+        if (strpos($LO_icon_path, "FileLocation + '") !== false) {
+            $LO_icon_path = str_replace("FileLocation + '" , $string_for_flash, $LO_icon_path);
+            $LO_icon_path = rtrim($LO_icon_path, "'");
+        }
+        $theme_path = 'themes/' . $row['parent_template'] . '/' . $xmlFixer->getTheme();
+        $page_content = process_logos($LO_icon_path, $theme_path, $template_path, $page_content);
+        
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
@@ -230,6 +261,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
         $page_content = str_replace("%USE_URL%", "", $page_content);
+        $page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $page_content);
 
         //twittercard
         $xml = new XerteXMLInspector();
@@ -277,7 +309,14 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 $tracking .= "  var lti_enabled=false;\n";
             }
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                if (isset($lti_enabled) && $lti_enabled)
+                {
+                    $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                }
+                else
+                {
+                    $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=0" : "xapi_proxy.php") . "';\n";
+                }
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
@@ -317,6 +356,14 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 if (isset($xerte_toolkits_site->module))
                 {
                     $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
+                }
+                if (isset($xerte_toolkits_site->lti_context_id))
+                {
+                    $tracking .= "   var lti_context_id = '" . $xerte_toolkits_site->lti_context_id . "';\n";
+                }
+                if (isset($xerte_toolkits_site->lti_context_name))
+                {
+                    $tracking .= "   var lti_context_name = '" . $xerte_toolkits_site->lti_context_name . "';\n";
                 }
             }
             $tracking .= "</script>\n";

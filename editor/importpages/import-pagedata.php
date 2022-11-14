@@ -72,6 +72,7 @@ $pageIcons = json_decode($_SESSION['pageIcons']);
                 $page = $x->pages[$i];
                 $type = $page->type;
                 $page->icon = $pageIcons->$type;
+                unset($page->node);
             }
 
             echo str_replace("'", "\\'", json_encode($x));

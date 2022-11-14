@@ -17,11 +17,15 @@
  * limitations under the License.
  */
 
-/* MAIN CSS DOCUMENT */
-/* styles we recommend changing to rebrand your version of Xerte Online Toolkits are in themeStyles.css */
-/* changing other styles in this file may cause problems in functionality */
+/* MAIN XOT CSS DOCUMENT */
+/* these styles are loaded into every XOT project - regardless of theme used */
+/* changing css in this file may cause problems in functionality */
+/* to rebrand your version of XOT, change the css files in themes/Nottingham/default/... */
+
+@import url("editorstyles.css");
 
 body {
+	font-family: Arial, sans-serif;
 	margin: 0px;
 }
 
@@ -30,7 +34,19 @@ p {
     margin: 0;
 }
 
+h1 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0px 0px;
+}
+
 h3 {
+	font-size:	1em;
+	margin:		0px;
 	padding-left: 0.3em;
     padding-right: 0.3em;
 }
@@ -52,9 +68,13 @@ ul, ol {
 	height:		600px;
 	position:	absolute;
 	z-index:	-3;
+	border:		1px solid black;
+	box-sizing: border-box;
 }
 
 #x_headerBlock {
+	color:			#FFFFFF;
+	background:		#010101;
 	width:			100%;
 	height:			auto;
 	position:		absolute;
@@ -63,6 +83,10 @@ ul, ol {
 
 #x_headerBlock div, #x_pageDiv {
 	padding:	10px;
+}
+
+#x_headerBlock img {
+	max-height: 200px;
 }
 
 #x_pageHolder {
@@ -96,6 +120,9 @@ ul, ol {
 }
 
 #x_footerBlock {
+	color:			#FFFFFF;
+	background:		#010101;
+	font-size:		1em;
 	width:			100%;
 	position:		absolute;
 	bottom:			0px;
@@ -107,8 +134,20 @@ ul, ol {
 	width:				100%;
 	height:				100%;
 	z-index:			-1;
+	background-repeat:	repeat-x;
 }
 
+.noFocus {
+	border: 2px solid transparent;
+}
+
+.focusBorder {
+	border-color: orange;
+}
+
+.bgDarken {
+	background-color: black;
+}
 
 .x_floatLeft {
 	float:		left;
@@ -148,6 +187,19 @@ button.ui-button-icon-only {
 	margin-right:	3px;
 }
 
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
+	height:					40px;
+	background-position:	center;
+}
+
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
+	width:	41px;
+}
+
+.ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
+	width:	43px;
+}
+
 #x_prevBtn {
 	/* removes automatic spacing added between inline-block elements */
 	margin-right:	-4px;
@@ -178,21 +230,8 @@ button.ui-button-icon-only {
 	float:	left;
 }
 #x_footerBlock  #x_prevBtn, #x_footerBlock #x_nextBtn {
-	 display:	inline-block;
-	 float:		none;
- }
-
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession {
-	height:					40px;
-	background-position:	center;
-}
-
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession {
-	width:	41px;
-}
-
-.ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
-	width:	43px;
+	display:	inline-block;
+	float:		none;
 }
 
 .spinner { background-image: url("../spinner.gif"); width: 32px; height: 32px; }
@@ -589,9 +628,21 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 #x_footerChevron{
     cursor: pointer;
 }
+
+#x_footerChevron{
+    color: white;
+	background: none;
+	border: none;
+	height:45px;
+	font-size: 14px !important;
+	width:25px !important;
+}
+
+#x_footerBlock #x_footerChevron i {
+	font-size: 1.3em;
+}
+
 #x_footerShowHide{
-    /*padding-left: 8px;
-    padding-top: 15px;*/
     float:left;
 }
 
@@ -605,23 +656,27 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	height: 6px;
 	margin: auto;
 	margin-top: 15px;
+	background-color: #ddd;
 }
 
 .pbPercent {
 	text-align: right;
 	padding-right: 2px;
 	line-height: 6px;
+	color: #ffffff;
 }
 
 .pbBar {
 	width: 10%;
 	font-size: 8px;
+	background-color: #2196F3;
 }
 
 .pbTxt {
 	font-size: 10px;
 	text-align: center;
 }
+
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
 
@@ -666,4 +721,244 @@ textarea {
 /*#pageContents and #adaptiveContentMain not usually an actionable item so hide focus border*/
 #pageContents:focus,#adaptiveContentMain:focus{
 	outline:none;
+}
+
+/* --INTERFACE BUTTONS WITH CUSTOM FONT AWESOME ICONS SET IN EDITOR-------------------------------------------------------------- */
+
+#x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+	font-size: 1.9em;
+	width: 1.5em;
+}
+
+#x_footerBlock .customIconBtn:after {
+	content: none !important;
+}
+
+#x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary {
+	display: block;
+}
+.x_responsive #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary:before,
+#x_footerBlock button.customIconBtn .ui-button-icon-primary:before {
+/* 	icons used in themes are generally 1.9em with font-family: FontAwesome
+	icons selected in editor icon picker use font-family "Font Awesome 5 Free" which appears larger - this reduces the customIcons to match theme icon size */
+	font-size: .9em;
+}
+
+#x_footerBlock button.customIconBtn .ui-icon {
+    left: 50%;
+    transform: translate(-50%, 25%);
+}
+
+/* --PROJECT INTRODUCTION-------------------------------------------------------------- */
+
+#x_introH1 {
+	padding: 0.3em;
+}
+
+#x_introStartBtn {
+	float: right;
+}
+
+/* --LIGHTBOX-------------------------------------------------------------- */
+
+.featherlight.lightboxSmall .featherlight-content {
+	width: 50%;
+	height: 50%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxMedium .featherlight-content {
+	width: 70%;
+	height: 70%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxLarge .featherlight-content {
+	width: 90%;
+	height: 90%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxFull .featherlight-content {
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight:not(.lightboxAuto) #x_introHolder {
+	top: 25px;
+	bottom: 25px;
+	left: 25px;
+	right: 25px;
+	overflow: auto;
+	position: absolute;
+	display: flex;
+}
+
+.featherlight #x_introTxt {
+	margin: auto;
+}
+
+/* FONT AWESOME BUTTON ICONS */
+
+/* chevron */
+.fa-x-next:before { content: "\f054"; }
+.fa-x-prev:before { content: "\f053"; }
+.fa-x-next-circle:before { content: "\f138"; } /* circle versions are used in multiple perspectives & thumbnail viewer pages */
+.fa-x-prev-circle:before { content: "\f137"; }
+
+/* Media */
+.fa-x-play:before   { content: "\f04b"; }
+.fa-x-pause:before  { content: "\f04c"; }
+.fa-x-mute:before   { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
+
+.fa-x-close:before { content: "\f00d"; }
+.fa-x-refresh:before { content: "\f021"; }
+.fa-x-acc-hide:before { content: "\f0da"; }
+.fa-x-acc-show:before { content: "\f0d7"; }
+.fa-x-btn-hide:before { content: "\f0d8"; } /* btn-hide/show used on transcript buttons */
+.fa-x-btn-show:before { content: "\f0d7"; }
+.fa-x-zoom-in:before { content: "\f00e"; }
+.fa-x-zoom-out:before { content: "\f010"; }
+.fa-x-download:before { content: "\f019"; }
+.fa-x-copy:before { content:"\f0c5" }
+.fa-x-info-circle:before { content:"\f05a" }
+.fa-x-circle:before { content:"\f111" }
+.fa-x-circle-o:before { content:"\f10c" }
+
+/* decision tree overview icons */
+.fa-x-info:before { content:"\f129" }
+.fa-x-question:before { content:"\f128" }
+.fa-x-lightbulb:before { content:"\f0eb" }
+
+.fa-x-tick-circle:before { content:"\f058"} /* used for visited ticks in table of contents */
+
+/* marking on interactivity pages */
+.fa-x-tick:before { font-family: FontAwesome; content: "\f00c"; color: #62c562; }
+.fa-x-cross:before { content: "\f00d"; color: #ff0000; }
+
+/* Just the colour */
+.fa-x-tick {
+	font-family: FontAwesome; content: "\f00c"; color: #62c562;
+}
+.fa-x-cross {
+	content: "\f00d"; color: #ff0000;
+}
+
+/* Media */
+.fa-x-play:before { content: "\f04b"; }
+.fa-x-pause:before { content: "\f04c"; }
+.fa-x-mute:before { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
+
+/*class for hidden screenreader only content*/
+.sr-only {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+
+.wcagLogo{
+	position:absolute;
+	top:3%;
+	right:1%;
+}
+a:focus .wcagLogo {
+	outline: -webkit-focus-ring-color auto 1px;
+}
+
+/*fix button and text issue with footer narration controls in some themes*/
+#x_footerBlock .mejs-controls .mejs-button button {
+    font-size: 0 !important;
+    height: 16px !important;
+    width: 16px !important;
+}
+.featherlight iframe {
+	height: 85vh;
+	width: 85vw;
+}
+
+.featherlight-content {
+	max-width: 95vw;
+}
+
+.x_homePageLink, .x_homePageLink:visited, .x_homePageLink:hover, .x_homePageLink:focus {
+	color: inherit;
+	text-decoration: none;
+}
+
+.skip-link {
+	background: #000000;
+	color: #ffffff;
+	font-weight: 700;
+	left: 50%;
+	padding: 4px;
+	position: absolute;
+	transform: translateY(-100%);
+	transition: transform 0.3s;
+}
+.skip-link a, .skip-link a:visited{
+	color:#ffffff !important;
+}
+
+.skip-link:focus {
+	transform: translateY(0%);
+	color:#ffffff !important;
+}
+
+#x_embed_overlay.embed-overlay-inactive {
+	display: none;
+}
+
+#x_embed_overlay.embed-overlay {
+	position: fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background-color: rgba(0,0,0,0.3);
+	color: #ffffff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 4em;
+}
+
+/* circleBtn only used on flashCards page at the moment but could be used elsewhere too to better style buttons that only have font awesome icon on (no text) */
+.circleBtn.ui-button .ui-button-text, .circleBtn.ui-button .ui-button-icon-primary, .circleBtn.ui-button .ui-button-icon-secondary {
+	color: white;
+}
+
+.circleBtn.ui-button {
+	border-radius: 100%;
+}
+
+.circleBtn.ui-button {
+	background: #555;
+	border-color: #555;
+}
+
+.circleBtn.ui-button.ui-state-hover, .circleBtn.ui-button.ui-state-focus, .circleBtn.ui-button.ui-state-active {
+	background: #FF9900;
+	border-color: #FF9900;
+}
+
+.circleBtn.ui-button-icon-only {
+	height: 2.4em;
 }

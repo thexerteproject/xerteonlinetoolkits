@@ -29,7 +29,7 @@
 require_once("../../../config.php");
 _load_language_file("/website_code/php/folderproperties/share_this_folder.inc");
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");

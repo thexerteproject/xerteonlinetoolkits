@@ -32,7 +32,7 @@ include "../template_status.php";
 include "../user_library.php";
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-if(is_numeric($_POST['id'])&&is_numeric($_POST['template_id'])||is_user_admin()){
+if(is_numeric($_POST['id'])&&is_numeric($_POST['template_id'])){
 
     if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
         $new_role = $_POST['role'];

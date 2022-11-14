@@ -3,28 +3,190 @@
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
-	<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue="" />
-
-    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
+    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls,Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
-    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" deprecated="This property is deprecated" />
     <language type="LanguageList" label="Language" width="170"/>
-    <theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
+    <theme type="ThemeList" label="Theme" mandatory="true" conditionTrigger="true" defaultValue="default" />
+	<themeIcons type="CheckBox" label="Update Theme Icons" mandatory="true" defaultValue="false" condition="theme==undefined||theme=='default'||theme=='darkgrey'||theme=='flatblue'||theme=='orangepurple'||theme=='flatred'||theme=='flatwhite'||theme=='sketch'||theme=='django'||theme=='blackround'" tooltip="The selected theme uses images for the navigation and footer tool buttons. Most newer themes use Font Awesome icons instead, which give you greater flexibility in their appearance. Checking this box will automatically update interface buttons to use Font Awesome icons. It is recommended that you check this if you use are using any of the Customise Button Icon options so that all buttons appear consistent." />
+	<displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100" conditionTrigger="true"/>
+	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
+	
+	
+	<!-- OPTIONAL PROPERTIES -->
+	
+	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (e.g. 1400px) that the page contents will be displayed on larger displays. Note: some pages like media lesson and hotspot connector will currently still fill the full width of the page."/>
+	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||fixDisplay" />
+	
+	<fullScreenGroup type="group" label="Full Screen Button" optional="true" tooltip="Customise the tooltip descriptions and icons used on the full screen toggle button">
+		<fullScreenIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="displayMode=='default'||fixDisplay" optional="true" tooltip="Override the default icons used on the full screen button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
+		<maxScreenGroup type="group" label="Full Screen" optional="true">
+			<maxLabel label="Tooltip" type="TextInput" defaultValue="Full Screen" condition="displayMode=='default'||fixDisplay" optional="true"/>
+			<maxIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-expand-arrows-alt" condition="(displayMode=='default'||fixDisplay)&amp;&amp;fullScreenIcons=='true'" optional="true"/>
+		</maxScreenGroup>
+		<minScreenGroup type="group" label="Fixed Size" optional="true">
+			<minLabel label="Tooltip" type="TextInput" defaultValue="Default" condition="displayMode=='default'||fixDisplay" optional="true"/>
+			<minIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-compress-arrows-alt" condition="(displayMode=='default'||fixDisplay)&amp;&amp;fullScreenIcons=='true'" optional="true"/>
+		</minScreenGroup>
+	</fullScreenGroup>
+	
 	<hideHeader optional="true" type="CheckBox" label="Hide Header" defaultValue="false" />
 	<hideFooter optional="true" type="CheckBox" label="Hide Footer" defaultValue="false" />
-	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||fixDisplay" />
-	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (e.g. 1400px) that the page contents will be displayed on larger displays. Note: some pages like media lesson and hotspot connector will currently still fill the full width of the page."/>
+	
+	<navGroup type="group" label="Navigation Buttons" optional="true" tooltip="Customise the tooltip descriptions and icons used on the navigation buttons">
+		<navIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icons used on the navigation buttons. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
+		<prevGroup type="group" label="Previous Page" optional="true">
+			<prevLabel label="Tooltip" type="TextInput" defaultValue="Back" condition="navigation!='Menu'" optional="true"/>
+			<prevIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-chevron-circle-left" condition="navIcons=='true'&amp;&amp;navigation!='Menu'" optional="true"/>
+		</prevGroup>
+		<nextGroup type="group" label="Next Page" optional="true">
+			<nextLabel label="Tooltip" type="TextInput" defaultValue="Next" condition="navigation!='Menu'" optional="true"/>
+			<nextIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-chevron-circle-right" condition="navIcons=='true'&amp;&amp;navigation!='Menu'" optional="true"/>
+		</nextGroup>
+		<tocGroup type="group" label="Table of Contents" optional="true">
+			<tocLabel label="Tooltip" type="TextInput" defaultValue="Contents" condition="navigation!='Historic'" optional="true" tooltip="The tooltip description for the Table of Contents button. This text also appears as the title of the dialog box that opens when the button is clicked (unless navigation is set to menu or menu with page controls)."/>
+			<tocIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-bars" condition="navIcons=='true'&amp;&amp;navigation!='Historic'" optional="true"/>
+		</tocGroup>
+		<homeGroup type="group" label="Home Page" optional="true">
+			<homeLabel label="Tooltip" type="TextInput" defaultValue="Home" condition="navigation=='Historic'" optional="true"/>
+			<homeIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-home" condition="navIcons=='true'&amp;&amp;navigation=='Historic'" optional="true"/>
+		</homeGroup>
+	</navGroup>
+	
+	<toc type="group" label="Table of Contents" optional="true">
+		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
+		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true"/>
+		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
+		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
+	</toc>
 	
 	<homePageGroup type="group" label="Home Page" optional="true">
-		<homePageLink optional="true" type="CheckBox" label="Link LO title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the learning object title a link which returns users to the home page." />
+		<homePageLink optional="true" type="CheckBox" label="Link LO Title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the learning object title a link which returns users to the home page." />
 		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="By default, the home page (linked to from LO title or home button when navigation is set to 'Historic') is the first page in the project. Select a page from the drop down to use a different page in your project as the home page instead."/>
 	</homePageGroup>
+	
+	<progressBar optional="true" type="ComboBox" options="Show progress bar with page counter,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress Bar" defaultValue="pBar" width="100"/>
+	
+	<footerToolsGroup type="group" label="Show / Hide Footer Tools" optional="true" tooltip="The footer tools are the buttons that normally appear on the bottom left of your project, such as Assessibility Options and Glossary. The show / hide footer tools button allows you to toggle these buttons in and out of view.">
+		<footerTools type="ComboBox" label="Default State" options="Hide footer tools,Show footer tools,Remove show/hide button" data="hideFooterTools,showFooterTools,none" conditionTrigger="true" defaultValue="showFooterTools" width="100" optional="true"/>
+		<footerToolIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="footerTools!='none'" optional="true" tooltip="Override the default icons used on the show / hide footer tools button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
+		<hideToolsGroup type="group" label="Hide Footer Tools" optional="true">
+			<hideToolsLabel label="Tooltip" type="TextInput" defaultValue="Hide footer tools" condition="footerTools!='none'" optional="true"/>
+			<hideToolsIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-left" condition="footerTools!='none'&amp;&amp;footerToolIcons=='true'" optional="true"/>
+		</hideToolsGroup>
+		<showToolsGroup type="group" label="Show Footer Tools" optional="true">
+			<showToolsLabel label="Tooltip" type="TextInput" defaultValue="Show footer tools" condition="footerTools!='none'" optional="true"/>
+			<showToolsIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-right" condition="footerTools!='none'&amp;&amp;footerToolIcons=='true'" optional="true"/>
+		</showToolsGroup>
+	</footerToolsGroup>
+	
+	<accessibilityGroup type="group" label="Accessibility" optional="true" tooltip="Options related to the Accessibility Options button">
+		<accessibilityLabel label="Tooltip" type="TextInput" defaultValue="Accessibility Options" condition="accessibilityHide!='true'" optional="true" tooltip="The tooltip description for the Accessibility Options button. This text also appears as the title of the dialog box that opens when the button is clicked."/>
+		<accessibilityIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" condition="accessibilityHide!='true'" optional="true" tooltip="Override the default icon used on the Accessibility Options button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<accessibilityIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-eye-slash" condition="accessibilityHide!='true'&amp;&amp;accessibilityIc=='true'" optional="true"/>
+		<wcagGroup type="group" label="Logo and Link" optional="true" tooltip="The Accessibility Options dialog contains a WCAG logo which links to the Xerte Accessibility statement">
+			<wcagHide label="Hide Logo and Link" type="Checkbox" conditionTrigger='true' defaultValue="false" condition="accessibilityHide!='true'" optional="true"/>
+			<wcagAlt label="Logo Description" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="accessibilityHide!='true'&amp;&amp;wcagHide=='false'" optional="true"/>
+			<wcagLinkTitle label="Link Tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="accessibilityHide!='true'&amp;&amp;wcagHide=='false'" optional="true"/>
+			<wcagLink type="Media" label="Accessibility Statement Link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="accessibilityHide!='true'&amp;&amp;wcagHide=='false'" optional="true" />
+		</wcagGroup>
+		<accessibilityHide type="CheckBox" label="Hide Button" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Use this option with caution! Although you can hide the Accessibility Options button from the project interface, think carefully before you do this. The accessibility options allow learners to easily change the look of the project to suit their needs and links to information on the accessibility of Xerte."/>
+	</accessibilityGroup>
+	
+	<helpGroup type="group" label="Help File" optional="true" tooltip="Add a Help button to the footer tools, which opens a file or URL when clicked">
+		<nfo label="File" type="media" optional="true" tooltip="Upload a file (e.g. pdf) or enter a URL"/>
+		<helpTarget type="ComboBox" label="Open in" defaultValue="new" options="New Window,Lightbox" data="new,lightbox" tooltip="Where the help file will open - by default it will open in a new browser tab/window" optional="true"/>
+		<helpLabel label="Tooltip" type="TextInput" defaultValue="Help" optional="true"/>
+		<helpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<helpIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-question" condition="helpIc=='true'" optional="true"/>
+	</helpGroup>
+	
+	<introGroup type="group" label="Project Introduction" optional="true" tooltip="Add a Project Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the project first loads.">
+		<intro label="Text" type="TextArea" height="100" defaultValue="" optional="true"/>
+		<introTitle type="CheckBox" label="Include Title" defaultValue="true" optional="true" tooltip="Include the learning object title above the introduction text"/>
+		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Include a 'start' button below the introduction text that closes the lightbox when clicked"/>
+		<introBtnTxt label="Button Text" type="TextInput" defaultValue="Get Started" condition="introBtn=='true'" wysiwyg="true" optional="true"/>
+		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" width="100" optional="true"/>
+		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="When project loads,When project loads on first page,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the project first loads"/>
+		<introLabel label="Tooltip" type="TextInput" defaultValue="Introduction" tooltip="The tooltip description for the Project Introduction button" optional="true"/>
+		<introIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Project Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<introIcon label="Icon" type="FontAwesome" iconList="hotspot" condition="introIc!='false'" defaultValue="fas fa-info" optional="true"/>
+	</introGroup>
+	
+	<pageHelpGroup type="group" label="Page Help File Button" optional="true" tooltip="An extra button will appear in the interface if you have added help files to any of your pages. Use these properties to control the location and appearance of this button.">
+		<pageHelpLocation label="Button Location" type="ComboBox" options="Footer,Header" data="footer,header" defaultValue="footer" optional="true"/>
+		<pageHelpLabel label="Tooltip" type="TextInput" defaultValue="Page Help" optional="true"/>
+		<pageHelpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<pageHelpIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-question" condition="pageHelpIc=='true'" optional="true"/>
+	</pageHelpGroup>
+	
+	<pageIntroGroup type="group" label="Page Introduction Button" optional="true" tooltip="An extra button will appear in the interface if you have added an introduction to any of your pages. Use these properties to control the location and appearance of this button.">
+		<pageIntroLocation label="Button Location" type="ComboBox" options="Footer,Header" data="footer,header" defaultValue="footer" optional="true"/>
+		<pageIntroLabel label="Tooltip" type="TextInput" defaultValue="Page Introduction" optional="true"/>
+		<pageIntroIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
+	</pageIntroGroup>
+	
+	<icon type="group" label="Header Icon/Logo" optional="true">
+		<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger='true' tooltip="If a default logo is automatically added by this template, or by the theme you have chosen, then use this checkbox to hide that logo, or leave this unchecked and use the options below to load an alternative logo."/>
+		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="Select an Image"/>
+		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="Enter a Description for Accessibility"/>
+		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100"/>
+	</icon>
+	
+	<bg type="group" label="Background" optional="true">
+		<background optional="true" type="media" label="Image" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
+		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="30" label="Opacity"/>
+		<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</bg>
+	
+	<stylesheet optional="true" type="Media" label="Stylesheet"/>
+	<styles optional="true" type="script" height="200" label="Styles"/>
+	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>	
+	
+	<tracking type="group" label="Tracking" optional="true">
+		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
+		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
+        <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed to count as completed" />
+        <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong" />
+		<restartOptions label="Restart session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" optional="true" tooltip="If restart xAPI information is available, should that be used to restart tehe session?" />
+		
+		<saveSessionGroup type="group" label="Save Session Button" optional="true" tooltip="Options related to the Save Session button">
+			<hideSaveSession label="Hide button" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true" />
+			<saveSessionLabel label="Tooltip (Save)" type="TextInput" defaultValue="Save Session" condition="hideSaveSession!='true'" optional="true"/>
+			<closeSessionLabel label="Tooltip (Close)" type="TextInput" defaultValue="Close Session" condition="hideSaveSession!='true'" optional="true"/>
+			<saveSessionIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" condition="hideSaveSession!='true'" optional="true" tooltip="Override the default icon used on the Save Session button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+			<saveSessionIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-save" condition="hideSaveSession!='true'&amp;&amp;saveSessionIc=='true'" optional="true"/>
+		</saveSessionGroup>
+	</tracking>
 
-    <kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
-    <decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
-    <displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100" conditionTrigger="true"/>
-	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
-    <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size"  defaultValue="24" deprecated="This property is deprecated"/>
+	<meta type="group" label="Meta data" optional="true">
+		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" mandatory="true"/>
+		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
+		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
+		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
+		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
+		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the creator and co-author names are used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the institution that runs the Xerte install will be used." condition="oai_pmh_available"/>
+		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
+		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
+		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" mandatory="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
+    </meta>
+	
+	<glossaryGroup type="group" label="Glossary" optional="true" tooltip="A glossary of words/terms and their definitions. Hovering over a word/term in the project text will reveal the associated definition in a tooltip. A glossary button will also be added to the footer tools, which opens the full glossary in a dialog box when clicked.">
+		<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" wysiwyg="false,true" optional="true"/>
+		<glossaryLabel label="Tooltip" type="TextInput" defaultValue="Glossary" optional="true" tooltip="The tooltip description for the Glossary button. This text also appears as the title of the dialog box that opens when the button is clicked."/>
+		<glossaryIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Glossary button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<glossaryIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-book" condition="glossaryIc=='true'" optional="true"/>
+	</glossaryGroup>
+	
+	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
+		<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
+	</varGroup>
+	
+	<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
 	
 	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for the whole project. A lightbox property is also available on each page.">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
@@ -33,39 +195,32 @@
 		<lightboxOpacity type="NumericStepper" label="Background Opacity" min="0" max="100" step="1" defaultValue="80" optional="true"/>
 	</lightboxGroup>
 	
-	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
+	<twittercard type="group" label="Twitter card" optional="true">
+		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter." />
+		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
+		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
+		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
+		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
+		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
+		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
+		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
+	</twittercard>
 	
-	<helpGroup type="group" label="Help File" optional="true">
-		<nfo label="File" type="media" optional="true" tooltip="Upload a file (e.g. pdf) or enter a URL"/>
-		<helpTarget type="ComboBox" label="Open in" defaultValue="new" options="New Window,Lightbox" data="new,lightbox" tooltip="Where the help file will open - by default it will open in a new browser tab/window" optional="true"/>
-	</helpGroup>
-	
-    <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" wysiwyg="false,true"/>
-    <controller optional="true" label="Custom Interface" type="media" flashonly="true" deprecated="This property is deprecated" />
-	
-	<stylesheet optional="true" type="Media" label="Stylesheet"/>
-	<styles optional="true" type="script" height="200" label="Styles"/>
-	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
-    <authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated as the resume functionality is now available automatically"/>
+	<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
+	<!--<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue="" />-->
+	<kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
+	<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
     <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	<forcePage1 type="CheckBox" label="Force First Page" defaultValue="true" optional="true" tooltip="Force projects to open on first page even if the URL contains specific page information. Useful when creating projects, such as escape rooms, where you don't want users to be able to jump ahead."/>
+	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 	
-	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
-		<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
-	</varGroup>
 	
-	<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
+	<!-- DEPRECATED PROPERTIES -->
 	
-	<progressBar optional="true" type="ComboBox" options="Show progress bar with page counter,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress bar" defaultValue="pBar" width="100"/>
-	<footerTools optional="true" type="ComboBox" options="Hide footer tools by default,Show footer tools by default,Remove show/hide button" data="hideFooterTools,showFooterTools,none" label="Show/Hide Footer Tools" defaultValue="showFooterTools" width="100"/>
-	
-	<toc type="group" label="Table of Contents" optional="true">
-		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
-		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true"/>
-		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
-		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
-	</toc>
+	<visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" deprecated="This property is deprecated" />
+	<allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size"  defaultValue="24" deprecated="This property is deprecated"/>
+	<controller optional="true" label="Custom Interface" type="media" flashonly="true" deprecated="This property is deprecated" />
+	<resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated as the resume functionality is now available automatically"/>
 	
 	<mediaFile type="group" label="Media" optional="true" deprecated="This property is deprecated and no longer supported">
 		<media optional="true" type="media" label="File" defaultValue="Select an Audio or Video File"/>
@@ -79,61 +234,6 @@
 		<mediaHighlight optional="true" type="CheckBox" label="Caption Highlight" defaultValue="true"/>
 		<mediaHighlightColour optional="true" type="ColourPicker" label="Caption Highlight Colour" defaultValue="0xFFFF00"/>
 	</mediaFile>
-	
-	<icon type="group" label="Icon/Logo" optional="true">
-		<ic optional="true" type="media" label="Image" defaultValue="Select an Image"/>
-		<icTip optional="true" type="TextInput" label="Description" defaultValue="Enter a Description for Accessibility"/>
-		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" label="Position" defaultValue="left" width="100"/>
-	</icon>
-
-	<wcagGroup type="group" label="Accessilibity logo and link" optional="true" tooltip="Hide the accessilibity logo and link or change the link.">
-                <wcagHide label="Hide the Accessibility logo and link" type="Checkbox" conditionTrigger='true' defaultValue="false" optional="true"/>
-    			<wcagAlt label="Accessilibity logo alt text" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'" optional="true"/>
-    			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
-                <wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true" />
-    		</wcagGroup>
-	
-	<bg type="group" label="Background" optional="true">
-		<background optional="true" type="media" label="Image" defaultValue="Select an Image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
-		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="30" label="Opacity"/>
-		<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
-		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</bg>
-	
-	<tracking type="group" label="Tracking" optional="true">
-		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
-		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
-        <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed to count as completed" />
-        <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong" />
-       	<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button" />
-		<restartOptions label="Restart session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" tooltip="If restart xAPI information is available, should that be used to restart tehe session?" />
-	</tracking>
-
-	<meta type="group" label="Meta data" optional="true">
-		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" mandatory="true"/>
-		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
-		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
-		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
-		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning obect. Not only its subject, but also the learning goals and expected level."/>
-		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords other people are likely to use to find this learning object. Use a new line for each keyword."/>
-		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
-		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality). If disabled the name of the instatution that runs the Xerte install will be used." condition="oai_pmh_available"/>
-		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, i.e. primary education, secondary education, etc."/>
-		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
-		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agee to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" mandatory="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
-    </meta>
-	
-	<twittercard type="group" label="Twitter card" optional="true">
-		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter." />
-		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
-		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
-		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
-		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
-		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
-		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
-		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
-	</twittercard>
 
     <newNodes>
     </newNodes>

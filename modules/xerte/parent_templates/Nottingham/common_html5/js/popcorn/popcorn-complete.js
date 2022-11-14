@@ -3210,6 +3210,18 @@
     };
   };
 
+  // Based somewhat on these regexps for YouTube and Vimeo (check there for updates)
+  //   https://stackoverflow.com/questions/19377262/regex-for-youtube-url
+  //   https://stackoverflow.com/questions/5008609/vimeo-video-link-regex
+  Popcorn.fixYouTubeVimeo = function(url) {
+    var path = url.trim();
+    let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
+    if (result) return "https://www.youtube.com/watch?v=" + result[7] + (result[8] !== undefined ? result[8] : "");
+    result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
+    if (result) return "https://vimeo.com/" + result[2];
+    return url;
+  }
+
   // Popcorn.smart will attempt to find you a wrapper or player. If it can't do that,
   // it will default to using an HTML5 video in the target.
   Popcorn.smart = function( target, src, options ) {
@@ -3231,6 +3243,9 @@
     // Loop through each src, and find the first playable.
     for ( i = 0, srcLength = src.length; i < srcLength; i++ ) {
       srci = src[ i ];
+
+      // Normalize srci
+      srci = Popcorn.fixYouTubeVimeo(srci);
 
       // See if we can use a wrapper directly, if not, try players.
       for ( j = 0; j < wrappers.length; j++ ) {
@@ -6799,7 +6814,9 @@
         if ( player.isMuted() ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
           addYouTubeEvent( "play", onFirstPlay );
-          player.playVideo();
+          addYouTubeEvent( "pause", onPause );
+          onReady();
+
         } else {
           setTimeout( onMuted, 0 );
         }
@@ -6856,8 +6873,8 @@
 
     function onReady() {
 
-      addYouTubeEvent( "play", onPlay );
-      addYouTubeEvent( "pause", onPause );
+      // addYouTubeEvent( "play", onPlay );
+      // addYouTubeEvent( "pause", onPause );
       // Set initial paused state
       if( impl.autoplay || !impl.paused ) {
         removeYouTubeEvent( "play", onReady );
@@ -6908,6 +6925,7 @@
         addYouTubeEvent( "play", onReady );
         player.playVideo();
       } else {
+        player.seekTo( 0, true );
         onReady();
       }
     }
@@ -6919,9 +6937,9 @@
         setTimeout( onFirstPlay, 0 );
         return;
       }
-      addYouTubeEvent( "pause", onFirstPause );
-      player.seekTo( 0 );
-      player.pauseVideo();
+      addYouTubeEvent( "play", onPlay );
+      onPlay();
+      document.dispatchEvent(new Event('youtubemetadata'));
     }
 
     function addYouTubeEvent( event, listener ) {

@@ -91,7 +91,13 @@ img {
 .featherlight .featherlight-content {
 	background-color: $defaultpagebackground;
 }
-
+/*code snippet*/
+.hljs, .hljs-subst, .hljs-tag .hljs-title, .lisp .hljs-title, .clojure .hljs-built_in, .nginx .hljs-title {
+	color: white;
+}
+.hljs {
+	background: #232222;
+}
 /******@media changes******/
 @media (min-width: 1366px) {
 	/*tablet and above css below here*/

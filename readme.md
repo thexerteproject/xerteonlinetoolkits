@@ -1,7 +1,7 @@
 Xerte Online Toolkits
 =====================
 
-Latest release : v3.9 (released on September 13, 2020)
+Latest release : v3.10 (released on June 30, 2021)
 
 Installation Instructions (Stable release, .zip)
 ------------------------------------------------
@@ -9,15 +9,12 @@ Installation Instructions (Stable release, .zip)
 
 Here's a quick guide to installing toolkits on your local computer:
 
- 1. Download and install XAMPP from http://www.apachefriends.org/download.php?xampp-win32-1.7.0-installer.exe accepting the default settings;
+ 1. Download and install XAMPP from http://www.apachefriends.org accepting the default settings;
  2. Download Xerte Online Toolkits from http://xerte.org.uk
  3. Unzip the folder 'xertetoolkits' to c:\xampp\htdocs\, giving you c:\xampp\htdocs\xertetoolkits
  4. Start Apache and MySQL in XAMPP control panel
  5. Visit http://localhost/xertetoolkits/setup
- 6. Click the XAMPP button.
-
-Server administrators should choose the 'full install' option and step through the wizard. When copying the files to a server, you can use the setup utility at http://yourserver.com/yourtololkitsfolder/setup
-
+ 6. Follow the steps through the setup wizard
 
 Installation Instructions (unstable release, github)
 --------------------------------------------------
@@ -29,7 +26,7 @@ git clone https://github.com/thexerteproject/xerteonlinetoolkits.git .
 
 Requires :
 
- 1. PHP v5.1.2+ with either sqlite or mysql extensions available.
+ 1. PHP v7.x with either mysql, xml, curl, mbstring and zip extensions available.
  2. Apache or some other web server that is setup to execute PHP.
  3. Write permission to USER-FILES
 
@@ -40,5 +37,4 @@ Optional additions :
  3. Transcoding support for video files - see/read cron/transcoding.php - when run it will attempt to convert .flv files to .mp4 files to improve template viewing on Adobe-flash-free devices.
 
 
-If you do not go through /setup (and stick with using Sqlite) then the Sqlite database will be somewhere in /tmp. 
-Edit config.php to change this.
+For full installation instructions please see the documentation/ToolkitsInstallationGuide.pdf

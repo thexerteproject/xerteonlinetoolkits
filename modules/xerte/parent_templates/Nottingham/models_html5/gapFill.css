@@ -62,7 +62,15 @@
 	}
 	
 	#targetHolder select[disabled].answerShown {
-		color:			#c36b00;
+		/*gap fill: drop down show answers styling*/
+		opacity:1.0;
+		font-weight:400;
+		border-color: unset;
+		border-width:2px;
+		border-style:outset;
+		background:#ffffff;
+		cursor: default;
+		padding:initial !important;
 	}
 	
 	#labelHolder {
@@ -109,3 +117,51 @@
 	#showBtn {
 		margin-right: 1em;
 	}
+
+
+/* change styling of correct and disable answers */
+#targetHolder input[readonly].correct, #targetHolder .target.correct, #targetHolder input[correct], #targetHolder select[disabled].correct {
+	color:unset;
+	color: green;
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+	caret-color: transparent;
+}
+/* add ticks to correct answers */
+#targetHolder input[readonly].correct+span:before, #targetHolder input[correct]+span:before, #targetHolder .target.correct+span:before, #targetHolder select[disabled].correct+span:before {
+	font-family: FontAwesome;
+	content: "\f00c";
+	color: green;
+	margin-left:1px;
+}
+
+/*gap fill: show red crosses when incorrect and in tracking mode*/
+#targetHolder select[disabled]+span:before, #targetHolder .target.incorrect+span:before, #pageContents input[readonly]+span:before{
+	font-family: FontAwesome;
+	content: "\f00d";
+	color: red;
+	margin-left:1px;
+}
+
+/*gap fill: styling of disabled/incorrect responses when in tracking mode*/
+#targetHolder select[disabled], #targetHolder .target.incorrect, #targetHolder input[readonly]{
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+}
+
+/*gap fill: remove red crosses when show answers selected*/
+#targetHolder .target.answerShown+span:before, #targetHolder select[disabled].answerShown+span:before, #targetHolder input.answerShown+span:before {
+	content:"";
+}

@@ -67,12 +67,18 @@
         var x_templateLocation = "%TEMPLATEPATH%";
 		var themePath = "%THEMEPATH%";
         var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
-		var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
         var x_lastUpdated = new Date("%LASTUPDATED%");
         var x_dateCreated = new Date("%DATECREATED%");
         var x_numPlays = String("%NUMPLAYS%");
-        var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
-        var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+        var localeoptions = { year: 'numeric', month: 'short', day: 'numeric' };
+        try {
+            var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
+            var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+        }
+        catch(e) {
+            var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString();
+            var x_dateCreatedLocale = x_dateCreated.toLocaleDateString();
+        }
 		%USE_URL%
 
 		var globalVars = {

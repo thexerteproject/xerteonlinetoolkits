@@ -17,20 +17,107 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+class XertePage
+{
+    private $pageFiles = null;
+    public $name;
+    public $node;
+    public $type;
+    public $index;
+
+    private function getImgNum($fileName) {
+        $info = pathinfo($fileName);
+        $name = $info['filename'];
+        $num = '';
+
+        // extract the number from the end of the file name
+        for ($k=strlen($name)-1; $k>-1; $k--) {
+            if (is_numeric($name[$k]))
+            {
+			    $num = $name[$k] . $num;
+            } else {
+                $name = substr($name, 0, strlen($name) - strlen($num));
+                break;
+            }
+        }
+
+        // return the file name (without number) & number separately
+        $ret = new stdClass();
+        $ret->name = $name;
+        $ret->num = ($num != '' ? intval($num) : $num);
+        $ret->addZeros = strlen($num) - strlen((string)((int)$num));
+        return $ret;
+    }
+
+    public function getImageSequenceFiles()
+    {
+        if ($this->type != "imageSequence")
+        {
+            return array();
+        }
+        if ($this->pageFiles === null)
+        {
+            $this->pageFiles = array();
+            // This piece of code know way too much of the structure of the XML of imageSequence
+            // Create sequence structure for all cases
+            $cases = $this->node->xpath("case");
+            foreach ($cases as $case)
+            {
+                $series = $case->xpath("imgSeries");
+                foreach ($series as $seq)
+                {
+                    $thisSeries = new stdClass();
+                    // Build sequence structure like in page
+                    $firstImg = str_replace("FileLocation + 'media/", "", (string)$seq['firstImg']);
+                    $lastImg = str_replace("FileLocation + 'media/", "", (string)$seq['lastImg']);
+                    // Remove last character
+                    $firstImg = substr($firstImg, 0, strlen($firstImg) - 1);
+                    $lastImg = substr($lastImg, 0, strlen($lastImg) - 1);
+                    $firstImgInfo = pathinfo($firstImg);
+                    $lastImgInfo = pathinfo($lastImg);
+
+                    $thisSeries->firstImg = $this->getImgNum($firstImgInfo['basename']);
+                    $thisSeries->lastImg = $this->getImgNum($lastImgInfo['basename']);
+
+                    // first & last images must be in the same folder & have same file name except for number at the end & have same file extension
+                    // first image should be the image with the lowest number and last image should be the image with the highest number
+                    $thisSeries->imgFolder = $firstImgInfo['dirname'];
+                    $thisSeries->imgExt = $firstImgInfo['extension'];
+                    if ($thisSeries->firstImg->addZeros > 0)
+                    {
+                        $thisSeries->numLength = strlen((string)($thisSeries->firstImg->num)) + $thisSeries->firstImg->addZeros;
+                    }
+                    else{
+                        $thisSeries->numLength = 0;
+                    }
+                    // Generate filenames and add to file array
+                    for ($i=$thisSeries->firstImg->num; $i<=$thisSeries->lastImg->num; $i++)
+                    {
+                        $this->pageFiles[] = $thisSeries->imgFolder . "/" . $thisSeries->firstImg->name .  str_pad($i, $thisSeries->numLength, "0", STR_PAD_LEFT) . "." . $thisSeries->imgExt;
+                    }
+                }
+            }
+        }
+        return $this->pageFiles;
+    }
+}
+
 class XerteXMLInspector
 {
 
-    private $fname;
-    private $xml;
-    private $name;
-    private $models;
-    private $mediaIsUsed;
-    private $language;
-    private $theme;
-    private $glossary;
-    private $resultpageEnabled;
-    private $hasResultPage;
-    private $pages;
+    protected $fname;
+    protected $xmlstr;
+    protected $xml;
+    protected $name;
+    protected $models;
+    protected $mediaIsUsed;
+    protected $language;
+    protected $theme;
+    protected $glossary;
+    protected $resultpageEnabled;
+    protected $hasResultPage;
+    protected $pages;
 
     private function addModel($model)
     {
@@ -44,7 +131,7 @@ class XerteXMLInspector
 
     private function addPage($node, $i)
     {
-        $page = new stdClass();
+        $page = new XertePage();
         $name = (string)$node['name'];
         // This may contain HTML tags, convert to plain text
         // Remove the HTML tags
@@ -54,6 +141,7 @@ class XerteXMLInspector
         // encode
         $name = base64_encode($name);
         $page->name = $name;
+        $page->node = $node;
         $page->type = $node->getName();
         $page->index = $i;
 
@@ -142,6 +230,32 @@ class XerteXMLInspector
         return $ok;
     }
 
+    private function recognise_template($check) {
+        $probably = "decision";
+        $probably_weight = $this->test_unrecognised_template(array("name", "displayMode", "newBtnLabel", "backBtn", "fwdBtn", "emailBtn", "printBtn", "viewThisBtn", "closeBtn", "moreInfoString", "lessInfoString", "helpString", "resultString", "overviewString", "posAnswerString", "fromRangeString", "viewAllString", "errorString", "sliderError", "noQ", "noA", "resultEndString", "theme"), $check);
+
+        $new_weight = $this->test_unrecognised_template(array("name", "language", "navigation", "textSize", "theme", "displayMode", "responsive"), $check);
+        if ($new_weight > $probably_weight) {
+            $probably = "Nottingham";
+            $probably_weight = $new_weight;
+        }
+    
+        $new_weight = $this->test_unrecognised_template(array("language", "name", "theme"), $check);
+        if ($new_weight > $probably_weight) {
+            $probably = "site";
+        }
+    
+        return $probably;
+    }
+
+    private function test_unrecognised_template($test_array, $check) {
+        $count = 0;
+        foreach($test_array as $t)
+            if ( $check[$t] ) $count++;
+        return ($count / count($test_array)) * 100;
+    }
+
+
     public function loadTemplateXML($name)
     {
         _debug("Trying to simplexml_load_file : $name");
@@ -179,6 +293,7 @@ class XerteXMLInspector
                 $xml = file_get_contents($name);
             }
         }
+        $this->xmlstr = $xml;
 
         $this->xml = simplexml_load_string($xml);
         if (strlen((string)$this->xml['glossary'])>0)
@@ -229,6 +344,25 @@ class XerteXMLInspector
         {
             $this->theme = "default";
         }
+
+        if ($this->xml['targetFolder']) {
+            $this->target = (string) $this->xml['targetFolder'];
+        }
+        else { // Sniff the XML to figure out if Bootstrap or XOT
+            $this->target = $this->recognise_template($this->xml);
+        }
+
+        if ($this->target == 'site') { // Bootstrap
+            $this->logoL = (string) $this->xml['logoL'];
+            $this->logoR = (string) $this->xml['logoR'];
+            $this->logoLHide = filter_var($this->xml['logoLHide'], FILTER_VALIDATE_BOOLEAN);
+            $this->logoRHide = filter_var($this->xml['logoRHide'], FILTER_VALIDATE_BOOLEAN);
+        }
+        else { // Assume XOT
+            $this->ic = (string) $this->xml['ic'];
+            $this->icHide = filter_var($this->xml['icHide'], FILTER_VALIDATE_BOOLEAN);
+        }
+
         if (PHP_VERSION < '8' && function_exists('libxml_disable_entity_loader'))
         {
             libxml_disable_entity_loader($original_el_setting);
@@ -249,6 +383,23 @@ class XerteXMLInspector
     public function getTheme()
     {
         return $this->theme;
+    }
+
+    public function getIcon()
+    {
+        $ic = new stdClass;
+
+        if ($this->target == 'site') { //Bootstrap
+            $ic->logoL = $this->logoL;
+            $ic->logoR = $this->logoR;
+            $ic->logoLHide = $this->logoLHide;
+            $ic->logoRHide = $this->logoRHide;
+        }
+        else { // XOT
+            $ic->url = $this->ic;
+            $ic->hide = $this->icHide;
+        }
+        return $ic;
     }
 
     public function getLanguage()
@@ -276,6 +427,11 @@ class XerteXMLInspector
         return $this->glossary;
     }
 
+    public function getPage($page)
+    {
+        return $this->pages[$page];
+    }
+
     public function getPages()
     {
         return $this->pages;
@@ -290,6 +446,69 @@ class XerteXMLInspector
         else
         {
             return false;
+        }
+    }
+    /**
+     * @par $filename is supposed to be the filename with media (so do NOT include media)
+     * @return bool
+     */
+    public function fileIsUsed($filename, $pagenr=null)
+    {
+        if ($pagenr != null)
+        {
+            // get the page and check if the file is used
+            $page = $this->getPage($pagenr);
+            $node = $page->node;
+            $nodeXmlStr = $node->asXML();
+            $pos = strpos($nodeXmlStr, 'media/' . $filename);
+            if ($pos !== false)
+            {
+                return true;
+            }
+            else
+            {
+                if ($page->type === 'imageSequence')
+                {
+                    $files = $page->getImageSequenceFiles();
+                    // find filename in files
+                    foreach ($files as $file)
+                    {
+                        if ($file == $filename)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+        else
+        {
+            // check if the file is used
+            $pos = strpos($this->xmlstr, 'media/' . $filename);
+            if ($pos !== false)
+            {
+                return true;
+            }
+            else
+            {
+                foreach($this->pages as $page)
+                {
+                    if ($page->type === 'imageSequence')
+                    {
+                        $files = $page->getImageSequenceFiles();
+                        // find filename in files
+                        foreach ($files as $file)
+                        {
+                            if ($file == $filename)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
         }
     }
 }

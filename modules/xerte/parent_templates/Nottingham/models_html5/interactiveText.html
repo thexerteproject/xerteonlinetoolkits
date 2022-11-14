@@ -400,7 +400,6 @@
 				"groupInfo": groupInfo,
 				"subGroups": subGroups
 			});
-			//debugger;
 			this.setUpInteraction();
 
 			x_pageLoaded();
@@ -571,6 +570,7 @@
 								.fadeIn();
 
 							$pageContents.data("currentGroup", index);
+							x_pageContentsUpdated();
 						}
 					});
 
@@ -621,6 +621,7 @@
 						$("#prevBtn").button("enable");
 
 						$pageContents.data("currentGroup", currentGroup);
+						x_pageContentsUpdated();
 					})
 					.attr("tabindex", tabIndex+1);
 
@@ -659,6 +660,7 @@
 						$("#nextBtn").button("enable");
 
 						$pageContents.data("currentGroup", currentGroup);
+						x_pageContentsUpdated();
 					})
 					.attr("tabindex", tabIndex+2);
 
@@ -1004,6 +1006,7 @@
 			}
 
 			$pageContents.data("currentGroup", currentGroup);
+			x_pageContentsUpdated();
 		};
 
 		// only used in find interactions - sets up arrays to hold found/complete data & create buttons

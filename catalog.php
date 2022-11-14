@@ -36,6 +36,7 @@ require $xerte_toolkits_site->php_library_path  . "template_status.php";
 require $xerte_toolkits_site->php_library_path  . "template_library.php";
 require $xerte_toolkits_site->php_library_path  . "display_library.php";
 require $xerte_toolkits_site->php_library_path  . "user_library.php";
+require $xerte_toolkits_site->php_library_path  . "XerteProjectDecoder.php";
 
 function require_auth() {
     global $xerte_toolkits_site;
@@ -155,6 +156,7 @@ if ($full_access && isset($_REQUEST['list']))
         $q .= " and td.date_modified > ?";
         $params[] = $since->format('Y-m-d');
     }
+    $q .= " order by td.date_modified asc limit $take offset $offset";
 
     $templates = db_query($q, $params);
     $response = new stdClass();
@@ -166,11 +168,15 @@ if ($full_access && isset($_REQUEST['list']))
     $response->take = $take;
     $response->offset = $offset;
     $tmptemplates = array();
-    for ($i = $offset; $i<count($templates) && $i-$offset < $take; $i++)
+    for ($i = 0; $i<count($templates); $i++)
     {
         $template = new stdClass();
         $template->db_record = $templates[$i];
-        $template->data_xml = get_template_data_as_xmlstring($templates[$i]['template_id'], $templates[$i]['owner_username'], $templates[$i]['template_type']);
+        // Construct file name
+        $template_dir = $xerte_toolkits_site->users_file_area_full . $templates[$i]['template_id'] . "-" . $templates[$i]['owner_username'] . "-" . $templates[$i]['template_type'] . "/";
+        $dataFilename = $template_dir . "data.xml";
+        $decoder = new XerteProjectDecoder($dataFilename);
+        $template->data = $decoder->detailedTemplateDecode($templates[$i]['template_id'], $templates[$i]);
         $tmptemplates[] = $template;
     }
     $response->count = count($tmptemplates);
@@ -205,14 +211,18 @@ else if (isset($_GET['template_id']) && is_numeric($_GET['template_id']) && ($fu
     $response = new stdClass();
     $response->site_url = $xerte_toolkits_site->site_url;
     $response->site_name = $xerte_toolkits_site->site_name;
-    $response->query = $_REQUEST['list'];
+    $response->query = 'template_id=' . $_GET['template_id'];
     $response->date = date('c');
     $tmptemplates = array();
     for ($i = 0; $i<count($templates); $i++)
     {
         $template = new stdClass();
-        $template->db_record = $templates[$i];
-        $template->data_xml = get_template_data_as_xmlstring($templates[$i]['template_id'], $templates[$i]['owner_username'], $templates[$i]['template_type']);
+        //$template->db_record = $templates[$i];
+        // Construct file name
+        $template_dir = $xerte_toolkits_site->users_file_area_full . $templates[$i]['template_id'] . "-" . $templates[$i]['owner_username'] . "-" . $templates[$i]['template_type'] . "/";
+        $dataFilename = $template_dir . "data.xml";
+        $decoder = new XerteProjectDecoder($dataFilename);
+        $template->data = $decoder->detailedTemplateDecode($templates[$i]['template_id'], $templates[$i]);
         $tmptemplates[] = $template;
     }
     $response->count = count($tmptemplates);

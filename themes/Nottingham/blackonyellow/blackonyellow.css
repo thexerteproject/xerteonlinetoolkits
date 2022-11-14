@@ -18,7 +18,7 @@
   background-image: none;
   width: 100%;
   border-top-right-radius: 3px;
-  background: #000000;
+  background: #000000 !important;
   box-shadow: none;
 }
 
@@ -359,7 +359,7 @@ a.hotspot, a.hotspot.selected {
 
 .ui-widget-content {
   border: 1px solid #aaaaaa;
-  background: #FFFF99 url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
+  background: #FFFF99;
   color: #000000;
 }
 
@@ -660,40 +660,48 @@ div#shorturltodisplay a {
   background-image: none;
 }
 
+.ui-button .ui-icon.x_projectIntro {
+  background-image: none;
+}
+
 #x_nextBtn:after {
-  content: "\f138";
+  content: "";
 }
 
 #x_prevBtn:after {
-  content: "\f137";
+  content: "";
 }
 
 #x_cssBtn:after {
-  content: "\f066";
+  content: "";
 }
 
 #x_colourChangerBtn:after {
-  content: "\f042";
+  content: "";
 }
 
 #x_mediaBtn:after {
-  content: "\f16a";
+  content: "";
 }
 
 #x_glossaryBtn:after {
-  content: "\f02d";
+  content: "";
 }
 
 #x_helpBtn:after {
-  content: "\f128";
+  content: "";
+}
+
+#x_introBtn:after {
+  content: "";
 }
 
 #x_menuBtn:after {
-  content: "\f0c9";
+  content: "";
 }
 
 #x_saveSessionBtn:after {
-  content: "\f0c7";
+  content: "";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
 }
@@ -735,7 +743,7 @@ div#shorturltodisplay a {
   color: #FFFF99;
 }
 
-#x_footerChevron:hover {
+#x_footerChevron:hover, #x_footerChevron:focus {
   color: yellow;
 }
 
@@ -1404,6 +1412,11 @@ img {
 /******lightboxes******/
 .featherlight .featherlight-content {
   background-color: #FFFF99;
+}
+
+/*code snippet*/
+.hljs {
+  background: #f0f179;
 }
 
 /******@media changes******/

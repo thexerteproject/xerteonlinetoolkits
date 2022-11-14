@@ -36,6 +36,9 @@ var defaultHeaderCss;
 var urlParams = {};
 var categories;
 var validPages = [];
+var collapseBanner = false;
+var collapseHeight = -1;
+var fullscreenBannerTitleMargin=10;
 
 function init(){
 	loadContent();
@@ -186,6 +189,13 @@ function loadContent(){
 		
 		fixSideBar();
 	});
+
+	setTimeout(function() {
+		$('div.nav-collapse li a').click(function () {
+			$('.navbar-toggler').click();
+		});
+	}, 500);
+
 	x_xAPI_SessionId = new Date().getTime() + "" + Math.round(Math.random() * 1000000);
 }
 
@@ -392,14 +402,25 @@ function setup() {
 			if ($(data).find('learningObject').attr('glossaryHover') == undefined || $(data).find('learningObject').attr('glossaryHover') == "true") {
 
 				x_checkForText($(data).find('page'), 'glossary');
-
+				
+				// Handle the closing of glossary bubble with escape key
+				var $activeTooltip, escapeHandler = function(e) {
+					e = e || window.event; //IE
+					if ((e.keyCode ? e.keyCode : e.which) === 27) { // Escape
+						$activeTooltip.trigger("mouseleave");
+						e.stopPropagation();
+					}
+				};
+				
 				// add events to control what happens when you rollover glossary words
 				$("body > .container")
 					.on("mouseenter", ".glossary", function(e) {
-						$(this).trigger("mouseleave");
-
-						var $this = $(this),
-							myText = $this.text(),
+						$activeTooltip = $(this);
+						$activeTooltip.trigger("mouseleave");
+						
+						window.addEventListener('keydown', escapeHandler);
+						
+						var myText = $activeTooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 							myDefinition, i, len;
 
 						for (i=0, len=glossary.length; i<len; i++) {
@@ -409,11 +430,11 @@ function setup() {
 							}
 						}
 
-						$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
+						$activeTooltip.parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
 
 						$("#glossaryHover").css({
-							"left"	:$(this).offset().left + 20,
-							"top"	:$(this).offset().top + 20
+							"left"	:$activeTooltip.offset().left + 20,
+							"top"	:$activeTooltip.offset().top + 20
 						});
 						$("#glossaryHover").fadeIn("slow");
 					})
@@ -423,6 +444,7 @@ function setup() {
 						if ($("#glossaryHover") != undefined) {
 							$("#glossaryHover").remove();
 						}
+						window.removeEventListener('keydown', escapeHandler);
 					})
 					.on("mousemove", ".glossary", function(e) {
 						$("#glossaryHover").css({
@@ -500,10 +522,11 @@ function setup() {
 
 			// remove size & background color styles from links on nav bar
 			if ($('<p>' + name + '</p>').children().length > 0) {
-				name = $(name);
+				name = $('<p>' + name + '</p>');
 				name.css({ 'font-size': '', 'background-color': 'transparent' });
 				name.find('[style*="font-size"]').css('font-size', '');
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
+				name = name.html();
 			}
 			
 			if ($(this).attr('pageLink') != undefined && $(this).attr('pageLink') != '') {
@@ -922,75 +945,23 @@ function setup() {
 		$(".jumbotron").remove();
 
 	} else {
-
-		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
-		// they are overridden by any logos in theme folders
-		// they can also be overridden by images uploaded via Header Logo optional properties
-		$('#overview div.logoR, #overview div.logoL').hide();
-		$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
-		$('#overview .logoR img').attr('alt', '');
-		$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
-		$('#overview .logoL img').attr('alt', '');
-
-		var checkExists = function(logoClass, type, fallback) {
-			$.ajax({
-				url: $('#overview .' + logoClass + ' img').attr('src'),
-				success: function() {
-					$('#overview').addClass(logoClass);
-					$('#overview div.' + logoClass).show();
-
-					// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-					if (type == 'theme') {
-						$('#overview .' + logoClass + ' img.' + logoClass).addClass('themeLogo');
-					}
-				},
-				error: function() {
-					if ($(data).find('learningObject').attr(logoClass + 'Hide') == 'true') {
-						$('#overview .' + logoClass + ' img').removeAttr('src');
-					} else {
-						if (fallback == 'theme') {
-							$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
-							checkExists(logoClass, 'theme', 'default');
-						} else if (fallback == 'default') {
-							$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
-							checkExists(logoClass);
-						}
-					}
-				}
-			});
-		}
-
-		var type, fallback;
-		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
-			$('#overview .logoR img').attr('src', $(data).find('learningObject').attr('logoR'));
-			$('#overview .logoR img').attr('alt', $(data).find('learningObject').attr('logoRAlt'));
-			type = 'LO';
-			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-			type = 'theme';
-			$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
-		}
-		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoRHide') == 'true') {
-			$('#overview .logoR img').removeAttr('src');
-		} else {
-			checkExists('logoR', type, fallback);
-		}
-
-		var type, fallback;
-		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
-			$('#overview .logoL img').attr('src', $(data).find('learningObject').attr('logoL'));
-			$('#overview .logoL img').attr('alt', $(data).find('learningObject').attr('logoLAlt'));
-			type = 'LO';
-			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-			type = 'theme';
-			$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
-		}
-		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoLHide') == 'true') {
-			$('#overview .logoL img').removeAttr('src');
-		} else {
-			checkExists('logoL', type, fallback);
-		}
+		var $logo, LO = $(data).find('learningObject');
+		['logoL', 'logoR'].forEach(function(logo) {
+			$('#overview').addClass(logo);
+			$('#overview .' + logo + ' img').addClass(logo);
+			$('#overview div.' + logo).data('defaultLogo', $('#overview .' + logo + ' img').attr('src'));
+			$logo = $('#overview .' + logo + ' img');
+			$logo.attr('alt', LO.attr(logo + 'Alt'));
+			if (LO.attr('theme') != undefined && LO.attr('theme') != 'default') {
+				$logo.addClass('themeLogo');
+			}
+			// Hide logo if no src value or 'Hide' is ticked, otherwise show it
+			$('#overview div.' + logo)[  LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '' ? 'hide' : 'show'  ]();
+			
+			if (LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '') {
+				$('#overview').removeClass(logo); 
+			}
+		});
 
 		// apply all the header css optional properties
 		var $jumbotron = $(".jumbotron");
@@ -1025,9 +996,13 @@ function setup() {
 		if ($(data).find('learningObject').attr('headerRepeat') != undefined) {
 			$jumbotron.css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
 		}
+		if ($(data).find('learningObject').attr('headerSize') != undefined && $(data).find('learningObject').attr('headerSize') != "not-set") {
+			$jumbotron.css('background-size', $(data).find('learningObject').attr('headersize'));
+		}
 		if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '' && $(data).find('learningObject').attr('headerTextColour') != '0x') {
 			$jumbotron.find('#pageTitle, #pageSubTitle').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		}
+
 
 	}
 
@@ -1037,6 +1012,7 @@ function setup() {
 		header: $jumbotron.css('background-image'),
 		headerPos: $jumbotron.css('background-position'),
 		headerRepeat: $jumbotron.css('background-repeat'),
+		headerSize: $jumbotron.css('background-size'),
 		headerColour: $jumbotron.css('background-color'),
 		headerTextColour: $jumbotron.find('#pageTitle').css('color')
 	};
@@ -1312,7 +1288,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (tempPageIndex != undefined) {
 			parseContent({ type: "index", id: tempPageIndex });
 		}
-		this.CheckBanner(tempPageIndex)
+		this.x_CheckBanner(tempPageIndex)
 
 	// Then try to look them up by ID
 	} else {
@@ -1368,27 +1344,143 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 		if (found == false) {
 			console.log("Page/section with ID *" + pageInfo.ID + "* not found");
 		}
-		this.CheckBanner(i)
+		this.x_CheckBanner(i)
 	}
 }
 
-function CheckBanner(index){
-	var banner = $(data).find('page').eq(index).attr('headerBanner');
-	if(banner == "Jumbotron"){
-		$(".jumbotron").addClass("scale");
+function x_CheckBanner(index){
+	// This routine potentially breaks themes/customcode based on Cardiff's example
+	// if .scale is set on the jumbotron class, do nothing! Better would be to have a version in the xml of which version created the xml
+	if ($(".jumbotron").hasClass('scale'))
+	{
+		return;
+	}
+	// Remove introtext if visible
+	$("#x_clickableWrapper").remove();
+
+	// Title alignment
+	const alignmentLO = $(data).find('learningObject').attr('headerTitleAlign');
+	let alignment = $(data).find('page').eq(index).attr('headerTitleAlign');
+	if (alignment == undefined)
+	{
+		alignment = alignmentLO;
+	}
+	if (alignment != undefined)
+	{
+		$(".jumbotron .titles")
+			.css('float', 'none')
+			.css('text-align', alignment);
+	}
+	else
+	{
+		// remove
+		$(".jumbotron .titles")
+			.css('float', '')
+			.css('text-align', '');
+	}
+
+	const banner = $(data).find('page').eq(index).attr('headerBanner');
+	if(banner == "fullscreen"){
+		$(".jumbotron").addClass("x_scale");
 		var viewHeight = $(this).height();
-		$(".scale").height(viewHeight);
-	}else{
-		$(".jumbotron").removeClass("scale");
-		$(".jumbotron").css({
-			"height":"200px"
-		})
+		$(".x_scale").height(viewHeight);
+		// check collapse
+		const collapse = $(data).find('page').eq(index).attr('bannerCollapse');
+		if (collapse != undefined && collapse=="true")
+		{
+			collapseBanner = true;
+			let height=-1;
+			if ($(data).find('page').eq(index).attr('bannerFixedHeight') === 'true'
+				&& $(data).find('page').eq(index).attr('bannerHeight') !== undefined)
+			{
+				height = $(data).find('page').eq(index).attr('bannerHeight');
+			}
+			collapseHeight = height;
+		}
+		else
+		{
+			collapseBanner = false;
+		}
+		// check info
+		const checkinfo = $(data).find('page').eq(index).attr('bannerFullScrolldownInfo');
+		if (checkinfo != undefined && checkinfo=="true")
+		{
+			// Add fullscreen info in clickableWrapper
+			// Get text from bannerFullScrolldownText property or fall back to use languageData string
+			const label = $(data).find('page').eq(index).attr('bannerFullScrolldownText') != undefined && $(data).find('page').eq(index).attr('bannerFullScrolldownText') != '' ? $(data).find('page').eq(index).attr('bannerFullScrolldownText') :
+			(languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
+			setTimeout(function () {
+				if ($(".arrow").length) {
+					return false;
+				}
+				$("<div id='x_clickableWrapper'><div class='x_arrow x_bounce'><i class='fa fa-chevron-down fa-2x' aria-hidden='true'></i></div><div class='x_promptText'>" + label + "</div></div>").appendTo(".jumbotron .container").hide().fadeIn(1000);
+			}, 800);
+		}
+		// Check title top margin
+		const titlemargin = $(data).find('page').eq(index).attr('headerTopMargin');
+		if (titlemargin != undefined && titlemargin != "")
+		{
+			fullscreenBannerTitleMargin = titlemargin;
+			$(".jumbotron .titles").css("margin-top", titlemargin + "%");
+		}
+		else
+		{
+			fullscreenBannerTitleMargin = -1;
+			$(".jumbotron .titles").css("margin-top", "");
+		}
+
+	}else { //if (banner == "fixedheight") {
+		let height=-1;
+		if ($(data).find('page').eq(index).attr('bannerFixedHeight') === 'true'
+			&& $(data).find('page').eq(index).attr('bannerHeight') !== undefined)
+		{
+			height = $(data).find('page').eq(index).attr('bannerHeight');
+		}
+		collapseHeight = height;
+		$(".jumbotron").removeClass("x_scale");
+		if (height != -1) {
+			$(".jumbotron").css('height', height + "vh");
+		}
+		else {
+			// remove height
+			$(".jumbotron").css('height', '');
+		}
+		fullscreenBannerTitleMargin = -1;
+		$(".jumbotron .titles").css("margin-top", "");
+		$("#x_clickableWrapper").remove();
 	}
 }
+
+//this is the main scroll function
+$(window).scroll(function () {
+	if ($(document).scrollTop() > 20) {
+		if (collapseBanner) {
+			$(".x_scale").addClass("x_shrink");
+			if (collapseHeight != -1) {
+				$(".x_scale").css("height", collapseHeight + "vh");
+			}
+			else
+			{
+				$(".x_scale").css("height", "");
+			}
+			$(".jumbotron .titles").css("margin-top", "");
+		}
+		$("#x_clickableWrapper").remove();
+	} else {
+		if (collapseBanner) {
+			$(".x_scale").removeClass("x_shrink");
+			$(".x_scale").css("height", Math.max(document.documentElement.clientHeight, window.innerHeight || 0));
+			if (fullscreenBannerTitleMargin != -1)
+			{
+				$(".jumbotron .titles").css("margin-top", fullscreenBannerTitleMargin + "%");
+			}
+		}
+	}
+});
+
 
 // function loads a new page
 function parseContent(pageRef, sectionNum, contentNum, addHistory) {
-	debugger
 	// pageRefType determines how pageID should be dealt with
 	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
 	var pageRefType = pageRef.type,
@@ -1397,15 +1489,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 	// check if pageIndex exists & can be shown
 	var pageIndex;
-
-	//assign active class for current navbar
-	$("#nav li").not(':first-child').each(function(i, el){
-		if ($(el).hasClass("active")) {
-			$(el).removeClass("active")
-		} else if (i == pageID) {
-			$(el).addClass("active")
-		}
-	})
 
 	// pageID might be an ID - see if it matches either a linkID or a customLinkID
 	if (pageRefType != 'index') {
@@ -1472,6 +1555,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 		var page = $(data).find('page').eq(pageIndex);
 		var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
+		//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
 		
 		// Load page as normal as it's not opening in a new window
 		if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
@@ -1493,7 +1577,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 			// store current page
 			currentPage = pageIndex;
-			this.CheckBanner(currentPage)
+			this.x_CheckBanner(currentPage)
 
 			//set the main page title and subtitle
 			$('#pageTitle').html(page.attr('name'));
@@ -1504,7 +1588,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					$(".jumbotron").hide();
 
 				} else {
-					setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
+					setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerSize'), page.attr('headerColour'), page.attr('headerTextColour'));
 					$(".jumbotron").show();
 				}
 			}
@@ -1596,13 +1680,14 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 				//add a TOC entry
 				var tocName = $(this).attr('name');
-
+				
 				// remove size & background color styles from links on toc
-				if ($('<p>' + tocName + '</p>').children().length > 0 && tocName.indexOf("sup") < 0) {
-					tocName = $(tocName);
+				if ($('<p>' + tocName + '</p>').children().length > 0) {
+					tocName = $('<p>'+tocName+'</p>');
 					tocName.css({ 'font-size': '', 'background-color': 'transparent' });
 					tocName.find('[style*="font-size"]').css('font-size', '');
 					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+					tocName = tocName.html();
 				}
 
 				var $link = $('<li' + (sectionVisibleIndex==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
@@ -1694,7 +1779,11 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
         if(topBtnRoundIconColour != '0x' && topBtnRoundIconColour != 'undefined') {
 			$(".top-round").css('color', formatColour(topBtnRoundIconColour));
         }
-
+	}
+	//if alternating sections enabled add classes
+	if ($(data).find('learningObject').attr('alternatingSections') =='true'){
+		$("section:nth-child(2n+0)").addClass("evenSection");
+		$("section:nth-child(2n+1)").addClass("oddSection");
 	}
 }
 
@@ -1865,7 +1954,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		if (topBtnRound == 'true') {
 			//add FA icon and make button round via .top-round class
 			//create round button
-			var $button = $('<a class="btn btn-mini pull-right top-round" href="#"><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
+			var $button = $('<a class="btn btn-mini pull-right top-round" href="#"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
 			//attach the button
 			section.append(
 				$('<p>')
@@ -1875,6 +1964,8 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 			//original default button
 			section.append($('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
 		}
+	} else if ($(data).find('learningObject').attr('topBtnHide') == 'true') {
+		section.append($('<p>').append($('<br>')));
 	}
 
 	// lightbox image links might also need to be added
@@ -1904,6 +1995,11 @@ function updateContent($section) {
 	
 	// Queue reparsing of MathJax - fails if no network connection
 	try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+
+	// update codesnippet code blocks
+	let codeblocks = $("pre code").each(function(){
+		hljs.highlightBlock(this);
+	});
 }
 
 function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
@@ -2088,7 +2184,6 @@ function getHashInfo(urlHash) {
 
 // browser back / fwd button will trigger this - manually make page change to match page hash info
 window.onhashchange = function() {
-	debugger
 	var pageSectionInfo = getHashInfo(window.location.hash),
 		tempPage,
 		tempSection,
@@ -2107,7 +2202,6 @@ window.onhashchange = function() {
 }
 
 function updateMenu(listID) {
-	debugger
 	if (!$.isNumeric(listID)) {
 		listID = 1;
 	}
@@ -2134,7 +2228,7 @@ function goToSection(pageId) {
 }
 
 // LO level header background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
-function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour) {
+function setHeaderFormat(header, headerPos, headerRepeat, headerSize, headerColour, headerTextColour) {
 
 	var $overview = $('#overview'),
 		bgImg = '';
@@ -2198,6 +2292,8 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 
 	}
 
+
+
 	if (col != '' && col != '0x' && col != 'rgba(0, 0, 0, 0)') {
 
 		if (col.indexOf('rgb(') >= 0) {
@@ -2232,6 +2328,17 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 			'background': bgImg
 		});
 
+	}
+
+	let size = 'not-set';
+	if (headerSize != undefined && headerSize != '' && headerSize != 'not-set') {
+		size = headerSize;
+	} else if (defaultHeaderCss.headerSize != undefined && defaultHeaderCss.headerSize != '' && defaultHeaderCss.headerSize != 'not-set') {
+		size = defaultHeaderCss.headerSize;
+	}
+	if (size != 'not-set')
+	{
+		$overview.css('background-size', size);
 	}
 
 	var txtCol = '';
@@ -2518,6 +2625,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	var itemIndex = itemIndex;
 
 	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
+	debugger
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
@@ -2632,7 +2740,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-
+	debugger;
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
@@ -2707,7 +2815,7 @@ function loadXotContent($this) {
 	// If $this.attr('showEmbed') is undefined, it still is != 'false', so only need to check on != false
 	if ($this.attr('showEmbed') != 'false')
 	{
-		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'x_embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
 	}
 	if ($this.attr('showLink') != undefined && $this.attr('showLink') == 'true')
 	{

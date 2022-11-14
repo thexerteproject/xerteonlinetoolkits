@@ -282,7 +282,7 @@
 			if (type == 'series') {
 				$imgHolder.find('.resetBtn').show();
 				
-				numImgs.splice(imgPos, 1, thisSeries.lastImg.num - thisSeries.firstImg.num);
+				numImgs.splice(imgPos, 1, thisSeries.lastImg.num - thisSeries.firstImg.num + 1);
 				
 				if (thisSeries.firstImg.num === 0) {
 					numImgs.splice(imgPos, 1, numImgs[imgPos]++);
@@ -343,7 +343,6 @@
 				// not previously viewed so preload all images in series
 				if (thisSeries.viewed == false) {
 					$textHolder.find('#loadMsg').html('<div class="panel">' + loadTxt + '<div class="loadMsgSpinner fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
-					
 					preloadImgs(imgs[imgPos], function(){
 						imageSequence.initialiseViewer(thisSeries, imgPos);
 					});
@@ -666,7 +665,7 @@
 			
 			// series is being played - show next image after short delay
 			if (animate == true && $imgHolder.find('.playBtn').data('state') == 'pause' && currentImg[imgPos] < numImgs[imgPos]-1) {
-				setTimeout(function() { imageSequence.nextImg(true, imgPos); }, 100);
+				setTimeout(function() { imageSequence.nextImg(true, imgPos); }, x_currentPageXML.getAttribute('playSpeed') != undefined && x_currentPageXML.getAttribute('playSpeed') != '' ? Number(x_currentPageXML.getAttribute('playSpeed'))*1000 : 100);
 				
 			// end of animation
 			} else if (animate == true) {
@@ -1127,7 +1126,6 @@
 									// return the file name (without number) & number seperately
 									return { name: name, num: (num != '' ? Number(num) : num), addZeros: (num.length - String(Number(num)).length) };
 								}
-								
 								var firstImg = this.getAttribute('firstImg').substring(this.getAttribute('firstImg').lastIndexOf('/')+1),
 									lastImg = this.getAttribute('lastImg').substring(this.getAttribute('lastImg').lastIndexOf('/')+1);
 								

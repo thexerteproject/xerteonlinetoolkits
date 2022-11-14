@@ -40,7 +40,7 @@ $temp_new_path="";
  * @author Patrick Lockley
  */
 
-function create_folder_loop($dir_path,$new_path){
+function create_folder_loop_site($dir_path,$new_path){
 
     $folder_name = opendir($dir_path);
 
@@ -51,7 +51,7 @@ function create_folder_loop($dir_path,$new_path){
                 $temp_new_path = $new_path . $f . "/";
                 if(@mkdir($temp_new_path)){
                     if(@chmod($temp_new_path, 0777)){
-                        create_folder_loop($full . "/", $temp_new_path);
+                        create_folder_loop_site($full . "/", $temp_new_path);
                     }else{
                         receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "MAJOR", "Failed to set permissions on folder", "Failed to set correct rights on " . $temp_new_path);
                         return false;
@@ -94,7 +94,7 @@ function create_folder_loop($dir_path,$new_path){
  * @author Patrick Lockley
  */
 
-function duplicate_template($folder_name_id,$id_to_copy,$tutorial_id_from_post){
+function duplicate_template_site($folder_name_id,$id_to_copy,$tutorial_id_from_post){
 
     global $dir_path, $new_path, $temp_dir_path, $temp_new_path, $xerte_toolkits_site;
 
@@ -107,21 +107,28 @@ function duplicate_template($folder_name_id,$id_to_copy,$tutorial_id_from_post){
     /*
      * Get the id of the folder we are looking to copy into
      */
-
-    $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/";
+    $newusername = get_template_creator_username($folder_name_id);
+    $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $newusername . "-" . $tutorial_id_from_post . "/";
 
     if(mkdir($new_path)){
 
         if(@chmod($new_path,0777)){
 
-            if(create_folder_loop($dir_path, $new_path)){
+            if(create_folder_loop_site($dir_path, $new_path)){
 
-                if(file_exists($new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/lockfile.txt")){
-
-                    unlink($new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/lockfile.txt");
-
+                if(file_exists($new_path . "lockfile.txt")){
+                    unlink($new_path . "lockfile.txt");
                 }
-
+                // Remove oai-pmh consent flag if present from
+                if (file_exists($new_path . "preview.xml"))
+                {
+                    change_copied_xml($new_path . "preview.xml");
+                }
+                // Remove oai-pmh consent flag if present from
+                if (file_exists($new_path . "data.xml"))
+                {
+                    change_copied_xml($new_path . "data.xml");
+                }
 
                 return true;
 
@@ -149,4 +156,3 @@ function duplicate_template($folder_name_id,$id_to_copy,$tutorial_id_from_post){
 
 }
 
-?>

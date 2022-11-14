@@ -26,7 +26,7 @@
 		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 		<hsSize label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
 	</hsAppearance>
-	
+
 	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
 	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
 	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true"/>

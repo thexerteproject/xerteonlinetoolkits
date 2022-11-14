@@ -89,14 +89,15 @@ $version = getVersion();
     <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
     <link rel="stylesheet" href="editor/css/jquery-ui.css">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+    <!-- <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script> -->
+    <script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
     <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="website_code/scripts/plotly-latest.min.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
@@ -106,12 +107,10 @@ $version = getVersion();
     <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
-    <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
     <link href="website_code/styles/folder_popup.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/jquery-ui-layout.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" href="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.css?version=<?php echo $version;?>" />
 
@@ -189,13 +188,13 @@ Folder popup is the div that appears when creating a new folder
         <p style="color:white"><?PHP echo INDEX_FOLDER_PROMPT; ?></p>
 
         <form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain">
+			<label for="foldername" class="sr-only"><?php echo INDEX_FOLDER_NAME ?></label>
             <input type="text" width="200" id="foldername" name="foldername"
                    style="margin:0px; margin-right:5px; padding:3px"/>
             <button type="submit" class="xerte_button_c">
-                <img src="website_code/images/Icon_Folder_15x12.gif"/>
                 <?php echo INDEX_BUTTON_NEWFOLDER_CREATE; ?>
             </button>
-            <button type="button" class="xerte_button_c"
+            <button type="button" class="xerte_button_c" style="margin-top:0.5em;"
                     onclick="javascript:popup_close()"><?php echo INDEX_BUTTON_CANCEL; ?>
             </button>
         </form>
@@ -228,7 +227,7 @@ Folder popup is the div that appears when creating a new folder
                     <input type="text" id="dp-end">
                 </div>
                 <div class="dash-col-1">
-                    <label for="dp-end">
+                    <label for="group-select">
                         <?php echo INDEX_XAPI_DASHBOARD_GROUP_SELECT; ?>
                     </label>
                     <select type="text" id="group-select">
@@ -321,7 +320,7 @@ Folder popup is the div that appears when creating a new folder
                 ';
                 }
                ?>
-               <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
+               <div style="display: inline-block"><?php display_language_selectionform("general", false); ?></div>
                <?PHP if($xerte_toolkits_site->authentication_method != "Guest") {
                ?><button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_button_c_no_width"
                         onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
@@ -344,6 +343,7 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-west" id="workspace_layout" >
         <div class="header" id="inner_left_header">
+			<h1 class="heading sr-only"><?PHP echo INDEX_DETAILS; ?></h1>
 			<div class="file_mgt_area_buttons">
 				<!--Workspace buttons-->
 
@@ -379,7 +379,7 @@ Folder popup is the div that appears when creating a new folder
             <div class="file_mgt_area_bottom">
 				<div class="sorter">
 					<form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
-						<i class="fa  fa-sort xerte-icon"></i>&nbsp;<?PHP echo INDEX_SORT; ?>
+						<i class="fa  fa-sort xerte-icon"></i>&nbsp;<label for="sort-selector"><?PHP echo INDEX_SORT; ?></label>
 						<select id="sort-selector" name="type" onChange="refresh_workspace()">>
 							<option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
 							<option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
@@ -390,8 +390,8 @@ Folder popup is the div that appears when creating a new folder
 				</div>
 				<div class="workspace_search_outer">
 					<div class="workspace_search">
-						<i class="fa  fa-search"></i>&nbsp;<?PHP echo INDEX_SEARCH; ?>
-						<input type="text" id="workspace_search" label="Search" placeholder="<?php echo INDEX_SEARCH_PLACEHOLDER?>">
+						<i class="fa  fa-search"></i>&nbsp;<label for="workspace_search"><?PHP echo INDEX_SEARCH; ?></label>
+						<input type="text" id="workspace_search" placeholder="<?php echo INDEX_SEARCH_PLACEHOLDER?>">
 					</div>
 				</div>
 			</div>
@@ -400,7 +400,7 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-center">
         <div class="header" id="inner_center_header">
-			<p class="heading"><i class="fa  icon-info-sign xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></p>
+			<h1 class="heading"><i class="fa icon-info-sign xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></h1>
         </div>
         <div class="content">
             <div class="projectInformationContainer" id="project_information">
@@ -413,7 +413,7 @@ Folder popup is the div that appears when creating a new folder
     <div class="ui-layout-east">
 
         <div class="header" id="inner_right_header">
-            <p class="heading"><i class="fa  icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></p>
+            <h1 class="heading"><i class="fa icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></h1>
         </div>
 
         <div class="content">

@@ -95,7 +95,7 @@
 			$("#pageContents").data("judge", judge);
 			
             // Create fallback label
-            var label = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
+            var label = (x_currentPageXML.getAttribute('name') != undefined ? x_currentPageXML.getAttribute('name') : "Multiple choice question");
             label += ' ' + (x_currentPage+1);
 			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
 			{

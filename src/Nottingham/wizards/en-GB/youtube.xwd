@@ -15,6 +15,7 @@
     <videoSize type="TextInput" label="Video Size" optional="true" defaultValue="420,315"/>
 
     <launchvideo label="Launch Video Link" type="textInput" divider="true" language="true" deprecated="This property is no longer required"/> 
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
   </youtube>
 

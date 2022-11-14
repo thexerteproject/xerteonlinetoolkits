@@ -20,12 +20,16 @@
 require_once(dirname(__FILE__) . "/../../../config.php");
 require_once(dirname(__FILE__) . "/../../../plugins.php");
 
+
 /*
  * Function to convert a size string - e.g '128MB' - to the
  * actual number of bytes.
  *
  * Provided by 'John V' at https://stackoverflow.com/questions/11807115/php-convert-kb-mb-gb-tb-etc-to-bytes
  */
+
+ini_set("upload_max_filesize", "128M");
+ini_set("post_max_size", "128M");
 
 function convertToBytes(string $from): ?int {
     $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
@@ -50,7 +54,7 @@ function convertToBytes(string $from): ?int {
 }
 
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");

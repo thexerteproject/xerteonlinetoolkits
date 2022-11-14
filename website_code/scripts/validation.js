@@ -94,7 +94,7 @@ function is_ok_name(name_string){
 	 
 function is_ok_notes(name_string){
 
-   var ValidChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,)(-+ ";
+   var ValidChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,)(-+ :";
    var name_is_ok=true;
    var Char;
 

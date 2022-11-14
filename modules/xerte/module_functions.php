@@ -64,6 +64,31 @@ function display_property_engines($change,$msgtype){
 
 }
 
+function process_logos($LO_icon_path, $theme_path, $template_path, $page_content) {
+    $extensions = array('svg',  'png', 'jpg', 'gif');
+
+    // First the author logo
+    if (strlen(trim($LO_icon_path)) > 0) {
+        return str_replace("%LOGO%", '<img class="x_icon" src="' . trim($LO_icon_path) . '" alt="" />' , $page_content);
+    }
+
+    // Secondly check the theme logo
+    foreach($extensions as $ext) {
+        if (file_exists($theme_path . '/logo.' . $ext)) {
+            return str_replace("%LOGO%", '<img class="x_icon" src="' . $theme_path . '/logo.'. $ext . '" alt="" />' , $page_content);
+        }
+    }
+
+    // Lastly check the default location
+    foreach($extensions as $ext) {
+        if (file_exists($template_path . 'common_html5/logo.' . $ext)) {
+            return str_replace("%LOGO%", '<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.'. $ext . '" alt="" />' , $page_content);
+        }
+    }
+
+    return $page_content = str_replace("%LOGO%", '<img class="x_icon" src="" alt="" />' , $page_content);
+}
+
 function display_publish_engine(){
     echo "<p><b>" . PROPERTIES_LIBRARY_PUBLISH_ENGINE  . "</b><br>";
     echo PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";

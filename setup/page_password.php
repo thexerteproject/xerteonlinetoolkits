@@ -108,8 +108,6 @@ if ($success)
                 if(document.getElementById('account').value==''||document.getElementById('password').value==''){
                     alert('Please set a username and password');
                     return false;
-                } else {
-                    document.getElementById('password').value = encodeURIComponent(document.getElementById('password').value);
                 }
                 return true;" enctype="multipart/form-data">
         <label for="account">Admin account name</label><br /><br /><input type="text" width="100" name="account" id="account" /><br /><br />

@@ -98,6 +98,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             $xwd_file_url = $xwd_url . "data.xwd";
         }
     }
+    $xwd_file_url = $xwd_url . "wizards/getXwd.php";
+
     $module_url = "modules/" . $row_edit['template_framework'] . "/";
 
     $jqgridlangfile = "editor/js/vendor/jqgrid/js/i18n/grid.locale-en.js";
@@ -246,7 +248,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
 	<link rel="stylesheet" type="text/css" href="editor/js/vendor/pannellum/pannellum.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/iconpicker/iconpicker-1.5.0.css?version=<?php echo $version;?>" />
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <!--link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'-->
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
     {
@@ -344,12 +346,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
 <!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-<?php if (preg_match('~MSIE|Internet Explorer~i', $_SERVER['HTTP_USER_AGENT']) || (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') !== false)) { ?>
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-<?php }else{ ?>
-<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script -->
-<?php } ?>
+<script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script-->
 <script src="editor/js/vendor/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>

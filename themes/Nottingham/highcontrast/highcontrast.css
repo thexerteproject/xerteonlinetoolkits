@@ -620,40 +620,48 @@ div#shorturltodisplay a {
   background-image: none;
 }
 
+.ui-button .ui-icon.x_projectIntro {
+  background-image: none;
+}
+
 #x_nextBtn:after {
-  content: "\f138";
+  content: "";
 }
 
 #x_prevBtn:after {
-  content: "\f137";
+  content: "";
 }
 
 #x_cssBtn:after {
-  content: "\f066";
+  content: "";
 }
 
 #x_colourChangerBtn:after {
-  content: "\f042";
+  content: "";
 }
 
 #x_mediaBtn:after {
-  content: "\f16a";
+  content: "";
 }
 
 #x_glossaryBtn:after {
-  content: "\f02d";
+  content: "";
 }
 
 #x_helpBtn:after {
-  content: "\f128";
+  content: "";
+}
+
+#x_introBtn:after {
+  content: "";
 }
 
 #x_menuBtn:after {
-  content: "\f0c9";
+  content: "";
 }
 
 #x_saveSessionBtn:after {
-  content: "\f0c7";
+  content: "";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
 }
@@ -695,7 +703,7 @@ div#shorturltodisplay a {
   color: #ffffff;
 }
 
-#x_footerChevron:hover {
+#x_footerChevron:hover, #x_footerChevron:focus {
   color: #C4551F;
 }
 
@@ -1375,6 +1383,15 @@ img {
 /******lightboxes******/
 .featherlight .featherlight-content {
   background-color: #000000;
+}
+
+/*code snippet*/
+.hljs, .hljs-subst, .hljs-tag .hljs-title, .lisp .hljs-title, .clojure .hljs-built_in, .nginx .hljs-title {
+  color: white;
+}
+
+.hljs {
+  background: #232222;
 }
 
 /******@media changes******/

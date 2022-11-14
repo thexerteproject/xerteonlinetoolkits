@@ -29,6 +29,7 @@
 .ui-button .ui-icon.x_prev {	background-image: none; }
 .ui-button .ui-icon.x_prev_hist { background-image: none; }
 .ui-button .ui-icon.x_colourChanger { background-image: none; }
+.ui-button .ui-icon.x_projectIntro { background-image: none; }
 
 #x_nextBtn:after { content: "\f138"; }
 #x_prevBtn:after { content: "\f137"; }
@@ -37,6 +38,7 @@
 #x_mediaBtn:after { content: "\f16a"; }
 #x_glossaryBtn:after { content: "\f02d"; }
 #x_helpBtn:after { content: "\f128"; }
+#x_introBtn:after { content: "\f129"; }
 #x_menuBtn:after { content: "\f0c9"; }
 #x_saveSessionBtn:after {content: "\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
 
@@ -62,7 +64,7 @@
 #x_footerChevron {
   color: $whiteorlightest;
 }
-#x_footerChevron:hover {
+#x_footerChevron:hover, #x_footerChevron:focus {
   color: $lightestcolor;
 }
 //*****TOC****/

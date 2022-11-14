@@ -41,13 +41,13 @@
 	<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
 
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/smoothness/jquery-ui-1.8.18.custom.css%VERSION_PARAM%" type="text/css" />
-	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/themeStyles.css%VERSION_PARAM%" type="text/css" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/mainStyles.css%VERSION_PARAM%" type="text/css" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/fonts.css%VERSION_PARAM%" type="text/css" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/mediaelement/mediaelementplayer.min.css%VERSION_PARAM%" />
     <link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/xapidashboard/lib/nv.d3.css%VERSION_PARAM%" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.min.css%VERSION_PARAM%" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.gallery.min.css%VERSION_PARAM%" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/highlight/css/default.css%VERSION_PARAM%" />
 	<link href="%TEMPLATEPATH%common_html5/font-awesome/css/font-awesome.min.css%VERSION_PARAM%" rel="stylesheet">
     <link href="%TEMPLATEPATH%common_html5/fontawesome-5.6.3/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
 	<link href="%TEMPLATEPATH%common_html5/fontawesome-5.6.3/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
@@ -62,7 +62,7 @@
 
 		<div id="x_mobileScroll">
 			<div id="x_headerBlock" role="banner">
-				<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.png" alt=""/>
+				%LOGO%
 				<div>
 					<h1> </h1>
 					<h2 aria-live="assertive"> </h2>
@@ -111,6 +111,8 @@
 	<!-- for lightboxes and lightbox gallery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.min.js%VERSION_PARAM%"></script>
 	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.gallery.min.js%VERSION_PARAM%"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/highlight/js/highlight.pack.js%VERSION_PARAM%"></script>
+
 	<!-- for audio & video players -->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/mediaPlayer.js%VERSION_PARAM%"></script>
 	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js%VERSION_PARAM%"></script>
@@ -118,7 +120,6 @@
 
     %TRACKING_SUPPORT%
     <script type="text/javascript" async src="%MATHJAXPATH%MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
-
     <script type="text/javascript">
         var FileLocation = "%XMLPATH%";
         var x_templateLocation = "%TEMPLATEPATH%";
@@ -127,12 +128,18 @@
         var x_TemplateId = "%TEMPLATEID%";
         var x_youtube_api_key = "%YOUTUBEAPIKEY%";
 		var x_Version = "%VERSION%";
-		var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
         var x_lastUpdated = new Date("%LASTUPDATED%");
         var x_dateCreated = new Date("%DATECREATED%");
         var x_numPlays = String("%NUMPLAYS%");
-        var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
-        var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+		var localeoptions = { year: 'numeric', month: 'short', day: 'numeric' };
+		try {
+			var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
+			var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+		}
+		catch(e) {
+			var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString();
+			var x_dateCreatedLocale = x_dateCreated.toLocaleDateString();
+		}
 		%USE_URL%
 
 		var globalVars = {
@@ -140,6 +147,7 @@
 			dateCreated: x_dateCreatedLocale,
 			numViews: x_numPlays
 		};
+		%PLUGINS%;
 		%EMBED_SUPPORT%
     </script>
 </body>
