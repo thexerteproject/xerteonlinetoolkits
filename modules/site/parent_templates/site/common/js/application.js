@@ -1373,7 +1373,6 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 }
 
 function CheckBanner(index){
-	debugger
 	var banner = $(data).find('page').eq(index).attr('headerBanner');
 	if(banner == "Jumbotron"){
 		$(".jumbotron").addClass("scale");
@@ -1389,6 +1388,7 @@ function CheckBanner(index){
 
 // function loads a new page
 function parseContent(pageRef, sectionNum, contentNum, addHistory) {
+	debugger
 	// pageRefType determines how pageID should be dealt with
 	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
 	var pageRefType = pageRef.type,
@@ -1397,6 +1397,15 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 	// check if pageIndex exists & can be shown
 	var pageIndex;
+
+	//assign active class for current navbar
+	$("#nav li").not(':first-child').each(function(i, el){
+		if ($(el).hasClass("active")) {
+			$(el).removeClass("active")
+		} else if (i == pageID) {
+			$(el).addClass("active")
+		}
+	})
 
 	// pageID might be an ID - see if it matches either a linkID or a customLinkID
 	if (pageRefType != 'index') {
@@ -2079,6 +2088,7 @@ function getHashInfo(urlHash) {
 
 // browser back / fwd button will trigger this - manually make page change to match page hash info
 window.onhashchange = function() {
+	debugger
 	var pageSectionInfo = getHashInfo(window.location.hash),
 		tempPage,
 		tempSection,
@@ -2097,6 +2107,7 @@ window.onhashchange = function() {
 }
 
 function updateMenu(listID) {
+	debugger
 	if (!$.isNumeric(listID)) {
 		listID = 1;
 	}
@@ -2507,7 +2518,6 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	var itemIndex = itemIndex;
 
 	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
-	debugger
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
@@ -2622,7 +2632,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-	debugger;
+
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
