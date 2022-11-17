@@ -123,6 +123,10 @@
  .highlighted .crossword-input[type=text]{
      background-color: yellow;
  }
+ 
+ #crossword .correct {
+	 background-color: #24FF00;
+ }
 
  #pageContents-innerContainer{
      display: flex;

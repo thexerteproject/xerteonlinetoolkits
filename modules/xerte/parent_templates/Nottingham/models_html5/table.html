@@ -33,7 +33,11 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+			if (x_browserInfo.mobile == true) {
+				$('#tableHolder .panel')
+					.width('auto')
+					.width($x_pageDiv.width() - ($('#tableHolder .panel').outerWidth(true) - $('#tableHolder .panel').width()));
+			}
 		}
 		
 		this.init = function() {
@@ -120,6 +124,7 @@
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
+			this.sizeChanged();
 			
 		}
 		

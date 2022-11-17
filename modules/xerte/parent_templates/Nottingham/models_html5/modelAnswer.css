@@ -28,7 +28,8 @@
 	
 	#answerTxt {
 		display:	block;
-		width:		95%;
+		width:		100%;
+		box-sizing: border-box;
 		resize:		vertical;
 		margin:	0.5em auto;
 	}

@@ -27,3 +27,8 @@
 		height: 100%;
 	}
 	
+	.x_mobile .mobileAlign .panel.inline {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	
