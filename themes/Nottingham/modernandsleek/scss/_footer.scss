@@ -34,6 +34,7 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 .ui-button .ui-icon.x_prev_hist { background-image: none; }
 .ui-button .ui-icon.x_colourChanger { background-image: none; }
 .ui-button .ui-icon.x_projectIntro { background-image: none; }
+.ui-button .ui-icon.x_saveSession { background-image: none; }
 
 #x_nextBtn:not(.customIconBtn) .ui-icon:before { content: "\f138"; }
 #x_prevBtn:not(.customIconBtn) .ui-icon:before { content: "\f137"; }

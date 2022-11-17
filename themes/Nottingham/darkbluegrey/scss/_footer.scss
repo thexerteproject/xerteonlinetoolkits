@@ -30,6 +30,7 @@
 .ui-button .ui-icon.x_prev_hist { background-image: none; }
 .ui-button .ui-icon.x_colourChanger { background-image: none; }
 .ui-button .ui-icon.x_projectIntro { background-image: none; }
+.ui-button .ui-icon.x_saveSession { background-image: none; }
 
 #x_nextBtn:not(.customIconBtn) .ui-icon:before { content: "\f138"; }
 #x_prevBtn:not(.customIconBtn) .ui-icon:before { content: "\f137"; }
@@ -99,7 +100,7 @@
 //*****SIDE BAR****/
 
 #x_sideBar {
-	background-color: $darkestcolor;
+	background-color: #3F4957;
 }
 
 #x_sideBarToggleBtn {
@@ -109,7 +110,7 @@
 
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
 	color: $lightestcolor;
-	background-color: $darkestcolor;
+	background-color: #3F4957;
 }
 
 #x_sideBarBtnHolder button {
