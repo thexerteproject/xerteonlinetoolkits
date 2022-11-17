@@ -889,37 +889,7 @@
           $("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
-/*
-			// print button
-            $("#printBtn")
-				.button({
-					label: 'Print'
-				})
-				.click(function() {
-					$("#textHolder, #qNo, #diagram").printThis({
-						debug: false,               // show the iframe for debugging
-						importCSS: true,            // import parent page css
-						importStyle: false,         // import style tags
-						printContainer: true,       // print outer container/$.selector
-						loadCSS: "",                // path to additional css file - use an array [] for multiple
-						pageTitle: "",              // add title to print page
-						removeInline: false,        // remove inline styles from print elements
-						removeInlineSelector: "*",  // custom selectors to filter inline styles. removeInline must be true
-						printDelay: 333,            // variable print delay
-						header: null,               // prefix to html
-						footer: null,               // postfix to html
-						base: false,                // preserve the BASE tag or accept a string for the URL
-						formValues: true,           // preserve input/form values
-						canvas: true,               // copy canvas content
-						doctypeString: "",       // enter a different doctype for older markup
-						removeScripts: false,       // remove script tags from print content
-						copyTagClasses: false,      // copy classes from the html & body tag
-						beforePrintEvent: null,     // function for printEvent in iframe
-						beforePrint: null,          // function called before iframe is filled
-						afterPrint: null            // function called before iframe is removed
-					});
-				});
-*/
+			
 			// reset button
             $("#resetBtn")
 				.button({
@@ -960,7 +930,7 @@
 				.click(async function() {
 					$("#pageContents").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
 					$("#mainPanel").prepend(
-							`<div id="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+							'<div id="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>'
 					);
 					$("#mainPanel .panel").addClass("panel-print");
 					$("#mainPanel .panel").removeClass("panel");
@@ -1025,7 +995,7 @@
 		}
 
 		this.showPrintButton = function (force) {
-			$("#printBtn")[printAvailable && force !== false ? 'show' : 'hide']();
+			$("#printBtn")[printAvailable && force !== false && x_currentPageXML.getAttribute('disableprinting') != 'true' ? 'show' : 'hide']();
 		}
 
 		this.resetGraph = function () {
@@ -1048,9 +1018,6 @@
 
 <div id="pageContents">
 
-  <!--div id="prnbuttonHolder" style="direction: rtl; float: none;">
-    <button id="printBtn" hidden></button>
-  </div-->
 	<div class="splitScreen">
 
 		<div id="textHolder" class="left"></div>
