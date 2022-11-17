@@ -216,3 +216,35 @@ background-image: none;
 	color: #1c1c1c;
 	background-color: #FFFFFF;
 }
+
+#x_sideBar {
+	background-color: #1c1c1c;
+}
+#x_sideBarToggleBtn {
+	border-color: #BFBFBF;
+	color: #cfcfcf;
+	box-shadow: none;
+}
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: white;
+	background-color: #464646;
+}
+#x_sideBarBtnHolder button {
+	color: #cfcfcf;
+	box-shadow: none;
+}
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-color: #BFBFBF;
+}
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border-color: #152c51;
+}
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: #464646;
+	color: #ffffff;
+}
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder
+button:active span.ui-icon {
+	background-color: #464646;
+	color: #ffffff;
+}
