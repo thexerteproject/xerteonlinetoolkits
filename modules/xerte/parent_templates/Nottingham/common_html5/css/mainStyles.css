@@ -500,7 +500,8 @@ table tr.shaded {
 }
 
 /* BORDER STYLES */
-table.full td {
+table.full td,
+table.full th {
 	border:	1px solid #333333;
 	border:	1px solid #333333;
 }
