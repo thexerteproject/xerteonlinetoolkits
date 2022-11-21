@@ -1013,7 +1013,7 @@ var EDITOR = (function ($, parent) {
         };
         jqGrGridData[key + '_' + id][colnr] = data;
 
-        var xerte = convertjqGridData(jqGrGridData[key + '_' + id]);
+        var xerte = convertjqGridData(jqGrGridData[key + '_' + id], id);
         setAttributeValue(key, [name], [xerte]);
 
         // prepare postdata for tree grid
@@ -1131,9 +1131,20 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key, true);
     },
-
-    convertjqGridData = function(data)
+    //pass id to sort data
+    convertjqGridData = function(data, id)
     {
+        if (id !== undefined) {
+            var sortColumnName = $('#' + id + '_jqgrid').jqGrid('getGridParam','sortname');
+            var sortOrder = $('#' + id + '_jqgrid').jqGrid('getGridParam','sortorder');
+            var colName = Object.keys(data[0])[1];
+            if (sortColumnName !== '' && sortOrder == 'asc') {
+                data.sort((a,b) => (a[colName] > b[colName]) ? 1 : ((b[colName] > a[colName]) ? -1 : 0));
+            } else if (sortColumnName !== '' && sortOrder == 'desc') {
+                data.sort((a,b) => (a[colName] > b[colName]) ? -1 : ((b[colName] > a[colName]) ? 1 : 0));
+            }
+        }
+
         var xerte = "";
         $.each(data, function(i, row){
             if (i>0)
@@ -1152,7 +1163,6 @@ var EDITOR = (function ($, parent) {
                 }
             });
         })
-
         return xerte;
     },
 
@@ -1606,7 +1616,6 @@ var EDITOR = (function ($, parent) {
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
             var rows = [];
-
             $.each(data.split('||'), function(j, row){
                 var records = row.split('|');
                 var record = {};
@@ -1703,7 +1712,9 @@ var EDITOR = (function ($, parent) {
                     col['width'] = (colWidths[i] ? colWidths[i] : Math.round(parseInt(gridoptions.width) / nrCols));
                 }
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
-                col['sortable'] = false;
+                if (i==0) {
+                    col['sortable'] = true;
+                } else {col['sortable'] = false;}
 
 				if (gridoptions.wysiwyg != undefined) {
 					var wysiwyg = gridoptions.wysiwyg.split(',');
@@ -1818,7 +1829,6 @@ var EDITOR = (function ($, parent) {
 
             // Setup the grid
             var grid = $('#' + id + '_jqgrid');
-
             grid.jqGrid({
                 datatype: 'local',
                 data: rows,
@@ -1874,9 +1884,12 @@ var EDITOR = (function ($, parent) {
                     	delbutton.switchClass('enabled', 'disabled');
                     	delbutton.prop('disabled', true);
                     }
+                },
+                onSortCol: function(index, iCol, sortorder) {
+                    var xerte = convertjqGridData(jqGrGridData[key + '_' + id], id);
+                    setAttributeValue(key, [name], [xerte])
                 }
             });
-
             grid.jqGrid('navGrid', '#' + id + '_nav', {refresh: false}, editSettings, addSettings, delSettings, {multipleSearch:true, overlay:false});
 
 			// add the buttons to add / delete columns if required
