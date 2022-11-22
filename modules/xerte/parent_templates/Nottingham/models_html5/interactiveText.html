@@ -1251,7 +1251,7 @@
 			var groupTxt = (x_currentPageXML.getAttribute('groupTxt') != undefined ? x_currentPageXML.getAttribute('groupTxt') : "Group");
 			var yourAnswerTxt = (x_currentPageXML.getAttribute('yourAnswerTxt') != undefined ? x_currentPageXML.getAttribute('yourAnswerTxt') : "Your Answer");
 			var correctAnswerTxt = (x_currentPageXML.getAttribute('correctAnswerTxt') != undefined ? x_currentPageXML.getAttribute('correctAnswerTxt') : "Correct Answer");
-			var text = "<h3>" + feedbackTxt + "</h3><table class='full header shaded'> <tr> <th>" + groupTxt + "</th><th>" + yourAnswerTxt + "</th><th>" + correctAnswerTxt + "</th></tr>";
+			var text = "<h3>" + feedbackTxt + "</h3><table class='full header shaded'> <thead><tr> <th>" + groupTxt + "</th><th>" + yourAnswerTxt + "</th><th>" + correctAnswerTxt + "</th></tr></thead><tbody>";
 
 			for (var group = 0; group < correctAnswers.length; group++){
 				if (groupInfo[group].name == "#distractor#")
@@ -1280,7 +1280,7 @@
 				text += ("</td>");
 				text +=("</tr>");
 			}
-			text +=("</table>");
+			text +=("</tbody></table>");
 
 			$("#feedback").empty().append(text).show();
 
