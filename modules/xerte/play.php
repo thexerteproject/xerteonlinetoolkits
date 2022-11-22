@@ -347,23 +347,23 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
-                    $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                    $tracking .= "   var groupname = '" . str_replace("'", "\'", $xerte_toolkits_site->group) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->course))
                 {
-                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                    $tracking .= "   var coursename = '" . str_replace("'", "\'", $xerte_toolkits_site->course) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->module))
                 {
-                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
+                    $tracking .= "   var modulename = '" . str_replace("'", "\'", $xerte_toolkits_site->module) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->lti_context_id))
                 {
-                    $tracking .= "   var lti_context_id = '" . $xerte_toolkits_site->lti_context_id . "';\n";
+                    $tracking .= "   var lti_context_id = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_id) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->lti_context_name))
                 {
-                    $tracking .= "   var lti_context_name = '" . $xerte_toolkits_site->lti_context_name . "';\n";
+                    $tracking .= "   var lti_context_name = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_name) . "';\n";
                 }
             }
             $tracking .= "</script>\n";
