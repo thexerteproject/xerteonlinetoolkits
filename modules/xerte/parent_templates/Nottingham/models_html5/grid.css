@@ -102,18 +102,6 @@
 		background-color:	white;
 	}
 	
-	table.header tr:first-child {
-		font-weight:	bold;
-	}
-	
-	table.header.simple tr:first-child {
-		border-bottom:	1px solid #333333;
-	}
-	
-	table.header.shaded tr:first-child {
-		background:	#F2F2F2;
-	}
-	
 	#btnHolder {
 		width: 100%;
 		margin:	10px;

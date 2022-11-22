@@ -311,6 +311,14 @@ border:none;
   background:$lightestcolor;
   border-color: transparent;
 }
+table tr.shaded {
+  background: $contrastcolor;
+  color:$blackordarkest;
+}
+tr {
+  background: $brightcolor;
+  color:$blackordarkest;
+}
 table.glossary tr {
   background: #F8F1E5;
 }
@@ -337,6 +345,13 @@ table.glossary tr.shaded {
 }
 //***********************************Charts*************************************/
 //***Charts Table***/
+table tr.shaded {
+  background: $lightestcolor;
+}
+table.header.shaded tr:first-child {
+  background: $blackordarkest;
+  color:$fontcolorforcontrastcolor;
+}
 table.header.simple tr:first-child {
   border:none;
 }
@@ -399,11 +414,19 @@ div#shorturltodisplay a{
   color: darkblue;
 }
 //*****results page*****/
+td, th {
+  border-radius: $mediumroundedcorners;
+}
 tr.alt td {
   background-color: $brightcolor;
 }
 tr.alt td{
+  background: $contrastcolor;
+  color:$whiteorlightest;
+}
+.details th {
   background: $lightestcolor;
+  color: $blackordarkest;
 }
 #general_summary th {
   background: #ffffff;//hide otherwise black line at to of summary table
@@ -417,36 +440,5 @@ tr.alt td{
 }
 
 
-//***********************************Tables*************************************/
-//default background of table rows
-.x_grid_page table tr,
-.x_table_page table tr,
-.x_interactiveText_page table tr,
-.x_documentation_page table tr,
-.x_results_page table tr {
-	background: $brightcolor;
-	color: $blackordarkest;
-}
 
-//background of shaded/alternate rows
-table tr.shaded {
-	background: $lightestcolor;
-	color: $blackordarkest;
-}
 
-// header/footer shaded
-table.header.shaded thead tr:first-child,
-table.header.shaded tr.header,
-table.header.shaded :not(tbody) > tr:first-child,
-.x_grid_page table.header.shaded tr:first-child,
-table.footer.shaded tbody tr:last-child,
-table.headerCol.shaded td.header {
-	background:	$blackordarkest;
-	color: $fontcolorfordarkestcolor;
-	border-color: $lightestcolor;
-}
-
-table.header.shaded th:not(:last-of-type),
-table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
-	border-right-color: $lightestcolor;
-}

@@ -500,8 +500,7 @@ table tr.shaded {
 }
 
 /* BORDER STYLES */
-table.full td,
-table.full th {
+table.full td {
 	border:	1px solid #333333;
 	border:	1px solid #333333;
 }
@@ -512,15 +511,13 @@ table.simple {
 table.horizontal tr {
 	border-bottom:	1px solid #333333;
 }
-table.horizontal tbody tr:last-child {
+table.horizontal tr:last-child {
 	border-bottom:	0px;
 }
-table.vertical td,
-table.vertical th {
+table.vertical td {
 	border-right:	1px solid #333333;
 }
-table.vertical td:last-child,
-table.vertical th:last-child {
+table.vertical td:last-child {
 	border-right:	0px;
 }
 table.outside {
@@ -558,19 +555,13 @@ table.glossary tr.shaded td:first-child {
 }
 
 /* HEADER / FOOTER STYLES */
-
-table.header thead tr:first-child,
-table.header tr.header,
-table.header :not(tbody) > tr:first-child {
+table.header tr:first-child {
 	font-weight:	bold;
 }
 table.footer tr:last-child {
 	font-weight:	bold;
 }
-
-table.header.shaded thead tr:first-child,
-table.header.shaded tr.header,
-table.header.shaded :not(tbody) > tr:first-child {
+table.header.shaded tr:first-child {
 	background:	#F2F2F2;
 }
 table.footer.shaded tr:last-child {
@@ -579,18 +570,13 @@ table.footer.shaded tr:last-child {
 table.headerCol.shaded td.header {
 	background:	#F2F2F2;
 }
-
-table.header.simple tr.header,
-table.header.simple thead tr:first-child,
-table.header.simple :not(tbody) > tr:first-child {
+table.header.simple tr:first-child {
 	border-bottom:	1px solid #333333;
 }
-table.footer.simple tbody tr:last-child,
-table.footer.simple :not(thead) tr:last-child {
+table.footer.simple tr:last-child {
 	border-top:	1px solid #333333;
 }
-table.headerCol.simple td:first-child,
-table.headerCol.simple th:first-child {
+table.headerCol.simple td:first-child {
 	border-right: 1px solid #333333;
 }
 

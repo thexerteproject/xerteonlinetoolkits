@@ -386,6 +386,18 @@ a.hotspot, a.hotspot.selected {
 }
 //***********************************Charts*************************************/
 //***Charts Table***/
+.x_table_page tr {
+  background: $contrastcolor;
+  color:$fontcolorforcontrastcolor;
+}
+.x_table_page table tr.shaded {
+  background: $brightcolor;
+  color:$fontcolorfobrightcolor;
+}
+.x_table_page table.header.shaded tr:first-child {
+  background: $blackordarkest;
+  color:$whiteorlightest;
+}
 .x_table_page table.header.simple tr:first-child {
   border:none;
 }
@@ -452,9 +464,9 @@ div#shorturltodisplay a{
   color: darkblue;
 }
 //*****results page*****/
-.x_results_page td {
+.x_results_page td, th {
+  border-radius: $mediumroundedcorners;
   background:$lightestcolor;
-  color: $mainfontcolour;
 }
 .x_results_page #questionScores  th{
   background-color: $darkestcolor;
@@ -503,31 +515,5 @@ div#shorturltodisplay a{
 }
 
 
-//***********************************Tables*************************************/
-//default background of table rows
-.x_table_page table tr,
-.x_interactiveText_page table tr,
-.x_documentation_page table tr,
-.x_results_page table tr {
-	background: $contrastcolor;
-	color: $fontcolorforcontrastcolor;
-}
 
-//background of shaded/alternate rows
-table tr.shaded {
-	background: $brightcolor;
-	color: $fontcolorfobrightcolor;
-}
 
-// header/footer shaded
-table.header.shaded thead tr:first-child,
-table.header.shaded tr.header,
-table.header.shaded :not(tbody) > tr:first-child,
-table.footer.shaded tbody tr:last-child {
-	background:	$blackordarkest;
-	color: $whiteorlightest;
-}
-
-table.headerCol.shaded td.header {
-	background-color: inherit;
-}

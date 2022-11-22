@@ -56,7 +56,7 @@
 			score = $pageContents.data('score');
 			attempts = $pageContents.data('attempts');
 			
-			if (XTGetMode() == "normal") { this.isTracked = true; };
+			if (XTGetMode() == "normal") { this.isTracked = true; }
 			
 			$pageContents.find("#hint").remove();
 		}
@@ -425,7 +425,6 @@
 						
 						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						$feedbackTxt.fadeIn();
-						x_pageContentsUpdated();
 						gapFill.audioFbResize(true);
 					});
 					
@@ -485,7 +484,6 @@
 									if ($targetHolder.find("input.correct").length == $targetHolder.find("input").length) {
 										$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 										$feedbackTxt.fadeIn();
-										x_pageContentsUpdated();
 										gapFill.audioFbResize(true);
 									}
 
@@ -605,7 +603,6 @@
 						$("#submitBtn").hide();
 						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						$feedbackTxt.fadeIn();
-						x_pageContentsUpdated();
 						gapFill.audioFbResize(true);
 						
 						finished = true;
@@ -657,7 +654,6 @@
 						$("#submitBtn").hide();
 						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						$feedbackTxt.fadeIn();
-						x_pageContentsUpdated();
 						gapFill.audioFbResize(true);
 						
 						finished = true;
@@ -829,7 +825,6 @@
 				$feedbackTxt.fadeIn();
 				gapFill.audioFbResize(true);
                 gapFill.dragDropSubmit();
-				x_pageContentsUpdated();
 			}
 		}
 		
@@ -925,7 +920,6 @@
 				if (forced != true) {
 					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
 					$feedbackTxt.fadeIn();
-					x_pageContentsUpdated();
 				}
 				
 			// an attempt (even if partial) has been made
@@ -984,7 +978,6 @@
 						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						$feedbackTxt.fadeIn();
 						gapFill.audioFbResize(true);
-						x_pageContentsUpdated();
 						
 						finished = true;
 						
@@ -1024,14 +1017,12 @@
 							$("#feedbackTxt #txt").html('<p>' + gapFillPartWrong + '</p>');
 						}
 						$feedbackTxt.fadeIn();
-						x_pageContentsUpdated();
 					}
 					
 				// if force tracking mode is on then you must fully complete before checking answers
 				} else {
 					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
 					$feedbackTxt.fadeIn();
-					x_pageContentsUpdated();
 				}
 			}
         };
@@ -1044,7 +1035,6 @@
 				if (forced != true) {
 					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
 					$feedbackTxt.fadeIn();
-					x_pageContentsUpdated();
 				}
 				
 			// an attempt (even if partial) has been made
@@ -1113,7 +1103,6 @@
 						$("#showBtn,#submitBtn").hide();
 						$feedbackTxt.fadeIn();
 						gapFill.audioFbResize(true);
-						x_pageContentsUpdated();
 						
 						finished = true;
 						
@@ -1124,7 +1113,6 @@
 							$("#feedbackTxt #txt").html('<p>' + gapFillPartWrong + '</p>');
 						}
 						$feedbackTxt.fadeIn();
-						x_pageContentsUpdated();
 						
 						if (this.isTracked) {
 							$("#submitBtn").hide();
@@ -1136,7 +1124,6 @@
 				} else {
 					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
 					$feedbackTxt.fadeIn();
-					x_pageContentsUpdated();
 				}
 			}
 		};
@@ -1149,7 +1136,6 @@
 				if (forced != true) {
 					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
 					$feedbackTxt.fadeIn();
-					x_pageContentsUpdated();
 				}
 				
 			// an attempt (even if partial) has been made
@@ -1178,20 +1164,20 @@
 					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
 						var correctAnswer = answerData[interactionNumber][0];
 						var labelSource = labelAnswers[correctAnswer];
-						var option = {source: labelSource, target: correctAnswer};
+						var option = {source: labelSource, target: interactionNumber};
 						l_options.push(option);
-						if (option.source == option.target) {
+						if (correctAnswer == labelSource) {
 							correct_answers++;
 						}
 
-						var l_answer = labelSource + "-->" + correctAnswer;
+						var l_answer = labelSource + "-->" + interactionNumber;
 						l_answers.push(l_answer);
 						total++;
 					}
-					var correct = (total == correct_answers);
-					var result = {
+					const correct = (total == correct_answers);
+					const result = {
 						success: correct,
-						score: (correct ? 100.0 : 0.0)
+						score: (correct_answers * 100.0)/total
 					};
 					if (!correct) { feedback = "Incorrect"; }
 
@@ -1281,7 +1267,6 @@
 						$("#labelHolder").hide();
 						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						$feedbackTxt.fadeIn();
-						x_pageContentsUpdated();
 						gapFill.audioFbResize(true);
 						finished = true;
 					} else {
@@ -1291,14 +1276,12 @@
 							$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillPartWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillPartWrongTracking") : "Your correct answers are shown in green.") + '</p>');
 						}
 						$feedbackTxt.fadeIn();
-						x_pageContentsUpdated();
 					}
 
 				// if force tracking mode is on then you must fully complete before checking answers
 				} else {
 					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
 					$feedbackTxt.fadeIn();
-					x_pageContentsUpdated();
 				}
 			}
 		}

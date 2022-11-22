@@ -55,7 +55,7 @@
 				
 				// this resizing is for if the panel is a tabbed navigator
 				$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
-				$thisPanelPaneHolder.find('.navChild').height($thisPanelPaneHolder.height() - ($thisPanelPaneHolder.find('.navChild').outerHeight(true) - $thisPanelPaneHolder.find('.navChild').height()));
+				$thisPanelPaneHolder.find('.navChild').height($thisPanelPaneHolder.height() - parseInt($thisPanelPaneHolder.find('.navChild').css('padding-top')) * 2 - 2);
 			}
 			
 			// resize the contenteditable divs within panels

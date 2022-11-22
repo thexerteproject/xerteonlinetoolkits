@@ -54,6 +54,7 @@
 	}
 
 	#pageContents.find #feedback, #pageContents.find2 #feedback {
+		float:		left;
 		margin-top:	0.5em;
 		width: 100%;
 	}

@@ -2911,11 +2911,11 @@
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
 	<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
 
-	<fontSize type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
-		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
-		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
-		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
-		<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
+	<fontSize type="group" label="Font Size" optional="true">
+    		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
+    		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
+    		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
+    		<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
     </fontSize>
 
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
@@ -4466,21 +4466,21 @@
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="150"/>
 	<passage label="Interactive Text" type="TextArea" height="200"/>
-    <interactivity label="Interactivity" options="Explore,Show Me (By Name),Show Me (In Order),Find,Find (Mark at end),MCQ" type="ComboBox" data="explore,show,show2,find,find2,mcq" conditionTrigger="true"/>
+    <interactivity label="Interactivity" options="Explore,Show Me (By Name),Show Me (In Order),Find,Find (Mark at end),MCQ" type="ComboBox" data="explore,show,show2,find,find2,mcq"/>
 	<highlight label="Underline Text" type="CheckBox"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
-    <findOptions type="group" label="Distractors" optional="true">
-        <findAllowSelectionOfAllWords label="Automatic distractors" condition="interactivity=='find'||interactivity=='find2'" tooltip="Allow the selection of all the individual words, not only delimited ones" type="CheckBox" defaultValue="false" optional="true"/>
-        <findUseDistractors label="Custom distractors" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" condition="interactivity=='find'||interactivity=='find2'" tooltip="Be able to mark distractors by setting the distractor delimiter below."/>
-        <findDistractorDelimiter label="Distractor delimiter" type="TextInput" optional="true" defaultValue="The character used to mark up this group in the interactive text, e.g. *" condition="interactivity=='find'||interactivity=='find2'&amp;&amp;findUseDistractors=='true'" tooltip="The character used to mark up this group in the interactive text, e.g. *. This delimiter can only be sued if 'custom distractors' is enabled."/>
+    <findOptions type="group" label="Find options" optional="true">
+        <findAllowSelectionOfAllWords label="Automatic distractors" tooltip="Allow the selection of all the individual words, not only delimited ones" type="CheckBox" defaultValue="false" optional="true"/>
+        <findUseDistractors label="Custom distractors" type="CheckBox" defaultValue="false" optional="true" tooltip="Be able to mark distractors by setting the distractor delimiter below."/>
+        <findDistractorDelimiter label="Distractor delimiter" type="TextInput" optional="true" defaultValue="The character used to mark up this group in the interactive text, e.g. *" tooltip="The character used to mark up this group in the interactive text, e.g. *. This delimiter can only be sued if 'Use distractors' is enabled."/>
     </findOptions>
-	<mcqOptions type="group" label="MCQ Options" optional="true">
-		<mcqType label="Question Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" condition="interactivity=='mcq'" optional="true"/>
-		<mcqFB label="Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" condition="interactivity=='mcq'" optional="true"/>
-		<mcqNumQs label="Number of Questions (*=All)" type="TextInput" defaultValue="*" condition="interactivity=='mcq'" optional="true"/>
-		<mcqNumAs label="Number of Answer Options (*=All)" type="TextInput" defaultValue="*" condition="interactivity=='mcq'" optional="true"/>
+	<mcqOptions type="group" label="MCQ" optional="true">
+		<mcqType label="Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
+		<mcqFB label="Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" optional="true"/>
+		<mcqNumQs label="Number of Questions (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+		<mcqNumAs label="Number of Answer Options (*=All)" type="TextInput" defaultValue="*" optional="true"/>
 	</mcqOptions>
 
 	<exploreTxt label="Explore Instructions" type="TextInput" wysiwyg="true" language="true"/>
@@ -5714,14 +5714,14 @@
 	</media>
 	
 	<cubemapimages type="group" label="Cubemap Images" optional="true" tooltip="Upload and use 6 cube faces instead of a single image. All 6 faces are required. When including multiple Cubemap scenes be careful to use unique image names e.g. image1234_front.jpg, image1235_front.jpg etc or use subfolders for each Cubemap scene.">
-		<cubemapcb label="Cubemap" optional="true" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
-		<cubemaptip label="Description" optional="true" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
-		<front label="Front" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<right label="Right" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<back label="Back" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<left label="Left" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<top label="Top" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<bottom label="Bottom" optional="true" type="media" condition="cubemapcb!='false'"/>
+	<cubemapcb label="Cubemap" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
+		<cubemaptip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
+		<front label="Front" type="media" condition="cubemapcb!='false'"/>
+		<right label="Right" type="media" condition="cubemapcb!='false'"/>
+		<back label="Back" type="media" condition="cubemapcb!='false'"/>
+		<left label="Left" type="media" condition="cubemapcb!='false'"/>
+		<top label="Top" type="media" condition="cubemapcb!='false'"/>
+		<bottom label="Bottom" type="media" condition="cubemapcb!='false'"/>
 	</cubemapimages>
 
 	
@@ -5731,7 +5731,7 @@
 	
 	<autoRotate type="group" label="Auto-rotate" optional="true" tooltip="Auto-rotate image when first loaded">
 		<rotate label="Rotate" type="CheckBox" defaultValue="true" optional="true"/>
-		<direction label="Direction" optional="true" options="Right,Left" type="ComboBox" data="right,left" defaultValue="right" width="200"/>
+		<direction label="Direction" options="Right,Left" type="ComboBox" data="right,left" defaultValue="right" width="200"/>
 		<speed label="Speed" type="NumericStepper" min="1" max="20" step="1" defaultValue="2" optional="true"/>
 		<continueRotate label="Inactivity Delay" type="NumericStepper" min="0" max="20" step="1" defaultValue="0" optional="true" tooltip="By default, rotation will stop after user interaction with image. Specify a time (in seconds) of inactivity after which rotation will continue"/>
 	</autoRotate>
@@ -5772,7 +5772,7 @@
 	
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" optional="true" defaultValue="Select an Image"/>
-		<imageTip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<imageTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
 	</imgGroup>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
@@ -5800,8 +5800,8 @@
 	
 	<externalPage type="group" label="External Page" optional="true" tooltip="Go to an external website (or open it in a lightbox) when hotspot clicked">
 		<url label="URL" type="TextInput" defaultValue="" optional="true"/>
-		<urlAction label="Action" conditionTrigger="true" optional="true" options="Navigate to Page,Open in Lightbox" type="ComboBox" data="open,lightbox" defaultValue="open" width="200"/>
-		<urlTarget label="Target" condition="urlAction=='open'" optional="true" options="New Window/Tab,This Window" type="ComboBox" data="new,this" defaultValue="new" width="200"/>
+		<urlAction label="Action" conditionTrigger="true" options="Navigate to Page,Open in Lightbox" type="ComboBox" data="open,lightbox" defaultValue="open" width="200"/>
+		<urlTarget label="Target" condition="urlAction=='open'" options="New Window/Tab,This Window" type="ComboBox" data="new,this" defaultValue="new" width="200"/>
 	</externalPage>
 	
 	<hideHs type="group" label="Hide Hotspot" optional="true" tooltip="Hide the hotspot. Note that hidden hotspots can still be clicked">
@@ -9034,13 +9034,10 @@
 		<download label="Allow Download" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<filename label="Filename (without extension)" type="TextInput" defaultValue="textHighlight" condition="download=='true'" optional="true"/>
 		<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" condition="download=='true'" optional="true"/>
-		
-		<fontSize type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
-			<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
-			<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
-			<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
-			<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
-		</fontSize>
+	    <h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
+        <h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
+        <h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
+        <p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
 	</downloadGroup>
 	
 	<allowTyping label="Allow Typing" type="CheckBox" optional="true" condition="mode=='Notes'" defaultValue="true" tooltip="Allow typing directly in notes area (on by default)"/>
