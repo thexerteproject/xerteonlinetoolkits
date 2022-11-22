@@ -56,14 +56,14 @@
 	</media>
 	
 	<cubemapimages type="group" label="Cubemap Images" optional="true" tooltip="Upload and use 6 cube faces instead of a single image. All 6 faces are required. When including multiple Cubemap scenes be careful to use unique image names e.g. image1234_front.jpg, image1235_front.jpg etc or use subfolders for each Cubemap scene.">
-		<cubemapcb label="Cubemap" optional="true" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
-		<cubemaptip label="Description" optional="true" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
-		<front label="Front" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<right label="Right" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<back label="Back" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<left label="Left" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<top label="Top" optional="true" type="media" condition="cubemapcb!='false'"/>
-		<bottom label="Bottom" optional="true" type="media" condition="cubemapcb!='false'"/>
+	<cubemapcb label="Cubemap" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
+		<cubemaptip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
+		<front label="Front" type="media" condition="cubemapcb!='false'"/>
+		<right label="Right" type="media" condition="cubemapcb!='false'"/>
+		<back label="Back" type="media" condition="cubemapcb!='false'"/>
+		<left label="Left" type="media" condition="cubemapcb!='false'"/>
+		<top label="Top" type="media" condition="cubemapcb!='false'"/>
+		<bottom label="Bottom" type="media" condition="cubemapcb!='false'"/>
 	</cubemapimages>
 
 	
@@ -73,7 +73,7 @@
 	
 	<autoRotate type="group" label="Auto-rotate" optional="true" tooltip="Auto-rotate image when first loaded">
 		<rotate label="Rotate" type="CheckBox" defaultValue="true" optional="true"/>
-		<direction label="Direction" optional="true" options="Right,Left" type="ComboBox" data="right,left" defaultValue="right" width="200"/>
+		<direction label="Direction" options="Right,Left" type="ComboBox" data="right,left" defaultValue="right" width="200"/>
 		<speed label="Speed" type="NumericStepper" min="1" max="20" step="1" defaultValue="2" optional="true"/>
 		<continueRotate label="Inactivity Delay" type="NumericStepper" min="0" max="20" step="1" defaultValue="0" optional="true" tooltip="By default, rotation will stop after user interaction with image. Specify a time (in seconds) of inactivity after which rotation will continue"/>
 	</autoRotate>
@@ -118,7 +118,7 @@
 	
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" optional="true" defaultValue="Select an Image"/>
-		<imageTip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<imageTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
 	</imgGroup>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
@@ -146,8 +146,8 @@
 	
 	<externalPage type="group" label="External Page" optional="true" tooltip="Go to an external website (or open it in a lightbox) when hotspot clicked">
 		<url label="URL" type="TextInput" defaultValue="" optional="true"/>
-		<urlAction label="Action" conditionTrigger="true" optional="true" options="Navigate to Page,Open in Lightbox" type="ComboBox" data="open,lightbox" defaultValue="open" width="200"/>
-		<urlTarget label="Target" condition="urlAction=='open'" optional="true" options="New Window/Tab,This Window" type="ComboBox" data="new,this" defaultValue="new" width="200"/>
+		<urlAction label="Action" conditionTrigger="true" options="Navigate to Page,Open in Lightbox" type="ComboBox" data="open,lightbox" defaultValue="open" width="200"/>
+		<urlTarget label="Target" condition="urlAction=='open'" options="New Window/Tab,This Window" type="ComboBox" data="new,this" defaultValue="new" width="200"/>
 	</externalPage>
 	
 	<hideHs type="group" label="Hide Hotspot" optional="true" tooltip="Hide the hotspot. Note that hidden hotspots can still be clicked">

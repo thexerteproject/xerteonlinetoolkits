@@ -455,9 +455,14 @@
 				$('.tl-headline-date').css({
 					"padding-left" : 0+"px",
 					"padding-top" : 20+"px",
-					"padding-bottom" : 10+"px",
-					// "display" : "flex"
+					"padding-bottom" : 10+"px"
 				})
+				
+				$('.tl-headline-date, h2.tl-headline').each(function() {
+					if ($(this).html() == '') {
+						$(this).hide();
+					}
+				});
 
 				$(".tl-slidenav-title").html("")
 				$(".tl-slidenav-description").html("")

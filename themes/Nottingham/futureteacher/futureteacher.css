@@ -568,34 +568,6 @@ div#shorturltodisplay a {
 #menuItems .menuItem.current {
   border: 2px solid #84849a; }
 
-#x_sideBar {
-  background-color: #F4F4F6; }
-
-#x_sideBarToggleBtn {
-  border-color: #6a6a81;
-  color: #6a6a81; }
-
-#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
-  color: #F4F4F6;
-  background-color: #6a6a81; }
-
-#x_sideBarBtnHolder button {
-  color: #6a6a81; }
-
-#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
-  border-color: #6a6a81; }
-
-#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
-  border-color: #6a6a81; }
-
-#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
-  background-color: #6a6a81;
-  color: #ffffff; }
-
-#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
-  background-color: #6a6a81;
-  color: #ffffff; }
-
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block; }
