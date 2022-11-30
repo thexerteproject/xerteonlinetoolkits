@@ -4616,10 +4616,11 @@ var EDITOR = (function ($, parent) {
 						.attr('id', id + '_addcolumns')
 						.addClass('jqgridAddColumnsContainer'));
 
+                debugger
                 var form_id = "excel_upload_" + name;
                 excel_form = $("<form method='post' enctype='multipart/form-data' id =" + form_id + "></form>")
-                excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload" accept=".csv" required>');
-                excel_form.append('<input type="submit" value="Upload Image" name="submit" >');
+                excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload_'+ name +'" accept=".csv" required>');
+                excel_form.append('<input type="submit" value="Upload CSV">');
                 excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
                 excel_form.append('<input type="hidden" name="type" value=' + name + '>');
                 excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
@@ -4627,7 +4628,8 @@ var EDITOR = (function ($, parent) {
                 html.append(excel_form);
 
                 //called if user has uploaded a file to populate a grid
-                $('#excel_upload_glossary').submit(function (e){
+                html.find('#excel_upload_' + name).submit(function (e){
+                    debugger
                     e.preventDefault();
                     //TODO add translation support?
                     if(confirm("Let op dit overschrijft de huidige tabel")) {
@@ -4656,35 +4658,9 @@ var EDITOR = (function ($, parent) {
                         });
                     }
                 })
-                $('#excel_upload_variables').submit(function (e){
-                    e.preventDefault();
-                    //TODO add translation support?
-                    if(confirm("Let op dit overschrijft de huidige tabel")) {
-                        var form_data = new FormData(this);
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'text',
-                            url: 'editor/upload_file_to_jqgrid_template.php',
-                            data: form_data,
-                            contentType: false,
-                            processData: false,
-                            success: data => {
-                                return_data = JSON.parse(data);
-                                var gridId = '#' + return_data.gridId + '_jqgrid';
-                                $(gridId).jqGrid('clearGridData');
-                                //TODO check ik key can be used like this
-                                setAttributeValue(key, [return_data.type], [return_data.csv]);
-                                var rows = readyLocalJgGridData(key, return_data.type);
-                                $(gridId).jqGrid('setGridParam', {data: rows});
-                                $(gridId).trigger('reloadGrid');
-                            },
-                            error: () => {
-                                // error message here.
-                            }
 
-                        });
-                    }
-                })
+
+
                 //send file to php
                 //return xml
 				datagrids.push({id: id, key: key, name: name, options: options});
