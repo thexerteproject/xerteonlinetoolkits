@@ -15,7 +15,7 @@ if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin()) {
     _debug("Session is invalid or expired");
     die('{"status": "error", "message": "Session is invalid or expired"}');
 }
-//TODO test for file
+
 if ($_FILES["file"]["error"] > 0) {
     echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
 } else {

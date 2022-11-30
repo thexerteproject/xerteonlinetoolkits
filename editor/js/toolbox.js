@@ -4645,7 +4645,6 @@ var EDITOR = (function ($, parent) {
                                 return_data = JSON.parse(data);
                                 var gridId = '#' + return_data.gridId + '_jqgrid';
                                 $(gridId).jqGrid('clearGridData');
-                                //TODO check ik key can be used like this
                                 setAttributeValue(key, [return_data.type], [return_data.csv]);
                                 var rows = readyLocalJgGridData(key, return_data.type);
                                 $(gridId).jqGrid('setGridParam', {data: rows});
