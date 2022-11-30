@@ -10,7 +10,7 @@ body {
 
 #x_headerBlock, h2, h1 {
 	color:			#000000;
-	/*background:		#ffffff;*/
+	background-color: #ffffff;
 	background-repeat:no-repeat;
 	background-position:right; 
 	background-image:	none; 
@@ -139,4 +139,22 @@ border: 1px solid #000000;
 background: #ffffff url(ui-bg_highlight-soft_75_2d2a2a_1x100.png) 50% 50% repeat-x;
 color: #000000;
 font-weight: bold;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+	color: black;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: white;
+	background-color: black;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #A40000;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: white;
+	background-color: #A40000;
 }

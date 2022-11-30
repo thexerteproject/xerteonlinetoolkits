@@ -295,14 +295,14 @@ button.ui-button-icon-only {
 
 /* GLOSSARY */
 
-span.x_glossary {
+#x_pageDiv span.x_glossary {
 	font-weight:		bold;
 	text-decoration:	none;
 	color:				#010101;
 	border-bottom:		1px dotted;
 }
 
-span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
+#x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
 	color:	#010101;
 }
 
@@ -730,10 +730,6 @@ textarea {
 	width: 1.5em;
 }
 
-#x_footerBlock .customIconBtn:after {
-	content: none !important;
-}
-
 #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary {
 	display: block;
 }
@@ -744,12 +740,17 @@ textarea {
 	font-size: .9em;
 }
 
-#x_footerBlock button.customIconBtn .ui-icon {
+#x_footerBlock button.customIconBtn .ui-icon, #x_mainHolder.x_mobile #x_footerBlock button:not(.imgIconBtn) .ui-icon {
     left: 50%;
     transform: translate(-50%, 25%);
 }
 
-/* --PROJECT INTRODUCTION-------------------------------------------------------------- */
+#x_footerBlock button:not(.customIconBtn):not(.imgIconBtn) .ui-icon {
+	text-indent: 0;
+	margin-top: 15%;
+}
+
+/* --PROJECT & PAGE INTRODUCTION-------------------------------------------------------------- */
 
 #x_introH1 {
 	padding: 0.3em;
@@ -757,6 +758,76 @@ textarea {
 
 #x_introStartBtn {
 	float: right;
+}
+
+#x_introH1.x_introImgH1 {
+	background: inherit;
+	position: absolute;
+}
+
+#x_introStartBtn.x_introImgBtn {
+	position: absolute;
+	bottom: 10px;
+	right: 35px;
+}
+
+@media only screen and (max-width: 1024px) {
+	#x_introStartBtn.x_introImgBtn {
+		right: 20px;
+	}
+}
+
+.featherlight-content.pageIntroVideo.max {
+	width: 90vw;
+	height: 90vh;
+}
+
+.featherlight-content.pageIntroVideo.hidden {
+	opacity: 0;
+}
+
+.featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls {
+	display: none;
+}
+
+.featherlight .featherlight-content.pageIntroVideo.max.youTube iframe {
+	width: 100%;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+	font-family: FontAwesome, sans-serif;
+	width: 0.7em;
+	height: 0.7em;
+	color: white;
+	background: none;
+	border: none;
+	border-radius: .35em;
+	margin-left: .2em;
+	margin-bottom: .1em;
+	vertical-align: middle;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: black;
+	background-color: white;
+	margin-left: .5em;
+}
+
+#x_headerBlock #x_pageIntroBtn .ui-button-icon-primary {
+	position: relative;
+	margin: auto;
+	left: auto;
+	top: -.5em;
+	font-size: 0.5em;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #FF9900;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: black;
+	background-color: #FF9900;
 }
 
 /* --LIGHTBOX-------------------------------------------------------------- */
@@ -889,6 +960,25 @@ a:focus .wcagLogo {
     height: 16px !important;
     width: 16px !important;
 }
+
+.audioTranscript .mejs-container .mejs-controls {
+	box-sizing: border-box;
+	padding-right: 31px;
+}
+
+.audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn {
+	height: 100%;
+	position: absolute;
+	right: 5px;
+}
+
+.audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button, #x_footerBlock .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
+	font-family: "Font Awesome 5 Free";
+	background-image: none;
+	font-size: 15px !important;
+	color: #eee;
+}
+
 .featherlight iframe {
 	height: 85vh;
 	width: 85vw;
@@ -961,4 +1051,144 @@ a:focus .wcagLogo {
 
 .circleBtn.ui-button-icon-only {
 	height: 2.4em;
+}
+
+
+/* --SIDE BAR-------------------------------------------------------------- */
+
+#x_sideBar {
+	height: 100%;
+	position: absolute;
+	background-color: #ccc;
+	box-shadow: inset 0 0.5em 1.5em rgb(0 0 0 / 10%), inset 0 0.125em 0.5em rgb(0 0 0 / 50%);
+}
+
+.sb_right #x_sideBar {
+	right: 0;
+}
+
+#x_sideBarToggleBtn {
+	width: 100%;
+	height: 30px;
+	font-size: 20px;
+	background: none;
+	border: none;
+	border-bottom: 1px #666 solid;
+	border-radius: 0;
+	color: #212121;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: white;
+	background-color: #212121;
+}
+
+.sb_left #x_sideBarToggleBtn .ui-button-icon-primary {
+	text-align: right;
+	right: 5px;
+}
+
+.sb_right #x_sideBarToggleBtn .ui-button-icon-primary {
+	text-align: left;
+	left: 13px;
+}
+
+#x_sideBarBtnHolder {
+	padding-top: 1em;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+#x_sideBarBtnHolder button {
+	color: #212121;
+	background: none;
+	border: none;
+	border-radius: 0px;
+	display: block;
+	height: auto !important;
+}
+
+#x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	text-indent: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
+	float: left;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
+	width: auto !important;
+	margin: 0 auto 1em auto;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button {
+	white-space: nowrap;
+	width: auto;
+	box-sizing: border-box;
+	text-align: left;
+	padding: 1em 5px 1em;
+	margin-bottom: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-bottom: 1px solid #666;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button.ui-button-icon-only {
+	width: auto;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button span.ui-button-text {
+	display: inline-block;
+}
+
+#x_sideBarBtnHolder button span.ui-icon {
+	position: static;
+	box-sizing: border-box;
+	margin-top: 0;
+	margin-left: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button span.ui-icon {
+	width: 20px;
+	height: 20px;
+	font-size: 15px;
+	vertical-align: bottom;
+	margin-right: 10px;
+	text-align: center;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button.ui-button-icon-only span.ui-icon {
+	margin-right: 0;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border: 1px solid #212121;
+	border-radius: 35px;
+	width: 70px;
+	height: 70px;
+	padding-top: 16px;
+	font-size: 34px;
+	margin: 0 auto;
+}
+
+#x_sideBarBtnHolder button span.ui-button-text {
+	font-size: 1em;
+	padding: 0;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button.ui-button-icon-only span.ui-button-text {
+	display: inline-block;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: #212121;
+	color: white;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: #212121;
+	color: white;
 }

@@ -75,7 +75,11 @@
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox" />  
-    <sound label="Sound" type="Media" optional="true"/>
+	
+	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
+		<sound label="File" type="Media" optional="true"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+	</soundGroup>
 		
     <newNodes>
       <opinionOption><![CDATA[<opinionOption name="Answer" text="Here is an option" />]]></opinionOption>

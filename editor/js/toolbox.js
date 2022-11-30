@@ -32,6 +32,7 @@ var EDITOR = (function ($, parent) {
         jqGrGridData = {},
 		jqGridSetUp = false,
 		workspace,
+		currtheme,
 
     // Build the "insert page" menu
     create_insert_page_menu = function (advanced_toggle) {
@@ -518,7 +519,9 @@ var EDITOR = (function ($, parent) {
                     var tree = $.jstree.reference("#treeview");
                     var parent = tree.get_parent(key);
                     return evaluateConditionExpression(ctree.property, parent)
-                } else {
+                } else if (ctree.object.object.name == 'theme_list') {
+					return theme_list[currtheme][ctree.property.name];
+				} else {
                     return null;
                 }
                 break;
@@ -1538,8 +1541,9 @@ var EDITOR = (function ($, parent) {
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript', 'rubytext' ],
-                        [ 'Sourcedialog' ],
-                        [ 'FontAwesome']
+						[ 'FontAwesome'],
+						[ 'RemoveFormat'],
+                        [ 'Sourcedialog' ]
                     ],
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
@@ -4079,7 +4083,7 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				var html = $('<div>')
 					.attr('id', 'theme_div_' + form_id_offset);
-				var currtheme = 0;
+				currtheme = 0;
 				var select = $('<select>')
 					.attr('id', id)
 					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)

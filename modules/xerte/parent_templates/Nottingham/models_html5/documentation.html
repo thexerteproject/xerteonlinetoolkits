@@ -720,7 +720,7 @@
 			var $tempTable = $('<div>').append($table.find('table').clone());
 			
 			$tempTable.find('textarea').each(function() {
-				$(this).before('<i>' + ($(this).val().length == 0 ? notAnsweredText : $(this).val().replace(/\r?\n/g, '<br>')) + '</i>');
+				$(this).before('<em>' + ($(this).val().length == 0 ? notAnsweredText : $(this).val().replace(/\r?\n/g, '<br>')) + '</em>');
 				$(this).remove();
 			});
 			

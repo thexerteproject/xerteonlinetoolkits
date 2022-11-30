@@ -141,3 +141,22 @@ background: #164883 url(ui-bg_highlight-soft_75_2d2a2a_1x100.png) 50% 50% repeat
 color: #ffffff;
 font-weight: bold;
 }
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: #164883;
+	background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #A40000;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: white;
+	background-color: #A40000;
+}

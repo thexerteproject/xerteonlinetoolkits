@@ -32,34 +32,33 @@
 .ui-button .ui-icon.x_prev_hist { background-image: none; }
 .ui-button .ui-icon.x_colourChanger { background-image: none; }
 .ui-button .ui-icon.x_projectIntro { background-image: none; }
+.ui-button .ui-icon.x_saveSession { background-image: none; }
 
-#x_nextBtn:after { content: "\f138"; }
-#x_prevBtn:after { content: "\f137"; }
-#x_cssBtn:after { content: "\f066"; }
-#x_colourChangerBtn:after { content: "\f042"; }
-#x_mediaBtn:after { content: "\f16a"; }
-#x_glossaryBtn:after { content: "\f02d"; }
-#x_helpBtn:after { content: "\f128"; }
-#x_introBtn:after { content: "\f129"; }
-#x_menuBtn:after { content: "\f0c9"; }
-#x_saveSessionBtn:after {content: "\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
+#x_nextBtn:not(.customIconBtn) .ui-icon:before { content: "\f138"; }
+#x_prevBtn:not(.customIconBtn) .ui-icon:before { content: "\f137"; }
+#x_cssBtn:not(.customIconBtn) .ui-icon:before { content: "\f066"; }
+#x_colourChangerBtn:not(.customIconBtn) .ui-icon:before { content: "\f042"; }
+#x_mediaBtn:not(.customIconBtn) .ui-icon:before { content: "\f16a"; }
+#x_glossaryBtn:not(.customIconBtn) .ui-icon:before { content: "\f02d"; }
+#x_helpBtn:not(.customIconBtn) .ui-icon:before { content: "\f128"; }
+#x_introBtn:not(.customIconBtn) .ui-icon:before { content: "\f129"; }
+#x_menuBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
+#x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {content: "\f0c7"; }
 
-// #x_footerBlock button { color: lighten($blackordarkest, 50%); }
 #x_footerBlock button { color: darken($lightestcolor, 40%); }
 #x_footerBlock button.ui-state-hover { color: lighten($blackordarkest, 10%); }
 #x_footerBlock button.ui-state-focus { color: $blackordarkest; }
 #x_footerBlock button.ui-state-active { color: lighten($blackordarkest, 10%); }
 
-//background: darken($lightestcolor, 40%);
-
 #x_footerBlock button {
-  font-family: FontAwesome, sans-serif;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
   font-size: 1.9em;
   width: 1.5em;
   padding-right: 0;
   margin-left: 5px;
 }
-#x_footerBlock button span {
+#x_footerBlock button span.ui-button-text {
   display: none;
 }
 #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
@@ -92,6 +91,7 @@
 #menuItems .menuItem.current {
   border: 2px solid darken($lightestcolor,40);
 }
+
 
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen

@@ -415,9 +415,9 @@
       return true;
     } else {
       if (
-        interaction.getAttribute("interactionType") !== "open" &&
-        interaction.getAttribute("interactionType") !== "opinion" &&
-        interaction.getAttribute("opinionClass") != undefined
+        (interaction.getAttribute("interactionType") !== "open" &&
+            (interaction.getAttribute("interactionType") !== "opinion"
+             || interaction.getAttribute("opinionClass") == undefined))
       ) {
         if (interaction.getAttribute("graph") === "true") {
           return (
@@ -1017,12 +1017,7 @@
     // Function called every time the page is viewed after it has initially loaded.
     this.pageChanged = function () {
       $("#adaptiveContentMain").html("");
-      var displayMode = x_currentPageXML.getAttribute("displayMode");
-      if (displayMode == "Listed") {
-        this.setUpListed();
-      } else {
-        this.setUpUnlisted();
-      }
+      this.init();
     };
 
     // Function called every time the size of the LO is changed.
@@ -1463,7 +1458,7 @@
         IncorrectText = "Incorrect";
       }
       var xertelo = interaction.getAttribute("xertelo");
-      //var statements = filterOwnStatements(data, xertelo);
+      var ownstatements = filterOwnStatements(data, xertelo);
       var statements = data;
       xerteurl = interaction.getAttribute("xerteurl");
       xertelabel = interaction.getAttribute("label");
@@ -1611,7 +1606,14 @@
             }
             score = score / statements.length;
           } else {
-            score = statements[0].result.score.raw;
+            // If a graph is also shown, statements might contain statements of other people, select the last one of the current user
+            if (ownstatements.length > 0) {
+              score = ownstatements[0].result.score.raw;
+            }
+            else
+            {
+                score = 0;
+            }
           }
           if (interaction.getAttribute("showScore") == "true") {
             var txt = scoreLabelText;
@@ -2289,7 +2291,8 @@
         var givenAnswer = statements[0].result.response;
         if (interaction.getAttribute("showScore") == "true") {
           var txt = answerLabelText;
-          txt = txt.replace(/\{0\}/, givenAnswer);
+          const givenAnswerCleanedUp = givenAnswer.replace(/\[\,\]/g, ",<br>").replace(/\[\.\]/g, " ==> ");
+          txt = txt.replace(/\{0\}/, givenAnswerCleanedUp);
           $(
             "#" + escapeUrl(url, type, interactionIndex) + " .score .stats"
           ).append("<li>" + txt + "</li>");

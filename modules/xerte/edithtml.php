@@ -159,10 +159,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                                 break;
                             case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['parent_template'] . "/" . $f . "/" . trim($attr_data[1]);
                                 break;
+							case "imgbtns" : $themeProperties->imgbtns = trim($attr_data[1]);
+                                break;
                         }
                     }
                     if (substr($themeProperties->enabled, 0, 1) == "y") {
-                        $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview);
+                        $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview, 'imgbtns' => $themeProperties->imgbtns);
                     }
                 }
             }
@@ -174,7 +176,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		}
 		array_multisort($display_name, SORT_ASC, $ThemeList);
 		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common_html5/default.jpg"));
+		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common_html5/default.jpg", 'imgbtns' => "true"));
     }
 
     /**

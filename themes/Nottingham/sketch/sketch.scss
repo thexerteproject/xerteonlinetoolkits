@@ -206,3 +206,26 @@ background: #ffffff;
 color: #000000;
 font-weight: bold;
 }
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: #D3D7CF;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: white;
+	background-color: #D3D7CF;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: black;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: white;
+	background-color: black;
+}
+
+#x_introStartBtn {
+	background-color: white;
+}

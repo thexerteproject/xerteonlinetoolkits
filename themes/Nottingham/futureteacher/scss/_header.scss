@@ -11,3 +11,22 @@
   background: $whiteorlightest;
   box-shadow: $interfaceboxshadow;
 }
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: #84849a;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: white;
+	background-color: #84849a;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #C4551F;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: white;
+	background-color: #C4551F;
+}

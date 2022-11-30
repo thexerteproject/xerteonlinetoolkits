@@ -330,7 +330,8 @@
 							
 							$mediaHolder.data({
 								source: url,
-								title: tip
+								title: tip,
+								transcript: thisInfo.getAttribute('transcript' + index)
 							});
 							
 						// image
@@ -395,6 +396,11 @@
 										height: "100%",
 										title: $mediaHolder.data('title')
 									});
+								
+								// manually add a transcript button to the end of the audio bar
+								if ($mediaHolder.data('transcript') != undefined && $mediaHolder.data('transcript') != '') {
+									x_addAudioTranscript($mediaHolder, $mediaHolder.data('transcript'));
+								}
 							}
 						}
 					}

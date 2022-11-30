@@ -16,3 +16,7 @@
 		border-top: 1px solid #ccc;
 	}
 	
+	.x_mobile #tableHolder .panel.inline {
+		margin-left: 0;
+		margin-right: 0;
+	}

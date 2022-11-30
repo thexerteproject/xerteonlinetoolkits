@@ -55,16 +55,18 @@ var videoSynch = new function() {
 		var popLocation = "common_html5/js/popcorn/"
 		var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
 		var i = 0;
-		scriptsToLoad.forEach(function(file){
-			$.getScript(x_templateLocation + popLocation + file + ".js")
-				.done(function(){
-						if (++i >= scriptsToLoad.length)
-							videoSynch.setUp();
-					})
-				.fail(function( jqxhr, settings, exception ) {
-						console.log("Failed to load plugin:" + exception);
-					});
-		});
+		if(!xot_offline) {
+			scriptsToLoad.forEach(function (file) {
+				$.getScript(x_templateLocation + popLocation + file + ".js")
+						.done(function () {
+							if (++i >= scriptsToLoad.length)
+								videoSynch.setUp();
+						})
+						.fail(function (jqxhr, settings, exception) {
+							console.log("Failed to load plugin:" + exception);
+						});
+			});
+		}
 	}
 
 	this.setUp = function() {

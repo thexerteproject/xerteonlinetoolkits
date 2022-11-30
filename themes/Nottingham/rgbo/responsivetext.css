@@ -172,10 +172,7 @@
     vertical-align: top;
     text-align: center;
     display: inline-block;
-    padding-top: 12px;
-    padding-right: 5px;
-    padding-bottom: 0px;
-    padding-left: 5px;
+    padding: 12px 5px 0 5px;
     margin-right: -5px;
     height: 30px;
     width: auto;
@@ -183,14 +180,21 @@
     font-size: 12px; }
 
   #x_footerBlock button {
-    font-size: 1.6em;
-    width: 1.2em;
+    font-size: 1.4rem;
+    width: 1em;
+    margin-left: 5px; }
+
+  #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+    font-size: 1.4rem;
+    width: 1em;
     margin-left: 5px; }
 
   .pbContainer {
+    display: block;
     margin-top: 1.2em; }
 
   .pbTxt {
+    display: block;
     font-size: 6px;
     text-align: center; } }
 @media only screen and (max-width: 320px) {
@@ -213,6 +217,11 @@
 
   #x_footerBlock button {
     font-size: 1.3em;
+    width: 1.1em;
+    margin-left: 5px; }
+
+  #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+    font-size: 1.3rem;
     width: 1.1em;
     margin-left: 5px; }
 

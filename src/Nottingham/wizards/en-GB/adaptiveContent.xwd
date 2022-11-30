@@ -62,7 +62,7 @@
           <colourPersonalAvg label="Personal average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionGraphType=='radar'" defaultValue="0x0000FF" optional="true"/>
           <colourAvg label="Average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionGraphType=='radar'" defaultValue="0x00FF00" optional="true"/>
           <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" condition="interactionType=='opinion'&amp;&amp;opinionGraphType=='radar'" defaultValue="12" optional="true" />
-          <showExplanation label="Show graph explanation" type="checkbox" optional="true" defaulValue="false" tooltip="Show a box with a legend or other explanation next to the graph" />
+          <showExplanation label="Show graph explanation" type="checkbox" optional="true" defaultValue="false" tooltip="Show a box with a legend or other explanation next to the graph" />
           <graphExplanation label="Graph legend/explanation" type="textArea" height="120" optional="true" defaultValue="" wysiwyg="true" tooltip="The legend or other explanation shown next to the graph"/>
           <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
           <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" condition="interactionType!='opinion'||opinionClass!=null" tooltip="The number of bars in a bargraph, or the number of points in a line graph" />

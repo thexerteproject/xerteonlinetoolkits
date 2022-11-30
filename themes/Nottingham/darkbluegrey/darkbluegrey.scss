@@ -129,7 +129,7 @@ img {
 //******@media changes******/
 @media (min-width: 1366px) {
 	//*tablet and above css below here*/
-	#x_mainHolder{
+	body:not(.sb_right):not(.sb_left) #x_mainHolder{
 		max-width:90%;
 		max-height:92%;
 		margin:auto;
@@ -146,7 +146,7 @@ img {
 and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (orientation : portrait) {
-	#x_mainHolder{
+	body:not(.sb_right):not(.sb_left) #x_mainHolder{
 		max-width:98%;
 		max-height:98%;
 		margin:auto;

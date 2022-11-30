@@ -9,9 +9,8 @@
   <interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
-		
 
-		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
+		<intro label="Introduction Panel" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true" deprecated="Although the introduction panel still works, the new introduction optional property is now the recommended way of adding an introduction to the page"/>
 
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>

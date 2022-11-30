@@ -670,6 +670,25 @@ img {
 #x_headerBlock h1 span, x_headerBlock h1, #x_headerBlock h2 span, #x_headerBlock h2 {
 	background-color:rgba(255,255,255,0) !important;
 }
+
+#x_headerBlock #x_pageIntroBtn {
+	color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: #152c51;
+	background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: red;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: #152c51;
+	background-color: red;
+}
+
 #x_footerBlock {
 	-webkit-box-shadow: inset 0px 4px 12px rgba(0,0,0,0.4);
 	box-shadow: inset 0px 4px 12px rgba(0,0,0,0.4)

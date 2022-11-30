@@ -3,3 +3,4 @@ display name: Informal: Sketch
 description: An informal sketch theme, white background, curved black border, sketched grey/black buttons, informal Google fonts.
 enabled: yes
 preview: sketch.jpg
+imgbtns: true

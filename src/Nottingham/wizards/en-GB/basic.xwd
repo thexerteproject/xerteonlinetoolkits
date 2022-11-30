@@ -7,7 +7,7 @@
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" conditionTrigger="true" defaultValue="default" />
-	<themeIcons type="CheckBox" label="Update Theme Icons" mandatory="true" defaultValue="false" condition="theme==undefined||theme=='default'||theme=='darkgrey'||theme=='flatblue'||theme=='orangepurple'||theme=='flatred'||theme=='flatwhite'||theme=='sketch'||theme=='django'||theme=='blackround'" tooltip="The selected theme uses images for the navigation and footer tool buttons. Most newer themes use Font Awesome icons instead, which give you greater flexibility in their appearance. Checking this box will automatically update interface buttons to use Font Awesome icons. It is recommended that you check this if you use are using any of the Customise Button Icon options so that all buttons appear consistent." />
+	<themeIcons type="CheckBox" label="Update Theme Icons" mandatory="true" defaultValue="false" condition="theme_list[currtheme].imgbtns=='true'||theme==undefined||theme=='default'" tooltip="The selected theme uses images for the navigation and footer tool buttons. Most newer themes use Font Awesome icons instead, which give you greater flexibility in their appearance. Checking this box will automatically update interface buttons to use Font Awesome icons. It is recommended that you check this if you use are using any of the Customise Button Icon options so that all buttons appear consistent." />
 	<displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100" conditionTrigger="true"/>
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
 	
@@ -53,10 +53,11 @@
 	</navGroup>
 	
 	<toc type="group" label="Table of Contents" optional="true">
-		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
-		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true"/>
-		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
-		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
+		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
+		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" condition="navigation!='Historic'"/>
+		<tocTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="navigation=='Linear'||navigation=='LinearWithHistoric'||navigation==undefined" optional="true" tooltip="Determines where the table of contents opens"/>
+		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
+		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
 	</toc>
 	
 	<homePageGroup type="group" label="Home Page" optional="true">
@@ -81,6 +82,7 @@
 	
 	<accessibilityGroup type="group" label="Accessibility" optional="true" tooltip="Options related to the Accessibility Options button">
 		<accessibilityLabel label="Tooltip" type="TextInput" defaultValue="Accessibility Options" condition="accessibilityHide!='true'" optional="true" tooltip="The tooltip description for the Accessibility Options button. This text also appears as the title of the dialog box that opens when the button is clicked."/>
+		<accessibilityTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="accessibilityHide!='true'" optional="true" tooltip="Determines where the accessibility options information opens"/>
 		<accessibilityIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" condition="accessibilityHide!='true'" optional="true" tooltip="Override the default icon used on the Accessibility Options button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<accessibilityIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-eye-slash" condition="accessibilityHide!='true'&amp;&amp;accessibilityIc=='true'" optional="true"/>
 		<wcagGroup type="group" label="Logo and Link" optional="true" tooltip="The Accessibility Options dialog contains a WCAG logo which links to the Xerte Accessibility statement">
@@ -101,30 +103,60 @@
 	</helpGroup>
 	
 	<introGroup type="group" label="Project Introduction" optional="true" tooltip="Add a Project Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the project first loads.">
-		<intro label="Text" type="TextArea" height="100" defaultValue="" optional="true"/>
-		<introTitle type="CheckBox" label="Include Title" defaultValue="true" optional="true" tooltip="Include the learning object title above the introduction text"/>
-		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Include a 'start' button below the introduction text that closes the lightbox when clicked"/>
-		<introBtnTxt label="Button Text" type="TextInput" defaultValue="Get Started" condition="introBtn=='true'" wysiwyg="true" optional="true"/>
-		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" width="100" optional="true"/>
+		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this project"/>
+		<intro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
+		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
+		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
+		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
+		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the learning object title above the introduction"/>
+		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
+		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Get Started" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
+		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="When project loads,When project loads on first page,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the project first loads"/>
-		<introLabel label="Tooltip" type="TextInput" defaultValue="Introduction" tooltip="The tooltip description for the Project Introduction button" optional="true"/>
-		<introIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Project Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
-		<introIcon label="Icon" type="FontAwesome" iconList="hotspot" condition="introIc!='false'" defaultValue="fas fa-info" optional="true"/>
+		<introBtnGroup type="group" label="Button" optional="true">
+			<introLabel label="Tooltip" type="TextInput" defaultValue="Introduction" tooltip="The tooltip description for the Project Introduction button" optional="true"/>
+			<introIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Project Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+			<introIcon label="Icon" type="FontAwesome" iconList="hotspot" condition="introIc!='false'" defaultValue="fas fa-info" optional="true"/>
+		</introBtnGroup>
 	</introGroup>
 	
-	<pageHelpGroup type="group" label="Page Help File Button" optional="true" tooltip="An extra button will appear in the interface if you have added help files to any of your pages. Use these properties to control the location and appearance of this button.">
-		<pageHelpLocation label="Button Location" type="ComboBox" options="Footer,Header" data="footer,header" defaultValue="footer" optional="true"/>
-		<pageHelpLabel label="Tooltip" type="TextInput" defaultValue="Page Help" optional="true"/>
-		<pageHelpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
-		<pageHelpIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-question" condition="pageHelpIc=='true'" optional="true"/>
-	</pageHelpGroup>
-	
 	<pageIntroGroup type="group" label="Page Introduction Button" optional="true" tooltip="An extra button will appear in the interface if you have added an introduction to any of your pages. Use these properties to control the location and appearance of this button.">
-		<pageIntroLocation label="Button Location" type="ComboBox" options="Footer,Header" data="footer,header" defaultValue="footer" optional="true"/>
+		<pageIntroBg label="Appearance" type="ComboBox" options="Icon only,Circle with icon" data="icon,circle" defaultValue="circle" optional="true"/>
 		<pageIntroLabel label="Tooltip" type="TextInput" defaultValue="Page Introduction" optional="true"/>
 		<pageIntroIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
+	
+	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing buttons which would normally be found on the footer bar.">
+		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
+		<sideBarShow type="ComboBox" label="Default State" defaultValue="open" options="Open,Closed" data="open,closed" condition="sideBar!='false'" optional="true"/>
+		<sideBarBtns type="group" label="Side Bar Buttons" condition="sideBar!='false'" cols="2" optional="true">
+			<sbGlossary label="Glossary" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbAccessibility label="Accessibility" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbToC label="Table of Contents" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbProjectHelp label="Project Help" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbProjectIntro label="Project Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+		</sideBarBtns>
+		<sideBarBtnTxt type="CheckBox" label="Display Button Title" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'" optional="true"/>
+		<sideBarHideShowGroup type="group" label="Show / Hide Side Bar Buttons" optional="true">
+			<sideBarBtnIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="sideBar!='false'" optional="true" tooltip="Override the default icons used on the show / hide side bar button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
+			<sideBarHideGroup type="group" label="Hide Side Bar" optional="true">
+				<sideBarHideLabel label="Tooltip" type="TextInput" defaultValue="Hide side bar" condition="sideBar!='false'" optional="true"/>
+				<sideBarHideLeftIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-left" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='left'" optional="true"/>
+				<sideBarHideRightIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-right" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='right'" optional="true"/>
+			</sideBarHideGroup>
+			<sideBarShowGroup type="group" label="Show Side Bar" optional="true">
+				<sideBarShowLabel label="Tooltip" type="TextInput" defaultValue="Show side bar" condition="sideBar!='false'" optional="true"/>
+				<sideBarShowLeftIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-right" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='left'" optional="true"/>
+				<sideBarShowRightIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-left" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='right'" optional="true"/>
+			</sideBarShowGroup>
+		</sideBarHideShowGroup>
+	</sideBarGroup>
 	
 	<icon type="group" label="Header Icon/Logo" optional="true">
 		<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger='true' tooltip="If a default logo is automatically added by this template, or by the theme you have chosen, then use this checkbox to hide that logo, or leave this unchecked and use the options below to load an alternative logo."/>
@@ -177,6 +209,7 @@
 	
 	<glossaryGroup type="group" label="Glossary" optional="true" tooltip="A glossary of words/terms and their definitions. Hovering over a word/term in the project text will reveal the associated definition in a tooltip. A glossary button will also be added to the footer tools, which opens the full glossary in a dialog box when clicked.">
 		<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" wysiwyg="false,true" optional="true"/>
+		<glossaryTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" optional="true" tooltip="Determines where the table of glossary terms and definitions opens"/>
 		<glossaryLabel label="Tooltip" type="TextInput" defaultValue="Glossary" optional="true" tooltip="The tooltip description for the Glossary button. This text also appears as the title of the dialog box that opens when the button is clicked."/>
 		<glossaryIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Glossary button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<glossaryIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-book" condition="glossaryIc=='true'" optional="true"/>
@@ -207,7 +240,6 @@
 	</twittercard>
 	
 	<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-	<!--<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue="" />-->
 	<kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
 	<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
     <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>

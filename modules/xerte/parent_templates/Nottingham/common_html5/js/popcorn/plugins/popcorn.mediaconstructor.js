@@ -125,8 +125,8 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     
     // add transcript to media panel if required
     if (mediaData.transcript) {
-        $mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' 
-            + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
+        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">' 
+            + x_addLineBreaks(mediaData.transcript) + '</div></div>');
         $mediaHolder.find(".transcript").hide();
         $mediaHolder.find(".transcriptBtn")
             .button({
@@ -135,7 +135,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             })
             .click(function() {
                 // transcript slides in and out of view on click
-                var $transcript = $(this).prev(".transcript");
+                var $transcript = $(this).next(".transcript");
                 if ($transcript.is(":hidden") == true) {
                     $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
                     $transcript.slideDown();
@@ -147,7 +147,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
         
         if (mediaType == "video") {
             $mediaHolder.find(".transcriptHolder")
-                .width($mediaHolder.find(".popcornMedia").width())
+                //.width($mediaHolder.find(".popcornMedia").width())
                 .css("margin", "0 auto");
         }
     }
@@ -173,14 +173,14 @@ this.initVideoState = function(mediaData)
 // sets the size of videos. width and height take precedence over ratio
 this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
 
-    if ($video.length == 0)
-    {
+    if ($video.length == 0) {
         return;
     }
     var $holder = $video.parent()
 
+
     var heightClaimed = 0;
-    $holder.children().not($video).each(function() {
+    $holder.children().not($video).each(function () {
         heightClaimed += $(this).outerHeight(true);
     });
 
@@ -191,9 +191,9 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
 
     var w = ww < hw ? ww : hw; 
     var h = ww < hw ? wh : hh;
-    console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
-    console.log("aspect    = " + ($video[0].getAttribute("aspect")?$video[0].getAttribute("aspect"):"UNDEF"));
-    console.log("mainMedia = " + ($video[0].getAttribute("mainMedia")?$video[0].getAttribute("mainMedia"):"UNDEF"));
+    //console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
+    //console.log("aspect    = " + ($video[0].getAttribute("aspect")?$video[0].getAttribute("aspect"):"UNDEF"));
+    //console.log("mainMedia = " + ($video[0].getAttribute("mainMedia")?$video[0].getAttribute("mainMedia"):"UNDEF"));
     if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
     {
         w = "100%";
@@ -202,14 +202,27 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
             "height": "100%"
         });
     }
-    console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
+    //console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
 
-    $video.css({
-        "width":	width ? width : w,
-        "height":	height ? height : h,
-        "min-width" : 150,
-        "min-height": 120
-    });
+    if ($video.hasClass("embed")) {
+        $video.css({
+            "width": width ? width : w,
+            "height": height ? height : h,
+            "min-width": 150,
+            "min-height": 120
+        });
+    } else if ($video.find(".mejs-container").length > 0) {
+
+        var $mediaHolder = $video.find(".mejs-container");
+        $mediaHolder.css({
+            "width": width ? width : w,
+            "height": height ? height : h,
+        });
+        $mediaHolder.find(".mejs-overlay-play").css({
+            "width": width ? width : w,
+            "height": height ? height : h,
+        });
+    }
 };
 
 // Adds XAPI tracking to the popcornInstance.

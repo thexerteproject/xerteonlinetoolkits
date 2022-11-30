@@ -102,7 +102,7 @@
 			}
 			
 			// transcript stuff
-			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "") {
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "" && x_currentPageXML.getAttribute("transcriptPos") != "lightbox") {
 				$imgCaption.addClass("transcript");
 				
 				$transcript
@@ -208,6 +208,11 @@
 					width: $("#pageImg").width()
 				});
 			}
+			
+			// manually add a transcript button to the end of the audio bar
+			if (x_currentPageXML.getAttribute('transcript') != undefined && x_currentPageXML.getAttribute('transcript') != '' && x_currentPageXML.getAttribute("transcriptPos") == "lightbox") {
+				x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute('transcript'));
+			}
 		}
 		
 		this.calculateOffset = function() {
@@ -252,13 +257,16 @@
 				if (x_currentPageXML.getAttribute('magnifierForce') == 'true' || ($pageImg.data("origSize") != undefined && $pageImg.width() / $pageImg.data("origSize")[0] < 0.8)) {
 					$pageImg.imageLens(imageLensInfo);
 					
+					$(".magnifiedImg")
+						.attr('alt', x_currentPageXML.getAttribute("tip"))
+						.addClass('x_noLightBox');
 				}
 			}
 		}
 	}
 
 	textGraphics.init();
-$(".magnifiedImg").attr("Alt",x_currentPageXML.getAttribute("tip"));
+	
 </script>
 
 

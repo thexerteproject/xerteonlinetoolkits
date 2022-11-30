@@ -56,7 +56,7 @@
 			score = $pageContents.data('score');
 			attempts = $pageContents.data('attempts');
 			
-			if (XTGetMode() == "normal") { this.isTracked = true; };
+			if (XTGetMode() == "normal") { this.isTracked = true; }
 			
 			$pageContents.find("#hint").remove();
 		}
@@ -309,6 +309,11 @@
 					width	:"100%"
 				});
 				
+				// manually add a transcript button to the end of the audio bar
+				if (x_currentPageXML.getAttribute('audioTranscript') != undefined && x_currentPageXML.getAttribute('audioTranscript') != '') {
+					x_addAudioTranscript($audioHolder, x_currentPageXML.getAttribute('audioTranscript'));
+				}
+				
 				$audioHolder.hide();
 				
 			} else {
@@ -344,7 +349,7 @@
 					correctAnswer = answerData[interactionNumber][0];
 					correctAnswer = correctAnswer + "-->" + interactionNumber;
 					correctAnswers.push(correctAnswer);
-					correctOption = {source: answerData[interactionNumber][0], target: interactionNumber}
+					correctOption = {source: answerData[interactionNumber][0], target: interactionNumber + ''}
 					correctOptions.push(correctOption);
 				}
                 XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
@@ -1159,20 +1164,20 @@
 					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
 						var correctAnswer = answerData[interactionNumber][0];
 						var labelSource = labelAnswers[correctAnswer];
-						var option = {source: labelSource, target: correctAnswer};
+						var option = {source: labelSource, target: interactionNumber};
 						l_options.push(option);
-						if (option.source == option.target) {
+						if (correctAnswer == labelSource) {
 							correct_answers++;
 						}
 
-						var l_answer = labelSource + "-->" + correctAnswer;
+						var l_answer = labelSource + "-->" + interactionNumber;
 						l_answers.push(l_answer);
 						total++;
 					}
-					var correct = (total == correct_answers);
-					var result = {
+					const correct = (total == correct_answers);
+					const result = {
 						success: correct,
-						score: (correct ? 100.0 : 0.0)
+						score: (correct_answers * 100.0)/total
 					};
 					if (!correct) { feedback = "Incorrect"; }
 

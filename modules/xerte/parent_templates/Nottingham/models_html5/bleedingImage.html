@@ -219,6 +219,11 @@
 					source	:soundFile,
 					width	:width
 				});
+				
+				// manually add a transcript button to the end of the audio bar
+				if (x_currentPageXML.getAttribute('soundTranscript') != undefined && x_currentPageXML.getAttribute('soundTranscript') != '') {
+					x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute('soundTranscript'));
+				}
 			}
 		}
 		
@@ -258,6 +263,10 @@
 				// if force magnification isn't on, don't magnify if not scaled to less that 80% of original image
 				if (x_currentPageXML.getAttribute('magnifierForce') == 'true' || ($pageImg.data("origSize") != undefined && $pageImg.width() / $pageImg.data("origSize")[0] < 0.8)) {
 					$pageImg.imageLens(imageLensInfo);
+					
+					$(".magnifiedImg")
+						.attr('alt', x_currentPageXML.getAttribute("tip"))
+						.addClass('x_noLightBox');
 				}
 			}
 			
@@ -265,7 +274,7 @@
 	}
 
 	bleedingImage.init();
-$(".magnifiedImg").attr("Alt",x_currentPageXML.getAttribute("tip"));
+	
 </script>
 
 
