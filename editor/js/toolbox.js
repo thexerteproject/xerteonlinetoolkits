@@ -4616,24 +4616,24 @@ var EDITOR = (function ($, parent) {
 						.attr('id', id + '_addcolumns')
 						.addClass('jqgridAddColumnsContainer'));
 
-                debugger
                 var form_id = "excel_upload_" + name;
                 excel_form = $("<form method='post' enctype='multipart/form-data' id =" + form_id + "></form>")
-                excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload_'+ name +'" accept=".csv" required>');
-                excel_form.append('<input type="submit" value="Upload CSV">');
+                excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload_' + name +'" accept=".csv" required>');
+                excel_form.append('<input type="submit" value="Upload csv">');
                 excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
                 excel_form.append('<input type="hidden" name="type" value=' + name + '>');
                 excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
-
                 html.append(excel_form);
 
                 //called if user has uploaded a file to populate a grid
                 html.find('#excel_upload_' + name).submit(function (e){
-                    debugger
                     e.preventDefault();
+                    upload_file(new FormData(this));
+                })
+
+                function upload_file(form_data){
                     //TODO add translation support?
                     if(confirm("Let op dit overschrijft de huidige tabel")) {
-                        var form_data = new FormData(this);
                         $.ajax({
                             type: 'POST',
                             dataType: 'text',
@@ -4657,11 +4657,7 @@ var EDITOR = (function ($, parent) {
 
                         });
                     }
-                })
-
-
-
-                //send file to php
+                }
                 //return xml
 				datagrids.push({id: id, key: key, name: name, options: options});
 				break;
