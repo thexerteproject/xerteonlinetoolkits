@@ -335,41 +335,19 @@ a.hotspot, a.hotspot.selected {
 }
 
 //*****sortable grid*****/
-.x_grid_page #gridBorders {
-  border-radius: $smallroundedcorners;
-}
 .x_grid_page #grid .listHolder.constrainC li {
   border-radius: $smallroundedcorners;
-}
-.x_grid_page #grid ul li.header {
-  color: $whiteorlightest ;
-  background:$accent1;
-  color:$whiteorlightest;
 }
 .x_grid_page table.simple {
   border: transparent;
 }
 .x_grid_page table.header.simple tr:first-child{
   border-bottom: transparent;
-  background:lighten($blackordarkest, 10%);
-}
-.x_grid_page table.header.shaded tr:first-child {
-  background: $tableheader;
 }
 //the draggable items
 .x_grid_page #grid ul li{
   background:lighten($blackordarkest, 30%);
   border-color: transparent;
-  color:$whiteorlightest !important;
-}
-//even rows of the table
-.x_grid_page table tr.shaded {
-  background: lighten($blackordarkest, 20%);
-  color:$whiteorlightest !important;
-}
-//odd rows of the table
-.x_grid_page table tr {
-  background: lighten($blackordarkest, 15%);
   color:$whiteorlightest !important;
 }
 .x_grid_page #grid ul li.static {
@@ -398,18 +376,6 @@ a.hotspot, a.hotspot.selected {
 }
 //***********************************Charts*************************************/
 //***Charts Table***/
-.x_table_page tr {
-  background: darken($lightestcolor, 40%);
-  color:$fontcolorforcontrastcolor;
-}
-.x_table_page table tr.shaded {
-  background: darken($lightestcolor, 70%);
-  color:$fontcolorfobrightcolor;
-}
-.x_table_page table.header.shaded tr:first-child {
-  background: $tableheader;
-  color:$whiteorlightest;
-}
 .x_table_page table.header.simple tr:first-child {
   border:none;
 }
@@ -474,8 +440,7 @@ div#shorturltodisplay a{
   color: $linkcolor;
 }
 //*****results page*****/
-.x_results_page td, th {
-  border-radius: $mediumroundedcorners;
+.x_results_page td {
   background:$blackordarkest;
 }
 .x_results_page #questionScores  th{
@@ -501,5 +466,38 @@ div#shorturltodisplay a{
 }
 
 
+//***********************************Tables*************************************/
+//default background of table rows
+.x_grid_page table tr,
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr {
+	background: $blackordarkest;
+	color:$fontcolorforcontrastcolor;
+}
 
+//background of shaded/alternate rows
+table tr.shaded {
+	background: lighten($blackordarkest, 10%);
+	color:$fontcolorfobrightcolor;
+}
 
+// header/footer shaded
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child,
+table.footer.shaded tbody tr:last-child,
+table.headerCol.shaded td.header {
+	background: lighten($blackordarkest, 20%);
+	color:$fontcolorforcontrastcolor;
+}
+table.header.shaded thead tr:first-child th,
+table.header.shaded tr.header td,
+table.header.shaded :not(tbody) > tr:first-child th,
+.x_grid_page table.header.shaded tr:first-child td,
+table.footer.shaded tbody tr:last-child td,
+table.headerCol.shaded td.header {
+	border-color: $blackordarkest;
+}

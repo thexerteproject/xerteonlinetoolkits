@@ -424,21 +424,6 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff;
 }
 
-.x_table_page tr {
-  background: #84849a;
-  color: #ffffff;
-}
-
-.x_table_page table tr.shaded {
-  background: #3c3c49;
-  color: #ffffff;
-}
-
-.x_table_page table.header.shaded tr:first-child {
-  background: #000000;
-  color: #ffffff;
-}
-
 .x_table_page table.header.simple tr:first-child {
   border: none;
 }
@@ -508,8 +493,7 @@ div#shorturltodisplay a {
   color: darkblue;
 }
 
-.x_results_page td, th {
-  border-radius: 3px;
+.x_results_page td {
   background: #F4F4F6;
 }
 
@@ -535,6 +519,28 @@ div#shorturltodisplay a {
   .tick, img.result {
     width: 2.5vmin;
   }
+}
+
+.x_grid_page table tr,
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr {
+  background: #d8d8df;
+}
+
+table tr.shaded {
+  background: #a0a0b1;
+}
+
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child,
+table.footer.shaded tbody tr:last-child,
+table.headerCol.shaded td.header {
+  background: #6a6a81;
+  color: #ffffff;
 }
 
 #x_footerBlock {
