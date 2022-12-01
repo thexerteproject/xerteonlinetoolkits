@@ -1499,8 +1499,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     success: result.success,
                                     completion: true,
                                     extensions: {
-                                        "http://xerte.org.uk/result/text": this
-                                            .learnerAnswers
+                                        "http://xerte.org.uk/result/text": this.learnerAnswers
                                     }
                                 };
                                 statement.object.definition = {
@@ -1844,10 +1843,16 @@ function getStatements(q, one, callback)
 {
     var search = ADL.XAPIWrapper.searchParams();
     var group = "";
+    var context_id = "";
     if (q['group'] != undefined)
     {
         group = q['group'];
         delete q['group'];
+    }
+    if (q['lti_context_id'] != undefined)
+    {
+        context_id = q['lti_context_id'];
+        delete q['lti_context_id'];
     }
     $.each(q, function(i, value) {
         search[i] = value;
@@ -1864,9 +1869,15 @@ function getStatements(q, one, callback)
         for (x = 0; x < tmp.statements.length; x++) {
             if (group != ""
                 && (tmp.statements[x].context.team == undefined
-                    || tmp.statements[x].context.team.account == undefined
-                    || tmp.statements[x].context.team.account.name == undefined
-                    || tmp.statements[x].context.team.account.name != group)) {
+                || tmp.statements[x].context.team.account == undefined
+                || tmp.statements[x].context.team.account.name == undefined
+                || tmp.statements[x].context.team.account.name != group)) {
+                continue;
+            }
+            if (context_id != ""
+                && (tmp.statements[x].context.extensions == undefined
+                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                 continue;
             }
             statements.push(tmp.statements[x]);
@@ -1887,6 +1898,12 @@ function getStatements(q, one, callback)
                             || body.statements[x].context.team.account == undefined
                             || body.statements[x].context.team.account.name == undefined
                             || body.statements[x].context.team.account.name != group)) {
+                        continue;
+                    }
+                    if (context_id != ""
+                        && (body.statements[x].context.extensions == undefined
+                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                         continue;
                     }
                     statements.push(body.statements[x]);
@@ -1921,8 +1938,7 @@ var surf_recipe, surf_course;
 var answeredQs = [];
 
 function XTInitialise(category) {
-    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() *
-        10000000);
+    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
     // Initialise actor object
     if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
         studentidmode = parseInt(studentidmode);
@@ -1942,7 +1958,7 @@ function XTInitialise(category) {
         } else {
             userEMail = "mailto:" + username;
         }
-        if (typeof fullusername == 'undefined')
+        if (typeof fullusername == 'undefined' || fullusername == "")
             fullusername = "Unknown";
         if (typeof groupname != "undefined" && groupname != "") {
             state.group = {
@@ -1986,6 +2002,24 @@ function XTInitialise(category) {
         else {
             state.module = "";
             state.modulename = "";
+        }
+        if (typeof lti_context_id != "undefined" && lti_context_id != "") {
+            state.lti_context_id = lti_context_id;
+        }
+        else if (typeof x_params['lti_context_id'] != "undefined" && x_params['lti_context_id'] != "") {
+            state.lti_context_id = x_params['lti_context_id'];
+        }
+        else {
+            state.lti_context_id = "";
+        }
+        if (typeof lti_context_name != "undefined" && lti_context_name != "") {
+            state.lti_context_name = lti_context_name;
+        }
+        else if (typeof x_params['lti_context_name'] != "undefined" && x_params['lti_context_name'] != "") {
+            state.lti_context_name = x_params['lti_context_name'];
+        }
+        else {
+            state.lti_context_name = "";
         }
         switch (studentidmode) {
             case 0: //mbox
@@ -2033,6 +2067,11 @@ function XTInitialise(category) {
         state.embedded = true;
         state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
         state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
+        state.embedded_fromSessionId = decodeURIComponent(x_urlParams.embedded_fromSessionId);
+        if (state.embedded_fromSessionId != undefined && state.embedded_fromSessionId != "")
+        {
+            state.sessionId = state.embedded_fromSessionId;
+        }
     }
     else
     {
@@ -3420,6 +3459,12 @@ function SaveStatement(statement, async) {
     if (state.modulename != "") {
         extension["http://xerte.org.uk/module"] = state.modulename;
     }
+    if (state.lti_context_id != "") {
+        extension["http://xerte.org.uk/lti_context_id"] = state.lti_context_id;
+    }
+    if (state.lti_context_name != "") {
+        extension["http://xerte.org.uk/lti_context_name"] = state.lti_context_name;
+    }
     if (typeof statement.context == "undefined") {
         statement.context = {
             "extensions": extension
@@ -3620,24 +3665,45 @@ function XTResults(fullcompletion) {
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
+                    // If unique targets, match answers by target, otherwise match by source
+                    const targets = [];
+                    for (let j = 0; j < state.interactions[i].nrinteractions; j++) {
+                        targets.push(state.interactions[i].correctOptions[c].target);
+                    }
+                    // Check whether values of targets are unique
+                    const uniqueTargets = targets.length === new Set(targets).size;
                     for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
-                        correctAnswer = state.interactions[i].correctOptions[c]
-                            .source + ' --> ' + state.interactions[i].correctOptions[
-                                c].target;
-                        source = state.interactions[i].correctOptions[c].source;
+                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                        let source = state.interactions[i].correctOptions[c].source;
+                        let target = state.interactions[i].correctOptions[c].target;
                         if (state.interactions[i].learnerOptions.length == 0) {
-                            learnerAnswer = source + ' --> ' + ' ';
-                        } else {
-                            for (var d = 0; d < state.interactions[i].learnerOptions
-                                .length; d++) {
-                                if (source == state.interactions[i].learnerOptions[
-                                        d].source) {
-                                    learnerAnswer = source + ' --> ' + state.interactions[
-                                        i].learnerOptions[d].target;
-                                    break;
-                                } else {
-                                    learnerAnswer = source + ' --> ' + ' ';
+                            if (uniqueTargets) {
+                                learnerAnswer = ' --> ' + target;
+                            }
+                            else {
+                                learnerAnswer = source + ' --> ' + ' ';
+                            }
+                        }
+                        else {
+                            for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
+                                if (uniqueTargets)
+                                {
+                                    if (target == state.interactions[i].learnerOptions[d].target) {
+                                        learnerAnswer = state.interactions[i].learnerOptions[d].source + ' --> ' + target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = ' --> ' + target;
+                                    }
+                                }
+                                else
+                                {
+                                    if (source == state.interactions[i].learnerOptions[d].source) {
+                                        learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = source + ' --> ' + ' ';
+                                    }
                                 }
                             }
                         }
@@ -3646,10 +3712,8 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-                        results.interactions[nrofquestions - 1].subinteractions
-                            .push(matchSub);
+                        results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
-
                     break;
                 case "text":
                     learnerAnswer = state.interactions[i].learnerAnswers;

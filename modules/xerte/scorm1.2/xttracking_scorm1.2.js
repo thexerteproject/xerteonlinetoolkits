@@ -1759,21 +1759,45 @@ function XTResults(fullcompletion) {
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
+                    // If unique targets, match answers by target, otherwise match by source
+                    const targets = [];
+                    for (let j = 0; j < state.interactions[i].nrinteractions; j++) {
+                        targets.push(state.interactions[i].correctOptions[c].target);
+                    }
+                    // Check whether values of targets are unique
+                    const uniqueTargets = targets.length === new Set(targets).size;
                     for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
                         correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
-                        source = state.interactions[i].correctOptions[c].source;
+                        let source = state.interactions[i].correctOptions[c].source;
+                        let target = state.interactions[i].correctOptions[c].target;
                         if (state.interactions[i].learnerOptions.length == 0) {
-                            learnerAnswer = source + ' --> ' + ' ';
+                            if (uniqueTargets) {
+                                learnerAnswer = ' --> ' + target;
+                            }
+                            else {
+                                learnerAnswer = source + ' --> ' + ' ';
+                            }
                         }
                         else {
                             for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
-                                if (source == state.interactions[i].learnerOptions[d].source) {
-                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
-                                    break;
+                                if (uniqueTargets)
+                                {
+                                    if (target == state.interactions[i].learnerOptions[d].target) {
+                                        learnerAnswer = state.interactions[i].learnerOptions[d].source + ' --> ' + target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = ' --> ' + target;
+                                    }
                                 }
-                                else {
-                                    learnerAnswer = source + ' --> ' + ' ';
+                                else
+                                {
+                                    if (source == state.interactions[i].learnerOptions[d].source) {
+                                        learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = source + ' --> ' + ' ';
+                                    }
                                 }
                             }
                         }
@@ -1784,7 +1808,6 @@ function XTResults(fullcompletion) {
                         matchSub.correctAnswer = correctAnswer;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
-
                     break;
                 case "text":
                     learnerAnswer = state.interactions[i].learnerAnswers;
