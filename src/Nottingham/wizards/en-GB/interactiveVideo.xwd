@@ -118,7 +118,7 @@
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100"/>
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
-		<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>
+		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<disable label="Disable Controls" type="CheckBox"/>
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>

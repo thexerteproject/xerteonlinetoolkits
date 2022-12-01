@@ -3299,7 +3299,7 @@
     <text label="Page Text" type="TextArea" height="120"/>
 	<random label="Randomise Cards" type="Checkbox" optional="true" tooltip="Randomise the order of the cards"/>
     <amountToShow label="Cards To Show" type="NumericStepper" min="1" max="1000" step="1" defaultValue="1" optional="true" tooltip="Use with 'Randomise Cards' to show a limited number of randomly selected cards"/>
-	<displayStyle label="Card Layout" type="ComboBox" options="One at a time,In a row: Horizontal,In a row: Vertical" data="one,horizontal,vertical" optional="true" defaultValue="one" tooltip="Display cards one at a time or in a row"/>
+	<displayStyle label="Card Layout" type="ComboBox" options="One at a time,In a row,In a column" data="one,horizontal,vertical" optional="true" defaultValue="one" tooltip="Display cards one at a time or in a row/column"/>
 
 	<sizing type="group" label="Card Size" optional="true">
 		<cardSize label="Width" type="ComboBox" options="Small,Medium,Large,Full" data="small,medium,large,full" defaultValue="medium" width="100" optional="true"/>
@@ -4763,7 +4763,7 @@
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100"/>
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
-		<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>
+		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<disable label="Disable Controls" type="CheckBox"/>
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
@@ -9415,8 +9415,6 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
 	
-	<showTitles label="Show Image Titles" type="CheckBox" defaultValue="false" optional="true"/>
-	
     <nextBtnTip label="Next Button Tip" type="textInput" divider="true" language="true"/>	
     <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
 
@@ -9495,7 +9493,7 @@
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></thumbnailViewer><thumbnailImage menuItem="Image" icon="icBullet" remove="true">
 
-    <name label="Tree Label" type="TextInput" wysiwyg="true"/>
+    <name label="Label" type="TextInput" wysiwyg="true"/>
     <text label="Image Text" type="TextArea" height="250"/>
 	
 	<image type="group" label="Image">
@@ -9503,8 +9501,10 @@
 		<tip label="Description" type="TextInput" mandatory="true" defaultValue="Enter a Description for Accessibility"/>
 	</image>
 	
-	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
-    <link label="URL" type="textInput"/>
+	<linkGroup label="Link" type="group">
+		<linktarget label="Link from image" conditionTrigger="true" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
+		<link label="URL" type="textInput" condition="linktarget=='Specified URL'"/>
+	</linkGroup>
 
   </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinematchingpairs" remove="true">
 
