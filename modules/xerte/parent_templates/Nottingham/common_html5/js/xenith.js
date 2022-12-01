@@ -2733,8 +2733,10 @@ function x_changePage(x_gotoPage, addHistory) {
 		
 	// standalone page opening in lightbox
 	} else {
+		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
+		//$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8}, {beforeClose: x_closeStandAlonePage});
 		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
-		
+
 		// update progress bar & record that it's been opened in lightbox
 		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
 			x_pageInfo[x_gotoPage].builtLightBox = true;
@@ -2748,6 +2750,37 @@ function x_changePage(x_gotoPage, addHistory) {
 	const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
 	if (overlay && !x_firstLoad && $('#x_sideBar').length > 0 && $('#x_sideBar').data('state') == 'open') {
 		$('#x_sideBar #x_sideBarToggleBtn').click();
+	}
+}
+
+function x_closeStandAlonePage(event) {
+	debugger;
+	$.featherlight.defaults.beforeClose = $.noop;
+
+	var standAlonePage = this.$content[0].contentWindow.x_currentPage
+	var template_id = this.$content[0].contentWindow.x_TemplateId;
+	if (template_id == x_TemplateId) {
+		// Tom Reijnders @022-10-06
+		// We're going to do some juggling with variables/code from the standalone page
+		// Assumptions:
+		// 1. The standalone page is using the same template as the main page
+		// 2. Therefore the standalone page is using the same x_pageInfo array as the main page
+		// 3. The XTInitialise code made sure that the iframe state variable is actually pointing to the main state vairable
+		//    i.e. when calling the leavePage inside the ifraeme, it's updateing the main state variable
+		// 4. It is necessary to call the leavePage from the ifarem in case the pagetype has not been yet in the main page
+		var pageObj, pageObjType;
+
+		if (x_pageInfo[standAlonePage].type == "text") {
+			pageObjType = 'simpleText';
+		} else {
+			pageObjType = x_pageInfo[standAlonePage].type
+		}
+		pageObj = eval('this.$content[0].contentWindow.' + pageObjType);
+		if (typeof pageObj.leavePage === 'function') {
+			pageObj.leavePage();
+		}
+
+		XTExitPage(standAlonePage);
 	}
 }
 
@@ -2802,6 +2835,12 @@ function x_changePageStep4(x_gotoPage) {
 }
 
 function x_endPageTracking(pagechange, x_gotoPage) {
+	if (pagechange == undefined) {
+		pagechange = false;
+	}
+	if (x_gotoPage == undefined) {
+		x_gotoPage = -1;
+	}
     // End page tracking of x_currentPage
     if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {

@@ -482,10 +482,18 @@ var state = new PedITTrackingState();
 
 function XTInitialise()
 {
-	if (! state.initialised)
-    {
-        state.initialised = true;
-        state.initialise();
+    // Tom Reijnders 2022-10-06: Trying to handle tracking of standalone pages where the page is a page of the same LO
+    // Specifically when the standalone page is shown in a lightbox
+    // We make use of the fact that in javascript, assigning a variable is done through reference, so we actually
+    // point the state variable (of the standalone page) to the parent state variable (of the main LO)
+    if (parent != self && parent.x_TemplateId != undefined && parent.x_TemplateId == x_TemplateId && parent.state != undefined) {
+        state = parent.state;
+    }
+    else {
+        if (!state.initialised) {
+            state.initialised = true;
+            state.initialise();
+        }
     }
 }
 
