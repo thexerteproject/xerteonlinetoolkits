@@ -855,7 +855,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 		}
 		
 		if ($x_menuBtn != undefined) {
-			const btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
+			let btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
 			if (x_params.navigation == "Historic") {
 				btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
 			}
@@ -2226,8 +2226,9 @@ function x_setUpSideBar() {
 					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 						.animate({'width': $x_body.width() - minW + borderW});
 					
+					var paddingString = 'padding-' + x_params.sideBarPosition;
 					$x_mainHolder
-						.animate({['padding-' + x_params.sideBarPosition]: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
+						.animate({paddingString: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
 					
 					$(this).button({ icons: { primary: openIcon }, label: openLabel, text: false });
 					
@@ -2245,8 +2246,9 @@ function x_setUpSideBar() {
 						$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 							.animate({'width': $x_body.width() - maxW + borderW});
 						
+						var paddingString = 'padding-' + x_params.sideBarPosition;
 						$x_mainHolder
-							.animate({['padding-' + x_params.sideBarPosition]: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
+							.animate({paddingString: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
 					}
 						
 					$(this).button({ icons: { primary: closeIcon }, label: closeLabel, text: false });
@@ -2736,7 +2738,7 @@ function x_changePage(x_gotoPage, addHistory) {
 		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
 		//$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8}, {beforeClose: x_closeStandAlonePage});
 		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
-
+		
 		// update progress bar & record that it's been opened in lightbox
 		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
 			x_pageInfo[x_gotoPage].builtLightBox = true;
@@ -2753,8 +2755,8 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 }
 
+
 function x_closeStandAlonePage(event) {
-	debugger;
 	$.featherlight.defaults.beforeClose = $.noop;
 
 	var standAlonePage = this.$content[0].contentWindow.x_currentPage
@@ -2835,13 +2837,13 @@ function x_changePageStep4(x_gotoPage) {
 }
 
 function x_endPageTracking(pagechange, x_gotoPage) {
-	if (pagechange == undefined) {
+    if (pagechange == undefined) {
 		pagechange = false;
 	}
 	if (x_gotoPage == undefined) {
 		x_gotoPage = -1;
 	}
-    // End page tracking of x_currentPage
+	// End page tracking of x_currentPage
     if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {
         var pageObj;
@@ -5435,7 +5437,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			let div = document.createElement("div");
 			div.appendChild(fragment);
 			tempText = div.innerHTML;
-			div.remove();
+			$(div).remove();
 
 			// Replace all our tokens with the glossary tag
 			for (var k=0, len=x_glossary.length; k<len; k++) {
