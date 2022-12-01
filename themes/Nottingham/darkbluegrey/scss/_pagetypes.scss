@@ -32,6 +32,16 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 .x_transcriptReader_page .highlight {
   background:transparentize($brightcolor, .2);
 }
+//*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: $bodybackgroundcolor;
+}
+.x_thumbnailViewer_page #thumbBar button { color: $whiteorlightest; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: $lightestcolor; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: $lightestcolor; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: $darkestcolor; }
+
 //***********************************Navigators*************************************/
 
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {

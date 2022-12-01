@@ -34,6 +34,15 @@ table.glossary tr.shaded {
 .x_transcriptReader_page .highlight {
   background:transparentize($whiteorlightest, .6);
 }
+//*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: $bodybackgroundcolor;
+}
+.x_thumbnailViewer_page #thumbBar button { color: $blackordarkest; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: lighten($blackordarkest,10%); }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: lighten($blackordarkest,10%); }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: lighten($blackordarkest,10%); }
 //***********************************Navigators*************************************/
 //*****Accordion page*******/
 .ui-accordion .ui-accordion-content {
