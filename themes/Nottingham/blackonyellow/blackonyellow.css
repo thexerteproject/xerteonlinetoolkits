@@ -74,6 +74,27 @@ table.glossary tr.shaded {
   background: rgba(255, 255, 255, 0.4);
 }
 
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: #FFFF99;
+}
+
+.x_thumbnailViewer_page #thumbBar button {
+  color: #000000;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover {
+  color: #1a1a1a;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus {
+  color: #1a1a1a;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-active {
+  color: #1a1a1a;
+}
+
 .ui-accordion .ui-accordion-content {
   border-radius: 3px;
   background: #FFFF99;

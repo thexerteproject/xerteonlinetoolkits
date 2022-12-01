@@ -744,6 +744,10 @@ textarea {
 	width: 1.5em;
 }
 
+button.customIconBtn:after {
+	content: none !important;
+}
+
 #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary {
 	display: block;
 }

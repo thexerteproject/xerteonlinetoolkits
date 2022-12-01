@@ -69,6 +69,27 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
   background: rgba(2, 122, 179, 0.8);
 }
 
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: #3F4957;
+}
+
+.x_thumbnailViewer_page #thumbBar button {
+  color: #ffffff;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover {
+  color: #FCBC2B;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus {
+  color: #FCBC2B;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-active {
+  color: #1D202D;
+}
+
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {
   color: #F8A302;
 }

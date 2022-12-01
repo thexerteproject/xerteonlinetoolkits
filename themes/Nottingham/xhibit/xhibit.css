@@ -50,3 +50,7 @@
 #x_introBtn:not(.customIconBtn) .ui-icon:before { content: "\f129"; }
 #x_menuBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
 #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c7"; }
+
+button:not(.customIconBtn) .ui-icon:before {
+	content: none !important;
+}
