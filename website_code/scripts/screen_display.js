@@ -822,8 +822,9 @@ function init_workspace()
             },
             "dnd": {
                 "is_draggable" : function(node) {
+                    debugger
                     console.log('is_draggable called: ', node[0]);
-                    if (node[0].type.includes("_group") || node[0].type.includes("_shared")) {
+                    if (node[0].type.includes("_group") || node[0].type.includes("_shared") || node[0].original.ChildOfShared) {
                         return false;
                     }
                     return true;

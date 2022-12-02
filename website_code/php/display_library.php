@@ -679,7 +679,23 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $items[] = $titem;
     }
 
-    return $items;
+    //ignore double items
+
+
+    $uniqueItems = [];
+    foreach ($items as $item => $value){
+        if(!in_array($value, $uniqueItems)){
+            $uniqueItems[$item] = $value;
+        }
+       /* foreach ($uniqueItems as $uniqueItem){
+            if($item->xot_id !== $uniqueItem->xot_id && $item->type !== $uniqueItem->type){
+                array_push($uniqueItems, $item);
+                break;
+            }
+        }*/
+    }
+
+    return $uniqueItems;
 }
 
 /**
@@ -943,11 +959,28 @@ function get_users_projects($sort_type, $copy_only=false)
     $workspace->nodes[$item->id] = $item;
     //$items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, "_top");
     $items = get_workspace_contents($item->xot_id, $item->id, $sort_type, $copy_only,"_top");
+    $sharedItems = [];
     if ($items) {
         $workspace->items = array_merge($workspace->items, $items);
         foreach($items as $item)
         {
-            $workspace->nodes[$item->id] = $item;
+            if(count($sharedItems)>0){
+                foreach ($sharedItems as $shared){
+                    if($item->parent == $shared){
+                        $item->ChildOfShared = true;
+                        array_push($sharedItems, $item->id);
+                        $workspace->nodes[$item->id] = $item;
+                    }else{
+                        $workspace->nodes[$item->id] = $item;
+                    }
+                }
+            }else{
+                if($item->type == "folder_shared"){
+                    array_push($sharedItems, $item->id);
+                }
+                $workspace->nodes[$item->id] = $item;
+            }
+
         }
     }
 
@@ -978,7 +1011,9 @@ function get_users_projects($sort_type, $copy_only=false)
         $workspace->nodes[$item->id] = $item;
         $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, $type = "group_top");
         if ($items) {
+
             $workspace->items = array_merge($workspace->items, $items);
+
             foreach($items as $item)
             {
                 $workspace->nodes[$item->id] = $item;
@@ -1032,6 +1067,7 @@ function get_users_projects($sort_type, $copy_only=false)
     $workspace->templates = $templates;
     $workspace->grouptemplates = $grouptemplates;
     $workspace->sharedtemplates = $sharedtemplates;
+
 
     return json_encode($workspace);
 }
