@@ -181,6 +181,7 @@ function showPageData(xot_id, data) {
 						$("#mergeGlossary").show();
 				}else{
 						$("#mergeGlossaryCheck").prop("checked", false);
+                        $("#overwriteGlossaryCheck").prop("checked", false);
 						$("#mergeGlossary").hide();
 				}
 
@@ -208,6 +209,7 @@ function showPageData(xot_id, data) {
 			}
 			else {
 				$("#mergeGlossaryCheck").prop("checked", false);
+                $("#overwriteGlossaryCheck").prop("checked", false);
 				$("#mergeGlossary").hide();
 				$("#pages").html("");
 				$("#merge").hide();
@@ -319,6 +321,7 @@ function init_workspace()
                 }
 
                 $("#mergeGlossaryCheck").prop("checked", false);
+                $("#overwriteGlossaryCheck").prop("checked", false)
                 $("#mergeGlossary").hide();
                 $("#pages").html("");
                 $("#merge").hide();
@@ -384,7 +387,8 @@ function init()
 
             });
             merge_glossary = $("#mergeGlossaryCheck").is(":checked");
-            if(source_pages.length > 0 || merge_glossary)
+            overwrite_glossary = $("#overwriteGlossaryCheck").is(":checked");
+            if(source_pages.length > 0 || merge_glossary || overwrite_glossary)
             {
                 source_page = source_pages.join();
                 source_project = sourceProject;
@@ -420,7 +424,8 @@ function init()
                                 target_project: target_project,
                                 target_page_position: target_insert,
                                 source_pages: source_page,
-                                merge_glossary: merge_glossary
+                                merge_glossary: merge_glossary,
+                                overwrite_glossary: overwrite_glossary
                             },
                             dataType: "text",
                             type: "POST"
