@@ -77,6 +77,21 @@ li.select-interaction.selected {
   font-size:smaller;
 }
 
+.interaction_load {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  width: 66px;
+  margin-left: -33px; /* -1 * div width / 2 */
+}
+
+.loader-gif {
+  margin-left: auto;
+  margin-right:auto;
+  display:block;
+}
+
+
 #adaptiveContentMain .splitScreen .left, #adaptiveContentMain .splitScreen .right {
   overflow-y: auto;
 }
