@@ -1883,10 +1883,18 @@ function getStatements(q, one, callback)
                     //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                     //}
                     if (group != ""
-                        && (body.statements[x].context.team == undefined
+                        && (body.statements[x].context == undefined
+                            || body.statements[x].context.team == undefined
                             || body.statements[x].context.team.account == undefined
                             || body.statements[x].context.team.account.name == undefined
                             || body.statements[x].context.team.account.name != group)) {
+                        continue;
+                    }
+                    if (context_id != ""
+                        && (body.statements[x].context == undefined
+                            || body.statements[x].context.extensions == undefined
+                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                         continue;
                     }
                     statements.push(body.statements[x]);
@@ -1897,8 +1905,8 @@ function getStatements(q, one, callback)
                     // TODO: do something with error, didn't get statements
                     return;
                 }
-                if (res.more && res.more !== "") {
-                    ADL.XAPIWrapper.getStatements(null, res.more, getmorestatements);
+                if (body.more && body.more !== "") {
+                    ADL.XAPIWrapper.getStatements(null, body.more, getmorestatements);
                 } else {
                     callback(statements, search);
                 }
