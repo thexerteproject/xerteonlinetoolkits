@@ -1825,7 +1825,7 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
     var groupedData = {};
     for($key in $this.data.groupedData) {
         $val = $this.data.groupedData[$key];
-        if ($this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == $this.getGroupFromStatements($val.statements)) {
+        if ($this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == $this.getGroupFromStatements($val.statementidxs)) {
             groupedData[$key] = $val;
         }
     }
