@@ -535,7 +535,7 @@ function XTResults(fullcompletion, trackingState) {
         totalDuration = 0;
     results.interactions = Array();
 
-    for (i = 0; i < trackingState.interactions.length - 1; i++) {
+    for (i = 0; i < trackingState.interactions.length; i++) {
 
 
         score += trackingState.interactions[i].score * trackingState.interactions[i].weighting;

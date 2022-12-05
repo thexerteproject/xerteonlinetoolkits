@@ -3625,7 +3625,7 @@ function XTResults(fullcompletion) {
         totalDuration = 0;
     results.interactions = Array();
 
-    for (i = 0; i < state.interactions.length - 1; i++) {
+    for (i = 0; i < state.interactions.length; i++) {
 
 
         score += state.interactions[i].score * state.interactions[i].weighting;
