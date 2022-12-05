@@ -4606,7 +4606,7 @@ var EDITOR = (function ($, parent) {
 						.append(td1)
 						.append(td2)));
 				break;
-			case 'datagrid':
+            case 'datagrid':
 				var id = 'grid_' + form_id_offset;
 				form_id_offset++;
 				html = $('<div>')
@@ -4623,7 +4623,7 @@ var EDITOR = (function ($, parent) {
                 var form_id = "excel_upload_" + name;
                 excel_form = $("<form method='post' enctype='multipart/form-data' id =" + form_id + "></form>")
                 excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload_' + name +'" accept=".csv" required>');
-                excel_form.append('<input type="submit" value="Upload csv">');
+                excel_form.append('<input type="submit" value="' + language.UploadCSV.UploadCSVBtn.$label + '">');
                 excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
                 excel_form.append('<input type="hidden" name="type" value=' + name + '>');
                 excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
@@ -4636,8 +4636,7 @@ var EDITOR = (function ($, parent) {
                 })
 
                 function upload_file(form_data){
-                    //TODO add translation support?
-                    if(confirm("Let op dit overschrijft de huidige tabel")) {
+                    if(confirm(language.UploadCSV.Info.$label)) {
                         $.ajax({
                             type: 'POST',
                             dataType: 'text',

@@ -188,5 +188,8 @@
 	<course deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php">
 		<FreeText label="Anders"></FreeText>
 	</course>
-
+	<UploadCSV>
+		<UploadCSVBtn label = "Upload csv"/>
+		<Info label = "Let op dit overschrijft de huidige tabel"> </Info>
+	</UploadCSV>>
 </language>

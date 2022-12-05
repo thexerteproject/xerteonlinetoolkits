@@ -236,4 +236,8 @@
 		<error>Add {x} to project first</error>
 		<errorEmpty>Add data to {x} first</errorEmpty>
 	</categoryList>
+	<UploadCSV>
+		<UploadCSVBtn label = "Upload csv"/>
+		<Info label = "Warning: This will overwrite the current table, are you sure?"> </Info>
+	</UploadCSV>>
 </language>
