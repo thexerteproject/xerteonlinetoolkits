@@ -435,11 +435,12 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         if ($row['role'] != 'creator' && $newtype != 'group'){
             $shared = 'shared';
         }
-        if($row['folder_id'] == $folder_id){
+        $item->type = ($shared == "") ?  "folder" : "folder" . _ .$shared;
+
+       /* if($row['folder_id'] == $folder_id){
             $item->type = "folder_shared";
         }else{
-            $item->type = ($shared == "") ?  "folder" : "folder" . _ .$shared;
-        }
+        }*/
 
         $item->xot_type = "folder";
         $item->published = false;
