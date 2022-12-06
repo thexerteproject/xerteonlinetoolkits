@@ -435,11 +435,12 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         if ($row['role'] != 'creator' && $newtype != 'group'){
             $shared = 'shared';
         }
-        if($tree_id . "_F" . $folder_id){
+        if($row['folder_id'] == $folder_id){
             $item->type = "folder_shared";
         }else{
             $item->type = ($shared == "") ?  "folder" : "folder" . _ .$shared;
         }
+
         $item->xot_type = "folder";
         $item->published = false;
         $item->shared = false;
@@ -695,7 +696,23 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
 
     $uniqueItems = [];
     foreach ($items as $item => $value){
-        if(!in_array($value, $uniqueItems)){
+        /*if(!in_array($value, $uniqueItems)){
+            $uniqueItems[$item] = $value;
+        }*/
+        $counter = 0;
+        if(count($uniqueItems) > 0){
+            foreach ($uniqueItems as $uniqueItem){
+                if($value->id != $uniqueItem->id){
+                    $counter++;
+                }else{
+                    break;
+                }
+            }
+
+            if(count($uniqueItems) == $counter){
+                $uniqueItems[$item] = $value;
+            }
+        }else{
             $uniqueItems[$item] = $value;
         }
     }
