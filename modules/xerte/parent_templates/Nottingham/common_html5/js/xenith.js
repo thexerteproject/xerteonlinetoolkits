@@ -2226,9 +2226,8 @@ function x_setUpSideBar() {
 					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 						.animate({'width': $x_body.width() - minW + borderW});
 					
-					var paddingString = 'padding-' + x_params.sideBarPosition;
 					$x_mainHolder
-						.animate({paddingString: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
+						.animate({['padding-' + x_params.sideBarPosition]: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
 					
 					$(this).button({ icons: { primary: openIcon }, label: openLabel, text: false });
 					
@@ -2246,9 +2245,8 @@ function x_setUpSideBar() {
 						$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 							.animate({'width': $x_body.width() - maxW + borderW});
 						
-						var paddingString = 'padding-' + x_params.sideBarPosition;
 						$x_mainHolder
-							.animate({paddingString: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
+							.animate({['padding-' + x_params.sideBarPosition]: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
 					}
 						
 					$(this).button({ icons: { primary: closeIcon }, label: closeLabel, text: false });
