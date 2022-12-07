@@ -542,11 +542,23 @@ function setup() {
 	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
 	$(data).find('page').each( function(index, value){
 		var tempID = $(this).attr('customLinkID');
+		var $page = $(this);
 		if (tempID != undefined && tempID != "") {
 			tempID = $.trim(tempID);
 			tempID = tempID.split(" ").join("_");
 			$(this).attr('customLinkID', tempID);
 		}
+
+		//also check if page contains sections with customLinkID that includes spaces
+		$page.find('section').each( function(index, value){
+			var secTempID = $(this).attr('customLinkID');
+			if (secTempID != undefined && secTempID != "") {
+				secTempID = $.trim(secTempID);
+				secTempID = secTempID.split(" ").join("_");
+				$(this).attr('customLinkID', secTempID);
+			}
+		})
+
 	});
 
 	// make list of all the normal pages (not hidden or standalone) to display in TOC
@@ -846,7 +858,6 @@ function setup() {
 								}
 							}
 							catMatches = catMatches.substring(0, catMatches.length - 2);
-
 							var linkAction;
 							if (index.length == 1) {
 								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
@@ -1485,6 +1496,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
 	var pageRefType = pageRef.type,
 		pageID = pageRef.id,
+		pageLinkType = true;
 		found = false;
 
 	// check if pageIndex exists & can be shown
@@ -1496,8 +1508,9 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	if (pageRefType != 'index') {
 		$(data).find('page').each(function(index, value) {
 			var $page = $(this);
+			var $pageIndex = index;
 			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
-				// an ID match has been found
+				// an ID match has been found for a page
 				pageIndex = index;
 				activeIndex = index;
 				found = true;
@@ -1505,6 +1518,22 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 				return false;
 			}
+			$page.find('section').each(function (index, value) {
+				var $section = $(this);
+				if (pageID == $section.attr('linkID') || pageID == $section.attr('customLinkID')) {
+					//an ID match has been found for a section
+					pageIndex = $pageIndex;
+					activeIndex = $pageIndex;
+					found = true;
+					if (sectionNum == undefined) {
+						sectionNum = index + 1;
+					}
+					pageLinkType = false;
+					pageRefType = 'id';
+
+					return false;
+				}
+			});
 		});
 	}
 	//assign active class for current navbar
@@ -1565,9 +1594,15 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		}
 
 		var page = $(data).find('page').eq(pageIndex);
-		var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
-		//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
-		
+
+		var pageHash = ""
+		if (pageLinkType) {
+			pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex) + 1));
+			//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
+		} else {
+			var section = page.find('section').eq(sectionNum - 1); //
+			pageHash = section.attr('customLinkID');
+		}
 		// Load page as normal as it's not opening in a new window
 		if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
 
@@ -1639,7 +1674,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					}
 				}
 			}
-			
 			if (pswds.length > 0) {
 				passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds);
 			} else {
@@ -1648,9 +1682,15 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			
 		// Page is a stand alone page opening in a new window
 		} else {
-			window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+			if (pageLinkType) {
+				window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+			} else {
+				window.open(window.location.href.split('#')[0] + '#' + pageHash);
+			}
 		}
 	} else {
+		//TOOD add section num, if we are already at page
+
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
 	//dynamically change the skip link for each page
@@ -2021,7 +2061,11 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 	if (sectionNum != undefined) {
 
 		var page = $(data).find('page').eq(pageIndex),
-			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
+			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1)),
+			section =  page.find('section').eq(sectionNum-1);
+
+		//if direct navigation using customLink for sections
+		pageTempInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo;
 
 		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
 
