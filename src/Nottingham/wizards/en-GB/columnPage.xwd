@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- COLUMN PAGE============================== -->
-  <columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#columnpage">
+  <columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#columnpage" wiki="https://xerte.org.uk/wiki/doku.php?id=text_columns_page">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 	

@@ -682,7 +682,8 @@ var EDITOR = (function ($, parent) {
 
         var menu_options = wizard_data[node_name].menu_options;
         if (menu_options.menu && menu_options.menuItem) {
-            $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem);
+            var wikiLink = menu_options.wiki != undefined ? '<a href="' + menu_options.wiki + '" target="_blank">' + '<i class="tooltipIcon iconEnabled fa fa-info-circle" title="' + language.wikiLink.$tooltip.replace('{x}', menu_options.menuItem) + '"</i></a>' : '';
+            $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem + wikiLink);
         }
         else if (menu_options.menuItem)
         {
