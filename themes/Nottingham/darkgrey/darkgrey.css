@@ -187,8 +187,8 @@ background-image: none;
 .x_grid_page #grid ul li {
 	color: black !important;
 }
-.x_grid_page li.ui-state-default.static {
-	background: white !important;
+.x_grid_page #gridBorders {
+	background-color: inherit;
 }
 #x_footerBlock .ui-button-text{
 	color:white;
@@ -217,34 +217,49 @@ background-image: none;
 	background-color: #FFFFFF;
 }
 
-#x_sideBar {
-	background-color: #1c1c1c;
+
+/*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: #1c1c1c;
 }
-#x_sideBarToggleBtn {
-	border-color: #BFBFBF;
-	color: #cfcfcf;
-	box-shadow: none;
+.x_thumbnailViewer_page #thumbBar button { color: #CFCFCF; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: #FFFFFF; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: #FFFFFF; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: #FFFFFF; }
+
+
+/***********************************Tables*************************************/
+/*default background of table rows*/
+.x_grid_page table tr,
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr,
+.x_results_page tr td {
+  background: #1c1c1c;
 }
-#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
-	color: white;
-	background-color: #464646;
+
+table th, table td, table tr, table {
+	border-color: #cfcfcf !important;
 }
-#x_sideBarBtnHolder button {
-	color: #cfcfcf;
-	box-shadow: none;
+
+/*background of shaded/alternate rows*/
+table tr.shaded,
+.x_results_page tr.alt td {
+	background:	rgba(255,255,255,0.1);
 }
-#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
-	border-color: #BFBFBF;
+
+/*header/footer shaded*/
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child,
+table.footer.shaded tbody tr:last-child,
+table.headerCol.shaded td.header {
+	background:	rgba(255,255,255,0.4);
+	color: #1c1c1c;
 }
-#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
-	border-color: #152c51;
-}
-#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
-	background-color: #464646;
-	color: #ffffff;
-}
-#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder
-button:active span.ui-icon {
-	background-color: #464646;
-	color: #ffffff;
-}
+
+
+.x_results_page tr.alt td

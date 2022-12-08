@@ -6,7 +6,7 @@
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #079FC0;
+  background-color: #065465;
   color: #ffffff; }
 
 .panel2 {
@@ -61,7 +61,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #079FC0; }
+  border-color: #065465; }
 
 .highlight2 {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -157,7 +157,7 @@ blockquote:after {
   color: #ccc; }
 
 .bq1 {
-  border-color: #079FC0; }
+  border-color: #065465; }
 
 .bq1:after {
   content: close-quote;
@@ -165,7 +165,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #079FC0; }
+  color: #065465; }
 
 .bq1:before {
   content: open-quote;
@@ -173,7 +173,7 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #079FC0; }
+  color: #065465; }
 
 .bq2 {
   border-color: #4e9794; }
@@ -271,11 +271,11 @@ blockquote:after {
   color: #D13759; }
 
 .speech-bubble1 {
-  background: #079FC0;
+  background: #065465;
   color: white; }
 
 .speech-bubble1:after {
-  border-right-color: #079FC0; }
+  border-right-color: #065465; }
 
 .speech-bubble2 {
   background: #4e9794;
@@ -327,7 +327,7 @@ tt a, samp a, var a, .marker a {
 
 var {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #079FC0;
+  background-color: #065465;
   color: #0F1E25;
   display: table;
   border-radius: 1vmin;
@@ -421,7 +421,7 @@ body {
 
 /*--Heading and other text changes---------------------------------------*/
 h1 {
-  color: #079FC0;
+  color: #065465;
   font-weight: 400; }
 
 h2, h3, h4, h5, h6 {
@@ -487,7 +487,7 @@ a {
   text-shadow: none; }
 
 .bs-docs-sidenav > li > a {
-  border: 1px solid #079FC0; }
+  border: 1px solid #065465; }
 
 .bs-docs-sidenav > li:first-child > a {
   -webkit-border-radius: 6px 6px 0 0;
@@ -506,7 +506,7 @@ a {
   box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1); }
 
 .bs-docs-sidenav > li > a:hover {
-  background-color: #079FC0;
+  background-color: #065465;
   color: white; }
 
 .bs-docs-sidenav a:hover .icon-chevron-right {
@@ -574,7 +574,7 @@ a {
 
 /* --GLOSSARY-------------------------------------------------------------- */
 a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
-  color: #079FC0; }
+  color: #065465; }
 
 .glossaryTip {
   background-color: #0F1E25;

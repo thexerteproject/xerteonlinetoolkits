@@ -27,6 +27,11 @@
 		padding-left: 25px !important;
 		padding-right: 25px !important;
 	}
+	
+	th {
+		background-color: #434343;
+		color: white;
+	}
 
 	td.question, th.question {
 		width: 40%;
@@ -41,16 +46,8 @@
 		width:28.5%;
 	}
 
-	th {
-		background: black;
-		color: #ffffff;
-	}
 	#questionScores th:not(:first-child) {
 		text-align: center;
-	}
-	.details th, .details td.th {
-		background: #434343;
-		color: #ffffff;
 	}
 	.td-center{
 		text-align:center;
@@ -69,7 +66,6 @@
 	}
 
 	.notLast{
-		/*border-bottom: 1px solid black !important; */
 		background-color: #bbbbbb;
 	}
 	#specific{

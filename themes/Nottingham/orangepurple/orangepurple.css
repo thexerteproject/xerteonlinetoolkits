@@ -146,6 +146,18 @@ color: #ffffff;
 font-weight: bold;
 }
 
+/*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: #fffff0;
+}
+.x_thumbnailViewer_page #thumbBar button { color: #FF9900; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: #7c097d; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: #7c097d; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: #7c097d; }
+
+
+
 #x_headerBlock #x_pageIntroBtn {
 	color: #FF9900;
 }

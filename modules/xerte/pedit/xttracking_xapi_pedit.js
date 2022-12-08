@@ -1575,56 +1575,92 @@ var answeredQs = [];
 
 function XTInitialise()
 {
-    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
-    // Initialise actor object
-    if (studentidmode != undefined && typeof studentidmode == 'string')
-    {
-        studentidmode = parseInt(studentidmode);
+    if (parent != self && parent.x_TemplateId != undefined && parent.x_TemplateId == x_TemplateId && parent.state != undefined) {
+        state = parent.state;
+        actor = parent.actor;
+        try {
+            /*
+            lrsInstance = new TinCan.LRS(
+                {
+                    endpoint: lrsEndpoint,
+                    username: lrsUsername,
+                    password: lrsPassword,
+                    allowFail: false,
+                    version: "1.0.2"
+                }
+            );
+            */
+
+            // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+            // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+            // {
+            //     state.aggregate = true;
+            //     state.lrsAggregateEndpoint = lrsEndpont;
+            //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+            //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+            // }
+            // else {
+            //     state.aggregate = false;
+            // }
+            var conf = {
+                "endpoint": lrsEndpoint + '/',
+                "user": lrsUsername,
+                "password": lrsPassword,
+                "strictCallbacks": true
+            };
+            ADL.XAPIWrapper.log.debug = true;
+            ADL.XAPIWrapper.changeConfig(conf);
+
+        } catch (ex) {
+            //alert("Failed LRS setup. Error: " + ex);
+            state.mode = "none";
+        }
     }
-    if (studentidmode == undefined || (studentidmode <= 0 && studentidmode > 3))
-    {
-        // set actor to global group
-        actor = {
+    else {
+        state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
+        // Initialise actor object
+        if (studentidmode != undefined && typeof studentidmode == 'string') {
+            studentidmode = parseInt(studentidmode);
+        }
+        if (studentidmode == undefined || (studentidmode <= 0 && studentidmode > 3)) {
+            // set actor to global group
+            actor = {
                 objectType: "Group",
                 account: {
                     name: "global",
                     homePage: baseUrl() + state.templateId
                 }
             };
-    }
-    else
-    {
-        if(username == undefined || username == "")
-        {
-            userEMail = "mailto:email@test.com"
-        }else{
-            userEMail = username;
-        }
-        if (typeof fullusername == 'undefined')
-            fullusername = "Unknown";
-        switch(studentidmode)
-        {
-            case 0: //mbox
-                actor = {
+        } else {
+            if (username == undefined || username == "") {
+                userEMail = "mailto:email@test.com"
+            } else {
+                userEMail = username;
+            }
+            if (typeof fullusername == 'undefined')
+                fullusername = "Unknown";
+            switch (studentidmode) {
+                case 0: //mbox
+                    actor = {
                         objectType: "Agent",
                         mbox: userEMail
                     };
-                break;
-            case 1:
-                actor = {
+                    break;
+                case 1:
+                    actor = {
                         objectType: "Agent",
                         mbox_sha1sum: mboxsha1
                     };
-                break;
-            case 2:
-                actor = {
+                    break;
+                case 2:
+                    actor = {
                         objectType: "Agent",
                         mbox: userEMail,
                         name: fullusername
                     };
-                break;
-            case 3:
-                actor = {
+                    break;
+                case 3:
+                    actor = {
                         objectType: "Group",
                         account: {
                             name: groupname,
@@ -1632,103 +1668,98 @@ function XTInitialise()
                         }
                     };
 
+            }
         }
-    }
 
-    if (! state.initialised)
-    {
-        state.initialised = true;
-        state.initialise();
-    }
-    state.mode = "normal";
-    if(lrsInstance == undefined){
-        try{
-            lrsInstance = new TinCan.LRS(
-                {
-                    endpoint: lrsEndpoint,
-                    username: lrsUsername,
-                    password: lrsPassword,
-                    allowFail: false,
-                    version: "1.0.1"
-                }
-            );
-
+        if (!state.initialised) {
+            state.initialised = true;
+            state.initialise();
         }
-        catch(ex)
-        {
-            //alert("Failed LRS setup. Error: " + ex);
-            state.mode = "none";
+        state.mode = "normal";
+        if (lrsInstance == undefined) {
+            try {
+                lrsInstance = new TinCan.LRS(
+                    {
+                        endpoint: lrsEndpoint,
+                        username: lrsUsername,
+                        password: lrsPassword,
+                        allowFail: false,
+                        version: "1.0.1"
+                    }
+                );
+
+            } catch (ex) {
+                //alert("Failed LRS setup. Error: " + ex);
+                state.mode = "none";
+            }
+            TinCan.enableDebug();
         }
-        TinCan.enableDebug();
-    }
-    if(surf_course != undefined && surf_recipe != undefined)
-    {
-        surf_mode = true;
-    }
+        if (surf_course != undefined && surf_recipe != undefined) {
+            surf_mode = true;
+        }
 
-    if(lrsInstance != undefined)
-    {
-        this.initStamp = new Date();
+        if (lrsInstance != undefined) {
+            this.initStamp = new Date();
 
-        if (! surf_mode) {
-            var statement = new TinCan.Statement(
-                {
-                    actor: actor,
-                    verb: {
-                        id: "http://adlnet.gov/expapi/verbs/launched",
-                        display: {
-                            "en-US": "launched"
-                        }
-                    },
-                    object: {
-                        objectType: "Activity",
-                        id: baseUrl() + state.templateId,
-                        description: {
-                            name: {
-                                "en": x_params.name
+            if (!surf_mode) {
+                var statement = new TinCan.Statement(
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/launched",
+                            display: {
+                                "en-US": "launched"
                             }
-                        }
-                    },
-                    timestamp: this.initStamp
-                }
-            );
-
-            SaveStatement(statement);
-        }
-        if(surf_mode)
-        {
-            var statement = new TinCan.Statement(
-                {
-                    actor: actor,
-                    verb: {
-                        id: "http://lrs.surfuni.org/verb/joined",
-                        display: {
-                            "en-US": "Joined"
-                        }
-                    },
-                    object: {
-                        objectType: "Activity",
-                        id: "http://lrs.surfuni.org/object/course",
-                        definition: {
-                            name: {
-                                "en-US": "Course"
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: baseUrl() + state.templateId,
+                            description: {
+                                name: {
+                                    "en": x_params.name
+                                }
                             }
-                        }
-                    },
-                    context: {
-                        extensions: {
-                            "http://lrs.surfuni.org/context/course": surf_course,
-                            "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                            "http://lrs.surfuni.org/context/label": ""
-                        }
-                    },
-                    target: {
-                        id: baseUrl() + state.templateId
-                    },
-                    timestamp: this.initStamp
-                }
-            );
-            SaveStatement(statement);
+                        },
+                        timestamp: this.initStamp
+                    }
+                );
+
+                SaveStatement(statement);
+            }
+            if (surf_mode) {
+                var statement = new TinCan.Statement(
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://lrs.surfuni.org/verb/joined",
+                            display: {
+                                "en-US": "Joined"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: "http://lrs.surfuni.org/object/course",
+                            definition: {
+                                name: {
+                                    "en-US": "Course"
+                                }
+                            }
+                        },
+                        context: {
+                            extensions: {
+                                "http://lrs.surfuni.org/context/course": surf_course,
+                                "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                                "http://lrs.surfuni.org/context/label": ""
+                            }
+                        },
+                        target: {
+                            id: baseUrl() + state.templateId
+                        },
+                        timestamp: this.initStamp
+                    }
+                );
+                SaveStatement(statement);
+            }
         }
     }
 }
@@ -2525,21 +2556,45 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                 var learnerAnswer, correctAnswer;
                 switch (state.interactions[i].ia_type) {
                     case "match":
+                        // If unique targets, match answers by target, otherwise match by source
+                        const targets = [];
+                        for (let j = 0; j < state.interactions[i].nrinteractions; j++) {
+                            targets.push(state.interactions[i].correctOptions[c].target);
+                        }
+                        // Check whether values of targets are unique
+                        const uniqueTargets = targets.length === new Set(targets).size;
                         for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                             var matchSub = {}; //Create a subinteraction here for every match sub instead
                             correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
-                            source = state.interactions[i].correctOptions[c].source;
+                            let source = state.interactions[i].correctOptions[c].source;
+                            let target = state.interactions[i].correctOptions[c].target;
                             if (state.interactions[i].learnerOptions.length == 0) {
-                                learnerAnswer = source + ' --> ' + ' ';
+                                if (uniqueTargets) {
+                                    learnerAnswer = ' --> ' + target;
+                                }
+                                else {
+                                    learnerAnswer = source + ' --> ' + ' ';
+                                }
                             }
                             else {
                                 for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
-                                    if (source == state.interactions[i].learnerOptions[d].source) {
-                                        learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
-                                        break;
+                                    if (uniqueTargets)
+                                    {
+                                        if (target == state.interactions[i].learnerOptions[d].target) {
+                                            learnerAnswer = state.interactions[i].learnerOptions[d].source + ' --> ' + target;
+                                            break;
+                                        } else {
+                                            learnerAnswer = ' --> ' + target;
+                                        }
                                     }
-                                    else {
-                                        learnerAnswer = source + ' --> ' + ' ';
+                                    else
+                                    {
+                                        if (source == state.interactions[i].learnerOptions[d].source) {
+                                            learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                            break;
+                                        } else {
+                                            learnerAnswer = source + ' --> ' + ' ';
+                                        }
                                     }
                                 }
                             }
@@ -2550,7 +2605,6 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                             matchSub.correctAnswer = correctAnswer;
                             results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                         }
-
                         break;
                     case "text":
                         learnerAnswer = state.interactions[i].learnerAnswers;

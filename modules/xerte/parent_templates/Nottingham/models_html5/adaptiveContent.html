@@ -1186,6 +1186,7 @@
       div.html(
         `<h2><p>${name}</p></h2>` +
           `<div class='introduction'>${introductionText}</div>` +
+          '<div class="interaction_load" id="interaction_load_' + interactionIndex + '"><img class="loading-gif" src="' + x_templateLocation + 'common_html5/loading16.gif"/></div>' +
           '<div class="summary-container">' +
           summaryDiv +
           graphContainer +
@@ -1431,6 +1432,8 @@
       interactionIndex,
       fullWidth
     ) {
+      // remove loader
+      $("#interaction_load_" + interactionIndex).remove();
       let scoreLabelText = interaction.getAttribute("scoreText");
       if (scoreLabelText == null) {
         scoreLabelText = "Your score is {0}";
@@ -2272,6 +2275,9 @@
       interactionIndex,
       fullWidth
     ) {
+      // remove loader
+      $("#interaction_load_" + interactionIndex).remove();
+
       var answerLabelText = interaction.getAttribute("answerText");
       if (answerLabelText == undefined) {
         answerLabelText = "Your answer is {0}";
@@ -2571,6 +2577,9 @@
       interactionIndex,
       fullWidth
     ) {
+      // remove loader
+      $("#interaction_load_" + interactionIndex).remove();
+
       var scoreLabelText = interaction.getAttribute("scoreText");
       if (scoreLabelText == null) {
         scoreLabelText = "Your score is {0}";
@@ -2659,6 +2668,9 @@
       interactionIndex,
       fullWidth
     ) {
+      // remove loader
+      $("#interaction_load_" + interactionIndex).remove();
+
       var answerLabelText = interaction.getAttribute("answerText");
       if (answerLabelText == undefined) {
         answerLabelText = "Your answer is {0}";
@@ -2799,6 +2811,9 @@
       interactionIndex,
       fullWidth
     ) {
+      // remove loader
+      $("#interaction_load_" + interactionIndex).remove();
+
       // reshuffle
       var groupingStatements = [];
       var userGrouping = [];

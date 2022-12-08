@@ -32,6 +32,16 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 .x_transcriptReader_page .highlight {
   background:transparentize($brightcolor, .2);
 }
+//*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: $bodybackgroundcolor;
+}
+.x_thumbnailViewer_page #thumbBar button { color: $whiteorlightest; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: $lightestcolor; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: $lightestcolor; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: $darkestcolor; }
+
 //***********************************Navigators*************************************/
 
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {
@@ -329,18 +339,6 @@ a.hotspot, a.hotspot.selected {
 .x_grid_page #grid ul li.header {
   color: $whiteorlightest !important;
 }
-//background color of header
-.x_grid_page table.header.shaded tr:first-child {
-  background: $blackordarkest;
-}
-//default background of table rows
-.x_grid_page table tr{
-  background: $brightcolor;
-}
-//background of shaded/alternate rows
-.x_grid_page tr.shaded {
-  background: $contrastcolor;
-}
 //draggable items
 .x_grid_page #grid ul li{
   background:$lightestcolor;
@@ -365,14 +363,7 @@ a.hotspot, a.hotspot.selected {
 }
 //***********************************Charts*************************************/
 //***Charts Table***/
-.x_table_page table tr.shaded {
-  background: $lightestcolor;
-}
-.x_table_page table.header.shaded tr:first-child {
-  background: $blackordarkest;
-  color:$fontcolorforcontrastcolor;
-}
-.x_table_page table.header.simple tr:first-child {
+.x_table_page table.header.simple :not(tbody) > tr:first-child {
   border:none;
 }
 .x_table_page table.simple {
@@ -459,6 +450,28 @@ div#shorturltodisplay a{
   }
 }
 
+//***********************************Tables*************************************/
+//default background of table rows
+.x_grid_page table tr,
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr {
+  background: $brightcolor;
+}
 
+//background of shaded/alternate rows
+table tr.shaded {
+	background:	$contrastcolor;
+}
 
-
+// header/footer shaded
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child,
+table.footer.shaded tbody tr:last-child,
+table.headerCol.shaded td.header {
+	background:	$blackordarkest;
+	color: $fontcolorforcontrastcolor;
+}

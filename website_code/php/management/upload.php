@@ -18,6 +18,22 @@ _load_language_file("/website_code/php/management/upload.inc");
 global $xerte_toolkits_site;
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
+function cleardir($src) {
+    $dir = opendir($src);
+    while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            $full = $src . '/' . $file;
+            if ( is_dir($full) ) {
+                rrmdir($full);
+            }
+            else {
+                unlink($full);
+            }
+        }
+    }
+    closedir($dir);
+}
+
 if (!is_user_admin())
 {
     _debug("Session is invalid or expired");
@@ -151,6 +167,9 @@ if($_FILES["fileToUpload"]["name"])
             if (!is_dir($template_location . $name . DIRECTORY_SEPARATOR . "media"))
             {
                 mkdir($template_location . $name . DIRECTORY_SEPARATOR . "media", 0755);
+            }
+            else{
+                cleardir($template_location . $name . DIRECTORY_SEPARATOR . "media");
             }
 
             foreach ($iterator as $item)
