@@ -179,7 +179,6 @@ if(is_numeric($_POST['template_id'])) {
 
         echo "<div class=\"template_file_area\"><p>" . MEDIA_AND_QUOTA_PUBLISH . "</p>";
 
-
         /**
          * display the first string
          */
@@ -189,10 +188,12 @@ if(is_numeric($_POST['template_id'])) {
             echo $y;
 
         }
+        $delete_string_json = json_encode($delete_string);
 
         echo "</div>";
         echo "<div style=\"clear:both;\"></div>";
         echo "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
+        echo '<button id=\'delete_unused_files\' type=\'submit\' class=\'xerte_button\' name=\'delete_unused_filesBTN\' onclick=\'javascript:delete_unused_files("' . $dir_path . '", '. $delete_string_json .')\'>' . MEDIA_AND_QUOTA_UNUSED_DELETE . '</button>';
 
     }else{
 

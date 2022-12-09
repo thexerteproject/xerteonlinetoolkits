@@ -25,6 +25,8 @@
 	define("MEDIA_AND_QUOTA_NOT_IN_USE", "Not in use");
 	
 	define("MEDIA_AND_QUOTA_DELETE", "Click to delete");
+
+    define("MEDIA_AND_QUOTA_UNUSED_DELETE", "Click to delete all unused files");
 	
 	define("MEDIA_AND_QUOTA_USAGE", "This project is currently using");
 

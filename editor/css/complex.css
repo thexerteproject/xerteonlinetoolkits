@@ -1118,6 +1118,9 @@ div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
 #mergeGlossaryCheck, #pages {
 	margin-left: 15px;
 }
+#overwriteGlossaryCheck, #pages {
+	margin-left: 30px;
+}
 #merge_button_icon {
 	height: 17px;
 	padding-bottom:1px;
