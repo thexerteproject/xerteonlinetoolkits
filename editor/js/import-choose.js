@@ -146,6 +146,8 @@ function getIcon(nodetype)
                 icon = "website_code/images/Icon_Folder_Group.gif";
             }else if (nodetype == "folder_shared"){
                 icon = "website_code/images/Icon_Folder_Shared.gif";
+            }else if(nodetype == 'sub_folder_shared'){
+                icon = "website_code/images/Icon_Sub_Shared_Folder.png"
             }else{
                 icon = "website_code/images/Icon_Folder.gif";
             }
