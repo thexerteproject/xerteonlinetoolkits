@@ -613,8 +613,8 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $item->parent = $folder['tree_parent_id'];
         $item->text = $folder['folder_name'];
         if($folder['nrshared'] > 1){
-            $folder['type'] = "folder_shared";
-            $item->type = 'folder_shared';
+            /*$folder['type'] = "folder_shared";*/
+            $item->type = $folder['type'];
         }else{
             $item->type = $folder['type'];
         }
@@ -624,7 +624,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
 
         $items[] = $item;
 
-        if ($folder['type'] == 'folder_shared')
+        if ($folder['type'] == 'folder_shared' || $folder['type'] == 'sub_folder_shared')
         {
             $files = get_folder_contents($folder['folder_id'], $folder['tree_id'],$sort_type, $copy_only);
 
@@ -692,7 +692,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $items[] = $titem;
     }
 
-    //ignore double items
+    //remove double items
 
 
     $uniqueItems = [];
@@ -751,7 +751,7 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
             . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
         $params = array($folder_id);
     }else{
-        $query = "select fd.folder_id, fd.folder_name, fr.folder_parent, fr.role, cfr.nrshared as nrshared from {$prefix}folderdetails fd, {$prefix}folderrights fr cross join (
+        $query = "select fd.folder_id, fd.folder_name, fd.folder_parent as real_parent, fr.folder_parent, fr.role, cfr.nrshared as nrshared from {$prefix}folderdetails fd, {$prefix}folderrights fr cross join (
 select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.folder_id) as nrshared  from {$prefix}folderdetails fd, {$prefix}folderrights fr  where fr.folder_id = fd.folder_id  and fd.folder_parent != 0 and fr.folder_id in 
                     (
                         select fd.folder_id from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.login_id=? and fd.folder_parent != 0
@@ -821,6 +821,7 @@ select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.
             $shared = 'shared';
         }
         $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder_" .$shared;
+
     }
     while ($unassigned_found)
     {
@@ -848,6 +849,32 @@ select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.
             }
         }
     }
+
+    $query = "SELECT * FROM folderdetails where";
+    $params = [];
+    foreach ($query_response as $folder){
+
+        if(intval($folder['nrshared']) > 1){
+            if(count($params) == 0){
+                $query.= " folder_id = ?";
+            }else{
+                $query .= " or folder_id = ?";
+            }
+            array_push($params, $folder['real_parent']);
+        }
+    }
+    if(count($params) > 0){
+        $query_shared_sub_folder = db_query($query, $params);
+
+        foreach ($query_response as $index =>$folder){
+            foreach ($query_shared_sub_folder as $sharedSubFolder){
+                if($folder['real_parent'] ==  $sharedSubFolder['folder_id']){
+                    $query_response[$index]['type'] = 'sub_folder_shared';
+                }
+            }
+        }
+    }
+
 
     return $query_response;
 }
@@ -1004,7 +1031,7 @@ function get_users_projects($sort_type, $copy_only=false)
                     }
                 }
             }else{
-                if($item->type == "folder_shared"){
+                if($item->type == "folder_shared" || $item->type == "sub_folder_shared"){
                     array_push($sharedItems, $item->id);
                 }
                 $workspace->nodes[$item->id] = $item;
