@@ -2254,7 +2254,9 @@ window.onhashchange = function() {
 	}
 
     var listID = Number(location.href.substr(location.href.length-1,1));
-    setTimeout("updateMenu("+listID+")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+	if (!isNaN(listID)) {
+		setTimeout("updateMenu(" + listID + ")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+	}
 }
 
 function updateMenu(listID) {
