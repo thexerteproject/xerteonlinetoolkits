@@ -81,6 +81,16 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->description = (string)$xml['metaDescription'];
     else
         $xerteMetaObj->description = '';
+    //TODO check oaiphm....
+    //compare strings for true /false
+    //if unset return false
+    if (isset($xml['oaiPmhAgree']))
+        if ((string)$xml['oaiPmhAgree'] == 'true' )
+            $xerteMetaObj->oaiPmhAgree = true;
+        else
+            $xerteMetaObj->oaiPmhAgree = false;
+    else
+        $xerteMetaObj->oaiPmhAgree = false;
     if (isset($xml['metaKeywords']))
         $xerteMetaObj->keywords = (string)$xml['metaKeywords'];
     else
@@ -95,6 +105,7 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     else {
         $xerteMetaObj->author = $config['institute'];
     }
+    //TODO check domain ^ level make sure they return "unknown"
     if (isset($xml['category']) || isset($xml['metaCategory'])) {
         if (isset($xml['metaCategory']))
         {
@@ -104,11 +115,12 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         {
             $cat = (string)$xml['category'];
         }
+
         // query oai_categories
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_categories where label=?";
         $params = array($cat);
         $cat = db_query_one($q, $params);
-        if ($cat !== false) {
+        if ($cat !== false and $cat !== null) {
             $xerteMetaObj->domain = $cat["label"];
             $xerteMetaObj->domainId = $cat["taxon"];
             $xerteMetaObj->domainSource = $cat["source_url"];
@@ -126,7 +138,7 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_education where label=?";
         $params = array((string)$xml["metaEducation"]);
         $cat = db_query_one($q, $params);
-        if ($cat !== false) {
+        if ($cat !== false and $cat !== null) {
             $xerteMetaObj->level = $cat["label"];
             $xerteMetaObj->levelId = $cat["term_id"];
         }

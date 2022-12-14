@@ -235,7 +235,7 @@ function getTemplates($metadataPrefix,$from,$until) {
     {
         $currentTemplate = $templates[$i];
         $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
-        if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown"){
+        if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown" and $tempMetaData->oaiPmhAgree){
             $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
             $tmpRecords[] = $currentRecord;
         }
