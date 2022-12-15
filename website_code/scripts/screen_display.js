@@ -686,7 +686,6 @@ function dynamicResize()
 
 function getIcon(nodetype)
 {
-    debugger
     var nodetypetemp = nodetype;
     if (nodetype){
         nodetypetemp = nodetype.replace("_group", "");
@@ -753,7 +752,6 @@ var lastTreeItemTimestamp = undefined;
  */
 function init_workspace()
 {
-    debugger
     // build Types structure for the types plugin
     var node_types = {};
     // root
@@ -831,8 +829,8 @@ function init_workspace()
             },
             "dnd": {
                 "is_draggable" : function(node) {
-                    debugger
                     console.log('is_draggable called: ', node[0]);
+                    debugger
                     if (node[0].type.includes("_group") || node[0].type.includes("_shared") || node[0].original.ChildOfShared) {
                         return false;
                     }
