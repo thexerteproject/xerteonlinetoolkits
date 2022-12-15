@@ -686,10 +686,12 @@ function dynamicResize()
 
 function getIcon(nodetype)
 {
+    debugger
     var nodetypetemp = nodetype;
     if (nodetype){
         nodetypetemp = nodetype.replace("_group", "");
         nodetypetemp = nodetypetemp.replace("_shared", "");
+        nodetypetemp = nodetypetemp.replace("sub_", "");
     }
     switch(nodetypetemp)
     {
@@ -751,6 +753,7 @@ var lastTreeItemTimestamp = undefined;
  */
 function init_workspace()
 {
+    debugger
     // build Types structure for the types plugin
     var node_types = {};
     // root
@@ -774,6 +777,10 @@ function init_workspace()
     //shared folder
     var shared_children = workspace.sharedtemplates;
     node_types["folder_shared"] = create_node_type("folder_shared", shared_children);
+
+    // sub shared folder
+    var sub_shared_children = workspace.sharedtemplates;
+    node_types["sub_folder_shared"] = create_node_type("sub_folder_shared", sub_shared_children);
 
     //group
     var group_children = workspace.grouptemplates;

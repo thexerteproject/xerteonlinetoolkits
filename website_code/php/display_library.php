@@ -613,7 +613,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $item->parent = $folder['tree_parent_id'];
         $item->text = $folder['folder_name'];
         if($folder['nrshared'] > 1){
-            /*$folder['type'] = "folder_shared";*/
+            $folder['type'] = "folder_shared";
             $item->type = $folder['type'];
         }else{
             $item->type = $folder['type'];
@@ -630,7 +630,23 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
 
             if ($files)
             {
-                $items = array_merge($items, $files);
+                foreach ($files as $index => $file){
+                    $found = false;
+                    foreach ($folders as $folderCheck){
+                        if($file->id == $folderCheck['tree_id']){
+                            $found = true;
+                        }
+                    }
+
+                    if(!$found){
+                        if($folder['nrshared'] > 1){
+                             $files[$index]->type = "sub_folder_shared";
+                        }
+                        array_push($items, $file);
+                    }
+                }
+
+
             }
         }
         else {
@@ -850,7 +866,34 @@ select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.
         }
     }
 
-    $query = "SELECT * FROM folderdetails where";
+
+    $sharedFolders = [];
+    foreach ($query_response as $index => $folder){
+        if(intval($folder['nrshared']) > 1){
+            array_push($sharedFolders, $folder["folder_id"]);
+            $query_response[$index]['type'] = 'folder_shared';
+        }
+    }
+
+    if(count($sharedFolders) > 0){
+        for($j = 0; $j < count($sharedFolders); $j++){
+            for($i = 0; $i < count($query_response); $i++){
+                if($sharedFolders[$j] == $query_response[$i]["folder_parent"]){
+                    if(!in_array($query_response[$i]["folder_id"], $sharedFolders)){
+                        array_push($sharedFolders, $query_response[$i]["folder_id"]);
+                        $query_response[$i]['type'] = 'sub_folder_shared';
+                        $j =-1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+    /*$query = "SELECT * FROM folderdetails where";
     $params = [];
     foreach ($query_response as $folder){
 
@@ -873,7 +916,7 @@ select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.
                 }
             }
         }
-    }
+    }*/
 
 
     return $query_response;
