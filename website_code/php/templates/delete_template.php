@@ -66,6 +66,14 @@ if(is_numeric($_POST['template_id'])){
 
                 receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Moved file to users recycle bin", "Moved file to users recycle bin");
 
+                //update oai table if needed
+                $q_get_oai = "select * from {$prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
+                $oai = db_query_one($q_get_oai, [$safe_template_id]);
+                if ($oai !== null and $oai["status"] !== "" and $oai["status"] === "published"){
+                    $q_delete_oai = "insert into {$prefix}oai_publish set template_id=?, login_id=?, user_type='creator', status='deleted'";
+                    $params = array($safe_template_id, $_SESSION["toolkits_logon_id"]);
+                    db_query_one($q_delete_oai, $params);
+                }
             }else{
 
                 receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to move file to the recycle bin", "Failed to move file to the recycle bin");	
