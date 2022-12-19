@@ -763,22 +763,21 @@ function init_workspace()
     node_types["workspace"] = create_node_type("workspace", workspace_children);
 
     //recyclebin
-    var recyclebin_children = ["folder"];
+    var recyclebin_children = ["folder", "folder_shared", "sub_folder_shared"];
     recyclebin_children = recyclebin_children.concat(workspace.templates);
     node_types["recyclebin"] = create_node_type("recyclebin", recyclebin_children);
 
     //folder
-    var folder_children = ["folder"];
+    var folder_children = ["folder", "folder_shared", "sub_folder_shared"];
     folder_children = folder_children.concat(workspace.templates);
     node_types["folder"] = create_node_type("folder", folder_children);
 
     //shared folder
-    var shared_children = workspace.sharedtemplates;
-    node_types["folder_shared"] = create_node_type("folder_shared", shared_children);
+    node_types["folder_shared"] = create_node_type("folder_shared", folder_children);
 
+    debugger
     // sub shared folder
-    var sub_shared_children = workspace.sharedtemplates;
-    node_types["sub_folder_shared"] = create_node_type("sub_folder_shared", sub_shared_children);
+    node_types["sub_folder_shared"] = create_node_type("sub_folder_shared", folder_children);
 
     //group
     var group_children = workspace.grouptemplates;
@@ -831,7 +830,8 @@ function init_workspace()
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
                     debugger
-                    if (node[0].type.includes("_group") || node[0].type.includes("_shared") || node[0].original.ChildOfShared) {
+                    if (node[0].type.includes("_group") || (node[0].type.includes("_shared") && workspace.nodes[node[0].id].role !== "creator")
+                        || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") ) {
                         return false;
                     }
                     return true;

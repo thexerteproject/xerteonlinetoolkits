@@ -431,6 +431,7 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         $item->xot_id = $row['folder_id'];
         $item->parent = $tree_id;
         $item->text = $row['folder_name'];
+        $item->role = $row['role'];
         $shared = "";
         if ($row['role'] != 'creator' && $newtype != 'group'){
             $shared = 'shared';
@@ -542,6 +543,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         $item->xot_id = $row['template_id'];
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
+        $item->role = $row['role'];
         $shared = "";
         if ($row['role'] != 'creator' && $newtype != 'group') {
             $shared = 'shared';
@@ -621,6 +623,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $item->xot_type = "folder";
         $item->published = false;
         $item->shared = false;
+        $item->role = $folder['role'];
 
         $items[] = $item;
 
@@ -639,7 +642,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                     }
 
                     if(!$found){
-                        if($folder['nrshared'] > 1){
+                        if($folder['nrshared'] > 1 && $files[$index]->type == "folder"){
                              $files[$index]->type = "sub_folder_shared";
                         }
                         array_push($items, $file);
@@ -664,6 +667,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                 $titem->xot_id = $template['template_id'];
                 $titem->parent = $folder['tree_id'];
                 $titem->text = $template['project_name'];
+                $titem->role = $template['role'];
                 if ($newtype == "")
                     $titem->type = strtolower($template['parent_template']);
                 else
@@ -695,6 +699,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $titem->xot_id = $template['template_id'];
         $titem->parent = $tree_id;
         $titem->text = $template['project_name'];
+        $titem->role = $template['role'];
         if ($newtype == "")
             $titem->type = strtolower($template['parent_template']);
         else
@@ -1044,6 +1049,7 @@ function get_users_projects($sort_type, $copy_only=false)
     $item->parent = "#";
     $item->text = DISPLAY_WORKSPACE;
     $item->type = "workspace";
+    $item->role = "creator";
     $item->xot_type = "workspace";
     $item->published = false;
     $item->shared = false;
