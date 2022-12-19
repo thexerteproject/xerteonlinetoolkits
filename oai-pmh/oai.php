@@ -231,15 +231,36 @@ function getTemplates($metadataPrefix,$from,$until) {
     //$tmpTemplates = array();
 
     $tmpRecords = array();
+    //get the oai status for all templates that at some point have been published
+    $q = "select template_id, status, timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish group by template_id)";
+    $publish_status = db_query($q);
+    $temp_added = [];
+
     for($i=0;$i<count($templates);$i++)
     {
         $currentTemplate = $templates[$i];
-        $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
-        if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown" and $tempMetaData->oaiPmhAgree){
-            $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
-            $tmpRecords[] = $currentRecord;
+        $needle_key = array_search($currentTemplate['template_id'], array_column($publish_status, 'template_id'));
+        if ($needle_key !== false){
+            if (strcmp($publish_status[$needle_key]['status'], "published") == 0) {
+                $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
+                if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown" and $tempMetaData->oaiPmhAgree){
+                    $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
+                    $tmpRecords[] = $currentRecord;
+                    $temp_added[] = $needle_key;
+                }
+            }
         }
-        
+
+    }
+
+    //add all templates that have their sharing rights revoked
+    foreach ($publish_status as $key => $value) {
+        if (!in_array($key, $temp_added)) {
+            $record = array('identifier' => ($xerte_toolkits_site->site_url . $value['template_id']),
+                'datestamp' => date($value['timestamp']),
+                'deleted' => true);
+            $tmpRecords[] = $record;
+        }
     }
 
     //$response->templates = $tmpTemplates;

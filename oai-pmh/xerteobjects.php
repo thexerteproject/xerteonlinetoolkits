@@ -81,9 +81,6 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->description = (string)$xml['metaDescription'];
     else
         $xerteMetaObj->description = '';
-    //TODO check oaiphm....
-    //compare strings for true /false
-    //if unset return false
     if (isset($xml['oaiPmhAgree']))
         if ((string)$xml['oaiPmhAgree'] == 'true' )
             $xerteMetaObj->oaiPmhAgree = true;

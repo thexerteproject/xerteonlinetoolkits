@@ -1288,3 +1288,21 @@ function upgrade_33()
         return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? true". "<br>";
     }
 }
+
+function upgrade_35(){
+    $table = 'oai_publish';
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `audith_id` int(11) NOT NULL AUTO_INCREMENT,
+      `template_id` BIGINT(20) NOT NULL,
+      `login_id` BIGINT(20) NOT NULL,
+      `user_type` VARCHAR(10),
+      `status` VARCHAR(10),
+      `timestamp` TIMESTAMP,
+      PRIMARY KEY (`audith_id`)
+    )
+    ");
+
+    $message = "Creating oai_publish - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
