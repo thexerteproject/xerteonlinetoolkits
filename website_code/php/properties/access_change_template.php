@@ -34,6 +34,8 @@ include "../template_status.php";
 
 include "properties_library.php";
 
+require_once (__DIR__ . "/../XerteProjectDecoder.php");
+
 if (!isset($_SESSION['toolkits_logon_username']))
 {
     _debug("Session is invalid or expired");
@@ -85,7 +87,44 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
         access_display_fail();
 
     } else {
-
+        update_oai_access($prefix, $xerte_toolkits_site->users_file_area_full);
         access_display($xerte_toolkits_site, true);
+    }
+}
+
+function update_oai_access($prefix, $path_root){
+    //get oai status
+    $q_get_oai = "select * from {$prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
+    $oai = db_query_one($q_get_oai, [$_POST['template_id']]);
+
+    if ($oai !== null and $oai["status"] === "published" and $_POST["access"] !== "Public"){
+        //set oai to deleted
+        $q_delete_oai = "insert into {$prefix}oai_publish set template_id=?, login_id=?, user_type='creator', status='deleted'";
+        $params = array($_POST['template_id'], $_SESSION["toolkits_logon_id"]);
+        db_query_one($q_delete_oai, $params);
+    } elseif ($_POST['access'] === "Public" and (($oai === null) or ($oai !== null and ($oai["status"] === "deleted" or $oai["status"] === "incomplete")))) {
+        //get template information from db
+        $q = "select
+          otd.template_name as template_type, 
+          ld.username as owner_username
+          from {$prefix}templatedetails as td, 
+          {$prefix}originaltemplatesdetails otd,
+          {$prefix}logindetails ld 
+          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.template_id=?";
+        $template = db_query_one($q, [$_POST['template_id']]);
+        //compute local template location and read template data
+        $template_dir = $path_root . $_POST['template_id'] . "-" . $template['owner_username'] . "-" . $template['template_type'] . "/";
+        $dataFilename = $template_dir . "data.xml";
+        $decoder = new XerteProjectDecoder($dataFilename);
+        $info = $decoder->detailedTemplateDecode($_POST['template_id']);
+
+        $q_add_oai = "insert into {$prefix}oai_publish set template_id=?, login_id=?, user_type='creator', status='published'";
+        $params = array($_POST['template_id'], $_SESSION["toolkits_logon_id"]);
+
+        if ($oai === null and $info->oaiPmhAgree === "true" and $info->education !== "unknown" and $info->category !== 'unknown'){
+            db_query_one($q_add_oai, $params);
+        } elseif ($oai !== null and $info->oaiPmhAgree === "true" and $info->education !== "unknown" and $info->category !== 'unknown'){
+            db_query_one($q_add_oai, $params);
+        }
     }
 }
