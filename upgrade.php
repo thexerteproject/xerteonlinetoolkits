@@ -1306,3 +1306,12 @@ function upgrade_35(){
 
     return $message;
 }
+
+function upgrade_36(){
+    $ok = _upgrade_db_query("alter table oai_education add column parent_id int(11)");
+    $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("alter table oai_categories add column parent_id int(11)");
+    $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
