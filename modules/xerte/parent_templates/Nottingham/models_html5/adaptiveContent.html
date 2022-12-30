@@ -1135,7 +1135,9 @@
           "</div>";
       }
       let adviceHeader = "";
-      if (interaction.children.length !== 0 && adaptiveContent.dashboardMode !== 'true') {
+      if (interaction.children.length !== 0
+          && adaptiveContent.dashboardMode !== 'true'
+          && interaction.getAttribute("AdviceText") != null) {
         adviceHeader = `<h4>${interaction.getAttribute("AdviceText")}</h4>`;
       }
 
