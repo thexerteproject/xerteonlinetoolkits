@@ -4150,6 +4150,7 @@ var EDITOR = (function ($, parent) {
 					select.append(option);
 				}
 				html.append(select);
+                form_id_offset++;
 			break;
 			case 'grouping':
 				var id = 'select_' + form_id_offset;
@@ -4195,6 +4196,7 @@ var EDITOR = (function ($, parent) {
 					select.append(option);
 				}
 				html.append(select);
+                form_id_offset++;
 				break;
             case 'educationlevellist':
                 var id = 'select_' + form_id_offset;
@@ -4368,6 +4370,7 @@ var EDITOR = (function ($, parent) {
 					}
 
 				}
+                form_id_offset++;
                 break;
             case 'locpicker':
 			case 'hotspot':
