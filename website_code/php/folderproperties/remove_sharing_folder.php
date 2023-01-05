@@ -55,5 +55,42 @@ if(is_numeric($_POST['folder_id'])){
         }
         $params = array($folder_id, $id);
         db_query($query_to_delete_share, $params);
+
+
+        $query_to_get_user_workspace = "SELECT * FROM {$prefix}folderdetails where login_id = ? and folder_name != ?";
+        $workspaceId = db_query($query_to_get_user_workspace, array($id, "recyclebin"));
+
+        //uit folderrights halen
+        $query_to_get_folders = "SELECT folder_id, folder_parent FROM {$prefix}folderdetails where folder_parent != 0";
+        $folders = db_query($query_to_get_folders, array());
+
+        $foldersToCheck = array($folder_id);
+        for ($i = 0; $i < count($foldersToCheck); $i++){
+            foreach ($folders as $index =>$folder){
+                if($foldersToCheck[$i] == $folder['folder_parent']){
+                    array_push($foldersToCheck, $folder['folder_id']);
+                }
+            }
+        }
+
+        $changeParams = array($workspaceId[0]["folder_id"], $id, "creator");
+        $query_to_change_folder = "UPDATE {$prefix}templaterights SET folder = ? where user_id = ? and role = ? and (";
+        foreach ($foldersToCheck as $folder){
+            if($folder_id == $folder){
+                $query_to_change_folder .= " folder = ? ";
+                array_push($changeParams, $folder);
+            }else{
+                $query_to_change_folder .= " or folder = ? ";
+                array_push($changeParams, $folder);
+            }
+        }
+
+        $query_to_change_folder .= ")";
+
+        db_query($query_to_change_folder, $changeParams);
+
+
+
+
     }
 }

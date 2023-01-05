@@ -830,8 +830,7 @@ function init_workspace()
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
                     debugger
-                    if (node[0].type.includes("_group") || (node[0].type.includes("_shared") && workspace.nodes[node[0].id].role !== "creator")
-                        || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") ) {
+                    if (node[0].type.includes("_group") || node[0].type === "folder_shared" || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") ) {
                         return false;
                     }
                     return true;
