@@ -12,7 +12,7 @@
   </pageWizard>
 
   <!-- OPINION=============================== -->
-    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
+    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_opinion_page" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
 	<instructions label="Instructions" type="textArea"  height="120"/>
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>

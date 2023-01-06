@@ -23,7 +23,24 @@
 	var title = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
+            if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined || x_currentPageXML.getAttribute("hideIcon") != undefined) {
+                if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined && x_currentPageXML.getAttribute("hideTitleTxt") == "true") {
+                    $x_headerBlock.addClass('hideTitleTxt');
+                } else {
+                    $x_headerBlock.removeClass('hideTitleTxt');
+                }
+
+                if (x_currentPageXML.getAttribute("hideIcon") != undefined && x_currentPageXML.getAttribute("hideIcon") == "true") {
+                    $x_headerBlock.addClass('hideTitleIcon');
+                } else {
+                    $x_headerBlock.removeClass('hideTitleIcon');
+                }
+
+                // make sure anything that's already calculated height assuming header is there is recalculated
+                x_updateCss2(false);
+            } else {
+                $x_headerBlock.removeClass('hideTitleTxt hideTitleIcon');
+            }
 		}
 		
 		// function called every time the size of the LO is changed
@@ -37,20 +54,25 @@
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
-			
+
 			if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined || x_currentPageXML.getAttribute("hideIcon") != undefined) {
-				
 				if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined && x_currentPageXML.getAttribute("hideTitleTxt") == "true") {
 					$x_headerBlock.addClass('hideTitleTxt');
-				}
+				} else {
+                    $x_headerBlock.removeClass('hideTitleTxt');
+                }
 				
 				if (x_currentPageXML.getAttribute("hideIcon") != undefined && x_currentPageXML.getAttribute("hideIcon") == "true") {
 					$x_headerBlock.addClass('hideTitleIcon');
-				}
+				} else {
+                    $x_headerBlock.removeClass('hideTitleIcon');
+                }
 				
 				// make sure anything that's already calculated height assuming header is there is recalculated
 				x_updateCss2(false);
-			}
+			} else {
+                $x_headerBlock.removeClass('hideTitleTxt hideTitleIcon');
+            }
 			
 			if (x_currentPageXML.childNodes[0] != undefined && x_currentPageXML.childNodes[0].nodeValue != "" && x_currentPageXML.childNodes[0].nodeValue != undefined) {
 				$pageContents.html(x_currentPageXML.childNodes[0].nodeValue);

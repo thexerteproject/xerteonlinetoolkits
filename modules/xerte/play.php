@@ -312,14 +312,21 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 if (isset($lti_enabled) && $lti_enabled)
                 {
                     $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                    if (function_exists('addSession')) {
+                        $tracking .= "  var sessionParam = '" . addSession("") . "&tsugisession=1';\n";
+                    }
                 }
                 else
                 {
                     $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=0" : "xapi_proxy.php") . "';\n";
+                    if (function_exists('addSession')) {
+                        $tracking .= "  var sessionParam = '" . addSession("") . "&tsugisession=0';\n";
+                    }
                 }
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
+
                 if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";

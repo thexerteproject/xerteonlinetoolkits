@@ -1300,6 +1300,27 @@ function x_cssSetUp(param) {
     }
 }
 
+function x_KeepAlive()
+{
+	const now = new Date().getTime();
+	let url = "website_code/php/keepalive.php" + "?t=" + now;
+	if (sessionParam != undefined)
+	{
+		url = "website_code/php/keepalive.php" + sessionParam + "&t=" + now;
+	}
+
+	setTimeout(function(){
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			success: function (data) {
+				x_KeepAlive();
+			}
+		})
+	}, 600000);
+}
+
 // clunky fix for issue where Firefox triggers css loaded event (which then triggers x_continueSetUp1) everytime the responsive stylesheet is enabled when changing from small view to full screen
 var setUpComplete = false;
 function x_continueSetUp1() {
@@ -1934,7 +1955,10 @@ function x_continueSetUp1() {
 			$x_saveSessionBtn.remove();
 			$x_saveSessionBtn = undefined;
 		}
-		
+		// If this LO is being tracked and is part of the install (not SCORM) keep session open
+		if (XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
+			x_KeepAlive();
+		}
 		// create side bar
 		x_setUpSideBar();
 		

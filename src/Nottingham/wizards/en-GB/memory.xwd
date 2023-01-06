@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- MEMORY============================== -->
-  <memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#memorygame" remove="true">
+  <memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#memorygame" wiki="https://xerte.org.uk/wiki/doku.php?id=games_memorygame_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>

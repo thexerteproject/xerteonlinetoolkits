@@ -423,7 +423,7 @@
 
   </learningObject>
 
-<QRcode menu="Links / Feeds" menuItem="QR Code" hint="A page for generating and presenting QR codes. You can also add an optional sound to this page." label="Page Text" icon="icQRCode" thumb="thumbs/QRcode.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#qrcode" type="text" height="300" remove="true">
+<QRcode menu="Links / Feeds" menuItem="QR Code" hint="A page for generating and presenting QR codes. You can also add an optional sound to this page." label="Page Text" icon="icQRCode" thumb="thumbs/QRcode.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#qrcode" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_qrcode_page" type="text" height="300" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="URL" type="TextInput"/>
@@ -506,7 +506,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></QRcode><SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" remove="true">
+    </pageHeaderGroup></QRcode><SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" wiki="https://xerte.org.uk/wiki/doku.php?id=media_timeline_media_page" remove="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="150"/>
         <image type="group" label="Image" optional="true">
@@ -727,7 +727,7 @@
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 	<synch label="Synch Point" type="TextInput"/><!-- for backwards compatibility with templates that used to use nestedPage -->
 
-  </nestedPage><adaptiveContent menu="Tracking / xAPI" menuItem="Adaptive Content" hint="A page where you can import Xerte result data from an xAPI LRS to present adaptive content based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" remove="true">
+  </nestedPage><adaptiveContent menu="Tracking / xAPI" menuItem="Adaptive Content" hint="A page where you can import Xerte result data from an xAPI LRS to present adaptive content based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_adaptivecontent_page" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <introduction label="Introduction" type="textArea" height="120"/>
       <displayMode label="Display Mode" conditionTrigger="true" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted"/>
@@ -921,7 +921,7 @@
           <adaptiveContent label="Content" type="TextArea" wysiwyg="true" height="360"/>
           <conScoreBetween label="Score between" type="TextInput" mandatory="true" defaultValue="0,100" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'" wysiwyg="false"/>
           <conScoreAnswer label="Result label equals" type="TextInput" mandatory="true" defaultValue="label of answer" condition="parent.interactionType=='answer'" wysiwyg="false"/>
-    </interactionBlock><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#annotateddiagram" deepLink="true">
+    </interactionBlock><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#annotateddiagram" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_annotated_diagram" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -1033,7 +1033,7 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </flexhotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" remove="true">
+  </flexhotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_audio_slideshow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <sound label="Sound" type="Media"/>
@@ -1129,7 +1129,7 @@
 	
 	<synch label="Synch Point" type="TextInput"/>
 
-  </synchPoint><bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#advancedimage" remove="true">
+  </synchPoint><bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#advancedimage" wiki="https://xerte.org.uk/wiki/doku.php?id=media_advanced_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox" width="100"/>
@@ -1230,7 +1230,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></bleedingImage><bullets menu="Text" menuItem="Bullets / Timed Content" hint="A page of bullet points (or other content) which appears on screen at timed intervals." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#bullets" remove="true" tooltip="Each paragraph and bullet point (including numbered list, sub-list items and images) will appear separately at timed intervals on screen. Apply bullets/numbers to selected text using the toolbar buttons.">
+    </pageHeaderGroup></bleedingImage><bullets menu="Text" menuItem="Bullets / Timed Content" hint="A page of bullet points (or other content) which appears on screen at timed intervals." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#bullets" wiki="https://xerte.org.uk/wiki/doku.php?id=text_bullets_page" remove="true" tooltip="Each paragraph and bullet point (including numbered list, sub-list items and images) will appear separately at timed intervals on screen. Apply bullets/numbers to selected text using the toolbar buttons.">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="10" step="0.25" width="100" defaultValue="1"/>
@@ -1391,7 +1391,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#stimulatingquestion" remove="true">
+    </pageHeaderGroup></buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#stimulatingquestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_stimulating_question_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="50"/>
@@ -1472,7 +1472,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#buttonsequence" remove="true">
+    </pageHeaderGroup></buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#buttonsequence" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_button_sequence" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <intro label="Introduction" type="TextArea" height="100"/>
@@ -1556,7 +1556,7 @@
     <name label="Button Label" type="TextInput" wysiwyg="true"/>
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>	
     <text label="Feedback" type="TextArea" height="250"/>
-  </button><cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information." thumb="thumbs/connectorMCQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-choiceconnector" remove="true">
+  </button><cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information." thumb="thumbs/connectorMCQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-choiceconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_multiplechoiceconnector_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>	
@@ -1721,7 +1721,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#categories">
+    </pageHeaderGroup></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#categories" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_categories_page">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -1816,7 +1816,7 @@
 
   </category><item menuItem="Item" icon="icBullet">
     <name label="Item Text" type="TextInput" wysiwyg="true"/>
-  </item><chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. Choose from line, bar, stacked bar or pie charts, and add several series of data to the chart." icon="icChart" thumb="thumbs/charts.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#basicchart" remove="true">
+  </item><chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. Choose from line, bar, stacked bar or pie charts, and add several series of data to the chart." icon="icChart" thumb="thumbs/charts.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#basicchart" wiki="https://xerte.org.uk/wiki/doku.php?id=charts_basicchart_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="300"/>
@@ -1903,7 +1903,7 @@
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
-  </series><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#columnpage">
+  </series><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#columnpage" wiki="https://xerte.org.uk/wiki/doku.php?id=text_columns_page">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 	
@@ -1983,7 +1983,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimageconnector" remove="true">
+    </pageHeaderGroup></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimageconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_hotspotimageconnector_page" remove="true">
   
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -2141,7 +2141,7 @@
 	<destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to another page in this project when hotspot clicked"/>
 	<relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)" deprecated="This property is deprecated. You can now select a relative destination in the Destination Page optional property."/>
 	
-  </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu" thumb="thumbs/connectorMenu.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#menuconnector" remove="true">
+  </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu" thumb="thumbs/connectorMenu.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#menuconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_menuconnector_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <buttonWidth label="Button Width" condition="columns &lt; '2'" type="NumericStepper" optional="true" min="1" max="100" step="1" width="100" defaultValue="80" tooltip="The number indicates in percent how wide the buttons are."/>
@@ -2244,7 +2244,7 @@
 	
     <checkIfVisited label="Check if Visited Page" type="pageList" defaultValue="" optional="true"/>
 	<btnTxt label="Use Title on Button" type="CheckBox" defaultValue="false" mandatory="true" tooltip="By default the text on the menu button will be the destination page title. Check this box to use the title text from the field above instead."/>
-  </cMenuListedPage><crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword puzzle where clues are given to each word or phrase that must be completed in the grid." thumb="thumbs/crossword.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#crossword" remove="true">
+  </cMenuListedPage><crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword puzzle where clues are given to each word or phrase that must be completed in the grid." thumb="thumbs/crossword.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#crossword" wiki="https://xerte.org.uk/wiki/doku.php?id=games_crossword_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"/>
 	<capitalise label="Force Capitalisation" type="CheckBox" defaultValue="false" mandatory="true" tooltip="Force the letters entered in the crossword to appear capitalised"/>
@@ -2452,7 +2452,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#decisiontree" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
+    </pageHeaderGroup></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#decisiontree" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_decision_tree_page" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
 	<text label="Intro Text" type="TextArea" height="100"/>
@@ -2702,7 +2702,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></delicious><dialog menu="Interactivity" menuItem="Dialogue" hint="An interaction comprising a sequence of text-entry interactions forming a short dialogue." icon="icScript" thumb="thumbs/dialog.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#dialogue" remove="true">
+    </pageHeaderGroup></delicious><dialog menu="Interactivity" menuItem="Dialogue" hint="An interaction comprising a sequence of text-entry interactions forming a short dialogue." icon="icScript" thumb="thumbs/dialog.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#dialogue" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_dialogue" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100"/>
@@ -2798,7 +2798,7 @@
     <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
     <hint label="Hint" type="TextInput" wysiwyg="true"/>
 
-  </dialogStep><dictation menu="Interactivity" menuItem="Dictation" hint="An interaction for typing text from a series of audio files." icon="icTranscript" thumb="thumbs/dictation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#dictation" remove="true">
+  </dialogStep><dictation menu="Interactivity" menuItem="Dictation" hint="An interaction for typing text from a series of audio files." icon="icTranscript" thumb="thumbs/dictation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#dictation" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_dictation" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -2899,7 +2899,7 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence" wysiwyg="false"/>
     <audio label="Audio File" type="Media"/>
 	<answer label="Answer Text" type="TextArea" height="200"/>
-  </nestedDictation><documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#documentation" hint="A form based interaction where the user downloads a copy of their responses.">
+  </nestedDictation><documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#documentation" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_documentation" hint="A form based interaction where the user downloads a copy of their responses.">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="120"/>
 	<intro label="Introduction Text" type="TextArea" height="120"/>
@@ -3112,7 +3112,7 @@
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 	
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
-  </textbox><dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" remove="true">
+  </textbox><dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_drag_and_drop_labelling" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -3212,7 +3212,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></dragDropLabel><embedDiv menu="Links / Feeds" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#embedcontent" remove="true">
+    </pageHeaderGroup></dragDropLabel><embedDiv menu="Links / Feeds" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#embedcontent" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_embedcontent_page" remove="true">
     
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <src label="Embed Code or URL" type="script" height="300"/>
@@ -3292,7 +3292,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></embedDiv><flashCards menu="Navigators" menuItem="Flash Cards" icon="icRefreshPage" remove="true" thumb="thumbs/flashCards.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flashcards" hint="A series of double sided flash cards containing text and media.">
+    </pageHeaderGroup></embedDiv><flashCards menu="Navigators" menuItem="Flash Cards" icon="icRefreshPage" remove="true" thumb="thumbs/flashCards.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flashcards" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_flashcards_page" hint="A series of double sided flash cards containing text and media.">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="120"/>
@@ -3478,7 +3478,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></flashPaper><flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flickrslideshow" remove="true">
+    </pageHeaderGroup></flashPaper><flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flickrslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_flickr_slideshow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>
@@ -3560,7 +3560,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#gapfilldraganddrop" remove="true">
+    </pageHeaderGroup></flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#gapfilldraganddrop" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_gap_fill_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
@@ -3751,7 +3751,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></geocommons><grid menu="Interactivity" menuItem="Sortable Grid" hint="An interaction allowing the user to sort items on a grid." icon="icGrid" thumb="thumbs/grid.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#sortablegrid" remove="true">
+    </pageHeaderGroup></geocommons><grid menu="Interactivity" menuItem="Sortable Grid" hint="An interaction allowing the user to sort items on a grid." icon="icGrid" thumb="thumbs/grid.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#sortablegrid" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_sortable_grid_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="150"/>
@@ -3850,7 +3850,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></grid><hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icHangman" thumb="thumbs/hangman.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hangman" remove="true">
+    </pageHeaderGroup></grid><hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icHangman" thumb="thumbs/hangman.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hangman" wiki="https://xerte.org.uk/wiki/doku.php?id=games_hangman_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
@@ -3929,7 +3929,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></hangman><hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="An interaction where the answer to the question posed is given by selecting one or more relevant hotspots on an image." icon="icHotspotQuestion" thumb="thumbs/hotspotQuestion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotquestion" remove="true">
+    </pageHeaderGroup></hangman><hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="An interaction where the answer to the question posed is given by selecting one or more relevant hotspots on an image." icon="icHotspotQuestion" thumb="thumbs/hotspotQuestion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotquestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_hotspot_question_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -4042,7 +4042,7 @@
     <text label="Feedback" type="TextArea" height="250"/>
     <truth label="Correct Answer" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </QHotSpot><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" remove="true">
+  </QHotSpot><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_hotspot_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -4374,7 +4374,7 @@
 	
 	<seriesID label="Image ID" type="TextInput" optional="true" tooltip="Link directly to this image by giving it a unique ID"/>
 	
-  </singleImg><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageviewer" label="Page Text" type="text" height="250" remove="true">
+  </singleImg><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageviewer" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_viewer_page" label="Page Text" type="text" height="250" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -4461,7 +4461,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></imageViewer><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivetext" remove="true">
+    </pageHeaderGroup></imageViewer><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivetext" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_interactive_text_page" remove="true">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="150"/>
 	<passage label="Interactive Text" type="TextArea" height="200"/>
@@ -4594,7 +4594,7 @@
     <text label="Description" type="TextArea" height="150"/>
 	<bgColour label="Highlight Colour" type="ColourPicker"/>
 
-  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
+  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_interactive_video_page" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 
@@ -4841,7 +4841,7 @@
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
-	</ivSynchXotChange><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#inventory" remove="true">
+	</ivSynchXotChange><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#inventory" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_inventory_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
@@ -5145,7 +5145,7 @@
 	<name label="Label" type="TextInput" wysiwyg="true"/>
 	<script label="Jmol Script" type="TextArea" height="100"/>
   
-  </jmolOption><links menu="Links / Feeds" menuItem="Hyperlinks" hint="A list of keyboard accessible links." icon="icWorld" remove="true" thumb="thumbs/links.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hyperlinks">
+  </jmolOption><links menu="Links / Feeds" menuItem="Hyperlinks" hint="A list of keyboard accessible links." icon="icWorld" remove="true" thumb="thumbs/links.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hyperlinks" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_hyperlinks_page">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100"/>
@@ -5230,7 +5230,7 @@
     <text label="Description" type="TextArea" height="100"/>
     <url label="URL" type="TextInput" tooltip="Tip: You can add your link(s) to the text area above and leave this URL field blank. This allows more control over where the links appear as well as control over the specific text and/or images to which the links are attached."/>
 	<target label="Open In" options="New Window,Lightbox" type="ComboBox" data="new,lightbox" defaultValue="new" mandatory="true"/>
-  </link><list menu="Navigators" menuItem="Interactive List" hint="Present an interactive list where each list item presents further information." icon="icList" thumb="thumbs/interactiveList.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivelist" remove="true" deepLink="true">
+  </link><list menu="Navigators" menuItem="Interactive List" hint="Present an interactive list where each list item presents further information." icon="icList" thumb="thumbs/interactiveList.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivelist" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_interactivelist_page" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -5492,7 +5492,7 @@
     </pageHeaderGroup></mapstraction><overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
     <name type="TextInput" wysiwyg="true" label="Title"/>
     <url type="TextInput" label="Overlay"/>
-  </overlay><mcq menu="Interactivity" menuItem="Multiple Choice Question" hint="Pose a question with multiple answer options. Create simple true - false questions, or more complex questions with multiple correct answers." icon="icComments" thumb="thumbs/mcq.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multiplechoicequestion" remove="true">
+  </overlay><mcq menu="Interactivity" menuItem="Multiple Choice Question" hint="Pose a question with multiple answer options. Create simple true - false questions, or more complex questions with multiple correct answers." icon="icComments" thumb="thumbs/mcq.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multiplechoicequestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_mcq_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
@@ -5602,7 +5602,7 @@
 		<audioFB label="File" defaultValue="" type="media" optional="true"/>
 		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</audioGroup>
-  </option><media360 menu="Media" menuItem="360&#xB0; Image" hint="An interaction allowing you to mark up a 360&#xB0; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" remove="true">
+  </option><media360 menu="Media" menuItem="360&#xB0; Image" hint="An interaction allowing you to mark up a 360&#xB0; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" wiki="https://xerte.org.uk/wiki/doku.php?id=media_360_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -5819,7 +5819,7 @@
 		<unlockPswdTxt label="Instructions" condition="lock=='true'&amp;&amp;unlockOn=='password'" type="TextArea" height="100" defaultValue="" optional="true" tooltip="Text to accompany the password input field"/>
 	</lockHs>
 	
-  </hotspot360><mediaLesson menu="Media" menuItem="Media Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#medialesson" remove="true">
+  </hotspot360><mediaLesson menu="Media" menuItem="Media Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#medialesson" wiki="https://xerte.org.uk/wiki/doku.php?id=media_media_lesson_page" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		<layout label="Panel Layout" type="ComboBox" options="Grid,Tile Horizontally,Tile Vertically,Full Top - Tile Bottom,Tile Top - Full Bottom,Full Left - Tile Right,Tile Left - Full Right" data="grid,tileH,tileV,top,bottom,left,right" defaultValue="grid" width="200"/>
@@ -6179,7 +6179,7 @@
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 
-	</synchGoogleMapChange><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#memorygame" remove="true">
+	</synchGoogleMapChange><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#memorygame" wiki="https://xerte.org.uk/wiki/doku.php?id=games_memorygame_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -6265,7 +6265,7 @@
     <url label="Image" type="Media"/>
 	<url2 label="Label Image" type="Media" optional="true"/>
 
-  </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to paste the response to clipboard." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modelanswer" remove="true">
+  </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to paste the response to clipboard." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modelanswer" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100"/>
@@ -6367,7 +6367,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" height="280" remove="true">
+    </pageHeaderGroup></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" height="280" remove="true" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_results_page">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
     <copyBtnTxt label="Copy Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
@@ -6445,7 +6445,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modifyexercise" remove="true">
+    </pageHeaderGroup></modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modifyexercise" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_modify_exercise_page" remove="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
@@ -6528,7 +6528,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#morphimages" remove="true">
+    </pageHeaderGroup></modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#morphimages" wiki="https://xerte.org.uk/wiki/doku.php?id=media_morph_images_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -6618,7 +6618,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a series of sub-pages. Layout options include accordion, button, columns, slideshow and tabs." icon="icPages" thumb="thumbs/tabNav.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-navigator" remove="true" deepLink="true">
+    </pageHeaderGroup></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a series of sub-pages. Layout options include accordion, button, columns, slideshow and tabs." icon="icPages" thumb="thumbs/tabNav.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-navigator" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_multinavigator_page" remove="true" deepLink="true">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -6721,7 +6721,7 @@
 		<transcript label="Audio Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</mediaInfo>
 
-  </navPage><newWindow menu="Links / Feeds" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#newwindow" remove="true">
+  </navPage><newWindow menu="Links / Feeds" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#newwindow" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_newwindow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="150"/>
@@ -6814,7 +6814,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
+    </pageHeaderGroup></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_opinion_page" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<instructions label="Instructions" type="textArea" height="120"/>
     <align label="Align Text" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
@@ -6955,7 +6955,7 @@
   </opinionQuestion><opinionOption menuItem="Answer" icon="icBullet">
     <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwig="true"/>
 	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
-  </opinionOption><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteQuestion" remove="true" thumb="thumbs/orient.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#orientation">
+  </opinionOption><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteQuestion" remove="true" thumb="thumbs/orient.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#orientation" wiki="https://xerte.org.uk/wiki/doku.php?id=text_orientation_page">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
@@ -7048,7 +7048,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></orient><pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#pdffile" remove="true">
+    </pageHeaderGroup></orient><pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#pdffile" wiki="https://xerte.org.uk/wiki/doku.php?id=media_pdf_file_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
@@ -7131,7 +7131,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></pdf><perspectives menu="Navigators" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips alongside related text." icon="icUser" thumb="thumbs/perspectives.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multipleperspectives" remove="true" deepLink="true">
+    </pageHeaderGroup></pdf><perspectives menu="Navigators" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips alongside related text." icon="icUser" thumb="thumbs/perspectives.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multipleperspectives" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_multiple_perpectives_page" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
     <backBtnTip label="Scroll Back Tip" type="TextInput" wysiwyg="true" language="true"/>
@@ -7301,7 +7301,7 @@
 		<pageLink label="Page" type="pageList" optional="true"/>
 		<pageLinkTxt label="Text" type="textInput" wysiwyg="true" defaultValue="Enter Text for Link" optional="true"/>
 	</linkInfo>
-  </image><quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#quiz" hint="Present a formative assessment comprising a series of questions with multiple answer options. Each question can have one or more correct answers.">
+  </image><quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#quiz" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_quiz_page" hint="Present a formative assessment comprising a series of questions with multiple answer options. Each question can have one or more correct answers.">
     <name label="Quiz Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -7518,7 +7518,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></raptivity><results menu="Tracking / xAPI" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#resultspage" remove="true">
+    </pageHeaderGroup></raptivity><results menu="Tracking / xAPI" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#resultspage" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_results_page" remove="true">
 
         <generalResultsTxt label="General results text label" type="TextInput" wysiwyg="true" language="true"/>
         <averageTxt label="Average text label" type="TextInput" wysiwyg="true" language="true"/>
@@ -7625,7 +7625,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></results><rss menuItem="RSS Feed" menu="Links / Feeds" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#rssfeed" remove="true">
+    </pageHeaderGroup></results><rss menuItem="RSS Feed" menu="Links / Feeds" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#rssfeed" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_rssfeed_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="textArea" height="300"/>
@@ -7704,7 +7704,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></rss><rssdownload menuItem="RSS Xerte Download Feed" menu="Links / Feeds" hint="Include Xerte specific RSS feeds from any version 3.8 or later Xerte installation to include download links for any projects that have been included in the RSS export feed." icon="icRSS" thumb="thumbs/rssdownload.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#rssxertedownloadfeed" remove="true">
+    </pageHeaderGroup></rss><rssdownload menuItem="RSS Xerte Download Feed" menu="Links / Feeds" hint="Include Xerte specific RSS feeds from any version 3.8 or later Xerte installation to include download links for any projects that have been included in the RSS export feed." icon="icRSS" thumb="thumbs/rssdownload.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#rssxertedownloadfeed" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_rssxertedownload_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="textArea" height="300"/>
@@ -8197,7 +8197,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></slideshow><stopTracking label="Page Text" type="text" height="360" menu="Tracking / xAPI" menuItem="Stop Tracking" hint="A page with a button to stop and finish tracking the learning object." icon="icPageWhiteText" thumb="thumbs/stopTracking.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#stoptracking" remove="true">
+    </pageHeaderGroup></slideshow><stopTracking label="Page Text" type="text" height="360" menu="Tracking / xAPI" menuItem="Stop Tracking" hint="A page with a button to stop and finish tracking the learning object." icon="icPageWhiteText" thumb="thumbs/stopTracking.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#stoptracking" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_stoptracking_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <textIntro label="Instruction" type="textarea" wysiwyg="true"/>
@@ -8274,7 +8274,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></stopTracking><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps." icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#summary">
+    </pageHeaderGroup></stopTracking><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps." icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#summary" wiki="https://xerte.org.uk/wiki/doku.php?id=text_summary_page">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
@@ -8439,7 +8439,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#tabbednavigatorplus" remove="true" deepLink="true">
+    </pageHeaderGroup></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#tabbednavigatorplus" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_tabbednavigator_page" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
@@ -8541,7 +8541,7 @@
       <nestedPage><![CDATA[<nestedPage name="Nested Page Name" text="Content for the pane"/>]]></nestedPage>
     </newNodes>
 
-  </nestedTab><table menu="Charts" menuItem="Table" hint="A page for basic tables." icon="icTable" remove="true" thumb="thumbs/table.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#table">
+  </nestedTab><table menu="Charts" menuItem="Table" hint="A page for basic tables." icon="icTable" remove="true" thumb="thumbs/table.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#table" wiki="https://xerte.org.uk/wiki/doku.php?id=charts_table_page">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="300" width="380"/>
@@ -8639,7 +8639,7 @@
 		<delimiter label="Delimiter" options="Comma,Semicolon" type="ComboBox" data="comma,semicolon" defaultValue="comma" width="100" optional="true"/>
 	</csv>
 
-  </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#plaintext" remove="true">
+  </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#plaintext" wiki="https://xerte.org.uk/wiki/doku.php?id=text_plain_text_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
@@ -8715,7 +8715,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></text><textCorrection menu="Interactivity" menuItem="Text Correction" hint="A page for comparing texts. A text prompt containing errors can be rewritten and compared with the correct answer." icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#textcorrection" remove="true">
+    </pageHeaderGroup></text><textCorrection menu="Interactivity" menuItem="Text Correction" hint="A page for comparing texts. A text prompt containing errors can be rewritten and compared with the correct answer." icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#textcorrection" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_text_correction_page" remove="true">
         <name label="Page Title" type="textInput" wysiwyg="true"/>
         <introduction label="Page Text" type="TextArea" height="100"/>
         
@@ -8891,7 +8891,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></textDrawing><textGraphics menu="Media" menuItem="Graphics and Sound" hint="A page for presenting text and graphics. You can also add an optional sound to this page." label="Page Text" type="text" height="300" icon="icPageWhitePicture" thumb="thumbs/textGraphics.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#graphicsandsound" remove="true">
+    </pageHeaderGroup></textDrawing><textGraphics menu="Media" menuItem="Graphics and Sound" hint="A page for presenting text and graphics. You can also add an optional sound to this page." label="Page Text" type="text" height="300" icon="icPageWhitePicture" thumb="thumbs/textGraphics.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#graphicsandsound" wiki="https://xerte.org.uk/wiki/doku.php?id=media_graphics_and_sound_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -8989,7 +8989,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></textGraphics><textHighlight menu="Interactivity" menuItem="Highlight Text" hint="A page where an initial piece of text can be highlighted and then compared to a suggested answer." icon="icHighlight" thumb="thumbs/textHighlight.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#highlighttext" remove="true">
+    </pageHeaderGroup></textGraphics><textHighlight menu="Interactivity" menuItem="Highlight Text" hint="A page where an initial piece of text can be highlighted and then compared to a suggested answer." icon="icHighlight" thumb="thumbs/textHighlight.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#highlighttext" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_highlight_text_page" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
@@ -9128,7 +9128,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></textHighlight><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#matchingtexts" remove="true">
+    </pageHeaderGroup></textHighlight><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#matchingtexts" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_matching_texts_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
@@ -9316,7 +9316,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></textSWF><textVideo menu="Media" menuItem="Video" hint="Embed MP4 video files in your project." label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#video" type="text" height="180" remove="true">
+    </pageHeaderGroup></textSWF><textVideo menu="Media" menuItem="Video" hint="Embed MP4 video files in your project." label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#video" wiki="https://xerte.org.uk/wiki/doku.php?id=media_video_page" type="text" height="180" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -9409,7 +9409,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></textVideo><thumbnailViewer menu="Media" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#thumbnailviewer" remove="true" deepLink="true">
+    </pageHeaderGroup></textVideo><thumbnailViewer menu="Media" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#thumbnailviewer" wiki="https://xerte.org.uk/wiki/doku.php?id=media_thumbnail_viewer_page" remove="true" deepLink="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -9505,7 +9505,7 @@
 		<link label="URL" type="textInput" condition="linktarget=='Specified URL'"/>
 	</linkGroup>
 
-  </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinematchingpairs" remove="true">
+  </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinematchingpairs" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_timeline_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -9602,7 +9602,7 @@
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Description" type="TextArea" height="100"/>
 
-  </timelinedate><title menu="Text" menuItem="Title Page" hint="A simple page for displaying a title." label="Title Text" icon="icTitle" thumb="thumbs/title.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#xertepagetypes" type="text" height="100" remove="true">
+  </timelinedate><title menu="Text" menuItem="Title Page" hint="A simple page for displaying a title." label="Title Text" icon="icTitle" thumb="thumbs/title.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#xertepagetypes" wiki="https://xerte.org.uk/wiki/doku.php?id=text_title_page" type="text" height="100" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100"/> 
@@ -9695,7 +9695,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></title><topXQ menu="Interactivity" menuItem="Answer X of Y" hint="Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#answerxofy" remove="true">
+    </pageHeaderGroup></title><topXQ menu="Interactivity" menuItem="Answer X of Y" hint="Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#answerxofy" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_answer_x_of_y" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
     <prompt label="Question" type="TextArea" height="100"/>
@@ -9796,7 +9796,7 @@
     </pageHeaderGroup></topXQ><optionXQ menuItem="Answer" icon="icBullet">
         <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true"/>
         <name label="Label" type="TextInput"/>
-    </optionXQ><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Synchronise a transcript to an audio file." icon="icTranscript2" thumb="thumbs/transcriptReader.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#transcriptreader" remove="true">
+    </optionXQ><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Synchronise a transcript to an audio file." icon="icTranscript2" thumb="thumbs/transcriptReader.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#transcriptreader" wiki="https://xerte.org.uk/wiki/doku.php?id=media_transcript_reader_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -9883,7 +9883,7 @@
     <text label="Text" type="TextArea" height="250"/>
     <synch label="Synch Point" type="TextInput"/>	
 
-  </nestedSynch><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#synchedvideo" remove="true">
+  </nestedSynch><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#synchedvideo" wiki="https://xerte.org.uk/wiki/doku.php?id=media_synched_video_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Video" type="Media"/>
@@ -10057,7 +10057,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></wiki><wordsearch menu="Games" menuItem="Wordsearch" hint="A wordsearch game. Create a list of words for the user to find." icon="icWordsearch" thumb="thumbs/wordsearch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#wordsearch" remove="true">
+    </pageHeaderGroup></wiki><wordsearch menu="Games" menuItem="Wordsearch" hint="A wordsearch game. Create a list of words for the user to find." icon="icWordsearch" thumb="thumbs/wordsearch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#wordsearch" wiki="https://xerte.org.uk/wiki/doku.php?id=games_wordsearch_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
@@ -10226,7 +10226,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Media" remove="true" thumb="thumbs/youtube.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubevideo" hint="Include video content from YouTube in your project." icon="icYoutube">&gt;
+    </pageHeaderGroup></xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Media" remove="true" thumb="thumbs/youtube.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubevideo" wiki="https://xerte.org.uk/wiki/doku.php?id=media_youtube_video_page" hint="Include video content from YouTube in your project." icon="icYoutube">&gt;
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>
@@ -10307,7 +10307,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></youtube><youtuberss menuItem="YouTube Feed" menu="Media" remove="true" thumb="thumbs/youtubefeed.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubefeed" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
+    </pageHeaderGroup></youtube><youtuberss menuItem="YouTube Feed" menu="Media" remove="true" thumb="thumbs/youtubefeed.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubefeed" wiki="https://xerte.org.uk/wiki/doku.php?id=media_youtube_feed_page" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="200"/>

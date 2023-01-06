@@ -13,7 +13,7 @@
     </pageWizard>
 
     <!-- TXQ PAGE=============================-->
-<topXQ menu = "Interactivity" menuItem = "Answer X of Y" hint = "Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#answerxofy" remove="true">
+<topXQ menu = "Interactivity" menuItem = "Answer X of Y" hint = "Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#answerxofy" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_answer_x_of_y" remove="true">
     <name label = "Page Title" type = "TextInput" wysiwyg = "true"/>
     <instruction label = "Instruction" type = "TextArea" height = "100"/>
     <prompt label="Question" type="TextArea" height="100"/>

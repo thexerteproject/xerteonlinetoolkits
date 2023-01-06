@@ -10,7 +10,7 @@
   </pageWizard>
 
   <!-- 360 IMAGE============================= -->
-  <media360 menu="Media" menuItem="360&#176; Image" hint="An interaction allowing you to mark up a 360&#176; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" remove="true">
+  <media360 menu="Media" menuItem="360&#176; Image" hint="An interaction allowing you to mark up a 360&#176; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" wiki="https://xerte.org.uk/wiki/doku.php?id=media_360_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>

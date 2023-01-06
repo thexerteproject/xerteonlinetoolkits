@@ -63,7 +63,7 @@
 		
         <footerGroup type="group" label="Footer" optional="true">
             <footerHide label="Hide Footer" type="Checkbox" defaultValue="false" optional="true"/>
-            <customFooter type="TextArea" height="60" label="Custom Footer Content"/>
+            <customFooter type="TextArea" height="60" label="Custom Footer Content" optional="true"/>
 			<footerPos type="ComboBox" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175"/>
             <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
 		</footerGroup>
