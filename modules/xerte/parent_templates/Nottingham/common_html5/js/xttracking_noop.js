@@ -381,8 +381,7 @@ function NoopTrackingState()
         {
             return this.findPage(page_nr);
         }
-        var i=0;
-        for (i=0; i<this.interactions.length; i++)
+        for (let i=0; i<this.interactions.length; i++)
         {
             if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
                 return this.interactions[i];
@@ -1316,8 +1315,8 @@ function XTResults(fullcompletion) {
                 case "match":
                     // If unique targets, match answers by target, otherwise match by source
                     const targets = [];
-                    for (let j = 0; j < state.interactions[i].nrinteractions; j++) {
-                        targets.push(state.interactions[i].correctOptions[c].target);
+                    for (let j = 0; j < state.interactions[i].correctOptions.length; j++) {
+                        targets.push(state.interactions[i].correctOptions[j].target);
                     }
                     // Check whether values of targets are unique
                     const uniqueTargets = targets.length === new Set(targets).size;

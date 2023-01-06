@@ -1,4 +1,21 @@
-//TODO: get user email, more verbs (passed/failed, completed, ect), define scormmode for xAPI
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 function makeId(page_nr, ia_nr, ia_type, ia_name) {
     var tmpid = 'urn:x-xerte:p-' + (page_nr + 1);
@@ -471,10 +488,8 @@ function XApiTrackingState() {
         if (ia_nr < 0) {
             return this.findPage(page_nr);
         }
-        var id = makeId(page_nr, ia_nr, "", "");
-        var i = 0;
-        for (i = 0; i < this.interactions.length; i++) {
-            if (this.interactions[i].id.indexOf(id) == 0)
+        for (let i = 0; i < this.interactions.length; i++) {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
                 return this.interactions[i];
         }
         return null;
@@ -3702,8 +3717,8 @@ function XTResults(fullcompletion) {
                 case "match":
                     // If unique targets, match answers by target, otherwise match by source
                     const targets = [];
-                    for (let j = 0; j < state.interactions[i].nrinteractions; j++) {
-                        targets.push(state.interactions[i].correctOptions[c].target);
+                    for (let j = 0; j < state.interactions[i].correctOptions.length; j++) {
+                        targets.push(state.interactions[i].correctOptions[j].target);
                     }
                     // Check whether values of targets are unique
                     const uniqueTargets = targets.length === new Set(targets).size;
