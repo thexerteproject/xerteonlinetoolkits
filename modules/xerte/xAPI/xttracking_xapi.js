@@ -411,6 +411,7 @@ function XApiTrackingState() {
             this.currentid = "";
         }
 
+      debugger;
         var sit = this.findInteraction(page_nr, ia_nr);
         this.verifyExitInteractionParameters(sit, result, learneroptions,
             learneranswer, feedback);
@@ -458,7 +459,7 @@ function XApiTrackingState() {
 
     function setPageScore(page_nr, score) {
         var sit = this.findPage(page_nr);
-        if (sit != null && (this.scoremode != 'first' || sit.count < 1)) {
+        if (sit != null && (this.scoremode != 'first' || sit.count <= 1)) {
             sit.score = score;
         }
     }
@@ -2419,6 +2420,7 @@ function XTSetOption(option, value) {
 }
 
 function XTEnterPage(page_nr, page_name, grouping) {
+  debugger;
     var sitp = state.enterPage(page_nr, -1, "page", page_name);
     this.pageStart = new Date();
     var id = sitp.getPageId();
@@ -2932,6 +2934,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
 }
 
 function XTSetPageScore(page_nr, score) {
+  debugger;
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
     var sitp = state.findPage(page_nr);

@@ -1175,7 +1175,7 @@
 					total = 0;
 					correct_answers = 0;
 					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
-						var correctAnswer = answerData[interactionNumber][0];
+            var correctAnswer = answerData[interactionNumber][0];
 						var labelSource = labelAnswers[correctAnswer];
 						var option = {source: labelSource, target: interactionNumber+''};
 						l_options.push(option);
@@ -1312,10 +1312,10 @@
 			}
 			if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
 			{
-                XTSetPageType(x_currentPage, 'numeric', answerData.length, this.weighting);
+                XTSetPageType(x_currentPage, 'match', answerData.length, this.weighting);
 			}
 			else { // text fill in blank or drag & drop
-                XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+                XTSetPageType(x_currentPage, 'match', 1, this.weighting);
             }
 		}
 		
