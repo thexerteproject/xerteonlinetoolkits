@@ -775,7 +775,6 @@ function init_workspace()
     //shared folder
     node_types["folder_shared"] = create_node_type("folder_shared", folder_children);
 
-    debugger
     // sub shared folder
     node_types["sub_folder_shared"] = create_node_type("sub_folder_shared", folder_children);
 
@@ -830,7 +829,7 @@ function init_workspace()
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
                     debugger
-                    if (node[0].type.includes("_group") || node[0].type === "folder_shared" || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") ) {
+                    if (node[0].type.includes("_group") || node[0].type.includes("folder_shared") || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") || workspace.nodes[node[0].id].role !== "creator" ) {
                         return false;
                     }
                     return true;

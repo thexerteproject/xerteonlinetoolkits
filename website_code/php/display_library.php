@@ -478,7 +478,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     $params = NULL;
 
     if ($type != "group_top") {
-        $query  = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
+        $query  = "select td.template_name as project_name, td.creator_id, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tr.role, fd3.folder_name as creator_folder_name, count(tr2.template_id) as nrshared "
             . " from {$prefix}templatedetails td "
             . " join {$prefix}templaterights tr on td.template_id=tr.template_id and tr.folder=? " //and tr.user_id=?
@@ -492,7 +492,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         }
     } else {
         //select templates the same way as regularly, however, now check for group_id in template_group_rights
-        $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
+        $query = "select td.template_name as project_name, td.creator_id, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tgr.role, '' as creator_folder_name, 2 as nrshared from {$prefix}templatedetails td, "
             . " {$prefix}template_group_rights tgr, {$prefix}originaltemplatesdetails otd where td.template_id = tgr.template_id and tgr.group_id = ? "
             . " and otd.template_type_id = td.template_type_id ";
@@ -543,7 +543,13 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         $item->xot_id = $row['template_id'];
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
-        $item->role = $row['role'];
+        //$item->role = $row['role'];
+        if($row["creator_id"] == $_SESSION["toolkits_logon_id"]){
+            $item->role = $row['role'];
+        }else{
+            $item->role = "non-creator";
+        }
+
         $shared = "";
         if ($row['role'] != 'creator' && $newtype != 'group') {
             $shared = 'shared';
@@ -989,6 +995,7 @@ function get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only=fa
     }
 
     $query_response = db_query($query, $params);
+
     return $query_response;
 }
 

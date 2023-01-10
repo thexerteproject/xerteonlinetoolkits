@@ -796,8 +796,8 @@ function sharing_info($template_id)
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ?";
-    $query_folder_id = db_query($sql, array($template_id));
+    $sql = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ? and role =?";
+    $query_folder_id = db_query($sql, array($template_id, "creator"));
 
     $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ?";
     $query_folders = db_query($sql, array($query_folder_id[0]["folder"]));
@@ -825,12 +825,12 @@ function sharing_info($template_id)
 
 
 
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id where";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
             $sql.= " or ld.login_id = ?";
         }else{
-            $sql.= " (ld.login_id = ?";
+            $sql.= " where (ld.login_id = ?";
         }
     }
     $sql .= ") and";
@@ -851,8 +851,17 @@ function sharing_info($template_id)
 
     foreach ($query_sharing_rows as $index => $row) {
         foreach ($query_shared_folder_users as $indexUser => $user){
-            if(($row["user_id"] == $user["user_id"] && $row["role"] != $user["row"]) && $roles[$query_shared_folder_users[$indexUser]["role"]] > $roles[ $query_sharing_rows[$index]["role"]]){
-                $query_sharing_rows[$index]["role"] = $query_shared_folder_users[$indexUser]["role"];
+
+            if($user["role"] == "creator"){
+                $query_shared_folder_users[$indexUser]["role"] = "co-author";
+            }
+
+            if($row["user_id"] == $user["user_id"] && $row["role"] == "creator"){
+                $query_shared_folder_users[$indexUser]["role"] = "creator";
+            }
+
+            if($row["user_id"] == $user["user_id"] && $row["role"] != "creator" && $roles[$query_shared_folder_users[$indexUser]["role"]] < $roles[ $query_sharing_rows[$index]["role"]]){
+                $query_shared_folder_users[$indexUser]["role"] =  $query_sharing_rows[$index]["role"];
             }
         }
     }
