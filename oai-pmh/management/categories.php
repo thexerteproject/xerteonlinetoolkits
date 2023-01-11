@@ -21,27 +21,26 @@ if ($argc > 1) {
         $source_url = $xmlfile;
         echo $source_url . "\n";
         $xml = simplexml_load_file($xmlfile);
-        $ns = $xml->getNamespaces();
 
-        $xml->registerXPathNamespace('f', reset($ns));
-
-        $nodes = $xml->xpath("//f:term");
-        $relations = $xml->xpath("//f:relationship");
+        $nodes = $xml->xpath('//vdex:term');
+        $relations = $xml->xpath("//vdex:relationship");
 
         for ($i = 0; $i < count($nodes); $i++) {
             $node = $nodes[$i];
+            $ns = $node->getNamespaces();
+            $c = $node->children($ns['vdex']);
             $tempParent = null;
+
             foreach ($relations as $relation){
-                if ((string)$relation->sourceTerm == (string)$node->termIdentifier and $relation->relationshipType == "BT"){
-                    $tempParent = (string)$relation->targetTerm;
+                $relationChild = $relation->children($ns['vdex']);
+                if ((string)$relationChild->sourceTerm == (string)$c->termIdentifier and (string)$relationChild->relationshipType == "BT"){
+                    $tempParent = (string)$relationChild->targetTerm;
                     break;
                 }
             }
 
-
-            $tempTaxon = (string)$node->termIdentifier;
-            $tempLabel = (string)$node->caption->langstring;
-
+            $tempTaxon = (string)$c->termIdentifier;
+            $tempLabel = (string)$c->caption->langstring;
             insertCategory($source_url,$tempTaxon,$tempLabel, $tempParent);
         }
     }
@@ -91,7 +90,7 @@ function clearCategoryTable() {
     db_query($q);
 }
 
-function insertCategory($source_url, $taxon, $label, $parent = null){
+function insertCategory($source_url, $taxon, $label,$parent){
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
@@ -104,7 +103,7 @@ function insertCategory($source_url, $taxon, $label, $parent = null){
 
     $q3 = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}oai_categories(category_id,taxon,label,source_url,parent_id) VALUES (?,?,?,?,?)";
     if (is_null($parent)) {
-        $params = array($return_id, $taxon, $label, $source_url);
+        $params = array($return_id, $taxon, $label, $source_url, null);
     } else {
         $q ="SELECT category_id FROM {$xerte_toolkits_site->database_table_prefix}oai_categories WHERE taxon = ?";
         $parent_id = db_query_one($q, array($parent));
@@ -113,4 +112,3 @@ function insertCategory($source_url, $taxon, $label, $parent = null){
     db_query($q3,$params);
 
 }
-

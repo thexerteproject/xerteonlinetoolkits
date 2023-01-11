@@ -2,7 +2,7 @@
 
 require_once('../../config.php');
 
-// php educational2.php ./vocabularies/mbo_opleidingsdomeinen_en_studierichtingen-2015.xml
+// php educational.php ./vocabularies/leerniveaus-knset.xml
 
 if ($argc > 1) {
     createEducationalTable();
@@ -13,28 +13,29 @@ if ($argc > 1) {
     $xml = simplexml_load_file($xmlfile);
 
     $ns = $xml->getNamespaces();
-    $xml->registerXPathNamespace('f', reset($ns));
 
-    $nodes = $xml->xpath("//f:term");
-    $relations = $xml->xpath("//f:relationship");
+    $nodes = $xml->xpath('//vdex:term');
+    $relations = $xml->xpath("//vdex:relationship");
 
     for ($i = 0; $i < count($nodes); $i++) {
         $tempParent = null;
         $node = $nodes[$i];
+        $c = $node->children($ns['vdex']);
+
         foreach ($relations as $relation){
-            if ((string)$relation->sourceTerm == (string)$node->termIdentifier and $relation->relationshipType == "BT"){
-                $tempParent = (string)$relation->targetTerm;
+            $relationChild = $relation->children($ns['vdex']);
+            if ((string)$relationChild->sourceTerm == (string)$c->termIdentifier and (string)$relationChild->relationshipType == "BT"){
+                $tempParent = (string)$relationChild->targetTerm;
                 break;
+                }
             }
-        }
 
-        $tempLabel = (string)$node->caption->langstring;
-        $tempID = (string)$node->termIdentifier;
+        $tempLabel = (string)$c->caption->langstring;
+        $tempID = (string)$c->termIdentifier;
 
-        insertEducational($tempID,$tempLabel,$tempParent);
+        insertEducational($tempID,$tempLabel, $tempParent);
     }
 }
-
 function createEducationalTable() {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -42,7 +43,7 @@ function createEducationalTable() {
     $q = "CREATE TABLE IF NOT EXISTS {$prefix}oai_education(
     education_id INT(11) PRIMARY KEY NOT NULL,
     term_id VARCHAR(63) NOT NULL,
-    label VARCHAR(255) NOT NULL,
+    label VARCHAR(255) NOT NULL
     parent_id INT(11))";
 
     db_query($q);
@@ -71,7 +72,7 @@ function insertEducational($termID, $label, $parent = null){
     $return_id = $result[0]['educationlevel_id'];
 
     $q3 = "INSERT INTO {$prefix}oai_education(education_id,term_id,label,parent_id) VALUES (?,?,?,?)";
-    if (is_null($parent)) {
+    if (is_null($parent)){
         $params = array($return_id, $termID, $label, $parent);
     } else {
         $q = "SELECT education_id FROM {$prefix}oai_education WHERE term_id = ?";
@@ -81,3 +82,4 @@ function insertEducational($termID, $label, $parent = null){
     $res = db_query($q3,$params);
 
 }
+
