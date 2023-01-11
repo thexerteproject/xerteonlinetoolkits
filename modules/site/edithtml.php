@@ -25,6 +25,18 @@
  * Time: 12:24
  */
 
+function get_children ($parent_id, $lookup, $column, $type) : array {
+    // children
+    $children = [];
+    //we are at a leaf level
+    if (empty($lookup[$parent_id]['children'])){
+        return $children;
+    }
+    foreach ($lookup[$parent_id]['children'] as $node) {
+        $children[] = [name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type)];
+    }
+    return $children;
+}
 
 /**
  *
@@ -159,16 +171,57 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => $xerte_toolkits_site->site_url . "modules/site/parent_templates/site/common/img/default.jpg"));
     }
     /**
-     * Build CategoryList
+     * Build CategoryList with hierarchy
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories order by category_name asc";
+    $sql = "select category_id, label, parent_id from {$xerte_toolkits_site->database_table_prefix}oai_categories";
     $categories = db_query($sql);
+    $lookup = [];
+    foreach ($categories as $node){
+        $node[children] = [];
+        $lookup = $lookup + [$node['category_id'] => $node];
+    }
+    foreach ($lookup as $node){
+        if ($node['parent_id'] != null){
+            $lookup[$node['parent_id']]['children'][] = $node;
+        }
+    }
+
+    $parsed_categories = [];
+    foreach ($lookup as $value){
+        //find all tree origins
+        if ($value['parent_id'] == null) {
+            //add node and all its children recursively
+            $node = [name => $value['label'], value => $value['label'], children => get_children($value['category_id'], $lookup, 'label', 'category_id')];
+            $parsed_categories[] = $node;
+        }
+    }
 
     /**
      * Build EducationList
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}educationlevel order by educationlevel_name asc";
+    $sql = "select education_id, label, parent_id from {$xerte_toolkits_site->database_table_prefix}oai_education order by parent_id asc";
     $educationlevels = db_query($sql);
+
+    $lookup = [];
+    foreach ($educationlevels as $node){
+        $node[children] = [];
+        $lookup = $lookup + [$node['education_id'] => $node];
+    }
+    foreach ($lookup as $node){
+        if ($node['parent_id'] != null){
+            $lookup[$node['parent_id']]['children'][] = $node;
+        }
+    }
+
+    $parsed_educationlevels = [];
+    foreach ($lookup as $value){
+        //find all tree origins
+        if ($value['parent_id'] == null) {
+            //add node and all its children recursively
+            $node = [name => $value['label'], value => $value['label'], children => get_children($value['education_id'], $lookup, 'label', 'education_id')];
+            $parsed_educationlevels[] = $node;
+        }
+    }
 
     /**
      * Build Grouping List
@@ -226,6 +279,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" href="editor/js/vendor/treeselect/treeselectjs.css" />
     <!--link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'-->
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -339,7 +393,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jsep.min.js?version=<?php echo $version;?>"></script>
-
+<script type="module" src="editor/js/vendor/treeselect/treeselectjs.mjs.js"></script>
 <!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
 
@@ -372,8 +426,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
-    echo "category_list=" . json_encode($categories) . ";\n";
-    echo "educationlevel_list=" . json_encode($educationlevels) . ";\n";
+    echo "category_list=" . json_encode($parsed_categories) . ";\n";
+    echo "educationlevel_list=" . json_encode($parsed_educationlevels) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "course_list=" . json_encode($course) . ";\n";
     echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
@@ -409,6 +463,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         }
 
     }
+
+    let TreeSelect;
+    (async()=>{
+        const { Treeselect } = await import(site_url + "editor/js/vendor/treeselect/treeselectjs.mjs.js");
+        TreeSelect = Treeselect;
+    })();
+
 </script>
 <script type="text/javascript" src="editor/js/data.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/application.js?version=<?php echo $version;?>"></script>

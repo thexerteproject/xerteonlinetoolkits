@@ -26,6 +26,20 @@
  */
 
 
+function get_children ($parent_id, $lookup, $column, $type) : array {
+    // children
+    $children = [];
+    //we are at a leaf level
+    if (empty($lookup[$parent_id]['children'])){
+        return $children;
+    }
+    foreach ($lookup[$parent_id]['children'] as $node) {
+        $children[] = [name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type)];
+    }
+    return $children;
+}
+
+
 /**
  *
  * Function output_editor_code
@@ -180,16 +194,59 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
 
     /**
-     * Build CategoryList
+     * Build CategoryList with hierarchy
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories order by category_name asc";
+    $sql = "select category_id, label, parent_id from {$xerte_toolkits_site->database_table_prefix}oai_categories";
     $categories = db_query($sql);
+    $lookup = [];
+    foreach ($categories as $node){
+        $node[children] = [];
+        $lookup = $lookup + [$node['category_id'] => $node];
+    }
+    foreach ($lookup as $node){
+        if ($node['parent_id'] != null){
+            $lookup[$node['parent_id']]['children'][] = $node;
+        }
+    }
+
+    $parsed_categories = [];
+    foreach ($lookup as $value){
+        //find all tree origins
+        if ($value['parent_id'] == null) {
+            //add node and all its children recursively
+            $node = [name => $value['label'], value => $value['label'], children => get_children($value['category_id'], $lookup, 'label', 'category_id')];
+            $parsed_categories[] = $node;
+        }
+    }
 
     /**
      * Build EducationList
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}educationlevel order by educationlevel_name asc";
+    $sql = "select education_id, label, parent_id from {$xerte_toolkits_site->database_table_prefix}oai_education order by parent_id asc";
     $educationlevels = db_query($sql);
+
+    $lookup = [];
+    foreach ($educationlevels as $node){
+        $node[children] = [];
+        $lookup = $lookup + [$node['education_id'] => $node];
+    }
+    foreach ($lookup as $node){
+        if ($node['parent_id'] != null){
+            $lookup[$node['parent_id']]['children'][] = $node;
+        }
+    }
+
+    $parsed_educationlevels = [];
+    foreach ($lookup as $value){
+        //find all tree origins
+        if ($value['parent_id'] == null) {
+            //add node and all its children recursively
+            $node = [name => $value['label'], value => $value['label'], children => get_children($value['education_id'], $lookup, 'label', 'education_id')];
+            $parsed_educationlevels[] = $node;
+        }
+    }
+
+
 
     /**
      * Build Grouping List
@@ -250,6 +307,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
 	<link rel="stylesheet" type="text/css" href="editor/js/vendor/pannellum/pannellum.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/iconpicker/iconpicker-1.5.0.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" href="editor/js/vendor/treeselect/treeselectjs.css" />
     <!--link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'-->
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -368,6 +426,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jsep.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/pannellum/pannellum.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/iconpicker/iconpicker-1.5.0.js?version=<?php echo $version;?>"></script>
+<script type="module" src="editor/js/vendor/treeselect/treeselectjs.mjs.js"></script>
 
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>
@@ -405,8 +464,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
-    echo "category_list=" . json_encode($categories) . ";\n";
-    echo "educationlevel_list=" . json_encode($educationlevels) . ";\n";
+    echo "category_list=" . json_encode($parsed_categories) . ";\n";
+    echo "educationlevel_list=" . json_encode($parsed_educationlevels) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "course_list=" . json_encode($course) . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
@@ -438,6 +497,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     }
 
+    let TreeSelect;
+    (async()=>{
+        const { Treeselect } = await import(site_url + "editor/js/vendor/treeselect/treeselectjs.mjs.js");
+        TreeSelect = Treeselect;
+    })();
 
 </script>
 <script type="text/javascript" src="editor/js/data.js?version=<?php echo $version;?>"></script>

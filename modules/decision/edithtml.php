@@ -193,6 +193,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" href="editor/js/vendor/treeselect/treeselectjs.css" />
     <!--link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'-->
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -359,6 +360,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         }
 
     }
+
+    let TreeSelect;
+    (async()=>{
+        const { Treeselect } = await import(site_url + "editor/js/vendor/treeselect/treeselectjs.mjs.js");
+        TreeSelect = Treeselect;
+    })();
+
 </script>
 <script type="text/javascript" src="editor/js/data.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/application.js?version=<?php echo $version;?>"></script>
