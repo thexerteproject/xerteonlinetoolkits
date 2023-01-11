@@ -739,6 +739,7 @@ var EDITOR = (function ($, parent) {
         colorpickers = [];
 		iconpickers = [];
         datagrids = [];
+        treeSelecters = [];
 
         form_fields = [];
         form_id_offset = 0;
@@ -1239,6 +1240,7 @@ var EDITOR = (function ($, parent) {
         toolbox.convertColorPickers();
 		toolbox.convertIconPickers();
         toolbox.convertDataGrids();
+        toolbox.convertTreeSelect();
 		
 		// make buttons appear disabled when the node can't be duplicated / deleted
 		$("#copy_button, #delete_button").removeClass("disabled");

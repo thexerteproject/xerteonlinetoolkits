@@ -1940,6 +1940,21 @@ var EDITOR = (function ($, parent) {
         });
     },
 
+    convertTreeSelect = function ()
+    {
+        $.each(treeSelecters, function (i, options){
+            new TreeSelect({
+                parentHtmlContainer: document.querySelector('#' + options.parentID),
+                value: options.value,
+                options: options.treeSelectOptions,
+                searchable: true,
+                isGroupedValue: true,
+                openLevel: 0,
+                inputCallback: (value) => setAttributeValue(options.key, [options.name] ,[value.join("|")])
+            })
+        });
+    }
+
 	checkRowIds = function (grid) {
 		var rows = grid.find('tr.jqgrow, tr.jqgfirstrow');
 		for (var i=0; i<rows.length; i++) {
@@ -4110,46 +4125,53 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				var html = $('<div>')
 					.attr('id', 'category_div_' + form_id_offset);
-				var currselected=false;
-				var select = $('<select>')
-					.attr('id', id)
-					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
-					{
-						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        if (event.data.trigger)
-                        {
-                            triggerRedrawPage(event.data.key);
-                        }
-					});
-				// Add empty option
-				var option = $('<option>')
-					.attr('value', "");
-				if (value=="") {
-					option.prop('selected', true);
-					currselected=true;
-				}
-				option.append("");
-				select.append(option);
-				for (var i=0; i<category_list.length; i++) {
-					var option = $('<option>')
-						.attr('value', category_list[i].category_name);
-					if (category_list[i].category_name==value) {
-						option.prop('selected', true);
-						curreselected = true;
-					}
-					option.append(category_list[i].category_name);
-					select.append(option);
-				}
-				if (value != "" && !currselected)
-				{
-					//  Add current value as option, even though it is not in the list
-					var option = $('<option>')
-						.attr('value', value);
-					option.prop('selected', true);
-					option.append(value);
-					select.append(option);
-				}
-				html.append(select);
+
+                //used to display current value
+                var setValue = value.split("|");
+                var id = 'treeselect_' + form_id_offset;
+
+                treeSelecters.push({id: id, options: options, value: setValue, parentID: 'category_div_' + form_id_offset, treeSelectOptions: category_list, key: key, name: name})
+                form_id_offset++;
+				// var currselected=false;
+				// var select = $('<select>')
+				// 	.attr('id', id)
+				// 	.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
+				// 	{
+				// 		inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                //         if (event.data.trigger)
+                //         {
+                //             triggerRedrawPage(event.data.key);
+                //         }
+				// 	});
+				// // Add empty option
+				// var option = $('<option>')
+				// 	.attr('value', "");
+				// if (value=="") {
+				// 	option.prop('selected', true);
+				// 	currselected=true;
+				// }
+				// option.append("");
+				// select.append(option);
+				// for (var i=0; i<category_list.length; i++) {
+				// 	var option = $('<option>')
+				// 		.attr('value', category_list[i].category_name);
+				// 	if (category_list[i].category_name==value) {
+				// 		option.prop('selected', true);
+				// 		curreselected = true;
+				// 	}
+				// 	option.append(category_list[i].category_name);
+				// 	select.append(option);
+				// }
+				// if (value != "" && !currselected)
+				// {
+				// 	//  Add current value as option, even though it is not in the list
+				// 	var option = $('<option>')
+				// 		.attr('value', value);
+				// 	option.prop('selected', true);
+				// 	option.append(value);
+				// 	select.append(option);
+				// }
+				// html.append(select);
                 form_id_offset++;
 			break;
 			case 'grouping':
@@ -4199,49 +4221,54 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
 				break;
             case 'educationlevellist':
-                var id = 'select_' + form_id_offset;
                 var html = $('<div>')
                     .attr('id', 'educationlevel_div_' + form_id_offset);
-                var currselected = false;
-                var select = $('<select>')
-                    .attr('id', id)
-                    .change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
-                    {
-                        inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        if (event.data.trigger)
-                        {
-                            triggerRedrawPage(event.data.key);
-                        }
-                    });
-                // Add empty option
-                var option = $('<option>')
-                    .attr('value', "");
-                if (value=="") {
-                    option.prop('selected', true);
-                    currselected = true;
-                }
-                option.append("");
-                select.append(option);
-                for (var i=0; i<educationlevel_list.length; i++) {
-                    var option = $('<option>')
-                        .attr('value', educationlevel_list[i].educationlevel_name);
-                    if (educationlevel_list[i].educationlevel_name==value) {
-                        option.prop('selected', true);
-                        currselected = true;
-                    }
-                    option.append(educationlevel_list[i].educationlevel_name);
-                    select.append(option);
-                }
-                if (value != "" && !currselected)
-                {
-                    //  Add current value as option, even though it is not in the list
-                    var option = $('<option>')
-                        .attr('value', value);
-                    option.prop('selected', true);
-                    option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
-                    select.append(option);
-                }
-                html.append(select);
+
+                var setValue = value.split("|");
+                var id = 'treeselect_' + form_id_offset;
+
+                treeSelecters.push({id: id, options: options, value: setValue, parentID: 'educationlevel_div_' + form_id_offset, treeSelectOptions: educationlevel_list, key: key, name: name})
+                form_id_offset++;
+                //deprecated code
+                // var select = $('<select>' )
+                //     .attr('id', id)
+                //     .change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
+                //     {
+                //         inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                //         if (event.data.trigger)
+                //         {
+                //             triggerRedrawPage(event.data.key);
+                //         }
+                //     });
+                // // Add empty option
+                // var option = $('<option>')
+                //     .attr('value', "");
+                // if (value=="") {
+                //     option.prop('selected', true);
+                //     currselected = true;
+                // }
+                // option.append("");
+                // select.append(option);
+                // for (var i=0; i<educationlevel_list.length; i++) {
+                //     var option = $('<option>')
+                //         .attr('value', educationlevel_list[i].educationlevel_name);
+                //     if (educationlevel_list[i].educationlevel_name==value) {
+                //         option.prop('selected', true);
+                //         currselected = true;
+                //     }
+                //     option.append(educationlevel_list[i].educationlevel_name);
+                //     select.append(option);
+                // }
+                // if (value != "" && !currselected)
+                // {
+                //     //  Add current value as option, even though it is not in the list
+                //     var option = $('<option>')
+                //         .attr('value', value);
+                //     option.prop('selected', true);
+                //     option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
+                //     select.append(option);
+                // }
+                // html.append(select);
                 break;
 			case 'course':
 				if (course_list.length == 0)
@@ -4803,6 +4830,7 @@ var EDITOR = (function ($, parent) {
     my.convertColorPickers = convertColorPickers;
 	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
+    my.convertTreeSelect = convertTreeSelect;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;
