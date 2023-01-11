@@ -275,9 +275,13 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
 
     if($metadataPrefix == "lom_ims") {
 
+        //get first publish time.
+        $q = "select timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id = ? and status = ? group by timestamp limit 1";
+        $params = array($template['template_id'], "published");
+        $first_publish_time = db_query_one($q, $params);
 
         $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
-            'datestamp' => date($template['date_modified']),
+            'datestamp' => date($first_publish_time["timestamp"]),
             //'set' => 'class:activity',
             'metadata' => array(
                 'container_name' => 'lom',
@@ -306,7 +310,7 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                 'lifecycle' => array(
                     'author' => $metadata->author,
                     'publisher' => $metadata->publisher,
-                    'publishdate' => $template['date_modified'],
+                    'publishdate' => $first_publish_time["timestamp"],
                 ),
                 'rights' => array(
                     'rights' => $metadata->rights,
