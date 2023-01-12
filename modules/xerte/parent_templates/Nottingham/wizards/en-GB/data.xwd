@@ -4224,7 +4224,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageSequence menu="Media" menuItem="Image Sequence" hint="A page which animates a series of images in a sequence through scrolling. Image series can be displayed on their own or grouped with others into cases." icon="icImages" thumb="thumbs/imageSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageSequence" remove="true" deepLink="true">
+    </pageHeaderGroup></iSpring><imageSequence menu="Media" menuItem="Image Sequence" hint="A page which animates a series of images in a sequence through scrolling. Image series can be displayed on their own or grouped with others into cases." icon="icImages" thumb="thumbs/imageSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageSequence" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_sequence" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="300" width="380"/>
     <align label="Image Position" options="Left,Right" type="ComboBox" data="left,right" width="100"/>
