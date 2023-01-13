@@ -833,7 +833,12 @@ function sharing_info($template_id)
             $sql.= " where (ld.login_id = ?";
         }
     }
-    $sql .= ") and";
+
+    if(count($params) > 0){
+        $sql .= ")";
+    }
+    $sql .= " and";
+
     foreach ($related_folders as $index =>$rf){
         if($index != 0){
             $sql.= " or fr.folder_id = ?";
