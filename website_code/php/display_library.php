@@ -526,6 +526,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
 
     $query_response = db_query($query, $params);
 
+
     foreach ($query_response as $row) {
 
         // Check whether shared LO is in recyclebin
@@ -814,6 +815,31 @@ select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.
     /*
     * recurse through the folders
     */
+
+    //checking if folder is shared with a group
+    $query_group = "SELECT * FROM {$prefix}folder_group_rights";
+    $params = array();
+    foreach ($query_response as $index => $folder){
+        if($index != 0){
+            $query_group .= " or folder_id = ?";
+        }else{
+            $query_group .= " where folder_id = ?";
+        }
+        array_push($params, $folder["folder_id"]);
+    }
+
+
+
+    $shared_groups = db_query($query_group, $params);
+    if(count($shared_groups) > 0){
+        foreach ($shared_groups as $shared){
+            foreach ($query_response as $index => $folder){
+                if($shared["folder_id"] == $folder["folder_id"]){
+                    $query_response[$index]["nrshared"] = intval($query_response[$index]["nrshared"]) + 1;
+                }
+            }
+        }
+    }
 
 
     // Build tree
