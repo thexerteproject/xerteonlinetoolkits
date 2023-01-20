@@ -1023,7 +1023,7 @@ function folder_sharing_info($folder_id)
 
     $info .=  "</ul>";
 
-    /*return $info;*/
+    return $info;
 }
 
 function nr_user_groups()
