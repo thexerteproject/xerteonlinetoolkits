@@ -2019,17 +2019,23 @@ function x_changePage(x_gotoPage, addHistory) {
 }
 
 function x_changePageStep2(x_gotoPage) {
-    x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
-            x_changePageStep3(x_gotoPage);
-    }, false, "theme_css", true);
+	if (x_params.theme != undefined) {
+		x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+			x_changePageStep3(x_gotoPage);
+		}, false, "theme_css", true);
+	}
+	else {
+		x_changePageStep3(x_gotoPage);
+	}
 }
 
 function x_changePageStep3(x_gotoPage) {
-	var css = document.getElementById('theme_css');
-    css.load = function()
-    {
-        var i=1;
-    };
+	if (x_params.theme != undefined) {
+		var css = document.getElementById('theme_css');
+		css.load = function () {
+			var i = 1;
+		};
+	}
 
     if (x_params.theme != undefined && x_params.theme != "default") {
         // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
@@ -3686,11 +3692,18 @@ function x_saveSessionBtnIsStyled() {
 		return s.href && s.href.indexOf('/themes/Nottingham/')>0 && s.href.indexOf('responsivetext')<0 ? s : null;
 	});
 
-	var isStyled = files.reduce(function(a,r){
-		return [].slice.call(r.rules).reduce(function(a,r){
-			return (r.cssText && r.cssText.indexOf('x_saveSession')>0) || a;
-		}, false) || a;
-	}, false);
+	try {
+		var isStyled = files.reduce(function (a, r) {
+			return [].slice.call(r.rules).reduce(function (a, r) {
+				return (r.cssText && r.cssText.indexOf('x_saveSession') > 0) || a;
+			}, false) || a;
+		}, false);
+	}
+	catch (e)
+	{
+		console.log("Error checking whether saveSession button is styled in theme: " + e);
+		return false;
+	}
 	return isStyled;
 }
 
