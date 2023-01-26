@@ -173,7 +173,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * Build CategoryList with hierarchy
      */
-    $sql = "select category_id, label, parent_id from {$xerte_toolkits_site->database_table_prefix}oai_categories";
+    $sql = "select category_id, category_name, parent_id from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
     $categories = db_query($sql);
     $lookup = [];
     foreach ($categories as $node){
@@ -191,7 +191,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = [name => $value['label'], value => $value['label'], children => get_children($value['category_id'], $lookup, 'label', 'category_id')];
+            $node = [name => $value['category_name'], value => $value['category_name'], children => get_children($value['category_id'], $lookup, 'category_name', 'category_id')];
             $parsed_categories[] = $node;
         }
     }
@@ -199,13 +199,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * Build EducationList
      */
-    $sql = "select education_id, label, parent_id from {$xerte_toolkits_site->database_table_prefix}oai_education order by parent_id asc";
+    $sql = "select educationlevel_id, educationlevel_name, parent_id from {$xerte_toolkits_site->database_table_prefix}educationlevel order by parent_id asc";
     $educationlevels = db_query($sql);
 
     $lookup = [];
     foreach ($educationlevels as $node){
         $node[children] = [];
-        $lookup = $lookup + [$node['education_id'] => $node];
+        $lookup = $lookup + [$node['educationlevel_id'] => $node];
     }
     foreach ($lookup as $node){
         if ($node['parent_id'] != null){
@@ -218,7 +218,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = [name => $value['label'], value => $value['label'], children => get_children($value['education_id'], $lookup, 'label', 'education_id')];
+            $node = [name => $value['educationlevel_name'], value => $value['educationlevel_name'], children => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
             $parsed_educationlevels[] = $node;
         }
     }
