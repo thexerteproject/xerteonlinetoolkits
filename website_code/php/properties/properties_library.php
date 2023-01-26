@@ -1025,6 +1025,21 @@ function access_info($template_id){
     return $info;
 }
 
+function oai_shared($template_id){
+    global $xerte_toolkits_site;
+
+    $sql = "select status from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
+    $params = array($_POST['template_id']);
+    $last_oaiTable_status = db_query_one($sql, $params)["status"];
+    $info = PROJECT_INFO_OAI . ": ";
+    if (is_null($last_oaiTable_status) || $last_oaiTable_status != "published") {
+        $info .= PROJECT_INFO_NOTSHARED . "<br/>";
+    } else {
+        $info .= PROJECT_INFO_SHARED . "<br/>";
+    }
+    return $info;
+}
+
 function str_replace_1st($pattern, $replacement, $subject)
 {
     $pos = strpos($subject, $pattern);

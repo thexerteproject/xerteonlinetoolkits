@@ -55,7 +55,13 @@
 
 	define ("PROJECT_INFO_SHARED", "Shared");
 
-	define ("PROJECT_INFO_NOTSHARED", "Not Shared");
+    define ("PROJECT_INFO_PUBLISHED", "Published");
+
+    define ("PROJECT_INFO_NOTPUBLISHED", "Not Published");
+
+	define ("PROJECT_INFO_NOTSHARED", "Not shared");
+
+    define("PROJECT_INFO_OAI", "Oai status");
 
 	define ("PROJECT_INFO_PRIVATE", "Private");
 
