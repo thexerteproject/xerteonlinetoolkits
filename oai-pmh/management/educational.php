@@ -74,12 +74,16 @@ function insertEducational($termID, $label, $parent = null){
     $q3 = "INSERT INTO {$prefix}oai_education(education_id,term_id,label,parent_id) VALUES (?,?,?,?)";
     if (is_null($parent)){
         $params = array($return_id, $termID, $label, $parent);
+        $res = db_query($q3,$params);
     } else {
         $q = "SELECT education_id FROM {$prefix}oai_education WHERE term_id = ?";
-        $parent_id = db_query_one($q, array($parent));
-        $params = array($return_id, $termID, $label, $parent_id["education_id"]);
+        $parent_id = db_query_one($q, array($parent))["education_id"];
+        $params = array($return_id, $termID, $label, $parent_id);
+        $res = db_query($q3,$params);
+        $q4 = "UPDATE {$prefix}educationlevel SET parent_id = ? WHERE educationlevel_id = ?";
+        $res = db_query($q4,array($parent_id, $return_id));
     }
-    $res = db_query($q3,$params);
+
 
 }
 

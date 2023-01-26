@@ -104,11 +104,14 @@ function insertCategory($source_url, $taxon, $label,$parent){
     $q3 = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}oai_categories(category_id,taxon,label,source_url,parent_id) VALUES (?,?,?,?,?)";
     if (is_null($parent)) {
         $params = array($return_id, $taxon, $label, $source_url, null);
+        db_query($q3,$params);
     } else {
         $q ="SELECT category_id FROM {$xerte_toolkits_site->database_table_prefix}oai_categories WHERE taxon = ?";
-        $parent_id = db_query_one($q, array($parent));
-        $params = array($return_id, $taxon, $label, $source_url, $parent_id["category_id"]);
+        $parent_id = db_query_one($q, array($parent))["category_id"];
+        $params = array($return_id, $taxon, $label, $source_url, $parent_id);
+        db_query($q3,$params);
+        $q4 = "UPDATE {$xerte_toolkits_site->database_table_prefix}syndicationcategories SET parent_id = ? WHERE category_id = ?";
+        db_query($q4,array($parent_id, $return_id));
     }
-    db_query($q3,$params);
 
 }
