@@ -1312,6 +1312,9 @@ function upgrade_36(){
     $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
     $ok = _upgrade_db_query("alter table oai_categories add column parent_id int(11)");
     $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-
+    $ok = _upgrade_db_query("alter table educationlevel add column parent_id int(11)");
+    $message .= "Adding parent_id column to educationlevel - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("alter table syndicationcategories add column parent_id int(11)");
+    $message .= "Adding parent_id column to syndicationcategories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
     return $message;
 }
