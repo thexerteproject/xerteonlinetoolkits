@@ -23,9 +23,14 @@ require("../user_library.php");
 require("management_library.php");
 
 if(is_user_admin()){
-
-    $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}educationlevel (educationlevel_name) values (?)";
-    $res = db_query($query, array($_POST['neweducationlevel']));
+    if ($_POST[parent] == "") {
+        $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}educationlevel (educationlevel_name) values (?)";
+        $param = array($_POST['educationlevel']);
+    } else {
+        $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}educationlevel (educationlevel_name, parent_id) values (?,?)";
+        $param = array($_POST['educationlevel'], $_POST['parent']);
+    }
+    $res = db_query($query, $param);
 
     if($res) {
 
