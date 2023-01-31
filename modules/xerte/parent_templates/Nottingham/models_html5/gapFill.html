@@ -1312,10 +1312,10 @@
 			}
 			if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
 			{
-                XTSetPageType(x_currentPage, 'match', answerData.length, this.weighting);
+                XTSetPageType(x_currentPage, 'numeric', answerData.length, this.weighting);
 			}
 			else { // text fill in blank or drag & drop
-                XTSetPageType(x_currentPage, 'match', 1, this.weighting);
+                XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
             }
 		}
 		
