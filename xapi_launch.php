@@ -80,7 +80,7 @@ if(is_numeric($id))
         );
     }
 
-    $lrs = CheckLearningLocker($lrs);
+    $lrs = CheckLearningLocker($lrs, true);
     $_SESSION['XAPI_PROXY'] = $lrs;
 
     $xerte_toolkits_site->group = $_REQUEST['group'];

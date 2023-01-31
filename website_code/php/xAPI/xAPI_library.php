@@ -1,8 +1,22 @@
 <?php
 
 
-function CheckLearningLocker($lrs)
+function CheckLearningLocker($lrs, $allowdb=false)
 {
+    global $xerte_toolkits_site;
+
+    if ($allowdb && isset($xerte_toolkits_site->LRSDbs) && isset($xerte_toolkits_site->LRSDbs[$lrs['lrsendpoint']]))
+    {
+        $lrsendpoint = $lrs['lrsendpoint'];
+        $lrs['dblrsendpoint'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['endpoint'];
+        $lrs['dblrskey'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['key'];
+        $lrs['dblrssecret'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['secret'];
+        $lrs['db'] = true;
+    }
+    else
+    {
+        $lrs['db'] = false;
+    }
     $apos = strpos($lrs['lrsendpoint'], 'api/statements/aggregate');
     if ($apos !== false)
     {
