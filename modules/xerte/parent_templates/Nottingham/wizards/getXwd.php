@@ -47,7 +47,7 @@ if (file_exists($xwd_path . "wizards/plugins/" . $_SESSION['toolkits_language'])
 {
     $plugin_path = $xwd_path . "wizards/plugins/" . $_SESSION['toolkits_language'];
 }
-else if (file_exists($xwd_path . "wizards/plugins/en-Gb"))
+else if (file_exists($xwd_path . "wizards/plugins/en-GB"))
 {
     $plugin_path = $xwd_path . "wizards/plugins/en-GB";
 }
