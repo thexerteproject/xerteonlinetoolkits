@@ -15,17 +15,17 @@
 	<!-- OPTIONAL PROPERTIES -->
 	
 	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (e.g. 1400px) that the page contents will be displayed on larger displays. Note: some pages like media lesson and hotspot connector will currently still fill the full width of the page."/>
-	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||fixDisplay" />
+	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" />
 	
-	<fullScreenGroup type="group" label="Full Screen Button" optional="true" tooltip="Customise the tooltip descriptions and icons used on the full screen toggle button">
-		<fullScreenIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="displayMode=='default'||fixDisplay" optional="true" tooltip="Override the default icons used on the full screen button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
+	<fullScreenGroup type="group" label="Full Screen Button" optional="true" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" tooltip="Customise the tooltip descriptions and icons used on the full screen toggle button">
+		<fullScreenIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" optional="true" tooltip="Override the default icons used on the full screen button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
 		<maxScreenGroup type="group" label="Full Screen" optional="true">
-			<maxLabel label="Tooltip" type="TextInput" defaultValue="Full Screen" condition="displayMode=='default'||fixDisplay" optional="true"/>
-			<maxIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-expand-arrows-alt" condition="(displayMode=='default'||fixDisplay)&amp;&amp;fullScreenIcons=='true'" optional="true"/>
+			<maxLabel label="Tooltip" type="TextInput" defaultValue="Full Screen" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" optional="true"/>
+			<maxIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-expand-arrows-alt" condition="(displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!=''))&amp;&amp;fullScreenIcons=='true'" optional="true"/>
 		</maxScreenGroup>
 		<minScreenGroup type="group" label="Fixed Size" optional="true">
-			<minLabel label="Tooltip" type="TextInput" defaultValue="Default" condition="displayMode=='default'||fixDisplay" optional="true"/>
-			<minIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-compress-arrows-alt" condition="(displayMode=='default'||fixDisplay)&amp;&amp;fullScreenIcons=='true'" optional="true"/>
+			<minLabel label="Tooltip" type="TextInput" defaultValue="Default" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" optional="true"/>
+			<minIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-compress-arrows-alt" condition="(displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!=''))&amp;&amp;fullScreenIcons=='true'" optional="true"/>
 		</minScreenGroup>
 	</fullScreenGroup>
 	

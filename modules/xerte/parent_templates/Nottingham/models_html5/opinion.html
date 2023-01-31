@@ -199,7 +199,7 @@
 				pageSize = $pageContents.data('pageSize'),
 				currentQuestion = $pageContents.data('currentQuestion'),
 				questions = $pageContents.data('questions');
-			
+
 		    if (listMode || listMode == 'all')
 			{
 			    if (pageMode || (pageMode == undefined && listMode == true))
@@ -499,6 +499,9 @@
 			{
 			    this.loadQuestions();
 			}
+			else {
+				$("#backBtn").button("enable");
+			}
 		};
 
 		this.trackQuestion = function(currentQuestion, goingBack)
@@ -755,6 +758,11 @@
 
             if ($pageContents.data('listMode') && x_currentPageXML.getAttribute("pagesize") != undefined) {
                 $pageContents.data('pageSize', parseInt(x_currentPageXML.getAttribute("pagesize")));
+				if ($pageContents.data('listMode') === 'all') {
+					// Set page size to number of items
+					const numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
+					$pageContents.data('pageSize', numberOfQuestions);
+				}
             }
 			else {
 				$pageContents.data('pageSize', 1);

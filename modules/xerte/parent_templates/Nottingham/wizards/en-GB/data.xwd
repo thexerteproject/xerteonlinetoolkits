@@ -16,17 +16,17 @@
 	<!-- OPTIONAL PROPERTIES -->
 	
 	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (e.g. 1400px) that the page contents will be displayed on larger displays. Note: some pages like media lesson and hotspot connector will currently still fill the full width of the page."/>
-	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||fixDisplay"/>
+	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')"/>
 	
-	<fullScreenGroup type="group" label="Full Screen Button" optional="true" tooltip="Customise the tooltip descriptions and icons used on the full screen toggle button">
-		<fullScreenIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="displayMode=='default'||fixDisplay" optional="true" tooltip="Override the default icons used on the full screen button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
+	<fullScreenGroup type="group" label="Full Screen Button" optional="true" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" tooltip="Customise the tooltip descriptions and icons used on the full screen toggle button">
+		<fullScreenIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" optional="true" tooltip="Override the default icons used on the full screen button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
 		<maxScreenGroup type="group" label="Full Screen" optional="true">
-			<maxLabel label="Tooltip" type="TextInput" defaultValue="Full Screen" condition="displayMode=='default'||fixDisplay" optional="true"/>
-			<maxIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-expand-arrows-alt" condition="(displayMode=='default'||fixDisplay)&amp;&amp;fullScreenIcons=='true'" optional="true"/>
+			<maxLabel label="Tooltip" type="TextInput" defaultValue="Full Screen" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" optional="true"/>
+			<maxIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-expand-arrows-alt" condition="(displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!=''))&amp;&amp;fullScreenIcons=='true'" optional="true"/>
 		</maxScreenGroup>
 		<minScreenGroup type="group" label="Fixed Size" optional="true">
-			<minLabel label="Tooltip" type="TextInput" defaultValue="Default" condition="displayMode=='default'||fixDisplay" optional="true"/>
-			<minIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-compress-arrows-alt" condition="(displayMode=='default'||fixDisplay)&amp;&amp;fullScreenIcons=='true'" optional="true"/>
+			<minLabel label="Tooltip" type="TextInput" defaultValue="Default" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" optional="true"/>
+			<minIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-compress-arrows-alt" condition="(displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!=''))&amp;&amp;fullScreenIcons=='true'" optional="true"/>
 		</minScreenGroup>
 	</fullScreenGroup>
 	
@@ -4223,7 +4223,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageSequence menu="Media" menuItem="Image Sequence" hint="A page which animates a series of images in a sequence through scrolling. Image series can be displayed on their own or grouped with others into cases." icon="icImages" thumb="thumbs/imageSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageSequence" remove="true" deepLink="true">
+    </pageHeaderGroup></iSpring><imageSequence menu="Media" menuItem="Image Sequence" hint="A page which animates a series of images in a sequence through scrolling. Image series can be displayed on their own or grouped with others into cases." icon="icImages" thumb="thumbs/imageSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#imageSequence" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_sequence" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="300" width="380"/>
     <align label="Image Position" options="Left,Right" type="ComboBox" data="left,right" width="100"/>
@@ -6452,6 +6452,7 @@
     <text label="Initial Text" type="script" height="100"/>
     <prompt label="Answer Prompt" type="script" height="100"/>
     <answer label="Model Answer" type="script" height="100"/>
+    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
     <answerHeaderTxt label="Instruction Header" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <feedbackBtnTxt label="Button Label" type="TextInput" wysiwyg="true" language="true"/>
