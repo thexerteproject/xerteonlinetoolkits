@@ -55,12 +55,36 @@ if(is_numeric($_POST['template_id'])){
             $query_for_folder_id = "select * from {$prefix}templaterights where template_id= ?"; 
             $params = array($safe_template_id);
 
-            $row = db_query_one($query_for_folder_id, $params); 
+            $row = db_query_one($query_for_folder_id, $params);
+
+            $query_to_get_folder_in_group = "SELECT id FROM {$prefix}template_group_rights WHERE template_id = ?";
+            $params = array($safe_template_id);
+
+            $array_template_group = db_query($query_to_get_folder_in_group, $params);
+
+            if(count($array_template_group) > 0){
+
+                $query_to_delete_from_group = "DELETE FROM {$prefix}template_group_rights WHERE";
+                $params = array();
+
+                foreach ($array_template_group as $index => $template){
+                    if($index == 0){
+                        $query_to_delete_from_group .= " id = ?";
+                    }else{
+                        $query_to_delete_from_group .= " and id = ?";
+                    }
+                    array_push($params, $template["id"]);
+                }
+
+                db_query($query_to_delete_from_group, $params);
+            }
+
 
             // delete from the database 
 
             $query_to_delete_template = "UPDATE {$prefix}templaterights set folder= ? WHERE template_id = ? AND user_id = ?";
             $params = array(get_recycle_bin(), $safe_template_id, $_SESSION['toolkits_logon_id']);
+
             
             if(db_query($query_to_delete_template, $params)){
 
