@@ -649,15 +649,23 @@ class XerteProjectDecoder extends XerteXMLInspector
             $project->course = urldecode((string)$this->xml['course']);
         else
             $project->course = 'unknown';
-
         if (isset($this->xml['module']))
             $project->module = urldecode((string)$this->xml['module']);
         else
             $project->module = '';
+        if (isset($this->xml['oaiPmhAgree']))
+            $project->oaiPmhAgree = (string)$this->xml['oaiPmhAgree'];
+        else
+            $project->oaiPmhAgree = '';
         if (isset($this->xml['metaDescription']))
             $project->description = (string)$this->xml['metaDescription'];
         else
             $project->description = '';
+        if (isset($this->xml['metaEducation']) and (string)$this->xml['metaEducation'] !== "")
+            $project->education = (string)$this->xml['metaEducation'];
+        else
+            $project->education = 'unknown';
+            //assent flag
         if (isset($this->xml['metaKeywords']))
             $project->keywords = (string)$this->xml['metaKeywords'];
         else
@@ -671,7 +679,7 @@ class XerteProjectDecoder extends XerteXMLInspector
             $project->passingpercentage = $this->normalizePercentage((string)$this->xml['trackingPassed']);
         else
             $project->passingpercentage = $this->normalizePercentage('55');
-        if (isset($this->xml['category']))
+        if (isset($this->xml['category']) and (string)$this->xml['category'] !== "")
             $project->category = (string)$this->xml['category'];
         else
             $project->category = 'unknown';

@@ -152,6 +152,8 @@ if ($mode == "publish")
     $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
     $params = array(date("Y-m-d"), $_POST['template_id']);
     db_query_one($sql, $params);
+
+    update_oai($data);
     //_debug("upload: updated table");
 }
 
@@ -242,4 +244,49 @@ function process($json, $xml = null) {
 
 function is_ajax_request() {
 	return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+}
+
+function update_oai($data){
+    $oaiPmhAgree = (string)$data->attributes()->oaiPmhAgree;
+    $category = (string)$data->attributes()->category;
+    $level = (string)$data->attributes()->metaEducation;
+    $user_type = '';
+    //get access status
+    $sql = "select access_to_whom from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id=?";
+    $status = db_query_one($sql, array($_POST['template_id']))["access_to_whom"];
+
+    if ($oaiPmhAgree !== "") {
+        $sql = "select status from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
+        $params = array($_POST['template_id']);
+        $last_oaiTable_status = db_query_one($sql, $params)["status"];
+
+        //find user type
+        if (is_user_admin()){
+            $user_type = "admin";
+        } else {
+            $sql = "select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?";
+            $params = array($_POST['template_id'], $_SESSION['toolkits_logon_id']);
+            $user_type = db_query_one($sql, $params)["role"];
+        }
+
+        $query = "insert into {$xerte_toolkits_site->database_table_prefix}oai_publish set template_id=?, login_id=?, user_type=?, status=?";
+        $params = array($_POST['template_id'], $_SESSION["toolkits_logon_id"], $user_type);
+
+        if ($oaiPmhAgree == 'true' and $category !== "" and $level !== "" and $status === "Public") {
+            //add new row to oai_published to indicate current oai-pmh status
+            if (is_null($last_oaiTable_status) || $last_oaiTable_status != "published") {
+                db_query_one($query, array_merge($params, ["published"]));
+            }
+        } elseif ($oaiPmhAgree == 'true' and ($category == "" or $level == "") and $status === "Public") {
+            //if the project has never been oai published we don't add it here
+            if ($last_oaiTable_status != "incomplete" AND !is_null($last_oaiTable_status)){
+                db_query_one($query, array_merge($params, ["incomplete"]));
+            }
+        } else {
+            //if the project has never been oai published we don't add it here
+            if ($last_oaiTable_status != "deleted" AND !is_null($last_oaiTable_status)){
+                db_query_one($query, array_merge($params, ["deleted"]));
+            }
+        }
+    }
 }

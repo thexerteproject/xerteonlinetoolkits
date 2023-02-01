@@ -1297,3 +1297,33 @@ function upgrade_34(){
     }
     return "hashed password if needed";
 }
+
+function upgrade_35(){
+    $table = 'oai_publish';
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `audith_id` int(11) NOT NULL AUTO_INCREMENT,
+      `template_id` BIGINT(20) NOT NULL,
+      `login_id` BIGINT(20) NOT NULL,
+      `user_type` VARCHAR(10),
+      `status` VARCHAR(10),
+      `timestamp` TIMESTAMP,
+      PRIMARY KEY (`audith_id`)
+    )
+    ");
+
+    $message = "Creating oai_publish - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_36(){
+    $ok = _upgrade_db_query("alter table oai_education add column parent_id int(11)");
+    $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("alter table oai_categories add column parent_id int(11)");
+    $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("alter table educationlevel add column parent_id int(11)");
+    $message .= "Adding parent_id column to educationlevel - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("alter table syndicationcategories add column parent_id int(11)");
+    $message .= "Adding parent_id column to syndicationcategories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    return $message;
+}
