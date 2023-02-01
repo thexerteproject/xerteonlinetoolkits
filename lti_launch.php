@@ -178,7 +178,7 @@ if(is_numeric($id) || $id == null)
                 'lrssecret' => $row['tsugi_xapi_secret'],
             );
         }
-        $lrs = CheckLearningLocker($lrs);
+        $lrs = CheckLearningLocker($lrs, true);
 
         $_SESSION['XAPI_PROXY'] = $lrs;
     }

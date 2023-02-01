@@ -513,7 +513,8 @@ DashboardState.prototype.groupStatements = function(data) {
             data = this.rawData;
         }
     }
-    groups = [];
+    const groups = [];
+    const $this = this;
     data.forEach(function(statement, i) {
         var participant = {
             'attemptkeys' : [],
@@ -530,75 +531,108 @@ DashboardState.prototype.groupStatements = function(data) {
                 groups.push(group);
             }
         }
-        if (statement.actor.mbox != undefined) {
-            // Key is email
-            // Cutoff mailto:
-            var key = statement.actor.mbox.substr(7).trim();
-            if (groupedData[key] == undefined) {
-                participant['mode'] = 'mbox';
-                participant['mbox'] = key;
-                participant['key'] = key;
-                if (statement.actor.name != undefined) {
-                    participant['username'] = statement.actor.name;
+        if ($this.info.users !== undefined) {
+            if (statement.actor.mbox != undefined)
+            {
+                var key = statement.actor.mbox.substr(7).trim();
+                var user = $this.info.users.find(x => x.email == key);
+            }
+            else if (statement.actor.mbox_sha1sum != undefined) {
+                var key = statement.actor.mbox_sha1sum.trim();
+                var user = $this.info.users.find(x => x.sha1 == key);
+            }
+            else
+            {
+                var key = undefined;
+            }
+            if (user != undefined) {
+                key = user.email;
+                if (groupedData[key] == undefined) {
+                    participant['username'] = user.name;
                     participant['mode'] = 'username';
+                    participant['mbox'] = user.email;
+                    participant['key'] = key;
+                    groupedData[key] = participant;
                 }
-                groupedData[key] = participant;
+            }
+            else
+            {
+                key = undefined;
+            }
+        }
+        else
+        {
+            if (statement.actor.mbox != undefined) {
+                // Key is email
+                // Cutoff mailto:
+                var key = statement.actor.mbox.substr(7).trim();
+                if (groupedData[key] == undefined) {
+                    participant['mode'] = 'mbox';
+                    participant['mbox'] = key;
+                    participant['key'] = key;
+                    if (statement.actor.name != undefined) {
+                        participant['username'] = statement.actor.name;
+                        participant['mode'] = 'username';
+                    }
+                    groupedData[key] = participant;
+                } else {
+                    if (statement.actor.name != undefined && groupedData[key]['username'] == undefined) {
+                        groupedData[key]['username'] = statement.actor.name;
+                        groupedData[key]['mode'] = 'username';
+                    }
+                }
+            } else if (statement.actor.mbox_sha1sum != undefined) {
+                // Key is sha1(email)
+                var key = statement.actor.mbox_sha1sum;
+                if (groupedData[key] == undefined) {
+                    participant['mode'] = 'mbox_sha1sum';
+                    participant['mbox_sha1sum'] = key;
+                    participant['key'] = key;
+                    groupedData[key] = participant;
+                }
             } else {
-                if (statement.actor.name != undefined && groupedData[key]['username'] == undefined) {
-                    groupedData[key]['username'] = statement.actor.name;
-                    groupedData[key]['mode'] = 'username';
-                }
-            }
-        } else if (statement.actor.mbox_sha1sum != undefined) {
-            // Key is sha1(email)
-            var key = statement.actor.mbox_sha1sum;
-            if (groupedData[key] == undefined) {
-                participant['mode'] = 'mbox_sha1sum';
-                participant['mbox_sha1sum'] = key;
-                participant['key'] = key;
-                groupedData[key] = participant;
-            }
-        } else {
-            // Key is group, session_id (if group is available), otherwise just session
-            var group = (statement.actor.group != undefined ? statement.actor.group.name : 'global');
-            if (statement.context != undefined &&
-                statement.context.extensions != undefined &&
-                statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
-                var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
-                if (key == undefined) {
-                    key = statement.context.extensions[site_url + "sessionId"];
-                }
-                if (key != undefined) {
-                    key = group + ' ' + key;
-                    if (groupedData[key] == undefined) {
-                        participant['mode'] = 'session';
-                        participant['sessionid'] = key;
-                        participant['key'] = key;
-                        groupedData[key] = participant;
+                // Key is group, session_id (if group is available), otherwise just session
+                var group = (statement.actor.group != undefined ? statement.actor.group.name : 'global');
+                if (statement.context != undefined &&
+                    statement.context.extensions != undefined &&
+                    statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
+                    var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                    if (key == undefined) {
+                        key = statement.context.extensions[site_url + "sessionId"];
+                    }
+                    if (key != undefined) {
+                        key = group + ' ' + key;
+                        if (groupedData[key] == undefined) {
+                            participant['mode'] = 'session';
+                            participant['sessionid'] = key;
+                            participant['key'] = key;
+                            groupedData[key] = participant;
+                        }
                     }
                 }
             }
         }
-        if (statement.context != undefined &&
-            statement.context.extensions != undefined &&
-            statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
-            var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
-            if (groupedData[key]['attempts'][attemptkey] ==undefined)
-            {
-                groupedData[key]['attempts'][attemptkey] = {
-                    key : attemptkey,
-                    parentattempt : null,
-                    subattempts : [],
-                    statementidxs : []
-                };
-                groupedData[key]['attemptkeys'].push(
-                    {
-                        key : attemptkey,
-                    }
-                );
+        if (key != undefined) {
+            if (statement.context != undefined &&
+                statement.context.extensions != undefined &&
+                statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
+                var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                if (groupedData[key]['attempts'][attemptkey] == undefined) {
+                    groupedData[key]['attempts'][attemptkey] = {
+                        key: attemptkey,
+                        parentattempt: null,
+                        subattempts: [],
+                        statementidxs: []
+                    };
+                    groupedData[key]['attemptkeys'].push(
+                        {
+                            key: attemptkey,
+                        }
+                    );
+                }
+                groupedData[key]['statementidxs'].push(i);
+                groupedData[key]['attempts'][attemptkey]['statementidxs'].push(i);
             }
-            groupedData[key]['statementidxs'].push(i);
-            groupedData[key]['attempts'][attemptkey]['statementidxs'].push(i);
         }
     });
     // prepare statistics

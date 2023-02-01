@@ -238,8 +238,10 @@
 
 				groupInfo[i].numSubGroups = count;
 			}
+			
+			// distractors are only relevant in the find interactions
 			var findUseDistractors = (x_currentPageXML.getAttribute("findUseDistractors") != undefined ? x_currentPageXML.getAttribute("findUseDistractors")==="true" : false);
-			if (findUseDistractors) {
+			if (findUseDistractors && x_currentPageXML.getAttribute("interactivity") == "find" || x_currentPageXML.getAttribute("interactivity") == "find2") {
 				var findDistractorDelimiter = (x_currentPageXML.getAttribute("findDistractorDelimiter") != undefined && x_currentPageXML.getAttribute("findDistractorDelimiter").length < 4 ? x_currentPageXML.getAttribute("findDistractorDelimiter") : "");
 				if (findDistractorDelimiter != "") {
 					var group = new Object();
@@ -392,7 +394,7 @@
 					if (x_currentPageXML.getAttribute("trackingWeight") != undefined){
 						this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 					}
-					XTSetPageType(x_currentPage, 'numeric', groupInfo.length, this.weighting);
+          XTSetPageType(x_currentPage, 'numeric', groupInfo.filter(gi => gi.name !== '#distractor#').length, this.weighting);
 				}
 			}
 
@@ -527,6 +529,7 @@
 			// --- SHOW ME (BY NAME) ---
 			// group names are shown and subgroups are highlighted when a group is selected
 			} else if (intType == "show") {
+				$("#questionHolder").hide();
 				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt2") != undefined ? x_currentPageXML.getAttribute("showMeTxt2") : "Click a group to learn more.") + '</p>');
 
 				var $btnHolder = $("#btnHolder");
@@ -578,6 +581,7 @@
 			// --- SHOW ME (IN ORDER) ---
 			// next/prev buttons show details of each group in turn, highlighting relevant subgroups
 			} else if (intType == "show2") {
+				$("#questionHolder").hide();
 				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt") != undefined ? x_currentPageXML.getAttribute("showMeTxt") : "Click the arrow buttons to learn more.") + '</p>');
 				$("#btnHolder")
 					.html('<button id="prevBtn"></button><button id="nextBtn"></button>')
@@ -820,7 +824,7 @@
 						}
 					});
 
-				$("#markAtEnd").click(function () { interactiveText.endFindInteraction(); $("#markAtEnd").button("disable");});
+				$("#markAtEnd").click(function () { interactiveText.endFindInteraction(); $("#markAtEnd").hide();});
 
 			// --- MCQ ---
 			// quiz asks what is highlighted
@@ -1247,7 +1251,7 @@
 			var groupTxt = (x_currentPageXML.getAttribute('groupTxt') != undefined ? x_currentPageXML.getAttribute('groupTxt') : "Group");
 			var yourAnswerTxt = (x_currentPageXML.getAttribute('yourAnswerTxt') != undefined ? x_currentPageXML.getAttribute('yourAnswerTxt') : "Your Answer");
 			var correctAnswerTxt = (x_currentPageXML.getAttribute('correctAnswerTxt') != undefined ? x_currentPageXML.getAttribute('correctAnswerTxt') : "Correct Answer");
-			var text = "<h3>" + feedbackTxt + "</h3><table> <tr> <th>" + groupTxt + "</th><th>" + yourAnswerTxt + "</th><th>" + correctAnswerTxt + "</th></tr>";
+			var text = "<h3>" + feedbackTxt + "</h3><table class='full header shaded'> <thead><tr> <th>" + groupTxt + "</th><th>" + yourAnswerTxt + "</th><th>" + correctAnswerTxt + "</th></tr></thead><tbody>";
 
 			for (var group = 0; group < correctAnswers.length; group++){
 				if (groupInfo[group].name == "#distractor#")
@@ -1276,7 +1280,7 @@
 				text += ("</td>");
 				text +=("</tr>");
 			}
-			text +=("</table>");
+			text +=("</tbody></table>");
 
 			$("#feedback").empty().append(text).show();
 
@@ -1400,7 +1404,7 @@
 			$("#quizBtn")
 				.button({"label":$pageContents.data("phrases").mcqBtnTxt})
 				.data("state", 0)
-				.hide();
+				.button("disable");
 
 			// turn on highlight & set up answers - correct answer plus number of random incorrect wrong answers
 			var options = mcqAnswerOptions.slice(0),
@@ -1478,7 +1482,7 @@
 						"id"	:"option" + i
 						})
 					.change(function() {
-						$("#quizBtn").show();
+						$("#quizBtn").button("enable");
 					})
 					.focusin(function() {
 						$(this).parent().addClass("highlight");
@@ -1538,11 +1542,13 @@
 		<div id="passage"/>
 		<div id="feedbackTxt"/>
 	</div>
-	<div id="pageTxt" tabindex="1"/>
-	<div id="instructions" tabindex="2"/>
-	<div id="groupInfo"/>
-	<div id="btnHolder"/>
-	<div id="questionHolder"/>
+	<div tabindex="1">
+		<div id="pageTxt"/>
+		<div id="instructions"/>
+		<div id="groupInfo"/>
+		<div id="btnHolder"/>
+		<div id="questionHolder"/>
+	</div>
 
 	<div id="feedback" aria-live="polite"/>
 

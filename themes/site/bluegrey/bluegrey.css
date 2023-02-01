@@ -4,7 +4,7 @@
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #0098C3;
+  background-color: #007899;
   color: #ffffff; }
 
 .panel2 {
@@ -59,7 +59,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #0098C3; }
+  border-color: #007899; }
 
 .highlight2 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -155,7 +155,7 @@ blockquote:after {
   color: #ccc; }
 
 .bq1 {
-  border-color: #0098C3; }
+  border-color: #007899; }
 
 .bq1:after {
   content: close-quote;
@@ -163,7 +163,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #0098C3; }
+  color: #007899; }
 
 .bq1:before {
   content: open-quote;
@@ -171,7 +171,7 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #0098C3; }
+  color: #007899; }
 
 .bq2 {
   border-color: #4e9794; }
@@ -269,11 +269,11 @@ blockquote:after {
   color: #D13759; }
 
 .speech-bubble1 {
-  background: #0098C3;
+  background: #007899;
   color: white; }
 
 .speech-bubble1:after {
-  border-right-color: #0098C3; }
+  border-right-color: #007899; }
 
 .speech-bubble2 {
   background: #4e9794;
@@ -372,13 +372,13 @@ body {
 
 /*--Heading and other text changes---------------------------------------*/
 h1 {
-  color: #0098C3; }
+  color: #007899; }
 
 h2, h3, h4, h5, h6 {
   color: #3C3C3C; }
 
 a {
-  color: #0098C3; }
+  color: #007899; }
 
 a:hover {
   color: #005172; }
@@ -395,14 +395,14 @@ a:hover {
   color: #ffffff; }
 
 .navbar-inverse .navbar-inner {
-  background-color: #0098C3;
-  background-image: -moz-linear-gradient(top, #0098C3, #0098C3);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0098C3), to(#0098C3));
-  background-image: -webkit-linear-gradient(top, #0098C3, #0098C3);
-  background-image: -o-linear-gradient(top, #0098C3, #0098C3);
-  background-image: linear-gradient(to bottom, #0098C3, #0098C3);
+  background-color: #007899;
+  background-image: -moz-linear-gradient(top, #007899, #007899);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#007899), to(#007899));
+  background-image: -webkit-linear-gradient(top, #007899, #007899);
+  background-image: -o-linear-gradient(top, #007899, #007899);
+  background-image: linear-gradient(to bottom, #007899, #007899);
   background-repeat: repeat-x;
-  border-color: #0098C3;
+  border-color: #007899;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$brightcolor', endColorstr='$brightcolor', GradientType=0); }
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
@@ -422,7 +422,7 @@ a:hover {
   /*border-bottom: solid white;*/ }
 
 .nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
-  background-color: #0098C3; }
+  background-color: #007899; }
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
@@ -435,7 +435,7 @@ a:hover {
   text-shadow: none; }
 
 .bs-docs-sidenav > li > a {
-  border: 1px solid #0098C3; }
+  border: 1px solid #007899; }
 
 .bs-docs-sidenav > li:first-child > a {
   -webkit-border-radius: 6px 6px 0 0;
@@ -473,7 +473,7 @@ a:hover {
 
 .accordion-heading a {
   border-bottom: 0;
-  background: #0098C3;
+  background: #007899;
   color: #ffffff; }
 
 .accordion-group {
@@ -481,20 +481,20 @@ a:hover {
   border: none; }
 
 .table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
-  background-color: #0098C3;
+  background-color: #007899;
   color: #ffffff; }
 
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
   color: #ffffff;
   cursor: default;
-  background-color: #0098C3;
-  border: 1px solid #0098C3;
+  background-color: #007899;
+  border: 1px solid #007899;
   border-bottom-color: transparent; }
 
 /* --PANELS-------------------------------------------------------------- */
 .panel {
-  background-color: #0098C3;
-  border: 1px solid #0098C3;
+  background-color: #007899;
+  border: 1px solid #007899;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -504,8 +504,8 @@ a:hover {
 .panel:after {
   font-size: 12px;
   font-weight: bold;
-  background-color: #0098C3;
-  border: 1px solid #0098C3;
+  background-color: #007899;
+  border: 1px solid #007899;
   color: #ffffff;
   -webkit-border-radius: 4px 0 4px 0;
   -moz-border-radius: 4px 0 4px 0;
@@ -538,7 +538,7 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
   color: #ffffff;
-  background-color: #0098C3; }
+  background-color: #007899; }
 
 .top-round {
   color: #575757;

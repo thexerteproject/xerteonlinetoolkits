@@ -8,3 +8,29 @@ eval(xerte_patch(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/
 
 // Patch to fix issue when multiple CKEditors in a single editor page
 function xerte_patch(code){return eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('N.2(/3\\.6\\(\'(\\w+?)\'\\)\\[0\\]\\.7\\(\'e\'\\)\\[0\\]\\.i/g,j(m,a){k"4.8.9().b(\'c\',\'"+a+"\').l().$.i"}).2(/3\\.6\\(\'(\\w+?)\'\\)\\[0\\]\\.7\\(\'O\'\\)\\[0\\]\\.d/g,j(m,a){k"4.8.9().b(\'c\',\'"+a+"\').l().$.d"}).2(/3\\.n\\(\'o\'\\)/g,"3.n(\'p\'+4.q.r)").2(/s:\'<t u="o\\"/g,"s:\'<t P=\\"Q\\" u=\\"p\' +4.q.r+\'\\"").2(/3\\.6\\(\'v\'\\)\\[0\\]\\.7\\(\'e\'\\)\\[0\\]\\.d=f\\.x\\(\'y\'\\)/g,"4.8.9().b(\'c\',\'v\').h(f.x(\'y\'))").2(/3\\.6\\(\'z\'\\)\\[0\\]\\.7\\(\'e\'\\)\\[0\\]\\.d=\\(f\\.A\\[1\\]\\.B\\)\\.2\\(\'<C>\',\'\'\\)/g,"4.8.9().b(\'c\',\'z\').h((f.A[1].B).2(\'<C>\', \'\'))").2(/3\\.6\\(\'D\'\\)\\[0\\]\\.7\\(\'e\'\\)\\[0\\]\\.d=E/g,"4.8.9().R.S.b(\'c\',\'D\').h(E)").2("F.G(H)","F.I().G(H.I())").2("5-T-J","5-U-J").2("V K","W K").2("5-X-Y","5-Z").2("10","11").2("\'12\'","\'13\'").2("5-L-M-14","5-L-M-15")',62,68,'||replace|document|CKEDITOR|fa|getElementsByClassName|getElementsByTagName|dialog|getCurrent||getContentElement|insertFontawesome|value|input|el||setValue|checked|function|return|getInputElement||getElementById|fontawesome|fontawesome_|currentInstance|name|html|div|id|fontawesomeClass||getAttribute|title|alternativeDescription|children|innerHTML|br|colorChooser|color|klasNeym|indexOf|val|toLowerCase|brush|Brush|pied|piper|code|select|class|fontawesomeclass|_|parentDialog|pain|paint|Pain|Paint|connect|develop|connectdevelop|Pageliens|Pagelines|table|Table|square|pp'.split('|'),0,{}))}
+
+
+// attempt to make sure dialog isn't too tall for smaller screens
+function waitForElementToDisplay(selector, callback, checkFrequencyInMs, timeoutInMs) {
+	var startTimeInMs = Date.now();
+	(function loopSearch() {
+		if (document.querySelector(selector) != null) {
+			callback();
+			return;
+		} else {
+			setTimeout(function () {
+				if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs)
+				return;
+				loopSearch();
+			}, checkFrequencyInMs);
+		}
+	})();
+}
+
+waitForElementToDisplay('#fontawesome_textarea_1', function(){
+	if ($('body').height() < $('.cke_dialog').outerHeight()) {
+		var h = $('.cke_dialog_title').outerHeight() + $('table.cke_dialog_contents > tbody > tr:last-of-type').outerHeight();
+		h += $('.cke_dialog_contents_body').outerHeight() - $('#fontawesome_textarea_1').outerHeight();
+		$('#fontawesome_textarea_1').height(($('body').height() - h) * 0.9);
+	}
+}, 1000, 9000);

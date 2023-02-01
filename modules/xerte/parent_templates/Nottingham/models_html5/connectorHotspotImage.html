@@ -416,8 +416,22 @@
 													'source : "' + _this.getAttribute("hotspotSound") + '",' +
 													'width : "100%"' + ',' +
 													'startEndFrame: [' + Number(_this.getAttribute("soundStart")) + ', ' + Number(_this.getAttribute("soundEnd")) + ']' +
-												'});' +
-											'</' + 'script>';
+												'});';
+										
+										// manually add a transcript button to the end of the audio bar
+										if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
+											
+											function HtmlEncode(s) {
+												var el = document.createElement('div');
+												el.innerText = el.textContent = s;
+												s = el.innerHTML;
+												return s;
+											}
+											
+											dialogHtml += 'x_addAudioTranscript($("#pageAudio"), "' + HtmlEncode(_this.getAttribute('soundTranscript')) + '", true);';
+										}
+										
+										dialogHtml += '</' + 'script>';
 										
 										$pageContents.data("dialogPos").width = undefined;
 										$pageContents.data("dialogPos").height = x_audioBarH;
@@ -437,6 +451,11 @@
 												width: '100%',
 												startEndFrame: [Number(_this.getAttribute('soundStart')), Number(_this.getAttribute('soundEnd'))]
 											});
+										
+										// manually add a transcript button to the end of the audio bar
+										if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
+											x_addAudioTranscript($('#pageAudio'), _this.getAttribute('soundTranscript'));
+										}
 									}
 									
 								} else if (hsInfo == "image") {

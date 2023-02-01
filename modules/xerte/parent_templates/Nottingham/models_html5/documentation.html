@@ -468,15 +468,10 @@
 						if (xml.getAttribute("shade") == "true") {
 							var $tr = $element.find('tr');
 							
-							$element.find('table').children(0).children().each(function() {
-								var $this = $(this),
-									thisIndex = $this.index();
-								if (footer != true || thisIndex != $tr.length-1) {
-									if (header == true) { // shade even no. rows, except for 1st row
-										if (thisIndex%2 == 0 && thisIndex != 0) {
-											$this.addClass("shaded");
-										}
-									} else if (thisIndex%2 != 0) { // shade odd no. rows
+							$element.find('table tbody').children().each(function(i) {
+								var $this = $(this);
+								if (footer != true || (footer == true && i != $element.find('table tbody').children().length-1)) {
+									if (i%2 != 0) { // shade odd no. rows
 										$this.addClass("shaded");
 									}
 								}
@@ -685,9 +680,20 @@
 				tableString = '<table class="' + classes + '">',
 				rows = xml.getAttribute('data').split(separators[0]),
 				id = 0,
-				rowNum = xml.hasAttribute('rows') ? parseInt(xml.getAttribute('rows')) : 3;
+				rowNum = xml.hasAttribute('rows') ? parseInt(xml.getAttribute('rows')) : 3,
+				tbodySetUp = false;
+			
+			var header = classes.indexOf('header') >= 0;
 			
 			for (i=0; i<rows.length; i++) {
+				var dataTag = "td";
+				if (header == true && i==0) {
+					tableString += "<thead>";
+					dataTag = "th";
+				} else if (tbodySetUp == false) {
+					tableString += "<tbody>";
+					tbodySetUp = true;
+				}
 				tableString += '<tr>';
 				
 				var cells = rows[i].split(separators[1]);
@@ -695,20 +701,26 @@
 					if (xml.getAttribute('replace') != 'false') {
 						if ($.trim(cells[j]) == '') {
 							var textarea = '<textarea class="cell' + id + '" rows="' + rowNum + '"></textarea>';
-							tableString += '<td class="editable">' + textarea + '</td>';
+							tableString += '<' + dataTag + ' class="editable">' + textarea + '</' + dataTag + '>';
 							id++;
 							
 						} else if ($.trim(cells[j]) == (xml.hasAttribute('empty') ? xml.getAttribute('empty') : '[empty]')) {
-							tableString += '<td></td>';
+							tableString += '<' + dataTag + '></' + dataTag + '>';
 						} else {
-							tableString += '<td>' + cells[j] + '</td>';
+							tableString += '<' + dataTag + '>' + cells[j] + '</' + dataTag + '>';
 						}
 					} else {
-						tableString += '<td>' + cells[j] + '</td>';
+						tableString += '<' + dataTag + '>' + cells[j] + '</' + dataTag + '>';
 					}
 				}
 				
 				tableString += '</tr>';
+				
+				if (header == true && i==0) {
+					tableString += "</thead>";
+				} else if (i==rows.length-1) {
+					tableString += "</tbody>";
+				}
 			}
 			
 			tableString += '</table>';
@@ -720,7 +732,7 @@
 			var $tempTable = $('<div>').append($table.find('table').clone());
 			
 			$tempTable.find('textarea').each(function() {
-				$(this).before('<i>' + ($(this).val().length == 0 ? notAnsweredText : $(this).val().replace(/\r?\n/g, '<br>')) + '</i>');
+				$(this).before('<em>' + ($(this).val().length == 0 ? notAnsweredText : $(this).val().replace(/\r?\n/g, '<br>')) + '</em>');
 				$(this).remove();
 			});
 			

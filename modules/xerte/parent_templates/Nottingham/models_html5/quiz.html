@@ -27,10 +27,9 @@
 			qNoTxt,
 			myProgress,
             resultsShown = false,
-			tracked = false,
-			questionFeedbackText;
+			tracked = false;
 
-			// function called every time the page is viewed after it has initially loaded
+		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			if ($(x_currentPageXML).children().length > 0) {
 				this.startQs();
@@ -75,8 +74,6 @@
 					}
 				}
 			}
-			
-			//$("#qTxt").width($panel.width());
 		};
 
 
@@ -163,7 +160,7 @@
 				var infoString = $thisQ.getAttribute("prompt");
 				
 				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
-					quiz.loadAudio($thisQ.getAttribute("sound"));
+					quiz.loadAudio($("#questionAudio"), $thisQ.getAttribute("sound"), $thisQ.getAttribute("soundTranscript"));
 				} else {
 					$("#questionAudio").empty().hide();
 				}
@@ -180,13 +177,6 @@
 				}
 				$("#qTxt").html(x_addLineBreaks(infoString));
 
-				//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-				//	$("#qTxt").find("a.x_glossary").contents().unwrap();
-				//}
-
-				$("#feedback").html("");
-				$("#generalFeedback").html("");
-
 				if ($($thisQ).children().length == 0) {
 					$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				} else {
@@ -198,7 +188,6 @@
 					}
 					var $optionGroup = $optionHolder.find(".optionGroup"),
 						$checkBtn = $("#checkBtn"),
-						$feedback = $("#feedback"),
 						correctOptions = [],
 						correctAnswer = [],
 						correctFeedback = [];
@@ -221,7 +210,8 @@
 								name:       label,
 								correct:	this.getAttribute("correct"),
 								feedback:	this.getAttribute("feedback"),
-								audioFB:	this.getAttribute("audioFB")
+								audioFB:	this.getAttribute("audioFB"),
+								transcript:	this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
 							}
 						);
 
@@ -267,8 +257,6 @@
 									})
 								.data("correct", thisOption.correct)
 								.change(function() {
-
-									$feedback.html("");
 									$("#feedbackGroup").find('.feedbackBlock').html("");
 									var $selected = $("#optionHolder input:checked");
 									if ($selected.length > 0) {
@@ -289,10 +277,6 @@
 								.attr("for", "option" + i)
 								.data("option", $thisOption)
 								.html(x_addLineBreaks(thisOption.text));
-							
-							//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-							//	$thisOptionTxt.find("a.x_glossary").contents().unwrap();
-							//}
 						});
 					var name = $thisQ.getAttribute("prompt");
 					if ($thisQ.getAttribute("name"))
@@ -307,29 +291,22 @@
 			}
 		}
 
-        this.showFeedBackandTrackResults = function()
-        {
-
+        this.showFeedBackandTrackResults = function() {
+			
             this.tracked = true;
-
             var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
-
             var selected = $("#optionHolder input:checked"),
-                    optionFeedback = "",
                     correct = true,
                     l_options = [],
                     l_answer = [],
                     l_feedback = [];
 
-            var generalFeedback = "";
             var correctCounter = 0;
-
             var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
-			questionFeedbackText = thisQ.getAttribute('generalFeedback')
             var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
+			
             for(i = 0; i < currentQuestionsChildren.length; i++)
            	{
-            	
             	if(currentQuestionsChildren[i].getAttribute("correct") == 'true')
             	{
             		correctCounter++;
@@ -340,15 +317,11 @@
 			{
 				correct = false;	
 			}
+			
             // get feedback for selected options and check if they are correct
             for (var i=0; i<selected.length; i++) {
                 var optionIndex = $(selected[i]).parent().index(),
-                        selectedOption = quiz.currentAnswers[optionIndex];
-
-                optionFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback)  + "</p>";
-				if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
-					optionFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
-				}
+					selectedOption = quiz.currentAnswers[optionIndex];
 				
                 if (correct != false && selectedOption.correct == "true") {
                     correct = true;
@@ -363,7 +336,7 @@
                 l_answer.push(selectedOption.name);
                 l_feedback.push(selectedOption.feedback);
             }
-            generalFeedback += optionFeedback;
+            
             var rightWrongTxt = "";
             if (x_currentPageXML.getAttribute("judge") != "false") {
                 // if all selected are correct - check that none of the unselected options should have been
@@ -393,7 +366,7 @@
             }
 
 			var feedbackDiv = ['top', 'middle', 'bottom'],
-					feedbackOrder = thisQ.getAttribute('feedbackPos') == undefined ? 'GAC' : thisQ.getAttribute('feedbackPos');
+				feedbackOrder = thisQ.getAttribute('feedbackPos') == undefined ? 'GAC' : thisQ.getAttribute('feedbackPos');
 
 			feedbackOrder = [...feedbackOrder];
 			
@@ -406,6 +379,9 @@
 						} else if (feedbackOrder[i] == 'A') {
 							if(selectedOption !== undefined && selectedOption !== null){
 								thisFeedback = selectedOption.feedback;
+								if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
+									thisFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
+								}
 							}
 						} else {
 							thisFeedback = rightWrongTxt;
@@ -433,13 +409,17 @@
 							var feedback = "";
 
 							for(var f = 0; f <selectedInput.length; f++){
-								multipleFeedback.push(selectedInput[f].value)
+								multipleFeedback.push(selectedInput[f].value);
 							}
 
 							for(var l = 0; l < multipleFeedback.length; l++){
 								for(var j = 0; j < thisQ.children.length; j++){
 									if(multipleFeedback[l] === thisQ.children[j].attributes.text.value){
-										feedback += thisQ.children[j].attributes.feedback.value
+										feedback += thisQ.children[j].attributes.feedback.value;
+										if (thisQ.children[j].attributes.audioFB != undefined && thisQ.children[j].attributes.audioFB.value != undefined && thisQ.children[j].attributes.audioFB.value != "") {
+											var transcriptInfo = thisQ.children[j].attributes.audioTranscript != undefined ? 'data-transcript="' + thisQ.children[j].attributes.audioTranscript.value + '"' : '';
+											feedback += '<div class="audioHolder" data-audio="' + thisQ.children[j].attributes.audioFB.value + '" ' + transcriptInfo + '></div>';
+										}
 									}
 								}
 							}
@@ -449,19 +429,39 @@
 						}
 
 						$('#' + feedbackDiv[p] + 'Feedback')
-								.html(thisFeedback)
-								.show();
+							.html(thisFeedback)
+							.show();
 					}
+					
 					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
 					if (feedbackLabel == undefined) {
 						feedbackLabel = "Feedback";
 					}
+					
 					$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
 				}
+				
+				$('#feedbackGroup').find('.audioHolder').each(function() {
+					quiz.loadAudio($(this), $(this).data('audio'), $(this).data('transcript'));
+				});
+				
+				$("#nextBtn").button("enable");
+				$("#checkBtn").button("disable");
 
+                $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+
+			} else {
+				// Continue to next question
+
+                $("#checkBtn").button("disable");
+                quiz.currentQ++;
+                if (quiz.currentQ == quiz.questions.length) {
+                    // last question answered - show results
+                    quiz.showResults();
+                } else {
+                    quiz.loadQ();
+                }
 			}
-
-
 
 			// Track answer
             var result = {
@@ -472,8 +472,6 @@
             XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
             quiz.myProgress.splice(quiz.currentQ, 1, correct);
 
-            generalFeedback += rightWrongTxt;
-            var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
             if (XTGetMode() == "normal")
             {
                 // Disable all options
@@ -481,49 +479,6 @@
                 for (i=0; i<quiz.currNrOptions; i++)
                 {
                     $("#option"+i).attr("disabled", "disabled");
-                }
-            }
-            if (quiz.showfeedback)
-            {
-                $("#feedback")
-					.html(answerFeedback)
-					.find(".audioHolder").each(function() {
-						$(this).mediaPlayer({
-							type	:"audio",
-							source	:$(this).data("audio"),
-							width	:"100%"
-						});
-					});
-
-                if(questionFeedbackText !== null){
-                	if(questionFeedbackText !== ""){
-						var questionFeedback = "<h3>" + $("#pageContents").data("generalFeedbackLabel") + "</h3>" + questionFeedbackText
-						$('#generalFeedback').html(questionFeedback)
-					}
-
-				}
-
-
-                //if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-                //    $("#feedback").find("a.x_glossary").contents().unwrap();
-                //}
-
-                $("#nextBtn").button("enable");
-				$("#checkBtn").button("disable");
-
-                $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
-            }
-            else
-            {
-                // Continue to next question
-
-                $("#checkBtn").button("disable");
-                quiz.currentQ++;
-                if (quiz.currentQ == quiz.questions.length) {
-                    // last question answered - show results
-                    quiz.showResults();
-                } else {
-                    quiz.loadQ();
                 }
             }
 
@@ -552,10 +507,6 @@
 
             $("#feedbackHeader").html(fbTxt);
 			$("#questionAudio").empty();
-
-			//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-			//	$("#feedback").find("a.x_glossary").contents().unwrap();
-			//}
 
             $("#optionHolder").hide();
 			$("#nextBtn, #checkBtn").button("disable");
@@ -600,10 +551,6 @@
 				$splitScreen.remove();
 			} else {
 				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
-				
-				//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-				//	$textHolder.find("a.x_glossary").contents().unwrap();
-				//}
 				
 				var textAlign = x_currentPageXML.getAttribute("align");
 				if (textAlign != "right" || (x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "")) {
@@ -753,13 +700,18 @@
 			x_pageLoaded();
 		}
 		
-		this.loadAudio = function(soundFile) {
+		this.loadAudio = function($audio, soundFile, transcript) {
 			if (soundFile != undefined && soundFile != "") {
-				$("#questionAudio").mediaPlayer({
+				$audio.mediaPlayer({
 					type	:"audio",
 					source	:soundFile,
 					width	:"100%"
 				});
+				
+				// manually add a transcript button to the end of the audio bar
+				if (transcript != undefined && transcript != '') {
+					x_addAudioTranscript($audio, transcript);
+				}
 			}
 		}		
 	}
@@ -793,8 +745,7 @@
 						<button id="nextBtn"></button>
 						<button id="restartBtn"></button>
 					</div>
-<!--					<div id="generalFeedback" aria-live="polite"></div>-->
-<!--					<div id="feedback" aria-live="polite"></div>-->
+					
 					<div id="feedbackGroup" aria-live="polite">
 						<div id="feedbackHeader" class="feedbackBlock"></div>
 						<div id="topFeedback" class="feedbackBlock"></div>

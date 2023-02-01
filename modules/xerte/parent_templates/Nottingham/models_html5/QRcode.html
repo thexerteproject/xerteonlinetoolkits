@@ -54,7 +54,8 @@
 		this.init = function() {
 			// Load in the required scripts before we can begin
 			// Uses new loadjs
-			loadjs([x_templateLocation + 'common_html5/js/qrcode/qrcode.min.js'], {
+			loadjs.path(x_templateLocation + 'common_html5/js/qrcode/');
+			loadjs(['qrcode.min.js'], {
 				success: function() {
 					QRcode.begin();
 				}
@@ -165,6 +166,11 @@
 					source		:soundFile,
 					width		:$("#pageImg").width()
 				});
+				
+				// manually add a transcript button to the end of the audio bar
+				if (x_currentPageXML.getAttribute('soundTranscript') != undefined && x_currentPageXML.getAttribute('soundTranscript') != '') {
+					x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute('soundTranscript'));
+				}
 			}
 			if (firstLoad == true) {
 				x_pageLoaded();

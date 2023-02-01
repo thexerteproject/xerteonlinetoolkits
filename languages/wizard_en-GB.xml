@@ -9,6 +9,7 @@
     </insertDialog>
     <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
+	<wikiLink tooltip="Open {x} wiki page"/>
 	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
 	<browseImportFile title="Select file to import...">
 		<dialogFilter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
@@ -236,4 +237,8 @@
 		<error>Add {x} to project first</error>
 		<errorEmpty>Add data to {x} first</errorEmpty>
 	</categoryList>
+	<UploadCSV>
+		<UploadCSVBtn label = "Upload csv"/>
+		<Info label = "Warning: This will overwrite the current table, are you sure?"> </Info>
+	</UploadCSV>>
 </language>

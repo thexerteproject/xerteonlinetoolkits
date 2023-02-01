@@ -190,6 +190,10 @@
 							mediaElement.addEventListener("loadedmetadata", function() {
 								if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
 									mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]);
+								} else if (opts.pageName == "introVideo") { // it's a video from project or page intro
+									if (mimeType.toLowerCase() === 'video/mp4') {
+										x_introMediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')])
+									}
 								} else {
 									try {
 										eval(x_pageInfo[x_currentPage].type).mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]); // send dimensions details back to page

@@ -2,18 +2,13 @@
 
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" language="English" text="Enter text for the page here" error="There is no image" />]]></SictTimeline>
+      <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="Enter text for the page here" error="There is no image" />]]></SictTimeline>
     </newNodes>
   </pageWizard>
 
-    <SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" remove="true">
+    <SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" wiki="https://xerte.org.uk/wiki/doku.php?id=media_timeline_media_page" remove="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="150"/>
-        <language label="Language" options="Afrikaans,Arabic,Armenian,Basque,Belarusian,Bulgarian,Catalan,Chinese,Croatian/Hrvatski,Czech,Danish,Dutch,English,Esperanto,Estonian,Faroese,Farsi,Finnish,French,Frisian,Galician,Georgian,German,Greek,Hebrew,Hindi,
-        Hungarian,Icelandic,Indonesian,Irish,Italian,Japanese,Korean,Latvian,Lithuanian,Luxembourgish,Malay,Nepali,Norwegian,Polish,Portuguese,Portuguese (Brazilian),Romanian,Romansh,Russian,Serbian - Cyrillic, Serbian - Latin,Sinhalese,Slovak,Slovenian,Spanish,Swedish,
-        Tagalog,Tamil,Taiwanese,Telugu,Thai,Turkish,Ukrainian" type="ComboBox" data="Afrikaans,Arabic,Armenian,Basque,Belarusian,Bulgarian,Catalan,Chinese,Croatian/Hrvatski,Czech,Danish,Dutch,English,Esperanto,Estonian,Faroese,Farsi,Finnish,French,Frisian,Galician,Georgian,German,Greek,Hebrew,Hindi,
-        Hungarian,Icelandic,Indonesian,Irish,Italian,Japanese,Korean,Latvian,Lithuanian,Luxembourgish,Malay,Nepali,Norwegian,Polish,Portuguese,Portuguese (Brazilian),Romanian,Romansh,Russian,Serbian - Cyrillic, Serbian - Latin,Sinhalese,Slovak,Slovenian,Spanish,Swedish,
-        Tagalog,Tamil,Taiwanese,Telugu,Thai,Turkish,Ukrainian" defaultValue="English" width="100"/>
         <image type="group" label="Image" optional="true">
           <url label="File" type="media" defaultValue="Select Media" optional="true"/>
           <tip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>

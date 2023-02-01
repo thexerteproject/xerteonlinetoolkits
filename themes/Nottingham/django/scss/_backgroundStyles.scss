@@ -9,3 +9,43 @@
 #x_footerBlock {
   background: linear-gradient(to top, rgba(0, 89, 199, 0.65) 0%, rgba(34, 123, 230, 0.65) 100%);
 }
+
+
+//*****SIDE BAR****/
+
+#x_sideBar {
+	background-color: #B5E2F2;
+}
+
+#x_sideBarToggleBtn {
+	border-color: #D3EEF5;
+	color: #525252;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: white;
+	background-color: #398ADD;
+}
+
+#x_sideBarBtnHolder button {
+	color: #525252;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-color: #D3EEF5;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border-color: #525252;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: #398ADD;
+	color: white;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: #398ADD;
+	color: white;
+	border-color: #398ADD;
+}

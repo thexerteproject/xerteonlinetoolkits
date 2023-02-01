@@ -296,8 +296,7 @@ function ScormTrackingState()
         {
             return this.findPage(page_nr);
         }
-        var i=0;
-        for (i=0; i<this.interactions.length; i++)
+        for (let i=0; i<this.interactions.length; i++)
         {
             if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
                 return this.interactions[i];
@@ -1308,12 +1307,20 @@ function setValue(elementName, value){
 
 function XTInitialise(category)
 {
-    if (! state.initialised)
-    {
-        state.initialised = true;
-        initializeCommunication();
-        state.initTracking();
-        state.scormmode =  String(getValue("cmi.mode"));
+    // Tom Reijnders 2022-10-06: Trying to handle tracking of standalone pages where the page is a page of the same LO
+    // Specifically when the standalone page is shown in a lightbox
+    // We make use of the fact that in javascript, assigning a variable is done through reference, so we actually
+    // point the state variable (of the standalone page) to the parent state variable (of the main LO)
+    if (parent != self && parent.x_TemplateId != undefined && parent.x_TemplateId == x_TemplateId && parent.state != undefined) {
+        state = parent.state;
+    }
+    else {
+        if (!state.initialised) {
+            state.initialised = true;
+            initializeCommunication();
+            state.initTracking();
+            state.scormmode = String(getValue("cmi.mode"));
+        }
     }
 }
 
@@ -1658,7 +1665,7 @@ function XTResults(fullcompletion) {
         totalDuration = 0;
     results.interactions = Array();
 
-    for (i = 0; i < state.interactions.length - 1; i++) {
+    for (i = 0; i < state.interactions.length; i++) {
 
 
         score += state.interactions[i].score * state.interactions[i].weighting;
@@ -1701,21 +1708,45 @@ function XTResults(fullcompletion) {
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
+                    // If unique targets, match answers by target, otherwise match by source
+                    const targets = [];
+                    for (let j = 0; j < state.interactions[i].correctOptions.length; j++) {
+                        targets.push(state.interactions[i].correctOptions[j].target);
+                    }
+                    // Check whether values of targets are unique
+                    const uniqueTargets = targets.length === new Set(targets).size;
                     for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
                         correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
-                        source = state.interactions[i].correctOptions[c].source;
+                        let source = state.interactions[i].correctOptions[c].source;
+                        let target = state.interactions[i].correctOptions[c].target;
                         if (state.interactions[i].learnerOptions.length == 0) {
-                            learnerAnswer = source + ' --> ' + ' ';
+                            if (uniqueTargets) {
+                                learnerAnswer = ' --> ' + target;
+                            }
+                            else {
+                                learnerAnswer = source + ' --> ' + ' ';
+                            }
                         }
                         else {
                             for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
-                                if (source == state.interactions[i].learnerOptions[d].source) {
-                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
-                                    break;
+                                if (uniqueTargets)
+                                {
+                                    if (target == state.interactions[i].learnerOptions[d].target) {
+                                        learnerAnswer = state.interactions[i].learnerOptions[d].source + ' --> ' + target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = ' --> ' + target;
+                                    }
                                 }
-                                else {
-                                    learnerAnswer = source + ' --> ' + ' ';
+                                else
+                                {
+                                    if (source == state.interactions[i].learnerOptions[d].source) {
+                                        learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = source + ' --> ' + ' ';
+                                    }
                                 }
                             }
                         }
@@ -1726,7 +1757,6 @@ function XTResults(fullcompletion) {
                         matchSub.correctAnswer = correctAnswer;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
-
                     break;
                 case "text":
                     learnerAnswer = state.interactions[i].learnerAnswers;

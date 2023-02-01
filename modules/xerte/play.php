@@ -312,14 +312,27 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 if (isset($lti_enabled) && $lti_enabled)
                 {
                     $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                    if (function_exists('addSession')) {
+                        $tracking .= "  var sessionParam = '" . addSession("") . "&tsugisession=1';\n";
+                    }
                 }
                 else
                 {
                     $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=0" : "xapi_proxy.php") . "';\n";
+                    if (function_exists('addSession')) {
+                        $tracking .= "  var sessionParam = '" . addSession("") . "&tsugisession=0';\n";
+                    }
                 }
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
+                if (isset($_SESSION['XAPI_PROXY']) && $_SESSION['XAPI_PROXY']['db']) {
+                    $tracking .= "  var lrsUseDb = true;\n";
+                }
+                else
+                {
+                    $tracking .= "  var lrsUseDb = false;\n";
+                }
                 if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
@@ -347,26 +360,27 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
-                    $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                    $tracking .= "   var groupname = '" . str_replace("'", "\'", $xerte_toolkits_site->group) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->course))
                 {
-                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                    $tracking .= "   var coursename = '" . str_replace("'", "\'", $xerte_toolkits_site->course) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->module))
                 {
-                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
+                    $tracking .= "   var modulename = '" . str_replace("'", "\'", $xerte_toolkits_site->module) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->lti_context_id))
                 {
-                    $tracking .= "   var lti_context_id = '" . $xerte_toolkits_site->lti_context_id . "';\n";
+                    $tracking .= "   var lti_context_id = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_id) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->lti_context_name))
                 {
-                    $tracking .= "   var lti_context_name = '" . $xerte_toolkits_site->lti_context_name . "';\n";
+                    $tracking .= "   var lti_context_name = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_name) . "';\n";
                 }
             }
-            $tracking .= "</script>\n";
+	    $tracking .= "</script>\n";
+            //$tracking .= "var lti_context_id = '1390';  var lti_context_name = 'Don Bosco College';\n</script>\n";
             _debug("Tracking script: " . $tracking);
         }
         else

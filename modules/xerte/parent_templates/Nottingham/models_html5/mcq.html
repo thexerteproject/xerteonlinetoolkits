@@ -157,7 +157,7 @@
 						tempFeedback = '<p>' + tempFeedback + '</p>';
 					}
 					if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
-						tempFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
+						tempFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
 					}
 					if (tempFeedback != "") {
 						answerFeedback += tempFeedback;
@@ -259,6 +259,11 @@
 						source	:$(this).data("audio"),
 						width	:"100%"
 					});
+					
+					// manually add a transcript button to the end of the audio bar
+					if ($(this).data("transcript") !== false) {
+						x_addAudioTranscript($("#feedback").find(".audioHolder"), $(this).data("transcript"));
+					}
 				});
 
             $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
@@ -346,7 +351,8 @@
 							text:		this.getAttribute("text"),
 							correct:	this.getAttribute("correct"),
 							feedback:	this.getAttribute("feedback"),
-							audioFB:	this.getAttribute("audioFB")
+							audioFB:	this.getAttribute("audioFB"),
+							transcript:	this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
 						}
 					);
 				});

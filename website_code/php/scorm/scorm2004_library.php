@@ -208,7 +208,7 @@ function scorm2004_html_page_create($id, $name, $type, $rlo_file, $lo_name, $lan
 
 }
 
-function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo=''){
+function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='', $plugins=''){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -237,8 +237,10 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
 	$scorm_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $scorm_html_page_content);
 
-    $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js?version=" . $version . "\"></script>\n";
+
+	$tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js?version=" . $version . "\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
     if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm2004.3rd.js"))

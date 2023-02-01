@@ -314,6 +314,15 @@ if(is_user_admin())
                     if ($new_root_folder_id == -1)
                     {
                         $new_root_folder_id = db_query($folder_create_query, $folder_create_params);
+                        if ($new_root_folder_id === false)
+                        {
+                            die("Error creating folder " . $foldername . "in workspace of new user " . $newuser);
+                        }
+                        // Make sure folderrights record is created as well
+                        $folder_rights_query = "INSERT INTO {$prefix}folderrights (folder_id,login_id,folder_parent,role) values  (?,?,?,?)";
+                        $folder_rights_params = array($new_root_folder_id, $rootfolder['login_id'], $rootfolder['folder_id'], 'creator');
+                        $folder_rights_id = db_query($folder_rights_query, $folder_rights_params);
+
                         $folder_structure[$new_root_folder_index]['newid'] = $new_root_folder_id;
                     }
                     // Correct the database

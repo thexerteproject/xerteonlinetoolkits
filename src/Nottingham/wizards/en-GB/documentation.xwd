@@ -7,7 +7,7 @@
   </pageWizard>
 
   <!-- DOCUMENTATION=============================== -->  
-    <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#documentation" hint="A form based interaction where the user downloads a copy of their responses.">
+    <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#documentation" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_documentation" hint="A form based interaction where the user downloads a copy of their responses.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="120"/>
 	<intro label="Introduction Text" type="TextArea" height="120"/>
@@ -18,11 +18,11 @@
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
 	<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
 
-	<fontSize type="group" label="Font Size" optional="true">
-    		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
-    		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
-    		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
-    		<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
+	<fontSize type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
+		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
+		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
+		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
+		<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
     </fontSize>
 
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true" />

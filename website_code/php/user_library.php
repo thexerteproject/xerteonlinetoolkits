@@ -137,9 +137,12 @@ function recycle_bin() {
 
         $query = "insert into {$xerte_toolkits_site->database_table_prefix}folderdetails 
             (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-        $res = db_query($query, array($_SESSION['toolkits_logon_id'], "0", "recyclebin", date('Y-m-d')) );
+        $newid = db_query($query, array($_SESSION['toolkits_logon_id'], "0", "recyclebin", date('Y-m-d')) );
 
-        if($res) {
+        if($newid !== false) {
+            $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}folderrights (folder_id, login_id, folder_parent, role) values (?,?,?,?)";
+            $params = array($newid, $_SESSION['toolkits_logon_id'], "0", "creator");
+            db_query($query, $params);
 
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users recycle bin", "Succeeded in creating users recycle bin: User: " . $_SESSION['toolkits_logon_username']);
 
@@ -195,7 +198,12 @@ function create_a_virtual_root_folder(){
     $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
     $params = array($_SESSION['toolkits_logon_id'], "0", $_SESSION['toolkits_logon_username'], date('Y-m-d'));
 
-    if(db_query($query, $params) !== false){
+    $newid = db_query($query, $params);
+    if($newid !== false){
+        $query = "INSERT INTO {$prefix}folderrights (folder_id, login_id, folder_parent, role) values (?,?,?,?)";
+        $params = array($newid, $_SESSION['toolkits_logon_id'], "0", "creator");
+
+        db_query($query, $params);
 
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users root folder", "Succeeded in creating users root folder: User: " . $_SESSION['toolkits_logon_username']);
 

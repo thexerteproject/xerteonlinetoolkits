@@ -72,20 +72,19 @@
 			}
 			
 			var width = $("#mainPanel").width(),
-				height = $("#mainPanel").height() - $("#qNo").height() - $("#feedback").height() - $("#buttonHolder").height(),
-				textSize;
-			
+					height = $("#pageContents").innerHeight() - $("#qNo").outerHeight(true) - $("#feedback").outerHeight(true) - $("#buttonHolder").outerHeight(true),
+					textSize;
+			let paddingHeightMainPanel = $("#mainPanel").outerHeight(true) - $("#mainPanel").innerHeight() + parseFloat($("#mainPanel").css('padding-top')) + parseFloat($("#mainPanel").css('padding-bottom'));
+			let paddingWidthMainPanel = $("#mainPanel").outerWidth(true) - $("#mainPanel").innerWidth() + parseFloat($("#mainPanel").css('padding-left')) + parseFloat($("#mainPanel").css('padding-right'));
+			width -= paddingWidthMainPanel;
+			height -= paddingHeightMainPanel;
+			height *= 0.98; // Build in some extra space
 			if(width > height) {
-				$("#canvas-container")
-					.width(height*0.90)
-					.height(height*0.90);
-				textSize = (height - width) / 10;
+				textSize = (width - height) / 10;
 			}
 			else {
-				$("#canvas-container")
-					.width(width)
-					.height(width);
 				textSize = (height - width) / 10;
+				height = width;
 			}
 			if (textSize > 20) {
 				textSize = 20;
@@ -93,19 +92,28 @@
 			else if (textSize < 12) {
 				textSize = 12;
 			}
-			
 			$pageContents.data('textSize', textSize);
+			
+			$("#canvas-container")
+					.css('width', width)
+					.css('height', height);
+
 		};
 
-		this.loadAudio = function(currentQuestion, soundFile)
+		this.loadAudio = function(currentQuestion, soundFile, transcript)
 		{
 			if (soundFile != undefined && soundFile != "")
-			{
+			{	
 				$("#questionAudio" + currentQuestion).mediaPlayer({
 					type	:"audio",
 					source	:soundFile,
 					width	:"100%"
 				});
+				
+				// manually add a transcript button to the end of the audio bar
+				if (transcript != undefined && transcript != '') {
+					x_addAudioTranscript($("#questionAudio" + currentQuestion), transcript);
+				}
 			}
 		};
 
@@ -191,7 +199,7 @@
 				pageSize = $pageContents.data('pageSize'),
 				currentQuestion = $pageContents.data('currentQuestion'),
 				questions = $pageContents.data('questions');
-			
+
 		    if (listMode || listMode == 'all')
 			{
 			    if (pageMode || (pageMode == undefined && listMode == true))
@@ -267,7 +275,7 @@
 				var infoString = $thisQ.getAttribute("prompt");
 
 				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
-					this.loadAudio(currentQuestion, $thisQ.getAttribute("sound"));
+					this.loadAudio(currentQuestion, $thisQ.getAttribute("sound"), $thisQ.getAttribute('soundTranscript'));
 				}
 				else
 				{
@@ -491,6 +499,9 @@
 			{
 			    this.loadQuestions();
 			}
+			else {
+				$("#backBtn").button("enable");
+			}
 		};
 
 		this.trackQuestion = function(currentQuestion, goingBack)
@@ -572,14 +583,14 @@
 		this.trackOpinion = function() {
             // Last question answered - show results
             var JSONGraph = this.createGraphObject();
-            if (x_currentPageXML.getAttribute("diagram") !== "true"){
-            if (x_currentPageXML.getAttribute("diagram") !== "true"){
-              $("#canvas-container").show();
-            } else {
-              $('#canvas-container').hide();
-            }
-            this.sizeChanged();
-            this.createDiagram(JSONGraph);
+            if (x_currentPageXML.getAttribute("diagram") !== "true") {
+				if (x_currentPageXML.getAttribute("diagram") !== "true") {
+					$("#canvas-container").show();
+				} else {
+					$('#canvas-container').hide();
+				}
+				this.sizeChanged();
+				this.createDiagram(JSONGraph);
 			}
 
             $("#qNo").html($pageContents.data("onCompletionText"));
@@ -747,6 +758,11 @@
 
             if ($pageContents.data('listMode') && x_currentPageXML.getAttribute("pagesize") != undefined) {
                 $pageContents.data('pageSize', parseInt(x_currentPageXML.getAttribute("pagesize")));
+				if ($pageContents.data('listMode') === 'all') {
+					// Set page size to number of items
+					const numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
+					$pageContents.data('pageSize', numberOfQuestions);
+				}
             }
 			else {
 				$pageContents.data('pageSize', 1);
@@ -881,37 +897,7 @@
           $("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
-/*
-			// print button
-            $("#printBtn")
-				.button({
-					label: 'Print'
-				})
-				.click(function() {
-					$("#textHolder, #qNo, #diagram").printThis({
-						debug: false,               // show the iframe for debugging
-						importCSS: true,            // import parent page css
-						importStyle: false,         // import style tags
-						printContainer: true,       // print outer container/$.selector
-						loadCSS: "",                // path to additional css file - use an array [] for multiple
-						pageTitle: "",              // add title to print page
-						removeInline: false,        // remove inline styles from print elements
-						removeInlineSelector: "*",  // custom selectors to filter inline styles. removeInline must be true
-						printDelay: 333,            // variable print delay
-						header: null,               // prefix to html
-						footer: null,               // postfix to html
-						base: false,                // preserve the BASE tag or accept a string for the URL
-						formValues: true,           // preserve input/form values
-						canvas: true,               // copy canvas content
-						doctypeString: "",       // enter a different doctype for older markup
-						removeScripts: false,       // remove script tags from print content
-						copyTagClasses: false,      // copy classes from the html & body tag
-						beforePrintEvent: null,     // function for printEvent in iframe
-						beforePrint: null,          // function called before iframe is filled
-						afterPrint: null            // function called before iframe is removed
-					});
-				});
-*/
+			
 			// reset button
             $("#resetBtn")
 				.button({
@@ -940,6 +926,7 @@
 
         let startHeight;
         let startWidth;
+        let panelStartWidth;
         let startPadding;
         let canvasStartHeight;
         let canvasStartWidth;
@@ -951,40 +938,63 @@
 				.click(async function() {
 					$("#pageContents").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
 					$("#mainPanel").prepend(
-							`<div id="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>`
+							'<div id="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>'
 					);
+					$("#mainPanel .panel").addClass("panel-print");
+					$("#mainPanel .panel").removeClass("panel");
 					startHeight = $("#mainPanel")[0].style.height;
-					startWidth = $("#mainPanel")[0].style.width;
+					startWidth = $("#pageContents")[0].style.width;
+					panelStartWidth = $("#mainPanel")[0].style.width;
 					startPadding = $("#mainPanel")[0].style.padding;
 					canvasStartHeight = $("#canvas-container")[0].style.height;
 					canvasStartWidth = $("#canvas-container")[0].style.width;
 					$("#mainPanel #buttonHolder").hide();
-					$("#mainPanel").css("width", "794px");
-					$("#mainPanel").css("height", "500px");
-					$("#mainPanel").css("padding", "79.4px");
+					$("#pageContents").css("width", "794px");
+					//$("#mainPanel").css("width", "764px");
+					$("#mainPanel").css("max-height", "794px");
+					$("#canvas-container canvas").css("min-width", "540px");
+					$("#canvas-container canvas").css("min-height", "270px");
+					$("#canvas-container canvas").css("max-width", "764px");
+					$("#canvas-container canvas").css("max-height", "764px");
+					//$("#mainPanel").css("padding", "79.4px");
+					/*
 					$("#canvas-container").css("width", "794px");
-					$("#canvas-container").css("height", "450px");
+					$("#canvas-container").css("height", "750px");
+					*/
+					opinion.sizeChanged();
 					$("p").css("font-size", "16px");
 					$("h3").css("font-size", "18px");
+					setTimeout(function(){
+						let opt = {
+							filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
+							html2canvas: { scale: 2 },
+							jsPDF: {unit: 'in', format: 'a4', orientation: 'portrait'}
+						};
+						html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
+							$("#mainPanel .panel-print").addClass("panel");
+							$("#mainPanel .panel").removeClass("panel-print");
+							$("#pageContents").css("width", startWidth);
+							//$("#mainPanel").css("width", panelStartWidth);
+							$("#mainPanel").css("height", startHeight);
+							$("#mainPanel").css("padding", startPadding);
+							$("#canvas-container canvas").css("min-width", "");
+							$("#canvas-container canvas").css("min-height", "");
+							$("#canvas-container canvas").css("max-width", "");
+							$("#canvas-container canvas").css("max-height", "");
+							$("#mainPanel").css("max-height", "");
 
-					await new Promise(resolve => setTimeout(resolve, 1000));
-					let opt = {
-						filename: `xerte-opinion${x_currentPageXML.getAttribute("name")}.pdf`,
-						html2canvas: { scale: 2 },
-						jsPDF: {unit: 'in', format: 'a4', orientation: 'portrait'}
-					};
-					html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
-						$("#mainPanel").css("width", "");
-						$("#mainPanel").css("height", "");
-						$("#mainPanel").css("padding", "");
-						$("#canvas-container").css("width", canvasStartWidth);
-						$("#canvas-container").css("height", canvasStartHeight);
-						$("#print-title").remove();
-						$("#print-overlay").remove();
-						$("#buttonHolder").show();
-						$("p").css("font-size", "");
-						$("h3").css("font-size", "");
-					}).save();
+							/*
+							$("#canvas-container").css("width", canvasStartWidth);
+							$("#canvas-container").css("height", canvasStartHeight);
+							*/
+							$("#print-title").remove();
+							$("#print-overlay").remove();
+							$("#buttonHolder").show();
+							$("p").css("font-size", "");
+							$("h3").css("font-size", "");
+							opinion.sizeChanged();
+						}).save();
+					}, 4000)
 				});
 	        $("#printBtn").hide();
 			this.startQuestions();
@@ -993,7 +1003,7 @@
 		}
 
 		this.showPrintButton = function (force) {
-			$("#printBtn")[printAvailable && force !== false ? 'show' : 'hide']();
+			$("#printBtn")[printAvailable && force !== false && x_currentPageXML.getAttribute('disableprinting') != 'true' ? 'show' : 'hide']();
 		}
 
 		this.resetGraph = function () {
@@ -1016,9 +1026,6 @@
 
 <div id="pageContents">
 
-  <!--div id="prnbuttonHolder" style="direction: rtl; float: none;">
-    <button id="printBtn" hidden></button>
-  </div-->
 	<div class="splitScreen">
 
 		<div id="textHolder" class="left"></div>

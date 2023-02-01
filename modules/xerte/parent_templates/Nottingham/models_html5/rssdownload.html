@@ -169,14 +169,16 @@
 						{
 							resultsString += '<span class="rssDownloadOffline"><a target="_blank" href="' + item.offlinelink + '"><i class="fa fa-cube" aria-hidden="true"></i> Download Offline</a></span>';
 						}
-						resultsString += '</div>'
+						//resultsString += '</div>'
 						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
 							// snippet is a bit long so shorten it
 							if (description != "undefined" && description.length > 400) {
 								var cutOff = 400 + description.substr(400).indexOf(' ');
-								resultsString += '<p class="rssDescription">' + description.substring(0, cutOff) + '...</p>';
+								var $html = $('<div>').html(description.substring(0, cutOff));
+								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '...</p>';
 							} else {
-								resultsString += '<p class="rssDescription">' + description + '</p>';
+								var $html = $('<div>').html(description);
+								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '</p>';
 							}
 						}
 						if (optauthor !="false" && optauthor !=null) {
@@ -193,6 +195,7 @@
 						resultsString += '</div>';
 					});
 				}
+				
 				$resultsHolder
 					.html(resultsString)
 					.children("div:even").addClass("shadedDiv");

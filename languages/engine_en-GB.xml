@@ -9,8 +9,6 @@
   <tocButton label="Contents"/>
   
   <helpButton label="Help"/>
-  
-  <pageHelpButton label="Page Help"/>
 
   <mediaButton label="Media"/>
   
@@ -27,6 +25,8 @@
   <progressBar label="COMPLETE"/>
   
   <footerTools hide="Hide footer tools" show="Show footer tools"/>
+  
+  <sideBar hide="Hide side bar" show="Show side bar"/>
   
   <toc label="Table of Contents" htmlDescription="Use the tab key to select a page. Press space to go to that page.">
 	  <closeButton description="Close Table of Contents"/>
@@ -93,6 +93,7 @@
 	<muteButton label="Mute Toggle" description="Toggle Mute Button"/>
 	<fullscreenButton label="Fullscreen" description="Fullscreen Movie Button"/>
 	<captionsButton label="Captions/Subtitles" description="Show/Hide Captions Button"/>
+	<transcriptButton label="Transcript"/>
   </mediaElementControls>
   
   <interactions>

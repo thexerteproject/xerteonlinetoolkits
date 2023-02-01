@@ -144,7 +144,8 @@ foreach($workspace->items as $item)
         <div id="content" class="content">
                 <div id="mergeGlossary">
                     <div class="merge_title"><?php echo GLOSSARY;?></div>
-                    <div><label><input type="checkbox" id="mergeGlossaryCheck"><?php echo MERGE_GLOSSARY;?></label></div>
+                    <div><label><input type="checkbox" id="mergeGlossaryCheck" onclick="this.checked ? getElementById('overwriteGlossaryCheck').disabled = false : (getElementById('overwriteGlossaryCheck').disabled = true , getElementById('overwriteGlossaryCheck').checked = false) "><?php echo MERGE_GLOSSARY;?></label></div>
+                    <div><label><input type="checkbox" id="overwriteGlossaryCheck" disabled ><?php echo OVERWRITE_GLOSSARY;?></label></div>
                 </div>
                 <div class="merge_title"><?php echo PAGES;?></div>
                 <div id="pages">

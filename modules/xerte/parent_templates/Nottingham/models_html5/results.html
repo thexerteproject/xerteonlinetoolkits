@@ -197,7 +197,7 @@
       $("#startTime").html(xtresults.start);
       var detailstables = 0;
       var firstnormalrow = true;
-      var detailstable = $("<table class='details'>");
+      var detailstable = $("<table class='details header shaded'>");
       var scoretxt;
 
 
@@ -233,8 +233,9 @@
         if (xtresults.mode == 'normal-results') {
           $("#specific").show();
           $("#specificResultsTxt").hide();
+		  var $hrow = $();
           if (firstnormalrow) {
-            $("#questionScores").append("<th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th>");
+            $("#questionScores").append("<thead><tr><th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th></tr></thead>");
             normalcolumns = [x_GetTrackingTextFromHTML(nameTxt, ""), scoreTxt, durationTxt, weightingTxt, completedTxt];
             firstnormalrow = false;
           }
@@ -248,7 +249,7 @@
           $("#specificResultsTxt").show();
           if (firstnormalrow) {
             normalcolumns = [x_GetTrackingTextFromHTML(nameTxt, ""), scoreTxt, durationTxt, weightingTxt, completedTxt, detailsTxt];
-            $("#questionScores").append("<th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th><th>" + detailsTxt + "</th>");
+            $("#questionScores").append("<thead><tr><th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th><th>" + detailsTxt + "</th></tr></thead>");
             firstnormalrow = false;
           }
           $("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-center'>" + scoretxt + "</td><td class='td-center'>" + x.duration + "s</td><td class='td-center'>" + x.weighting +
@@ -258,7 +259,7 @@
           altnormalrow = !altnormalrow;
           altfullrow = false;
           if (x.subinteractions.length > 0 && x.type != 'page') {
-            detailstable.append("<tr><th class='correct th'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>" + correctAnswerTxt + "</th></tr>");
+            detailstable.append("<tr class='header'><th class='correct th'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>" + correctAnswerTxt + "</th></tr>");
             var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
             var detailstablerows = [];
             altfullrow = false;
@@ -280,7 +281,7 @@
               altfullrow = !altfullrow;
             });
             $("#fullResults").append(detailstable);
-            detailstable = $("<table class='details'>");
+            detailstable = $("<table class='details header shaded'>");
             detailstablescolumns.push(detailstablecolumns);
             detailstablesrows.push(detailstablerows);
           }
@@ -614,7 +615,7 @@
     <div id="specific">
       <h3 id="interactivityResultsTxt"></h3>
       <h3 id="globalResultsTxt"></h3>
-      <table id="questionScores" rules="rows">
+      <table id="questionScores" rules="rows" class="header shaded">
       </table>
       <br />
       <h3 id="specificResultsTxt"></h3>

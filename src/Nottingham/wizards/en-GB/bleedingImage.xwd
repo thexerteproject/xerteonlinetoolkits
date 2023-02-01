@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- Bleeding Image Page=========================================================== -->
-  <bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text"  height="200"  icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#advancedimage" remove="true">
+  <bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text"  height="200"  icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#advancedimage" wiki="https://xerte.org.uk/wiki/doku.php?id=media_advanced_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox"  width="100"/>
@@ -23,7 +23,10 @@
 		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
 	</magnifierGroup>
 	
-    <sound label="Sound" type="media" optional="true" tooltip="Add an audio player below the image"/>
+	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the image">
+		<sound label="File" type="media" optional="true"/>
+		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+	</soundGroup>	
 	
 	<linkInfo type="group" label="Link" optional="true">
 		<link label="URL" type="textInput" optional="true" defaultValue="Enter Link Address"/>

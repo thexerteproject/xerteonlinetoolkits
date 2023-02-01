@@ -670,6 +670,25 @@ img {
 #x_headerBlock h1 span, x_headerBlock h1, #x_headerBlock h2 span, #x_headerBlock h2 {
 	background-color:rgba(255,255,255,0) !important;
 }
+
+#x_headerBlock #x_pageIntroBtn {
+	color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: #152c51;
+	background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: red;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: #152c51;
+	background-color: red;
+}
+
 #x_footerBlock {
 	-webkit-box-shadow: inset 0px 4px 12px rgba(0,0,0,0.4);
 	box-shadow: inset 0px 4px 12px rgba(0,0,0,0.4)
@@ -958,7 +977,6 @@ table {
 	font-size:1em;
 	margin-bottom:20px;
 	margin-top:10px;
-	table-layout:fixed;
 }
 table ul {
 	line-height:1.2em;
@@ -968,8 +986,9 @@ table ol {
 	line-height:1.2em;
 	padding-left:15px;
 }
-td {
-	background:#fff;
+
+table td {
+	background: #fff;
 	border-color: #152c51;
 	font-size:1.1em;
 	line-height: 1.4em; //OC
@@ -982,6 +1001,11 @@ td li {
 .ui-tabs .ui-tabs-panel p {
 	font-size:1em; //OC
 }
+.x_grid_page table.header.shaded tr:first-child td,
+.x_grid_page table.headerCol.shaded td.header {
+	background:#efefef;
+}
+
 th {
 	background:#152c51;
 	border:1px solid #152c51;
@@ -990,6 +1014,14 @@ th {
 	font-weight:lighter;
 	padding:5px;
 	text-align:center;
+}
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child {
+	background:#152c51;
+	border-color: #152c51;
+	color:white;
 }
 tt {
 	background: #fff;

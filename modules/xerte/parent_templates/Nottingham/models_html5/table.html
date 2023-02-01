@@ -33,7 +33,11 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+			if (x_browserInfo.mobile == true) {
+				$('#tableHolder .panel')
+					.width('auto')
+					.width($x_pageDiv.width() - ($('#tableHolder .panel').outerWidth(true) - $('#tableHolder .panel').width()));
+			}
 		}
 		
 		this.init = function() {
@@ -120,13 +124,15 @@
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
+			this.sizeChanged();
 			
 		}
 		
 		this.makeTable = function(tableData, csv) {
 			var tableString = "",
 				separator = "|",
-				i, j;
+				i, j,
+				tbodySetUp = false;
 			
 			if (csv == true) {
 				if ($tableInfo[0].getAttribute("delimiter") != "") {
@@ -136,12 +142,27 @@
 				}
 			}
 			for (i=0; i<tableData.length; i++) {
+				var dataTag = "td";
+				if (header == true && i==0) {
+					tableString += "<thead>";
+					dataTag = "th";
+				} else if (tbodySetUp == false) {
+					tableString += "<tbody>";
+					tbodySetUp = true;
+				}
+				
 				tableString += "<tr>";
 				var rowData = tableData[i].split(separator);
 				for (j=0; j<rowData.length; j++) {
-					tableString += "<td>" + rowData[j] + "</td>";
+					tableString += "<" + dataTag + ">" + rowData[j] + "</" + dataTag + ">";
 				}
 				tableString += "</tr>";
+				
+				if (header == true && i==0) {
+					tableString += "</thead>";
+				} else if (i==tableData.length-1) {
+					tableString += "</tbody>";
+				}
 			}
 			$table.html(tableString);
 			
@@ -150,15 +171,10 @@
 			}
 			
 			if ($tableInfo[0].getAttribute("shade") == "true") {
-				$table.children(0).children().each(function() {
-					var $this = $(this),
-						thisIndex = $this.index();
-					if (footer != true || thisIndex != tableData.length-1) {
-						if (header == true) { // shade even no. rows, except for 1st row
-							if (thisIndex%2 == 0 && thisIndex != 0) {
-								$this.addClass("shaded");
-							}
-						} else if (thisIndex%2 != 0) { // shade odd no. rows
+				$table.find('tbody').children().each(function(i) {
+					var $this = $(this);
+					if (footer != true || (footer == true && i != $table.find('tbody').children().length-1)) {
+						if (i%2 != 0) { // shade odd no. rows
 							$this.addClass("shaded");
 						}
 					}

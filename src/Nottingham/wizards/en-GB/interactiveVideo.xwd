@@ -6,12 +6,11 @@
   </pageWizard>
 
   <!-- INTERACTIVE VIDEO======================= -->
-  <interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
+  <interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_interactive_video_page" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
-		
 
-		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
+		<intro label="Introduction Panel" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true" deprecated="Although the introduction panel still works, the new introduction optional property is now the recommended way of adding an introduction to the page"/>
 
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
@@ -119,7 +118,7 @@
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100"/>
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
-		<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>
+		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<disable label="Disable Controls" type="CheckBox"/>
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>

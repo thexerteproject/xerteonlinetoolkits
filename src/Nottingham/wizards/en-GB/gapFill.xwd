@@ -6,12 +6,12 @@
   </pageWizard>
 
   <!-- GAP FILL INTERACTION=============================== -->
-  <gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#gapfilldraganddrop" remove="true">
+  <gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#gapfilldraganddrop" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_gap_fill_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
     <passage label="Gap Fill Text" type="TextArea" height="150"/>
-    <interactivity label="Interactivity" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100"/>
+    <interactivity label="Interactivity" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100" conditionTrigger="true"/>
     <feedback label="Feedback" type="TextArea" height="50"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
@@ -29,15 +29,20 @@
 		<mainDelimiter label="Marked Word" type="textInput" defaultValue="|" optional="true" tooltip="The character used to mark words for the exercise"/>
 		<answerDelimiter label="Correct Answer" type="textInput" defaultValue="," optional="true" tooltip="The character separating each correct answer, where there is more than one correct answer for a gap, e.g. |Doctor,Dr|"/>
 		<noiseDelimiter label="Distractor" type="textInput" defaultValue=" " optional="true" tooltip="The character used to separate distractors"/>
-		<dropDownDelimiter label="Drop Down Menu Option" type="textInput" defaultValue="/" optional="true" tooltip="The character separating the options that will appear within a drop down menu, e.g. |England/Scotland/Wales|, where the first in the list is the correct answer"/>
+		<dropDownDelimiter label="Drop Down Menu Option" type="textInput" defaultValue="/" condition="interactivity=='Drop Down Menu'" optional="true" tooltip="The character separating the options that will appear within a drop down menu, e.g. |England/Scotland/Wales|, where the first in the list is the correct answer"/>
 	</delimiters>
 
-	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" width="100" optional="true" />
+	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" condition="interactivity=='Drop Down Menu'" width="100" optional="true" />
 
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
-	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
+	
+	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Include an audio player below the written feedback">
+		<audioFeedback label="File" type="media" optional="true"/>
+		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+	</audioGroup>
+	
 	<spaceLines label="Space Lines Evenly" type="CheckBox" defaultValue="true" optional="true"/>
 
     <hints type="group" label="Hints" optional="true">
@@ -45,7 +50,7 @@
     	<attemptsBeforeHint label="Attempts Before Hint" defaultValue="2" type="NumericStepper" min="0" max="10" step="1" width="100" optional="true" />
     </hints>
 	
-	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
+	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" condition="interactivity=='Fill in Blank'" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
 
   </gapFill>
 

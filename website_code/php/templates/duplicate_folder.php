@@ -140,7 +140,7 @@ function copy_folder($folder_id, $parentfolder_id, $folder_name, $org_folder_nam
 
                     receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
-                    duplicate_template($template['template_framework'], $new_template_id, $template['temlpate_id'], $template['org_template_name']);
+                    duplicate_template($template['template_framework'], $new_template_id, $template['template_id'], $template['org_template_name']);
 
                 } else {
                     receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create new template record for the database", $query_for_template_rights);

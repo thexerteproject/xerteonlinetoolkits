@@ -14,7 +14,7 @@
   </pageWizard>
 
   <!-- HOTSPOT IMAGE INTERACTION============================= -->
-  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="An interaction where the answer to the question posed is given by selecting one or more relevant hotspots on an image." icon="icHotspotQuestion"  thumb="thumbs/hotspotQuestion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotquestion" remove="true">
+  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="An interaction where the answer to the question posed is given by selecting one or more relevant hotspots on an image." icon="icHotspotQuestion"  thumb="thumbs/hotspotQuestion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotquestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_hotspot_question_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>

@@ -74,8 +74,7 @@
 				})
 				.click(function() {
 					$thumbHolder.animate({scrollLeft: $thumbHolder.scrollLeft() - $thumbHolder.find(".thumbBox:eq(0)").width() - 10}, 800, "easeInOutCubic");
-				})
-				.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/small_prev.png")');
+				});
 			
 			
 			btnText = x_currentPageXML.getAttribute("nextBtnTip");
@@ -91,8 +90,7 @@
 				})
 				.click(function() {
 					$thumbHolder.animate({scrollLeft: $thumbHolder.scrollLeft() + $thumbHolder.find(".thumbBox:eq(0)").width() + 10}, 800, "easeInOutCubic");
-				})
-				.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/small_next.png")');
+				});
 			
 			if (x_browserInfo.touchScreen == true) {
 				$thumbHolder.css("overflow-x", "auto");
@@ -255,10 +253,8 @@
 					}
 				});
 			
-			
-			// have to add this css using jQuery rather than in styles below as some browsers (IE) don't support first-child/last-child
-			$("#thumbHolder .thumbBox:eq(0)").css("margin-left", "40px");
-			$("#thumbHolder .thumbBox:last-child").css("margin-right", "40px");
+			$("#thumbHolder .thumbBox:eq(0)").css("margin-left", $("#thumbBar button").width());
+			$("#thumbHolder .thumbBox:last-child").css("margin-right", $("#thumbBar button").width());
 			
 			x_pageLoaded();
 		}

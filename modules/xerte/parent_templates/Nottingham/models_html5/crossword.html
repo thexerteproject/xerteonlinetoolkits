@@ -1301,9 +1301,8 @@
 			    for(var coor = 0; coor < coordinates.length; coor++){
                     var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase()
                     if(letters[coor].toLowerCase() === inputValue){
-
-                        //make border green
-                        document.getElementById(coordinates[coor]).style.backgroundColor= "#24FF00"
+                        //make bg green
+                        $(document.getElementById(coordinates[coor])).addClass('correct');
                     }else{
                         //replace letter
                         document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
@@ -1327,7 +1326,7 @@
                     }
                 });
 
-                document.getElementById("show_button").disabled = true;
+                $(document.getElementById("show_button")).hide();
 
 				if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 					var fbHeading =  x_currentPageXML.getAttribute("feedbackLabel") != undefined ? x_currentPageXML.getAttribute("feedbackLabel") : 'Feedback';

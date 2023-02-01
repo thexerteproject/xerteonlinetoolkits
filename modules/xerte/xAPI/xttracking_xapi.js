@@ -1,4 +1,21 @@
-//TODO: get user email, more verbs (passed/failed, completed, ect), define scormmode for xAPI
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 function makeId(page_nr, ia_nr, ia_type, ia_name) {
     var tmpid = 'urn:x-xerte:p-' + (page_nr + 1);
@@ -441,7 +458,7 @@ function XApiTrackingState() {
 
     function setPageScore(page_nr, score) {
         var sit = this.findPage(page_nr);
-        if (sit != null && (this.scoremode != 'first' || sit.count < 1)) {
+        if (sit != null && (this.scoremode != 'first' || sit.count <= 1)) {
             sit.score = score;
         }
     }
@@ -471,10 +488,8 @@ function XApiTrackingState() {
         if (ia_nr < 0) {
             return this.findPage(page_nr);
         }
-        var id = makeId(page_nr, ia_nr, "", "");
-        var i = 0;
-        for (i = 0; i < this.interactions.length; i++) {
-            if (this.interactions[i].id.indexOf(id) == 0)
+        for (let i = 0; i < this.interactions.length; i++) {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
                 return this.interactions[i];
         }
         return null;
@@ -1839,88 +1854,142 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
     this.context = "";
 }
 
-function getStatements(q, one, callback)
+async function httpGetStatements(url, query)
 {
-    var search = ADL.XAPIWrapper.searchParams();
-    var group = "";
-    var context_id = "";
-    if (q['group'] != undefined)
-    {
-        group = q['group'];
-        delete q['group'];
+    const auth = btoa(`${lrsUsername}:${lrsPassword}`);
+    try {
+        const result = await $.ajax({
+            url: url,
+            type: "POST",
+            headers: {
+                'X-XERTE-USEDB': 'true',
+                'Authorization': 'Basic ' + auth
+            },
+            data: query,
+            dataType: "json"
+        });
+        return result;
     }
-    if (q['lti_context_id'] != undefined)
-    {
-        context_id = q['lti_context_id'];
-        delete q['lti_context_id'];
+    catch (error) {
+        console.log(error);
+        return null;
     }
+}
+
+async function getStatementsFromDB(q, one)
+{
+    let search = {};
     $.each(q, function(i, value) {
         search[i] = value;
     });
     if (one) {
-        search['limit'] = 1;
+        limit=1;
     } else {
-        search['limit'] = 1000;
+        limit = 5000;
     }
-    var statements = [];
-    if (callback == null)
+    let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
+    let statements = [];
+    do
     {
-        var tmp=ADL.XAPIWrapper.getStatements(search);
-        for (x = 0; x < tmp.statements.length; x++) {
-            if (group != ""
-                && (tmp.statements[x].context.team == undefined
-                || tmp.statements[x].context.team.account == undefined
-                || tmp.statements[x].context.team.account.name == undefined
-                || tmp.statements[x].context.team.account.name != group)) {
-                continue;
-            }
-            if (context_id != ""
-                && (tmp.statements[x].context.extensions == undefined
-                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
-                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
-                continue;
-            }
-            statements.push(tmp.statements[x]);
+        const response = await httpGetStatements(lrsEndpoint, query);
+        statements = [...statements, ...response.statements];
+        if (response.more) {
+            query = response.more;
         }
-        return statements;
+        else
+        {
+            query = null;
+        }
+    } while (query != null && query != "");
+    return statements;
+}
+
+function getStatements(q, one, callback)
+{
+    if (lrsUseDb)
+    {
+        getStatementsFromDB(q, one).then( (data) => callback(data, q));
     }
     else {
-        ADL.XAPIWrapper.getStatements(search, null,
-            function getmorestatements(err, res, body) {
-                var lastSubmit = null;
-
-                for (x = 0; x < body.statements.length; x++) {
-                    //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
-                    //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
-                    //}
-                    if (group != ""
-                        && (body.statements[x].context.team == undefined
-                            || body.statements[x].context.team.account == undefined
-                            || body.statements[x].context.team.account.name == undefined
-                            || body.statements[x].context.team.account.name != group)) {
-                        continue;
-                    }
-                    if (context_id != ""
-                        && (body.statements[x].context.extensions == undefined
-                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
-                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
-                        continue;
-                    }
-                    statements.push(body.statements[x]);
+        var search = ADL.XAPIWrapper.searchParams();
+        var group = "";
+        var context_id = "";
+        if (q['group'] != undefined) {
+            group = q['group'];
+            delete q['group'];
+        }
+        if (q['lti_context_id'] != undefined) {
+            context_id = q['lti_context_id'];
+            delete q['lti_context_id'];
+        }
+        $.each(q, function (i, value) {
+            search[i] = value;
+        });
+        if (one) {
+            search['limit'] = 1;
+        } else {
+            search['limit'] = 1000;
+        }
+        var statements = [];
+        if (callback == null) {
+            var tmp = ADL.XAPIWrapper.getStatements(search);
+            for (x = 0; x < tmp.statements.length; x++) {
+                if (group != ""
+                    && (tmp.statements[x].context.team == undefined
+                        || tmp.statements[x].context.team.account == undefined
+                        || tmp.statements[x].context.team.account.name == undefined
+                        || tmp.statements[x].context.team.account.name != group)) {
+                    continue;
                 }
-                //stringObjects.push(lastSubmit);
-                if (err !== null) {
-                    console.log("Failed to query statements: " + err);
-                    // TODO: do something with error, didn't get statements
-                    return;
+                if (context_id != ""
+                    && (tmp.statements[x].context.extensions == undefined
+                        || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                        || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
+                    continue;
                 }
-                if (res.more && res.more !== "") {
-                    ADL.XAPIWrapper.getStatements(null, res.more, getmorestatements);
-                } else {
-                    callback(statements, search);
-                }
+                statements.push(tmp.statements[x]);
             }
-        );
+            return statements;
+        } else {
+            ADL.XAPIWrapper.getStatements(search, null,
+                function getmorestatements(err, res, body) {
+                    var lastSubmit = null;
+
+                    for (x = 0; x < body.statements.length; x++) {
+                        //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
+                        //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                        //}
+                        if (group != ""
+                            && (body.statements[x].context == undefined
+                                || body.statements[x].context.team == undefined
+                                || body.statements[x].context.team.account == undefined
+                                || body.statements[x].context.team.account.name == undefined
+                                || body.statements[x].context.team.account.name != group)) {
+                            continue;
+                        }
+                        if (context_id != ""
+                            && (body.statements[x].context == undefined
+                                || body.statements[x].context.extensions == undefined
+                                || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                                || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
+                            continue;
+                        }
+                        statements.push(body.statements[x]);
+                    }
+                    //stringObjects.push(lastSubmit);
+                    if (err !== null) {
+                        console.log("Failed to query statements: " + err);
+                        // TODO: do something with error, didn't get statements
+                        return;
+                    }
+                    if (body.more && body.more !== "") {
+                        ADL.XAPIWrapper.getStatements(null, body.more, getmorestatements);
+                    } else {
+                        callback(statements, search);
+                    }
+                }
+            );
+        }
     }
 }
 
@@ -1938,273 +2007,306 @@ var surf_recipe, surf_course;
 var answeredQs = [];
 
 function XTInitialise(category) {
-    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
-    // Initialise actor object
-    if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
-        studentidmode = parseInt(studentidmode);
-    }
-    if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
-        // set actor to global group
-        actor = {
-            objectType: "Group",
-            account: {
-                name: "global",
-                homePage: baseUrl() + state.templateId
-            }
-        };
-    } else {
-        if (typeof username == "undefined" || username == "") {
-            userEMail = "mailto:email@test.com"
-        } else {
-            userEMail = "mailto:" + username;
+    // Tom Reijnders 2022-10-06: Trying to handle tracking of standalone pages where the page is a page of the same LO
+    // Specifically when the standalone page is shown in a lightbox
+    // We make use of the fact that in javascript, assigning a variable is done through reference, so we actually
+    // point the state variable (of the standalone page) to the parent state variable (of the main LO)
+    if (parent != self && parent.x_TemplateId != undefined && parent.x_TemplateId == x_TemplateId && parent.state != undefined) {
+        state = parent.state;
+        actor = parent.actor;
+        try {
+            /*
+            lrsInstance = new TinCan.LRS(
+                {
+                    endpoint: lrsEndpoint,
+                    username: lrsUsername,
+                    password: lrsPassword,
+                    allowFail: false,
+                    version: "1.0.2"
+                }
+            );
+            */
+
+            // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+            // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+            // {
+            //     state.aggregate = true;
+            //     state.lrsAggregateEndpoint = lrsEndpont;
+            //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+            //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+            // }
+            // else {
+            //     state.aggregate = false;
+            // }
+            var conf = {
+                "endpoint": lrsEndpoint + '/',
+                "user": lrsUsername,
+                "password": lrsPassword,
+                "strictCallbacks": true
+            };
+            ADL.XAPIWrapper.log.debug = true;
+            ADL.XAPIWrapper.changeConfig(conf);
+
+        } catch (ex) {
+            //alert("Failed LRS setup. Error: " + ex);
+            state.mode = "none";
         }
-        if (typeof fullusername == 'undefined' || fullusername == "")
-            fullusername = "Unknown";
-        if (typeof groupname != "undefined" && groupname != "") {
-            state.group = {
+    } else {
+        state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
+        // Initialise actor object
+        if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
+            studentidmode = parseInt(studentidmode);
+        }
+        if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
+            // set actor to global group
+            actor = {
                 objectType: "Group",
                 account: {
-                    name: groupname,
-                    homePage: baseUrl()
+                    name: "global",
+                    homePage: baseUrl() + state.templateId
                 }
             };
         } else {
-            state.group = "";
-        }
-        if (typeof coursename != "undefined" && coursename != "") {
-            state.course = {
-                id: baseUrl() + 'course/' + coursename
-            };
-            state.coursename = coursename;
-        }
-        else if (typeof x_params['course'] != "undefined" && x_params['course'] != "") {
-            state.course = {
-                id: baseUrl() + 'course/' + x_params['course']
-            };
-            state.coursename = x_params['course'];
-        }
-        else {
-            state.course = "";
-            state.coursename = "";
-        }
-        if (typeof modulename != "undefined" && modulename != "") {
-            state.module = {
-                id: baseUrl() + 'module/' + modulename
-            };
-            state.modulename = modulename;
-        }
-        else if (typeof x_params['module'] != "undefined" && x_params['module'] != "") {
-            state.module = {
-                id: baseUrl() + 'module/' + x_params['module']
-            };
-            state.modulename = x_params['module'];
-        }
-        else {
-            state.module = "";
-            state.modulename = "";
-        }
-        if (typeof lti_context_id != "undefined" && lti_context_id != "") {
-            state.lti_context_id = lti_context_id;
-        }
-        else if (typeof x_params['lti_context_id'] != "undefined" && x_params['lti_context_id'] != "") {
-            state.lti_context_id = x_params['lti_context_id'];
-        }
-        else {
-            state.lti_context_id = "";
-        }
-        if (typeof lti_context_name != "undefined" && lti_context_name != "") {
-            state.lti_context_name = lti_context_name;
-        }
-        else if (typeof x_params['lti_context_name'] != "undefined" && x_params['lti_context_name'] != "") {
-            state.lti_context_name = x_params['lti_context_name'];
-        }
-        else {
-            state.lti_context_name = "";
-        }
-        switch (studentidmode) {
-            case 0: //mbox
-                actor = {
-                    objectType: "Agent",
-                    mbox: userEMail
-                };
-                break;
-            case 1:
-                actor = {
-                    objectType: "Agent",
-                    mbox_sha1sum: mboxsha1
-                };
-                break;
-            case 2:
-                actor = {
-                    objectType: "Agent",
-                    mbox: userEMail,
-                    name: fullusername
-                };
-                break;
-            case 3:
-                if (groupname != undefined && groupname != "") {
-                    actor = {
-                        objectType: "Group",
-                        account: {
-                            name: groupname,
-                            homePage: baseUrl() + state.templateId
-                        }
-                    };
-                } else {
-                    actor = {
-                        objectType: "Group",
-                        account: {
-                            name: "global",
-                            homePage: baseUrl() + state.templateId
-                        }
-                    };
-                }
-
-        }
-    }
-    if (typeof x_urlParams.embedded_from != "undefined")
-    {
-        state.embedded = true;
-        state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
-        state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
-        state.embedded_fromSessionId = decodeURIComponent(x_urlParams.embedded_fromSessionId);
-        if (state.embedded_fromSessionId != undefined && state.embedded_fromSessionId != "")
-        {
-            state.sessionId = state.embedded_fromSessionId;
-        }
-    }
-    else
-    {
-        state.embedded = false;
-    }
-
-    if (!state.initialised) {
-        state.initialised = true;
-        state.initialise();
-    }
-    state.mode = "normal";
-    if (typeof category != "undefined" && category != "") {
-        state.category = category;
-    } else {
-        state.category = "";
-    }
-    if (x_params.language != "undefined" && x_params.language != "")
-    {
-        state.language=x_params.language.substr(0,2);
-    }
-
-    //    if(lrsInstance == undefined){
-    try {
-        /*
-        lrsInstance = new TinCan.LRS(
-            {
-                endpoint: lrsEndpoint,
-                username: lrsUsername,
-                password: lrsPassword,
-                allowFail: false,
-                version: "1.0.2"
+            if (typeof username == "undefined" || username == "") {
+                userEMail = "mailto:email@test.com"
+            } else {
+                userEMail = "mailto:" + username;
             }
-        );
-        */
-
-        // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
-        // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
-        // {
-        //     state.aggregate = true;
-        //     state.lrsAggregateEndpoint = lrsEndpont;
-        //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
-        //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
-        // }
-        // else {
-        //     state.aggregate = false;
-        // }
-        var conf = {
-            "endpoint": lrsEndpoint + '/',
-            "user": lrsUsername,
-            "password": lrsPassword,
-            "strictCallbacks": true
-        };
-        ADL.XAPIWrapper.log.debug = true;
-        ADL.XAPIWrapper.changeConfig(conf);
-
-    } catch (ex) {
-        //alert("Failed LRS setup. Error: " + ex);
-        state.mode = "none";
-    }
-
-
-    //TinCan.enableDebug();
-    //    }
-    if (surf_course != undefined && surf_recipe != undefined) {
-        surf_mode = true;
-    }
-
-    //    if(lrsInstance != undefined)
-    //    {
-    this.initStamp = new Date();
-
-    if (!surf_mode) {
-        var statement = {
-            actor: actor,
-            context: {
-                extensions: {
-                    "http://xerte.org.uk/learningObjectLevel" : "lo"
-                }
-            },
-            verb: {
-                id: "http://adlnet.gov/expapi/verbs/launched",
-                display: {
-                    "en-US": "launched"
-                }
-            },
-            object: {
-                objectType: "Activity",
-                id: baseUrl() + state.templateId,
-                definition: {
-                    name: {
-                        "en": x_params.name
+            if (typeof fullusername == 'undefined' || fullusername == "")
+                fullusername = "Unknown";
+            if (typeof groupname != "undefined" && groupname != "") {
+                state.group = {
+                    objectType: "Group",
+                    account: {
+                        name: groupname,
+                        homePage: baseUrl()
                     }
-                }
-            },
-            timestamp: this.initStamp
-        };
-        statement.object.definition.name[state.language] = x_params.name;
-
-        SaveStatement(statement);
-    }
-    if (surf_mode) {
-        var statement = {
-            actor: actor,
-            verb: {
-                id: "http://lrs.surfuni.org/verb/joined",
-                display: {
-                    "en-US": "Joined"
-                }
-            },
-            object: {
-                objectType: "Activity",
-                id: "http://lrs.surfuni.org/object/course",
-                definition: {
-                    name: {
-                        "en-US": "Course"
+                };
+            } else {
+                state.group = "";
+            }
+            if (typeof coursename != "undefined" && coursename != "") {
+                state.course = {
+                    id: baseUrl() + 'course/' + coursename
+                };
+                state.coursename = coursename;
+            } else if (typeof x_params['course'] != "undefined" && x_params['course'] != "") {
+                state.course = {
+                    id: baseUrl() + 'course/' + x_params['course']
+                };
+                state.coursename = x_params['course'];
+            } else {
+                state.course = "";
+                state.coursename = "";
+            }
+            if (typeof modulename != "undefined" && modulename != "") {
+                state.module = {
+                    id: baseUrl() + 'module/' + modulename
+                };
+                state.modulename = modulename;
+            } else if (typeof x_params['module'] != "undefined" && x_params['module'] != "") {
+                state.module = {
+                    id: baseUrl() + 'module/' + x_params['module']
+                };
+                state.modulename = x_params['module'];
+            } else {
+                state.module = "";
+                state.modulename = "";
+            }
+            if (typeof lti_context_id != "undefined" && lti_context_id != "") {
+                state.lti_context_id = lti_context_id;
+            } else if (typeof x_params['lti_context_id'] != "undefined" && x_params['lti_context_id'] != "") {
+                state.lti_context_id = x_params['lti_context_id'];
+            } else {
+                state.lti_context_id = "";
+            }
+            if (typeof lti_context_name != "undefined" && lti_context_name != "") {
+                state.lti_context_name = lti_context_name;
+            } else if (typeof x_params['lti_context_name'] != "undefined" && x_params['lti_context_name'] != "") {
+                state.lti_context_name = x_params['lti_context_name'];
+            } else {
+                state.lti_context_name = "";
+            }
+            switch (studentidmode) {
+                case 0: //mbox
+                    actor = {
+                        objectType: "Agent",
+                        mbox: userEMail
+                    };
+                    break;
+                case 1:
+                    actor = {
+                        objectType: "Agent",
+                        mbox_sha1sum: mboxsha1
+                    };
+                    break;
+                case 2:
+                    actor = {
+                        objectType: "Agent",
+                        mbox: userEMail,
+                        name: fullusername
+                    };
+                    break;
+                case 3:
+                    if (groupname != undefined && groupname != "") {
+                        actor = {
+                            objectType: "Group",
+                            account: {
+                                name: groupname,
+                                homePage: baseUrl() + state.templateId
+                            }
+                        };
+                    } else {
+                        actor = {
+                            objectType: "Group",
+                            account: {
+                                name: "global",
+                                homePage: baseUrl() + state.templateId
+                            }
+                        };
                     }
+
+            }
+        }
+        if (typeof x_urlParams.embedded_from != "undefined") {
+            state.embedded = true;
+            state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
+            state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
+            state.embedded_fromSessionId = decodeURIComponent(x_urlParams.embedded_fromSessionId);
+            if (state.embedded_fromSessionId != undefined && state.embedded_fromSessionId != "") {
+                state.sessionId = state.embedded_fromSessionId;
+            }
+        } else {
+            state.embedded = false;
+        }
+
+        if (!state.initialised) {
+            state.initialised = true;
+            state.initialise();
+        }
+        state.mode = "normal";
+        if (typeof category != "undefined" && category != "") {
+            state.category = category;
+        } else {
+            state.category = "";
+        }
+        if (x_params.language != "undefined" && x_params.language != "") {
+            state.language = x_params.language.substr(0, 2);
+        }
+
+        //    if(lrsInstance == undefined){
+        try {
+            /*
+            lrsInstance = new TinCan.LRS(
+                {
+                    endpoint: lrsEndpoint,
+                    username: lrsUsername,
+                    password: lrsPassword,
+                    allowFail: false,
+                    version: "1.0.2"
                 }
-            },
-            context: {
-                extensions: {
-                    "http://lrs.surfuni.org/context/course": surf_course,
-                    "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                    "http://lrs.surfuni.org/context/label": ""
-                }
-            },
-            target: {
-                id: baseUrl() + state.templateId
-            },
-            timestamp: this.initStamp
-        };
-        SaveStatement(statement);
+            );
+            */
+
+            // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+            // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+            // {
+            //     state.aggregate = true;
+            //     state.lrsAggregateEndpoint = lrsEndpont;
+            //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+            //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+            // }
+            // else {
+            //     state.aggregate = false;
+            // }
+            var conf = {
+                "endpoint": lrsEndpoint + '/',
+                "user": lrsUsername,
+                "password": lrsPassword,
+                "strictCallbacks": true
+            };
+            ADL.XAPIWrapper.log.debug = true;
+            ADL.XAPIWrapper.changeConfig(conf);
+
+        } catch (ex) {
+            //alert("Failed LRS setup. Error: " + ex);
+            state.mode = "none";
+        }
+
+
+        //TinCan.enableDebug();
+        //    }
+        if (surf_course != undefined && surf_recipe != undefined) {
+            surf_mode = true;
+        }
+
+        //    if(lrsInstance != undefined)
+        //    {
+        this.initStamp = new Date();
+
+        if (!surf_mode) {
+            var statement = {
+                actor: actor,
+                context: {
+                    extensions: {
+                        "http://xerte.org.uk/learningObjectLevel": "lo"
+                    }
+                },
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/launched",
+                    display: {
+                        "en-US": "launched"
+                    }
+                },
+                object: {
+                    objectType: "Activity",
+                    id: baseUrl() + state.templateId,
+                    definition: {
+                        name: {
+                            "en": x_params.name
+                        }
+                    }
+                },
+                timestamp: this.initStamp
+            };
+            statement.object.definition.name[state.language] = x_params.name;
+
+            SaveStatement(statement);
+        }
+        if (surf_mode) {
+            var statement = {
+                actor: actor,
+                verb: {
+                    id: "http://lrs.surfuni.org/verb/joined",
+                    display: {
+                        "en-US": "Joined"
+                    }
+                },
+                object: {
+                    objectType: "Activity",
+                    id: "http://lrs.surfuni.org/object/course",
+                    definition: {
+                        name: {
+                            "en-US": "Course"
+                        }
+                    }
+                },
+                context: {
+                    extensions: {
+                        "http://lrs.surfuni.org/context/course": surf_course,
+                        "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                        "http://lrs.surfuni.org/context/label": ""
+                    }
+                },
+                target: {
+                    id: baseUrl() + state.templateId
+                },
+                timestamp: this.initStamp
+            };
+            SaveStatement(statement);
+        }
+        //    }
     }
-    //    }
 }
 
 function XTTrackingSystem() {
@@ -3623,7 +3725,7 @@ function XTResults(fullcompletion) {
         totalDuration = 0;
     results.interactions = Array();
 
-    for (i = 0; i < state.interactions.length - 1; i++) {
+    for (i = 0; i < state.interactions.length; i++) {
 
 
         score += state.interactions[i].score * state.interactions[i].weighting;
@@ -3665,24 +3767,45 @@ function XTResults(fullcompletion) {
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
+                    // If unique targets, match answers by target, otherwise match by source
+                    const targets = [];
+                    for (let j = 0; j < state.interactions[i].correctOptions.length; j++) {
+                        targets.push(state.interactions[i].correctOptions[j].target);
+                    }
+                    // Check whether values of targets are unique
+                    const uniqueTargets = targets.length === new Set(targets).size;
                     for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
-                        correctAnswer = state.interactions[i].correctOptions[c]
-                            .source + ' --> ' + state.interactions[i].correctOptions[
-                                c].target;
-                        source = state.interactions[i].correctOptions[c].source;
+                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                        let source = state.interactions[i].correctOptions[c].source;
+                        let target = state.interactions[i].correctOptions[c].target;
                         if (state.interactions[i].learnerOptions.length == 0) {
-                            learnerAnswer = source + ' --> ' + ' ';
-                        } else {
-                            for (var d = 0; d < state.interactions[i].learnerOptions
-                                .length; d++) {
-                                if (source == state.interactions[i].learnerOptions[
-                                        d].source) {
-                                    learnerAnswer = source + ' --> ' + state.interactions[
-                                        i].learnerOptions[d].target;
-                                    break;
-                                } else {
-                                    learnerAnswer = source + ' --> ' + ' ';
+                            if (uniqueTargets) {
+                                learnerAnswer = ' --> ' + target;
+                            }
+                            else {
+                                learnerAnswer = source + ' --> ' + ' ';
+                            }
+                        }
+                        else {
+                            for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
+                                if (uniqueTargets)
+                                {
+                                    if (target == state.interactions[i].learnerOptions[d].target) {
+                                        learnerAnswer = state.interactions[i].learnerOptions[d].source + ' --> ' + target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = ' --> ' + target;
+                                    }
+                                }
+                                else
+                                {
+                                    if (source == state.interactions[i].learnerOptions[d].source) {
+                                        learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = source + ' --> ' + ' ';
+                                    }
                                 }
                             }
                         }
@@ -3691,10 +3814,8 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-                        results.interactions[nrofquestions - 1].subinteractions
-                            .push(matchSub);
+                        results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
-
                     break;
                 case "text":
                     learnerAnswer = state.interactions[i].learnerAnswers;

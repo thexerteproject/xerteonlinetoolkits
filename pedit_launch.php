@@ -237,6 +237,9 @@ if (is_numeric($id))
     $lrs = CheckLearningLocker($lrs);
     $_SESSION['XAPI_PROXY'] = $lrs;
 
+    // Set studentid mode
+    $xerte_toolkits_site->xapi_user->studentidmode = $row['tsugi_xapi_student_id_mode'];
+
     if ($_GET['x_embed'] === 'true') {
         $x_embed = true;
         if ($_GET['activated'] !== 'true') {

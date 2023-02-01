@@ -84,16 +84,21 @@
 			var popLocation = "common_html5/js/popcorn/"
 			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
 			var i = 0;
-			scriptsToLoad.forEach(function(file){
-				$.getScript(x_templateLocation + popLocation + file + ".js")
-					.done(function(){
-							if (++i >= scriptsToLoad.length)
-								perspectives.setUp();
-						})
-					.fail(function( jqxhr, settings, exception ) {
-							console.log("Failed to load plugin:" + exception);
-						});
-			});
+			if (!xot_offline) {
+				scriptsToLoad.forEach(function (file) {
+					$.getScript(x_templateLocation + popLocation + file + ".js")
+							.done(function () {
+								if (++i >= scriptsToLoad.length)
+									perspectives.setUp();
+							})
+							.fail(function (jqxhr, settings, exception) {
+								console.log("Failed to load plugin:" + exception);
+							});
+				});
+			}
+			else {
+				perspectives.setUp();
+			}
 		}
 
 		this.setUp = function() {
@@ -376,7 +381,8 @@
 										var $thisAudio = $mediaPanel.find("#pageAudio");
 										$thisAudio.data({
 											"src": thisData.getAttribute("src"),
-											"width": $mediaPanel.find("#audioImage").width()
+											"width": $mediaPanel.find("#audioImage").width(),
+											"transcript": thisData.getAttribute('transcript') != undefined && thisData.getAttribute('transcript') != '' ? thisData.getAttribute('transcript') : false
 										});
 										perspectives.loadAudio($thisAudio, playAll);
 									});
@@ -402,7 +408,6 @@
 									
 									if ($thisVideo.data("width") != "fixed") {
 										$mediaPanel.width((mediaW * 100) + "%");
-										$mediaPanel.height((mediaW * 100) + "%");
 									}
 									
 									$thisVideo.data({
@@ -624,6 +629,11 @@
 				width: $audio.data("width"),
 				pageName: "perspectives"
 			});
+			
+			// manually add a transcript button to the end of the audio bar
+			if ($audio.data('transcript') !== false) {
+				x_addAudioTranscript($audio, $audio.data('transcript'));
+			}
 			
 			if (playAll) perspectives.playAll($audio);
 		}

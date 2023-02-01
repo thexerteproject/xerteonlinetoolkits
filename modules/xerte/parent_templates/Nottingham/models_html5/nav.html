@@ -72,7 +72,7 @@
 					
 				} else {
 					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");
-					$("#infoHolder").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - $("#btnHolder").outerHeight(true) - (parseInt($panel.css("padding-top")) * 2) - 5);
+					$("#infoHolder").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - $("#btnHolder").outerHeight(true) - (parseInt($panel.css("padding-top")) * 2) - (parseInt($("#infoHolder").css("padding-top"))) - (parseInt($("#infoHolder").css("padding-bottom"))) - 5);
 				}
 			}
 			
@@ -122,16 +122,21 @@
 			var popLocation = "common_html5/js/popcorn/"
 			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
 			var i = 0;
-			scriptsToLoad.forEach(function(file){
-				$.getScript(x_templateLocation + popLocation + file + ".js")
-					.done(function(){
-							if (++i >= scriptsToLoad.length)
-								nav.setUp();
-						})
-					.fail(function( jqxhr, settings, exception ) {
-							console.log("Failed to load plugin:" + exception);
-						});
-			});
+			if (!xot_offline) {
+				scriptsToLoad.forEach(function (file) {
+					$.getScript(x_templateLocation + popLocation + file + ".js")
+							.done(function () {
+								if (++i >= scriptsToLoad.length)
+									nav.setUp();
+							})
+							.fail(function (jqxhr, settings, exception) {
+								console.log("Failed to load plugin:" + exception);
+							});
+				});
+			}
+			else {
+				nav.setUp();
+			}
 		}
 		
 		this.setUp = function() {
@@ -299,7 +304,8 @@
 						
 						$media.data({
 							source: this.getAttribute("url"),
-							title: this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? this.getAttribute("tip") : ''
+							title: this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? this.getAttribute("tip") : '',
+							transcript: this.getAttribute("transcript") != undefined && this.getAttribute("transcript") != "" ? this.getAttribute("transcript") : false
 						});
 						
 					// image
@@ -361,6 +367,11 @@
 								pageName: "nav",
 								trackMedia: false
 							}, 	true);
+							
+							// manually add a transcript button to the end of the audio bar
+							if ($media.data('transcript') !== false) {
+								x_addAudioTranscript($media, $media.data('transcript'));
+							}
 						}
 					}
 				}

@@ -542,11 +542,23 @@ function setup() {
 	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
 	$(data).find('page').each( function(index, value){
 		var tempID = $(this).attr('customLinkID');
+		var $page = $(this);
 		if (tempID != undefined && tempID != "") {
 			tempID = $.trim(tempID);
 			tempID = tempID.split(" ").join("_");
 			$(this).attr('customLinkID', tempID);
 		}
+
+		//also check if page contains sections with customLinkID that includes spaces
+		$page.find('section').each( function(index, value){
+			var secTempID = $(this).attr('customLinkID');
+			if (secTempID != undefined && secTempID != "") {
+				secTempID = $.trim(secTempID);
+				secTempID = secTempID.split(" ").join("_");
+				$(this).attr('customLinkID', secTempID);
+			}
+		})
+
 	});
 
 	// make list of all the normal pages (not hidden or standalone) to display in TOC
@@ -846,7 +858,6 @@ function setup() {
 								}
 							}
 							catMatches = catMatches.substring(0, catMatches.length - 2);
-
 							var linkAction;
 							if (index.length == 1) {
 								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
@@ -1485,25 +1496,54 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
 	var pageRefType = pageRef.type,
 		pageID = pageRef.id,
+		pageLinkType = true;
 		found = false;
 
 	// check if pageIndex exists & can be shown
 	var pageIndex;
+	// used to set active on nav item.
+	var activeIndex = pageID;
 
 	// pageID might be an ID - see if it matches either a linkID or a customLinkID
 	if (pageRefType != 'index') {
 		$(data).find('page').each(function(index, value) {
 			var $page = $(this);
+			var $pageIndex = index;
 			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
-				// an ID match has been found
+				// an ID match has been found for a page
 				pageIndex = index;
+				activeIndex = index;
 				found = true;
 				pageRefType = 'id';
 
 				return false;
 			}
+			$page.find('section').each(function (index, value) {
+				var $section = $(this);
+				if (pageID == $section.attr('linkID') || pageID == $section.attr('customLinkID')) {
+					//an ID match has been found for a section
+					pageIndex = $pageIndex;
+					activeIndex = $pageIndex;
+					found = true;
+					if (sectionNum == undefined) {
+						sectionNum = index + 1;
+					}
+					pageLinkType = false;
+					pageRefType = 'id';
+
+					return false;
+				}
+			});
 		});
 	}
+	//assign active class for current navbar
+	$("#nav li").not(':first-child').each(function(i, el){
+		if ($(el).hasClass("active") && i !== activeIndex){
+			$(el).removeClass("active")
+		} else if (i == activeIndex){
+			$(el).addClass("active")
+		}
+	})
 
 	// check if it's a valid page index
 	if (pageRefType != 'id') {
@@ -1554,9 +1594,15 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		}
 
 		var page = $(data).find('page').eq(pageIndex);
-		var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
-		//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
-		
+
+		var pageHash = ""
+		if (pageLinkType) {
+			pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex) + 1));
+			//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
+		} else {
+			var section = page.find('section').eq(sectionNum - 1); //
+			pageHash = section.attr('customLinkID');
+		}
 		// Load page as normal as it's not opening in a new window
 		if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
 
@@ -1628,7 +1674,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					}
 				}
 			}
-			
 			if (pswds.length > 0) {
 				passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds);
 			} else {
@@ -1637,9 +1682,15 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			
 		// Page is a stand alone page opening in a new window
 		} else {
-			window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+			if (pageLinkType) {
+				window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+			} else {
+				window.open(window.location.href.split('#')[0] + '#' + pageHash);
+			}
 		}
 	} else {
+		//TOOD add section num, if we are already at page
+
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
 	//dynamically change the skip link for each page
@@ -1799,17 +1850,18 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 	//add the section contents
 	$(thisSection).children().each( function(itemIndex, value){
-		if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+		if ($(this).attr('name') != '' && $(this).attr('name') != undefined && ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true')) {
 
-			if ($(this).attr('showTitle') == 'true') {
+			if ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true') {
 				var subLinkName = $(this).attr('name');
 
 				// remove size & background color styles from links on toc
 				if ($('<p>' + subLinkName + '</p>').children().length > 0) {
-					subLinkName = $(subLinkName);
+					subLinkName = $("<div>").html(subLinkName);
 					subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
 					subLinkName.find('[style*="font-size"]').css('font-size', '');
 					subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
+					subLinkName = subLinkName.html();
 				}
 				
 				var tempLink = validPages.indexOf(pageIndex) != -1 ? 'page' + (validPages.indexOf(pageIndex)+1) : (page.attr("customLinkID") != "" && page.attr("customLinkID") != undefined ? page.attr("customLinkID") : page.attr('linkID'));
@@ -2009,7 +2061,11 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 	if (sectionNum != undefined) {
 
 		var page = $(data).find('page').eq(pageIndex),
-			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
+			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1)),
+			section =  page.find('section').eq(sectionNum-1);
+
+		//if direct navigation using customLink for sections
+		pageTempInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo;
 
 		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
 
@@ -2400,9 +2456,9 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		var i = index;
 
 		$(this).children().each( function(x, value){
-
-			if ($(this).attr('showTitle') == 'true' || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
-				tab.append('<p><b>' + $(this).attr('name') + '</b></p>');
+			
+			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true')) {
+				tab.append('<h3>' + $(this).attr('name') + '</h3>');
 			}
 
 			if (this.nodeName == 'text'){
@@ -2551,6 +2607,12 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		var inner = $('<div class="accordion-inner" tabindex="0">');
 
 		$(this).children().each( function(i, value){
+			
+			// there was a bug in versions before 3.12 which meant audio & video on accordion always showed title & other content never did (regardless of whether show titles ticked or not)
+			// fix here for new content added to accordions - it doesn't fix for old content as then titles may unexpectedly appear / disappear after upgrade without the author editing
+			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && (($(this).attr('showTitle') == 'true' && (this.nodeName == 'audio' || this.nodeName == 'video')) || $(this).attr('showTitleFix') == 'true' || ($(this).attr('showTitleFix') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video')))) {
+				inner.append('<h3>' + $(this).attr('name') + '</h3>');
+			}
 
 			if (this.nodeName == 'text'){
 				inner.append( '<p>' + $(this).text() + '</p>');
@@ -2561,12 +2623,12 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				inner.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 
 			if (this.nodeName == 'video'){
 				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				inner.append('<p>' + videoInfo[0] + '</p>');
 
 				if (videoInfo[1] != undefined) {
 					inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
@@ -2625,7 +2687,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	var itemIndex = itemIndex;
 
 	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
-	debugger
+	
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
@@ -2661,6 +2723,12 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 		}
 
 		$(this).children().each( function(i, value){
+			
+			// there was a bug in versions before 3.12 which meant audio & video on carousel always showed title & other content never did (regardless of whether show titles ticked or not)
+			// fix here for new content added to carousel - it doesn't fix for old content as then titles may unexpectedly appear / disappear after upgrade without the author editing
+			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && (($(this).attr('showTitle') == 'true' && (this.nodeName == 'audio' || this.nodeName == 'video')) || $(this).attr('showTitleFix') == 'true' || ($(this).attr('showTitleFix') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video')))) {
+				pane.append('<h3>' + $(this).attr('name') + '</h3>');
+			}
 
 			if (this.nodeName == 'text'){
 				pane.append( '<p>' + $(this).text() + '</p>');
@@ -2671,12 +2739,12 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 
 			if (this.nodeName == 'video'){
 				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				pane.append('<p>' + videoInfo[0] + '</p>');
 
 				if (videoInfo[1] != undefined) {
 					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
@@ -2740,7 +2808,6 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-	debugger;
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
