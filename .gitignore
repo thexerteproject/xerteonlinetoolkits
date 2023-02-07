@@ -23,3 +23,6 @@ library/Xerte/Authentication/Saml2/settings.php
 
 #ignore tsugi folder (if installed)
 tsugi/
+
+#ignore lrsdb_config.php
+lrsdb_config.php

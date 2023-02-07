@@ -62,7 +62,7 @@ Start the page and once loaded set the default option
 
 -->
 
-<body onload="javascript:folderproperties();tab_highlight('1');">
+<body onload="javascript:folderproperties();tab_highlight('1');" onunload="javascript:parent.window.opener.refresh_workspace();">
 <div class="properties_main">
 		<div class="main_area">
 				<div>

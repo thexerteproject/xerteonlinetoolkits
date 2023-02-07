@@ -326,7 +326,13 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-
+                if (isset($_SESSION['XAPI_PROXY']) && $_SESSION['XAPI_PROXY']['db']) {
+                    $tracking .= "  var lrsUseDb = true;\n";
+                }
+                else
+                {
+                    $tracking .= "  var lrsUseDb = false;\n";
+                }
                 if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
@@ -373,7 +379,8 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                     $tracking .= "   var lti_context_name = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_name) . "';\n";
                 }
             }
-            $tracking .= "</script>\n";
+	    $tracking .= "</script>\n";
+            //$tracking .= "var lti_context_id = '1390';  var lti_context_name = 'Don Bosco College';\n</script>\n";
             _debug("Tracking script: " . $tracking);
         }
         else

@@ -40,13 +40,13 @@ require $xerte_toolkits_site->php_library_path  . "XerteProjectDecoder.php";
 
 function require_auth() {
     global $xerte_toolkits_site;
-
+#TODO use hash for authentication
     header('Cache-Control: no-cache, must-revalidate, max-age=0');
     $has_supplied_credentials = !(empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']));
     $is_not_authenticated = (
         !$has_supplied_credentials ||
         $_SERVER['PHP_AUTH_USER'] != $xerte_toolkits_site->admin_username ||
-        $_SERVER['PHP_AUTH_PW']   != $xerte_toolkits_site->admin_password);
+        hash('sha256', $_SERVER['PHP_AUTH_PW'])   != $xerte_toolkits_site->admin_password);
     if ($is_not_authenticated) {
         header('HTTP/1.1 401 Authorization Required');
         header('WWW-Authenticate: Basic realm="Access denied"');

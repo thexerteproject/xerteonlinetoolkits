@@ -266,7 +266,10 @@ function remove_educationlevel(id){
 			});
 	}
 }
-
+function hide_show_children(children, id_prefix){
+	const childrenArray = children.split(",");
+	childrenArray.forEach(node => $("#" + id_prefix + node).toggle())
+}
 // Function remove grouping
 //
 // remove a share, and check who did it
@@ -705,12 +708,13 @@ function new_security(){
 //
 // remove a share, and check who did it
 
-function new_category(){
+function new_category(parentID = ""){
 	$.ajax({
 		type: "POST",
 		url: "website_code/php/management/new_category.php",
 		data: {
-			newcategory: document.getElementById("newcategory").value
+			newcategory: document.getElementById("newcategory").value,
+			parent: parentID
 		},
 	})
 	.done(function (response) {
@@ -721,13 +725,14 @@ function new_category(){
 // Function new educationlevel
 //
 // remove a share, and check who did it
-
-function new_educationlevel(){
+function new_educationlevel(parentID = ""){
 	$.ajax({
 		type: "POST",
 		url: "website_code/php/management/new_educationlevel.php",
 		data: {
+			parent: parentID,
 			educationlevel: document.getElementById("neweducationlevel").value
+
 		},
 	})
 		.done(function (response) {

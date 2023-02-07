@@ -8,7 +8,7 @@ require( "../../" . $xerte_toolkits_site->php_library_path . "display_library.ph
 
 require( "../../" . $xerte_toolkits_site->php_library_path . "xmlInspector.php" );
 
-function merge_pages_to_project($source_project_id, $source_pages, $target_project, $target_page_location, $merge_glossary)
+function merge_pages_to_project($source_project_id, $source_pages, $target_project, $target_page_location, $merge_glossary, $overwrite_glossary)
 {
 	global $xerte_toolkits_site;
 	
@@ -42,7 +42,6 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 
 	$filemapping = getFileMapping($source_folder . "/media", $target_folder . "/media");
     $filesToCopy = array();
-
 	if($merge_glossary === "true")
 	{
 		$str_glossary = $xmlSource->documentElement->getAttribute("glossary");
@@ -53,11 +52,27 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 		{
 			$orig_glossary = $xmlTarget->documentElement->getAttribute("glossary");
 		}
-		if($orig_glossary != "")
-		{
-			$orig_glossary .= "||";
-		}
-		$orig_glossary .= $str_glossary;
+        if ($overwrite_glossary === "false") {
+            if ($orig_glossary != "") {
+                $orig_glossary .= "||";
+            }
+            $orig_glossary .= $str_glossary;
+        } else {
+            if ($orig_glossary === "") {
+                $orig_glossary .= $str_glossary;
+            } else {
+                $orig_gloss_array = glossaryToArray($orig_glossary);
+                $str_gloss_array = glossaryToArray($str_glossary);
+                $doubles = array_uintersect($orig_gloss_array, $str_gloss_array, 'compareTerms');
+                foreach ($doubles as $key => $var){
+                    unset($orig_gloss_array[$key]);
+                }
+                $orig_glossary = arrayToGlossary($orig_gloss_array);
+                $orig_glossary .= "||";
+                $orig_glossary .= $str_glossary;
+            }
+
+        }
 		$xmlTarget->documentElement->setAttribute("glossary", $orig_glossary);
 	}
 	$bannedLinkIDs = array();
@@ -136,6 +151,27 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	echo $xml;
 
 
+}
+//converts a glossary to an array.
+function glossaryToArray($glossary){
+    $glosArray = array();
+    $rows = explode('||', $glossary);
+    foreach ($rows as $key => $row){
+        $glosArray[$key] = explode('|', $row);
+    }
+    return $glosArray;
+}
+//returns the indexes of all terms in source that are also in target
+function compareTerms($source, $target){
+    return strcmp($source[0], $target[0]);
+}
+//converts an array to a glossary
+function arrayToGlossary($inputArray) {
+    $glossary = "";
+    foreach ($inputArray as $row) {
+        $glossary .= $row[0] . "|" . $row[1] . "||";
+    }
+    return substr($glossary, 0, -2);
 }
 
 function getFileMapping($source_media_folder, $target_media_folder)
@@ -273,5 +309,6 @@ if($_REQUEST["source_pages"] == "")
 $target_project = $_REQUEST["target_project"];
 $target_insert_page_position = $_REQUEST["target_page_position"];
 $merge_glossary= $_REQUEST["merge_glossary"];
-merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position, $merge_glossary);
+$overwrite_glossary = $_REQUEST["overwrite_glossary"];
+merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position, $merge_glossary, $overwrite_glossary);
 

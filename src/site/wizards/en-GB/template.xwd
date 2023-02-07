@@ -190,7 +190,7 @@
 	</variables></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
-		
+
 		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
 			<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
 			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
@@ -198,7 +198,11 @@
 			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
-		
+
+				<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this Section" info="Create a link directly to this section by adding #yourSectionID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs">
+                    <customLinkID label="Section ID" type="TextInput" optional="true"/>
+                </customSectionLinkGroup>
+
 		<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this section will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
 			<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this section"/>
 			<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>

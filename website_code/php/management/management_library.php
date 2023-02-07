@@ -25,9 +25,36 @@
 	function category_list(){
 	
 		global $xerte_toolkits_site;
-	
-		$query="select * from " . $xerte_toolkits_site->database_table_prefix . "syndicationcategories order by category_name ASC";
-	
+
+        $query = "select * from $xerte_toolkits_site->database_table_prefix syndicationcategories";
+        $query_response = db_query($query);
+
+        //build tree
+        $tree = [];
+        foreach ($query_response as $data){
+            if (!is_null($data) or $data !== false) {
+                $child[id] = $data["category_id"];
+                $child[name] = $data["category_name"];
+                $child[children] = [];
+                if (is_null($data["parent_id"])) {
+                    $tree[$child["id"]] = $child;
+                } else {
+                    if (!is_null($tree[$data["parent_id"]])) {
+                        //key is in top level
+                        $tree[$data["parent_id"]]["children"][$child["id"]] = $child;
+                    } else {
+                        //only checks 3 levels TODO change to work with all levels?
+                        foreach ($tree as $i => $v) {
+                            if (!is_null($v["children"][$data["parent_id"]])) {
+                                $tree[$i]["children"][$data["parent_id"]]["children"][$child["id"]] = $child;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+	    //build page
 		echo "<h2>" . MANAGEMENT_MENUBAR_CATEGORIES . "</h2>";
 		
 		echo "<div class=\"admin_block\">";
@@ -40,47 +67,92 @@
 		echo "<div class=\"admin_block\">";
 		echo "<h3>" . MANAGEMENT_LIBRARY_EXISTING_CATEGORIES . "</h3>";
 
-		$query_response = db_query($query);
-
-		foreach($query_response as $row) {
-
-			echo "<p>" . $row['category_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_category('" . $row['category_id'] .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
-
-		}
+        foreach ($tree as $node){
+            echo print_node($node, 0, "category");
+        }
 		
 		echo "</div>";
 	
 	}
 
     function educationlevel_list(){
-
         global $xerte_toolkits_site;
 
-        $query="select * from " . $xerte_toolkits_site->database_table_prefix . "educationlevel order by educationlevel_name ASC";
+        $query = "select * from $xerte_toolkits_site->database_table_prefix educationlevel";
+        $query_response = db_query($query);
 
+        //build tree
+        $tree = [];
+        foreach ($query_response as $data){
+            if (!is_null($data) or $data !== false) {
+                $child[id] = $data["educationlevel_id"];
+                $child[name] = $data["educationlevel_name"];
+                $child[children] = [];
+                if (is_null($data["parent_id"])) {
+                    $tree[$child["id"]] = $child;
+                } else {
+                    if (!is_null($tree[$data["parent_id"]])) {
+                        //key is in top level
+                        $tree[$data["parent_id"]]["children"][$child["id"]] = $child;
+                    } else {
+                        //only checks 3 levels TODO change to work with all levels?
+                        foreach ($tree as $i => $v) {
+                            if (!is_null($v["children"][$data["parent_id"]])) {
+                                $tree[$i]["children"][$data["parent_id"]]["children"][$child["id"]] = $child;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //build page
 		echo "<h2>" . MANAGEMENT_MENUBAR_EDUCATION . "</h2>";
-		
+
 		echo "<div class=\"admin_block\">";
         echo "<h3>" . MANAGEMENT_LIBRARY_ADD_EDUCATION . "</h3>";
 
         echo "<p>" . MANAGEMENT_LIBRARY_NEW_EDUCATION . "<form><textarea cols=\"100\" rows=\"2\" id=\"neweducationlevel\">" . MANAGEMENT_LIBRARY_NEW_EDUCATION_NAME . "</textarea></form></p>";
+
         echo "<p><form action=\"javascript:new_educationlevel();\"><button class=\"xerte_button\" type=\"submit\"><i class=\"fa fa-plus-circle\"></i> " . MANAGEMENT_LIBRARY_NEW_LABEL . "</button></form></p>";
 		echo "</div>";
 
 		echo "<div class=\"admin_block\">";
         echo "<h3>" . MANAGEMENT_LIBRARY_EXISTING_EDUCATION . "</h3>";
 
-        $query_response = db_query($query);
-
-        foreach($query_response as $row) {
-
-            echo "<p>" . $row['educationlevel_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_educationlevel('" . $row['educationlevel_id'] .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
-
+        foreach ($tree as $node){
+            echo print_node($node, 0, "educationlevel");
         }
+
 		echo "</div>";
 
     }
+    //returns a div with options and all its children =
+    function print_node($node, $level, $id_prefix, $hidden = "", $margin = 0){
+        $html = '<div style="margin-left: ' . $margin . 'px" id='. $id_prefix . $node["id"] . " " . $hidden."> <p>" . $node['name'] . " - ";
+        if (!empty($node["children"])){
+            $childIDs = "";
+            foreach ($node["children"] as $child){
+                $childIDs .= $child["id"] . ",";
+            } $childIDs = substr($childIDs, 0 , -1);
 
+            $html .= "<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:hide_show_children('" . $childIDs . "','". $id_prefix . "')\"><i class=\"fa fa-eye\"></i> " . MANAGEMENT_LIBRARY_EXPAND . " </button> ";
+        }
+        if ($level < 2){
+            //TODO change to be not hardcoded
+        $html .= "<button style='margin-right: 5px' type=\"button\" class=\"xerte_button\" onclick=\"javascript:new_" . $id_prefix . "('" . $node["id"] . "')\"><i class=\"fa fa-plus-circle\"></i> " . MANAGEMENT_LIBRARY_ADD . " </button>";
+        }
+        $html .= "<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_" . $id_prefix . "('" . $node['id'] .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button> </p>";
+
+        if (!empty($node["children"])) {
+            foreach ($node["children"] as $child){
+                $html .= print_node($child, $level + 1, $id_prefix, "hidden", 30);
+            }
+        }
+
+        $html .= "</div>";
+        return $html;
+    }
 
     function grouping_list(){
 

@@ -1016,7 +1016,7 @@ var EDITOR = (function ($, parent) {
         };
         jqGrGridData[key + '_' + id][colnr] = data;
 
-        var xerte = convertjqGridData(jqGrGridData[key + '_' + id]);
+        var xerte = convertjqGridData(jqGrGridData[key + '_' + id], id);
         setAttributeValue(key, [name], [xerte]);
 
         // prepare postdata for tree grid
@@ -1134,9 +1134,20 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key, true);
     },
-
-    convertjqGridData = function(data)
+    //pass id to sort data
+    convertjqGridData = function(data, id)
     {
+        if (id !== undefined) {
+            var sortColumnName = $('#' + id + '_jqgrid').jqGrid('getGridParam','sortname');
+            var sortOrder = $('#' + id + '_jqgrid').jqGrid('getGridParam','sortorder');
+            var colName = Object.keys(data[0])[1];
+            if (sortColumnName !== '' && sortOrder == 'asc') {
+                data.sort((a,b) => (a[colName] > b[colName]) ? 1 : ((b[colName] > a[colName]) ? -1 : 0));
+            } else if (sortColumnName !== '' && sortOrder == 'desc') {
+                data.sort((a,b) => (a[colName] > b[colName]) ? -1 : ((b[colName] > a[colName]) ? 1 : 0));
+            }
+        }
+
         var xerte = "";
         $.each(data, function(i, row){
             if (i>0)
@@ -1155,7 +1166,6 @@ var EDITOR = (function ($, parent) {
                 }
             });
         })
-
         return xerte;
     },
 
@@ -1609,19 +1619,8 @@ var EDITOR = (function ($, parent) {
 			var thisGrid = this;
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
-            var rows = [];
 
-            $.each(data.split('||'), function(j, row){
-                var records = row.split('|');
-                var record = {};
-                record['col_0'] = j+1;
-                $.each(records, function(k, field)
-                {
-                    var colnr = k+1;
-                    record['col_' + colnr] = field;
-                });
-                rows.push(record);
-            });
+            var rows = readyLocalJgGridData(options.key, options.name);
 
             var gridoptions = options.options;
             var key = options.key;
@@ -1707,7 +1706,9 @@ var EDITOR = (function ($, parent) {
                     col['width'] = (colWidths[i] ? colWidths[i] : Math.round(parseInt(gridoptions.width) / nrCols));
                 }
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
-                col['sortable'] = false;
+                if (i==0) {
+                    col['sortable'] = true;
+                } else {col['sortable'] = false;}
 
 				if (gridoptions.wysiwyg != undefined) {
 					var wysiwyg = gridoptions.wysiwyg.split(',');
@@ -1822,7 +1823,6 @@ var EDITOR = (function ($, parent) {
 
             // Setup the grid
             var grid = $('#' + id + '_jqgrid');
-
             grid.jqGrid({
                 datatype: 'local',
                 data: rows,
@@ -1878,9 +1878,12 @@ var EDITOR = (function ($, parent) {
                     	delbutton.switchClass('enabled', 'disabled');
                     	delbutton.prop('disabled', true);
                     }
+                },
+                onSortCol: function(index, iCol, sortorder) {
+                    var xerte = convertjqGridData(jqGrGridData[key + '_' + id], id);
+                    setAttributeValue(key, [name], [xerte])
                 }
             });
-
             grid.jqGrid('navGrid', '#' + id + '_nav', {refresh: false}, editSettings, addSettings, delSettings, {multipleSearch:true, overlay:false});
 
 			// add the buttons to add / delete columns if required
@@ -1939,6 +1942,38 @@ var EDITOR = (function ($, parent) {
 			}
         });
     },
+
+    readyLocalJgGridData = function(key, name){
+        var data_lo = lo_data[key].attributes[name];
+        var rows = [];
+        $.each(data_lo.split('||'), function(j, row){
+            var records = row.split('|');
+            var record = {};
+            record['col_0'] = j+1;
+            $.each(records, function(k, field)
+            {
+                var colnr = k+1;
+                record['col_' + colnr] = field;
+            });
+            rows.push(record);
+        });
+        return rows;
+    },
+
+    convertTreeSelect = function ()
+    {
+        $.each(treeSelecters, function (i, options){
+            new TreeSelect({
+                parentHtmlContainer: document.querySelector('#' + options.parentID),
+                value: options.value,
+                options: options.treeSelectOptions,
+                searchable: true,
+                isGroupedValue: true,
+                openLevel: 0,
+                inputCallback: (value) => setAttributeValue(options.key, [options.name] ,[value.join("|")])
+            })
+        });
+    }
 
 	checkRowIds = function (grid) {
 		var rows = grid.find('tr.jqgrow, tr.jqgfirstrow');
@@ -4110,46 +4145,54 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				var html = $('<div>')
 					.attr('id', 'category_div_' + form_id_offset);
-				var currselected=false;
-				var select = $('<select>')
-					.attr('id', id)
-					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
-					{
-						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        if (event.data.trigger)
-                        {
-                            triggerRedrawPage(event.data.key);
-                        }
-					});
-				// Add empty option
-				var option = $('<option>')
-					.attr('value', "");
-				if (value=="") {
-					option.prop('selected', true);
-					currselected=true;
-				}
-				option.append("");
-				select.append(option);
-				for (var i=0; i<category_list.length; i++) {
-					var option = $('<option>')
-						.attr('value', category_list[i].category_name);
-					if (category_list[i].category_name==value) {
-						option.prop('selected', true);
-						curreselected = true;
-					}
-					option.append(category_list[i].category_name);
-					select.append(option);
-				}
-				if (value != "" && !currselected)
-				{
-					//  Add current value as option, even though it is not in the list
-					var option = $('<option>')
-						.attr('value', value);
-					option.prop('selected', true);
-					option.append(value);
-					select.append(option);
-				}
-				html.append(select);
+
+                //used to display current value
+                var setValue = value.split("|");
+                var id = 'treeselect_' + form_id_offset;
+
+                treeSelecters.push({id: id, options: options, value: setValue, parentID: 'category_div_' + form_id_offset, treeSelectOptions: category_list, key: key, name: name})
+                form_id_offset++;
+				// var currselected=false;
+				// var select = $('<select>')
+				// 	.attr('id', id)
+				// 	.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
+				// 	{
+				// 		inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                //         if (event.data.trigger)
+                //         {
+                //             triggerRedrawPage(event.data.key);
+                //         }
+				// 	});
+				// // Add empty option
+				// var option = $('<option>')
+				// 	.attr('value', "");
+				// if (value=="") {
+				// 	option.prop('selected', true);
+				// 	currselected=true;
+				// }
+				// option.append("");
+				// select.append(option);
+				// for (var i=0; i<category_list.length; i++) {
+				// 	var option = $('<option>')
+				// 		.attr('value', category_list[i].category_name);
+				// 	if (category_list[i].category_name==value) {
+				// 		option.prop('selected', true);
+				// 		curreselected = true;
+				// 	}
+				// 	option.append(category_list[i].category_name);
+				// 	select.append(option);
+				// }
+				// if (value != "" && !currselected)
+				// {
+				// 	//  Add current value as option, even though it is not in the list
+				// 	var option = $('<option>')
+				// 		.attr('value', value);
+				// 	option.prop('selected', true);
+				// 	option.append(value);
+				// 	select.append(option);
+				// }
+				// html.append(select);
+                form_id_offset++;
 			break;
 			case 'grouping':
 				var id = 'select_' + form_id_offset;
@@ -4195,51 +4238,57 @@ var EDITOR = (function ($, parent) {
 					select.append(option);
 				}
 				html.append(select);
+                form_id_offset++;
 				break;
             case 'educationlevellist':
-                var id = 'select_' + form_id_offset;
                 var html = $('<div>')
                     .attr('id', 'educationlevel_div_' + form_id_offset);
-                var currselected = false;
-                var select = $('<select>')
-                    .attr('id', id)
-                    .change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
-                    {
-                        inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        if (event.data.trigger)
-                        {
-                            triggerRedrawPage(event.data.key);
-                        }
-                    });
-                // Add empty option
-                var option = $('<option>')
-                    .attr('value', "");
-                if (value=="") {
-                    option.prop('selected', true);
-                    currselected = true;
-                }
-                option.append("");
-                select.append(option);
-                for (var i=0; i<educationlevel_list.length; i++) {
-                    var option = $('<option>')
-                        .attr('value', educationlevel_list[i].educationlevel_name);
-                    if (educationlevel_list[i].educationlevel_name==value) {
-                        option.prop('selected', true);
-                        currselected = true;
-                    }
-                    option.append(educationlevel_list[i].educationlevel_name);
-                    select.append(option);
-                }
-                if (value != "" && !currselected)
-                {
-                    //  Add current value as option, even though it is not in the list
-                    var option = $('<option>')
-                        .attr('value', value);
-                    option.prop('selected', true);
-                    option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
-                    select.append(option);
-                }
-                html.append(select);
+
+                var setValue = value.split("|");
+                var id = 'treeselect_' + form_id_offset;
+
+                treeSelecters.push({id: id, options: options, value: setValue, parentID: 'educationlevel_div_' + form_id_offset, treeSelectOptions: educationlevel_list, key: key, name: name})
+                form_id_offset++;
+                //deprecated code
+                // var select = $('<select>' )
+                //     .attr('id', id)
+                //     .change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
+                //     {
+                //         inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                //         if (event.data.trigger)
+                //         {
+                //             triggerRedrawPage(event.data.key);
+                //         }
+                //     });
+                // // Add empty option
+                // var option = $('<option>')
+                //     .attr('value', "");
+                // if (value=="") {
+                //     option.prop('selected', true);
+                //     currselected = true;
+                // }
+                // option.append("");
+                // select.append(option);
+                // for (var i=0; i<educationlevel_list.length; i++) {
+                //     var option = $('<option>')
+                //         .attr('value', educationlevel_list[i].educationlevel_name);
+                //     if (educationlevel_list[i].educationlevel_name==value) {
+                //         option.prop('selected', true);
+                //         currselected = true;
+                //     }
+                //     option.append(educationlevel_list[i].educationlevel_name);
+                //     select.append(option);
+                // }
+                // if (value != "" && !currselected)
+                // {
+                //     //  Add current value as option, even though it is not in the list
+                //     var option = $('<option>')
+                //         .attr('value', value);
+                //     option.prop('selected', true);
+                //     option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
+                //     select.append(option);
+                // }
+                // html.append(select);
                 break;
 			case 'course':
 				if (course_list.length == 0)
@@ -4368,6 +4417,7 @@ var EDITOR = (function ($, parent) {
 					}
 
 				}
+                form_id_offset++;
                 break;
             case 'locpicker':
 			case 'hotspot':
@@ -4586,7 +4636,7 @@ var EDITOR = (function ($, parent) {
 						.append(td1)
 						.append(td2)));
 				break;
-			case 'datagrid':
+            case 'datagrid':
 				var id = 'grid_' + form_id_offset;
 				form_id_offset++;
 				html = $('<div>')
@@ -4600,6 +4650,47 @@ var EDITOR = (function ($, parent) {
 						.attr('id', id + '_addcolumns')
 						.addClass('jqgridAddColumnsContainer'));
 
+                var form_id = "excel_upload_" + name;
+                excel_form = $("<form method='post' enctype='multipart/form-data' id =" + form_id + "></form>")
+                excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload_' + name +'" accept=".csv" required>');
+                excel_form.append('<input type="submit" value="' + language.UploadCSV.UploadCSVBtn.$label + '">');
+                excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
+                excel_form.append('<input type="hidden" name="type" value=' + name + '>');
+                excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
+                html.append(excel_form);
+
+                //called if user has uploaded a file to populate a grid
+                html.find('#excel_upload_' + name).submit(function (e){
+                    e.preventDefault();
+                    upload_file(new FormData(this));
+                })
+
+                function upload_file(form_data){
+                    if(confirm(language.UploadCSV.Info.$label)) {
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'text',
+                            url: 'editor/upload_file_to_jqgrid_template.php',
+                            data: form_data,
+                            contentType: false,
+                            processData: false,
+                            success: data => {
+                                return_data = JSON.parse(data);
+                                var gridId = '#' + return_data.gridId + '_jqgrid';
+                                $(gridId).jqGrid('clearGridData');
+                                setAttributeValue(key, [return_data.type], [return_data.csv]);
+                                var rows = readyLocalJgGridData(key, return_data.type);
+                                $(gridId).jqGrid('setGridParam', {data: rows});
+                                $(gridId).trigger('reloadGrid');
+                            },
+                            error: () => {
+                                // error message here.
+                            }
+
+                        });
+                    }
+                }
+                //return xml
 				datagrids.push({id: id, key: key, name: name, options: options});
 				break;
 			case 'datefield':
@@ -4800,6 +4891,7 @@ var EDITOR = (function ($, parent) {
     my.convertColorPickers = convertColorPickers;
 	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
+    my.convertTreeSelect = convertTreeSelect;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;

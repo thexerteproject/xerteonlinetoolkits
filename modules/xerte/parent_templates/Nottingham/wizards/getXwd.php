@@ -47,17 +47,17 @@ if (file_exists($xwd_path . "wizards/plugins/" . $_SESSION['toolkits_language'])
 {
     $plugin_path = $xwd_path . "wizards/plugins/" . $_SESSION['toolkits_language'];
 }
-else if (file_exists($xwd_path . "wizards/plugins/en-Gb"))
+else if (file_exists($xwd_path . "wizards/plugins/en-GB"))
 {
     $plugin_path = $xwd_path . "wizards/plugins/en-GB";
 }
 
-if ($custom_path != "")
+if ($plugin_path != "")
 {
     require_once ("../../../../../website_code/php/mergexml.php");
     $merged = new MergeXML();
     $merged->addFile($xwd_file_path);
-    $plugin_files = scandir($custom_path);
+    $plugin_files = scandir($plugin_path);
     foreach ($plugin_files as $plugin_file)
     {
         if (substr($plugin_file, -4) == ".xwd")

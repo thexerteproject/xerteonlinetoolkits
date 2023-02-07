@@ -17,6 +17,10 @@
 
 	var DELETE_FILE_CONFIRM = "Are you sure you want to delete this file?";
 
+	var DELETE_UNUSED_FILES_CONFIRM = "Are you sure you want to delete all unused files?"
+
+	var DELETE_UNUSED_FILES_EMPTY = "There are no unused files"
+
 	var PROPERTIES_NAME_FAIL = "This is not a valid name. Please use only letters and numbers";
 	
 	var ACCESS_RESTRICT = "Please enter a value for the site you wish to limit access to";

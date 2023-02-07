@@ -394,7 +394,7 @@
 					if (x_currentPageXML.getAttribute("trackingWeight") != undefined){
 						this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 					}
-					XTSetPageType(x_currentPage, 'numeric', groupInfo.length, this.weighting);
+          XTSetPageType(x_currentPage, 'numeric', groupInfo.filter(gi => gi.name !== '#distractor#').length, this.weighting);
 				}
 			}
 
