@@ -481,9 +481,11 @@
 				$infoHolder.find(".closeTxt a").add($contentCover).on("click", function() {
 					$infoHolder.accordion("option", "active", false);
 				});
-				
-				$contentCover.show();
-			
+
+				if ($infoHolder.accordion("option", "active") !== false) {
+					$contentCover.show();
+				}
+
 			} else {
 				// no introduction text - remove accordion
 				$("#infoHolder").remove();
