@@ -290,23 +290,7 @@ if (in_array("give", $template_supports)) {
                             -->
                             <?PHP
                         }
-                        if (nr_user_groups() > 0)
-                        {
                         ?>
-<!--
-                        <div class="tab_spacer" style="height:<?PHP echo (((5 - count($template_supports)) * 53)) + 18; ?>px;">
-                        </div>
-                        <div id="tab12" class="tab"  style="width:146px; height:38px;">
-                            <p onclick="javascript:tab_highlight('12');
-                                                                                                        group_sharing_status_template()">
-                                <i class="fas fa-users xerte-icon"></i><?PHP echo PROPERTIES_TAB_GROUP_SHARED; ?>
-                            </p>
-                        </div>
-                        -->
-                        <?php
-                        }
-                        ?>
-
                         <div class="tab_spacer">
                     </div>
                 </div>									

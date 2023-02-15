@@ -783,7 +783,7 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
 select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.folder_id) as nrshared  from {$prefix}folderdetails fd, {$prefix}folderrights fr  where fr.folder_id = fd.folder_id  and fd.folder_parent != 0 and fr.folder_id in 
                     (
                         select fd.folder_id from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.login_id=? and fd.folder_parent != 0
-                    )  GROUP BY  fr.folder_id
+                    )  GROUP BY  fr.folder_id, fr.folder_parent, fr.id, fr.role
 ) as cfr  where fr.folder_id = fd.folder_id and fr.folder_id = cfr.folder_id AND fr.login_id=? and fd.folder_parent != 0 
 ";
         $params = array($_SESSION['toolkits_logon_id'], $_SESSION['toolkits_logon_id']);
