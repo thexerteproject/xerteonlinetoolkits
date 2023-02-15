@@ -200,7 +200,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $categories = db_query($sql);
     $lookup = [];
     foreach ($categories as $node){
-        $node[children] = [];
+        $node['children'] = [];
         $lookup = $lookup + [$node['category_id'] => $node];
     }
     foreach ($lookup as $node){
@@ -214,7 +214,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = [name => $value['category_name'], value => $value['category_name'], children => get_children($value['category_id'], $lookup, 'category_name', 'category_id')];
+            $node = ['name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id')];
             $parsed_categories[] = $node;
         }
     }
@@ -227,7 +227,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $lookup = [];
     foreach ($educationlevels as $node){
-        $node[children] = [];
+        $node['children'] = [];
         $lookup = $lookup + [$node['educationlevel_id'] => $node];
     }
     foreach ($lookup as $node){
@@ -241,7 +241,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = [name => $value['educationlevel_name'], value => $value['educationlevel_name'], children => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
+            $node = ['name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
             $parsed_educationlevels[] = $node;
         }
     }
