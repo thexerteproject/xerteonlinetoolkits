@@ -234,7 +234,7 @@ class XerteXMLInspector
         $probably = "decision";
         $probably_weight = $this->test_unrecognised_template(array("name", "displayMode", "newBtnLabel", "backBtn", "fwdBtn", "emailBtn", "printBtn", "viewThisBtn", "closeBtn", "moreInfoString", "lessInfoString", "helpString", "resultString", "overviewString", "posAnswerString", "fromRangeString", "viewAllString", "errorString", "sliderError", "noQ", "noA", "resultEndString", "theme"), $check);
 
-        $new_weight = $this->test_unrecognised_template(array("name", "language", "navigation", "textSize", "theme", "displayMode", "responsive"), $check);
+        $new_weight = $this->test_unrecognised_template(array("name", "language", "navigation", "textSize", "theme", "displayMode"), $check);
         if ($new_weight > $probably_weight) {
             $probably = "Nottingham";
             $probably_weight = $new_weight;
