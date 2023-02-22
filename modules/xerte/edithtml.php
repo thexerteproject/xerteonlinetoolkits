@@ -26,7 +26,7 @@
  */
 
 
-function get_children ($parent_id, $lookup, $column, $type) : array {
+function get_children ($parent_id, $lookup, $column, $type) {
     // children
     $children = [];
     //we are at a leaf level
