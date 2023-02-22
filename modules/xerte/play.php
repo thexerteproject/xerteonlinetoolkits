@@ -122,23 +122,24 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
     }
 
     // Get plugins
-    $pluginfiles = scandir($template_path . "plugins/");
     $plugins = array();
-    foreach($pluginfiles as $pluginfile) {
-        // get base name of plugin
-        $plugininfo = pathinfo($pluginfile);
-        if ($plugininfo['basename'] == '.' || $plugininfo['basename'] == '..') {
-            continue;
-        }
-        if (!isset($plugins[$plugininfo['filename']]))
-        {
-            $plugins[$plugininfo['filename']] = new stdClass();
-        }
-        if ($plugininfo['extension'] == 'js') {
-            $plugins[$plugininfo['filename']]->script = file_get_contents($template_path . "plugins/" . $pluginfile);
-        }
-        if ($plugininfo['extension'] == 'css') {
-            $plugins[$plugininfo['filename']]->css = file_get_contents($template_path . "plugins/" . $pluginfile);
+    if (file_exists($template_path . "plugins")) {
+        $pluginfiles = scandir($template_path . "plugins/");
+        foreach ($pluginfiles as $pluginfile) {
+            // get base name of plugin
+            $plugininfo = pathinfo($pluginfile);
+            if ($plugininfo['basename'] == '.' || $plugininfo['basename'] == '..') {
+                continue;
+            }
+            if (!isset($plugins[$plugininfo['filename']])) {
+                $plugins[$plugininfo['filename']] = new stdClass();
+            }
+            if ($plugininfo['extension'] == 'js') {
+                $plugins[$plugininfo['filename']]->script = file_get_contents($template_path . "plugins/" . $pluginfile);
+            }
+            if ($plugininfo['extension'] == 'css') {
+                $plugins[$plugininfo['filename']]->css = file_get_contents($template_path . "plugins/" . $pluginfile);
+            }
         }
     }
     $rlo_object_file = "rloObject.htm";
