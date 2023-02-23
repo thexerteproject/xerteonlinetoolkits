@@ -661,7 +661,7 @@ class XerteProjectDecoder extends XerteXMLInspector
             $project->description = (string)$this->xml['metaDescription'];
         else
             $project->description = '';
-        if (isset($this->xml['metaEducation']) and (string)$this->xml['metaEducation'] !== "")
+        if (isset($this->xml['metaEducation']) && (string)$this->xml['metaEducation'] !== "")
             $project->education = (string)$this->xml['metaEducation'];
         else
             $project->education = 'unknown';
@@ -679,10 +679,15 @@ class XerteProjectDecoder extends XerteXMLInspector
             $project->passingpercentage = $this->normalizePercentage((string)$this->xml['trackingPassed']);
         else
             $project->passingpercentage = $this->normalizePercentage('55');
-        if (isset($this->xml['category']) and (string)$this->xml['category'] !== "")
+        // Bleehhh site uses metaCategory (and category is used for something else)
+        if (isset($this->xml['metaCategory']) && (string)$this->xml['metaCategory'] !== "")
             $project->category = (string)$this->xml['category'];
-        else
-            $project->category = 'unknown';
+        else {
+            if ($project->type != 'site' && isset($this->xml['category']) && (string)$this->xml['category'] !== "")
+                $project->category = (string)$this->xml['category'];
+            else
+                $project->category = 'unknown';
+        }
         $project->language = (string)$this->xml['language'];
         $project->access = $project->db_record['access_to_whom'];
         if ($project->type != 'xerte') {
