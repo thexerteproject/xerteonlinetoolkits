@@ -2195,7 +2195,9 @@ function x_sideBarBtnInfo() {
 
 function x_setUpSideBar() {
 	// only create side bar if there are some buttons that will appear on it
-	if (x_sideBarBtns.length > 0) {
+	// don't create side bar if it's a standalone page in a lightbox
+	const isSA = x_pageInfo[x_startPage.ID] != undefined && x_pageInfo[x_startPage.ID].standalone == true ? true : false;
+	if (x_sideBarBtns.length > 0 && !isSA) {
 		
 		const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
 		
