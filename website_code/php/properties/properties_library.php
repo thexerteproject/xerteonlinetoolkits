@@ -849,7 +849,8 @@ function sharing_info($template_id)
 
         }
     }
-    $sql .= ") group by ld.login_id, fr.role";
+    $sql .= ") ";
+    //$sql .= ") group by ld.login_id, fr.role";
     $query_shared_folder_users = db_query($sql, $params);
 
     $roles = array("creator"=>4, "co-author"=>3, "editor"=>2, "read-only"=>1);
@@ -979,7 +980,7 @@ function folder_sharing_info($folder_id)
         return $info;
     }
 
-    $info .=  SHARING_CURRENT . "<br>";
+    $info .=  SHARING_CURRENT_FOLDER . "<br>";
     foreach($query_sharing_rows as $row) {
         $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
         switch($row['role'])

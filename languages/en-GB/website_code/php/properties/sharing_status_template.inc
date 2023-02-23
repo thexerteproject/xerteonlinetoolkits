@@ -16,6 +16,8 @@
 
 	define("SHARING_CURRENT","This project is currently shared with : ");
 
+    define("SHARING_CURRENT_FOLDER","This folder is currently shared with : ");
+
     define("SHARING_CREATOR", "Creator");
 
     define("SHARING_COAUTHOR", "Co-author");
