@@ -1318,13 +1318,44 @@ function upgrade_35(){
 }
 
 function upgrade_36(){
-    $ok = _upgrade_db_query("alter table oai_education add column parent_id int(11)");
+    $table = table_by_key('oai_education');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
     $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    $ok = _upgrade_db_query("alter table oai_categories add column parent_id int(11)");
+    $table = table_by_key('oai_categories');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
     $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    $ok = _upgrade_db_query("alter table educationlevel add column parent_id int(11)");
+    $table = table_by_key('educationlevel');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
     $message .= "Adding parent_id column to educationlevel - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    $ok = _upgrade_db_query("alter table syndicationcategories add column parent_id int(11)");
+    $table = table_by_key('syndicationcategories');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
     $message .= "Adding parent_id column to syndicationcategories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    return $message;
+}
+
+function upgrade_37(){
+    $table = table_by_key('templatedetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_created` `date_created` DATETIME NULL DEFAULT NULL,CHANGE COLUMN `date_modified` `date_modified` DATETIME NULL DEFAULT NULL,CHANGE COLUMN `date_accessed` `date_accessed` DATETIME NULL DEFAULT NULL;");
+    $message = "Changing date columns of templatedetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    return $message;
+}
+
+function upgrade_38()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for folderrights
+    $table = table_by_key('folderrights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index1'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index1` (`folder_id` ASC, `login_id` ASC, `role`(10) ASC);");
+        $message = "Creating index on table folderrights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on folderrights table is already present';
     return $message;
 }
