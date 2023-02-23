@@ -150,7 +150,7 @@ if ($mode == "publish")
     file_put_contents($preview, $data->asXML());
     // Update templatedetails modify date
     $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
-    $params = array(date("Y-m-d"), $_POST['template_id']);
+    $params = array(date("Y-m-d H:i:s"), $_POST['template_id']);
     db_query_one($sql, $params);
 
     update_oai($data);
@@ -249,7 +249,12 @@ function is_ajax_request() {
 function update_oai($data){
     global $xerte_toolkits_site;
     $oaiPmhAgree = (string)$data->attributes()->oaiPmhAgree;
-    $category = (string)$data->attributes()->category;
+    if ((string)$data->attributes()->targetFolder != "site") {
+        $category = (string)$data->attributes()->category;
+    }
+    else {
+        $category = (string)$data->attributes()->metaCategory;
+    }
     $level = (string)$data->attributes()->metaEducation;
     $user_type = '';
     //get access status

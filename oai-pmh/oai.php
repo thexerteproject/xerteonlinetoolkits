@@ -206,15 +206,15 @@ function getTemplates($metadataPrefix,$from,$until) {
           {$prefix}logindetails as ld 
           where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.access_to_whom = 'Public'";
 
-    if($from && $until){
+    if($from != "" && $until != ""){
         $q = $q . "and td.date_modified between ? and ?";
         $templates = db_query($q, array($from,$until));
     }
-    else if($until){
+    else if($until != ""){
         $q = $q . "and td.date_modified <= ?";
         $templates = db_query($q, array($until));
     }
-    else if($from){
+    else if($from != ""){
         $q = $q . "and td.date_modified >= ?";
         $templates = db_query($q, array($from));
     }
@@ -232,8 +232,14 @@ function getTemplates($metadataPrefix,$from,$until) {
 
     $tmpRecords = array();
     //get the oai status for all templates that at some point have been published
-    $q = "select template_id, status, timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish group by template_id)";
-    $publish_status = db_query($q);
+    if($until != ""){
+        $q = "select template_id, status, timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish where timestamp < ? group by template_id)";
+        $publish_status = db_query($q, array($until));
+    }
+    else {
+        $q = "select template_id, status, timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish group by template_id)";
+        $publish_status = db_query($q);
+    }
     $temp_added = [];
 
     for($i=0;$i<count($templates);$i++)
@@ -254,12 +260,17 @@ function getTemplates($metadataPrefix,$from,$until) {
     }
 
     //add all templates that have their sharing rights revoked
-    foreach ($publish_status as $key => $value) {
-        if (!in_array($key, $temp_added)) {
-            $record = array('identifier' => ($xerte_toolkits_site->site_url . $value['template_id']),
-                'datestamp' => date($value['timestamp']),
-                'deleted' => true);
-            $tmpRecords[] = $record;
+    for($i=0;$i<count($templates);$i++) {
+        $currentTemplate = $templates[$i];
+        $needle_key = array_search($currentTemplate['template_id'], array_column($publish_status, 'template_id'));
+        if ($needle_key !== false){
+            if (!in_array($needle_key, $temp_added)) {
+                $record = array('identifier' => ($xerte_toolkits_site->site_url . $currentTemplate['template_id']),
+                    'datestamp' => date($publish_status[$needle_key]['timestamp']),
+                    'modified' => date($currentTemplate['date_modified']),
+                    'deleted' => true);
+                $tmpRecords[] = $record;
+            }
         }
     }
 
@@ -282,6 +293,7 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
 
         $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
             'datestamp' => date($first_publish_time["timestamp"]),
+            'modified' => date($template['date_modified']),
             //'set' => 'class:activity',
             'metadata' => array(
                 'container_name' => 'lom',
