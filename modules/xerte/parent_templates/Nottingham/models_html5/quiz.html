@@ -291,64 +291,77 @@
 			}
 		}
 
-        this.showFeedBackandTrackResults = function() {
-			
-            this.tracked = true;
-            var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
-            var selected = $("#optionHolder input:checked"),
-                    correct = true,
-                    l_options = [],
-                    l_answer = [],
-                    l_feedback = [];
 
-            var correctCounter = 0;
-            var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
-            var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
-			
-            for(i = 0; i < currentQuestionsChildren.length; i++)
-           	{
-            	if(currentQuestionsChildren[i].getAttribute("correct") == 'true')
-            	{
-            		correctCounter++;
-            	}
-           	}
-            
+		this.isCorrect = function(currentQuestion) {
+			var selected = $("#optionHolder input:checked"),
+					correct = true,
+					l_options = [],
+					l_answer = [],
+					l_feedback = [],
+					l_selectedOptions = [];
+
+			var correctCounter = 0;
+			var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
+
+			for(i = 0; i < currentQuestionsChildren.length; i++)
+			{
+				if(currentQuestionsChildren[i].getAttribute("correct") == 'true')
+				{
+					correctCounter++;
+				}
+			}
+
 			if(selected.length == 0 && correctCounter != 0)
 			{
-				correct = false;	
+				correct = false;
 			}
-			
-            // get feedback for selected options and check if they are correct
-            for (var i=0; i<selected.length; i++) {
-                var optionIndex = $(selected[i]).parent().index(),
-					selectedOption = quiz.currentAnswers[optionIndex];
-				
-                if (correct != false && selectedOption.correct == "true") {
-                    correct = true;
-                } else {
-                    correct = false;
-                }
-                l_options.push({
+
+			// get feedback for selected options and check if they are correct
+			for (var i=0; i<selected.length; i++) {
+				var optionIndex = $(selected[i]).parent().index(),
+						selectedOption = quiz.currentAnswers[optionIndex];
+
+				if (correct != false && selectedOption.correct == "true") {
+					correct = true;
+				} else {
+					correct = false;
+				}
+				l_options.push({
 					id: optionIndex+1+"",
 					answer: selectedOption.name,
 					result: correct
-                });
-                l_answer.push(selectedOption.name);
-                l_feedback.push(selectedOption.feedback);
-            }
-            
+				});
+				l_answer.push(selectedOption.name);
+				l_feedback.push(selectedOption.feedback);
+			}
+			// if all selected are correct - check that none of the unselected options should have been
+			if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
+				var notSelected = $("#optionHolder input:not(:checked)");
+				for (var i=0; i<notSelected.length; i++) {
+					var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).parent().index()];
+					if (notSelectedOption.correct == "true") {
+						correct = false;
+					}
+				}
+			}
+			l_selectedOptions.push(selectedOption);
+			return {
+				correct: correct,
+				options: l_options,
+				answer: l_answer,
+				feedback: l_feedback
+			};
+		}
+
+        this.showFeedBackandTrackResults = function() {
+			var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
+			var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+            const trackData = this.isCorrect(currentQuestion);
+			const correct = trackData.correct;
+
             var rightWrongTxt = "";
             if (x_currentPageXML.getAttribute("judge") != "false") {
-                // if all selected are correct - check that none of the unselected options should have been
-                if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
-                    var notSelected = $("#optionHolder input:not(:checked)");
-                    for (var i=0; i<notSelected.length; i++) {
-                        var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).parent().index()];
-                        if (notSelectedOption.correct == "true") {
-                            correct = false;
-                        }
-                    }
-                }
+
                 // add correct feedback depending on if question overall has been answered correctly or not
                 if (currentQuestion.getAttribute("type") == "Multiple Answer") {
                     if (correct == true) {
@@ -377,7 +390,8 @@
 						if (feedbackOrder[i] == 'G') {
 							thisFeedback = thisQ.getAttribute('feedback');
 						} else if (feedbackOrder[i] == 'A') {
-							if(selectedOption !== undefined && selectedOption !== null){
+							if(trackData.selectedOption !== undefined && trackData.selectedOption[0] !== undefined && trackData.selectedOption[0] !== null){
+								const selectedOption = trackData.selectedOption[0];
 								thisFeedback = selectedOption.feedback;
 								if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
 									thisFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
@@ -450,40 +464,47 @@
 
                 $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
 
+				if (XTGetMode() == "normal")
+				{
+					// Disable all options
+					var i=0;
+					for (i=0; i<quiz.currNrOptions; i++)
+					{
+						$("#option"+i).attr("disabled", "disabled");
+					}
+				}
+
 			} else {
-				// Continue to next question
-
-                $("#checkBtn").button("disable");
-                quiz.currentQ++;
-                if (quiz.currentQ == quiz.questions.length) {
-                    // last question answered - show results
-                    quiz.showResults();
-                } else {
-                    quiz.loadQ();
-                }
+				$("#checkBtn").button("disable");
+				this.nextQuestion();
 			}
-
-			// Track answer
-            var result = {
-                success: correct,
-                score: correct ? 100.0 : 0.0
-            };
-            
-            XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
-            quiz.myProgress.splice(quiz.currentQ, 1, correct);
-
-            if (XTGetMode() == "normal")
-            {
-                // Disable all options
-                var i=0;
-                for (i=0; i<quiz.currNrOptions; i++)
-                {
-                    $("#option"+i).attr("disabled", "disabled");
-                }
-            }
 
 			x_pageContentsUpdated();
         }
+
+		this.nextQuestion = function() {
+			this.tracked = true;
+			var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
+
+			const trackData = this.isCorrect(currentQuestion);
+			// Track answer
+			var result = {
+				success: trackData.correct,
+				score: trackData.correct ? 100.0 : 0.0
+			};
+
+			XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], result, trackData.options, trackData.answer, trackData.feedback, x_currentPageXML.getAttribute("trackinglabel"));
+			quiz.myProgress.splice(quiz.currentQ, 1, trackData.correct);
+
+			// Continue to next question
+			quiz.currentQ++;
+			if (quiz.currentQ == quiz.questions.length) {
+				// last question answered - show results
+				quiz.showResults();
+			} else {
+				quiz.loadQ();
+			}
+		}
 
         this.showResults = function() {
             // last question answered - show results
@@ -675,14 +696,8 @@
 				.click(function() {
 					$(this).button("disable");
 					$("#feedbackGroup").find('.feedbackBlock').html("");
-					quiz.currentQ++;
-					if (quiz.currentQ == quiz.questions.length) {
-                        // last question answered - show results
-                        quiz.showResults();
-                        quiz.resultsShown = true;
-					} else {
-						quiz.loadQ();
-					}
+
+					quiz.nextQuestion();
 
 					x_pageContentsUpdated();
 					});

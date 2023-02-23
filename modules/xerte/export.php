@@ -445,26 +445,26 @@ $lo_name = $xml->getName();
 
 
 // Get plugins
-$pluginfiles = scandir($parent_template_path . "plugins/");
 $plugins = array();
-foreach($pluginfiles as $pluginfile) {
-    // get base name of plugin
-    $plugininfo = pathinfo($pluginfile);
-    if ($plugininfo['basename'] == '.' || $plugininfo['basename'] == '..') {
-        continue;
-    }
-    if (!isset($plugins[$plugininfo['filename']]))
-    {
-        $plugins[$plugininfo['filename']] = new stdClass();
-    }
-    if ($plugininfo['extension'] == 'js') {
-        $plugins[$plugininfo['filename']]->script = file_get_contents($parent_template_path . "plugins/" . $pluginfile);
-    }
-    if ($plugininfo['extension'] == 'css') {
-        $plugins[$plugininfo['filename']]->css = file_get_contents($parent_template_path . "plugins/" . $pluginfile);
+if (file_exists($parent_template_path . "plugins")) {
+    $pluginfiles = scandir($parent_template_path . "plugins/");
+    foreach ($pluginfiles as $pluginfile) {
+        // get base name of plugin
+        $plugininfo = pathinfo($pluginfile);
+        if ($plugininfo['basename'] == '.' || $plugininfo['basename'] == '..') {
+            continue;
+        }
+        if (!isset($plugins[$plugininfo['filename']])) {
+            $plugins[$plugininfo['filename']] = new stdClass();
+        }
+        if ($plugininfo['extension'] == 'js') {
+            $plugins[$plugininfo['filename']]->script = file_get_contents($parent_template_path . "plugins/" . $pluginfile);
+        }
+        if ($plugininfo['extension'] == 'css') {
+            $plugins[$plugininfo['filename']]->css = file_get_contents($parent_template_path . "plugins/" . $pluginfile);
+        }
     }
 }
-
 
 /*
  * Create scorm manifests or a basic HTML page
@@ -512,7 +512,7 @@ else {
         basic_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $row['date_created'], $tsugi, $export_offline, $offline_includes, $need_download_url, $export_logo, $plugins);
+        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $row['date_created'], $tsugi, $export_offline, $offline_includes, $need_download_url, $export_logo, '', $plugins);
     }
 }
 

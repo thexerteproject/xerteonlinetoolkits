@@ -173,7 +173,7 @@
                 if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
                     this.weighting = x_currentPageXML.getAttribute("trackingWeight");
                 }
-                XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+                XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
                 var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
                     $splitScreen = $("#pageContents .splitScreen");

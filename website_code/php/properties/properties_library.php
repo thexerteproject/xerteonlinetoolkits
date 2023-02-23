@@ -849,7 +849,8 @@ function sharing_info($template_id)
 
         }
     }
-    $sql .= ") group by ld.login_id";
+    $sql .= ") ";
+    //$sql .= ") group by ld.login_id, fr.role";
     $query_shared_folder_users = db_query($sql, $params);
 
     $roles = array("creator"=>4, "co-author"=>3, "editor"=>2, "read-only"=>1);
@@ -979,7 +980,7 @@ function folder_sharing_info($folder_id)
         return $info;
     }
 
-    $info .=  SHARING_CURRENT . "<br>";
+    $info .=  SHARING_CURRENT_FOLDER . "<br>";
     foreach($query_sharing_rows as $row) {
         $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
         switch($row['role'])
@@ -1133,12 +1134,20 @@ function oai_shared($template_id){
 
     $sql = "select status from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
     $params = array($_POST['template_id']);
-    $last_oaiTable_status = db_query_one($sql, $params)["status"];
+    $status = db_query_one($sql, $params);
     $info = PROJECT_INFO_OAI . ": ";
-    if (is_null($last_oaiTable_status) || $last_oaiTable_status != "published") {
+    if ($status == null)
+    {
         $info .= PROJECT_INFO_NOTSHARED . "<br/>";
-    } else {
-        $info .= PROJECT_INFO_SHARED . "<br/>";
+    }
+    else {
+        $last_oaiTable_status = $status["status"];
+
+        if (is_null($last_oaiTable_status) || $last_oaiTable_status != "published") {
+            $info .= PROJECT_INFO_NOTSHARED . "<br/>";
+        } else {
+            $info .= PROJECT_INFO_SHARED . "<br/>";
+        }
     }
     return $info;
 }

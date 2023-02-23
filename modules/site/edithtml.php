@@ -25,7 +25,7 @@
  * Time: 12:24
  */
 
-function get_children ($parent_id, $lookup, $column, $type) : array {
+function get_children ($parent_id, $lookup, $column, $type) {
     // children
     $children = [];
     //we are at a leaf level
@@ -177,7 +177,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $categories = db_query($sql);
     $lookup = [];
     foreach ($categories as $node){
-        $node[children] = [];
+        $node['children'] = [];
         $lookup = $lookup + [$node['category_id'] => $node];
     }
     foreach ($lookup as $node){
@@ -191,7 +191,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = [name => $value['category_name'], value => $value['category_name'], children => get_children($value['category_id'], $lookup, 'category_name', 'category_id')];
+            $node = ['name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id')];
             $parsed_categories[] = $node;
         }
     }
@@ -204,7 +204,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $lookup = [];
     foreach ($educationlevels as $node){
-        $node[children] = [];
+        $node['children'] = [];
         $lookup = $lookup + [$node['educationlevel_id'] => $node];
     }
     foreach ($lookup as $node){
@@ -218,7 +218,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = [name => $value['educationlevel_name'], value => $value['educationlevel_name'], children => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
+            $node = ['name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
             $parsed_educationlevels[] = $node;
         }
     }

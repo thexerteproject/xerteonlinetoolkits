@@ -276,7 +276,7 @@ function screen_refresh_no_ajax(){
 	 * @author Patrick Lockley
 	 */
 //TODO : depracate
-function screen_refresh(){
+function screen_refresh_depracated(){
     $.ajax({
         type: "POST",
         url: "website_code/php/templates/your_templates.php",

@@ -247,6 +247,7 @@ function is_ajax_request() {
 }
 
 function update_oai($data){
+    global $xerte_toolkits_site;
     $oaiPmhAgree = (string)$data->attributes()->oaiPmhAgree;
     if ((string)$data->attributes()->targetFolder != "site") {
         $category = (string)$data->attributes()->category;

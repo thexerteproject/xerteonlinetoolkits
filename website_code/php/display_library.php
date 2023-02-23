@@ -153,7 +153,7 @@ function list_folder_contents_event_free($folder_id, $path = '', $item = false, 
  * @author Patrick Lockley
  */
 // TODO depracate!!
-function list_folders_in_this_folder($folder_id, $sort_type){
+function list_folders_in_this_folder_depracated($folder_id, $sort_type){
 
   /*
   * use the global level for folder indenting
@@ -233,7 +233,7 @@ function list_folders_in_this_folder($folder_id, $sort_type){
  * @author Patrick Lockley
  */
 // TODO depracate!!
-function list_files_in_this_folder($folder_id, $sort_type) {
+function list_files_in_this_folder_depracated($folder_id, $sort_type) {
 
   global $level, $xerte_toolkits_site;
 
@@ -276,7 +276,7 @@ function list_files_in_this_folder($folder_id, $sort_type) {
  * @author Patrick Lockley
  */
 // TODO depracate!!
-function list_folder_contents($folder_id, $sort_type) {
+function list_folder_contents_depracated($folder_id, $sort_type) {
 
   global $level;
 
@@ -296,7 +296,7 @@ function list_folder_contents($folder_id, $sort_type) {
  * @author Patrick Lockley
  */
 // TODO depracate!!
-function list_users_projects($sort_type) {
+function list_users_projects_depracated($sort_type) {
 
   /*
   * Called by index.php to start off the process
@@ -502,7 +502,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     }
 
     if ($type != "group_top") {
-        $query .= " group by td.template_id, td.template_name, td.date_created, otd.template_name,td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, tr.role, tr.folder,fd3.folder_name ";
+        $query .= " group by td.template_id, td.creator_id, td.template_name, td.date_created, otd.template_name,td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, tr.role, tr.folder,fd3.folder_name ";
     }
 
     $top = false;
@@ -779,12 +779,12 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
             . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
         $params = array($folder_id);
     }else{
-        $query = "select fd.folder_id, fd.folder_name, fd.folder_parent as real_parent, fr.folder_parent, fr.role, cfr.nrshared as nrshared from {$prefix}folderdetails fd, {$prefix}folderrights fr cross join (
-select fd.folder_id, fd.folder_name, fr.folder_parent, fr.id, fr.role, count(fr.folder_id) as nrshared  from {$prefix}folderdetails fd, {$prefix}folderrights fr  where fr.folder_id = fd.folder_id  and fd.folder_parent != 0 and fr.folder_id in 
+        $query = "select fd.folder_id, fd.folder_name, fr.folder_parent, fr.role, cfr.nrshared as nrshared from {$prefix}folderdetails fd, {$prefix}folderrights fr cross join (
+select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetails fd, {$prefix}folderrights fr  where fr.folder_id = fd.folder_id  and fr.folder_parent != 0 and fr.folder_id in 
                     (
-                        select fd.folder_id from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.login_id=? and fd.folder_parent != 0
+                        select fd.folder_id from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.login_id=? and fr.folder_parent != 0
                     )  GROUP BY  fr.folder_id
-) as cfr  where fr.folder_id = fd.folder_id and fr.folder_id = cfr.folder_id AND fr.login_id=? and fd.folder_parent != 0 
+) as cfr  where fr.folder_id = fd.folder_id and fr.folder_id = cfr.folder_id AND fr.login_id=? and fr.folder_parent != 0 
 ";
         $params = array($_SESSION['toolkits_logon_id'], $_SESSION['toolkits_logon_id']);
     }
