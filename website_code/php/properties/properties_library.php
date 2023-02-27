@@ -849,8 +849,7 @@ function sharing_info($template_id)
 
         }
     }
-    $sql .= ") ";
-    //$sql .= ") group by ld.login_id, fr.role";
+    $sql .= ")";
     $query_shared_folder_users = db_query($sql, $params);
 
     $roles = array("creator"=>4, "co-author"=>3, "editor"=>2, "read-only"=>1);
