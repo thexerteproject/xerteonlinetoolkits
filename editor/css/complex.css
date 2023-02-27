@@ -680,13 +680,21 @@ select, input, textarea
     padding: 4px;
 }
 
-#mainPanel select,  #mainPanel textarea {
+#mainPanel select,  #mainPanel textarea{
     /* background: #ececed; */
     background: #fff;
    /* border-radius: 4px;*/
     border: 1px solid #cdcdcd;
     width: 100%;
     box-sizing: border-box;
+}
+
+#mainPanel form{
+	display: flex;
+}
+
+#mainPanel input[name=fileToUpload]{
+	flex-grow: 1;
 }
 
 #mainPanel select.deprecated {
