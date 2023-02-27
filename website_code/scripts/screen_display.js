@@ -370,6 +370,12 @@ function button_check(){
                 };
                 break;
             case "folder":
+                newfolderbtn.removeAttribute("disabled");
+                newfolderbtn.className = "xerte_workspace_button";
+                newfolderbtn.onclick = function () {
+                   make_new_folder()
+                };
+
                 deletebtn.removeAttribute("disabled");
                 deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
@@ -388,10 +394,23 @@ function button_check(){
                 duplicatebtn.onclick = function () {
                     duplicate_folder()
                 };
-                newfolderbtn.removeAttribute("disabled");
+                /*newfolderbtn.removeAttribute("disabled");
                 newfolderbtn.className = "xerte_workspace_button";
                 newfolderbtn.onclick = function () {
                     make_new_folder()
+                };*/
+                break;
+            case "sub_folder_shared":
+                propertiesbtn.removeAttribute("disabled");
+                propertiesbtn.className = "xerte_workspace_button";
+                propertiesbtn.onclick = function () {
+                    properties_window()
+                };
+
+                duplicatebtn.removeAttribute("disabled");
+                duplicatebtn.className = "xerte_workspace_button";
+                duplicatebtn.onclick = function () {
+                    duplicate_folder()
                 };
                 break;
             case "group":
@@ -446,11 +465,11 @@ function button_check(){
                     publish_this()
                 };
 
-                newfolderbtn.removeAttribute("disabled");
+                /*newfolderbtn.removeAttribute("disabled");
                 newfolderbtn.className = "xerte_workspace_button";
                 newfolderbtn.onclick = function () {
                     make_new_folder()
-                };
+                };*/
         }
     }
     else if(ids.length > 1)
@@ -828,8 +847,8 @@ function init_workspace()
             "dnd": {
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
-                    debugger
-                    if (node[0].type.includes("_group") || node[0].type.includes("folder_shared") || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") || workspace.nodes[node[0].id].role !== "creator" ) {
+                    //debugger
+                    if (node[0].type.includes("_group") || node[0].type.includes("_shared") || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator")) {
                         return false;
                     }
                     return true;
@@ -855,13 +874,22 @@ function init_workspace()
         })
         .bind('move_node.jstree',function(event,data)
         {
-
+                debugger
                 console.log(event);
                 console.log(data);
                 copy_to_folder(data);
 
         });
 
+        $(document).on('dnd_stop.vakata', function(e, data) {
+            debugger
+            if ($('.jstree-icon.jstree-ok').length > 0) {
+                console.log(e, data);
+                ref = $('#workspace').jstree(true);
+                parent = ref.get_node(data.event.target);
+            } else
+                console.log('canceled')
+        });
         /*
          .bind("copy_node.jstree", function (event, data) {
          var new_id = generate_lo_key(),

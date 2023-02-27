@@ -232,34 +232,41 @@ function popup_close(){
  */
 
 function copy_to_folder(data) {
+	debugger
 	var tree = $.jstree.reference("#workspace"),
 		ids = tree.get_selected();
 
 	// node to move
 	var node = workspace.nodes[data.node.id];
 	var destination = workspace.nodes[data.parent];
-	setTimeout(function () {
-		tree.open_node(destination.id)
-	}, 250);
-
-
-	if (node.xot_type == "folder") {
-		var data = {
-			folder_id: node.xot_id,
-			destination: destination.xot_id
-		};
-	} else {
-		var data = {
-			template_id: node.xot_id,
-			destination: destination.xot_id
-		};
-	}
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/folders/copy_to_new_folder.php",
-		data: data,
-	})
-	.done(function (response) {
+	debugger
+	if(node.type === "folder" && destination.type.includes("_shared")){
 		refresh_workspace();
-	});
+	}else{
+		setTimeout(function () {
+			tree.open_node(destination.id)
+		}, 250);
+
+
+		if (node.xot_type == "folder") {
+			var data = {
+				folder_id: node.xot_id,
+				destination: destination.xot_id
+			};
+		} else {
+			var data = {
+				template_id: node.xot_id,
+				destination: destination.xot_id
+			};
+		}
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/folders/copy_to_new_folder.php",
+			data: data,
+		})
+			.done(function (response) {
+				refresh_workspace();
+			});
+	}
+
 }
