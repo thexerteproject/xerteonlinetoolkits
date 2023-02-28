@@ -86,6 +86,7 @@ _load_language_file("/website_code/php/properties/gift_this_template.inc");
 
 include "../template_library.php";
 include "../template_status.php";
+include "../user_library.php";
 
 
 if (!isset($_SESSION['toolkits_logon_id']))
@@ -136,14 +137,10 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $ok = db_query($query_to_gift, $params);
 
-            $query_for_root_folder = "select folder_id from {prefix}folderdetails where login_id= ? and folder_name != ?";
-            $params = array($user_id, 'recyclebin');
-
-            $row_folder = db_query_one($query_for_root_folder, $params);
-
+            $root_folder = get_user_root_folder_by_id($user_id);
 
             $query_to_gift = "update {$prefix}templaterights set user_id =  ?, folder = ? WHERE template_id = ?";
-            $params = array($user_id, $row_folder['folder_id'], $tutorial_id);
+            $params = array($user_id, $root_folder, $tutorial_id);
 
             db_query($query_to_gift, $params);
 
@@ -192,18 +189,12 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $row_currentrights = db_query_one($query_for_currentdetails, $params);
 
-            $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ?  AND folder_parent=0";
-            $params = array($user_id, 'recyclebin');
-
-            $row_folder = db_query_one($query_for_root_folder, $params);
+            $root_folder = get_user_root_folder_by_id($user_id);
 
             $create_rights_query = "INSERT INTO {$prefix}templaterights (template_id, user_id, role,folder,notes) VALUES (?,?,?,?,?)";
-            $params = array($new_template_id, $user_id, "creator", $row_folder['folder_id'], '');
+            $params = array($new_template_id, $user_id, "creator", $root_folder, '');
 
             db_query($create_rights_query, $params);
-
-
-
 
             $query_for_new_login = "select firstname, surname, username from {$prefix}logindetails where login_id= ?";
             $params = array($user_id);

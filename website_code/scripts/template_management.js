@@ -781,6 +781,22 @@ function getFolderInformation(user_id, folder_id) {
     });
 }
 
+function getGroupInformation(user_id, group_name, group_id)
+{
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/groups/get_group_info.php",
+        data: {
+            group_name: group_name,
+            group_id: group_id
+        },
+        dataType: "json",
+        success: function (info) {
+            document.getElementById('project_information').innerHTML = info.properties;
+            disableReadOnlyButtons(info);
+        }
+    });
+}
 
 /**
  *

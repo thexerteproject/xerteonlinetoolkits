@@ -61,7 +61,7 @@
 
 	define ("PROJECT_INFO_NOTSHARED", "Not shared");
 
-    define("PROJECT_INFO_OAI", "Oai status");
+    define("PROJECT_INFO_OAI", "Harvesting status");
 
 	define ("PROJECT_INFO_PRIVATE", "Private");
 
@@ -88,6 +88,10 @@
 	define("PROJECT_INFO_LTI_PUBLISHED" , "LTI: The project is published as an LTI 1.1 tool");
 
 	define("PROJECT_INFO_XAPI_PUBLISHED", "xAPI: xAPI is enabled for this project through the following link:");
+
+    define("GROUP_INFO_NAME", "Name");
+
+    define("GROUP_INFO_MEMBERS", "Members");
 
 // PROJECT TAB
 

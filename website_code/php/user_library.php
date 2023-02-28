@@ -291,6 +291,40 @@ function get_user_root_folder(){
 
 }
 
+function get_user_root_folder_by_username($username){
+
+    global $xerte_toolkits_site;
+
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    $query = "select folder_id from {$prefix}folderdetails fd, {$prefix}logindetails ld where fd.login_id = ld.login_id AND fd.folder_name = ld.username and ld.username = ?";
+    $params = array($username);
+
+    $query_response = db_query($query, $params);
+    if($query_response!=FALSE){
+        $row = $query_response[0];
+        return $row['folder_id'];
+    }else{
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users root folder by username", "Failed to get users root folder: Username : " . $username);
+    }
+
+}
+
+function get_user_root_folder_by_id($id){
+    global $xerte_toolkits_site;
+
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    $query = "select folder_id from {$prefix}folderdetails fd, {$prefix}logindetails ld where fd.login_id= ? AND fd.login_id = ld.login_id AND folder_name = ld.username";
+    $params = array($id);
+
+    $query_response = db_query($query, $params);
+    if($query_response!=FALSE){
+        $row = $query_response[0];
+        return $row['folder_id'];
+    }else{
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users root folder by id", "Failed to get users root folder: User id : " . $id);
+    }
+
+}
 
 /**
  * Function is user admin

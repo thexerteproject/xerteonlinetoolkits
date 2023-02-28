@@ -433,7 +433,7 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         $item->text = $row['folder_name'];
         $item->role = $row['role'];
         $shared = "";
-        if ($row['role'] != 'creator' && $newtype != 'group'){
+        if ($row['role'] != 'creator' || $type == 'group_top'){
             $shared = 'shared';
         }
         $item->type = ($shared == "") ?  "folder" : "folder" . _ .$shared;
@@ -876,7 +876,9 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
         $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder_" .$shared;
 
     }
-    while ($unassigned_found)
+    $max_depth = 50;
+    $level = 0;
+    while ($unassigned_found && $level < $max_depth)
     {
         $currlevel = $nextlevel;
         $nextlevel = array();
@@ -901,8 +903,25 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
                 }
             }
         }
+        $level++;
     }
 
+    if ($unassigned_found)
+    {
+        // Something went wrong here, parent is not found even at depth level $max_depth
+        // Log to error log
+        $incomplete_rows = array();
+        foreach($query_response as $index=>$row)
+        {
+            if (!isset($row['tree_id']) && $query_response[$index]['role'] == 'creator')
+            {
+                $incomplete_rows[] = $row;
+            }
+        }
+        $error_msg = "Incomplete rows in folder tree. Depth level: $max_depth. Rows: " . print_r($incomplete_rows, true);
+        error_log("Error in get_workspace_folders: " . $error_msg);
+        _debug("Error in get_workspace_folders: " . $error_msg);
+    }
 
     $sharedFolders = [];
     foreach ($query_response as $index => $folder){
@@ -926,9 +945,6 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
             }
         }
     }
-
-
-
 
     /*$query = "SELECT * FROM folderdetails where";
     $params = [];
@@ -1049,6 +1065,29 @@ function get_group_contents($group_id, $tree_id, $sort_type, $copy_only) {
     return $files;
 }
 
+function insert_groupitems_into_workspace_items($workspace_items, $group_items){
+    // Get ID of root folder
+    $root_id = $workspace_items[0]->id;
+
+    // Create a new array and start copying $workspace_itmes until we find the first item with xot_type file and parent = $root_id
+    $new_workspace_items = array();
+    $i = 0;
+    while ($workspace_items[$i]->xot_type != 'file' || $workspace_items[$i]->parent != $root_id) {
+        $new_workspace_items[] = $workspace_items[$i];
+        $i++;
+    }
+    // Copy in all the group_items
+    foreach ($group_items as $group_item) {
+        $new_workspace_items[] = $group_item;
+    }
+    // Copy in the rest of the workspace_items
+    while ($i < count($workspace_items)) {
+        $new_workspace_items[] = $workspace_items[$i];
+        $i++;
+    }
+    return $new_workspace_items;
+}
+
 
 /**
  * Builds an array with the whole structure of the workspace suitable for jsTree
@@ -1135,6 +1174,8 @@ function get_users_projects($sort_type, $copy_only=false)
     $groups = db_query($query, array($_SESSION['toolkits_logon_id']));
     $workspace->groups = array();
     $counter = 0;
+    $group_items = array();
+
     foreach ($groups as $group){
         $workspace->groups[$counter] = "ID_" . $_SESSION['toolkits_logon_id'] . "_G" . $group['group_id'];
         $item = new stdClass();
@@ -1145,13 +1186,12 @@ function get_users_projects($sort_type, $copy_only=false)
         $item->type = "group";
         $item->xot_type = "group";
 
-        $workspace->items[] = $item;
+        $group_items[] = $item;
         $workspace->nodes[$item->id] = $item;
         $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, $type = "group_top");
         if ($items) {
 
-            $workspace->items = array_merge($workspace->items, $items);
-
+            $group_items = array_merge($group_items, $items);
 
             foreach($items as $item)
             {
@@ -1161,6 +1201,9 @@ function get_users_projects($sort_type, $copy_only=false)
 
         $counter++;
     }
+
+    // Now insert the group items into the workspace items after the normal folders
+    $workspace->items = insert_groupitems_into_workspace_items($workspace->items, $group_items);
 
     //recycle bin content
     $query = "select folder_id from {$prefix}folderdetails where folder_name=? AND login_id = ?";

@@ -26,6 +26,12 @@
 
 	define("SHARING_READONLY","Read only");
 
+    define("SHARING_SOURCE","from ");
+
+    define("SHARING_SOURCE_FOLDER","folder");
+
+    define("SHARING_SOURCE_TEMPLATE","project");
+
     define("SHARING_REMOVE_DESCRIPTION", "Press the button below to remove any sharing rights");
 
     define("SHARING_REMOVE", "Remove");
