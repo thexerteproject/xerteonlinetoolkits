@@ -436,7 +436,7 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         if ($row['role'] != 'creator' || $type == 'group_top'){
             $shared = 'shared';
         }
-        $item->type = ($shared == "") ?  "folder" : "folder" . _ .$shared;
+        $item->type = ($shared == "") ?  "folder" : "folder_" . $shared;
 
        /* if($row['folder_id'] == $folder_id){
             $item->type = "folder_shared";
