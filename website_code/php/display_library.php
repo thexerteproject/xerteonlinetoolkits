@@ -651,6 +651,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                     if(!$found){
                         if($folder['nrshared'] > 1 && $files[$index]->type == "folder"){
                              $files[$index]->type = "sub_folder_shared";
+                             $files[$index]->role = $folder['role'];
                         }
                         array_push($items, $file);
                     }
@@ -1072,7 +1073,7 @@ function insert_groupitems_into_workspace_items($workspace_items, $group_items){
     // Create a new array and start copying $workspace_itmes until we find the first item with xot_type file and parent = $root_id
     $new_workspace_items = array();
     $i = 0;
-    while ($workspace_items[$i]->xot_type != 'file' || $workspace_items[$i]->parent != $root_id) {
+    while ($i < count($workspace_items) && ($workspace_items[$i]->xot_type != 'file' || $workspace_items[$i]->parent != $root_id)) {
         $new_workspace_items[] = $workspace_items[$i];
         $i++;
     }
