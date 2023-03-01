@@ -626,7 +626,7 @@ function properties_window(admin) {
             NewWindow.focus();
         } else {
             for (var i = 0; i < ids.length; i++) {
-                if (workspace.nodes[ids[i]].type != "folder" && workspace.nodes[ids[i]].type != "folder_shared" && workspace.nodes[ids[i]].type != "folder_group") {
+                if (workspace.nodes[ids[i]].type != "folder" && workspace.nodes[ids[i]].type != "folder_shared" && workspace.nodes[ids[i]].type != "sub_folder_shared"&& workspace.nodes[ids[i]].type != "folder_group") {
                     if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
                         var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id,
                             "height=760,width=1000,status=yes");

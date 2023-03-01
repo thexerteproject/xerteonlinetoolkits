@@ -729,7 +729,7 @@ function getIcon(nodetype)
             }else if (nodetype == "folder_shared"){
                 icon = "website_code/images/Icon_Folder_Shared.gif";
             }else if(nodetype == 'sub_folder_shared'){
-                icon = "website_code/images/Icon_Sub_Shared_Folder.png"
+                icon = "website_code/images/Icon_Folder.gif"
             }else{
                 icon = "website_code/images/Icon_Folder.gif";
             }
@@ -933,6 +933,7 @@ function init_workspace()
             {
                 case "folder":
                 case "folder_shared":
+                case "sub_folder_shared":
                 case "workspace":
                 case "recyclebin":
                 case "group":
@@ -964,6 +965,7 @@ function showInformationAndSetStatus(node)
 		{
 			case "folder":
             case "folder_shared":
+            case "sub_folder_shared":
             case "folder_group":
                 getFolderInformation(workspace.user, xot_id);
                 break;

@@ -849,7 +849,7 @@ function sharing_info($template_id)
         }
     }
 
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
     $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
@@ -884,6 +884,29 @@ function sharing_info($template_id)
     $sql_grouped .= ") group by user_id, firstname, surname, username";
     $query_shared_folder_users_roles = db_query($sql, $params);
     $query_shared_folder_users = db_query($sql_grouped, $params);
+
+    // Find all sub-folders and make sure they have the correct role records
+    // Loop over related folders and find and add all records in $query_shared_folder_users_roles that are not in there yet with the role of the parent record
+    foreach ($related_folders as $rf){
+        $parent = $rf['folder_parent'];
+        foreach ($query_shared_folder_users_roles as $role){
+            if ($role['folder_id'] == $parent){
+                // Check if this user already has a record for this folder
+                $found = false;
+                foreach ($query_shared_folder_users_roles as $role2){
+                    if ($role2['folder_id'] == $rf['folder_id'] && $role2['user_id'] == $role['user_id']){
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found){
+                    $role['folder_id'] = $rf['folder_id'];
+                    $role['parent_id'] = $parent;
+                    array_push($query_shared_folder_users_roles, $role);
+                }
+            }
+        }
+    }
 
     $params = array();
     $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
@@ -924,13 +947,26 @@ function sharing_info($template_id)
 
                         if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
                             $query_shared_folder_users[$indexUser]["role"] = "creator";
+                            // Change the role of the user to co-author
+                            foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                    $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                                }
+                            }
                         }
-
                     }
                 }
                 if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
                     $query_shared_folder_users[$indexUser]["role"] = $row["role"];
                     $query_shared_folder_users[$indexUser]["role_source"] = 'template';
+                    if ($row['role'] == "creator") {
+                        // Change the role of the user to co-author
+                        foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                            if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -938,6 +974,14 @@ function sharing_info($template_id)
         {
             // Add $row to $query_shared_folder_users
             $query_shared_folder_users[] = $row;
+            if ($row['role'] == "creator") {
+                // Change the role of the user to co-author
+                foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                    if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                        $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                    }
+                }
+            }
         }
     }
 
