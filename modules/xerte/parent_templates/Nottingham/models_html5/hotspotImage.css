@@ -1,5 +1,10 @@
 /* hotspotImage.html */
 	
+	#panel {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	
 	#panel.right {
 		float:	right;
 		margin:	0 0 20px 20px;
@@ -8,6 +13,10 @@
 	#panel.left {
 		float:	left;
 		margin:	0 20px 20px 0;
+	}
+	
+	#x_mainHolder.x_mobile #panel {
+		margin-top: 20px;
 	}
 	
 	#imageHolder {
@@ -19,7 +28,7 @@
 		cursor:		pointer;
 	}
 	
-	#infoHolder {
+	#x_mainHolder:not(.x_mobile) #infoHolder {
 		padding-top: 10px;
 	}
 	

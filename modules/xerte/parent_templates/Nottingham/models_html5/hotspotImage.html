@@ -47,8 +47,11 @@
 		
 		this.init = function() {
 			$img = $("#image");
-
-            if (x_currentPageXML.getAttribute("align") == "Right") {
+			
+			if (x_browserInfo.mobile == true) {
+				$("#textContents").insertBefore($("#panel"));
+				$("#infoHolder").insertAfter($("#panel"));
+			} else if (x_currentPageXML.getAttribute("align") == "Right") {
 				$("#panel").addClass("left");
 			} else {
 				$("#panel").addClass("right");
@@ -121,8 +124,14 @@
 		};
 
 		this.resizeImg = function(firstLoad) {
-			var imgMaxW = Math.round($x_pageHolder.width() * (400.0/800.0)),
-				imgMaxH = Math.round($x_pageHolder.height() * (550.0/600.0) - 100);
+			const maxW = x_browserInfo.mobile != true ? 0.6 : 1;
+			const maxH = 1;
+				
+			let imgMaxW = Math.round($x_pageHolder.width() * maxW),
+				imgMaxH = Math.round($x_pageHolder.height() * maxH);
+			
+			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
+			imgMaxH -= ($("#panel").outerHeight(true) - $("#panel").height()) + $("#btnHolder").outerHeight(true) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height());
 
 			$img.mapster('unbind');
 
@@ -238,7 +247,7 @@
 					$hotspot
 						.attr("coords", coords_string)
 						.click(function() {
-							$("#infoHolder").html("<hr/><h3>" + _this.getAttribute("name") + "</h3>" + x_addLineBreaks(_this.getAttribute("text")));
+							$("#infoHolder").html((x_browserInfo.mobile == true ? "" : "<hr/>") + "<h3>" + _this.getAttribute("name") + "</h3>" + x_addLineBreaks(_this.getAttribute("text")));
 							
 							$(".selected").removeClass("selected");
 							if (x_currentPageXML.getAttribute("highlight") !== "true") {
