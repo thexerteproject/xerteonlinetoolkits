@@ -9,6 +9,15 @@
 		float:	left;
 		margin:	0 20px 20px 0;
 	}
+	
+	#x_mainHolder.x_mobile #panel {
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+	
+	#x_mainHolder.x_mobile #textHolder {
+		margin-bottom: 10px;
+	}
 
 	#imageHolder {
 		position:	relative;
