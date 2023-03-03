@@ -1359,3 +1359,34 @@ function upgrade_38()
     $message = 'Index on folderrights table is already present';
     return $message;
 }
+
+function upgrade_39(){
+    $table = table_by_key('logindetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `lastlogin` `lastlogin` DATETIME NULL DEFAULT NULL;");
+    $message = "Changing lastlogin column of logindetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folderdetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_created` `date_created` DATETIME NULL DEFAULT NULL;");
+    $message .= "Changing date_created column of folderdetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('originaltemplatesdetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_uploaded` `date_uploaded` DATETIME NULL DEFAULT NULL;");
+    $message .= "Changing date_uploaded column of originaltemplatesdetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+
+    return $message;
+}
+
+function upgrade_40(){
+    //Guarantee that the collation of logindetails.username and folderdetails.folder_name is the same utf8_unicode_ci
+    $table = table_by_key('logindetails');
+    $ok = _upgrade_db_query("ALTER TABLE `$table` MODIFY username CHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci;");
+    $message = "Changing collation of username column of logindetails to utf_unicode_ci - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folderdetails');
+    $ok = _upgrade_db_query("ALTER TABLE `$table` MODIFY folder_name CHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci;");
+    $message .= "Changing collation of folder_name column of folderdetails to utf_unicode_ci - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}

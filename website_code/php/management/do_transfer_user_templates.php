@@ -207,7 +207,7 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id)
                 }
                 // Not found, create
                 $q = "insert into {$prefix}folderdetails set login_id=?, folder_parent=?, folder_name=?, date_created=?";
-                $params = array($newuserid, $parent_folder_id, $folder_structure[$i]['folder_name'], date('Y-m-d'));
+                $params = array($newuserid, $parent_folder_id, $folder_structure[$i]['folder_name'], date('Y-m-d H:i:s'));
                 $folder_id = db_query($q, $params);
                 $folder_structure[$i]['newid'] = $folder_id;
                 if ($folder_id !== false){
@@ -289,7 +289,7 @@ if(is_user_admin())
             {
                 // create folder
                 $folder_create_query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-                $folder_create_params = array($rootfolder['login_id'], $rootfolder['folder_id'], $foldername, date('Y-m-d'));
+                $folder_create_params = array($rootfolder['login_id'], $rootfolder['folder_id'], $foldername, date('Y-m-d H:i:s'));
                 //$folderid = db_query($q, $params);
                 // Create folder only if needed
             }

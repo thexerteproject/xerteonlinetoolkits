@@ -194,8 +194,8 @@
 		</saveSessionGroup>
 	</tracking>
 
-	<meta type="group" label="Meta data" optional="true">
-		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" mandatory="true"/>
+	<meta type="group" label="Metadata" optional="true">
+		<explanation label="Note: oai-pmh is enabled on this installation and if you wish to share this project using oai-pmh, you need to give your assent here and the relevant 'Category' and 'Education level' fields need to be added via the Metadata optional properties." type="info" condition="oai_pmh_available" mandatory="true"/>
 		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
 		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
 		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
