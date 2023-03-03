@@ -95,7 +95,7 @@ function copy_folder($folder_id, $parentfolder_id, $folder_name, $org_folder_nam
 
         // Create duplicate of folder
         $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-        $params = array($_SESSION['toolkits_logon_id'], $parentfolder_id, $folder_name, date('Y-m-d'));
+        $params = array($_SESSION['toolkits_logon_id'], $parentfolder_id, $folder_name, date('Y-m-d H:i:s'));
 
         $new_folder_id = db_query($query, $params);
 
@@ -124,8 +124,8 @@ function copy_folder($folder_id, $parentfolder_id, $folder_name, $org_folder_nam
             $params = array(
                 $_SESSION['toolkits_logon_id'],
                 $template['template_type_id'],
-                date('Y-m-d'),
-                date('Y-m-d'),
+                date('Y-m-d H:i:s'),
+                date('Y-m-d H:i:s'),
                 $template['access_to_whom'],
                 $template['template_name'],
                 $template['extra_flags']);

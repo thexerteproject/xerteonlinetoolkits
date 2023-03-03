@@ -47,7 +47,7 @@ CREATE TABLE `$folderdetails` (
   `login_id` bigint(20) DEFAULT NULL,
   `folder_parent` bigint(20) DEFAULT NULL,
   `folder_name` char(255) DEFAULT NULL,
-  `date_created` date DEFAULT '2008-12-08',
+  `date_created` datetime DEFAULT '2008-12-08',
   PRIMARY KEY (`folder_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -67,7 +67,7 @@ CREATE TABLE `$ldap` (
 CREATE TABLE `$logindetails` (
   `login_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` char(255) DEFAULT NULL,
-  `lastlogin` date DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   `firstname` char(255) DEFAULT NULL,
   `surname` char(255) DEFAULT NULL,
   PRIMARY KEY (`login_id`)
@@ -79,7 +79,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   `template_name` char(255) DEFAULT NULL,
   `parent_template` char(255) DEFAULT NULL,
   `description` char(255) DEFAULT NULL,
-  `date_uploaded` date DEFAULT NULL,
+  `date_uploaded` datetime DEFAULT NULL,
   `display_name` char(255) DEFAULT NULL,
   `display_id` bigint(20) DEFAULT NULL,
   `access_rights` char(255) DEFAULT NULL,

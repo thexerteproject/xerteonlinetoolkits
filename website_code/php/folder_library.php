@@ -56,7 +56,7 @@ function make_new_folder($folder_id,$folder_name){
         $folder_id = get_user_root_folder();
     }
     $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-    $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d'));
+    $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d H:i:s'));
 
 
     $new_folder_id = db_query($query, $params);
@@ -207,3 +207,28 @@ function has_rights_to_this_folder($folder_id, $user_id){
 }
 */
 
+function get_all_subfolders_of_folder_for_user($folder_id, $user_id){
+    global $xerte_toolkits_site;
+    $query = "select * from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_parent = ? AND login_id=? ";
+    $result = db_query($query, array($folder_id, $user_id));
+
+    $folders = array();
+    foreach($result as $row) {
+        $folders[] = $row['folder_id'];
+        $folders = array_merge($folders, get_all_subfolders_of_folder_for_user($row['folder_id'], $user_id));
+    }
+    return $folders;
+}
+
+function get_folder_creator($folder)
+{
+    global $xerte_toolkits_site;
+    $sql = "select login_id from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? and role='creator'";
+    $params = array($folder);
+    $row = db_query_one($sql, $params);
+    if (!empty($row)) {
+        return $row['login_id'];
+    }
+
+    return null;
+}

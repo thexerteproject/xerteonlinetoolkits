@@ -28,8 +28,9 @@
  */
 
 require_once("../../../config.php");
-include "../folder_status.php";
-include "../user_library.php";
+require_once "../folder_status.php";
+require_once "../folder_library.php";
+require_once "../user_library.php";
 
 if (!isset($_SESSION['toolkits_logon_username']))
 {
@@ -48,6 +49,10 @@ if(is_numeric($_POST['folder_id'])){
 
         $database_id = database_connect("Folder sharing database connect failed", "Folder sharing database connect failed");
 
+        // Get creator of folder
+        $creator = get_folder_creator($folder_id);
+
+        //remove from folderrights or folder_group_rights
         if ($group=="false"){
             $query_to_delete_share = "delete from {$prefix}folderrights where folder_id = ? AND login_id = ?";
         }else{
@@ -55,12 +60,6 @@ if(is_numeric($_POST['folder_id'])){
         }
         $params = array($folder_id, $id);
         db_query($query_to_delete_share, $params);
-
-
-
-        //remove from folderrights
-        $query_to_get_folders = "SELECT folder_id, folder_parent FROM {$prefix}folderdetails where folder_parent != 0";
-        $folders = db_query($query_to_get_folders, array());
 
         // Place all items that are not shared anymore in the user's private folder
         // - 1. Templates owned by the user
@@ -70,16 +69,14 @@ if(is_numeric($_POST['folder_id'])){
         // Step 1. Templates owned by the user (that is being unshared)
         $workspaceId = get_user_root_folder_by_id($id);
 
-        $changeParams = array($workspaceId, $id);
+        $query_to_get_folders = "SELECT folder_id, folder_parent FROM {$prefix}folderdetails where folder_parent != 0";
+        $folders = db_query($query_to_get_folders, array());
 
-        $foldersToCheck = array($folder_id);
-        for ($i = 0; $i < count($foldersToCheck); $i++){
-            foreach ($folders as $index =>$folder){
-                if($foldersToCheck[$i] == $folder['folder_parent']){
-                    array_push($foldersToCheck, $folder['folder_id']);
-                }
-            }
-        }
+        $checkParams = array($workspaceId, $id);
+
+        $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
+
+        $changeParams = array($workspaceId, $id);
 
         $query_to_change_folder = "UPDATE {$prefix}templaterights SET folder = ? where user_id = ? and role = 'creator' and folder in (";
         $first = true;
@@ -87,6 +84,7 @@ if(is_numeric($_POST['folder_id'])){
             if(!$first){
                 $query_to_change_folder .= ", ";
             }
+            $first = false;
             $query_to_change_folder .= "?";
             array_push($changeParams, $folder);
         }
@@ -95,6 +93,7 @@ if(is_numeric($_POST['folder_id'])){
 
         db_query($query_to_change_folder, $changeParams);
 
+        /*
 
         // Step 2. Folders owned by the user (that is being unshared)
         // Do not only update the folders, but get the ids of the folders as well, we will use those again in step 3.
@@ -145,5 +144,7 @@ if(is_numeric($_POST['folder_id'])){
             $changeParams[] = $template['user_id'];
         }
         db_query($query_to_change_folder, $params);
+
+        */
     }
 }
