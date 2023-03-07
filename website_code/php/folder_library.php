@@ -232,3 +232,65 @@ function get_folder_creator($folder)
 
     return null;
 }
+
+function get_all_templates_of_user_in_folder($folder_id, $user_id){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    // Get creator of folder
+    $creator = get_folder_creator($folder_id);
+
+    $checkParams = array($user_id);
+    $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
+
+    $query_to_check_folder = "SELECT template_id from {$prefix}templaterights where user_id = ? and role = 'creator' and folder in (";
+    $first = true;
+    foreach ($foldersToCheck as $folder) {
+        if (!$first) {
+            $query_to_check_folder .= ", ";
+        }
+        $first = false;
+        $query_to_check_folder .= "?";
+        array_push($checkParams, $folder);
+    }
+
+    $query_to_check_folder .= ")";
+
+    $result = db_query($query_to_check_folder, $checkParams);
+
+    $templates = array();
+    foreach($result as $row) {
+        $templates[] = $row['template_id'];
+    }
+    return $templates;
+}
+
+function get_all_templates_of_users_in_folder($folder_id, $user_ids){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    // Get creator of folder
+    $creator = get_folder_creator($folder_id);
+
+    $checkParams = array($user_ids);
+    $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
+
+    $questionmarks = str_repeat("?,", count($user_ids) - 1) . "?";
+
+    $query_to_check_folder = "SELECT template_id, user_id from {$prefix}templaterights where user_id in {$questionmarks} and role = 'creator' and folder in (";
+    $first = true;
+    foreach ($foldersToCheck as $folder) {
+        if (!$first) {
+            $query_to_check_folder .= ", ";
+        }
+        $first = false;
+        $query_to_check_folder .= "?";
+        array_push($checkParams, $folder);
+    }
+
+    $query_to_check_folder .= ")";
+
+    $result = db_query($query_to_check_folder, $checkParams);
+
+    return $result;
+}

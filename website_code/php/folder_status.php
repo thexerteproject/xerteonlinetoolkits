@@ -263,14 +263,13 @@ function get_implicit_folder_role($login_id, $folder_id, $group_id=-1){
         $result = null;
         if ($group_id == -1){
             //selects original parent and this user's role (if it exists) of this folder
-            $query = "select fd.folder_parent, fr.role from {$pre}folderdetails fd ".
-                "LEFT JOIN {$pre}folderrights fr ON fr.folder_id=fd.folder_id and fr.login_id = ?".
-                "where fd.folder_id=? ";
+            $query = "select fr.folder_parent, fr.role from {$pre}folderrights fr where fr.login_id = ? ".
+                "and fr.folder_id=?";
             $result = db_query_one($query, array($login_id, $folder_id));
         }else{ // check in group rights
-            $query = "select fd.folder_parent, fgr.role from {$pre}folderdetails fd ".
-                "LEFT JOIN {$pre}folder_group_rights fgr ON fgr.folder_id=fd.folder_id and fgr.group_id = ?".
-                "where fd.folder_id=? ";
+            $query = "select fr.folder_parent, fgr.role from {$pre}folderrights fr ".
+                "LEFT JOIN {$pre}folder_group_rights fgr ON fgr.folder_id=fr.folder_id and fgr.group_id = ?".
+                "where fr.folder_id=?";
             $result = db_query_one($query, array($group_id, $folder_id));
         }
         if (!is_null($result['role'])){
@@ -307,4 +306,14 @@ function get_implicit_folder_group_role($login_id, $folder_id){
     }
     return "";
 
+}
+
+function get_shared_groups_of_folder($folder_id){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $query = "select fgr.group_id, fgr.role from {$prefix}folder_group_rights fgr where fgr.folder_id=? ";
+    $result = db_query_one($query, array($folder_id));
+
+    return $result;
 }

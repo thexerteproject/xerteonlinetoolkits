@@ -1312,7 +1312,7 @@ function tutorial_created(response) {
             data = response.split(",");
 
             open_created_node(data[0], new_template_folder);
-            update_your_projects();
+            //update_your_projects();
 
             if (data[1] == "*") {
 

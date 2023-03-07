@@ -232,15 +232,13 @@ function popup_close(){
  */
 
 function copy_to_folder(data) {
-	debugger
 	var tree = $.jstree.reference("#workspace"),
 		ids = tree.get_selected();
 
 	// node to move
 	var node = workspace.nodes[data.node.id];
 	var destination = workspace.nodes[data.parent];
-	debugger
-	if(node.type === "folder" && destination.type.includes("_shared")){
+	if(node.type === "folder" && destination.type.includes("_shared") && destination.role != 'creator'){
 		refresh_workspace();
 	}else{
 		setTimeout(function () {

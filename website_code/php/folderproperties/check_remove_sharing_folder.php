@@ -30,6 +30,7 @@
 require_once("../../../config.php");
 require_once "../folder_status.php";
 require_once "../folder_library.php";
+require_once "../group_library.php";
 require_once "../user_library.php";
 
 if (!isset($_SESSION['toolkits_logon_username']))
@@ -49,41 +50,34 @@ if(is_numeric($_POST['folder_id'])) {
     if (is_user_creator_or_coauthor_folder($_POST['folder_id']) || is_user_admin() || $_POST['user_deleting_self'] == "true") {
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        $database_id = database_connect("Folder sharing database connect failed", "Folder sharing database connect failed");
-
-        // Get creator of folder
-        $creator = get_folder_creator($folder_id);
-
-        // Check if user has templates owned by the user being removed
-        $workspaceId = get_user_root_folder_by_id($id);
-
-        $checkParams = array($id);
-
-        $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
-
-        $query_to_check_folder = "SELECT count(template_id) as nrtemplates from {$prefix}templaterights where user_id = ? and role = 'creator' and folder in (";
-        $first = true;
-        foreach ($foldersToCheck as $folder) {
-            if (!$first) {
-                $query_to_check_folder .= ", ";
-            }
-            $first = false;
-            $query_to_check_folder .= "?";
-            array_push($checkParams, $folder);
+        // Get shared groups
+        $shared_groups = get_shared_groups_of_folder($folder_id);
+        $users = array();
+        foreach($shared_groups as $group_id) {
+            $users = array_merge($users, get_users_from_group($group_id));
         }
 
-        $query_to_check_folder .= ")";
+        // Check if $id is in $users
+        if (in_array($id, $users, true) !== false) {
+            // User is in a shared group
+            // No need to check the rest
+            echo "OK";
 
-        $nr_templates = db_query_one($query_to_check_folder, $checkParams);
-        if ($nr_templates['nrtemplates'] > 0) {
-            if ($_POST['user_deleting_self'] == "true"){
-                echo YOU_HAVE_TEMPLATES_IN_FOLDER;
+        }
+        else
+        {
+            // Get all templates of user in folder structure
+            $templates = get_all_templates_of_user_in_folder($folder_id, $id);
+
+            if (count($templates) > 0) {
+                if ($_POST['user_deleting_self'] == "true") {
+                    echo YOU_HAVE_TEMPLATES_IN_FOLDER;
+                } else {
+                    echo USER_HAS_TEMPLATES_IN_FOLDER;
+                }
+            } else {
+                echo "OK";
             }
-            else {
-                echo USER_HAS_TEMPLATES_IN_FOLDER;
-            }
-        } else {
-            echo "NO";
         }
     }
 }

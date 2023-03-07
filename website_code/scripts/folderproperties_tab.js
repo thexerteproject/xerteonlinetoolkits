@@ -392,7 +392,7 @@ function delete_sharing_folder(folder_id,id,who_deleted_flag, group=false){
 			})
 			.done(function(owns_templates){
 				do_it = true;
-				if (owns_templates != "NO") {
+				if (owns_templates != "OK") {
 					do_it = confirm(owns_templates);
 				}
 				if (do_it) {
