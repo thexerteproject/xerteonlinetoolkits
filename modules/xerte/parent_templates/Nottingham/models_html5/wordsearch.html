@@ -37,6 +37,13 @@
 			if(x_browserInfo.touchScreen){
 				document.body.classList.add("stop-scrolling");
 			}
+			
+			if (x_browserInfo.mobile == true) {
+				$("#infoHolder").removeClass("panel");
+				
+				$("#textHolder").insertBefore("#infoHolder");
+			}
+			
 			// add colour styles that can be changed by optional properties
 			var colourStyles = "<style type='text/css'>",
 				colour;
@@ -219,8 +226,10 @@
 			});
 			minW += (parseInt($("#puzzle").css("padding-left")) + parseInt($("#puzzle").css("margin-left"))) * 2;
 			minW += Math.ceil($("#words").outerWidth(true));
-
-			$("#infoHolder").css("min-width", minW);
+			
+			if (x_browserInfo.mobile != true) {
+				$("#infoHolder").css("min-width", minW);
+			}
 		}
 	}
 
