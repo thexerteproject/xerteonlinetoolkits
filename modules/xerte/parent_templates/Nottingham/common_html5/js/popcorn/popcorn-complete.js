@@ -4605,7 +4605,7 @@
 
     // Helper for identifying URLs we know how to play.
     Popcorn.HTMLMediasiteVideoElement._canPlaySrc = function( url ) {
-        return (/.+mediamission.+/).test( url ) || (/.+deltion.+/).test( url ) ? "probably" : "";
+        return (/.+mediamission.+/).test( url ) || (/.+mediasite.+/).test( url ) || (/.+deltion.+/).test( url ) ? "probably" : "";
     };
 
 
