@@ -933,12 +933,12 @@
         let canvasStartPadding;
     	    $("#printBtn")
 				.button({
-					label: 'Print'
+					label: x_currentPageXML.getAttribute("downloadBtnText") == undefined ? 'Download' : x_currentPageXML.getAttribute("downloadBtnText")
 				})
 				.click(async function() {
 					$("#pageContents").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
 					$("#mainPanel").prepend(
-							'<div id="print-title" style="font-size: 30px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>'
+						'<div id="print-title" style="font-size: 30px"><h1>' + x_currentPageXML.getAttribute("name") + '</h1></div>'
 					);
 					$("#mainPanel .panel").addClass("panel-print");
 					$("#mainPanel .panel").removeClass("panel");
@@ -1003,7 +1003,7 @@
 		}
 
 		this.showPrintButton = function (force) {
-			$("#printBtn")[printAvailable && force !== false && x_currentPageXML.getAttribute('disableprinting') != 'true' ? 'show' : 'hide']();
+			$("#printBtn")[printAvailable && force !== false && x_currentPageXML.getAttribute('disableprinting') != 'true' && x_currentPageXML.getAttribute("diagram") !== "true" ? 'show' : 'hide']();
 		}
 
 		this.resetGraph = function () {

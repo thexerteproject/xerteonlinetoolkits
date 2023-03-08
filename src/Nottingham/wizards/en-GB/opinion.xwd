@@ -7,6 +7,7 @@
 	  submitBtnText="Submit"
 	  resetBtnText="Reset"
 	  backBtnText="Back"
+	  downloadBtnText="Download"
 	  />]]></opinion>
     </newNodes>
   </pageWizard>
@@ -26,6 +27,7 @@
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <resetBtnText label="Reset Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Reset" language="true" />
     <backBtnText label="Back Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Back" language="true" />
+	<downloadBtnText label="Download Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Download" language="true" />
 
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
@@ -40,7 +42,7 @@
 		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
 
-    <disableprinting label="Disable printing" type="CheckBox" optional="true" defaultValue="false" />
+    <disableprinting label="Disable Download" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'" />
 
     <layout label="Layout" type="group" optional="true">
       <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
