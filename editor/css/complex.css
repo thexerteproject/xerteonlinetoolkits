@@ -1390,6 +1390,12 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 	cursor: default;
 }
 
+[data-cke-editorplaceholder]::before {
+	padding: 4px;
+	overflow: hidden;
+	height: 1.2em;
+}
+
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}
