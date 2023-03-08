@@ -3590,7 +3590,7 @@
 
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
-	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
+	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
 	
 	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Include an audio player below the written feedback">
 		<audioFeedback label="File" type="media" optional="true"/>
@@ -3599,9 +3599,9 @@
 	
 	<spaceLines label="Space Lines Evenly" type="CheckBox" defaultValue="true" optional="true"/>
 
-    <hints type="group" label="Hints" optional="true">
-		<showHint label="Show Hint/Correct Answers Button" type="CheckBox" defaultValue="true" optional="true"/>
-    	<attemptsBeforeHint label="Attempts Before Hint" defaultValue="2" type="NumericStepper" min="0" max="10" step="1" width="100" optional="true"/>
+    <hints type="group" label="Hints" optional="true" tooltip="Show a hint tooltip (fill in blank) or show answers button (drag drop/drop down menu) if answered incorrectly">
+		<showHint label="Show Hint/Correct Answers" type="CheckBox" defaultValue="true" optional="true" condition="interactivity!='Drag Drop'||markEnd=='true'"/>
+    	<attemptsBeforeHint label="Attempts Before Hint" defaultValue="2" type="NumericStepper" min="0" max="10" step="1" width="100" optional="true" condition="interactivity!='Drag Drop'||markEnd=='true'"/>
     </hints>
 	
 	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" condition="interactivity=='Fill in Blank'" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
