@@ -61,7 +61,12 @@
 			$("#pageVideo").html("");
 
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			$panel.addClass("x_floatRight");
+			
+			if (x_browserInfo.mobile == true) {
+				$panel.removeClass("panel inline");
+			} else {
+				$panel.addClass("x_floatRight");
+			}
 
 			// Get the youtube code the user pasted
 			var youtubeCode = $($(x_currentPageXML)).text();
@@ -140,6 +145,13 @@
 					trackMedia: true,
 					weighting: x_currentPageXML.getAttribute("trackingWeight"),
 				}, true);
+			
+			if (x_browserInfo.mobile == true) {
+				var aspect = iframe.width / iframe.height;
+				iframe.width = $("#x_pageDiv").width();
+				iframe.height = iframe.width/aspect;
+			}
+			
 			resizeEmbededMedia($(".popcornMedia.embed"), {width: iframe.width, height: iframe.height})
 
 			// call this function in every model once everything's loaded
@@ -187,10 +199,8 @@
 
 <div id="pageContents">
 
-	<div class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
-		<div class="panel inline">
-			<div id="pageVideo"></div>
-		</div>
+	<div class="panel inline">
+		<div id="pageVideo"></div>
 	</div>
 
 	<div id="textHolder"></div>
