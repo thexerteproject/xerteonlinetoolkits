@@ -1539,9 +1539,13 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	//assign active class for current navbar
 	$("#nav li").not(':first-child').each(function(i, el){
 		if ($(el).hasClass("active") && i !== activeIndex){
-			$(el).removeClass("active")
+			$(el)
+				.removeClass("active")
+				.removeAttr("aria-current");
 		} else if (i == activeIndex){
-			$(el).addClass("active")
+			$(el)
+				.addClass("active")
+				.attr("aria-current", "page");
 		}
 	})
 
@@ -1741,7 +1745,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName = tocName.html();
 				}
 
-				var $link = $('<li' + (sectionVisibleIndex==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
+				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 			}
 
@@ -2068,7 +2072,6 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 		pageTempInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo;
 
 		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
-
 		goToSection(pageTempInfo + 'section' + sectionNum + contentInfo);
 
 	} else {
