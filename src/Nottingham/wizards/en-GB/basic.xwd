@@ -4,13 +4,12 @@
 
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls,Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
-    <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" conditionTrigger="true" defaultValue="default" />
 	<themeIcons type="CheckBox" label="Update Theme Icons" mandatory="true" defaultValue="false" condition="theme_list[currtheme].imgbtns=='true'||theme==undefined||theme=='default'" tooltip="The selected theme uses images for the navigation and footer tool buttons. Most newer themes use Font Awesome icons instead, which give you greater flexibility in their appearance. Checking this box will automatically update interface buttons to use Font Awesome icons. It is recommended that you check this if you use are using any of the Customise Button Icon options so that all buttons appear consistent." />
 	<displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100" conditionTrigger="true"/>
-	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
-	
+	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true" conditionTrigger="true"/>
+	<textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100" tooltip="The default text size will only be used when responsive text is turned off. It can also be overridden when a text size is directly set in the text editor" condition="responsive!='true'"/>
 	
 	<!-- OPTIONAL PROPERTIES -->
 	
