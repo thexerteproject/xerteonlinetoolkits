@@ -4841,6 +4841,7 @@ var EDITOR = (function ($, parent) {
 						.attr('type', "text")
 						.addClass('inputtext')
 						.attr('id', id)
+						.attr('placeholder', options.placeholder)
 						.keyup({name: name, key: key, options: options}, function()
 						{
 							if (name == 'name') {
