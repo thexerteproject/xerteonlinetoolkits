@@ -1,7 +1,8 @@
 /* videoSynch.html */
 	
 #mainText {
-	padding: 10px;
+	padding: 0 10px 10px;
+	overflow: auto;
 }
 
 #infoHolder {
@@ -28,3 +29,6 @@ div#muteButton, div#playButton {
 	cursor: pointer;
 }
 
+#videoHolder .panel {
+	margin-bottom: 1em;
+}
