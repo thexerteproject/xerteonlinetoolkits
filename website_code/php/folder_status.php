@@ -336,12 +336,24 @@ function is_folder_shared_subfolder($folder_id)
         $shared = get_shared_groups_of_folder($folder);
         if (empty($shared)) {
             // Check if folder itself is shared
-            $sql = "select fr.folder_parent, count(fr2.folder_id) as nrshared from {$prefix}folderrights fr, {$prefix}folderrights fr2 where fr.folder_id=? and fr.login_id=? and fr2.folder_id=fr.folder_id";
+            $sql = "select fr.folder_parent, count(fr2.folder_id) as nrshared from {$prefix}folderrights fr, {$prefix}folderrights fr2 where fr.folder_id=? and fr.login_id=? and fr2.folder_id=fr.folder_id group by fr2.folder_id, fr.folder_parent";
             $result = db_query_one($sql, array($folder, $_SESSION['toolkits_logon_id']));
-            if ($result['nrshared'] > 0 && $folder != $folder_id) {
+            if ($result['nrshared'] > 1 && $folder != $folder_id) {
                 return true;
             }
             else{
+                $parent = $result['folder_parent'];
+                $folder = $parent;
+            }
+        }
+        else
+        {
+            if ($folder != $folder_id) {
+                return true;
+            }
+            else{
+                $sql = "select fr.folder_parent from {$prefix}folderrights fr where fr.folder_id=? and fr.login_id=?";
+                $result = db_query_one($sql, array($folder, $_SESSION['toolkits_logon_id']));
                 $parent = $result['folder_parent'];
                 $folder = $parent;
             }
