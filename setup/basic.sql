@@ -173,7 +173,7 @@ CREATE TABLE `$sitedetails` (
   `globalhidesocial` char(255) DEFAULT 'false',
   `globalsocialauth` char(255) DEFAULT 'true',
   PRIMARY KEY (`site_id`)
-) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$syndicationcategories` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -305,7 +305,7 @@ CREATE TABLE `$folderrights` (
   `login_id` int(11) NOT NULL,
   `folder_parent` int(11) NOT NULL,
   `role` char(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
   KEY `index1` (`folder_id`,`login_id`,`role`(10))
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -325,7 +325,7 @@ CREATE TABLE IF NOT EXISTS `$oai_publish` (
       `status` VARCHAR(10),
       `timestamp` TIMESTAMP,
       PRIMARY KEY (`audith_id`)
-)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_context` (
   `lti_context_key` varchar(255) NOT NULL,
