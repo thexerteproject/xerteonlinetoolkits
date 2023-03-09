@@ -235,7 +235,7 @@ function cssSetUp(param) {
 				$('head').append('<script src="'+ themePath + theme + '/'+ theme+ '.js"' + '</script>');
 				insertCSS(themePath + theme + '/' + theme + '.css', function() {cssSetUp('stylesheet')});
 			} else {
-				cssSetUp('stylesheet');
+				insertCSS(themePath + 'default/default.css', function() {cssSetUp('stylesheet')});
 			}
             break;
         case 'stylesheet':
