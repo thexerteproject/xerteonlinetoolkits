@@ -23,7 +23,6 @@
     <menuOverLineCol label="Line Colour (over)" type="ColourPicker" defaultValue="0x456287" optional="true" deprecated="This property is deprecated"/>	
     <menuOverFillCol label="Fill Colour (over)" type="ColourPicker" defaultValue="0xFFFFFF" optional="true" deprecated="This property is deprecated"/>	
     <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true" deprecated="This property is deprecated"/>
-    <info><![CDATA[<b>For full details on how to use the Menu Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MenuConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
       <cMenuListedPage><![CDATA[<cMenuListedPage name="Enter Item Title Here" pageID=""/>]]></cMenuListedPage>

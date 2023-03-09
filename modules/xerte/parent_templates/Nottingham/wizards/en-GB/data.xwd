@@ -1568,8 +1568,6 @@
     <confirmBtnTip label="Confirm Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
     <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
 
-    <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
-
     <newNodes>
       <cOption><![CDATA[<cOption name="Answer" text="Here is an option" destination="" />]]></cOption>
     </newNodes>
@@ -2014,7 +2012,6 @@
 	</popUp>
 	
     <imageTransition label="Image Transition" options="Blinds,Dissolve,Fade,Fly,Iris,Squeeze,Wipe,Zoom" type="ComboBox" data="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" defaultValue="wipe" width="100" optional="true" deprecated="This property is no longer required"/>
-    <info><![CDATA[<b>For full details on how to use the Hotspot Image Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/HotspotImageConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
       <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" windowType="dialog" destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
@@ -2158,7 +2155,6 @@
     <menuOverLineCol label="Line Colour (over)" type="ColourPicker" defaultValue="0x456287" optional="true" deprecated="This property is deprecated"/>	
     <menuOverFillCol label="Fill Colour (over)" type="ColourPicker" defaultValue="0xFFFFFF" optional="true" deprecated="This property is deprecated"/>	
     <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true" deprecated="This property is deprecated"/>
-    <info><![CDATA[<b>For full details on how to use the Menu Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MenuConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
       <cMenuListedPage><![CDATA[<cMenuListedPage name="Enter Item Title Here" pageID=""/>]]></cMenuListedPage>
@@ -4866,8 +4862,6 @@
     <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
-	
-    <info><![CDATA[<b>For full details on how to use the Inventory Page. <u><a href="http://xerte.org.uk/docs/xot/help/InventoryPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
       <invQuestion><![CDATA[<invQuestion name="Question" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
