@@ -109,8 +109,8 @@
 }
 
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
-	color: $lightestcolor;
-	background-color: #3F4957;
+	background-color: $lightestcolor;
+	color: $bodybackgroundcolor;
 }
 
 #x_sideBarBtnHolder button {
@@ -125,14 +125,18 @@
 	border-color: $bodybackgroundcolor;
 }
 
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover .ui-button-text, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus .ui-button-text, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active .ui-button-text {
+	color: $bodybackgroundcolor;
+}
+
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
-	background-color: $bodybackgroundcolor;
-	color: $whiteorlightest;
+	background-color: $lightestcolor;
+	color: $bodybackgroundcolor;
 }
 
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
-	background-color: $bodybackgroundcolor;
-	color: $whiteorlightest;
+	background-color: $lightestcolor;
+	color: $bodybackgroundcolor;
 }
 
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
