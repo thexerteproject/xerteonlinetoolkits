@@ -131,30 +131,9 @@
     z-index: 3;
 }
 
-#panelHolder .panel.tileH {
-    display:	inline-block;
-}
-
-#panelHolder .panel.fullW {
-    display:	block;
-}
-
-
 #panelHolder .panel {
     vertical-align:	top;
     overflow:		auto;
-}
-
-#panelHolder .top .panel.halfH {
-    margin-bottom:	15px;
-}
-
-#panelHolder .panel.tileH:not(:last-of-type) {
-    margin-right:	15px;
-}
-
-#panelHolder .panel.tileV:not(:last-of-type) {
-    margin-bottom:	15px;
 }
 
 .mediaHolder {

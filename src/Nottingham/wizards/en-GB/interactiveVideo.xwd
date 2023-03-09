@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
+	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
     </newNodes>
   </pageWizard>
 
@@ -35,7 +35,7 @@
 
 	</ivMediaPanel>
 
-	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" max="1">
+	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" duplicate="false">
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
