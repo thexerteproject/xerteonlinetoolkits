@@ -41,6 +41,8 @@
 
 	define ("PROJECT_INFO_MODIFIED", "Last modified on");
 
+	define ("PROJECT_INFO_FRAMEWORK", "Template");
+
 	define ("PROJECT_INFO_RUNTIME", "Player");
 
 	define ("PROJECT_INFO_URL", "URL");
