@@ -107,7 +107,7 @@
 		<intro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the learning object title above the introduction"/>
@@ -161,7 +161,7 @@
 	<icon type="group" label="Header Icon/Logo" optional="true">
 		<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="If a default logo is automatically added by this template, or by the theme you have chosen, then use this checkbox to hide that logo, or leave this unchecked and use the options below to load an alternative logo."/>
 		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="Select an Image"/>
-		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="Enter a Description for Accessibility"/>
+		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100"/>
 	</icon>
 	
@@ -257,7 +257,7 @@
 	<mediaFile type="group" label="Media" optional="true" deprecated="This property is deprecated and no longer supported">
 		<media optional="true" type="media" label="File" defaultValue="Select an Audio or Video File"/>
 		<mediaImage optional="true" type="media" label="Image (Audio only)" defaultValue="Select an Image"/>
-		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<mediaTranscript optional="true" type="media" label="Transcript" defaultValue="Select a Timed Text Transcript File"/>
 		<mediaTiming optional="true" type="ComboBox" options="Current Caption Only,Keep Previous Captions,Show All Captions" data="current,previous,all" label="Caption Timing" defaultValue="current" width="175"/>
 		<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Caption Position" defaultValue="below" width="175"/>
@@ -268,11 +268,11 @@
 	</mediaFile>
 
     <newNodes>
-    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility" imagesize="large">Enter text for the page here</QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="Enter text for the page here" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" panelWidth="Medium" tip="Enter a Description for Accessibility" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
+    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility" imagesize="large">Enter text for the page here</QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="Enter text for the page here" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
 	  home="false" back="false" next="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
+	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="" highlight="false" align="Left" home="false" back="false" next="false"
 	  notFoundMessage="could not be found in this project." />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true"
 	  acrossLabel="Across"
 	  downLabel="Down"
@@ -300,11 +300,11 @@
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
 	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
-	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="Enter text for the page here" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
+	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="Enter text for the page here" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
 	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
-	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" answers="true" align="Left" attempts="1"
+	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter feedback here" text="Enter text for the page here" url="Select an Image" tip="" answers="true" align="Left" attempts="1"
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right (out of /c) and /w wrong."
 	  again="Try again, you have /a attempt(s) remaining."
@@ -312,7 +312,7 @@
 	  allGood2="You have not selected all of the /c correct answers."
 	  allWrong="You have not selected any of the /c correct answers."
 	  btnLabel="Submit"
-	  />]]></hotSpotQuestion><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left"
+	  />]]></hotSpotQuestion><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="" interactivity="Show Me" highlight="false" align="Left"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageSequence><![CDATA[<imageSequence name="Enter Page Title" text="Enter text for the page here" align="left" imgSize="auto"
@@ -346,7 +346,7 @@
 	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle" 
 	  pageError="Destination page not found"
 	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
-	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
+	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
 	  feedbackBtnTxt="Feedback" 
 	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
 	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
@@ -356,7 +356,7 @@
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
 	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="Provide a prompt here" answer="Provide a model answer here"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
-	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" target="new" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
+	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="" url2="Select Image" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" target="new" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
@@ -511,13 +511,13 @@
         <text label="Page Text" type="TextArea" height="150"/>
         <image type="group" label="Image" optional="true">
           <url label="File" type="media" defaultValue="Select Media" optional="true"/>
-          <tip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+          <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
         </image>
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
           <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
-          <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="Enter text for the item here" align="Left" url="Select an Image" tip="Enter a Description for Accessibility" date="Choose Date"/>]]></timelineimage>
+          <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="Enter text for the item here" align="Left" url="Select an Image" tip="" date="Choose Date"/>]]></timelineimage>
           <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
           <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="Select an Audio File" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
 
@@ -608,7 +608,7 @@
       <text label="Text" type="TextArea" height="150"/>
       <image type="group" label="Image">
         <url label="File" type="media"/>
-        <tip label="Description" type="TextInput"/>
+        <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
       </image>
       <TimeLineEndDate type="group" label="End Date" optional="true">
             		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
@@ -929,7 +929,7 @@
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 		<panelWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" mandatory="true" width="100"/>
 	</image>
 	
@@ -1028,11 +1028,11 @@
   </hotspotGroup><hotspot type="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
   </hotspot><flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
   </flexhotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_audio_slideshow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -1993,7 +1993,7 @@
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
 		<textWidth label="Size" options="Small,Medium,Large,Full" type="ComboBox" data="max,wide,narrow,none" defaultValue="narrow" width="200"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
 	
     <hidePanel label="Hide Panel" type="CheckBox" defaultValue="false" deprecated="This property is deprecated"/>
@@ -2092,14 +2092,14 @@
     </pageHeaderGroup></connectorHotspotImage><cHotspot menuItem="Hotspot" label="Edit Hotspot" type="flexhotSpot" icon="icLayers" remove="true">
   
 	<name label="Title" type="TextInput" wysiwyg="false"/>
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
 	<!--<windowType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||iframe!=null" defaultValue="dialog" mandatory="true" width="200"/>-->
 	<windowType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null||iframe!=null" defaultValue="dialog" mandatory="true" width="200"/>
 	
 	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
 		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select a Video"/>
-		<tip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</video>
 	
 	<videoTiming type="group" label="Video Start &amp; End Times" condition="hotspotMovie!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole video will play">
@@ -2119,7 +2119,7 @@
 	
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an Image"/>
-		<imageTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+		<imageTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgGroup>
 	
 	<soundTiming type="group" label="Sound Start &amp; End Times" condition="hotspotSound!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole audio will play">
@@ -3004,7 +3004,7 @@
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text here"/>]]></section>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip=""/>]]></media>
 	  <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -3020,7 +3020,7 @@
 
     <newNodes>
       <line><![CDATA[<line />]]></line>
-	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip="Enter a Description for Accessibility"/>]]></media>
+	  <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select an Image" tip=""/>]]></media>
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
 	  <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
 	  <tableDoc><![CDATA[<tableDoc name="Table Title" text="Enter text here" data=" | " borders="full" header="header" shadeHeader="true" shade="false" notAnswered="Not answered" replace="true"/>]]></tableDoc>
@@ -3076,7 +3076,7 @@
 	
 	<mediaGroup type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</mediaGroup>
 
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
@@ -3120,7 +3120,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
 	
 	<highlight type="group" label="Hotspot Highlight">
@@ -3392,14 +3392,14 @@
 	
 	<side1Media type="group" label="Side 1 Media" optional="true" tooltip="Media (e.g. image) shown on the front of this card">
 		<media1 label="File" type="Media" optional="true" defaultValue="Select a File"/>
-		<tip1 label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip1 label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<align1 label="Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
 		<transcript1 label="Audio Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="If media if MP3, a transcript button will appear on the audio player when text is added here"/>
 	</side1Media>
 	
 	<side2Media type="group" label="Side 2 Media" optional="true" tooltip="Media (e.g. image) shown on the back of this card">
 		<media2 label="File" type="Media" optional="true" defaultValue="Select a File"/>
-		<tip2 label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip2 label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<align2 label="Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
 		<transcript2 label="Audio Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="If media if MP3, a transcript button will appear on the audio player when text is added here"/>
 	</side2Media>
@@ -3937,7 +3937,7 @@
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 		<textWidth label="Size" options="Full Screen,Large,Medium,Small" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200" tooltip="The page text will be hidden when the image is set to full screen"/>
 	</image>
 
@@ -4041,7 +4041,7 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Feedback" type="TextArea" height="250"/>
     <truth label="Correct Answer" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
   </QHotSpot><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_hotspot_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -4050,7 +4050,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
     
     <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
@@ -5910,13 +5910,13 @@
 		
 		<mediaGroup type="group" label="Media" tooltip="Add video or audio (file or url)">
 			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
+			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 		</audioImg>
 
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
@@ -5930,7 +5930,7 @@
 			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>-->
 			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="false" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" overlay="false" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" overlay="false" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a description for accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
 			<!--<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>-->
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
@@ -5945,9 +5945,9 @@
 			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
 			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>-->
 			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
-			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearPanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
+			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="" synchStart="0" autoplay="false" clearPanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a description for accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
 		</newNodes>
@@ -5993,7 +5993,7 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
 		<newNodes>
-			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
+			<synchSlide><![CDATA[<synchSlide name="Enter a description for accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
 		</newNodes>
 	</synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
 		<name label="Image Description" type="TextInput"/>
@@ -6010,7 +6010,7 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<mediaGroup type="group" label="Media">
 			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
+			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
@@ -6019,7 +6019,7 @@
 
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true"/>
-			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 		</audioImg>
 
 		<synchStart label="Synch Point" type="TextInput"/>
@@ -6536,12 +6536,12 @@
 	
 	<image1 type="group" label="Image 1">
 		<url label="File" type="media"/>
-		<tip1 label="Description" type="TextInput"/>
+		<tip1 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image1>
 	
 	<image2 type="group" label="Image 2">
 		<url2 label="File" type="media"/>
-		<tip2 label="Description" type="TextInput"/>
+		<tip2 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image2>
 	
     <zoomSpeed label="Zoom Speed" type="NumericStepper" min="1" max="10" step="1" defaultValue="3"/>
@@ -7161,8 +7161,8 @@
     <newNodes>
 	  <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
       <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound" mediaW="Medium" align="Right"></sound>]]></sound>
-      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="Enter a Description for Accessibility" mediaW="Medium" align="Right"></image>]]></image>
-	  <mpText><![CDATA[<mpText txt="Enter text for the page here" name="Text" src="Select an Image" tooltip="Enter a Description for Accessibility"></mpText>]]></mpText>
+      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="" mediaW="Medium" align="Right"></image>]]></image>
+	  <mpText><![CDATA[<mpText txt="Enter text for the page here" name="Text" src="Select an Image" tooltip=""></mpText>]]></mpText>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -7240,7 +7240,7 @@
 	
 	<thumbnail type="group" label="Thumbnail" tooltip="The image that will appear on the thumbnail bar for this item.">
 		<src label="Image" type="media" defaultValue="Select an Image"/>
-		<tooltip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+		<tooltip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</thumbnail>
 	
 	<linkInfo type="group" label="Page Link" optional="true">
@@ -7259,7 +7259,7 @@
 	</video>
 	
 	<movieSize label="Fixed Video Size" type="textInput" defaultValue="320,240" optional="true"/>
-    <tooltip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+    <tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	
 	<thumbnail type="group" label="Thumbnail" optional="true" tooltip="Customise how the video is shown on the thumbnail bar. By default videos will use a generic video icon.">
 		<useVidThumb label="Use 1st Frame" type="Checkbox" defaultValue="true" optional="true" tooltip="Use the first frame of the video as the thumbnail image"/>
@@ -7279,7 +7279,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true" tooltip="Customise the image accompanying the audio player. By default it will use a generic audio icon.">
 		<img label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<tooltip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
 	<linkInfo type="group" label="Page Link" optional="true">
@@ -7295,7 +7295,7 @@
 	
 	<imageGroup type="group" label="Image">
 		<src label="File" type="media"/>
-		<tooltip label="Description" type="TextInput"/>
+		<tooltip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 		<mediaW label="Size" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	</imageGroup>
 	
@@ -8906,7 +8906,7 @@
 	
 	<transcriptbuttonlabel label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-	<caption label="Image Caption" type="textInput" defaultValue="Enter a Caption for the Image" optional="true" wysiwyg="true" tooltip="A caption displayed below the image"/>
+	<caption label="Image Caption" type="textInput" defaultValue="Enter a caption for the image" optional="true" wysiwyg="true" tooltip="A caption displayed below the image"/>
 	
 	<magnifierGroup type="group" label="Image Magnification" optional="true">
 		<magnifier label="Magnifier" type="checkBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
@@ -9420,7 +9420,7 @@
     <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
 
     <newNodes>
-      <thumbnailImage><![CDATA[<thumbnailImage name="Image" text="Content for the pane" align="Top" url="Select an Image" linktarget="none" link="Link URL" tip="Enter a Description for Accessibility"/>]]></thumbnailImage>
+      <thumbnailImage><![CDATA[<thumbnailImage name="Image" text="Content for the pane" align="Top" url="Select an Image" linktarget="none" link="Link URL" tip=""/>]]></thumbnailImage>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -9499,7 +9499,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput" mandatory="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="TextInput" mandatory="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</image>
 	
 	<linkGroup label="Link" type="group">
