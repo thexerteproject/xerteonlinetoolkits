@@ -192,7 +192,9 @@ function loadContent(){
 
 	setTimeout(function() {
 		$('div.nav-collapse li a').click(function () {
-			$('.navbar-toggler').click();
+			if ($('.navbar .btn-navbar').is(':visible')) {
+				$('.navbar-toggler').click();
+			}
 		});
 	}, 500);
 
