@@ -480,8 +480,8 @@ function project_info($template_id){
 
 	$prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query_for_names = "select {$prefix}templatedetails.template_name, template_id, template_framework, date_created, date_modified, extra_flags from "
-        . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
+    $query_for_names = "select {$prefix}td.template_name as project_name, td.template_id, otd.template_framework, otd.template_name, otd.display_name, otd.parent_template, otd2.display_name as parent_display_name, td.date_created, td.date_modified, td.extra_flags from "
+        . "{$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd, {$prefix}originaltemplatesdetails otd2 where td.template_id= ? and otd.template_type_id = td.template_type_id and otd.parent_template = otd2.template_name";
 
     $params = array($template_id);
     $row = db_query_one($query_for_names, $params);
@@ -499,7 +499,13 @@ function project_info($template_id){
 
     $info .=  PROJECT_INFO_MODIFIED . ": " . $row['date_modified'] . "<br/>";
 
+    $info .= PROJECT_INFO_FRAMEWORK . ": " . $row['display_name'];
 
+    if ($row['parent_template'] == $row['template_name']) {
+        $info .= "<br/>";
+    } else {
+        $info .= " (" . $row['parent_display_name'] . ")<br/>";
+    }
 
     include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
