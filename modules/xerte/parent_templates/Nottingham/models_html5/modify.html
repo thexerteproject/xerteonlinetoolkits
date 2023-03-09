@@ -24,10 +24,7 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#button").show();
-
-			$("#modelTxt")
-				.hide()
-				.html("");
+			$("#modelTxt, #feedbackTxt").hide();
 		}
 
 		// function called every time the size of the LO is changed
@@ -54,43 +51,59 @@
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
 			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+			
             var label = "";
-            var modelAnswerTxt = "";
             if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
-            if (x_currentPageXML.getAttribute("answer") != null && x_currentPageXML.getAttribute("answer") != "")
-            {
-                modelAnswerTxt = x_currentPageXML.getAttribute("answer");
-            }
-			var initText = $("<div>").html(x_currentPageXML.getAttribute("text")).text()
-			var ansText = $("<div>").html(x_currentPageXML.getAttribute("prompt")).text()
-			var feedbackText = $("<div>").html(x_currentPageXML.getAttribute("answer")).text()
+			
+			if (x_currentPageXML.getAttribute("answerType") == "false") {
+				var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').appendTo($('#pageContents'));
+				$modelTxt.html(x_currentPageXML.getAttribute("answer"));
+			} else {
+				var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').appendTo($('#pageContents'));
+				$modelTxt.html($("<div>").html(x_currentPageXML.getAttribute("answer")).text());
+			}
+			var modelAnswerTxt = "";
+			if (x_currentPageXML.getAttribute("answer") != null && x_currentPageXML.getAttribute("answer") != "") {
+				modelAnswerTxt = x_currentPageXML.getAttribute("answer");
+			}
             XTEnterInteraction(x_currentPage, 0, 'text', label, [], modelAnswerTxt, [], x_currentPageXML.getAttribute("grouping"));
+			
 			$("#instruction").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
-			$("#initText").html(initText);
-			$("#answer").html(answerHeaderTxt);
-			$("#answerTxt").html(ansText);
-
+			
+			if (x_currentPageXML.getAttribute("text") == '') {
+				$("#initText").remove();
+			} else {
+				$("#initText").html($("<div>").html(x_currentPageXML.getAttribute("text")).text());
+			}
+			
+			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
+				$('#pageContents').append('<div id="feedbackTxt">' + x_currentPageXML.getAttribute("feedback") + '</div>');
+				$('#feedbackTxt').hide();
+			}
+			
+			$("#answer").html('<p>' + answerHeaderTxt + '</p>');
+			$("#answerTxt").html($("<div>").html(x_currentPageXML.getAttribute("prompt")).text());
 			$("#modelTxt").hide();
 
 			$("#button")
 				.button({ label: feedbackBtnTxt })
 				.click(function() {
 					$(this).hide();
-					$("#modelTxt")
-						.show()
-						.html(feedbackText);
-                        var answerTxt = $("#answerTxt").val();
-                        result =
-                            {
-                                success: (answerTxt.trim() == "" ? false : true),
-                                score: (answerTxt.trim() == "" ? 0.0 : 100.0)
-                            };
+					$("#modelTxt").show();
+					$('#feedbackTxt').show();
+					
+					var answerTxt = $("#answerTxt").val();
+					result =
+						{
+							success: (answerTxt.trim() == "" ? false : true),
+							score: (answerTxt.trim() == "" ? 0.0 : 100.0)
+						};
 
-                        XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
-                        XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
+					XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
+					XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
 				});
 
 			x_pageLoaded();
@@ -104,11 +117,10 @@
 
 <div id="pageContents">
 
-	<p id="instruction"></p>
+	<div id="instruction"></div>
 	<textarea id="initText" rows="5" aria-label="Start text" readonly></textarea>
-	<p id="answer"></p>
+	<div id="answer"></div>
 	<textarea id="answerTxt" aria-label="Answer" rows="5"></textarea>
 	<button id="button"></button>
-	<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>
 
 </div>

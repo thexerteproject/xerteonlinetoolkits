@@ -4,12 +4,31 @@
 		margin-top: 0px;
 	}
 	
-	#pageContents textarea {
+	#pageContents textarea, div#modelTxt {
 		display: block;
 		width: 100%;
 		box-sizing: border-box;
 		resize: vertical;
 		margin: 0.5em auto;
+		font-family: monospace;
+	}
+	
+	div#modelTxt {
+		padding: 0.5em;
+		border: 1px solid #767676;
+	}
+	
+	div#modelTxt p {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	
+	div#modelTxt p:first-of-type {
+		padding-top: 0;
+	}
+	
+	div#modelTxt p:last-of-type {
+		padding-bottom: 0;
 	}
 	
 	#answer, #modelTxt {

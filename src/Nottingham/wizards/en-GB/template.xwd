@@ -354,7 +354,7 @@
 	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" panelWidth="Medium" 
 	  copyBtnLabel="Select Text" 
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
-	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="Provide a prompt here" answer="Provide a model answer here"
+	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="Provide a prompt here" answer="Provide a model answer here" answerType="true"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
 	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="" url2="Select Image" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" target="new" previewImage="Select a preview image" tip="" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
@@ -6443,9 +6443,18 @@
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
-    <text label="Initial Text" type="script" height="100"/>
+	
+	<text label="Initial Text" type="script" height="100"/>
+	
     <prompt label="Answer Prompt" type="script" height="100"/>
-    <answer label="Model Answer" type="script" height="100"/>
+	
+	<modelTxtGroup type="group" label="Model Answer">
+		<answer label="Text" type="TextArea" height="100"/>
+		<answerType label="Display as Plain Text" type="Checkbox" defaultValue="true" mandatory="true" tooltip="By default, the model answer will appear as plain text to match the answer text field. Uncheck this box to allow formatting (e.g. highlights) added to the text to appear in the model answer"/>
+	</modelTxtGroup>
+	
+	<feedback label="Feedback" type="TextArea" height="100" optional="true"/>
+	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
     <answerHeaderTxt label="Instruction Header" type="TextInput" wysiwyg="true" divider="true" language="true"/>
