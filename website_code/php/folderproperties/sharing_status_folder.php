@@ -49,6 +49,11 @@ if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || !i
     exit(0);
 }
 
+if (!is_folder_shared_subfolder($folder_id)){
+    echo "<p>" . SHARING_FAIL_SHARED_SUBFOLDER . "</p>";
+    exit(0);
+}
+
 if(is_user_creator_or_coauthor_folder($folder_id) || is_user_admin()){
     echo "<div>";
     echo "<p class=\"header\"><span>" . FOLDERPROPERTIES_TAB_SHARED . "</span></p>";

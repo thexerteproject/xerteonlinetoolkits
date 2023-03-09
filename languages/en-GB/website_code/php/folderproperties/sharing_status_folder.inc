@@ -40,4 +40,7 @@
 
     define("SHARING_FAIL","You have no rights to this folder");
 
+    define("SHARING_FAIL_SHARED_SUBFOLDER","You cannot reshare a subfolder of a shared folder");
+
+
 ?>

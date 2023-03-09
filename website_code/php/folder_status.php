@@ -34,9 +34,12 @@ function is_folder_shared($folder_id){
 
     global $xerte_toolkits_site;
 
-    $query = db_query("select folder_id from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=?", array($folder_id));
-    if(sizeof($query)>0) {
-        return true;
+    $shared = get_shared_groups_of_folder($folder_id);
+    if (empty($shared)) {
+        $query = db_query("select folder_id from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=?", array($folder_id));
+        if (sizeof($query) > 0) {
+            return true;
+        }
     }
     return false;
 
@@ -317,4 +320,33 @@ function get_shared_groups_of_folder($folder_id){
     $result = db_query_one($query, array($folder_id));
 
     return $result;
+}
+
+function is_folder_shared_subfolder($folder_id)
+{
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $folder = $folder_id;
+    $parent = -1;
+
+    $i = 0;
+    while ($parent != 0 && $i < 50) {   // $i s a failsafe, max 50 levels deep
+        // Check if the folder is shared
+        $shared = get_shared_groups_of_folder($folder);
+        if (empty($shared)) {
+            // Check if folder itself is shared
+            $sql = "select fr.folder_parent, count(fr2.folder_id) as nrshared from {$prefix}folderrights fr, {$prefix}folderrights fr2 where fr.folder_id=? and fr.login_id=? and fr2.folder_id=fr.folder_id";
+            $result = db_query_one($sql, array($folder, $_SESSION['toolkits_logon_id']));
+            if ($result['nrshared'] > 0 && $folder != $folder_id) {
+                return true;
+            }
+            else{
+                $parent = $result['folder_parent'];
+                $folder = $parent;
+            }
+        }
+        $i++;
+    }
+    return false;
 }
