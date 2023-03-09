@@ -1388,7 +1388,7 @@ function folder_sharing_info($folder_id)
         return $info;
     }
 
-    $info .=  SHARING_CURRENT . "<br>";
+    $info .=  SHARING_CURRENT_FOLDER . "<br>";
     if(sizeof($query_shared_folder_users)==1){
         foreach($query_sharing_rows as $row) {
             $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
