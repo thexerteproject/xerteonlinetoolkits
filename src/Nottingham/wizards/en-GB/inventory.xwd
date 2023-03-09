@@ -53,7 +53,7 @@
 
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" optional="true" defaultValue="Select an Image"/>
-		<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Image Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 
     <newNodes>

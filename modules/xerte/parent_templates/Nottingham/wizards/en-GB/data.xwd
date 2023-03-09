@@ -268,7 +268,7 @@
 	</mediaFile>
 
     <newNodes>
-    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility" imagesize="large">Enter text for the page here</QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="Enter text for the page here" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
+    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="" imagesize="large">Enter text for the page here</QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="Enter text for the page here" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
 	  home="false" back="false" next="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
@@ -327,14 +327,14 @@
 	  fwdLabel="Scroll forward" 
 	  viewLabel="View" 
 	  caseLabel="Case"
-	  />]]></imageSequence><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" imagesize="medium" tip="Enter a Description for Accessibility"
+	  />]]></imageSequence><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" imagesize="medium" tip=""
 	  moveTip="Move"
 	  zoomInTip="Zoom In"
 	  zoomOutTip="Zoom Out"
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -356,7 +356,7 @@
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
 	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="Provide a prompt here" answer="Provide a model answer here"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
-	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="" url2="Select Image" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" target="new" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
+	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="" url2="Select Image" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" target="new" previewImage="Select a preview image" tip="" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
@@ -409,7 +409,7 @@
 		initTxtLabel2="Initial text - select text before clicking highlight button"
 		suggestedTxtLabel="A suggested answer"
 		notesTxtLabel="Notes"
-	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="Provide Instructions here" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="Enter feedback here" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Description for Accessibility" transcriptTabTxt="Transcript" >Enter text for the page here</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Instruction" prompt= "Enter a Prompt"  align = "Left" panelWidth = "Medium" numberAnswers = "*" caseSensitivity="true"
+	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="Provide Instructions here" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="Enter feedback here" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="" transcriptTabTxt="Transcript" >Enter text for the page here</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Instruction" prompt= "Enter a Prompt"  align = "Left" panelWidth = "Medium" numberAnswers = "*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
 			 attemptLabel="Attempts remaining"
 			 correctAnswersLabel="Correct answers"
@@ -427,7 +427,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="URL" type="TextInput"/>
-    <tip label="QR Code Description" type="TextInput"/>
+    <tip label="QR Code Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" type="ComboBox" width="100" mandatory="true"/>
 
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the QR code">
@@ -470,7 +470,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -555,7 +555,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -676,7 +676,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -720,7 +720,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true" tooltip="An image to display above the text">
 		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
     <initObject label="Init Object" type="TextInput" optional="true" flashonly="true" deprecated="This property is deprecated"/>
@@ -798,7 +798,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -980,7 +980,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1080,7 +1080,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1124,7 +1124,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true">
 		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
 	<synch label="Synch Point" type="TextInput"/>
@@ -1194,7 +1194,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1274,7 +1274,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1355,7 +1355,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1436,7 +1436,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1516,7 +1516,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1607,7 +1607,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1685,7 +1685,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1770,7 +1770,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1863,7 +1863,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1947,7 +1947,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2053,7 +2053,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2197,7 +2197,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2298,7 +2298,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2416,7 +2416,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2517,7 +2517,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2666,7 +2666,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2754,7 +2754,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2858,7 +2858,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2961,7 +2961,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3176,7 +3176,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3256,7 +3256,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3349,7 +3349,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3442,7 +3442,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3524,7 +3524,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3639,7 +3639,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3715,7 +3715,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3814,7 +3814,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3893,7 +3893,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4001,7 +4001,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4105,7 +4105,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4187,7 +4187,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4298,7 +4298,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4341,8 +4341,8 @@
 	<caseID label="Case ID" type="TextInput" optional="true" tooltip="Link directly to this case by giving it a unique ID"/>
 	
 	<newNodes>
-	  <imgSeries><![CDATA[<imgSeries name="Series Name" txt="Enter text here" src="Select an Image" tooltip="Enter a Description for Accessibility" firstImg="Select an Image" lastImg="Select an Image" cycleImages="false"></imgSeries>]]></imgSeries>	  
-	  <singleImg><![CDATA[<singleImg name="Image Name" txt="Enter text here" src="Select an Image" tooltip="Enter a Description for Accessibility"></singleImg>]]></singleImg>	  
+	  <imgSeries><![CDATA[<imgSeries name="Series Name" txt="Enter text here" src="Select an Image" tooltip="" firstImg="Select an Image" lastImg="Select an Image" cycleImages="false"></imgSeries>]]></imgSeries>	  
+	  <singleImg><![CDATA[<singleImg name="Image Name" txt="Enter text here" src="Select an Image" tooltip=""></singleImg>]]></singleImg>	  
 	</newNodes>
 	
   </case><imgSeries menuItem="Series" icon="icPictures" duplicate="true" remove="true">
@@ -4351,7 +4351,7 @@
 	
 	<thumbGroup type="group" label="Thumbnail Image" tooltip="The image that appears on the thumbnail bar menu if this case contains more than one series or image">
 		<src label="File" type="media"/>
-		<tooltip label="Description" type="TextInput"/>
+		<tooltip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</thumbGroup>
 	
 	<imgGroup type="group" label="Series Images" info="File names of images within the series must be identical, except for a number at the end which determines the image's position within the series.&lt;/br&gt;&lt;/br&gt;For example, in a series of 50 images the images could be called img1.jpg, img2.jpg, img3.jpg... img50.jpg.&lt;/br&gt;&lt;/br&gt;All images for the series must be in the same folder.">
@@ -4369,7 +4369,7 @@
 	
 	<thumbGroup type="group" label="Image">
 		<src label="File" type="media"/>
-		<tooltip label="Description" type="TextInput"/>
+		<tooltip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</thumbGroup>
 	
 	<seriesID label="Image ID" type="TextInput" optional="true" tooltip="Link directly to this image by giving it a unique ID"/>
@@ -4382,7 +4382,7 @@
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
 		<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" mandatory="true" type="ComboBox" width="100"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
 	
     <moveTip label="Move Button Tip" type="textInput" divider="true" language="true"/>	
@@ -4425,7 +4425,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4551,7 +4551,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4639,7 +4639,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4681,7 +4681,7 @@
 		
 		<mediaGroup type="group" label="Video" tooltip="Add video (file or url)">
 			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
+			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
@@ -4739,12 +4739,12 @@
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
 		<newNodes>
-			<ivSynchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
+			<ivSynchSlide><![CDATA[<synchSlide name="" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
 		</newNodes>
 
 	</ivSynchSlides><ivSynchSlide menuItem="Slide" icon="icBullet" remove="true">
 
-		<name label="Image Description" type="TextInput"/>
+		<name label="Image Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
@@ -4906,7 +4906,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4950,7 +4950,7 @@
 
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" optional="true" defaultValue="Select an Image"/>
-		<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Image Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 
     <newNodes>
@@ -5003,7 +5003,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5104,7 +5104,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5189,7 +5189,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5280,7 +5280,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5324,7 +5324,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true">
 		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Image Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
   </listItem><map icon="icMap" menu="Miscellaneous" menuItem="Google Map" hint="Use the map to include an interactive map in the presentation. You can add optional layers of KML data to the map." thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
@@ -5370,7 +5370,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5453,7 +5453,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5556,7 +5556,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5627,7 +5627,7 @@
 	<lockPswdWrong label="Wrong Password" type="TextInput" wysiwyg="true" language="true"/>
 	
     <newNodes>
-	  <file360><![CDATA[<file360 name="Enter Scene Title" file="Select an Image" tip="Enter a Description for Accessibility" title="false"/>]]></file360>
+	  <file360><![CDATA[<file360 name="Enter Scene Title" file="Select an Image" tip="" title="false"/>]]></file360>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -5663,7 +5663,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5709,12 +5709,12 @@
   
     <media type="group" label="Image" condition="cubemapcb!='true'">
 		<file label="File" type="media" condition="cubemapcb!='true'"/>
-		<tip label="Description" type="TextInput" condition="cubemapcb!='true'"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" condition="cubemapcb!='true'"/>
 	</media>
 	
 	<cubemapimages type="group" label="Cubemap Images" optional="true" tooltip="Upload and use 6 cube faces instead of a single image. All 6 faces are required. When including multiple Cubemap scenes be careful to use unique image names e.g. image1234_front.jpg, image1235_front.jpg etc or use subfolders for each Cubemap scene.">
 		<cubemapcb label="Cubemap" optional="true" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
-		<cubemaptip label="Description" optional="true" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
+		<cubemaptip label="Description" optional="true" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="cubemapcb!='false'"/>
 		<front label="Front" optional="true" type="media" condition="cubemapcb!='false'"/>
 		<right label="Right" optional="true" type="media" condition="cubemapcb!='false'"/>
 		<back label="Back" optional="true" type="media" condition="cubemapcb!='false'"/>
@@ -5771,7 +5771,7 @@
 	
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" optional="true" defaultValue="Select an Image"/>
-		<imageTip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<imageTip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgGroup>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
@@ -5787,7 +5787,7 @@
 	
 	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
 		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select a Video"/>
-		<tip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</video>
 	
 	<videoTiming type="group" label="Video Start &amp; End Times" condition="hotspotMovie!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole video will play">
@@ -5868,7 +5868,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6223,7 +6223,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6295,7 +6295,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="media" optional="true" defaultValue="Select an Image"/>	
-		<tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tooltip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -6331,7 +6331,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6409,7 +6409,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6493,7 +6493,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6583,7 +6583,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6674,7 +6674,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6736,7 +6736,7 @@
 	
 	<image type="group" label="Preview Image">
 		<previewImage label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
 	
 	<window type="group" label="Window">
@@ -6779,7 +6779,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6835,7 +6835,7 @@
 
 	<imgGroup type="group" label="Image" optional="true">
 		<img label="File" type="media" defaultValue="Select an Image" optional="true"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgGroup>
 
 	<graph label="Graph" type="group" optional="true">
@@ -6889,7 +6889,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6940,7 +6940,7 @@
 	
 	<imgGroup type="group" label="Image" optional="true">
 		<image label="File" type="media" defaultValue="Select an Image" optional="true"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox"/>  
@@ -7014,7 +7014,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7097,7 +7097,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7198,7 +7198,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7337,7 +7337,7 @@
 
 	<imgInfo type="group" label="Image" optional="true">
 		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
 	<videoInfo type="group" label="Video" optional="true">
@@ -7382,7 +7382,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7432,7 +7432,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" defaultValue="Select an Image" optional="true"/>
-		<tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
@@ -7484,7 +7484,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7591,7 +7591,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7670,7 +7670,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7760,7 +7760,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7869,7 +7869,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8082,7 +8082,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8163,7 +8163,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8240,7 +8240,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8323,7 +8323,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8405,7 +8405,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8491,7 +8491,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8584,7 +8584,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8681,7 +8681,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8781,7 +8781,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8857,7 +8857,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8955,7 +8955,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9094,7 +9094,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9189,7 +9189,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9282,7 +9282,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9325,7 +9325,7 @@
 	
 	<video type="group" label="Video">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a Description for Accessibility"/>
 	</video>
 	
     <reset label="Reset on Completion" type="Checkbox" defaultValue="false" deprecated="This property is deprecated. Videos now reset on completion by default."/>
@@ -9375,7 +9375,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9456,7 +9456,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9563,7 +9563,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9661,7 +9661,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9759,7 +9759,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9844,7 +9844,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9934,7 +9934,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9978,7 +9978,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true">
 		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
 	<synch label="Synch Point" type="TextInput"/>
@@ -10023,7 +10023,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10115,7 +10115,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10192,7 +10192,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10273,7 +10273,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10353,7 +10353,7 @@
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>

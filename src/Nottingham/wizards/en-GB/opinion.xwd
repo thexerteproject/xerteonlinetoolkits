@@ -33,7 +33,7 @@
 
 	<imgGroup type="group" label="Image" optional="true">
 		<img label="File" type="media" defaultValue="Select an Image" optional="true"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgGroup>
 
 	<graph label="Graph" type="group" optional="true">
@@ -73,7 +73,7 @@
 	
 	<imgGroup type="group" label="Image" optional="true">
 		<image label="File" type="media" defaultValue="Select an Image" optional="true"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox" />  
