@@ -74,6 +74,10 @@ color: #6FD9D9;
 color: #6FD9D9;
 }
 
+.navbar .nav > li.activePage > a {
+	text-decoration: underline;
+}
+
 .navbar-fixed-top {
 	position: static;
 }
