@@ -76,6 +76,7 @@ color: #6FD9D9;
 
 .navbar .nav > li.activePage > a {
 	text-decoration: underline;
+    text-underline-position: under;
 }
 
 .navbar-fixed-top {
