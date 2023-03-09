@@ -1538,13 +1538,13 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	}
 	//assign active class for current navbar
 	$("#nav li").not(':first-child').each(function(i, el){
-		if ($(el).hasClass("active") && i !== activeIndex){
+		if ($(el).hasClass("activePage") && i !== activeIndex){
 			$(el)
-				.removeClass("active")
+				.removeClass("activePage")
 				.removeAttr("aria-current");
 		} else if (i == activeIndex){
 			$(el)
-				.addClass("active")
+				.addClass("activePage")
 				.attr("aria-current", "page");
 		}
 	})
