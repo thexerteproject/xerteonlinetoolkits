@@ -100,6 +100,7 @@
 		</fileexists>
 	</importMedia>
 	<Alert>
+		<sessionError>Error: Session expired - please log in!\nReturn to the Xerte workspace and refresh the page to log in again.\nClosing the editor without logging in first may result in a loss of data.</sessionError>
 		<oklabel>Ok</oklabel>
 		<cancellabel>Cancel</cancellabel>
 		<nolabel>No</nolabel>
