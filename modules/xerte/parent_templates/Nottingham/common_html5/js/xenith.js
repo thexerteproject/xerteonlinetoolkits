@@ -2190,6 +2190,10 @@ function x_sideBarBtnInfo() {
 				}
 			}
 		}
+		
+		if (x_sideBarBtns.length > 0 && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
+			x_params.displayMode = 'full screen';
+		}
 	}
 }
 
