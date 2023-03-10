@@ -88,6 +88,11 @@ a:hover{
 .nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
   background-color: $brightcolor;
 }
+.navbar .nav > li.activePage > a,
+.navbar .nav > li.activePage > a:hover, .navbar .nav > li.activePage > a:hover {
+  background-color: $contrastcolor;
+  text-decoration: none;
+}
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {

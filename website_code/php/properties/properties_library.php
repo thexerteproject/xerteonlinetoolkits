@@ -966,36 +966,15 @@ function sharing_info($template_id)
                 if ($role['user_id'] == $user['user_id']) {
                     if ($row['folder'] == $role['folder_id']) {
                         $query_shared_folder_users[$indexUser]["role"] = $role['role'];
-                        //$query_shared_folder_users[$indexUser]["role_source"] = 'folder';
-
-                        //if ($user["role"] == "creator") {
-                        //    $query_shared_folder_users[$indexUser]["role"] = "co-author";
-                        //}
 
                         if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
                             $query_shared_folder_users[$indexUser]["role"] = "creator";
-                            // Change the role of the user to co-author
-                            foreach ($query_shared_folder_users as $indexUser2 => $user2) {
-                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
-                                    $query_shared_folder_users[$indexUser2]["role"] = "co-author";
-                                    break;
-                                }
-                            }
                         }
                     }
                 }
                 if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
                     $query_shared_folder_users[$indexUser]["role"] = $row["role"];
                     $query_shared_folder_users[$indexUser]["role_source"] = 'template';
-                    if ($row['role'] == "creator") {
-                        // Change the role of the user to co-author
-                        foreach ($query_shared_folder_users as $indexUser2 => $user2) {
-                            if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
-                                $query_shared_folder_users[$indexUser2]["role"] = "co-author";
-                                break;
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -1010,6 +989,24 @@ function sharing_info($template_id)
                     if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
                         $query_shared_folder_users[$indexUser2]["role"] = "co-author";
                         break;
+                    }
+                }
+            }
+        }
+    }
+    foreach ($query_sharing_rows as $index => $row) {
+        foreach ($query_shared_folder_users as $indexUser => $user) {
+            foreach ($query_shared_folder_users_roles as $indexRole => $role) {
+                if ($role['user_id'] == $user['user_id']) {
+                    if ($row['folder'] == $role['folder_id']) {
+                        if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
+                            foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                    $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
