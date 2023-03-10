@@ -370,7 +370,10 @@ var EDITOR = (function ($, parent) {
         })
         .fail(function() {
             $('#loader').hide();
-            alert( "error" );
+			// alert from play button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
         });
     },
 
@@ -400,7 +403,10 @@ var EDITOR = (function ($, parent) {
         })
         .fail(function() {
             $('#loader').hide();
-            alert( "error" );
+			// alert from publish button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
         });
     },
 
@@ -435,7 +441,8 @@ var EDITOR = (function ($, parent) {
                 })
             .fail(function() {
                 $('#loader').hide();
-                alert( "error" );
+				// alert from close editor
+				alert( "error" );
             });
     },
 
