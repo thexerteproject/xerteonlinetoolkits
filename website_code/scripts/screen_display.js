@@ -457,11 +457,13 @@ function button_check(){
                     remove_this()
                 };
 
-                duplicatebtn.removeAttribute("disabled");
-                duplicatebtn.className = "xerte_workspace_button";
-                duplicatebtn.onclick = function () {
-                    duplicate_template()
-                };
+                if (workspace.nodes[ids[0]].role != "read-onlu") {
+                    duplicatebtn.removeAttribute("disabled");
+                    duplicatebtn.className = "xerte_workspace_button";
+                    duplicatebtn.onclick = function () {
+                        duplicate_template()
+                    };
+                }
 
                 publishbtn.removeAttribute("disabled");
                 publishbtn.className = "xerte_workspace_button";
@@ -851,7 +853,7 @@ function init_workspace()
             "dnd": {
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
-                    if (node[0].type.includes("_group") || node[0].type.includes("folder_shared") || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") || workspace.nodes[node[0].id].role !== "creator" ) {
+                    if (node[0].type.includes("_group") || (node[0].type.includes("folder_shared") && workspace.nodes[node[0].id].role !== "creator") || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") ) {
                         return false;
                     }
                     return true;

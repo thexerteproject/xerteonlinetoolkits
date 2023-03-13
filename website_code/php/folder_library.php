@@ -118,6 +118,7 @@ function delete_folder($folder_id){
 
 }
 
+
 /**
  * 
  * Function move file
@@ -151,6 +152,24 @@ function move_file($template_id,$destination)
         $ok = db_query($query_file, $params);
 
         if ($ok !== false) {
+            if ($ok != 1)
+            {
+                // Not updated, so this is probably a project in a shared folder not owned by you
+                // Check if the project has a shared folder that is the same as the destination folder
+                $ancestor = get_shared_ancestor($template_id);
+                if ($ancestor == get_shared_ancestor($destination))
+                {
+                    // The project is in a shared folder, and the destination is the same shared folder
+                    // So we may update the project
+                    $query_file = "UPDATE {$prefix}templaterights SET folder = ? WHERE template_id = ?  AND role = 'creator'";
+                    $params = array($destination, $template_id);
+                    $ok = db_query($query_file, $params);
+                }
+                else
+                {
+                    echo MOVE_FILE_FAILED_NOT_OWNER;
+                }
+            }
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "Template " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
         } else {
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $$template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
