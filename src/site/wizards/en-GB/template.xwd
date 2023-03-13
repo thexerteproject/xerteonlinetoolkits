@@ -173,7 +173,7 @@
 	</linkGroup><sectionGroup type="group" label="Section Menu Options" optional="true" tooltip="Hide the table of contents for this page and set whether or not to expand the main contents to the width of the page" common="true">
         <sectionMenu label="Hide Menu" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="Hide the table of contents for this page"/>
         <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
-    </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding a unique PageID and then appending #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unquie throughout the whole project." common="true">
+    </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding a unique PageID and then appending #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unique throughout the whole project." common="true">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
@@ -199,7 +199,7 @@
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 
-		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this Section" info="Create a link directly to this section by adding a unique SectionID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unquie throughout the whole project.">
+		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this Section" info="Create a link directly to this section by adding a unique SectionID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unique throughout the whole project.">
             <customLinkID label="Section ID" type="TextInput" optional="true"/>
         </customSectionLinkGroup>
 
