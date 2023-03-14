@@ -853,7 +853,7 @@ function init_workspace()
             "dnd": {
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
-                    if (node[0].type.includes("_group") || (node[0].type.includes("folder_shared") && workspace.nodes[node[0].id].role !== "creator") || (node[0].original.ChildOfShared && workspace.nodes[node[0].id].role !== "creator") ) {
+                    if (node[0].type.includes("_group") || (node[0].type.includes("folder_shared") && workspace.nodes[node[0].id].role !== "creator")) {
                         return false;
                     }
                     return true;

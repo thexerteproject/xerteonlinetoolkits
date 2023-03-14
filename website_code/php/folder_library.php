@@ -30,6 +30,7 @@ if (file_exists('../../../config.php')) {
 }
 require_once('file_library.php');
 require_once('user_library.php');
+require_once('folder_status.php');
 
 _load_language_file("/website_code/php/folder_library.inc");
 
@@ -157,7 +158,7 @@ function move_file($template_id,$destination)
                 // Not updated, so this is probably a project in a shared folder not owned by you
                 // Check if the project has a shared folder that is the same as the destination folder
                 $ancestor = get_shared_ancestor($template_id);
-                if ($ancestor == get_shared_ancestor($destination))
+                if ($ancestor !== false && $ancestor === get_shared_folder_ancestor($destination))
                 {
                     // The project is in a shared folder, and the destination is the same shared folder
                     // So we may update the project
