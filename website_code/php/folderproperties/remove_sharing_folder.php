@@ -64,16 +64,21 @@ if(is_numeric($_POST['folder_id'])){
         // Check whether the user's templates need to be moved out of the folder
         // 1. Not needed if user is part of a group that still has access to the folder
         // Get shared groups
-        $shared_groups = get_shared_groups_of_folder($folder_id);
+        $shared_groups = get_shared_groups_of_folder($folder_id, true);
+        $shared_users = get_shared_users_of_folder($folder_id, true);
         if ($group !== "false")
         {
             // Remove the group from the list of shared groups
             $shared_groups = array_diff($shared_groups, array($id));
+        }else{
+            // Remove the user from the list of shared users
+            $shared_users = array_diff($shared_users, array($id));
         }
 
+
         $users = array();
-        foreach($shared_groups as $group_id) {
-            $users = array_merge($users, get_users_from_group($group_id));
+        foreach($shared_groups as $shared_group) {
+            $users = array_merge($users, get_users_from_group($shared_group));
         }
 
         // Check if we want to remove group
@@ -92,7 +97,8 @@ if(is_numeric($_POST['folder_id'])){
         $query_to_change_folder = "";
         $changeParams = array();
         foreach($removeusers as $user_id) {
-            if (in_array($user_id, $users, true) === false) {
+            if (in_array($user_id, $users, true) === false && in_array($user_id, $shared_users, true) === false) {
+                // User is not in the list of shared users
                 // User is not in a shared group
 
                 // Place all items that are not shared anymore in the user's private folder

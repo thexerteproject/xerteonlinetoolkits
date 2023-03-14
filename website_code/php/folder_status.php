@@ -312,13 +312,35 @@ function get_implicit_folder_group_role($login_id, $folder_id){
 
 }
 
-function get_shared_groups_of_folder($folder_id){
+function get_shared_users_of_folder($folder_id, $only_ids=false){
+    global $xerte_toolkits_site;
+    $query = "SELECT login_id, role FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? and role!='creator'";
+    $results = db_query($query, array($folder_id));
+
+    if ($only_ids){
+        $ids = array();
+        foreach ($results as $result){
+            $ids[] = $result['login_id'];
+        }
+        return $ids;
+    }
+    return $results;
+}
+
+function get_shared_groups_of_folder($folder_id, $only_ids=false){
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $query = "select fgr.group_id, fgr.role from {$prefix}folder_group_rights fgr where fgr.folder_id=? ";
-    $result = db_query_one($query, array($folder_id));
+    $result = db_query($query, array($folder_id));
 
+    if ($only_ids){
+        $ids = array();
+        foreach ($result as $row){
+            $ids[] = $row['group_id'];
+        }
+        return $ids;
+    }
     return $result;
 }
 

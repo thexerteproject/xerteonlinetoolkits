@@ -51,16 +51,20 @@ if(is_numeric($_POST['folder_id'])) {
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
         // Get shared groups
-        $shared_groups = get_shared_groups_of_folder($folder_id);
+        $shared_groups = get_shared_groups_of_folder($folder_id, true);
+        $shared_users = get_shared_users_of_folder($folder_id, true);
         if ($group !== "false")
         {
             // Remove the group from the list of shared groups
             $shared_groups = array_diff($shared_groups, array($id));
+        }else{
+            // Remove the user from the list of shared users
+            $shared_users = array_diff($shared_users, array($id));
         }
 
         $users = array();
-        foreach($shared_groups as $group_id) {
-            $users = array_merge($users, get_users_from_group($group_id));
+        foreach($shared_groups as $shared_group) {
+            $users = array_merge($users, get_users_from_group($shared_group));
         }
 
         // Check if we want to remove group
@@ -96,19 +100,21 @@ if(is_numeric($_POST['folder_id'])) {
 
             } else {
                 // Get all templates of user in folder structure
-                $templates = get_all_templates_of_user_in_folder($folder_id, $user_id);
+                if (in_array($user_id, $shared_users, true) === false) {
+                    // User is not in the list of shared users
 
-                if (count($templates) > 0) {
-                    if ($_POST['user_deleting_self'] == "true") {
-                        echo YOU_HAVE_TEMPLATES_IN_FOLDER;
-                    } else if ($group === "false") {
-                        echo USER_HAS_TEMPLATES_IN_FOLDER;
+                    $templates = get_all_templates_of_user_in_folder($folder_id, $user_id);
+
+                    if (count($templates) > 0) {
+                        if ($_POST['user_deleting_self'] == "true") {
+                            echo YOU_HAVE_TEMPLATES_IN_FOLDER;
+                        } else if ($group === "false") {
+                            echo USER_HAS_TEMPLATES_IN_FOLDER;
+                        } else {
+                            echo GROUP_HAS_TEMPLATES_IN_FOLDER;
+                        }
+                        return;
                     }
-                    else
-                    {
-                        echo GROUP_HAS_TEMPLATES_IN_FOLDER;
-                    }
-                    return;
                 }
             }
         }
