@@ -48,8 +48,6 @@ if(is_numeric($_POST['folder_id'])){
     if(is_user_creator_or_coauthor_folder($_POST['folder_id'])||is_user_admin()||$_POST['user_deleting_self']=="true"){
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        $database_id = database_connect("Folder sharing database connect failed", "Folder sharing database connect failed");
-
         // Get creator of folder
         $creator = get_folder_creator($folder_id);
 
@@ -62,49 +60,68 @@ if(is_numeric($_POST['folder_id'])){
         $params = array($folder_id, $id);
         db_query($query_to_delete_share, $params);
 
+
         // Check whether the user's templates need to be moved out of the folder
         // 1. Not needed if user is part of a group that still has access to the folder
         // Get shared groups
         $shared_groups = get_shared_groups_of_folder($folder_id);
+        if ($group !== "false")
+        {
+            // Remove the group from the list of shared groups
+            $shared_groups = array_diff($shared_groups, array($id));
+        }
+
         $users = array();
         foreach($shared_groups as $group_id) {
             $users = array_merge($users, get_users_from_group($group_id));
         }
 
-        // Check if $id is in $users
-        if (in_array($id, $users, true) === false) {
-            // User is not in a shared group
+        // Check if we want to remove group
+        if ($group !== "false")
+        {
+            // Get users from group
+            $removeusers = get_users_from_group($id);
+        }
+        else
+        {
+            // Add user to array
+            $removeusers[] = $id;
+        }
 
-            // Place all items that are not shared anymore in the user's private folder
-            // - 1. Templates owned by the user
-            // - 2. Folders owned by the user
-            // - 3. Templates owned by anyone else then the user and stored in folders from 2.
-            //
-            // Step 1. Templates owned by the user (that is being unshared)
-            $workspaceId = get_user_root_folder_by_id($id);
+        // For all users in $removeusers, move the projects to the root of the respective workspace
+        $query_to_change_folder = "";
+        $changeParams = array();
+        foreach($removeusers as $user_id) {
+            if (in_array($user_id, $users, true) === false) {
+                // User is not in a shared group
 
-            $query_to_get_folders = "SELECT folder_id, folder_parent FROM {$prefix}folderdetails where folder_parent != 0";
-            $folders = db_query($query_to_get_folders, array());
+                // Place all items that are not shared anymore in the user's private folder
+                // - 1. Templates owned by the user
+                // - 2. Folders owned by the user
+                // - 3. Templates owned by anyone else then the user and stored in folders from 2.
+                //
+                // Step 1. Templates owned by the user (that is being unshared)
+                $workspaceId = get_user_root_folder_by_id($user_id);
+                $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
 
-            $checkParams = array($workspaceId, $id);
+                array_push($changeParams, $workspaceId);
+                array_push($changeParams, $user_id);
 
-            $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
-
-            $changeParams = array($workspaceId, $id);
-
-            $query_to_change_folder = "UPDATE {$prefix}templaterights SET folder = ? where user_id = ? and role = 'creator' and folder in (";
-            $first = true;
-            foreach ($foldersToCheck as $folder) {
-                if (!$first) {
-                    $query_to_change_folder .= ", ";
+                $query_to_change_folder .= "UPDATE {$prefix}templaterights SET folder = ? where user_id = ? and role = 'creator' and folder in (";
+                $first = true;
+                foreach ($foldersToCheck as $folder) {
+                    if (!$first) {
+                        $query_to_change_folder .= ", ";
+                    }
+                    $first = false;
+                    $query_to_change_folder .= "?";
+                    array_push($changeParams, $folder);
                 }
-                $first = false;
-                $query_to_change_folder .= "?";
-                array_push($changeParams, $folder);
+
+                $query_to_change_folder .= ");";
             }
-
-            $query_to_change_folder .= ")";
-
+        }
+        if ($query_to_change_folder !== "") {
             db_query($query_to_change_folder, $changeParams);
         }
 

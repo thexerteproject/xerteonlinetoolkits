@@ -52,32 +52,66 @@ if(is_numeric($_POST['folder_id'])) {
 
         // Get shared groups
         $shared_groups = get_shared_groups_of_folder($folder_id);
+        if ($group !== "false")
+        {
+            // Remove the group from the list of shared groups
+            $shared_groups = array_diff($shared_groups, array($id));
+        }
+
         $users = array();
         foreach($shared_groups as $group_id) {
             $users = array_merge($users, get_users_from_group($group_id));
         }
 
-        // Check if $id is in $users
-        if (in_array($id, $users, true) !== false) {
-            // User is in a shared group
-            // No need to check the rest
-            echo "OK";
-
+        // Check if we want to remove group
+        if ($group !== "false")
+        {
+            // Get users from group
+            $removeusers = get_users_from_group($id);
         }
         else
         {
-            // Get all templates of user in folder structure
-            $templates = get_all_templates_of_user_in_folder($folder_id, $id);
-
-            if (count($templates) > 0) {
-                if ($_POST['user_deleting_self'] == "true") {
-                    echo YOU_HAVE_TEMPLATES_IN_FOLDER;
-                } else {
-                    echo USER_HAS_TEMPLATES_IN_FOLDER;
-                }
-            } else {
+            // Check if $id is in $users
+            if (in_array($id, $users, true) !== false) {
+                // User is in a shared group
+                // No need to check the rest
                 echo "OK";
+                return;
+            }
+            else{
+                $removeusers[] = $id;
             }
         }
+
+        // For all users in $removeusers, move the projects to the root of the respective workspace
+        $query_to_change_folder = "";
+        $changeParams = array();
+        foreach($removeusers as $user_id) {
+            // Check if $id is in $users
+            if (in_array($user_id, $users, true) !== false) {
+                // User is in a shared group
+                // No need to check the rest
+                echo "OK";
+                return;
+
+            } else {
+                // Get all templates of user in folder structure
+                $templates = get_all_templates_of_user_in_folder($folder_id, $user_id);
+
+                if (count($templates) > 0) {
+                    if ($_POST['user_deleting_self'] == "true") {
+                        echo YOU_HAVE_TEMPLATES_IN_FOLDER;
+                    } else if ($group === "false") {
+                        echo USER_HAS_TEMPLATES_IN_FOLDER;
+                    }
+                    else
+                    {
+                        echo GROUP_HAS_TEMPLATES_IN_FOLDER;
+                    }
+                    return;
+                }
+            }
+        }
+        echo "OK";
     }
 }
