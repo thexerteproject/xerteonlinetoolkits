@@ -679,6 +679,8 @@ function refresh_workspace() {
     })
     .done(function(response){
         workspace = response;
+        // Clear the project details
+        $("#project_information").html("");
         init_workspace();
     });
 }
