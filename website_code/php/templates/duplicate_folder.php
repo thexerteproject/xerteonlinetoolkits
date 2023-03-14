@@ -53,24 +53,31 @@ $prefix = $xerte_toolkits_site->database_table_prefix;
 if(is_numeric($_POST['folder_id'])){
     $folder_id = $_POST['folder_id'];
 
-    if ($_POST['parentfolder_id'] == "workspace") {
+    if(is_user_creator_or_coauthor_folder($folder_id)) {
 
-        $parentfolder_id = get_user_root_folder();
+        if ($_POST['parentfolder_id'] == "workspace") {
 
-    } else {
+            $parentfolder_id = get_user_root_folder();
 
-        $parentfolder_id = $_POST['parentfolder_id'];
+        } else {
 
+            $parentfolder_id = $_POST['parentfolder_id'];
+
+        }
+
+        //check if user is creator of parentfolder, if not the new folder should be placed in their workspace directly
+        if ($_POST['parentnode_type'] == 'group' || !is_user_creator_folder($parentfolder_id)) {
+            $parentfolder_id = get_user_root_folder();
+        }
+
+        $folder_name = COPY_OF . $_POST['folder_name'];
+        $messages = copy_folder($folder_id, $parentfolder_id, $folder_name, $_POST['folder_name']);
+        echo $messages;
     }
-
-    //check if user is creator of parentfolder, if not the new folder should be placed in their workspace directly
-    if ($_POST['parentnode_type'] == 'group' || !is_user_creator_folder($parentfolder_id)) {
-        $parentfolder_id = get_user_root_folder();
+    else
+    {
+        echo DUPLICATE_FOLDER_NOT_CREATOR;
     }
-
-    $folder_name = COPY_OF . $_POST['folder_name'];
-    $messages = copy_folder($folder_id, $parentfolder_id, $folder_name, $_POST['folder_name']);
-    echo $messages;
 }
 
 function copy_folder($folder_id, $parentfolder_id, $folder_name, $org_folder_name){
