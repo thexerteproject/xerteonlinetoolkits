@@ -386,5 +386,6 @@ function get_shared_folder_ancestor($folder_id, $is_parent_of_template = false)
 
 function is_folder_shared_subfolder($folder_id)
 {
-    return get_shared_folder_ancestor($folder_id) !== false;
+    $ancestor = get_shared_folder_ancestor($folder_id);
+    return ($ancestor !== false &&  $ancestor != $folder_id);
 }
