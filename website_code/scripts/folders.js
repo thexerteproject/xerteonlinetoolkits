@@ -292,7 +292,7 @@ function copy_to_folder(data) {
 			return;
 		}
 	}
-	if (node.xot_type == 'file') {
+	if (node.xot_type == 'file' && node.role !== 'creator') {
 		const shared_ancestor = get_shared_ancestor(node);
 		if (shared_ancestor !== false && shared_ancestor !== get_shared_ancestor(destination)) {
 			alert(PROJECT_MOVE_CONTENT_NOT_OWNED);
