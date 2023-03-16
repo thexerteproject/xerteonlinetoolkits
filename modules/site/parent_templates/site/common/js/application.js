@@ -2596,11 +2596,20 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 		var group = $('<div class="accordion-group"/>');
 
-		var header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
+		var header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
 
 		group.append(header);
+		
+		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
+		header.find('a.accordion-toggle').click(function() {
+			accDiv.find('.accordion-group a').not($(this)).addClass('collapsed');
+		});
 
 		if (index == 0){
+			
+			if (node[0].getAttribute('collapse') != 'true') {
+				header.find('a.accordion-toggle').removeClass('collapsed');
+			}
 
 			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse ' + (node[0].getAttribute('collapse') == 'true' ? "" : "in") + '"/>');
 
