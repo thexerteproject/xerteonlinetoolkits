@@ -1503,9 +1503,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 	// check if pageIndex exists & can be shown
 	var pageIndex;
-	// used to set active on nav item.
-	var activeIndex = pageID;
-
+	
 	// pageID might be an ID - see if it matches either a linkID or a customLinkID
 	if (pageRefType != 'index') {
 		$(data).find('page').each(function(index, value) {
@@ -1514,7 +1512,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
 				// an ID match has been found for a page
 				pageIndex = index;
-				activeIndex = index;
 				found = true;
 				pageRefType = 'id';
 
@@ -1525,7 +1522,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				if (pageID == $section.attr('linkID') || pageID == $section.attr('customLinkID')) {
 					//an ID match has been found for a section
 					pageIndex = $pageIndex;
-					activeIndex = $pageIndex;
 					found = true;
 					if (sectionNum == undefined) {
 						sectionNum = index + 1;
@@ -1538,18 +1534,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			});
 		});
 	}
-	//assign active class for current navbar
-	$("#nav li").not(':first-child').each(function(i, el){
-		if ($(el).hasClass("activePage") && i !== activeIndex){
-			$(el)
-				.removeClass("activePage")
-				.removeAttr("aria-current");
-		} else if (i == activeIndex){
-			$(el)
-				.addClass("activePage")
-				.attr("aria-current", "page");
-		}
-	})
 
 	// check if it's a valid page index
 	if (pageRefType != 'id') {
@@ -1699,6 +1683,22 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
+	
+	//assign active class for current navbar
+	var pageOffset = pageIndex - validPages.indexOf(pageIndex);
+	
+	$("#nav li").not(':first-child').each(function(i, el){
+		if ($(el).hasClass("activePage") && i !== pageIndex - pageOffset){
+			$(el)
+				.removeClass("activePage")
+				.removeAttr("aria-current");
+		} else if (i == pageIndex - pageOffset){
+			$(el)
+				.addClass("activePage")
+				.attr("aria-current", "page");
+		}
+	})
+	
 	//dynamically change the skip link for each page
 	var skipLinkTarget='#page'+(currentPage+1)+'section1';
 	$(".srskip").prop("href", skipLinkTarget)
