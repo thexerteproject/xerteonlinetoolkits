@@ -404,16 +404,22 @@ function button_check(){
                     properties_window()
                 };
 
-                duplicatebtn.removeAttribute("disabled");
-                duplicatebtn.className = "xerte_workspace_button";
-                duplicatebtn.onclick = function () {
-                    duplicate_folder()
-                };
+
                 if (workspace.nodes[ids[0]].role == "creator") {
+                    duplicatebtn.removeAttribute("disabled");
+                    duplicatebtn.className = "xerte_workspace_button";
+                    duplicatebtn.onclick = function () {
+                        duplicate_folder()
+                    };
                     newfolderbtn.removeAttribute("disabled");
                     newfolderbtn.className = "xerte_workspace_button";
                     newfolderbtn.onclick = function () {
                         make_new_folder()
+                    };
+                    deletebtn.removeAttribute("disabled");
+                    deletebtn.className = "xerte_workspace_button";
+                    deletebtn.onclick = function () {
+                        remove_this()
                     };
                 }
                 break;
