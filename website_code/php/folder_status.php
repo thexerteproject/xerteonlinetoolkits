@@ -314,7 +314,7 @@ function get_implicit_folder_group_role($login_id, $folder_id){
 
 function get_shared_users_of_folder($folder_id, $only_ids=false){
     global $xerte_toolkits_site;
-    $query = "SELECT login_id, role FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? and role!='creator'";
+    $query = "SELECT login_id, role FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=?";
     $results = db_query($query, array($folder_id));
 
     if ($only_ids){
