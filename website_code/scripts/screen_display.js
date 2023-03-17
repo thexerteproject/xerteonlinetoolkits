@@ -789,7 +789,7 @@ function init_workspace()
     node_types["#"] = create_node_type(null, ["workspace", "recyclebin"]); // Make sure that only the Workspace and recyclebin can be at root level
 
     // workspace
-    var workspace_children = ["folder"];
+    var workspace_children = ["folder", "folder_shared", "sub_folder_shared"];
     workspace_children = workspace_children.concat(workspace.templates);
     node_types["workspace"] = create_node_type("workspace", workspace_children);
 
