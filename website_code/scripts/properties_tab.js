@@ -817,10 +817,12 @@ function delete_unused_files(delete_path, delete_string){
 function delete_unused_files_ajax(delete_path, delete_string){
 
 	var files = new Array()
-	for (let i = 0; i < delete_string.length; i++) {
-		files.push(encodeURIComponent(delete_path + delete_string[i]));
+	const delete_files = JSON.parse(atob(delete_string));
+
+	for (let i = 0; i < delete_files.length; i++) {
+		files.push(encodeURIComponent(delete_path + delete_files[i]));
 	}
-	files = JSON.stringify(files)
+	files = btoa(JSON.stringify(files));
 	$.ajax({
 		type: "POST",
 		url: "website_code/php/properties/delete_unused_files_template.php",

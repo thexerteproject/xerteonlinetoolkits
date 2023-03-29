@@ -89,8 +89,6 @@ function media_folder_loop($folder_name){
 
     global $dir_path, $new_path, $temp_dir_path, $temp_new_path, $quota, $result_string, $delete_string, $xerte_toolkits_site, $end_of_path, $dataInspector, $previewInspector;
 
-    $result = "";
-
     $d = opendir($dir_path . $folder_name);
 
     while($f = readdir($d)){
@@ -105,11 +103,13 @@ function media_folder_loop($folder_name){
             $path = $xerte_toolkits_site->site_url . "USER-FILES/" . $end_of_path . "/media/" . $folder_name . $f;
             $buttonlbl = MEDIA_AND_QUOTA_DOWNLOAD;
 
+            $result = new stdClass();
+            $result->filename = $folder_name . $f;
             if($dataInspector->fileIsUsed($folder_name . $f) || $previewInspector->fileIsUsed($folder_name . $f)){
-                $result = "<div class=\"filename found\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">" . MEDIA_AND_QUOTA_USE . " </span>";
+                $result->html = "<div class=\"filename found\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">" . MEDIA_AND_QUOTA_USE . " </span>";
 
             }else{
-                $result = "<div class=\"filename notfound\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</div><div class=\"fileinuse notfound notfoundtextcolor\">" . MEDIA_AND_QUOTA_NOT_IN_USE . " <img alt=\"Click to delete\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"  onclick=\"javascript:delete_file('" . $dir_path . $folder_name . $f . "')" . "\" \" align=\"absmiddle\" src=\"website_code/images/delete.gif\" /></div>";
+                $result->html = "<div class=\"filename notfound\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</div><div class=\"fileinuse notfound notfoundtextcolor\">" . MEDIA_AND_QUOTA_NOT_IN_USE . " <img alt=\"Click to delete\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"  onclick=\"javascript:delete_file('" . str_replace("'", "\\'", $dir_path . $folder_name . $f) . "')" . "\" \" align=\"absmiddle\" src=\"website_code/images/delete.gif\" /></div>";
 
                 /**
                  * add the files to the delete array that are not in use  so they can be listed for use in the delete function
@@ -121,7 +121,6 @@ function media_folder_loop($folder_name){
             $quota += filesize($full);
 
             array_push($result_string,$result);
-            $result="";
         }
         else if (strlen($f) > 0 && $f[0] != '.')
         {
@@ -171,6 +170,8 @@ if(is_numeric($_POST['template_id'])) {
 
         media_folder_loop("");
 
+        // Order the result on filename
+        usort($result_string, function($a, $b) {return strcmp($a->filename, $b->filename);});
 
         echo "<p class=\"header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";
 
@@ -183,17 +184,17 @@ if(is_numeric($_POST['template_id'])) {
          * display the first string
          */
 
-        while($y=array_pop($result_string)){
+        foreach($result_string as $file){
 
-            echo $y;
+            echo $file->html;
 
         }
-        $delete_string_json = json_encode($delete_string);
+        $delete_string_json = base64_encode(json_encode($delete_string));
 
         echo "</div>";
         echo "<div style=\"clear:both;\"></div>";
         echo "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
-        echo '<button id=\'delete_unused_files\' type=\'submit\' class=\'xerte_button\' name=\'delete_unused_filesBTN\' onclick=\'javascript:delete_unused_files("' . $dir_path . '", '. $delete_string_json .')\'>' . MEDIA_AND_QUOTA_UNUSED_DELETE . '</button>';
+        echo "<button id=\"delete_unused_files\" type=\"submit\" class=\"xerte_button\" name=\"delete_unused_filesBTN\" onclick=\"javascript:delete_unused_files('" . $dir_path . "', '". $delete_string_json ."')\">" . MEDIA_AND_QUOTA_UNUSED_DELETE . "</button>";
 
     }else{
 

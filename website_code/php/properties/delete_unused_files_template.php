@@ -37,7 +37,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
     die("Session is invalid or expired");
 }
 
-$data = json_decode(stripslashes($_POST['data']));
+$data = json_decode(base64_decode($_POST['data']));
 
 foreach ($data as $d) {
     if(unlink(urldecode($d))){
