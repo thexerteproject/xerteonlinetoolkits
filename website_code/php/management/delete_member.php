@@ -48,7 +48,6 @@ if(is_user_admin()){
     $login_id = $_POST['login_id'];
     $group_id = $_POST['group_id'];
 
-    $database_id = database_connect("Delete member list connected","Delete member list failed");
     $query = "DELETE FROM " . $xerte_toolkits_site->database_table_prefix . "user_group_members WHERE login_id=? AND group_id=?";
     $params = array($login_id, $group_id);
     db_query($query, $params);
