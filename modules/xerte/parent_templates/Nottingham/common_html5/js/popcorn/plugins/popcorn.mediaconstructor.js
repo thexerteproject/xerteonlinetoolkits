@@ -26,6 +26,13 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     }
     
     if (mediaType == "video") {
+        if (typeof x_peertube_urls === 'undefined') {
+            x_peertube_urls = [];
+        }
+        if (typeof x_mediasite_urls === 'undefined') {
+            x_mediasite_urls = [];
+        }
+
         //load video - max dimensions set in mediaMetaData function below when dimensions received
         // Normalize url
         mediaData.media = Popcorn.fixYouTubeVimeo(mediaData.media);
@@ -44,7 +51,9 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
          || mediaData.media.indexOf('videos/embed') > 0 // Peertube
          || mediaData.media.indexOf('mediamission') > 0 
          || mediaData.media.indexOf('mediasite') > 0
-         || mediaData.media.indexOf('deltion') > 0) {
+         || mediaData.media.indexOf('deltion') > 0
+         || isMediaSiteVideo(mediaData.media)
+         || isPeertubeVideo(mediaData.media)) {
             popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
             var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
             $videoHolder.attr("aspect", mediaData.aspect);
@@ -153,6 +162,26 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
         }
     }
     return popcornInstance;
+}
+
+this.isMediaSiteVideo = function(mediaData) {
+    // Check if one of the elements in x_mediasite_urls is a prefix of mediaData
+    for (let i = 0; i < x_mediasite_urls.length; i++) {
+        if (mediaData.indexOf(x_mediasite_urls[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+this.isPeertubeVideo = function(mediaData) {
+    // Check if one of the elements in x_peertube_urls is a prefix of mediaData
+    for (let i = 0; i < x_peertube_urls.length; i++) {
+        if (mediaData.indexOf(x_peertube_urls[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 this.initVideoState = function(mediaData)
