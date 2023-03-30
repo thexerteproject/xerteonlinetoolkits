@@ -314,3 +314,16 @@ function get_all_templates_of_users_in_folder($folder_id, $user_ids){
 
     return $result;
 }
+
+function get_all_folders_shared_with_group($group)
+{
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $sql = "select fd.* from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr where group_id=? and role != 'creator' and fd.folder_id=fgr.folder_id";
+    $params = array($group);
+
+    $rows = db_query($sql, $params);
+
+    return $rows;
+}

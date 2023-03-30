@@ -176,6 +176,8 @@
 
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_NONANONYMOUS_VIEW", "Enable non-anonymous view (if available)");
 
+  define("MANAGEMENT_SITE_XAPI_DASHBOARD_FORCE_ANONYMOUS_LRS", "Enforce only anonymous actors (group and hashed emails) to be stored in LRS");
+
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_DEFAULT_PERIOD", "xAPI dashboard default period (in days)");
 
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE", "xAPI dashboard minimum role to view dashboard");
