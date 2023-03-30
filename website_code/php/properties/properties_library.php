@@ -1889,6 +1889,11 @@ function tsugi_display($id, $lti_def, $mesg = "")
                     {
                         continue;
                     }
+                    if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs) && ($i==0 || $i==2))
+                    {
+                        // Skip email and name + email
+                        continue;
+                    }
                     echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
                     switch($i)
                     {
