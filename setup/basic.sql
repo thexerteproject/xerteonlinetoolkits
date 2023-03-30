@@ -165,6 +165,7 @@ CREATE TABLE `$sitedetails` (
   `LRS_Secret` char(255) DEFAULT '',
   `dashboard_enabled` char(255) DEFAULT 'true',
   `dashboard_nonanonymous` char(255) DEFAULT 'true',
+  `xapi_force_anonymous_lrs` char(255) DEFAULT 'false',
   `xapi_dashboard_minrole` char(255) DEFAULT 'co-author',
   `dashboard_period` int DEFAULT 14,
   `dashboard_allowed_links` text,

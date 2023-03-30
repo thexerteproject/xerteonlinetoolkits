@@ -559,6 +559,7 @@ function update_site() {
 			site_xapi_secret: document.getElementById("site_xapi_secret").value,
 			site_xapi_dashboard_enable: document.getElementById("site_xapi_dashboard_enable").value,
 			site_xapi_dashboard_nonanonymous: document.getElementById("site_xapi_dashboard_nonanonymous").value,
+			site_xapi_force_anonymous_lrs: document.getElementById("site_xapi_force_anonymous_lrs").value,
 			xapi_dashboard_minrole: document.getElementById("xapi_dashboard_minrole").value,
 			xapi_dashboard_urls: document.getElementById("xapi_dashboard_urls").value,
 			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
@@ -1390,17 +1391,33 @@ function delete_member(login_id, group_id){
 	{
 		$.ajax({
 			type: "POST",
-			url: "website_code/php/management/delete_member.php",
+			url: "website_code/php/management/check_delete_member.php",
 			data: {
 				login_id: login_id,
-				group_id: group
+				group_id: group,
 			},
 		})
-		.done(function (response) {
-			list_group_members(group_id);
-		})
-		.fail(function(){
-			alert(DELETE_MEMBER_FAIL);
+		.done(function(owns_templates) {
+			do_it = true;
+			if (owns_templates != "OK") {
+				do_it = confirm(owns_templates);
+			}
+			if (do_it) {
+				$.ajax({
+					type: "POST",
+					url: "website_code/php/management/delete_member.php",
+					data: {
+						login_id: login_id,
+						group_id: group
+					},
+				})
+				.done(function (response) {
+					list_group_members(group_id);
+				})
+				.fail(function () {
+					alert(DELETE_MEMBER_FAIL);
+				})
+			}
 		});
 	}
 }

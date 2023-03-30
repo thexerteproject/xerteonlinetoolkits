@@ -1390,3 +1390,12 @@ function upgrade_40(){
     return $message;
 
 }
+
+function upgrade_41()
+{
+    // Add xapi_force_anonymous_lrs columns to sitedetails
+    $error = _db_add_field('sitedetails', 'xapi_force_anonymous_lrs', 'char(255)', 'false', 'dashboard_nonanonymous');
+    $message = "Adding xapi_force_anonymous_lrs column to sitedetails - ok ? " . ($error ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
