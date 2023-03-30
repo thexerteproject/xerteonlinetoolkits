@@ -30,7 +30,11 @@
 		margin-top: -2px;
 		margin-left: -2px;
 	}
-	
+
+	#pageContents .hotspot.transparent.selected {
+		border:		0px solid;
+	}
+
 	#feedback {
 		text-align:	center;
 	}
