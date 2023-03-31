@@ -1247,10 +1247,11 @@ function transfer_user_templates_stateChanged(response){
 	}
 }
 
-function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_private, tag_delete_user)
+function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_private, tag_transfer_shared_folders, tag_delete_user)
 {
 	var new_user = $('#' + tag_user_select).val();
 	var transfer_private = $('#' + tag_transfer_private).prop('checked');
+	var transfer_shared_folders = $('#' + tag_transfer_shared_folders).prop('checked');
 	var delete_user = $('#' + tag_delete_user).prop('checked');
 
 	$("#transfer_result").show();
@@ -1262,6 +1263,7 @@ function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_priva
 			olduserid: user_id,
 			newuserid: new_user,
 			transfer_private: transfer_private,
+			transfer_shared_folders: transfer_shared_folders,
 			delete_user: delete_user
 		},
 	})
