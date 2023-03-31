@@ -21,6 +21,24 @@
   box-shadow: none;
 }
 
+#x_headerBlock #x_pageIntroBtn {
+  color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+  color: #3F4957;
+  background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+  color: #FCBC2B;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+  color: #3F4957;
+  background-color: #FCBC2B;
+}
+
 .titlePageTxt {
   width: 98% !important;
   overflow: hidden;
@@ -49,6 +67,27 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 
 .x_transcriptReader_page .highlight {
   background: rgba(2, 122, 179, 0.8);
+}
+
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: #3F4957;
+}
+
+.x_thumbnailViewer_page #thumbBar button {
+  color: #ffffff;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover {
+  color: #FCBC2B;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus {
+  color: #FCBC2B;
+}
+
+.x_thumbnailViewer_page #thumbBar button.ui-state-active {
+  color: #1D202D;
 }
 
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {
@@ -378,18 +417,6 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff !important;
 }
 
-.x_grid_page table.header.shaded tr:first-child {
-  background: #000000;
-}
-
-.x_grid_page table tr {
-  background: #027ab3;
-}
-
-.x_grid_page tr.shaded {
-  background: #9A9A9A;
-}
-
 .x_grid_page #grid ul li {
   background: #FCBC2B;
   border-color: transparent;
@@ -412,16 +439,7 @@ a.hotspot, a.hotspot.selected {
   color: #1D202D;
 }
 
-.x_table_page table tr.shaded {
-  background: #FCBC2B;
-}
-
-.x_table_page table.header.shaded tr:first-child {
-  background: #000000;
-  color: #ffffff;
-}
-
-.x_table_page table.header.simple tr:first-child {
+.x_table_page table.header.simple :not(tbody) > tr:first-child {
   border: none;
 }
 
@@ -513,6 +531,28 @@ div#shorturltodisplay a {
   }
 }
 
+.x_grid_page table tr,
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr {
+  background: #027ab3;
+}
+
+table tr.shaded {
+  background: #9A9A9A;
+}
+
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child,
+table.footer.shaded tbody tr:last-child,
+table.headerCol.shaded td.header {
+  background: #000000;
+  color: #ffffff;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #ffffff;
@@ -580,42 +620,52 @@ div#shorturltodisplay a {
   background-image: none;
 }
 
-#x_nextBtn:after {
-  content: "\f138";
+.ui-button .ui-icon.x_projectIntro {
+  background-image: none;
 }
 
-#x_prevBtn:after {
-  content: "\f137";
+.ui-button .ui-icon.x_saveSession {
+  background-image: none;
 }
 
-#x_cssBtn:after {
-  content: "\f066";
+#x_nextBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_colourChangerBtn:after {
-  content: "\f042";
+#x_prevBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_mediaBtn:after {
-  content: "\f16a";
+#x_cssBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_glossaryBtn:after {
-  content: "\f02d";
+#x_colourChangerBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_helpBtn:after {
-  content: "\f128";
+#x_mediaBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_menuBtn:after {
-  content: "\f0c9";
+#x_glossaryBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_saveSessionBtn:after {
-  content: "\f0c7";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
+#x_helpBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
+}
+
+#x_introBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
+}
+
+#x_menuBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
+}
+
+#x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
 #x_footerBlock button {
@@ -635,14 +685,15 @@ div#shorturltodisplay a {
 }
 
 #x_footerBlock button {
-  font-family: FontAwesome, sans-serif;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
   font-size: 1.9em;
   width: 1.5em;
   padding-right: 0;
   margin-left: 5px;
 }
 
-#x_footerBlock button span {
+#x_footerBlock button span.ui-button-text {
   display: none;
 }
 
@@ -654,7 +705,7 @@ div#shorturltodisplay a {
   color: #ffffff;
 }
 
-#x_footerChevron:hover {
+#x_footerChevron:hover, #x_footerChevron:focus {
   color: #FCBC2B;
 }
 
@@ -666,7 +717,7 @@ div#shorturltodisplay a {
 }
 
 .fa-x-close:before {
-  content: "\f00d";
+  content: "";
 }
 
 .ui-dialog .ui-dialog-titlebar-close {
@@ -687,6 +738,46 @@ div#shorturltodisplay a {
 
 #menuItems .menuItem.current {
   border: 2px solid #3F4957;
+}
+
+#x_sideBar {
+  background-color: #3F4957;
+}
+
+#x_sideBarToggleBtn {
+  border-color: #3F4957;
+  color: #ffffff;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+  background-color: #FCBC2B;
+  color: #3F4957;
+}
+
+#x_sideBarBtnHolder button {
+  color: #ffffff;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+  border-color: #3F4957;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+  border-color: #3F4957;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover .ui-button-text, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus .ui-button-text, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active .ui-button-text {
+  color: #3F4957;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+  background-color: #FCBC2B;
+  color: #3F4957;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+  background-color: #FCBC2B;
+  color: #3F4957;
 }
 
 @media only screen and (max-width: 500px) {
@@ -1402,7 +1493,7 @@ img {
 }
 
 @media (min-width: 1366px) {
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 90%;
     max-height: 92%;
     margin: auto;
@@ -1414,7 +1505,7 @@ img {
   }
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 98%;
     max-height: 98%;
     margin: auto;
@@ -1427,19 +1518,19 @@ img {
 }
 /* chevron */
 .fa-x-next:before {
-  content: "\f054";
+  content: "";
 }
 
 .fa-x-prev:before {
-  content: "\f053";
+  content: "";
 }
 
 .fa-x-next-circle:before {
-  content: "\f138";
+  content: "";
 }
 
 .fa-x-prev-circle:before {
-  content: "\f137";
+  content: "";
 }
 
 /* arrow */
@@ -1450,51 +1541,51 @@ img {
 .fa-x-prev-circle:before { content: "\f0a8"; }
 */
 .fa-x-refresh:before {
-  content: "\f021";
+  content: "";
 }
 
 .fa-x-acc-hide:before {
-  content: "\f0da";
+  content: "";
 }
 
 .fa-x-acc-show:before {
-  content: "\f0d7";
+  content: "";
 }
 
 .fa-x-btn-hide:before {
-  content: "\f0d8";
+  content: "";
 }
 
 .fa-x-btn-show:before {
-  content: "\f0d7";
+  content: "";
 }
 
 .fa-x-zoom-in:before {
-  content: "\f00e";
+  content: "";
 }
 
 .fa-x-zoom-out:before {
-  content: "\f010";
+  content: "";
 }
 
 .fa-x-download:before {
-  content: "\f019";
+  content: "";
 }
 
 .fa-x-info-circle:before {
-  content: "\f05a";
+  content: "";
 }
 
 .fa-x-info:before {
-  content: "\f129";
+  content: "";
 }
 
 .fa-x-question:before {
-  content: "\f128";
+  content: "";
 }
 
 .fa-x-lightbulb:before {
-  content: "\f0eb";
+  content: "";
 }
 
 .fa-x-copy:before {

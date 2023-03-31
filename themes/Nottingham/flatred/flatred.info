@@ -3,3 +3,4 @@ display name: Flat: Red
 description: Flat Red header and footer, white background, round buttons.
 enabled: yes
 preview: flatred.jpg
+imgbtns: true

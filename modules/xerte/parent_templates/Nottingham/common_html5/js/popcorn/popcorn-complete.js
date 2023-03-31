@@ -4333,38 +4333,67 @@
 
             parent.appendChild(elem);
 
-            $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
-                .done(function () {
+            if (!xot_offline && typeof Mediasite !== undefined) {
+              $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
+                  .done(function () {
                     //$("#mediasiteIframe").parent()[0].style.visibility = "hidden";
                     console.log(" Mediasiteplayer loaded " + aSrc + "\n" + elem.id);
                     player = new Mediasite.Player(elem.id,
                         {
-                            url: aSrc,
-                            events: {
-                                "ready": onReady,
-                                "playcoverready": function () {
-                                    $("#mediasiteIframe")[0].style.width = "100%";
-                                    $("#mediasiteIframe")[0].style.height = "100%";
+                          url: aSrc,
+                          events: {
+                            "ready": onReady,
+                            "playcoverready": function () {
+                              $("#mediasiteIframe")[0].style.width = "100%";
+                              $("#mediasiteIframe")[0].style.height = "100%";
 
-                                    $("#mediasiteIframe").parent()[0].style.width = "100%";
-                                    $("#mediasiteIframe").parent()[0].style.height = "90%";
+                              $("#mediasiteIframe").parent()[0].style.width = "100%";
+                              $("#mediasiteIframe").parent()[0].style.height = "90%";
 
-                                    $("#mediasiteIframe").parent()[0].style.visibility = "visible";
-                                },
-                                "error": function (errorData) {
-                                    console.log(errorData);
-                                },
-                                "playerstatechanged": onPlayerStateChanged
+                              $("#mediasiteIframe").parent()[0].style.visibility = "visible";
                             },
-                            layoutOptions: {
-                                "BackgroundColor": "#FFFFFF"
-                            }
+                            "error": function (errorData) {
+                              console.log(errorData);
+                            },
+                            "playerstatechanged": onPlayerStateChanged
+                          },
+                          layoutOptions: {
+                            "BackgroundColor": "#FFFFFF"
+                          }
                         }
                     );
-                })
-                .fail(function (a, b, c) {
+                  })
+                  .fail(function (a, b, c) {
                     console.log("Failed: " + c)
-                });
+                  });
+            }
+            else {
+              console.log(" Mediasiteplayer already loaded " + aSrc + "\n" + elem.id);
+              player = new Mediasite.Player(elem.id,
+                  {
+                    url: aSrc,
+                    events: {
+                      "ready": onReady,
+                      "playcoverready": function () {
+                        $("#mediasiteIframe")[0].style.width = "100%";
+                        $("#mediasiteIframe")[0].style.height = "100%";
+
+                        $("#mediasiteIframe").parent()[0].style.width = "100%";
+                        $("#mediasiteIframe").parent()[0].style.height = "90%";
+
+                        $("#mediasiteIframe").parent()[0].style.visibility = "visible";
+                      },
+                      "error": function (errorData) {
+                        console.log(errorData);
+                      },
+                      "playerstatechanged": onPlayerStateChanged
+                    },
+                    layoutOptions: {
+                      "BackgroundColor": "#FFFFFF"
+                    }
+                  }
+              );
+            }
 
             self.dispatchEvent("loadstart");
             self.dispatchEvent("progress");
@@ -4605,7 +4634,7 @@
 
     // Helper for identifying URLs we know how to play.
     Popcorn.HTMLMediasiteVideoElement._canPlaySrc = function( url ) {
-        return (/.+mediamission.+/).test( url ) || (/.+deltion.+/).test( url ) ? "probably" : "";
+        return (/.+mediamission.+/).test( url ) || (/.+mediasite.+/).test( url ) || (/.+deltion.+/).test( url ) || isMediaSiteVideo(url) ? "probably" : "";
     };
 
 
@@ -4683,12 +4712,17 @@
             elem.allowfullscreen="";
             elem.sandbox="allow-same-origin allow-scripts allow-popups";
 
-            $.getScript("https://unpkg.com/@peertube/embed-api/build/player.min.js")
-                .done(function () {
-                    onReady();
-                }
-                ).fail(function () {
-                });
+            if (!xot_offline && typeof PeerTubePlayer !== undefined) {
+              $.getScript("https://unpkg.com/@peertube/embed-api/build/player.min.js")
+                  .done(function () {
+                        onReady();
+                      }
+                  ).fail(function () {
+              });
+            }
+            else {
+              onReady();
+            }
         }   
 
         // Called when the player script has loaded
@@ -4880,7 +4914,7 @@
 
     // Helper for identifying URLs we know how to play.
     Popcorn.HTMLPeerTubeVideoElement._canPlaySrc = function( url ) {
-      return (/\/videos\/embed\/[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}$/).test( url ) 
+      return (/\/videos\/embed\/[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}$/).test( url ) || isPeertubeVideo(url)
       ? "probably" 
       : "";  
     };

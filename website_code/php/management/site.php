@@ -140,7 +140,7 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_ADMIN_USER . "<form><textarea id=\"admin_username\">" . $row['admin_username'] . "</textarea></form>
         </p>";
 
-    echo "<p>" . MANAGEMENT_SITE_ADMIN_PASSWORD . "<form><textarea id=\"admin_password\">" . htmlspecialchars($row['admin_password']) . "</textarea></form>
+    echo "<p>" . MANAGEMENT_SITE_ADMIN_PASSWORD . "<form><textarea id=\"admin_password\">" . htmlspecialchars('') . "</textarea></form>
         </p>";
 
     echo "</div>";
@@ -275,6 +275,8 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_ENABLE . "<form><textarea id=\"site_xapi_dashboard_enable\">" . $row['dashboard_enabled'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_NONANONYMOUS_VIEW . "<form><textarea id=\"site_xapi_dashboard_nonanonymous\">" . $row['dashboard_nonanonymous'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_FORCE_ANONYMOUS_LRS . "<form><textarea id=\"site_xapi_force_anonymous_lrs\">" . $row['xapi_force_anonymous_lrs'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE . "<form>";
 

@@ -173,7 +173,7 @@ function require_auth() {
     $is_not_authenticated = (
         !$has_supplied_credentials ||
         $_SERVER['PHP_AUTH_USER'] != $xerte_toolkits_site->admin_username ||
-        $_SERVER['PHP_AUTH_PW']   != $xerte_toolkits_site->admin_password);
+        hash('sha256',$_SERVER['PHP_AUTH_PW'])   != $xerte_toolkits_site->admin_password);
     if ($is_not_authenticated) {
         header('WWW-Authenticate: Basic realm="Setup TSUGI for ' . $xerte_toolkits_site->site_title . '"');
         header('HTTP/1.0 401 Unauthorized');

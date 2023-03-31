@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left"
+      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="" interactivity="Show Me" highlight="false" align="Left"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotspotImage>
@@ -9,7 +9,7 @@
   </pageWizard>
 
   <!-- HOTSPOT IMAGE INTERACTION============================= -->
-  <hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" remove="true">
+  <hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_hotspot_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -17,7 +17,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
     
     <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
@@ -45,13 +45,13 @@
   <hotspot type="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250" />
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true" />
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
   </hotspot>
   
   <flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250" />
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true" />
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
   </flexhotspot>
 
   <!-- HOTSPOTQ================================== -->

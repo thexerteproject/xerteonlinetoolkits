@@ -199,7 +199,6 @@ var after_sharing_deleted = false;
 
 
 function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
-	debugger
 	var answer = confirm(SHARING_CONFIRM);
 	if(answer){
 		if(who_deleted_flag){
@@ -214,7 +213,8 @@ function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
 			data: {
 				template_id: template_id,
 				id: id,
-				user_deleting_self: who_deleted_flag
+				user_deleting_self: who_deleted_flag,
+				group: group
 			}
 		})
 		.done(function(response){
@@ -788,19 +788,68 @@ function change_notes(template_id, form_tag){
 	});
 }
 
+/**
+ *
+ * Function to delete all unused files
+ *
+ */
+
+function delete_unused_files(delete_path, delete_string){
+	if (delete_string.length <= 0){
+		confirm(DELETE_UNUSED_FILES_EMPTY);
+	} else {
+		var answer = confirm(DELETE_UNUSED_FILES_CONFIRM);
+		if (answer) {
+			delete_unused_files_ajax(delete_path, delete_string);
+		}
+	}
+}
+
+/**
+ *
+ * Function delete unused files
+ * This function handles the changing of notes on a template
+ * @param string file = id of the file to delete
+ * @version 1.0
+ * @author Timo Boer
+ */
+
+function delete_unused_files_ajax(delete_path, delete_string){
+
+	var files = new Array()
+	const delete_files = JSON.parse(atob(delete_string));
+
+	for (let i = 0; i < delete_files.length; i++) {
+		files.push(encodeURIComponent(delete_path + delete_files[i]));
+	}
+	files = btoa(JSON.stringify(files));
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/delete_unused_files_template.php",
+		data: {
+			data: files
+		}
+	})
+		.done(function (response) {
+			delete_file_stateChanged(response);
+		});
+
+}
+
      /**
 	 *
 	 * Function delete file
  	 * This function handles the changing of notes on a template
  	 * @param string file = id of the file to delete
-	 * @version 1.0
-	 * @author Patrick Lockley
+	  * @param boolean answer = false, set to true to skip confirmation
+	 * @version 1.1
+	 * @author Timo Boer
 	 */
 
-function delete_file(file){
-
-	var answer = confirm(DELETE_FILE_CONFIRM);
-
+function delete_file(file, answer = false){
+	if (!answer) {
+		answer = confirm(DELETE_FILE_CONFIRM);
+	}
 	if(answer){
 		$.ajax({
 			type: "POST",

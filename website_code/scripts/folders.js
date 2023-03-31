@@ -219,6 +219,36 @@ function popup_close(){
 
 }
 
+// Find the first parent folder that is of type folder_shared
+get_shared_ancestor = function(node) {
+	switch (node.type) {
+		case 'folder_shared':
+			return node.xot_id;
+		case 'folder':
+			return false;
+		case 'sub_folder_shared':
+			return get_shared_ancestor(workspace.nodes[node.parent]);
+	}
+	if (node.xot_type == 'file') {
+		return get_shared_ancestor(workspace.nodes[node.parent]);
+	}
+	return false;
+}
+
+// Return all projects contained in the folder structure
+get_shared_contents = function(node) {
+	let contents = [];
+	switch (node.type) {
+		case 'folder_shared':
+		case 'sub_folder_shared':
+		case 'folder':
+			contents = workspace.items.filter(c => c.xot_type == 'file' && c.parent == node.id);
+			contents = contents.concat(workspace.items.filter(c => c.type.includes == 'folder' && c.parent == node.id).map(get_shared_contents).reduce((a, b) => a.concat(b), []));
+			break;
+	}
+	return contents;
+}
+
 /**
  *
  * Function copy to folder
@@ -238,6 +268,38 @@ function copy_to_folder(data) {
 	// node to move
 	var node = workspace.nodes[data.node.id];
 	var destination = workspace.nodes[data.parent];
+	// Ok, check all the instances where moving is NOT allowed
+	if (node.type === "folder" && destination.type.includes("_shared") && destination.role != 'creator') {
+		alert(FOLDER_MOVE_NOT_CREATOR);
+		refresh_workspace();
+		return;
+	}
+	if (node.type === "sub_folder_shared") {
+		const shared_ancestor = get_shared_ancestor(node);
+		if (shared_ancestor !== false && shared_ancestor !== get_shared_ancestor(destination)) {
+			// Check contents of node (everything must be owned by the same user)
+			const contents = get_shared_contents(node);
+			const roles = contents.map(c => c.role);
+			if (!roles.every(r => r === 'creator')) {
+				alert(FOLDER_MOVE_CONTENT_NOT_OWNED);
+				refresh_workspace();
+				return;
+			}
+		}
+		if (node.role != 'creator') {
+			alert(FOLDER_MOVE_WITHIN_SHARED_FOLDER_NOT_CREATOR);
+			refresh_workspace();
+			return;
+		}
+	}
+	if (node.xot_type == 'file' && node.role !== 'creator') {
+		const shared_ancestor = get_shared_ancestor(node);
+		if (shared_ancestor !== false && shared_ancestor !== get_shared_ancestor(destination)) {
+			alert(PROJECT_MOVE_CONTENT_NOT_OWNED);
+			refresh_workspace();
+			return;
+		}
+	}
 	setTimeout(function () {
 		tree.open_node(destination.id)
 	}, 250);
@@ -259,7 +321,8 @@ function copy_to_folder(data) {
 		url: "website_code/php/folders/copy_to_new_folder.php",
 		data: data,
 	})
-	.done(function (response) {
-		refresh_workspace();
-	});
+		.done(function (response) {
+			refresh_workspace();
+		});
+
 }

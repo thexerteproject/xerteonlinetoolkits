@@ -187,9 +187,45 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -84px 0px; }
 
+.ui-button .ui-icon.x_projectIntro { background-image: url("project_intro.svg");background-position: 0px 0px;}
+.ui-button.ui-state-hover .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_projectIntro {	background-position: -84px 0px; }
+
+#x_footerBlock button.customIconBtn {
+	color: #D3D7CF;
+}
+
+#x_footerBlock button.customIconBtn:not(.ui-state-disabled):hover, #x_footerBlock button.customIconBtn:not(.ui-state-disabled):focus {
+	color: #000000;
+}
+
 .ui-dialog .ui-widget-header {
 border: 1px solid #164883;
 background: #ffffff;
 color: #000000;
 font-weight: bold;
+}
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: #D3D7CF;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: white;
+	background-color: #D3D7CF;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: black;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: white;
+	background-color: black;
+}
+
+#x_introStartBtn {
+	background-color: white;
 }

@@ -108,6 +108,7 @@ class XerteXMLInspector
 
     protected $fname;
     protected $xmlstr;
+    protected $decodedxmlstr;
     protected $xml;
     protected $name;
     protected $models;
@@ -234,7 +235,7 @@ class XerteXMLInspector
         $probably = "decision";
         $probably_weight = $this->test_unrecognised_template(array("name", "displayMode", "newBtnLabel", "backBtn", "fwdBtn", "emailBtn", "printBtn", "viewThisBtn", "closeBtn", "moreInfoString", "lessInfoString", "helpString", "resultString", "overviewString", "posAnswerString", "fromRangeString", "viewAllString", "errorString", "sliderError", "noQ", "noA", "resultEndString", "theme"), $check);
 
-        $new_weight = $this->test_unrecognised_template(array("name", "language", "navigation", "textSize", "theme", "displayMode", "responsive"), $check);
+        $new_weight = $this->test_unrecognised_template(array("name", "language", "navigation", "textSize", "theme", "displayMode"), $check);
         if ($new_weight > $probably_weight) {
             $probably = "Nottingham";
             $probably_weight = $new_weight;
@@ -294,6 +295,8 @@ class XerteXMLInspector
             }
         }
         $this->xmlstr = $xml;
+        // Create decoded version of this string to be used when checking whether files are in use
+        $this->decodedxmlstr = html_entity_decode(rawurldecode($xml));
 
         $this->xml = simplexml_load_string($xml);
         if (strlen((string)$this->xml['glossary'])>0)
@@ -460,7 +463,8 @@ class XerteXMLInspector
             $page = $this->getPage($pagenr);
             $node = $page->node;
             $nodeXmlStr = $node->asXML();
-            $pos = strpos($nodeXmlStr, 'media/' . $filename);
+            $decodedNodeXmlStr = html_entity_decode(rawurldecode($nodeXmlStr));
+            $pos = strpos($decodedNodeXmlStr, 'media/' . $filename);
             if ($pos !== false)
             {
                 return true;
@@ -485,7 +489,7 @@ class XerteXMLInspector
         else
         {
             // check if the file is used
-            $pos = strpos($this->xmlstr, 'media/' . $filename);
+            $pos = strpos($this->decodedxmlstr, 'media/' . $filename);
             if ($pos !== false)
             {
                 return true;

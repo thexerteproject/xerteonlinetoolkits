@@ -103,6 +103,7 @@
 		overflow: auto;
 		backface-visibility: hidden;
 		margin: 1em 1em 0;
+		height: 100%;
 	}
 	
 	#cards.hideOverflow .cardInner {
@@ -146,7 +147,7 @@
 	#cardCtrls .btnHolder button:active { color: #FF9900; }
 	
 	button.flipBtn.ui-button-icon-only .ui-icon[class*=" fa-"] {
-		margin-left: -0.4em;
+		margin-left: -0.5em;
 	}
 	
 	.flipBtnHolder {

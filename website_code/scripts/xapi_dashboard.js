@@ -1759,8 +1759,8 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
     var $this = this;
     contentDiv.append("<div class='question-overview'><ul></ul></div>");
     questions.forEach(function(q){
-        answerStatements = $this.data.rawData.filter(function(s){
-                g = $this.getGroupFromStatements([s]);
+        answerStatements = $this.data.rawData.filter(function(s, i){
+                g = $this.getGroupFromStatements([i]);
                 cg = $this.data.currentGroup.group_id;
                 return (cg == undefined || cg == "all-groups" || cg == g) && s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered";
             }
@@ -1798,8 +1798,8 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
     var dashboard = this;
     var $this = this;
     var sessions = [];
-    this.data.rawData.forEach(function(s) {
-        if (dashboard.data.currentGroup.group_id == "all-groups" || dashboard.data.currentGroup.group_id == dashboard.getGroupFromStatements([s])) {
+    this.data.rawData.forEach(function(s, i) {
+        if (dashboard.data.currentGroup.group_id == "all-groups" || dashboard.data.currentGroup.group_id == dashboard.getGroupFromStatements([i])) {
             sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
             if (sessions.indexOf(sessionId) === -1) {
                 sessions.push(sessionId);

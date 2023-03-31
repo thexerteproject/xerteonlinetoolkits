@@ -16,6 +16,8 @@
 
 	define("SHARING_CURRENT","This project is currently shared with : ");
 
+    define("SHARING_CURRENT_FOLDER","This folder is currently shared with : ");
+
     define("SHARING_CREATOR", "Creator");
 
     define("SHARING_COAUTHOR", "Co-author");
@@ -23,6 +25,12 @@
     define("SHARING_EDITOR","Editor");
 
 	define("SHARING_READONLY","Read only");
+
+    define("SHARING_SOURCE","from ");
+
+    define("SHARING_SOURCE_FOLDER","folder");
+
+    define("SHARING_SOURCE_TEMPLATE","project");
 
     define("SHARING_REMOVE_DESCRIPTION", "Press the button below to remove any sharing rights");
 

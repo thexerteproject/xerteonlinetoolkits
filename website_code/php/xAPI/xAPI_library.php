@@ -1,8 +1,22 @@
 <?php
 
 
-function CheckLearningLocker($lrs)
+function CheckLearningLocker($lrs, $allowdb=false)
 {
+    global $xerte_toolkits_site;
+
+    if ($allowdb && isset($xerte_toolkits_site->LRSDbs) && isset($xerte_toolkits_site->LRSDbs[$lrs['lrsendpoint']]))
+    {
+        $lrsendpoint = $lrs['lrsendpoint'];
+        $lrs['dblrsendpoint'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['endpoint'];
+        $lrs['dblrskey'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['key'];
+        $lrs['dblrssecret'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['secret'];
+        $lrs['db'] = true;
+    }
+    else
+    {
+        $lrs['db'] = false;
+    }
     $apos = strpos($lrs['lrsendpoint'], 'api/statements/aggregate');
     if ($apos !== false)
     {
@@ -17,17 +31,20 @@ function CheckLearningLocker($lrs)
     return $lrs;
 }
 
-function xAPI_html_page_create($id, $template_name, $type, $lo_name, $language, $date_modified, $logo='') {
-
+function xAPI_html_page_create($id, $template_name, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='', $plugins='') {
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
 	$version = file_get_contents(dirname(__FILE__) . "/../../../version.txt");
     $language_ISO639_1code = substr($language, 0, 2);
 
-	$xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
+    $template_path = $xerte_toolkits_site->basic_template_path . $type . '/parent_templates/' . $parent_name . "/";
+
+    $xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 
     $xapi_html_page_content = str_replace("%LANGUAGE%", $language_ISO639_1code , $xapi_html_page_content);
 	$xapi_html_page_content = str_replace("%VERSION%", $version , $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%TWITTERCARD%", "",$xapi_html_page_content);
+
     $xapi_html_page_content = str_replace("%VERSION_PARAM%", "", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TITLE%",$lo_name,$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%LOGO%", $logo, $xapi_html_page_content);
@@ -40,6 +57,26 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%DATECREATED%", $date_created, $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%NUMPLAYS%", 0, $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $xapi_html_page_content);
+
+    // Check popcorn mediasite and peertube config files
+    $popcorn_config = "";
+    $mediasite_config_js = $template_path . "common_html5/js/popcorn/config/mediasite_urls.js";
+    if (file_exists($mediasite_config_js))
+    {
+        $popcorn_config .= "<script type=\"text/javascript\" src=\"$mediasite_config_js?version=" . $version . "\"></script>\n";
+    }
+    $peertube_config_js = $template_path . "common_html5/js/popcorn/config/peertube_urls.js";
+    if (file_exists($peertube_config_js))
+    {
+        $popcorn_config .= "<script type=\"text/javascript\" src=\"$peertube_config_js?version=" . $version . "\"></script>\n";
+    }
+    $xapi_html_page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $xapi_html_page_content);
 
     $endpoint = $xerte_toolkits_site->LRS_Endpoint;
     $secret = $xerte_toolkits_site->LRS_Secret;
@@ -55,6 +92,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
 		$tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_xapi.js\"></script>";
 	}
 	$xapi_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$xapi_html_page_content);
+	$xapi_html_page_content = str_replace("%EMBED_SUPPORT%", "",$xapi_html_page_content);
 	$xapi_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $xapi_html_page_content);
 
 	$index_file = "index.htm";
@@ -76,4 +114,3 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
 	*/
 }
 
-?>

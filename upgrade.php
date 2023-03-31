@@ -1288,3 +1288,114 @@ function upgrade_33()
         return "Creating tsugi_manage_key_id field in templatedetails already present - ok ? true". "<br>";
     }
 }
+
+function upgrade_34(){
+    global $xerte_toolkits_site;
+    $table = table_by_key('sitedetails');
+    $res = db_query_one("SELECT admin_password FROM $table");
+    if (strlen($res['admin_password']) != 64) {
+        db_query("UPDATE $table SET admin_password = ?", array(hash('sha256', $res['admin_password'])));
+    }
+    return "hashed password if needed";
+}
+
+function upgrade_35(){
+    $table = 'oai_publish';
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `audith_id` int(11) NOT NULL AUTO_INCREMENT,
+      `template_id` BIGINT(20) NOT NULL,
+      `login_id` BIGINT(20) NOT NULL,
+      `user_type` VARCHAR(10),
+      `status` VARCHAR(10),
+      `timestamp` TIMESTAMP,
+      PRIMARY KEY (`audith_id`)
+    )
+    ");
+
+    $message = "Creating oai_publish - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_36(){
+    $table = table_by_key('oai_education');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+    $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $table = table_by_key('oai_categories');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+    $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $table = table_by_key('educationlevel');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+    $message .= "Adding parent_id column to educationlevel - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $table = table_by_key('syndicationcategories');
+    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+    $message .= "Adding parent_id column to syndicationcategories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    return $message;
+}
+
+function upgrade_37(){
+    $table = table_by_key('templatedetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_created` `date_created` DATETIME NULL DEFAULT NULL,CHANGE COLUMN `date_modified` `date_modified` DATETIME NULL DEFAULT NULL,CHANGE COLUMN `date_accessed` `date_accessed` DATETIME NULL DEFAULT NULL;");
+    $message = "Changing date columns of templatedetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    return $message;
+}
+
+function upgrade_38()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for folderrights
+    $table = table_by_key('folderrights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index1'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index1` (`folder_id` ASC, `login_id` ASC, `role`(10) ASC);");
+        $message = "Creating index on table folderrights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on folderrights table is already present';
+    return $message;
+}
+
+function upgrade_39(){
+    $table = table_by_key('logindetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `lastlogin` `lastlogin` DATETIME NULL DEFAULT NULL;");
+    $message = "Changing lastlogin column of logindetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folderdetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_created` `date_created` DATETIME NULL DEFAULT NULL;");
+    $message .= "Changing date_created column of folderdetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('originaltemplatesdetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_uploaded` `date_uploaded` DATETIME NULL DEFAULT NULL;");
+    $message .= "Changing date_uploaded column of originaltemplatesdetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+
+    return $message;
+}
+
+function upgrade_40(){
+    //Guarantee that the collation of logindetails.username and folderdetails.folder_name is the same utf8_unicode_ci
+    $table = table_by_key('logindetails');
+    $ok = _upgrade_db_query("ALTER TABLE `$table` MODIFY username CHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci;");
+    $message = "Changing collation of username column of logindetails to utf_unicode_ci - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folderdetails');
+    $ok = _upgrade_db_query("ALTER TABLE `$table` MODIFY folder_name CHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci;");
+    $message .= "Changing collation of folder_name column of folderdetails to utf_unicode_ci - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}
+
+function upgrade_41()
+{
+    // Add xapi_force_anonymous_lrs columns to sitedetails
+    $error = _db_add_field('sitedetails', 'xapi_force_anonymous_lrs', 'char(255)', 'false', 'dashboard_nonanonymous');
+    $message = "Adding xapi_force_anonymous_lrs column to sitedetails - ok ? " . ($error ? 'true' : 'false') . "<br>";
+
+    return $message;
+}

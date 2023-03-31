@@ -20,7 +20,9 @@
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_PRIVATE", "Include private projects in the transfer.");
 
-    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to projects which are owned by other users.");
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_SHARED_FOLDERS", "Include shared folders in the transfer.");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access from projects that are owned by other users. Also delete the user account if private projects and shared folders are transferred as well.");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do bulk transfer");
 

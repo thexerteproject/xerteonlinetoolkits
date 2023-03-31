@@ -178,6 +178,7 @@ class OAIServer
                     $identifier = $record['identifier'];
 
                     $datestamp = $this->formatDatestamp($record['datestamp']);
+                    $modified = $this->formatDatestamp($record['modified']);
 
                     $set = $record['set'];
 
@@ -186,7 +187,7 @@ class OAIServer
                             ($this->identifyResponse['deletedRecord'] == 'persistent')));
 
                     $cur_record = $this->response->addToVerbNode('record');
-                    $cur_header = $this->response->createHeader($identifier, $datestamp, $cur_record);
+                    $cur_header = $this->response->createHeader($identifier, $modified, $cur_record);
                     if ($status_deleted) {
                         $cur_header->setAttribute("status", "deleted");
                     } else {
@@ -266,6 +267,7 @@ class OAIServer
 
                     $identifier = $record['identifier'];
                     $datestamp = $this->formatDatestamp($record['datestamp']);
+                    $modified = $this->formatDatestamp($record['modified']);
 
                     $status_deleted = (isset($record['deleted']) && ($record['deleted'] === true) &&
                         (($this->identifyResponse['deletedRecord'] == 'transient') ||
@@ -273,12 +275,12 @@ class OAIServer
 
                     if ($this->verb == 'ListRecords') {
                         $cur_record = $this->response->addToVerbNode('record');
-                        $cur_header = $this->response->createHeader($identifier, $datestamp, $cur_record);
+                        $cur_header = $this->response->createHeader($identifier, $modified, $cur_record);
                         if (!$status_deleted) {
                             $this->add_metadata($this->args['metadataPrefix'],$cur_record, $record);
                         }
                     } else { // for ListIdentifiers, only identifiers will be returned.
-                        $cur_header = $this->response->createHeader($identifier, $datestamp);
+                        $cur_header = $this->response->createHeader($identifier, $modified);
                     }
                     if ($status_deleted) {
                         $cur_header->setAttribute("status", "deleted");
@@ -426,8 +428,22 @@ class OAIServer
             $date_node = $this->response->addChild($contribute_node, 'date');
             $this->response->addChild($date_node, 'datetime', ($publish_date . "T00:00:00+00:00"));
             $description_node = $this->response->addChild($date_node, 'description');
-            $langstring_node = $this->response->addChild($description_node, 'langstring', "The date the object was last modified.");
+            $langstring_node = $this->response->addChild($description_node, 'langstring', "The date the object was published.");
             $langstring_node->setAttribute("xml:lang", $language);
+
+            $contribute_node = $this->response->addChild($lifecycle_node, 'contribute');
+            $role_node = $this->response->addChild($contribute_node, 'role');
+            $source_node = $this->response->addChild($role_node, 'source');
+            $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
+            $langstring_node->setAttribute("xml:lang", "x-none");
+
+            $value_node = $this->response->addChild($role_node, 'value');
+            $langstring_node = $this->response->addChild($value_node, 'langstring', "technical implementer");
+            $langstring_node->setAttribute("xml:lang", "x-none");
+
+            $centity_node = $this->response->addChild($contribute_node, 'centity');
+            $vcard = "BEGIN:VCARD VERSION:3.0 FN:Xerte UID:https://www.xerte.org.uk END:VCARD";
+            $this->response->addChild($centity_node, 'vcard', $vcard);
 
             // METAMETADATA - metadataschema
             $metametadata_node = $this->response->addChild($schema_node, 'metametadata');
@@ -513,51 +529,54 @@ class OAIServer
             $langstring_node->setAttribute("xml:lang", "x-none");
 
             // CLASSIFICATION - domain
-            $classification_node = $this->response->addChild($schema_node, 'classification');
-            $purpose_node = $this->response->addChild($classification_node, 'purpose');
-            $source_node = $this->response->addChild($purpose_node, 'source');
-            $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-            $value_node = $this->response->addChild($purpose_node, 'value');
-            $langstring_node = $this->response->addChild($value_node, 'langstring', "discipline");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-
-            $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
-            $source_node = $this->response->addChild($taxonpath_node, 'source');
-            $domain_source = $record['metadata']['classification']['domain_source'];
-            $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/begrippenkader");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-            $domain_id = $record['metadata']['classification']['domain_id'];
-            $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
-            $this->response->addChild($taxon_node, 'id', $domain_id);
-            $entry_node = $this->response->addChild($taxon_node, 'entry');
             $domain = $record['metadata']['classification']['domain'];
-            $langstring_node = $this->response->addChild($entry_node, 'langstring', $domain);
-            $langstring_node->setAttribute("xml:lang", "nl");
+            $domain_id = $record['metadata']['classification']['domain_id'];
+            foreach ($domain as $key => $value) {
+                $classification_node = $this->response->addChild($schema_node, 'classification');
+                $purpose_node = $this->response->addChild($classification_node, 'purpose');
+                $source_node = $this->response->addChild($purpose_node, 'source');
+                $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+                $value_node = $this->response->addChild($purpose_node, 'value');
+                $langstring_node = $this->response->addChild($value_node, 'langstring', "discipline");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+
+                $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
+                $source_node = $this->response->addChild($taxonpath_node, 'source');
+                $domain_source = $record['metadata']['classification']['domain_source'];
+                $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/begrippenkader");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+                $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
+                $this->response->addChild($taxon_node, 'id', $domain_id[$key]);
+                $entry_node = $this->response->addChild($taxon_node, 'entry');
+                $langstring_node = $this->response->addChild($entry_node, 'langstring', $value);
+                $langstring_node->setAttribute("xml:lang", "nl");
+            }
 
             // CLASSIFICATION education - level
-
-            $classification_node = $this->response->addChild($schema_node, 'classification');
-            $purpose_node = $this->response->addChild($classification_node, 'purpose');
-            $source_node = $this->response->addChild($purpose_node, 'source');
-            $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-            $value_node = $this->response->addChild($purpose_node, 'value');
-            $langstring_node = $this->response->addChild($value_node, 'langstring', "educational level");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-
-            $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
-            $source_node = $this->response->addChild($taxonpath_node, 'source');
-            $education_source = "http://purl.edustandaard.nl/begrippenkader";
-            $langstring_node = $this->response->addChild($source_node, 'langstring', $education_source);
-            $langstring_node->setAttribute("xml:lang", "x-none");
             $level_id = $record['metadata']['classification']['levelId'];
-            $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
-            $this->response->addChild($taxon_node, 'id', $level_id);
-            $entry_node = $this->response->addChild($taxon_node, 'entry');
             $level = $record['metadata']['classification']['level'];
-            $langstring_node = $this->response->addChild($entry_node, 'langstring', $level);
-            $langstring_node->setAttribute("xml:lang", 'nl');
+            foreach ($level as $key => $value) {
+                $classification_node = $this->response->addChild($schema_node, 'classification');
+                $purpose_node = $this->response->addChild($classification_node, 'purpose');
+                $source_node = $this->response->addChild($purpose_node, 'source');
+                $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+                $value_node = $this->response->addChild($purpose_node, 'value');
+                $langstring_node = $this->response->addChild($value_node, 'langstring', "educational level");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+
+                $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
+                $source_node = $this->response->addChild($taxonpath_node, 'source');
+                $education_source = "http://purl.edustandaard.nl/begrippenkader";
+                $langstring_node = $this->response->addChild($source_node, 'langstring', $education_source);
+                $langstring_node->setAttribute("xml:lang", "x-none");
+                $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
+                $this->response->addChild($taxon_node, 'id', $level_id[$key]);
+                $entry_node = $this->response->addChild($taxon_node, 'entry');
+                $langstring_node = $this->response->addChild($entry_node, 'langstring', $value);
+                $langstring_node->setAttribute("xml:lang", 'nl');
+            }
 
             // CLASSIFICATION accesrights
             $classification_node = $this->response->addChild($schema_node, 'classification');

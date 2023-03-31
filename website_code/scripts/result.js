@@ -578,33 +578,55 @@ function XTResults(fullcompletion, trackingState) {
             var learnerAnswer, correctAnswer;
             switch (trackingState.interactions[i].ia_type) {
                 case "match":
-                    var resultCorrect=false;
+                    // If unique targets, match answers by target, otherwise match by source
+                    const targets = [];
+                    for (let j = 0; j < trackingState.interactions[i].nrinteractions; j++) {
+                        targets.push(trackingState.interactions[i].correctOptions[c].target);
+                    }
+                    // Check whether values of targets are unique
+                    const uniqueTargets = targets.length === new Set(targets).size;
                     for (var c = 0; c < trackingState.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
                         correctAnswer = trackingState.interactions[i].correctOptions[c].source + ' --> ' + trackingState.interactions[i].correctOptions[c].target;
-                        source = trackingState.interactions[i].correctOptions[c].source;
+                        let source = trackingState.interactions[i].correctOptions[c].source;
+                        let target = trackingState.interactions[i].correctOptions[c].target;
                         if (trackingState.interactions[i].learnerOptions.length == 0) {
-                            learnerAnswer = source + ' --> ' + ' ';
+                            if (uniqueTargets) {
+                                learnerAnswer = ' --> ' + target;
+                            }
+                            else {
+                                learnerAnswer = source + ' --> ' + ' ';
+                            }
                         }
                         else {
                             for (var d = 0; d < trackingState.interactions[i].learnerOptions.length; d++) {
-                                if (source == trackingState.interactions[i].learnerOptions[d].source) {
-                                    learnerAnswer = source + ' --> ' + trackingState.interactions[i].learnerOptions[d].target;
-                                    break;
+                                if (uniqueTargets)
+                                {
+                                    if (target == trackingState.interactions[i].learnerOptions[d].target) {
+                                        learnerAnswer = trackingState.interactions[i].learnerOptions[d].source + ' --> ' + target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = ' --> ' + target;
+                                    }
                                 }
-                                else {
-                                    learnerAnswer = source + ' --> ' + ' ';
+                                else
+                                {
+                                    if (source == trackingState.interactions[i].learnerOptions[d].source) {
+                                        learnerAnswer = source + ' --> ' + trackingState.interactions[i].learnerOptions[d].target;
+                                        break;
+                                    } else {
+                                        learnerAnswer = source + ' --> ' + ' ';
+                                    }
                                 }
                             }
                         }
 
                         matchSub.question = trackingState.interactions[i].ia_name;
-                        matchSub.correct = resultCorrect;
+                        matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
-
                     break;
                 case "text":
                     learnerAnswer = trackingState.interactions[i].learnerAnswers;

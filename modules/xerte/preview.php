@@ -195,6 +195,21 @@ function show_preview_code2($row, $row_username){
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
         $page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
         $page_content = str_replace("%EMBED_SUPPORT%", "", $page_content);
+
+        // Check popcorn mediasite and peertube config files
+        $popcorn_config = "";
+        $mediasite_config_js = $template_path . "common_html5/js/popcorn/config/mediasite_urls.js";
+        if (file_exists($mediasite_config_js))
+        {
+            $popcorn_config .= "<script type=\"text/javascript\" src=\"$mediasite_config_js?version=" . $version . "\"></script>\n";
+        }
+        $peertube_config_js = $template_path . "common_html5/js/popcorn/config/peertube_urls.js";
+        if (file_exists($peertube_config_js))
+        {
+            $popcorn_config .= "<script type=\"text/javascript\" src=\"$peertube_config_js?version=" . $version . "\"></script>\n";
+        }
+        $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
+
     }
     echo $page_content;
 }

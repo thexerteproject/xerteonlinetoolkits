@@ -276,7 +276,7 @@ function screen_refresh_no_ajax(){
 	 * @author Patrick Lockley
 	 */
 //TODO : depracate
-function screen_refresh(){
+function screen_refresh_depracated(){
     $.ajax({
         type: "POST",
         url: "website_code/php/templates/your_templates.php",
@@ -370,13 +370,19 @@ function button_check(){
                 };
                 break;
             case "folder":
+                newfolderbtn.removeAttribute("disabled");
+                newfolderbtn.className = "xerte_workspace_button";
+                newfolderbtn.onclick = function () {
+                   make_new_folder()
+                };
+
                 deletebtn.removeAttribute("disabled");
                 deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
             case "folder_group":
-            case "folder_shared":
+
                 propertiesbtn.removeAttribute("disabled");
                 propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
@@ -388,11 +394,34 @@ function button_check(){
                 duplicatebtn.onclick = function () {
                     duplicate_folder()
                 };
-                newfolderbtn.removeAttribute("disabled");
-                newfolderbtn.className = "xerte_workspace_button";
-                newfolderbtn.onclick = function () {
-                    make_new_folder()
+
+                break;
+            case "folder_shared":
+            case "sub_folder_shared":
+                propertiesbtn.removeAttribute("disabled");
+                propertiesbtn.className = "xerte_workspace_button";
+                propertiesbtn.onclick = function () {
+                    properties_window()
                 };
+
+
+                if (workspace.nodes[ids[0]].role == "creator") {
+                    duplicatebtn.removeAttribute("disabled");
+                    duplicatebtn.className = "xerte_workspace_button";
+                    duplicatebtn.onclick = function () {
+                        duplicate_folder()
+                    };
+                    newfolderbtn.removeAttribute("disabled");
+                    newfolderbtn.className = "xerte_workspace_button";
+                    newfolderbtn.onclick = function () {
+                        make_new_folder()
+                    };
+                    deletebtn.removeAttribute("disabled");
+                    deletebtn.className = "xerte_workspace_button";
+                    deletebtn.onclick = function () {
+                        remove_this()
+                    };
+                }
                 break;
             case "group":
                 break;
@@ -407,7 +436,7 @@ function button_check(){
                 editbtn.className = "xerte_workspace_button";
                 editbtn.onclick = function (e) {
                     if (e.shiftKey) {
-                        edit_window(false, "edit");
+                        edit_window(false, "edithtml");
                     }
                     else if (e.ctrlKey) {
                         win = edit_window(false, "edithtml", "_blank");
@@ -434,11 +463,13 @@ function button_check(){
                     remove_this()
                 };
 
-                duplicatebtn.removeAttribute("disabled");
-                duplicatebtn.className = "xerte_workspace_button";
-                duplicatebtn.onclick = function () {
-                    duplicate_template()
-                };
+                if (workspace.nodes[ids[0]].role != "read-onlu") {
+                    duplicatebtn.removeAttribute("disabled");
+                    duplicatebtn.className = "xerte_workspace_button";
+                    duplicatebtn.onclick = function () {
+                        duplicate_template()
+                    };
+                }
 
                 publishbtn.removeAttribute("disabled");
                 publishbtn.className = "xerte_workspace_button";
@@ -446,11 +477,11 @@ function button_check(){
                     publish_this()
                 };
 
-                newfolderbtn.removeAttribute("disabled");
+                /*newfolderbtn.removeAttribute("disabled");
                 newfolderbtn.className = "xerte_workspace_button";
                 newfolderbtn.onclick = function () {
                     make_new_folder()
-                };
+                };*/
         }
     }
     else if(ids.length > 1)
@@ -681,7 +712,7 @@ function dynamicResize()
         xertemain_layout.close('south');
     }
     $("div.dashboard-wrapper").css("top", $("#mainHeader").height());
-    //refresh_workspace();
+    // refresh_workspace();
 }
 
 function getIcon(nodetype)
@@ -690,6 +721,7 @@ function getIcon(nodetype)
     if (nodetype){
         nodetypetemp = nodetype.replace("_group", "");
         nodetypetemp = nodetypetemp.replace("_shared", "");
+        nodetypetemp = nodetypetemp.replace("sub_", "");
     }
     switch(nodetypetemp)
     {
@@ -704,6 +736,8 @@ function getIcon(nodetype)
                 icon = "website_code/images/Icon_Folder_Group.gif";
             }else if (nodetype == "folder_shared"){
                 icon = "website_code/images/Icon_Folder_Shared.gif";
+            }else if(nodetype == 'sub_folder_shared'){
+                icon = "website_code/images/Icon_Folder.gif"
             }else{
                 icon = "website_code/images/Icon_Folder.gif";
             }
@@ -755,23 +789,25 @@ function init_workspace()
     node_types["#"] = create_node_type(null, ["workspace", "recyclebin"]); // Make sure that only the Workspace and recyclebin can be at root level
 
     // workspace
-    var workspace_children = ["folder"];
+    var workspace_children = ["folder", "folder_shared", "sub_folder_shared"];
     workspace_children = workspace_children.concat(workspace.templates);
     node_types["workspace"] = create_node_type("workspace", workspace_children);
 
     //recyclebin
-    var recyclebin_children = ["folder"];
+    var recyclebin_children = ["folder", "folder_shared", "sub_folder_shared"];
     recyclebin_children = recyclebin_children.concat(workspace.templates);
     node_types["recyclebin"] = create_node_type("recyclebin", recyclebin_children);
 
     //folder
-    var folder_children = ["folder"];
+    var folder_children = ["folder", "folder_shared", "sub_folder_shared"];
     folder_children = folder_children.concat(workspace.templates);
     node_types["folder"] = create_node_type("folder", folder_children);
 
     //shared folder
-    var shared_children = workspace.sharedtemplates;
-    node_types["folder_shared"] = create_node_type("folder_shared", shared_children);
+    node_types["folder_shared"] = create_node_type("folder_shared", folder_children);
+
+    // sub shared folder
+    node_types["sub_folder_shared"] = create_node_type("sub_folder_shared", folder_children);
 
     //group
     var group_children = workspace.grouptemplates;
@@ -823,7 +859,7 @@ function init_workspace()
             "dnd": {
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
-                    if (node[0].type.includes("_group") || node[0].type.includes("_shared")) {
+                    if (node[0].type.includes("_group") || (node[0].type.includes("folder_shared") && workspace.nodes[node[0].id].role !== "creator")) {
                         return false;
                     }
                     return true;
@@ -905,6 +941,7 @@ function init_workspace()
             {
                 case "folder":
                 case "folder_shared":
+                case "sub_folder_shared":
                 case "workspace":
                 case "recyclebin":
                 case "group":
@@ -936,11 +973,13 @@ function showInformationAndSetStatus(node)
 		{
 			case "folder":
             case "folder_shared":
+            case "sub_folder_shared":
             case "folder_group":
                 getFolderInformation(workspace.user, xot_id);
                 break;
             case "group":
-                $("#project_information").html(node.text);
+                getGroupInformation(workspace.user, node.text, xot_id);
+                //$("#project_information").html(node.text);
                 break;
 			case "workspace":
 			case "recyclebin":

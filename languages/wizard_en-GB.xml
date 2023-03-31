@@ -9,6 +9,7 @@
     </insertDialog>
     <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
+	<wikiLink tooltip="Open {x} wiki page (new window)"/>
 	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
 	<browseImportFile title="Select file to import...">
 		<dialogFilter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
@@ -99,6 +100,7 @@
 		</fileexists>
 	</importMedia>
 	<Alert>
+		<sessionError>Error: Session expired - please log in!\nReturn to the Xerte workspace and refresh the page to log in again.\nClosing the editor without logging in first may result in a loss of data.</sessionError>
 		<oklabel>Ok</oklabel>
 		<cancellabel>Cancel</cancellabel>
 		<nolabel>No</nolabel>
@@ -236,4 +238,8 @@
 		<error>Add {x} to project first</error>
 		<errorEmpty>Add data to {x} first</errorEmpty>
 	</categoryList>
+	<UploadCSV>
+		<UploadCSVBtn label = "Upload csv"/>
+		<Info label = "Warning: This will overwrite the current table, are you sure?"> </Info>
+	</UploadCSV>>
 </language>

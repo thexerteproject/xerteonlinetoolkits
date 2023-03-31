@@ -3,3 +3,4 @@ display name: Modern: Django
 description: Bright blue header and footer with graduated light blue background and round buttons.
 enabled: yes
 preview: django.jpg
+imgbtns: true

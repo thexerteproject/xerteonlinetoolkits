@@ -42,9 +42,10 @@
     color:#fff;
     border-radius:4px;
     border:#fff 1px solid;
-    padding:2px;
-    width:70px;
+    padding:4px 5px;
     cursor: pointer;
+	font-size: 1.2em;
+	font-weight: bold;
 }
 
 .xerte_button_c_no_width {
@@ -52,8 +53,14 @@
     color:#fff;
     border-radius:4px;
     border:#fff 1px solid;
-    padding:2px;
+    padding:4px 5px;
     cursor: pointer;
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+.xerte_button_c_no_width .xerte-icon, .xerte_button_c .xerte-icon {
+	margin-right: 5px
 }
 
 .xerte_button_c.disabled {

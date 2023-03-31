@@ -1,0 +1,5 @@
+.navbar .nav > li.activePage > a,
+.navbar .nav > li.activePage > a:hover, .navbar .nav > li.activePage > a:hover {
+  background-color: #363636;
+  text-decoration: none;
+}

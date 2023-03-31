@@ -28,10 +28,32 @@
   background-repeat: no-repeat;
   background-position: right;
   background-image: none;
-  width: 100%;
-  border-top-right-radius: 3vmin;
   background: #222222;
   box-shadow: none;
+}
+
+body:not(.sb_right):not(.sb_left) #x_headerBlock {
+  width: 100%;
+  border-top-right-radius: 3vmin;
+  border-top-left-radius: 3vmin;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+  color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+  color: black;
+  background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+  color: #117BAD;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+  color: black;
+  background-color: #117BAD;
 }
 
 .titlePageTxt {
@@ -454,21 +476,6 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff;
 }
 
-.x_table_page tr {
-  background: #117BAD;
-  color: #ffffff;
-}
-
-.x_table_page table tr.shaded {
-  background: green;
-  color: #ffffff;
-}
-
-.x_table_page table.header.shaded tr:first-child {
-  background: #000000;
-  color: #ffffff;
-}
-
 .x_table_page table.header.simple tr:first-child {
   border: none;
 }
@@ -542,9 +549,9 @@ div#shorturltodisplay a {
   color: darkblue;
 }
 
-.x_results_page td, th {
-  border-radius: 2vmin;
+.x_results_page td {
   background: orange;
+  color: #222222;
 }
 
 .x_results_page #questionScores th {
@@ -600,14 +607,44 @@ div#shorturltodisplay a {
   }
 }
 
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr {
+  background: #117BAD;
+  color: #ffffff;
+}
+
+table tr.shaded {
+  background: green;
+  color: #ffffff;
+}
+
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+table.footer.shaded tbody tr:last-child {
+  background: #000000;
+  color: #ffffff;
+}
+
+table.headerCol.shaded td.header {
+  background-color: inherit;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #000000;
   background-image: none;
-  width: 100%;
   margin-bottom: 1%;
   background: #ffffff;
   box-shadow: none;
+}
+
+body:not(.sb_right):not(.sb_left) #x_footerBlock {
+  width: 100%;
+  border-bottom-left-radius: 3vmin;
+  border-bottom-right-radius: 3vmin;
 }
 
 #x_footerBg {
@@ -667,42 +704,52 @@ div#shorturltodisplay a {
   background-image: none;
 }
 
-#x_nextBtn:after {
-  content: "\f138";
+.ui-button .ui-icon.x_projectIntro {
+  background-image: none;
 }
 
-#x_prevBtn:after {
-  content: "\f137";
+.ui-button .ui-icon.x_saveSession {
+  background-image: none;
 }
 
-#x_cssBtn:after {
-  content: "\f066";
+#x_nextBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_colourChangerBtn:after {
-  content: "\f042";
+#x_prevBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_mediaBtn:after {
-  content: "\f16a";
+#x_cssBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_glossaryBtn:after {
-  content: "\f02d";
+#x_colourChangerBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_helpBtn:after {
-  content: "\f128";
+#x_mediaBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_menuBtn:after {
-  content: "\f0c9";
+#x_glossaryBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
-#x_saveSessionBtn:after {
-  content: "\f0c7";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
+#x_helpBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
+}
+
+#x_introBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
+}
+
+#x_menuBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
+}
+
+#x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {
+  content: "";
 }
 
 #x_footerBlock button {
@@ -722,14 +769,15 @@ div#shorturltodisplay a {
 }
 
 #x_footerBlock button {
-  font-family: FontAwesome, sans-serif;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
   font-size: 1.9em;
   width: 1.5em;
   padding-right: 0;
   margin-left: 5px;
 }
 
-#x_footerBlock button span {
+#x_footerBlock button span.ui-button-text {
   display: none;
 }
 
@@ -742,7 +790,7 @@ div#shorturltodisplay a {
   color: #000000;
 }
 
-#x_footerChevron:hover {
+#x_footerChevron:hover, #x_footerChevron:focus {
   color: green;
 }
 
@@ -768,6 +816,44 @@ div#shorturltodisplay a {
   border: 2px solid #117BAD;
 }
 
+#x_sideBar {
+  background-color: #222222;
+}
+
+#x_sideBarToggleBtn {
+  border-color: #BFBFBF;
+  color: #ffffff;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+  color: #222222;
+  background-color: orange;
+}
+
+#x_sideBarBtnHolder button {
+  color: #ffffff;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+  border-color: #BFBFBF;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+  background-color: #117BAD;
+  border-color: #117BAD;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+  background-color: #117BAD;
+  color: #ffffff;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+  background-color: orange;
+  border-color: orange;
+  color: #ffffff;
+}
+
 @media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block;
@@ -777,10 +863,7 @@ div#shorturltodisplay a {
     vertical-align: top;
     text-align: center;
     display: inline-block;
-    padding-top: 12px;
-    padding-right: 5px;
-    padding-bottom: 0px;
-    padding-left: 5px;
+    padding: 12px 5px 0 5px;
     margin-right: -5px;
     height: 30px;
     width: auto;
@@ -789,16 +872,24 @@ div#shorturltodisplay a {
   }
 
   #x_footerBlock button {
-    font-size: 1.6em;
-    width: 1.2em;
+    font-size: 1.4rem;
+    width: 1em;
+    margin-left: 5px;
+  }
+
+  #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+    font-size: 1.4rem;
+    width: 1em;
     margin-left: 5px;
   }
 
   .pbContainer {
+    display: block;
     margin-top: 1.2em;
   }
 
   .pbTxt {
+    display: block;
     font-size: 6px;
     text-align: center;
   }
@@ -1503,15 +1594,16 @@ a:hover {
 
 #x_mainHolder {
   background: #ffffff;
-  border-top-right-radius: 3vmin;
-  border-bottom-left-radius: 3vmin;
   border: none !important;
   /*remove this to restore the default border*/
 }
 
-#x_mainHolder {
+body:not(.sb_right):not(.sb_left) #x_mainHolder {
+  border-radius: 3vmin;
   max-width: 98%;
-  max-height: 98%;
+}
+
+#x_mainHolder {
   margin: auto;
   position: absolute;
   top: 0;
@@ -1532,20 +1624,6 @@ a:hover {
   background: orange;
 }
 
-#x_headerBlock {
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
-}
-
-#x_mainHolder {
-  border-radius: 20px;
-}
-
-#x_footerBlock {
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-}
-
 .panel {
   border-radius: 2vmin;
   background: orange;
@@ -1563,7 +1641,7 @@ img {
 
 @media (min-width: 1366px) {
   /*tablet and above css below here*/
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 90%;
     max-height: 92%;
     margin: auto;
@@ -1575,7 +1653,7 @@ img {
   }
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
-  #x_mainHolder {
+  body:not(.sb_right):not(.sb_left) #x_mainHolder {
     max-width: 98%;
     max-height: 98%;
     margin: auto;

@@ -43,13 +43,40 @@ var x_languageData  = [],
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [],
 	x_specialTheme = '',
-	x_pageLoadPause = false;
+	x_pageLoadPause = false,
+	x_btnIcons = [
+	// default interface buttons icons can be overriden:
+	// x_params[custom] = should a custom btn icon be used (FA icon selected in editor)? true/false
+	// x_params[name+'Icon'] = the icon to use if custom is true
+	// defaultFA = old themes that use images for buttons can have all btns set to use these default FA icons using themeIcons checkbox
+	// defaultIconClass = if icon isn't customised via icon selectors in editor or themeIcons checkbox, fallback to use this css style (this will mean btn icons/images set in theme will be used)
+		{name: 'max',				defaultIconClass:'x_maximise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-expand-arrows-alt'}, 	// full screen on
+		{name: 'min',				defaultIconClass:'x_minimise',						custom: 'fullScreenIcons',	defaultFA: 'fas fa-compress-arrows-alt'},	// full screen off
+		{name: 'prev',				defaultIconClass:'x_prev',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-left'},	// previous page
+		{name: 'next',				defaultIconClass:'x_next',							custom: 'navIcons',			defaultFA: 'fas fa-chevron-circle-right'},	// next page
+		{name: 'toc',				defaultIconClass:'x_info',							custom: 'navIcons',			defaultFA: 'fas fa-bars'},					// table of contents
+		{name: 'home',				defaultIconClass:'x_home',							custom: 'navIcons',			defaultFA: 'fas fa-home'},					// home page
+		{name: 'hideTools',			defaultIconClass:'fa fa-angle-double-left fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-left'},		// footer tools hide
+		{name: 'showTools',			defaultIconClass:'fa fa-angle-double-right fa-lg',	custom: 'footerToolIcons',	defaultFA: 'fas fa-angle-double-right'},	// footer tools show
+		{name: 'accessibility',		defaultIconClass:'x_colourChanger',					custom: 'accessibilityIc',	defaultFA: 'fas fa-eye-slash'},				// accessibility options
+		{name: 'help',				defaultIconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
+		{name: 'saveSession',		defaultIconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
+		{name: 'glossary',			defaultIconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
+		{name: 'intro',				defaultIconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
+		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'},					// page introduction
+		{name: 'sideBarHideLeft',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
+		{name: 'sideBarHideRight',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
+		{name: 'sideBarShowLeft',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
+		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
+	],
+	x_sideBarBtns = [];
 
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
+	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
@@ -671,9 +698,7 @@ x_projectDataLoaded = function(xmlData) {
         x_params.theme = x_urlParams.theme;
     }
 
-    x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
-
-    // Setup nr of pages for tracking
+	// Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
 	XTSetOption('toComplete', markedPages);
 	XTSetOption('templateId', x_TemplateId);
@@ -722,6 +747,122 @@ x_projectDataLoaded = function(xmlData) {
 				window.location = x_embed_activation_url;
 			})
 			.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
+	}
+
+	x_getThemeInfo(x_params.theme);
+}
+
+function x_getThemeInfo(thisTheme, themeChg) {
+	// what icons / images will be used on interface buttons?
+	// some older themes use images for interface buttons (not FontAwesome icons) - it's only these themes that can fall back to use the defaultFA (all others should have FA icons set in theme)
+	// these themes should have imgbtns: true in the theme info file
+	if (thisTheme == undefined || thisTheme == "default") {
+		x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
+
+	} else {
+		$.ajax({
+			type: "GET",
+			url: x_themePath + thisTheme + '/' + thisTheme + '.info',
+			dataType: "text",
+			success: function (text) {
+				const temp = text.split('\n'),
+					themeInfo = {};
+
+				for (let i=0; i<temp.length; i++) {
+					if (temp[i].split(':').length > 1) {
+						themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+					}
+				}
+
+				x_setUpThemeBtns(themeInfo, themeChg);
+			},
+			error: function() {
+				x_setUpThemeBtns({}, themeChg);
+			}
+		});
+	}
+}
+
+function x_setUpThemeBtns(themeInfo, themeChg) {
+	let themeIcons = x_params.themeIcons;
+	if (themeIcons != 'true' || themeInfo.imgbtns != 'true') {
+		themeIcons = false;
+	}
+
+	// buttons on side bar will always use icons & not images
+	if (themeChg !== true) {
+		x_sideBarBtnInfo();
+	}
+
+	for (let i=0; i<x_btnIcons.length; i++) {
+		x_btnIcons[i].customised = false;
+		x_btnIcons[i].btnImgs = false;
+		x_btnIcons[i].iconClass = x_btnIcons[i].defaultIconClass;
+
+		if (x_params[x_btnIcons[i].custom] == 'true') {
+			// a custom icon has individually been selected in editor for this button
+			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
+			x_btnIcons[i].customised = true;
+		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
+			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
+			// either because update theme icons is checked or button is on side bar
+			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
+			x_btnIcons[i].customised = true;
+		} else if (themeInfo.imgbtns == 'true') {
+			x_btnIcons[i].btnImgs = true;
+		}
+
+	}
+
+	if (themeChg !== true) {
+		x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
+
+	} else {
+		// theme has been changed sometime after the project has already loaded
+		// change classes on interface buttons as new theme may use a different type of btn (FontAwesome / image)
+		var btns = [ { btn: $x_helpBtn, name: 'help' }, { btn: $x_introBtn, name: 'intro' }, { btn: $x_colourChangerBtn, name: 'accessibility' }, { btn: $x_nextBtn, name: 'next' }, { btn: $x_saveSessionBtn, name: 'saveSession' }, { btn: $x_glossaryBtn, name: 'glossary' } ];
+
+		for (let i=0; i<btns.length; i++) {
+			if (btns[i].btn != undefined) {
+				const btnIcon = x_btnIcons.filter(function(icon){return icon.name === btns[i].name;})[0];
+				btns[i].btn.button({ icons: { primary: btnIcon.iconClass } });
+				if (btnIcon.customised == true) { btns[i].btn.addClass("customIconBtn"); } else { btns[i].btn.removeClass("customIconBtn");  };
+				if (btnIcon.btnImgs == true) { btns[i].btn.addClass("imgIconBtn"); } else { btns[i].btn.removeClass("imgIconBtn"); };
+			}
+		}
+
+		// now do btns where icon works slightly differently
+		if ($x_cssBtn != undefined) {
+			let btnIcon;
+			if (x_fillWindow == false) {
+				btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
+			} else {
+				btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'min';})[0];
+			}
+			$x_cssBtn.button({ icons: { primary: btnIcon.iconClass } });
+			if (btnIcon.customised == true) { $x_cssBtn.addClass("customIconBtn"); } else { $x_cssBtn.removeClass("customIconBtn");  };
+			if (btnIcon.btnImgs == true) { $x_cssBtn.addClass("imgIconBtn"); } else { $x_cssBtn.removeClass("imgIconBtn"); };
+		}
+
+		if ($x_prevBtn != undefined) {
+			const btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'prev';})[0];
+			if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && btnIcon.customised === false) {
+				btnIcon.iconClass = "x_prev_hist";
+			}
+			$x_prevBtn.button({ icons: { primary: btnIcon.iconClass } });
+			if (btnIcon.customised == true) { $x_prevBtn.addClass("customIconBtn"); } else { $x_prevBtn.removeClass("customIconBtn");  };
+			if (btnIcon.btnImgs == true) { $x_prevBtn.addClass("imgIconBtn"); } else { $x_prevBtn.removeClass("imgIconBtn"); };
+		}
+
+		if ($x_menuBtn != undefined) {
+			let btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
+			if (x_params.navigation == "Historic") {
+				btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
+			}
+			$x_menuBtn.button({ icons: { primary: btnIcon.iconClass } });
+			if (btnIcon.customised == true) { $x_menuBtn.addClass("customIconBtn"); } else { $x_menuBtn.removeClass("customIconBtn");  };
+			if (btnIcon.btnImgs == true) { $x_menuBtn.addClass("imgIconBtn"); } else { $x_menuBtn.removeClass("imgIconBtn"); };
+		}
 	}
 }
 
@@ -938,6 +1079,8 @@ function x_setUp() {
 			$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 		}
 
+		$x_headerBlock.find('h2').append('<span id="x_pageTitle"></span>');
+
 		// calculate author set variables
 		if (x_params.variables != undefined) {
 			XENITH.VARIABLES.init(x_params.variables);
@@ -978,17 +1121,22 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
-		$x_footerL.prepend('<button id="x_cssBtn"></button>');
-		
-		$("#x_cssBtn")
+		$x_cssBtn = $('<button id="x_cssBtn"></button>').prependTo($x_footerL);
+
+		const maxBtnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
+
+		$x_cssBtn
 			.button({
-				icons:	{primary: "x_maximise"},
-				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+				icons:	{
+					primary: maxBtnIcon.iconClass
+				},
+				// label can now be set in editor but fall back to language file if not set
+				label: x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
 				text:	false
 			})
-            .attr("aria-label", $("#x_cssBtn").attr("title"))
+			.addClass('x_maximise')
+            .attr("aria-label", $x_cssBtn.attr("title"))
 			.click(function() {
 				// Post flag to containing page for iframe resizing
 				if (window && window.parent && window.parent.postMessage) {
@@ -996,9 +1144,9 @@ function x_desktopSetUp() {
 				}
 
 				if (x_fillWindow == false) {
-					
+
 					x_setFillWindow();
-					
+
 				} else {
 					for (var i=0; i<x_responsive.length; i++) {
 						$x_mainHolder.removeClass("x_responsive");
@@ -1019,12 +1167,14 @@ function x_desktopSetUp() {
 							});
 					}
 					$x_body.css("overflow", "auto");
-					
-					$(this).button({
-						icons:	{primary: "x_maximise"},
-						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
-					});
-					$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
+
+					$(this)
+						.button({
+							icons:	{ primary: x_btnIcons.filter(function(icon){return icon.name === 'max';})[0].iconClass },
+							label:	x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+						})
+						.addClass('x_maximise').removeClass("x_minimise");
+
 					x_fillWindow = false;
 					x_updateCss();
 				}
@@ -1034,7 +1184,12 @@ function x_desktopSetUp() {
 					.removeClass("ui-state-hover");
 			});
 
-		$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
+		if (maxBtnIcon.customised == true) {
+			$x_cssBtn.addClass("customIconBtn");
+		}
+		if (maxBtnIcon.btnImgs == true) {
+			$x_cssBtn.addClass("imgIconBtn");
+		}
 	}
 
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
@@ -1145,6 +1300,27 @@ function x_cssSetUp(param) {
     }
 }
 
+function x_KeepAlive()
+{
+	const now = new Date().getTime();
+	let url = "website_code/php/keepalive.php" + "?t=" + now;
+	if (sessionParam != undefined)
+	{
+		url = "website_code/php/keepalive.php" + sessionParam + "&t=" + now;
+	}
+
+	setTimeout(function(){
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			success: function (data) {
+				x_KeepAlive();
+			}
+		})
+	}, 600000);
+}
+
 // clunky fix for issue where Firefox triggers css loaded event (which then triggers x_continueSetUp1) everytime the responsive stylesheet is enabled when changing from small view to full screen
 var setUpComplete = false;
 function x_continueSetUp1() {
@@ -1163,19 +1339,24 @@ function x_continueSetUp1() {
 			x_dialogInfo.push({type:'menu', built:false});
 		}
 
+
+		// add project help button to footer bar that opens file (or URL) in new window or lightbox
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
-			$x_footerL.prepend('<button id="x_helpBtn"></button>');
-			
-			$("#x_helpBtn")
+
+			const helpIcon = x_btnIcons.filter(function(icon){return icon.name === 'help';})[0];
+			$x_helpBtn = $('<button id="x_helpBtn"></button>').prependTo($x_footerL);
+
+			$x_helpBtn
 				.button({
 					icons: {
-						primary: "x_help"
+						primary: helpIcon.iconClass
 					},
-					label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.helpLabel != undefined && x_params.helpLabel != "" ? x_params.helpLabel : x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 					text:	false
 				})
-				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
+				.attr("aria-label", $x_helpBtn.attr("title") + x_params.newWindowTxt)
 				.click(function() {
 					if (x_params.helpTarget != 'lightbox') {
 						window.open(x_evalURL(x_params.nfo), "_blank");
@@ -1188,10 +1369,141 @@ function x_continueSetUp1() {
 						.removeClass("ui-state-focus")
 						.removeClass("ui-state-hover");
 				});
+
+			if (helpIcon.customised == true) {
+				$x_helpBtn.addClass("customIconBtn");
+			}
+			if (helpIcon.btnImgs == true) {
+				$x_helpBtn.addClass("imgIconBtn");
+			}
 		}
 
 		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
 
+		// add project intro button to footer bar that opens lightbox
+		if (x_getIntroInfo('project') != false) {
+
+			const introInfo = x_getIntroInfo('project');
+			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'intro';})[0];
+			$x_introBtn = $('<button id="x_introBtn"></button>').prependTo($x_footerL);
+
+			$x_introBtn
+				.button({
+					icons: {
+						primary: introIcon.iconClass
+					},
+					// label can be set in editor but fall back to language file if not set
+					label: x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction"),
+					text: false
+				})
+				.click(function() {
+					const $thisBtn = $(this);
+					let lb;
+
+					// set up close btn
+					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
+						.button({ label: $.trim(x_params.introBtnTxt) })
+						.click(function() {
+							parent.window.$.featherlight.current().close();
+						});
+
+					// there are different types of content that might appear in project intro lightbox
+					if (introInfo.type == 'img') {
+
+						lb = $.featherlight({
+							image: introInfo.info.img,
+							afterOpen: function() {
+								this.$content.attr('alt', introInfo.info.tip);
+
+								const $holder = this.$content.parent('.featherlight-content');
+
+								// include project title
+								if (x_params.introTitle == 'true') {
+									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
+										.prependTo($holder)
+										.html(x_params.name);
+								}
+
+								// include start button to close lightbox
+								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
+									$introStartBtn
+										.appendTo($holder)
+										.addClass('x_introImgBtn');
+								}
+
+							}
+						});
+
+					} else if (introInfo.type == 'video') {
+
+						lb = $.featherlight($('<div id="pageIntroVideo"></div>'));
+
+						$('.featherlight-content').addClass('pageIntroVideo');
+
+						if (introInfo.info.video.indexOf("www.youtube.com") != -1 || introInfo.info.video.indexOf("//youtu") != -1) {
+							$('.featherlight-content').addClass('max youTube');
+						}
+
+						$('#pageIntroVideo')
+							.attr('title', introInfo.info.tip)
+							.mediaPlayer({
+								type: 'video',
+								source: introInfo.info.video,
+								width: '100%',
+								height: '100%',
+								pageName: 'introVideo'
+							});
+
+					} else if (introInfo.type == 'url' || introInfo.type == 'file') {
+
+						lb = $.featherlight({
+							iframe: x_evalURL(introInfo.info),
+							iframeMaxWidth: $x_mainHolder.width()*0.8,
+							iframeMaxHeight: $x_mainHolder.height()*0.8
+						});
+
+					} else if (introInfo.type == 'text') {
+
+						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
+
+						$introHolder.find('#x_pageIntroTxtInner').html(introInfo.info);
+
+						// include project title
+						if (x_params.introTitle == 'true') {
+							$('<h1 id="x_introH1"></h1>')
+								.prependTo($introHolder.find('#x_pageIntroTxt'))
+								.html(x_params.name);
+						}
+
+						// include start button to close lightbox
+						if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
+							$introStartBtn.appendTo($introHolder.find('#x_pageIntroTxt'));
+						}
+
+						lb = $.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_params.introWidth == 'Full' ? x_params.introWidth : 'Auto' ) });
+					}
+
+					// open page intro after project intro has closed if it's also set to auto-open
+					if (lb != undefined && $x_pageIntroBtn != undefined && x_getIntroInfo(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
+						lb.beforeClose = function() {
+							if ($thisBtn.data('autoOpen') == true) {
+								$x_pageIntroBtn.click();
+								$thisBtn.data('autoOpen', false);
+							}
+						};
+					}
+
+				});
+
+			if (introIcon.customised == true) {
+				$x_introBtn.addClass("customIconBtn");
+			}
+			if (introIcon.btnImgs == true) {
+				$x_introBtn.addClass("imgIconBtn");
+			}
+		}
+
+		// media is deprecated but might still be in old projects
 		if (x_params.media != undefined) {
 			x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
 				if (mediaExists) {
@@ -1217,7 +1529,127 @@ function x_continueSetUp1() {
 			});
 		}
 
-		//add optional progress bar
+
+		// if any of the pages in this project have an intro - add a button to the footer bar that will open intro when clicked
+		let pageIntro = false;
+		for (let i=0; i<x_pages.length; i++) {
+			if (pageIntro != true && x_getIntroInfo(x_pages[i]) != false) {
+				pageIntro = true;
+				break;
+			}
+		}
+
+		// add page intro button to footer bar that opens lightbox if any of the pages in this project have the introduction optional property added
+		if (pageIntro == true) {
+
+			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'pageIntro';})[0];
+
+			$x_pageIntroBtn = $('<button id="x_pageIntroBtn"></button>').appendTo($('#x_headerBlock h2'));
+
+			if (x_params.pageIntroBg != 'icon') {
+				$x_pageIntroBtn.addClass('pageIntroBg');
+			}
+
+			$x_pageIntroBtn
+				.button({
+					icons: {
+						primary: introIcon.iconClass
+					},
+					// label can be set in editor but fall back to language file if not set
+					label: x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction"),
+					text: false
+				})
+				.click(function() {
+					const thisPageIntro = x_getIntroInfo(x_currentPageXML);
+
+					// set up close btn
+					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
+						.button()
+						.click(function() {
+							parent.window.$.featherlight.current().close();
+						});
+
+					// there are different types of content that might appear in page intro lightbox
+					if (thisPageIntro.type == 'img') {
+						$.featherlight({
+							image: thisPageIntro.info.img,
+							afterOpen: function() {
+								this.$content.attr('alt', thisPageIntro.info.tip);
+
+								const $holder = this.$content.parent('.featherlight-content');
+
+								// include page title
+								if (x_currentPageXML.getAttribute('introTitle') == 'true') {
+									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
+										.prependTo($holder)
+										.html(x_currentPageXML.getAttribute('name'));
+								}
+
+								// include start button to close lightbox
+								if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
+									$introStartBtn
+										.appendTo($holder)
+										.addClass('x_introImgBtn')
+										.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
+								}
+							}
+						});
+
+					} else if (thisPageIntro.type == 'video') {
+
+						$.featherlight($('<div id="pageIntroVideo"></div>'));
+
+						$('.featherlight-content').addClass('pageIntroVideo');
+
+						if (thisPageIntro.info.video.indexOf("www.youtube.com") != -1 || thisPageIntro.info.video.indexOf("//youtu") != -1) {
+							$('.featherlight-content').addClass('max youTube');
+						}
+
+						$('#pageIntroVideo')
+							.attr('title', thisPageIntro.info.tip)
+							.mediaPlayer({
+								type: 'video',
+								source: thisPageIntro.info.video,
+								width: '100%',
+								height: '100%',
+								pageName: 'introVideo'
+							});
+
+					} else if (thisPageIntro.type == 'url' || thisPageIntro.type == 'file') {
+
+						$.featherlight({
+							iframe: x_evalURL(thisPageIntro.info),
+							iframeMaxWidth: $x_mainHolder.width()*0.8,
+							iframeMaxHeight: $x_mainHolder.height()*0.8
+						});
+
+					} else if (thisPageIntro.type == 'text') {
+
+						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
+
+						$introHolder.find('#x_pageIntroTxtInner').html(thisPageIntro.info);
+
+						// include page title
+						if (x_currentPageXML.getAttribute('introTitle') == 'true') {
+							$('<h1 id="x_introH1"></h1>')
+								.prependTo($introHolder.find('#x_pageIntroTxt'))
+								.html(x_currentPageXML.getAttribute('name'));
+						}
+
+						// include start button to close lightbox
+						if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
+							$introStartBtn
+								.appendTo($introHolder.find('#x_pageIntroTxt'))
+								.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
+						}
+
+						$.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_currentPageXML.getAttribute('introWidth') == 'Full' ? x_currentPageXML.getAttribute('introWidth') : 'Auto' ) });
+					}
+				});
+		}
+
+
+		// add optional progress bar
 		if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
 			//add a div for the progress bar
 			$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
@@ -1229,35 +1661,57 @@ function x_continueSetUp1() {
 			}
 		}
 
-		//add show/hide footer tools
-		if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
-			var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
-			var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
-			//add a div for the show/hide chevron
-			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
-			$('#x_footerChevron').prop('title', hideMsg);
-			$("#x_footerChevron").attr("aria-label", hideMsg);
+		x_dialogInfo.push({type:'colourChanger', built:false});
 
-			// chevron to show/hide function
-			$('#x_footerChevron').click(function(){
-				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
-						if($(this).is(':visible')){
-							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
-							$('#x_footerChevron').prop('title', hideMsg);
-							$("#x_footerChevron").attr("aria-label", hideMsg);
-						}else{
-							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-							$('#x_footerChevron').prop('title', showMsg);
-							$("#x_footerChevron").attr("aria-label", showMsg);
-						}
-					});
-				return(false);
-			});
-			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
-				$('#x_footerBlock .x_floatLeft').hide();
-				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-				$('#x_footerChevron').prop('title', showMsg);
+		if (x_params.accessibilityHide != 'true') {
+
+			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
+
+			$x_colourChangerBtn
+				.button({
+					icons: {
+						primary: accessibilityIcon.iconClass
+					},
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
+					text:	false
+				})
+				.attr("aria-label", $x_colourChangerBtn.attr("title") + " " + x_params.dialogTxt)
+				.click(function() {
+					if (x_params.accessibilityTarget == "lightbox") {
+
+						$.featherlight($(), {
+							contentFilters: 'ajax',
+							ajax: x_templateLocation + 'models_html5/colourChanger.html',
+							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
+						});
+
+					} else {
+						x_openDialog(
+							"colourChanger",
+							x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
+							x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
+							null,
+							null,
+							function () {
+								$x_colourChangerBtn
+									.blur()
+									.removeClass("ui-state-focus")
+									.removeClass("ui-state-hover");
+							}
+						);
+					}
+				});
+
+			if (accessibilityIcon.customised == true) {
+				$x_colourChangerBtn.addClass("customIconBtn");
 			}
+			if (accessibilityIcon.btnImgs == true) {
+				$x_colourChangerBtn.addClass("imgIconBtn");
+			}
+
+		} else {
+			$x_colourChangerBtn.remove();
 		}
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
@@ -1285,7 +1739,7 @@ function x_continueSetUp1() {
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
 		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
-			$("#x_headerBlock h1").append(
+			$("#x_headerBlock h1").prepend(
 				$("<a>")
 					.html(x_params.name)
 					.attr("href", "#")
@@ -1296,7 +1750,7 @@ function x_continueSetUp1() {
 				);
 		}
 		else {
-			$("#x_headerBlock h1").html(x_params.name);
+			$("#x_headerBlock h1").prepend(x_params.name);
 		}
 
 		// strips code out of page title
@@ -1306,17 +1760,18 @@ function x_continueSetUp1() {
 			document.title = strippedText;
 		}
 
-		var prevIcon = "x_prev";
-		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-			prevIcon = "x_prev_hist";
+		const prevIcon = x_btnIcons.filter(function(icon){return icon.name === 'prev';})[0];
+		if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && prevIcon.customised === false) {
+			prevIcon.iconClass = "x_prev_hist";
 		}
 
 		$x_prevBtn
 			.button({
 				icons: {
-					primary: prevIcon
+					primary: prevIcon.iconClass
 				},
-				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+				// label can now be set in editor but fall back to language file if not set
+				label: x_params.prevLabel != undefined && x_params.prevLabel != "" ? x_params.prevLabel : x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 				text:	false
 			})
 			.attr("aria-label", $("#x_prevBtn").attr("title"))
@@ -1354,12 +1809,22 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 
+		if (prevIcon.customised == true) {
+			$x_prevBtn.addClass("customIconBtn");
+		}
+		if (prevIcon.btnImgs == true) {
+			$x_prevBtn.addClass("imgIconBtn");
+		}
+
+		const nextIcon = x_btnIcons.filter(function(icon){return icon.name === 'next';})[0];
+
 		$x_nextBtn
 			.button({
 				icons: {
-					primary: "x_next"
+					primary: nextIcon.iconClass
 				},
-				label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
+				// label can now be set in editor but fall back to language file if not set
+				label: x_params.nextLabel != undefined && x_params.nextLabel != "" ? x_params.nextLabel : x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
 				text:	false
 			})
 			.attr("aria-label", $("#x_nextBtn").attr("title"))
@@ -1367,19 +1832,6 @@ function x_continueSetUp1() {
 				// if it's a standalone page then nothing will happen
 				var pageIndex = $.inArray(x_currentPage, x_normalPages);
 				if (pageIndex != -1) {
-					if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-						//when moving forward history is generated so ensure button is historic style
-						prevIcon = "x_prev_hist";
-							$x_prevBtn
-								.button({
-									icons: {
-										primary: prevIcon
-									},
-									label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-									text:	false
-								});
-					}
-					
 					x_changePage(x_normalPages[pageIndex+1]);
 				}
 				
@@ -1388,19 +1840,27 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 
-		var	menuIcon = "x_info",
-			menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+		if (nextIcon.customised == true) {
+			$x_nextBtn.addClass("customIconBtn");
+		}
+		if (nextIcon.btnImgs == true) {
+			$x_nextBtn.addClass("imgIconBtn");
+		}
+
+		// icon & label can new be set up in editor but fall back to default if not set
+		let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
+			menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
 		if (x_params.navigation == "Historic") {
-			menuIcon = "x_home";
-			menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+			menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
+			menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
 			$x_menuBtn.addClass("x_home");
 		}
 
 		$x_menuBtn
 			.button({
 				icons: {
-					primary: menuIcon
+					primary: menuIcon.iconClass
 				},
 				label:	menuLabel,
 				text:	false
@@ -1408,19 +1868,29 @@ function x_continueSetUp1() {
 			.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
 			.click(function() {
 				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
-					x_openDialog(
-						"menu",
-						x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
-						x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
-						null,
-						null,
-						function () {
-							$x_menuBtn
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
+					if (x_params.tocTarget == "lightbox") {
+
+						$.featherlight($(), {
+							contentFilters: 'ajax',
+							ajax: x_templateLocation + 'models_html5/menu.html',
+							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
+						});
+
+					} else {
+						x_openDialog(
+							"menu",
+							x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+							x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+							null,
+							null,
+							function () {
+								$x_menuBtn
+									.blur()
+									.removeClass("ui-state-focus")
+									.removeClass("ui-state-hover");
+							}
+						);
+					}
 				} else x_goHome();
 				
 				$(this)
@@ -1429,48 +1899,34 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 
-		x_dialogInfo.push({type:'colourChanger', built:false});
-		$x_colourChangerBtn
-			.button({
-				icons: {
-					primary: "x_colourChanger"
-				},
-				label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
-				text:	false
-			})
-			.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
-			.click(function() {
-				x_openDialog(
-					"colourChanger",
-					x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
-					x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
-					null,
-					null,
-					function () {
-						$x_colourChangerBtn
-							.blur()
-							.removeClass("ui-state-focus")
-							.removeClass("ui-state-hover");
-					}
-				);
-			});
+		if (menuIcon.customised == true) {
+			$x_menuBtn.addClass("customIconBtn");
+		}
+		if (menuIcon.btnImgs == true) {
+			$x_menuBtn.addClass("imgIconBtn");
+		}
 
 		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
 			x_dialogInfo.push({type:'saveSession', built:false});
-			var tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
+
+			// labels can now be set in editor but fall back to language file if not set
+			var tooltip = x_params.saveSessionLabel != undefined && x_params.saveSessionLabel != "" ? x_params.saveSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
 			if (typeof lti_enabled != "undefined" && lti_enabled)
 			{
-				tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
 			}
+
+			const saveSessionIcon = x_btnIcons.filter(function(icon){return icon.name === 'saveSession';})[0];
+
 			$x_saveSessionBtn
 				.button({
 					icons: {
-						primary: "x_saveSession"
+						primary: saveSessionIcon.iconClass
 					},
 					label: tooltip,
 					text: false
 				})
-				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_saveSessionBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function () {
 					x_openDialog(
 						"saveSession",
@@ -1486,11 +1942,63 @@ function x_continueSetUp1() {
 						}
 					);
 				});
+
+			if (saveSessionIcon.customised == true) {
+				$x_saveSessionBtn.addClass("customIconBtn");
+			}
+			if (saveSessionIcon.btnImgs == true) {
+				$x_saveSessionBtn.addClass("imgIconBtn");
+			}
 		}
 		else
 		{
 			$x_saveSessionBtn.remove();
+			$x_saveSessionBtn = undefined;
 		}
+		// If this LO is being tracked and is part of the install (not SCORM) keep session open
+		if (XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
+			x_KeepAlive();
+		}
+		// create side bar
+		x_setUpSideBar();
+
+		//add show/hide footer tools
+		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
+
+			// labels can now be set in editor but fall back to language file if not set
+			var hideMsg = x_params.hideToolsLabel != undefined && x_params.hideToolsLabel != "" ? x_params.hideToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools"),
+				showMsg = x_params.showToolsLabel != undefined && x_params.showToolsLabel != "" ? x_params.showToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+
+			const hideIcon = x_btnIcons.filter(function(icon){return icon.name === 'hideTools';})[0];
+			const showIcon = x_btnIcons.filter(function(icon){return icon.name === 'showTools';})[0];
+
+			// add a div for the show/hide chevron
+			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="' + hideIcon.iconClass + '" aria-hidden="true"></i></button></div>');
+			$('#x_footerChevron').prop('title', hideMsg);
+			$("#x_footerChevron").attr("aria-label", hideMsg);
+
+			// chevron to show/hide function
+			$('#x_footerChevron').click(function(){
+				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
+						if($(this).is(':visible')){
+							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="' + hideIcon.iconClass + '" aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', hideMsg);
+							$("#x_footerChevron").attr("aria-label", hideMsg);
+						}else{
+							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon.iconClass + '" aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', showMsg);
+							$("#x_footerChevron").attr("aria-label", showMsg);
+						}
+					});
+				return(false);
+			});
+			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
+				$('#x_footerBlock .x_floatLeft').hide();
+				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon.iconClass + '" aria-hidden="true"></i></div>');
+				$('#x_footerChevron').prop('title', showMsg);
+			}
+		}
+
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
 			{
@@ -1607,6 +2115,255 @@ function x_continueSetUp1() {
 
 		} else {
 			x_continueSetUp2();
+		}
+	}
+}
+
+// returns intro info - could be text, image, url or file
+function x_getIntroInfo(xml) {
+	function getInfo(attr) {
+		if (xml == 'project') {
+			return x_params[attr];
+		} else {
+			if (attr == 'intro') {
+				return xml.getAttribute('pageIntro');
+			} else {
+				return xml.getAttribute(attr);
+			}
+		}
+	}
+
+	if (xml == 'menu') {
+		return false;
+	} else if (getInfo('introType') == 'image' && getInfo('introImg') != undefined && $.trim(getInfo('introImg')) != '') {
+		return {type: 'img', info: {img: getInfo('introImg'), tip: getInfo('introTip')}};
+	} else if (getInfo('introType') == 'video' && getInfo('introVideo') != undefined && $.trim(getInfo('introVideo')) != '') {
+		return {type: 'video', info: {video: getInfo('introVideo'), tip: getInfo('introTip')}};
+	} else if (getInfo('introType') == 'url' && getInfo('introURL') != undefined && $.trim(getInfo('introURL')) != '') {
+		return {type: 'url', info: getInfo('introURL')};
+	} else if (getInfo('introType') == 'file' && getInfo('introFile') != undefined && $.trim(getInfo('introFile')) != '') {
+		return {type: 'file', info: getInfo('introFile')};
+	} else if (getInfo('intro') != undefined && $.trim(getInfo('intro')) != '') {
+		return {type: 'text', info: getInfo('intro')};
+	} else {
+		return false;
+	}
+}
+
+function x_sideBarBtnInfo() {
+	// work out what buttons will show on side bar
+	if (x_params.sideBar == 'true') {
+
+		// project level buttons
+		if (x_params.sbToC == 'true') {
+			x_sideBarBtns.push('toc');
+		}
+		if (x_params.sbProjectIntro == 'true' && x_params.intro != undefined && $.trim(x_params.intro) != '') {
+			x_sideBarBtns.push('intro');
+		}
+		if (x_params.sbProjectHelp == 'true' && x_params.nfo != undefined && $.trim(x_params.nfo) != '') {
+			x_sideBarBtns.push('help');
+		}
+
+		if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
+			x_sideBarBtns.push('glossary');
+		}
+		if (x_params.sbAccessibility == 'true' && x_params.accessibilityHide != 'true') {
+			x_sideBarBtns.push('accessibility');
+		}
+
+		// page level buttons (what the button does will change on each page)
+		// does at least one page in project have some page info added?
+		if (x_params.sbPageIntro == 'true') {
+			for (let i=0; i<x_pages.length; i++) {
+				if (x_pageInfo[i].type != "menu") {
+					if (x_params.sbPageIntro == 'true' && (
+							(x_pages[i].getAttribute('introType') == 'text' && $.trim(x_pages[i].getAttribute('pageIntro')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'image' && $.trim(x_pages[i].getAttribute('introImg')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'video' && $.trim(x_pages[i].getAttribute('introVideo')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'url' && $.trim(x_pages[i].getAttribute('introURL')) != '') ||
+							(x_pages[i].getAttribute('introType') == 'file' && $.trim(x_pages[i].getAttribute('introFile')) != '')
+					)) {
+						x_sideBarBtns.push('pageIntro');
+						break;
+					}
+				}
+			}
+		}
+
+		if (x_sideBarBtns.length > 0 && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
+			x_params.displayMode = 'full screen';
+		}
+	}
+}
+
+function x_setUpSideBar() {
+	// only create side bar if there are some buttons that will appear on it
+	// don't create side bar if it's a standalone page in a lightbox
+	const isSA = x_pageInfo[x_startPage.ID] != undefined && x_pageInfo[x_startPage.ID].standalone == true ? true : false;
+	if (x_sideBarBtns.length > 0 && !isSA) {
+
+		const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
+
+		const $x_sideBar = $('<div id="x_sideBar"><button id="x_sideBarToggleBtn"></button><div id="x_sideBarBtnHolder"></div></div>'),
+			$x_sideBarBtnHolder = $x_sideBar.find('#x_sideBarBtnHolder'),
+			$x_sideBarToggleBtn = $x_sideBar.find('#x_sideBarToggleBtn');
+
+		const minW = 30, borderW = 1;
+		let maxW = 100;
+
+		if (x_params.sideBarSize == 'large') {
+			$x_sideBar.addClass('sideBarLarge');
+		} else {
+			$x_sideBar.addClass('sideBarSmall');
+
+			if (x_params.sideBarBtnTxt != 'true') {
+				maxW = 60;
+			}
+		}
+
+		// labels can be set in editor but fall back to language file if not set
+		const closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar"),
+			openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar"),
+			closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideLeft';})[0].iconClass,
+			openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowLeft';})[0].iconClass;
+
+		if (x_params.sideBarPosition == 'right') {
+			$x_sideBar.insertAfter($x_mainHolder);
+			$x_body.addClass('sb_right');
+		} else {
+			$x_sideBar.insertBefore($x_mainHolder);
+			$x_body.addClass('sb_left');
+		}
+
+		// side bar open / close
+		$x_sideBar.data('state', x_params.sideBarShow);
+
+		$x_sideBarToggleBtn
+			.button({
+				icons: { primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon },
+				label: x_params.sideBarShow == 'closed' ? openLabel : closeLabel,
+				text: false
+			})
+			.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
+			.click(function() {
+
+				if ($x_sideBar.data('state') == 'open') {
+					$x_sideBar
+						.animate({width: minW + 'px'})
+						.data('state', 'closed');
+
+					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+						.animate({'width': $x_body.width() - minW + borderW});
+
+					$x_mainHolder
+						.animate({['padding-' + x_params.sideBarPosition]: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
+
+					$(this).button({ icons: { primary: openIcon }, label: openLabel, text: false });
+
+				} else {
+					if (overlay) {
+						$x_sideBar
+							.animate({width: maxW})
+							.data('state', 'open');
+
+					} else {
+						$x_sideBar
+							.animate({width: maxW + 'px'})
+							.data('state', 'open');
+
+						$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+							.animate({'width': $x_body.width() - maxW + borderW});
+
+						$x_mainHolder
+							.animate({['padding-' + x_params.sideBarPosition]: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
+					}
+
+					$(this).button({ icons: { primary: closeIcon }, label: closeLabel, text: false });
+
+					$x_sideBarBtnHolder.show();
+				}
+			});
+
+		// add buttons to side bar
+		const btnTxt = x_params.sideBarBtnTxt == 'true' ? true : false;
+
+		if ($.inArray('toc', x_sideBarBtns) != -1) {
+			$x_menuBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('intro', x_sideBarBtns) != -1) {
+			$x_introBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('help', x_sideBarBtns) != -1) {
+			$x_helpBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('glossary', x_sideBarBtns) != -1) {
+			$x_glossaryBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('accessibility', x_sideBarBtns) != -1) {
+			$x_colourChangerBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+		if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
+			$x_pageIntroBtn
+				.appendTo($x_sideBarBtnHolder)
+				.button({ text: btnTxt });
+		}
+
+		if (x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') {
+			let widestBtn = 0;
+
+			$x_sideBarBtnHolder.find('button').each(function() {
+				widestBtn = Math.max(widestBtn, $(this).outerWidth());
+			});
+
+			maxW = widestBtn + 30;
+
+			$x_sideBarBtnHolder.find('button').width('90%');
+		}
+
+		if (overlay) {
+			maxW = '100%';
+			$x_sideBar.width(maxW);
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
+			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
+		} else {
+			$x_sideBar.width(maxW + 'px');
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
+			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
+
+			// the text may overlap side bar - make sure sidebar expands but without text forced to be on a single line
+			if (x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') {
+
+				let widestBtn = 0;
+				$x_sideBarBtnHolder.find('button').each(function() {
+					widestBtn = Math.max(widestBtn, $(this).outerWidth());
+				});
+
+				if ($x_sideBarBtnHolder.innerWidth() < widestBtn) {
+					$x_sideBar.width('min-content');
+
+					maxW = $x_sideBar.width();
+					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
+					$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
+				}
+			}
+		}
+
+		if (x_params.sideBarShow == 'closed') {
+			$x_sideBar.width(minW + 'px');
+			$x_sideBarBtnHolder.hide();
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
+			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
 		}
 	}
 }
@@ -1922,7 +2679,7 @@ function x_checkPages(type, id, pageArray) {
 
 function x_setMaxWidth() {
 	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
-		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss','interactiveVideo'];
 		var styleString = '<style>';
 		for (var i=0; i<workingPages.length; i++) {
 			if (i>0) { styleString += ', '; }
@@ -1956,7 +2713,7 @@ function x_changePage(x_gotoPage, addHistory) {
 		}
 	}
 	catch(e) {}
-	
+
 	if (x_params.forcePage1 == 'true') {
 		addHistory = false;
 	}
@@ -2006,6 +2763,8 @@ function x_changePage(x_gotoPage, addHistory) {
 		
 	// standalone page opening in lightbox
 	} else {
+		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
+		//$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8}, {beforeClose: x_closeStandAlonePage});
 		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
 		
 		// update progress bar & record that it's been opened in lightbox
@@ -2015,6 +2774,43 @@ function x_changePage(x_gotoPage, addHistory) {
 		}
 		
 		x_pageInfo[x_gotoPage].viewedLightBox = true;
+	}
+
+	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
+	const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
+	if (overlay && !x_firstLoad && $('#x_sideBar').length > 0 && $('#x_sideBar').data('state') == 'open') {
+		$('#x_sideBar #x_sideBarToggleBtn').click();
+	}
+}
+
+
+function x_closeStandAlonePage(event) {
+	$.featherlight.defaults.beforeClose = $.noop;
+
+	var standAlonePage = this.$content[0].contentWindow.x_currentPage
+	var template_id = this.$content[0].contentWindow.x_TemplateId;
+	if (template_id == x_TemplateId) {
+		// Tom Reijnders @022-10-06
+		// We're going to do some juggling with variables/code from the standalone page
+		// Assumptions:
+		// 1. The standalone page is using the same template as the main page
+		// 2. Therefore the standalone page is using the same x_pageInfo array as the main page
+		// 3. The XTInitialise code made sure that the iframe state variable is actually pointing to the main state vairable
+		//    i.e. when calling the leavePage inside the ifraeme, it's updateing the main state variable
+		// 4. It is necessary to call the leavePage from the ifarem in case the pagetype has not been yet in the main page
+		var pageObj, pageObjType;
+
+		if (x_pageInfo[standAlonePage].type == "text") {
+			pageObjType = 'simpleText';
+		} else {
+			pageObjType = x_pageInfo[standAlonePage].type
+		}
+		pageObj = eval('this.$content[0].contentWindow.' + pageObjType);
+		if (typeof pageObj.leavePage === 'function') {
+			pageObj.leavePage();
+		}
+
+		XTExitPage(standAlonePage);
 	}
 }
 
@@ -2075,7 +2871,13 @@ function x_changePageStep4(x_gotoPage) {
 }
 
 function x_endPageTracking(pagechange, x_gotoPage) {
-    // End page tracking of x_currentPage
+    if (pagechange == undefined) {
+		pagechange = false;
+	}
+	if (x_gotoPage == undefined) {
+		x_gotoPage = -1;
+	}
+	// End page tracking of x_currentPage
     if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {
         var pageObj;
@@ -2287,7 +3089,7 @@ function x_passwordPage(pswds) {
 			
 			x_pageInfo[x_currentPage].passwordPass = false;
 			
-			$("#x_headerBlock h2").html(pageTitle);
+			$("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 			$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 			
 			x_updateCss(false);
@@ -2338,12 +3140,21 @@ function x_passwordPage(pswds) {
 }
 
 function x_changePageStep6() {
-    $("#x_headerBlock h2").html(pageTitle);
+    $("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
     x_updateCss(false);
 
 	$("#x_pageDiv").show();
+
+	// enable page intro button depending on whether this info exists for the current page
+	if ($x_pageIntroBtn != undefined) {
+		if (!x_isMenu() && x_getIntroInfo(x_currentPageXML) != false) {
+			$x_pageIntroBtn.show();
+		} else {
+			$x_pageIntroBtn.hide();
+		}
+	}
 
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
@@ -2362,6 +3173,10 @@ function x_changePageStep6() {
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
+
+		// get short page type var
+		var pt = x_pageInfo[x_currentPage].type;
+		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
 
 		if (!x_isMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
@@ -2388,10 +3203,6 @@ function x_changePageStep6() {
 		}
 
         x_setUpPage();
-
-        // get short page type var
-        var pt = x_pageInfo[x_currentPage].type;
-        if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
 
         // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
         if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
@@ -2435,6 +3246,11 @@ function x_changePageStep6() {
 		$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
 		
 		x_focusPageContents(false);
+
+		// show page introduction immediately if set to always auto open
+		if (!x_isMenu() && $x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
+			$x_pageIntroBtn.click();
+		}
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
@@ -2671,16 +3487,7 @@ function x_setUpPage() {
 	
     if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
         $x_prevBtn.button("enable");
-		
-		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-			// should the normal back or historic back button be used?
-			if (x_pageHistory.length > 1) {
-				$x_prevBtn.button({ icons: { primary: 'x_prev_hist' } });
-			} else {
-				$x_prevBtn.button({ icons: { primary: 'x_prev' } });
-			}
-		}
-		
+
     } else {
         $x_prevBtn
             .button("disable")
@@ -2727,7 +3534,15 @@ function x_setUpPage() {
     }
 
     if (x_firstLoad == true) {
+        // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
+		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
+			$x_introBtn
+				.data('autoOpen', true)
+				.click();
+		}
+
         $x_mainHolder.css("visibility", "visible");
+
 		if (x_params.backgroundGrey == "true") {
 			$("#x_mainBg").show();
 			$("#x_mainBg").gray(); // won't work properly if called when hidden
@@ -2739,7 +3554,8 @@ function x_setUpPage() {
 			}
 		}
 		$('#preventFlash').remove();
-        x_firstLoad = false;
+
+		x_firstLoad = false;
     }
 }
 
@@ -2770,12 +3586,24 @@ function x_pageLoaded() {
 	if (!x_isMenu()) {
 		x_setUpLightBox();
 		
+		// plugin files are loaded after page is loaded
+		if (plugins[pt] != undefined) {
+			if (plugins[pt].script != undefined && plugins[pt].script != "" && $("#x_pagePluginScript").length == 0) {
+				$("#x_page" + x_currentPage).append('<script id="x_pagePluginScript">' +  plugins[pt].script + '</script>');
+				// calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
+				if (typeof window[pt].initPlugin === "function") window[pt].initPlugin();
+			}
+			if (plugins[pt].css != undefined && plugins[pt].css != "" && $("#x_pagePluginCSS").length == 0) {
+				$("#x_page" + x_currentPage).append('<style type="text/css" id="x_pagePluginCSS">' +  plugins[pt].css + '</style>');
+			}
+		}
+
 		// script & style optional properties for each page added after page is otherwise set up
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
-		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
-			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "" && $("#x_pageCSS").length == 0) {
+			$("#x_page" + x_currentPage).append('<style type="text/css" id="x_pageCSS">' +  x_currentPageXML.getAttribute("styles") + '</style>');
 		}
 	}
 
@@ -2811,6 +3639,14 @@ function x_pageLoaded() {
 	
 	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
+
+	// show page introduction immediately on page load if set to auto open - unless the project intro is also set to auto-open at this time
+	if ($x_pageIntroBtn != undefined && x_getIntroInfo(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
+		var projectIntroOpening = x_firstLoad == true && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0)) ? true : false;
+		if (projectIntroOpening != true) {
+			$x_pageIntroBtn.click();
+		}
+	}
 }
 
 //convert picker color to #value
@@ -2846,6 +3682,11 @@ function x_addNarration(funct, arguments) {
 					autoPlay    :x_currentPageXML.getAttribute("playNarration"),
 					autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
 				});
+
+				// manually add a transcript button to the end of the narration bar
+				if (x_currentPageXML.getAttribute("narrationTranscript") != undefined && x_currentPageXML.getAttribute("narrationTranscript") != '') {
+					x_addAudioTranscript($("#x_footerBlock #x_pageNarration"), x_currentPageXML.getAttribute("narrationTranscript"));
+				}
 			}
 			
 			if (funct != undefined) {
@@ -2859,10 +3700,28 @@ function x_addNarration(funct, arguments) {
 	}
 }
 
+// function adds transcript button to the end of audio bars, e.g. page narration - but also called from page models
+function x_addAudioTranscript($audioHolder, transcriptTxt, decode) {
+
+	if (decode == true) {
+		transcriptTxt = $("<div/>").html(transcriptTxt).text();
+	}
+
+	$audioHolder.addClass('audioTranscript');
+
+	const transcriptLabel = x_getLangInfo(x_languageData.find('mediaElementControls').find('transcriptButton')[0], 'label', 'Transcript');
+
+	$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
+		.appendTo($audioHolder.find('.mejs-container .mejs-controls'))
+		.click(function() {
+			$.featherlight(transcriptTxt);
+		});
+}
+
 // function adds timer bar above main controls on interface - optional property that can be added to any interactivity page
 function x_addCountdownTimer() {
     var x_timerLangInfo = [
-		x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"),
+		x_currentPageXML.getAttribute("timerText") != null && x_currentPageXML.getAttribute("timerText") != "" ? x_currentPageXML.getAttribute("timerText") : x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"),
 		x_currentPageXML.getAttribute("timerLabel") != null && x_currentPageXML.getAttribute("timerLabel") != "" ? x_currentPageXML.getAttribute("timerLabel") : x_getLangInfo(x_languageData.find("timer").find("timeUp")[0], "name", "Time up"),
 		x_getLangInfo(x_languageData.find("timer").find("seconds")[0], "name", "seconds")
 	];
@@ -3019,6 +3878,12 @@ function x_loadPageBg(loadModel) {
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
 	if (updatePage != false) {
+
+		if ($('#x_sideBar').length > 0) {
+			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+				.width($x_body.width() - $('#x_sideBar').width() + 1);
+		}
+
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
 		if ($("#x_pageNarration").length > 0) {
 			if ($("#x_pageNarration audio").css("display") == "none") { // flash
@@ -3128,7 +3993,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     {
                         $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function () {
                             x_setDialogSize($x_popupDialog, position);
-							
+
 							if (type == "menu") {
 								menu.showCurrent();
 							}
@@ -3355,13 +4220,16 @@ function x_setFillWindow(updatePage) {
     $x_body.css("overflow", "hidden");
     x_updateCss(updatePage);
     window.scrolling = false;
-	
-    $("#x_cssBtn").button({
-		icons:  {primary: "x_minimise"},
-		label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
-	});
-	
-	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
+
+    $("#x_cssBtn")
+		.button({
+			icons:  {
+				primary: x_btnIcons.filter(function(icon){return icon.name === 'min';})[0].iconClass
+			},
+			// label can now be set in editor but fall back to language file if not set
+			label: x_params.minLabel != undefined && x_params.minLabel != "" ? x_params.minLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
+		})
+		.addClass('x_minimise').removeClass("x_maximise");
 }
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
@@ -3685,7 +4553,7 @@ function x_saveSessionBtnIsStyled() {
 	// Offline doesn't use save session anyway, so return true
 	if (xot_offline)
 		return true;
-	if (x_params.theme != undefined && x_params.theme == "default")
+	if (x_params.theme == undefined || x_params.theme == "default") // old projects might not have a theme so fall back to using default
 		return true;
 	var files = $.map(document.styleSheets, function(s) {
 		// All css files in the themes folders except responsivetext.css
@@ -3705,6 +4573,26 @@ function x_saveSessionBtnIsStyled() {
 		return false;
 	}
 	return isStyled;
+}
+
+
+// video has loaded to intro lightbox - make sure it's sized correctly (MP4 only)
+function x_introMediaMetadata($video, wh) {
+	$video.data({
+		width: wh[0],
+		height: wh[1]
+	});
+
+	$video.closest(".mejs-video").css({
+		"maxWidth": wh[0] + 'px',
+		"maxHeight": wh[1] + 'px'
+	});
+
+	// resize if the media is the wrong size for its holder
+	// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
+	$('.featherlight-content').addClass('max');
+	$x_window.resize();
+	$('.featherlight-content').removeClass('max');
 }
 
 
@@ -4210,8 +5098,8 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			if (dataInfo == true) {
 				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
 				// replace with the variable text
-				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');console.log(tempText);
-				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));console.log(tempText);
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));
 				
 			} else {
 				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
@@ -4399,31 +5287,51 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				return a.word.length > b.word.length ? -1 : 1;
 			});
 
-			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
-			$("#x_glossaryBtn")
+			const glossaryIcon = x_btnIcons.filter(function(icon){return icon.name === 'glossary';})[0];
+			$x_glossaryBtn = $('<button id="x_glossaryBtn"></button>').prependTo($x_footerL);
+
+			$x_glossaryBtn
 				.button({
 					icons: {
-						primary: "x_glossary"
+						primary: glossaryIcon.iconClass
 					},
-					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 					text:	false
 				})
-				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_glossaryBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
-					x_openDialog(
-						"glossary",
-						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
-						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
-						null,
-						null,
-						function () {
-							$("#x_glossaryBtn")
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
+					if (x_params.glossaryTarget == "lightbox") {
+
+						$.featherlight($(), {
+							contentFilters: 'ajax',
+							ajax: x_templateLocation + 'models_html5/glossary.html',
+							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
+						});
+
+					} else {
+						x_openDialog(
+							"glossary",
+							x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
+							x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
+							null,
+							null,
+							function () {
+								$x_glossaryBtn
+									.blur()
+									.removeClass("ui-state-focus")
+									.removeClass("ui-state-hover");
+							}
+						);
+					}
 				});
+
+			if (glossaryIcon.customised == true) {
+				$x_glossaryBtn.addClass("customIconBtn");
+			}
+			if (glossaryIcon.btnImgs == true) {
+				$x_glossaryBtn.addClass("imgIconBtn");
+			}
 
 			// Handle the closing of glossary bubble with escape key
 			var $activeTooltip, escapeHandler = function(e) {
@@ -4447,7 +5355,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
-							if (x_glossary[i].definition.indexOf("https://xottest.dlearning.nl/USER-FILES/100-inge-Nottingham/") != -1) {
+							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
 								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
 							} else {
 								myDefinition += x_glossary[i].definition;
@@ -4522,12 +5430,26 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		}
 		tableData += "</table>";
 
+		if ($("#glossaryItems").parents('.featherlight').length > 0) {
+			tableData = '<div class="glossaryHolder">' + tableData + '</div>';
+		}
+
 		$("#glossaryItems").append(tableData);
 		
 		x_pageContentsUpdated();
 		
 		// add class for shaded rows rather than using css selector as doesnt work for IE8 & below
 		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
+
+		// lightbox
+		if ($("#glossaryItems").parents('.featherlight').length > 0) {
+
+			$('#glossaryItems').prepend('<h1 id="x_introH1">' + (x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary")) + '</h1>');
+
+			$('#glossaryItems .glossaryHolder')
+				.height($('.featherlight-content').height() - $('#x_introH1').outerHeight())
+				.css('overflow', 'auto');
+		}
 	},
 
 	insertText = function(tempText, exclude, list) {
@@ -4556,7 +5478,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			let div = document.createElement("div");
 			div.appendChild(fragment);
 			tempText = div.innerHTML;
-			div.remove();
+			$(div).remove();
 
 			// Replace all our tokens with the glossary tag
 			for (var k=0, len=x_glossary.length; k<len; k++) {
@@ -4583,14 +5505,14 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		})(fragment);
 		return textNodes;
 	},
-
+	
 	touchStartHandler = function() {
 		$x_mainHolder.off("click.glossary");
 		if ($x_glossaryHover != undefined) {
 			$x_glossaryHover.hide();
 		}
 	};
-
+		
 	// make some public methods
 	self.init = init;
     self.buildPage = buildPage;

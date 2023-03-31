@@ -1,17 +1,16 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
+	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
     </newNodes>
   </pageWizard>
 
   <!-- INTERACTIVE VIDEO======================= -->
-  <interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
+  <interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationMedia" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_interactive_video_page" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
-		
 
-		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
+		<intro label="Introduction Panel" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true" deprecated="Although the introduction panel still works, the new introduction optional property is now the recommended way of adding an introduction to the page"/>
 
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
@@ -27,7 +26,7 @@
 		
 		<mediaGroup type="group" label="Video" tooltip="Add video (file or url)">
 			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
+			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
@@ -36,7 +35,7 @@
 
 	</ivMediaPanel>
 
-	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" max="1">
+	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" duplicate="false">
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
@@ -91,14 +90,14 @@
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
 		<newNodes>
-			<ivSynchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
+			<ivSynchSlide><![CDATA[<synchSlide name="" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
 		</newNodes>
 
 	</ivSynchSlides>
 	
 	<ivSynchSlide menuItem="Slide" icon="icBullet" remove="true">
 
-		<name label="Image Description" type="TextInput"/>
+		<name label="Image Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
@@ -119,7 +118,7 @@
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100"/>
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
-		<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>
+		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<disable label="Disable Controls" type="CheckBox"/>
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>

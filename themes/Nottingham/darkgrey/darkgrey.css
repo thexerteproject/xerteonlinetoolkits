@@ -134,6 +134,19 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -84px 0px; }
 
+.ui-button .ui-icon.x_projectIntro { background-image: url("project_intro.svg");background-position: 0px 0px;}
+.ui-button.ui-state-hover .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_projectIntro {	background-position: -84px 0px; }
+
+#x_footerBlock button.customIconBtn {
+	color: #CFCFCF;
+}
+
+#x_footerBlock button.customIconBtn:not(.ui-state-disabled):hover, #x_footerBlock button.customIconBtn:not(.ui-state-disabled):focus {
+	color: #FFFFFF;
+}
+
 .ui-dialog .ui-widget-header {
 border: 1px solid #010101;
 /*background: #010101 url(ui-bg_highlight-soft_75_2d2a2a_1x100.svg) 50% 50% repeat-x;*/
@@ -174,8 +187,8 @@ background-image: none;
 .x_grid_page #grid ul li {
 	color: black !important;
 }
-.x_grid_page li.ui-state-default.static {
-	background: white !important;
+.x_grid_page #gridBorders {
+	background-color: inherit;
 }
 #x_footerBlock .ui-button-text{
 	color:white;
@@ -184,3 +197,69 @@ background-image: none;
 	background-color: #cfcfcf;
 	color: #1c1c1c;
 }
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: #cfcfcf;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: #1c1c1c;
+	background-color: #cfcfcf;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #FFFFFF;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: #1c1c1c;
+	background-color: #FFFFFF;
+}
+
+
+/*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: #1c1c1c;
+}
+.x_thumbnailViewer_page #thumbBar button { color: #CFCFCF; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: #FFFFFF; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: #FFFFFF; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: #FFFFFF; }
+
+
+/***********************************Tables*************************************/
+/*default background of table rows*/
+.x_grid_page table tr,
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr,
+.x_results_page tr td {
+  background: #1c1c1c;
+}
+
+table th, table td, table tr, table {
+	border-color: #cfcfcf !important;
+}
+
+/*background of shaded/alternate rows*/
+table tr.shaded,
+.x_results_page tr.alt td {
+	background:	rgba(255,255,255,0.1);
+}
+
+/*header/footer shaded*/
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child,
+table.footer.shaded tbody tr:last-child,
+table.headerCol.shaded td.header {
+	background:	rgba(255,255,255,0.4);
+	color: #1c1c1c;
+}
+
+
+.x_results_page tr.alt td

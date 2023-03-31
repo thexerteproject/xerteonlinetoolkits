@@ -3,3 +3,4 @@ display name: Simple: Black & White
 description: Black header and footer, white background, round image buttons.
 enabled: yes
 preview: blackround.jpg
+imgbtns: true

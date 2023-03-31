@@ -56,7 +56,7 @@ if(is_user_admin()) {
         error_log_message=?, max_error_size=?, authentication_method=?, ldap_host=?, ldap_port=?, bind_pwd=?, basedn=?, bind_dn=?, flash_save_path=?, flash_upload_path=?, flash_preview_check_path=?, flash_flv_skin=?,
         site_email_account=?, headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?, import_path=?,
         apache=?, enable_mime_check=?, mimetypes=?, enable_file_ext_check=?, file_extensions=?, enable_clamav_check=?, clamav_cmd=?, clamav_opts=?, LDAP_preference=?, LDAP_filter=?, integration_config_path=?,
-        admin_username=?, admin_password=?, LRS_Endpoint=?, LRS_Key=?, LRS_Secret=?, dashboard_enabled=?, dashboard_nonanonymous=?, xapi_dashboard_minrole=?, dashboard_period=?, dashboard_allowed_links=?, 
+        admin_username=?, LRS_Endpoint=?, LRS_Key=?, LRS_Secret=?, dashboard_enabled=?, dashboard_nonanonymous=?, xapi_force_anonymous_lrs=?, xapi_dashboard_minrole=?, dashboard_period=?, dashboard_allowed_links=?, 
         globalhidesocial=?, globalsocialauth=?";
 
     $data = array($_POST['site_url'], $_POST['site_title'], $_POST['site_name'], $_POST['site_logo'], $_POST['organisational_logo'], $_POST['welcome_message'], $site_texts, base64_encode(stripcslashes($_POST['news_text'])), base64_encode(stripcslashes($_POST['pod_one'])), base64_encode(stripcslashes($_POST['pod_two'])), $copyright, $_POST['demonstration_page'], base64_encode(stripcslashes($_POST['form_string'])),
@@ -66,12 +66,18 @@ if(is_user_admin()) {
         $_POST['flash_preview_check_path'], $_POST['flash_flv_skin'], $_POST['site_email_account'], $_POST['headers'], $_POST['email_to_add_to_username'], $_POST['proxy1'], $_POST['port1'],
         $_POST['site_session_name'], $_POST['synd_publisher'], $_POST['synd_rights'], $_POST['synd_license'], str_replace("\\", "/", $_POST['import_path']), $_POST['apache'],
         $enable_mime_check, str_replace(' ', '', $_POST['mimetypes']), $enable_file_ext_check, str_replace(' ', '', $_POST['file_extensions']), $enable_clamav_check, str_replace("\\", "/", $clamav_cmd), $clamav_opts,
-        $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'], $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret'],
-        $_POST['site_xapi_dashboard_enable'], $_POST['site_xapi_dashboard_nonanonymous'], $_POST['xapi_dashboard_minrole'], $_POST['site_xapi_dashboard_period'], $_POST['xapi_dashboard_urls'], $_POST['globalhidesocial'], $_POST['globalsocialauth']);
+        $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret'],
+        $_POST['site_xapi_dashboard_enable'], $_POST['site_xapi_dashboard_nonanonymous'], $_POST['site_xapi_force_anonymous_lrs'],$_POST['xapi_dashboard_minrole'], $_POST['site_xapi_dashboard_period'], $_POST['xapi_dashboard_urls'], $_POST['globalhidesocial'], $_POST['globalsocialauth']);
+
 
     $res = db_query($query, $data);
-
-    if ($res!==false) {
+    if ($res !== false) {
+        #seperate query to change password
+        if (!empty($_POST['admin_password'])) {
+            $res_pw = db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}sitedetails SET admin_password = ?", array(hash('sha256', $_POST['admin_password'])));
+        }
+    }
+    if ($res!==false && $res_pw !== false) {
         $query = "UPDATE {$xerte_toolkits_site->database_table_prefix}ldap SET ldap_knownname = 'from_sitedetails', ldap_host = ?, ldap_port = ?, ldap_username = ?, ldap_password = ?, ldap_basedn = ?, ldap_filter = ?, ldap_filter_attr = ? where ldap_id=1";
 
         $numaffected = db_query($query, array($_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_dn'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['LDAP_filter'], $_POST['LDAP_preference']));
@@ -93,7 +99,7 @@ if(is_user_admin()) {
             }
         }
     }
-    if($res!==false && $res2){
+    if($res!==false && $res2 && $res_pw !== false){
 
         $msg = "Site changes saved by user from " . $_SERVER['REMOTE_ADDR'];
         receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);

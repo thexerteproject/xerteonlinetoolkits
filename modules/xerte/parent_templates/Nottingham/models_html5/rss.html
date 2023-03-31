@@ -59,10 +59,7 @@
 			$panel = $("#pageContents .panel");
 			$resultsHolder = $pageContents.find("#resultsHolder");
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
-
 			$("#loadingSpinner").show();
-
-		//	google.load("feeds", "1");
 			
 			rssURL = x_currentPageXML.getAttribute("url");
 			
@@ -112,16 +109,18 @@
 						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
 						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
 						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
-						resultsString += '<div><a target="_blank" href="' + item.link + '">'+ item.title + '</a><br><br>';
+						resultsString += '<div class="s"><a target="_blank" href="' + item.link + '">'+ item.title + '</a><br><br>';
 
 
 						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
 							// snippet is a bit long so shorten it
 							if (description != "undefined" && description.length > 400) {
 								var cutOff = 400 + description.substr(400).indexOf(' ');
-								resultsString += '<p class="rssDescription">' + description.substring(0, cutOff) + '...</p>';
+								var $html = $('<div>').html(description.substring(0, cutOff));
+								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '...</p>';
 							} else {
-								resultsString += '<p class="rssDescription">' + description + '</p>';
+								var $html = $('<div>').html(description);
+								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '</p>';
 							}
 						}
 

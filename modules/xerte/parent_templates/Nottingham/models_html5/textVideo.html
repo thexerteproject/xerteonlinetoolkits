@@ -33,8 +33,6 @@
 					iframeRatio = $pageVideo.data('iframeRatio'),
 					videoDimensions = $pageVideo.data('dimensions');
 			const ratio = iframeRatio[0] / iframeRatio[1];
-			console.log("Ratio: " + iframeRatio);
-			console.log("Dimension: " + videoDimensions);
 
 			// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
 			var iframeMax = x_currentPageXML.getAttribute("iframeMax");
@@ -45,22 +43,21 @@
 			} else {
 				iframeMax = 0.6;
 			}
-			console.log("iframeMax: " + iframeMax);
 
 			var maxW = x_browserInfo.mobile == true ? 1 : iframeMax,
 					maxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($('.x_floatRight').outerHeight() - $('.x_floatRight').height());
 
 			var width = $x_pageDiv.width() * maxW;
-			var height = (width / ratio) + 35;
+			// make sure width of video isn't more than screen width when padding & margin on panel are accounted for
+			if (width > $x_pageDiv.width() - ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width())) {
+				width -= ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width());
+			}
+			var height = (width / ratio);
 
 			if (x_browserInfo.mobile != true && height > maxH) {
 				height = maxH;
-				width = ((height - 35) * ratio);
+				width = height * ratio;
 			}
-			console.log("maxW: " + maxW);
-			console.log("maxH: " + maxH);
-			console.log("width: " + width);
-			console.log("height: " + height);
 			$pageVideo
 					.width(width)
 					.height(height);
@@ -68,16 +65,17 @@
 			// Race conditions can cause the video to not be the correct size, so use a timeout to make sure it's the right size
 			setTimeout(function () {
 				$(".popcornMedia").each(function (i) {
-					console.log("PopcornMedia: " + i);
 					if (videoDimensions) {
-						console.log("resizeEmbededMedia: wxh=" + videoDimensions[0] + "x" + videoDimensions[1]);
 						resizeEmbededMedia($(this), {width: videoDimensions[0], height: videoDimensions[1]}) //popcorn mediaconstructor
 					} else {
-						console.log("resizeEmbededMedia: ratio=" + ratio);
 						resizeEmbededMedia($(this), {ratio: ratio}) //popcorn mediaconstructor
 					}
 				});
 			}, 100);
+
+			if ($(".transcriptHolder").length > 0) {
+				$(".transcript").width($pageVideo.width());
+			}
 		}
 		
 		this.init = function()
@@ -106,6 +104,7 @@
 		this.setUp = function() {
 			// Reset video for pageChanged
 			$("#pageVideo").html("");
+			$('.transcriptHolder').remove();
 			// text align
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			var $panel = $("#pageContents .panel");
@@ -128,21 +127,17 @@
 				iframeRatio = ratio ? ratio : '16:9';
 
 			if (videoSrc.substr(0,7) == "<iframe") {
-				$("#pageContents .panel").removeClass("panel inline");
 				
 				$pageVideo
 					.addClass('iframe')
 					.append(videoSrc);
-				
-				if ($("#transcriptHolder").length > 0) {
-					$("#transcript").width($pageVideo.width());
-				}
 
 				iframeRatio = iframeRatio.split(':');
 				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
 					iframeRatio = [16,9];
 				}
 				$pageVideo.data('iframeRatio', iframeRatio);
+
 				/*
 				setTimeout(function(){
 					// Set the height of the $pageVideo container
@@ -150,6 +145,33 @@
 					$pageVideo.height(height);
 				}, 250);
 				*/
+
+				if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != '') {
+
+					$transcriptHolder = $('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">'
+					+ x_addLineBreaks(x_currentPageXML.getAttribute("transcript")) + '</div></div>').insertAfter($pageVideo);
+
+					$transcriptHolder.find(".transcript").hide();
+					$transcriptHolder.find(".transcriptBtn")
+						.button({
+							icons: {secondary:"fa fa-x-btn-hide"},
+							label: x_currentPageXML.getAttribute("transcriptTabTxt") ? x_currentPageXML.getAttribute("transcriptTabTxt") : "Transcript"
+						})
+						.click(function() {
+							// transcript slides in and out of view on click
+							var $transcript = $(this).next(".transcript");
+							if ($transcript.is(":hidden") == true) {
+								$(this).button({icons: {secondary:"fa fa-x-btn-show"}});
+								$transcript.slideDown();
+							} else {
+								$transcript.slideUp();
+								$(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
+							}
+						});
+
+				} else {
+					$("#pageContents .panel").removeClass("panel inline");
+				}
 
 			} else {
 				var videoDimensions;// = [320,240];
@@ -174,8 +196,6 @@
 				$pageVideo.data('iframeRatio', iframeRatio);
 				const ratio = iframeRatio[0] / iframeRatio[1];
 
-				console.log("#pageVideo: " + $pageVideo.width() + "x" + $pageVideo.height());
-				console.log("loadMedia: w=" + (videoDimensions ? Number(videoDimensions[0]) : 0) + ", h=" + (videoDimensions ? Number(videoDimensions[1]) : 0) + ", ratio=" + ratio);
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
 					width: videoDimensions ? Number(videoDimensions[0]) : 0,
@@ -200,10 +220,10 @@
 					.mouseout(function(){
 						$(".mejs-controls").hide();
 					});
-				
-				if ($("#transcriptHolder").length > 0) {
-					$("#transcript").width(videoDimensions[0]);
-				}
+			}
+
+			if ($(".transcriptHolder").length > 0) {
+				$(".transcriptHolder").insertAfter($pageVideo);
 			}
 			
 			textVideo.sizeChanged();

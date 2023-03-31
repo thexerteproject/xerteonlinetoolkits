@@ -287,6 +287,13 @@ if (!isset($_SESSION['XAPI_PROXY']))
         $status = array('http_code' => 'ERROR');
 
     } else {
+        $headers = getallheaders();
+        if (isset($headers['X-XERTE-USEDB']) && $lrs['db']) {
+            $usedb = true;
+        }
+        else {
+            $usedb = false;
+        }
         _debug("xapi_proxy: Request uri:  " . $_SERVER["REQUEST_URI"]);
 
         $pos = strpos($_SERVER["REQUEST_URI"], "xapi_proxy.php");
@@ -311,16 +318,20 @@ if (!isset($_SESSION['XAPI_PROXY']))
             else{
                 $api_call_path = "?";
             }
-            if ($lrs['aggregate']  && strpos($api_call, "pipeline") !== false)
-            {
-                $url = $lrs['aggregateendpoint'] . $api_call;
+            if ($usedb) {
+                $url = $lrs['dblrsendpoint'] . $api_call;
+                $lrs_key = $lrs['dblrskey'];
+                $lrs_secret = $lrs['dblrssecret'];
             }
-            else
-            {
-                $url = $lrs['lrsendpoint'] . $api_call;
+            else {
+                if ($lrs['aggregate'] && strpos($api_call, "pipeline") !== false) {
+                    $url = $lrs['aggregateendpoint'] . $api_call;
+                } else {
+                    $url = $lrs['lrsendpoint'] . $api_call;
+                }
+                $lrs_key = $lrs['lrskey'];
+                $lrs_secret = $lrs['lrssecret'];
             }
-            $lrs_key = $lrs['lrskey'];
-            $lrs_secret = $lrs['lrssecret'];
         }
 
 
@@ -345,7 +356,6 @@ if (!isset($_SESSION['XAPI_PROXY']))
             $status = array('http_code' => 'ERROR');
 
         } else {
-            $headers = getallheaders();
             $cHeader = convertToCurl($headers);
 
             //_debug("Headers: " . print_r($headers, true));
@@ -385,7 +395,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
             }
 
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_HEADER, true);
+            curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
             curl_setopt($ch, CURLOPT_USERAGENT, isset($_GET['user_agent']) && $_GET['user_agent'] ? $_GET['user_agent'] : $_SERVER['HTTP_USER_AGENT']);
@@ -407,12 +417,27 @@ if (!isset($_SESSION['XAPI_PROXY']))
             // Disable SSL peer verification
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-            $response = curl_exec($ch);
-            if ($response === false)
+            $headers = array();
+            // this function is called by curl for each header received
+            curl_setopt($ch, CURLOPT_HEADERFUNCTION,
+                function($curl, $header) use (&$headers)
+                {
+                    $len = strlen($header);
+                    $header = explode(':', $header, 2);
+                    if (count($header) < 2) // ignore invalid headers
+                        return $len;
+
+                    $headers[strtolower(trim($header[0]))][] = trim($header[1]);
+
+                    return $len;
+                }
+            );
+
+            $contents = curl_exec($ch);
+            if ($contents === false)
             {
                  _debug("Error: ", curl_error($ch));
             }
-            list($header, $contents) = preg_split('/([\r\n][\r\n])\\1/', $response, 2);
 
             $status = curl_getinfo($ch);
             $info = curl_getinfo($ch, CURLINFO_HEADER_OUT);

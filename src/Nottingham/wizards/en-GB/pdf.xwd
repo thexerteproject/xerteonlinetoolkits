@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- PDF================================ -->
-  <pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#pdffile" remove="true">
+  <pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#pdffile" wiki="https://xerte.org.uk/wiki/doku.php?id=media_pdf_file_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>

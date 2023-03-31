@@ -206,15 +206,15 @@ function getTemplates($metadataPrefix,$from,$until) {
           {$prefix}logindetails as ld 
           where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.access_to_whom = 'Public'";
 
-    if($from && $until){
+    if($from != "" && $until != ""){
         $q = $q . "and td.date_modified between ? and ?";
         $templates = db_query($q, array($from,$until));
     }
-    else if($until){
+    else if($until != ""){
         $q = $q . "and td.date_modified <= ?";
         $templates = db_query($q, array($until));
     }
-    else if($from){
+    else if($from != ""){
         $q = $q . "and td.date_modified >= ?";
         $templates = db_query($q, array($from));
     }
@@ -231,15 +231,47 @@ function getTemplates($metadataPrefix,$from,$until) {
     //$tmpTemplates = array();
 
     $tmpRecords = array();
+    //get the oai status for all templates that at some point have been published
+    if($until != ""){
+        $q = "select template_id, status, timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish where timestamp < ? group by template_id)";
+        $publish_status = db_query($q, array($until));
+    }
+    else {
+        $q = "select template_id, status, timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish group by template_id)";
+        $publish_status = db_query($q);
+    }
+    $temp_added = [];
+
     for($i=0;$i<count($templates);$i++)
     {
         $currentTemplate = $templates[$i];
-        $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
-        if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown"){
-            $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
-            $tmpRecords[] = $currentRecord;
+        $needle_key = array_search($currentTemplate['template_id'], array_column($publish_status, 'template_id'));
+        if ($needle_key !== false){
+            if (strcmp($publish_status[$needle_key]['status'], "published") == 0) {
+                $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
+                if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown" and $tempMetaData->oaiPmhAgree){
+                    $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
+                    $tmpRecords[] = $currentRecord;
+                    $temp_added[] = $needle_key;
+                }
+            }
         }
-        
+
+    }
+
+    //add all templates that have their sharing rights revoked
+    for($i=0;$i<count($templates);$i++) {
+        $currentTemplate = $templates[$i];
+        $needle_key = array_search($currentTemplate['template_id'], array_column($publish_status, 'template_id'));
+        if ($needle_key !== false){
+            if (!in_array($needle_key, $temp_added)) {
+                $record = array('identifier' => ($xerte_toolkits_site->site_url . $currentTemplate['template_id']),
+                    'datestamp' => date($publish_status[$needle_key]['timestamp']),
+                    'modified' => date($currentTemplate['date_modified']),
+                    'deleted' => true);
+                $tmpRecords[] = $record;
+            }
+        }
     }
 
     //$response->templates = $tmpTemplates;
@@ -254,9 +286,14 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
 
     if($metadataPrefix == "lom_ims") {
 
+        //get first publish time.
+        $q = "select timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id = ? and status = ? group by timestamp limit 1";
+        $params = array($template['template_id'], "published");
+        $first_publish_time = db_query_one($q, $params);
 
         $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
-            'datestamp' => date($template['date_modified']),
+            'datestamp' => date($first_publish_time["timestamp"]),
+            'modified' => date($template['date_modified']),
             //'set' => 'class:activity',
             'metadata' => array(
                 'container_name' => 'lom',
@@ -285,7 +322,7 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                 'lifecycle' => array(
                     'author' => $metadata->author,
                     'publisher' => $metadata->publisher,
-                    'publishdate' => $template['date_modified'],
+                    'publishdate' => $first_publish_time["timestamp"],
                 ),
                 'rights' => array(
                     'rights' => $metadata->rights,

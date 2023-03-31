@@ -1,1 +1,1 @@
-3.11 - installed from github
+3.12 - installed from github

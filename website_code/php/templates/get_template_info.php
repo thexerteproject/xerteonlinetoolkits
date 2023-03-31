@@ -44,6 +44,8 @@ if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_
     $info->properties .= access_info($_POST['template_id']);
     $info->properties .= sharing_info($_POST['template_id']);
     $info->properties .= rss_syndication($_POST['template_id']);
+    $info->properties .= oai_shared($_POST['template_id']);
+
 
     $statistics_available = statistics_prepare($_POST['template_id']);
 

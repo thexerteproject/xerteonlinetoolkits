@@ -154,7 +154,7 @@ function loadContent(){
 
 	// does URL specify which page & section to start on?
 	var pageSectionInfo;
-
+	
 	if (urlParams.linkID != undefined) { // URL?linkID=XXX
 		pageSectionInfo = getHashInfo(urlParams.linkID);
 		if (pageSectionInfo != false) {
@@ -192,7 +192,9 @@ function loadContent(){
 
 	setTimeout(function() {
 		$('div.nav-collapse li a').click(function () {
-			$('.navbar-toggler').click();
+			if ($('.navbar .btn-navbar').is(':visible')) {
+				$('.navbar-toggler').click();
+			}
 		});
 	}, 500);
 
@@ -235,7 +237,7 @@ function cssSetUp(param) {
 				$('head').append('<script src="'+ themePath + theme + '/'+ theme+ '.js"' + '</script>');
 				insertCSS(themePath + theme + '/' + theme + '.css', function() {cssSetUp('stylesheet')});
 			} else {
-				cssSetUp('stylesheet');
+				insertCSS(themePath + 'default/default.css', function() {cssSetUp('stylesheet')});
 			}
             break;
         case 'stylesheet':
@@ -402,7 +404,7 @@ function setup() {
 			if ($(data).find('learningObject').attr('glossaryHover') == undefined || $(data).find('learningObject').attr('glossaryHover') == "true") {
 
 				x_checkForText($(data).find('page'), 'glossary');
-
+				
 				// Handle the closing of glossary bubble with escape key
 				var $activeTooltip, escapeHandler = function(e) {
 					e = e || window.event; //IE
@@ -411,15 +413,15 @@ function setup() {
 						e.stopPropagation();
 					}
 				};
-
+				
 				// add events to control what happens when you rollover glossary words
 				$("body > .container")
 					.on("mouseenter", ".glossary", function(e) {
 						$activeTooltip = $(this);
 						$activeTooltip.trigger("mouseleave");
-
+						
 						window.addEventListener('keydown', escapeHandler);
-
+						
 						var myText = $activeTooltip.text().replace(/(\s|&nbsp;)+/g, " ").trim(),
 							myDefinition, i, len;
 
@@ -528,7 +530,7 @@ function setup() {
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
 				name = name.html();
 			}
-
+			
 			if ($(this).attr('pageLink') != undefined && $(this).attr('pageLink') != '') {
 				name = $(this).attr('pageLink');
 			}
@@ -542,11 +544,23 @@ function setup() {
 	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
 	$(data).find('page').each( function(index, value){
 		var tempID = $(this).attr('customLinkID');
+		var $page = $(this);
 		if (tempID != undefined && tempID != "") {
 			tempID = $.trim(tempID);
 			tempID = tempID.split(" ").join("_");
 			$(this).attr('customLinkID', tempID);
 		}
+
+		//also check if page contains sections with customLinkID that includes spaces
+		$page.find('section').each( function(index, value){
+			var secTempID = $(this).attr('customLinkID');
+			if (secTempID != undefined && secTempID != "") {
+				secTempID = $.trim(secTempID);
+				secTempID = secTempID.split(" ").join("_");
+				$(this).attr('customLinkID', secTempID);
+			}
+		})
+
 	});
 
 	// make list of all the normal pages (not hidden or standalone) to display in TOC
@@ -593,7 +607,7 @@ function setup() {
 
 		var $searchHolder = $('<div id="searchHolder"></div>'),
 			$searchInner = $('<div id="searchInner"></div>');
-
+		
 		// category search
 		if ($(data).find('learningObject').attr('category') == 'true' && $(data).find('learningObject').attr('categoryInfo') != '') {
 			categories = $(data).find('learningObject').attr('categoryInfo').split('||');
@@ -772,7 +786,7 @@ function setup() {
 						results = [], // the pages / sections which match search terms
 						catsUsed = [],
 						numResults = 0;
-
+					
 					if ($searchLightbox.find('#categorySearch').length > 0) {
 
 						$searchLightbox.find('#categorySearch input:checked').each(function() {
@@ -846,7 +860,6 @@ function setup() {
 								}
 							}
 							catMatches = catMatches.substring(0, catMatches.length - 2);
-
 							var linkAction;
 							if (index.length == 1) {
 								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
@@ -957,7 +970,7 @@ function setup() {
 			}
 			// Hide logo if no src value or 'Hide' is ticked, otherwise show it
 			$('#overview div.' + logo)[  LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '' ? 'hide' : 'show'  ]();
-
+			
 			if (LO.attr(logo + 'Hide') === 'true' || $logo.attr('src') === '') {
 				$('#overview').removeClass(logo);
 			}
@@ -1311,9 +1324,9 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 			if (pages[i].childNodes.length > 0) {
 				// only check sections that aren't hidden
 				var sectionVisibleIndex = 0;
-
+				
 				for (var j=0; j<pages[i].childNodes.length; j++) {
-
+					
 					var hideSection = checkIfHidden(pages[i].childNodes[j].getAttribute('hidePage'), pages[i].childNodes[j].getAttribute('hideOnDate'), pages[i].childNodes[j].getAttribute('hideOnTime'), pages[i].childNodes[j].getAttribute('hideUntilDate'), pages[i].childNodes[j].getAttribute('hideUntilTime'), 'Section');
 					if ($.isArray(hideSection)) {
 						hideSection = hideSection[0];
@@ -1330,7 +1343,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 							found = true;
 							break;
 						}
-
+						
 						sectionVisibleIndex++;
 					}
 				}
@@ -1406,8 +1419,9 @@ function x_CheckBanner(index){
 		if (checkinfo != undefined && checkinfo=="true")
 		{
 			// Add fullscreen info in clickableWrapper
-			// Get text from languageData
-			const label = (languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
+			// Get text from bannerFullScrolldownText property or fall back to use languageData string
+			const label = $(data).find('page').eq(index).attr('bannerFullScrolldownText') != undefined && $(data).find('page').eq(index).attr('bannerFullScrolldownText') != '' ? $(data).find('page').eq(index).attr('bannerFullScrolldownText') :
+			(languageData.find("fullScreenBannerInfo")[0] != undefined && languageData.find("fullScreenBannerInfo")[0].getAttribute('label') != null ? languageData.find("fullScreenBannerInfo")[0].getAttribute('label') : 'Scroll down for more information...');
 			setTimeout(function () {
 				if ($(".arrow").length) {
 					return false;
@@ -1484,6 +1498,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
 	var pageRefType = pageRef.type,
 		pageID = pageRef.id,
+		pageLinkType = true;
 		found = false;
 
 	// check if pageIndex exists & can be shown
@@ -1493,20 +1508,37 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	if (pageRefType != 'index') {
 		$(data).find('page').each(function(index, value) {
 			var $page = $(this);
+			var $pageIndex = index;
 			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
-				// an ID match has been found
+				// an ID match has been found for a page
 				pageIndex = index;
 				found = true;
 				pageRefType = 'id';
 
 				return false;
 			}
+			$page.find('section').each(function (index, value) {
+				var $section = $(this);
+				if (pageID == $section.attr('linkID') || pageID == $section.attr('customLinkID')) {
+					//an ID match has been found for a section
+					pageIndex = $pageIndex;
+					found = true;
+					if (sectionNum == undefined) {
+						sectionNum = index + 1;
+					}
+					pageLinkType = false;
+					pageRefType = 'id';
+
+					return false;
+				}
+			});
 		});
 	}
 
 	// check if it's a valid page index
 	if (pageRefType != 'id') {
 		pageID = $.isNumeric(pageID) ? Number(pageID) : pageID;
+		
 		if ($.isNumeric(pageID)) {
 			var temp = pageID;
 			// pageID refers to actual page num of valid pages - need to convert to index of all pages
@@ -1552,9 +1584,15 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		}
 
 		var page = $(data).find('page').eq(pageIndex);
-		var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
-		//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
 
+		var pageHash = ""
+		if (pageLinkType) {
+			pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex) + 1));
+			//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
+		} else {
+			var section = page.find('section').eq(sectionNum - 1); //
+			pageHash = section.attr('customLinkID');
+		}
 		// Load page as normal as it's not opening in a new window
 		if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
 
@@ -1615,44 +1653,66 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 			$('#overview').removeClass('hide');// show the header
 			$('#topnav').removeClass('hide');// show the topnavbar
-
+			
 			var pswds = [];
 			if ($.trim(page.attr('password')).length > 0) {
 				var temp = $.trim(page.attr('password')).split(',');
-
+				
 				for (var i=0; i<temp.length; i++) {
 					if (temp[i] != '') {
 						pswds.push(page.attr('passwordCase') != 'true' ? $.trim(temp[i].toLowerCase()) : $.trim(temp[i]));
 					}
 				}
 			}
-
+			
 			if (pswds.length > 0) {
 				passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds);
 			} else {
 				loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
 			}
-
+			
 		// Page is a stand alone page opening in a new window
 		} else {
-			window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+			if (pageLinkType) {
+				window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+			} else {
+				window.open(window.location.href.split('#')[0] + '#' + pageHash);
+			}
 		}
 	} else {
+		//TOOD add section num, if we are already at page
+
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
+
+	//assign active class for current navbar
+	var pageOffset = pageIndex - validPages.indexOf(pageIndex);
+
+	$("#nav li").not(':first-child').each(function(i, el){
+		if ($(el).hasClass("activePage") && i !== pageIndex - pageOffset){
+			$(el)
+				.removeClass("activePage")
+				.removeAttr("aria-current");
+		} else if (i == pageIndex - pageOffset){
+			$(el)
+				.addClass("activePage")
+				.attr("aria-current", "page");
+		}
+	})
+
 	//dynamically change the skip link for each page
 	var skipLinkTarget='#page'+(currentPage+1)+'section1';
 	$(".srskip").prop("href", skipLinkTarget)
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
-
+	
 	if (authorSupport == true && page.attr('passwordPass') == 'true') {
 		$('#pageSubTitle').append(' <span class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('pageSupport') != null ? languageData.find("password")[0].getAttribute('pageSupport') : 'In live projects, an access code must be entered to view this page') + ': ' + pswds + '</span>');
 	}
-
+	
 	var sectionVisibleIndex = 0;
-
+	
 	//create the sections
 	page.find('section').each( function(sectionIndex, value){
 
@@ -1678,7 +1738,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 				//add a TOC entry
 				var tocName = $(this).attr('name');
-				
+
 				// remove size & background color styles from links on toc
 				if ($('<p>' + tocName + '</p>').children().length > 0) {
 					tocName = $('<p>'+tocName+'</p>');
@@ -1688,7 +1748,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName = tocName.html();
 				}
 
-				var $link = $('<li' + (sectionVisibleIndex==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
+				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 			}
 
@@ -2008,10 +2068,13 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 	if (sectionNum != undefined) {
 
 		var page = $(data).find('page').eq(pageIndex),
-			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
+			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1)),
+			section =  page.find('section').eq(sectionNum-1);
+
+		//if direct navigation using customLink for sections
+		pageTempInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo;
 
 		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
-
 		goToSection(pageTempInfo + 'section' + sectionNum + contentInfo);
 
 	} else {
@@ -2197,7 +2260,9 @@ window.onhashchange = function() {
 	}
 
     var listID = Number(location.href.substr(location.href.length-1,1));
-    setTimeout("updateMenu("+listID+")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+	if (!isNaN(listID)) {
+		setTimeout("updateMenu(" + listID + ")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+	}
 }
 
 function updateMenu(listID) {
@@ -2398,7 +2463,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		var i = index;
 
 		$(this).children().each( function(x, value){
-			
+
 			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true')) {
 				tab.append('<h3>' + $(this).attr('name') + '</h3>');
 			}
@@ -2531,11 +2596,20 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 		var group = $('<div class="accordion-group"/>');
 
-		var header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
+		var header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
 
 		group.append(header);
 
+		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
+		header.find('a.accordion-toggle').click(function() {
+			accDiv.find('.accordion-group a').not($(this)).addClass('collapsed');
+		});
+
 		if (index == 0){
+
+			if (node[0].getAttribute('collapse') != 'true') {
+				header.find('a.accordion-toggle').removeClass('collapsed');
+			}
 
 			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse ' + (node[0].getAttribute('collapse') == 'true' ? "" : "in") + '"/>');
 
@@ -2549,7 +2623,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		var inner = $('<div class="accordion-inner" tabindex="0">');
 
 		$(this).children().each( function(i, value){
-			
+
 			// there was a bug in versions before 3.12 which meant audio & video on accordion always showed title & other content never did (regardless of whether show titles ticked or not)
 			// fix here for new content added to accordions - it doesn't fix for old content as then titles may unexpectedly appear / disappear after upgrade without the author editing
 			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && (($(this).attr('showTitle') == 'true' && (this.nodeName == 'audio' || this.nodeName == 'video')) || $(this).attr('showTitleFix') == 'true' || ($(this).attr('showTitleFix') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video')))) {
@@ -2629,7 +2703,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	var itemIndex = itemIndex;
 
 	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
-	
+
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
@@ -2665,7 +2739,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 		}
 
 		$(this).children().each( function(i, value){
-			
+
 			// there was a bug in versions before 3.12 which meant audio & video on carousel always showed title & other content never did (regardless of whether show titles ticked or not)
 			// fix here for new content added to carousel - it doesn't fix for old content as then titles may unexpectedly appear / disappear after upgrade without the author editing
 			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && (($(this).attr('showTitle') == 'true' && (this.nodeName == 'audio' || this.nodeName == 'video')) || $(this).attr('showTitleFix') == 'true' || ($(this).attr('showTitleFix') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video')))) {

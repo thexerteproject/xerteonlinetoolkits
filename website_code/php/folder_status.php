@@ -34,9 +34,12 @@ function is_folder_shared($folder_id){
 
     global $xerte_toolkits_site;
 
-    $query = db_query("select folder_id from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=?", array($folder_id));
-    if(sizeof($query)>0) {
-        return true;
+    $shared = get_shared_groups_of_folder($folder_id);
+    if (empty($shared)) {
+        $query = db_query("select folder_id from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=?", array($folder_id));
+        if (sizeof($query) > 0) {
+            return true;
+        }
     }
     return false;
 
@@ -263,14 +266,14 @@ function get_implicit_folder_role($login_id, $folder_id, $group_id=-1){
         $result = null;
         if ($group_id == -1){
             //selects original parent and this user's role (if it exists) of this folder
-            $query = "select fd.folder_parent, fr.role from {$pre}folderdetails fd ".
-                "LEFT JOIN {$pre}folderrights fr ON fr.folder_id=fd.folder_id and fr.login_id = ?".
-                "where fd.folder_id=? ";
+            $query = "select fr.folder_parent, fr2.role from folderrights fr " .
+                "LEFT JOIN folderrights fr2 ON fr2.folder_id=fr.folder_id and fr2.login_id = ? " .
+                "where fr.folder_id=? and fr.role='creator'";
             $result = db_query_one($query, array($login_id, $folder_id));
         }else{ // check in group rights
-            $query = "select fd.folder_parent, fgr.role from {$pre}folderdetails fd ".
-                "LEFT JOIN {$pre}folder_group_rights fgr ON fgr.folder_id=fd.folder_id and fgr.group_id = ?".
-                "where fd.folder_id=? ";
+            $query = "select fr.folder_parent, fgr.role from {$pre}folderrights fr ".
+                "LEFT JOIN {$pre}folder_group_rights fgr ON fgr.folder_id=fr.folder_id and fgr.group_id = ?".
+                "where fr.folder_id=? and fr.role='creator'";
             $result = db_query_one($query, array($group_id, $folder_id));
         }
         if (!is_null($result['role'])){
@@ -307,4 +310,104 @@ function get_implicit_folder_group_role($login_id, $folder_id){
     }
     return "";
 
+}
+
+function get_shared_users_of_folder($folder_id, $only_ids=false){
+    global $xerte_toolkits_site;
+    $query = "SELECT login_id, role FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=?";
+    $results = db_query($query, array($folder_id));
+
+    if ($only_ids){
+        $ids = array();
+        foreach ($results as $result){
+            $ids[] = $result['login_id'];
+        }
+        return $ids;
+    }
+    return $results;
+}
+
+function get_shared_groups_of_folder($folder_id, $only_ids=false){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $query = "select fgr.group_id, fgr.role from {$prefix}folder_group_rights fgr where fgr.folder_id=? ";
+    $result = db_query($query, array($folder_id));
+
+    if ($only_ids){
+        $ids = array();
+        foreach ($result as $row){
+            $ids[] = $row['group_id'];
+        }
+        return $ids;
+    }
+    return $result;
+}
+
+function get_shared_ancestor($template_id)
+{
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    // Get the folder id of the template
+
+    $query = "select folder from {$prefix}templaterights where template_id=? and role='creator'";
+    $folder_id = db_query_one($query, array($template_id));
+
+    return get_shared_folder_ancestor($folder_id['folder'], true);
+}
+
+function get_shared_folder_ancestor($folder_id, $is_parent_of_template = false)
+{
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $folder = $folder_id;
+    $parent = -1;
+
+    $i = 0;
+    while ($parent != 0 && $i < 50) {   // $i s a failsafe, max 50 levels deep
+        // Check if the folder is shared
+        $shared = get_shared_groups_of_folder($folder);
+        if (empty($shared)) {
+            // Check if folder itself is shared
+            $sql = "select fr.folder_parent, count(fr2.folder_id) as nrshared from {$prefix}folderrights fr, {$prefix}folderrights fr2 where fr.folder_id=? and fr.login_id=? and fr2.folder_id=fr.folder_id group by fr2.folder_id, fr.folder_parent";
+            $result = db_query_one($sql, array($folder, $_SESSION['toolkits_logon_id']));
+            if ($result != null && $result['nrshared'] > 1) {
+                return $folder;
+            }
+            else{
+                $sql = "select fr.folder_parent from {$prefix}folderrights fr where fr.folder_id=? and fr.role=?";
+                $result = db_query_one($sql, array($folder, 'creator'));
+                $parent = $result['folder_parent'];
+                $folder = $parent;
+            }
+        }
+        else
+        {
+            if ($folder != $folder_id || $is_parent_of_template) {
+                return $folder;
+            }
+            else{
+                $sql = "select fr.folder_parent from {$prefix}folderrights fr where fr.folder_id=? and fr.login_id=?";
+                $result = db_query_one($sql, array($folder, $_SESSION['toolkits_logon_id']));
+
+                if ($result == null)
+                {
+                    $sql = "select fr.folder_parent from {$prefix}folderrights fr where fr.folder_id=? and fr.role=?";
+                    $result = db_query_one($sql, array($folder, 'creator'));
+                }
+                $parent = $result['folder_parent'];
+                $folder = $parent;
+            }
+        }
+        $i++;
+    }
+    return false;
+}
+
+
+function is_folder_shared_subfolder($folder_id)
+{
+    $ancestor = get_shared_folder_ancestor($folder_id);
+    return ($ancestor !== false &&  $ancestor != $folder_id);
 }

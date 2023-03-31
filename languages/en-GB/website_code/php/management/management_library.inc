@@ -11,6 +11,9 @@
 	 */
 
 	define("MANAGEMENT_LIBRARY_REMOVE", "Remove");
+    define("MANAGEMENT_LIBRARY_EXPAND", "Show/Hide");
+    define("MANAGEMENT_LIBRARY_COLLAPSE", "Hide");
+    define("MANAGEMENT_LIBRARY_ADD", "Add");
 	define("MANAGEMENT_LIBRARY_VIEW", "Show");
 
 	define("MANAGEMENT_LIBRARY_ADD_CATEGORY", "Add a new category");

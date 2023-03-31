@@ -23,9 +23,14 @@ require("../user_library.php");
 require("management_library.php");
 
 if(is_user_admin()){
-
-    $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}syndicationcategories (category_name) values (?)";
-    $res = db_query($query, array($_POST['newcategory']));
+    if ($_POST[parent] == "") {
+        $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}syndicationcategories (category_name) values (?)";
+        $param = array($_POST['newcategory']);
+    } else {
+        $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}syndicationcategories (category_name, parent_id) values (?,?)";
+        $param = array($_POST['newcategory'], $_POST['parent']);
+    }
+    $res = db_query($query, $param);
 
     if($res) {
 

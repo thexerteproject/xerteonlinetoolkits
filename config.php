@@ -252,6 +252,14 @@ else{
     $xerte_toolkits_site->altauthentication = "";
 }
 
+/* Set flag of whether oai-pmh harvesting is configured and available */
+$xerte_toolkits_site->oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
+
+if (file_exists(dirname(__FILE__) . '/lrsdb_config.php'))
+{
+    require_once(dirname(__FILE__) . '/lrsdb_config.php');
+}
+
 if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)
 {
     if($xerte_toolkits_site->authentication_method == "Moodle") {

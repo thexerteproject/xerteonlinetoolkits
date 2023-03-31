@@ -1,17 +1,17 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-	  <mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson>
+	  <mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson>
     </newNodes>
   </pageWizard>
 
   <!-- MEDIA LESSON======================= -->
-  <mediaLesson menu="Media" menuItem="Media Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#medialesson" remove="true">
+  <mediaLesson menu="Media" menuItem="Media Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#medialesson" wiki="https://xerte.org.uk/wiki/doku.php?id=media_media_lesson_page" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		<layout label="Panel Layout" type="ComboBox" options="Grid,Tile Horizontally,Tile Vertically,Full Top - Tile Bottom,Tile Top - Full Bottom,Full Left - Tile Right,Tile Left - Full Right" data="grid,tileH,tileV,top,bottom,left,right" defaultValue="grid" width="200"/>
 
-		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
+		<intro label="Introduction Panel" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true" deprecated="Although the introduction panel still works, the new introduction optional property is now the recommended way of adding an introduction to the page"/>
 
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
@@ -30,13 +30,13 @@
 		
 		<mediaGroup type="group" label="Media" tooltip="Add video or audio (file or url)">
 			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
+			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 		</audioImg>
 
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
@@ -46,13 +46,13 @@
 
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
-			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
-			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
+			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
+			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>-->
 			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="false" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" overlay="false" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" overlay="false" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a description for accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
-			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
+			<!--<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>-->
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
@@ -64,12 +64,12 @@
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
-			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
-			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
+			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
+			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>-->
 			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
-			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearPanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
+			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="" synchStart="0" autoplay="false" clearPanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a description for accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
 		</newNodes>
@@ -88,7 +88,7 @@
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
 	</synchEmpty>
 	
-	<synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1">
+	<synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1" deprecated="This item is deprecated">
 		<info><![CDATA[This is the holder for the media's subtitles.<br/>Select 'New Subtitle' to add and synch each caption.]]></info>
 		<newNodes>
 			<synchSub><![CDATA[<synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/>]]></synchSub>
@@ -100,7 +100,7 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 	</synchSub>
 	
@@ -109,7 +109,7 @@
 		<text label="Text" type="TextArea" height="250"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -120,14 +120,14 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
-		<overlay label="Overlay Media" type="CheckBox" defaultValue="false"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<overlay label="Overlay Media" type="CheckBox" defaultValue="false" deprecated="This property is deprecated. The interactive video page offers an alternative way of having content overlaying a video."/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
 		<newNodes>
-			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
+			<synchSlide><![CDATA[<synchSlide name="Enter a description for accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
 		</newNodes>
 	</synchSlides>
 	
@@ -135,7 +135,7 @@
 		<name label="Image Description" type="TextInput"/>
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<captionOptions type="group" label="Caption" optional="true">
 			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
@@ -148,7 +148,7 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<mediaGroup type="group" label="Media">
 			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
+			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
@@ -157,12 +157,12 @@
 
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true"/>
-			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 		</audioImg>
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -170,8 +170,8 @@
 		<aspect label="Maintain Aspect Ratio" type="CheckBox" defaultValue="true" optional="true"/>
 
 		<newNodes>
-			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="true" disable="true" synchStart="0" clearPanel="false" pauseMedia="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
+			<!--<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="true" disable="true" synchStart="0" clearPanel="false" pauseMedia="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>-->
+			<!--<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>-->
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
 
@@ -182,13 +182,13 @@
 		<text label="Question" type="TextArea" height="100"/>
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
-		<overlay label="Overlay Media" type="CheckBox" defaultValue="false"/>
+		<overlay label="Overlay Media" type="CheckBox" defaultValue="false" deprecated="This property is deprecated. The interactive video page offers an alternative way of having content overlaying a video."/>
 		<disable label="Disable Controls" type="CheckBox"/>
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
@@ -228,7 +228,7 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -247,7 +247,7 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -267,14 +267,14 @@
 
 	</synchXotChange>
 	
-	<synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true">
+	<synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true" deprecated="This item is deprecated">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<url label="RSS Feed URL" type="TextInput"/>
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -282,7 +282,7 @@
 
 	</synchGoogleFeed>
 	
-	<synchGoogleMap menuItem="Google Map" icon="icMap" remove="true">
+	<synchGoogleMap menuItem="Google Map" icon="icMap" remove="true" deprecated="This item is deprecated">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<type label="Map Type" type="ComboBox" options="Hybrid,Road,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
@@ -300,7 +300,7 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>

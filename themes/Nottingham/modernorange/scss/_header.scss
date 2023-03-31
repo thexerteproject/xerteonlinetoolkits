@@ -4,10 +4,32 @@
   background-repeat:no-repeat;
   background-position:right;
   background-image:	none;
-  width: 98%;
-  border-top-right-radius: $largeroundedcorners;
-  border-bottom-right-radius: $largeroundedcorners;
   margin-top: 5px;
   background: $contrastcolor;
   box-shadow: $interfaceboxshadow;
 }
+
+body:not(.sb_right):not(.sb_left) #x_headerBlock {
+  width: 98%;
+  border-top-right-radius: $largeroundedcorners;
+  border-bottom-right-radius: $largeroundedcorners;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+	color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: $contrastcolor;
+	background-color: white;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: $brightcolor;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: white;
+	background-color: $brightcolor;
+}
+

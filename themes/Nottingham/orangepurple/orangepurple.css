@@ -125,10 +125,89 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -84px 0px; }
 
+.ui-button .ui-icon.x_projectIntro { background-image: url("project_intro.svg");background-position: 0px 0px;}
+.ui-button.ui-state-hover .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_projectIntro {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_projectIntro {	background-position: -84px 0px; }
+
+#x_footerBlock button.customIconBtn {
+	color: #FF9900;
+}
+
+#x_footerBlock button.customIconBtn:not(.ui-state-disabled):hover, #x_footerBlock button.customIconBtn:not(.ui-state-disabled):focus {
+	color: #7c097d;
+}
+
 .ui-dialog .ui-widget-header {
 border: 1px solid #7c097d;
 background: #7c097d;
 background-image: none;
 color: #ffffff;
 font-weight: bold;
+}
+
+/*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: #fffff0;
+}
+.x_thumbnailViewer_page #thumbBar button { color: #FF9900; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: #7c097d; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: #7c097d; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: #7c097d; }
+
+
+
+#x_headerBlock #x_pageIntroBtn {
+	color: #FF9900;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: #fffff0;
+	background-color: #FF9900;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #7c097d;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: #fffff0;
+	background-color: #7c097d;
+}
+
+#x_sideBar {
+	background-color: #fffff0;
+}
+
+#x_sideBarToggleBtn {
+	border-color: #ffab38;
+	color: #7c097d;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: #7c097d;
+	background-color: #ffab38;
+}
+
+#x_sideBarBtnHolder button {
+	color: #7c097d;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-color: #ffab38;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border-color: #ffab38;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: #ffab38;
+	color: #7c097d;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: #ffab38;
+	color: #7c097d;
 }

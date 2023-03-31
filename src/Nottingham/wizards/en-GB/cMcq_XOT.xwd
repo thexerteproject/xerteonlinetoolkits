@@ -11,7 +11,7 @@
 
   
   <!-- MCQ PAGE =========================================== -->
-  <cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information." thumb="thumbs/connectorMCQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-choiceconnector" remove="true">
+  <cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information." thumb="thumbs/connectorMCQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-choiceconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_multiplechoiceconnector_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <instruction label="Instruction" type="TextArea" height="100"/>	
@@ -22,8 +22,6 @@
     <confirmBtnTxt label="Confirm Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <confirmBtnTip label="Confirm Button Tip" type="textInput"  language="true" deprecated="This property is no longer required" />	
     <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
-
-    <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
       <cOption><![CDATA[<cOption name="Answer" text="Here is an option" destination="" />]]></cOption>

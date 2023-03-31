@@ -30,8 +30,6 @@ var EDITOR = (function ($, parent) {
 
     // Called once document is ready
     setup = function (xml) {
-        console.log("Setting up tree");
-
         var bottom_buttons = $('#bottom_buttons').attr('id', 'bottom_buttons');
         do_bottom_buttons();
         do_buttons();
@@ -372,7 +370,10 @@ var EDITOR = (function ($, parent) {
         })
         .fail(function() {
             $('#loader').hide();
-            alert( "error" );
+			// alert from play button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
         });
     },
 
@@ -402,7 +403,10 @@ var EDITOR = (function ($, parent) {
         })
         .fail(function() {
             $('#loader').hide();
-            alert( "error" );
+			// alert from publish button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
         });
     },
 
@@ -437,7 +441,8 @@ var EDITOR = (function ($, parent) {
                 })
             .fail(function() {
                 $('#loader').hide();
-                alert( "error" );
+				// alert from close editor
+				alert( "error" );
             });
     },
 
@@ -684,7 +689,8 @@ var EDITOR = (function ($, parent) {
 
         var menu_options = wizard_data[node_name].menu_options;
         if (menu_options.menu && menu_options.menuItem) {
-            $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem);
+            var wikiLink = menu_options.wiki != undefined ? '<a href="' + menu_options.wiki + '" target="_blank">' + '<i class="tooltipIcon iconEnabled fa fa-question-circle" title="' + language.wikiLink.$tooltip.replace('{x}', menu_options.menuItem) + '"</i></a>' : '';
+            $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem + wikiLink);
         }
         else if (menu_options.menuItem)
         {
@@ -728,6 +734,7 @@ var EDITOR = (function ($, parent) {
         {
             $('#pagetype').html('');
         }
+		
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -740,6 +747,7 @@ var EDITOR = (function ($, parent) {
         colorpickers = [];
 		iconpickers = [];
         datagrids = [];
+        treeSelecters = [];
 
         form_fields = [];
         form_id_offset = 0;
@@ -764,50 +772,67 @@ var EDITOR = (function ($, parent) {
             }
         }
         if (advanced_mode || key!='treeroot' || !simple_lo_page) {
+			
+			function getGroups(options) {
+				var groups = [];
+				
+				// get list of all property groups...
+				for (var i = 0; i < options.length; i++) {
+					if (options[i].value.type == 'group') {
+						
+						// remove any groups that are already created elsewhere (e.g. title.xwd adds new properties to background group that's created in basicPages.xwd)
+						var temp = [];
+						for (var j=0; j<options.length; j++) {
+							if (j != i && options[i].name === options[j].name) {
+								temp.push(j);
+							}
+						}
+						
+						if (temp.length > 0) {
+							for (var j=temp.length-1; j>=0; j--) {
+								options.splice(temp[j], 1);
+							}
+						}
+						
+						options[i].value.children = options[i].value.children == undefined ? [] : options[i].value.children;
+						groups.push(i);
+					}
+				}
+				
+				// ...find all properties that belong to them
+				// work through the groups backwards so that the most nested groups are dealt with first
+				for (var i=groups.length-1; i>=0; i--) {
+					if (options[groups[i]].value.children.length === 0) {
+						// returns the index of all the properties in a group
+						var index = $.map(options, function (obj, index) {
+							if (obj.value.group == options[groups[i]].name) {
+								return index;
+							}
+						});
+						
+						if (index.length > 0) {
+							// remove children of groups as they are now associated with group parent
+							index.sort(function(a, b) { return b - a; }); // sort high to low
+							for (var j=0; j<index.length; j++) {
+								options[groups[i]].value.children.unshift(options[index[j]]);
+								options.splice(index[j], 1);
+							}
+							
+						} else {
+							// remove empty groups
+							options.splice(groups[i], 1);
+						}
+					}
+				}
+				return options;
+			}
+			
             // If the main node has a label, display the node item second (unconditionaly)
             if (node_label.length > 0 && !node_options['cdata']) {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
             }
-
-            // check for property groups in the rest of the normal params
-            var propGroups = [],
-                propGroupChildren = [];
-
-            for (var i = 0; i < node_options['normal'].length; i++) {
-                if (node_options['normal'][i].value.type == "group") {
-                    node_options['normal'][i].value.children = node_options['normal'][i].value.children == undefined ? [] : node_options['normal'][i].value.children;
-                    propGroups.push(i);
-                }
-            }
-
-            // ...find all properties that belong to them
-            if (propGroups.length > 0 && node_options['normal'][propGroups[0]].value.children.length == 0) {
-                for (var i = 0; i < node_options['normal'].length; i++) {
-                    for (var j = 0; j < propGroups.length; j++) {
-                        if (node_options['normal'][propGroups[j]].name == node_options['normal'][i].value.group) {
-                            node_options['normal'][propGroups[j]].value.children.push(node_options['normal'][i]);
-                            propGroupChildren.push(i);
-                            break;
-                        }
-                    }
-                }
-
-                // remove children of groups as they are now associated with group parent
-                propGroupChildren.sort(function (a, b) {
-                    return b - a
-                });
-                for (var i = 0; i < propGroupChildren.length; i++) {
-                    node_options['normal'].splice(propGroupChildren[i], 1);
-                }
-
-                // ignore groups with no children
-                for (var i = 0; i < node_options['normal'].length; i++) {
-                    if (node_options['normal'][i].value.children != undefined && node_options['normal'][i].value.children.length == 0) {
-                        node_options['normal'].splice(i, 1);
-                        i--;
-                    }
-                }
-            }
+			
+			getGroups(node_options['normal']);
 
             // The rest of the normal params
             for (var i = 0; i < node_options['normal'].length; i++) {
@@ -846,24 +871,13 @@ var EDITOR = (function ($, parent) {
 
                     // at least one of the group's children exists in xml or is mandatory so show whole group
                     if (exists == true) {
-                        toolbox.displayGroup('#mainPanel .wizard', node_options['normal'][i].name, node_options['normal'][i].value, key);
-
-                        var groupChildren = node_options['normal'][i].value.children;
-                        for (var j = 0; j < groupChildren.length; j++) {
-                            var tableOffset = (node_options['normal'][i].value.cols ? j % parseInt(node_options['normal'][i].value.cols, 10) : '');
-                            if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
-                                toolbox.displayParameter(
-                                    '#mainPanel .wizard #groupTable_' + node_options['normal'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-                                    groupChildren,
-                                    groupChildren[j].name,
-                                    toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value,
-                                    key
-                                );
-                            }
-                        }
+						
+						groupSetUp(node_options['normal'][i], attributes, node_options, key);
+						
                     }
                 }
             }
+			
             // Optional parameters
             // 1. Empty right panel
             $('#optionalParams').html("");
@@ -876,61 +890,20 @@ var EDITOR = (function ($, parent) {
                 .attr('alt', 'Flash only attribute');
             var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
             var tooltipavailable = '<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>';
-
-            var optGroups = [];
-
-            // get all optional property groups...
-            for (var i = 0; i < node_options['optional'].length; i++) {
-                if (node_options['optional'][i].value.type == "group") {
-                    node_options['optional'][i].value.children = node_options['optional'][i].value.children == undefined ? [] : node_options['optional'][i].value.children;
-                    optGroups.push(node_options['optional'][i]);
-                }
-            }
-
-            // ...find all optional properties that belong to them
-            if (optGroups.length > 0 && optGroups[0].value.children.length == 0) {
-                for (var i = 0; i < node_options['optional'].length; i++) {
-                    var index = $.map(node_options['optional'], function (obj, index) {
-                        if (obj.name == node_options['optional'][i].value.group) {
-                            return index;
-                        }
-                    });
-
-                    if (index.length > 0) {
-                        node_options['optional'][index[0]].value.children.push(node_options['optional'][i]);
-                        node_options['optional'].splice(i, 1);
-                        i--;
-                    }
-                }
-
-                // ignore groups with no children
-                for (var i = 0; i < node_options['optional'].length; i++) {
-                    if (node_options['optional'][i].value.type == 'group' && node_options['optional'][i].value.children.length == 0) {
-                        node_options['optional'].splice(i, 1);
-                        i--;
-                    }
-                }
-            }
-
-
-            //node_options['optional'] = node_options['optional'].concat(optGroups);
-
+			
+			getGroups(node_options['optional']);
+			
             // Determine whether optional properties are used and if they are visble according to their condition
             // is optional property (or any children of group) already in project?
             for (var i = 0; i < node_options['optional'].length; i++) {
                 var found = [];
                 if (node_options['optional'][i].value.type == 'group') {
-                    var groupChildren = node_options['optional'][i].value.children;
-                    for (var j = 0; j < groupChildren.length; j++) {
-                        var child_value = toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key);
-                        found.push(child_value.found);
-                    }
+					found = checkGroupFound(node_options['optional'][i], attributes, node_options, key);
                 }
                 attribute_name = node_options['optional'][i].name;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
                 if (attribute_value.found || $.inArray(true, found) > -1) {
                     node_options['optional'][i].found = true;
-                    node_options['optional'][i].groupitemfound = found;
                 }
                 else
                 {
@@ -942,6 +915,7 @@ var EDITOR = (function ($, parent) {
                 }
                 node_options['optional'][i].visible = visible;
             }
+			
             // Sort into alphabetical order in a different (cloned) object
             var sorted_options = JSON.parse(JSON.stringify(node_options));
             sorted_options['optional'].sort(function (a, b) {
@@ -970,17 +944,32 @@ var EDITOR = (function ($, parent) {
                                 children: sorted_options['optional'][i].value.children
                             },
                             function (event) {
-                                if (event.data.children != undefined) {
-                                    // it's a group so add all children too
-                                    for (var j = 0; j < event.data.children.length; j++) {
-                                        if (!event.data.children[j].value.deprecated) {
-                                            var load = (j == event.data.children.length - 1);
-                                            parent.toolbox.insertOptionalProperty(event.data.key, event.data.children[j].name, (event.data.children[j].value.defaultValue ? event.data.children[j].value.defaultValue : ""), load, (load ? "group_" + event.data.attribute : ""));
-                                        }
-                                    }
-                                } else {
-                                    parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default, true, "opt_" +event.data.attribute);
-                                }
+								
+								function checkForOptGroup(data) {
+									if (data.children != undefined) {
+										// it's a group so add all children too
+										for (var j = 0; j < data.children.length; j++) {
+											if (!data.children[j].value.deprecated) {
+												var load = (j == data.children.length - 1);
+												
+												if (data.children[j].value.children != undefined) {
+													// nested group
+													var temp = data.children[j].value;
+													temp.key = data.key;
+													temp.attribute = data.attribute;
+													
+													checkForOptGroup(temp);
+												} else {
+													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""));
+												}
+											}
+										}
+									} else {
+										parent.toolbox.insertOptionalProperty(data.key, data.attribute, data.default, true, "opt_" + data.attribute);
+									}
+								}
+								
+								checkForOptGroup(event.data);
                             })
                         .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
                     if (sorted_options['optional'][i].value.flashonly) {
@@ -1076,24 +1065,11 @@ var EDITOR = (function ($, parent) {
                             toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
                         }
                     } else {
+						
                         if (node_options['optional'][i].visible) {
-                            toolbox.displayGroup('#mainPanel .wizard', node_options['optional'][i].name, node_options['optional'][i].value, key);
-
-                            // group children aren't sorted into alphabetical order - they appear in order taken from xml
-                            var groupChildren = node_options['optional'][i].value.children;
-                            var found = node_options['optional'][i].groupitemfound;
-                            for (var j = 0; j < groupChildren.length; j++) {
-                                var tableOffset = (node_options['optional'][i].value.cols ? j % parseInt(node_options['optional'][i].value.cols, 10) : '');
-                                if (found[j] == true || !groupChildren[j].value.deprecated) {
-                                    toolbox.displayParameter(
-                                        '#mainPanel .wizard #groupTable_' + node_options['optional'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-                                        groupChildren,
-                                        groupChildren[j].name,
-                                        (found[j] ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
-                                        key
-                                    );
-                                }
-                            }
+							
+							groupSetUp(node_options['optional'][i], attributes, node_options, key);
+							
                         }
                     }
                 }
@@ -1272,6 +1248,7 @@ var EDITOR = (function ($, parent) {
         toolbox.convertColorPickers();
 		toolbox.convertIconPickers();
         toolbox.convertDataGrids();
+        toolbox.convertTreeSelect();
 		
 		// make buttons appear disabled when the node can't be duplicated / deleted
 		$("#copy_button, #delete_button").removeClass("disabled");
@@ -1302,12 +1279,64 @@ var EDITOR = (function ($, parent) {
         $("#subPanels").show();
 		
 		// remove any property groups that are empty because of conditions
-		$('.wizardgroup .wizardgroup_table').each(function() {
+		// now groups can be nested, this is done backwards to make sure parent group is removed if all of the child groups have been removed
+		$($('.wizardgroup .wizardgroup_table').get().reverse()).each(function() {
 			if ($(this).find('tr').length == 0) {
-				$(this).parents('.wizardattribute').remove();
+				$(this).parents('.wizardattribute')[0].remove();
 			}
 		});
     },
+	
+	groupSetUp = function(group, attributes, node_options, key) {
+		toolbox.displayGroup('#mainPanel .wizard', group.name, group.value, key);
+
+		// group children aren't sorted into alphabetical order - they appear in order taken from xml
+		var groupChildren = group.value.children;
+		
+		for (var j = 0; j < groupChildren.length; j++) {
+			
+			// set up a nested group
+			if (groupChildren[j].value.type == 'group') {
+				var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
+				if ($.inArray(true, foundGroup) > -1) {
+					groupChildren[j].found = true;
+				}
+				
+				var visible = true;
+				if (typeof groupChildren[j].value.condition != "undefined") {
+					visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
+				}
+				groupChildren[j].visible = visible;
+				groupSetUp(groupChildren[j], attributes, node_options, key);
+				
+			// display a parameter within this group
+			} else {
+				var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
+				
+				if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
+					toolbox.displayParameter(
+						'#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+						groupChildren,
+						groupChildren[j].name,
+						(toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
+						key
+					);
+				}
+			}
+		}
+	},
+	
+	checkGroupFound = function(group, attributes, node_options, key)
+	{
+		var found = [];
+		var groupChildren = group.value.children;
+		for (var j = 0; j < groupChildren.length; j++) {
+			var child_value = toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key);
+			found.push(child_value.found);
+		}
+		
+		return found;
+	}
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
     {
@@ -1384,11 +1413,9 @@ var EDITOR = (function ($, parent) {
 
     addSubNode = function (event)
     {
-        console.log('Add sub node ' + event.data.node + ' to ' + event.data.key);
         var tree = $.jstree.reference("#treeview");
         var node = tree.get_node(event.data.key, false);
         var nodeName = event.data.node;
-        //var key = parent.tree.generate_lo_key();
         var xmlData = $.parseXML(event.data.defaultnode);
         // Parse the attributes and store in the data store
         addNodeToTree(event.data.key,'last',nodeName,xmlData.firstChild,tree,true);
@@ -1397,7 +1424,6 @@ var EDITOR = (function ($, parent) {
 
     addNode = function(selectedItem, mode)
     {
-        console.log(selectedItem, mode);
         var tree = $.jstree.reference("#treeview");
         var ids = tree.get_selected();
         var id;
@@ -1543,8 +1569,6 @@ var EDITOR = (function ($, parent) {
                 node_types[key] = create_node_type(key, value.new_nodes);
         });
 
-        console.log(node_types);
-
         var treeview = $('<div />').attr('id', 'treeview');
         $(".ui-layout-west .content").append(treeview);
         $("#treeview").jstree({
@@ -1565,7 +1589,7 @@ var EDITOR = (function ($, parent) {
             showNodeData(data.node.id);
         })
         .bind('move_node.jstree', function(event, data) {
-            console.log("move node");
+            //console.log("move node");
         });
     },
 

@@ -200,7 +200,7 @@ if($_POST['folder'] == "") {
             (template_framework, template_name, description, date_uploaded, display_name, display_id, access_rights, active)
             VALUES (?,?,?,?,?,?,?,?)";
   
-    $parameters = array('xerte', $folder, $desc, date('Y-m-d'), $name, '0', '', 'false');
+    $parameters = array('xerte', $folder, $desc, date('Y-m-d H:i:s'), $name, '0', '', 'false');
     $ok = db_query($sql, $parameters);
 
     if ($ok) {

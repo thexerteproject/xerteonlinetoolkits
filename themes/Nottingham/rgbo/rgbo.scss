@@ -67,14 +67,14 @@ a:hover{
 
 #x_mainHolder{
 	background:$defaultpagebackground;
-	border-top-right-radius:$largeroundedcorners;
-	border-bottom-left-radius:$largeroundedcorners;
 	border: none !important;/*remove this to restore the default border*/
+}
+body:not(.sb_right):not(.sb_left) #x_mainHolder {
+	border-radius:$largeroundedcorners;
+	max-width:98%;
 }
 //for this theme display at least a small inset at all sizes even mobiles
 #x_mainHolder{
-	max-width:98%;
-	max-height:98%;
 	margin:auto;
 	position: absolute;
 	top: 0;
@@ -94,18 +94,6 @@ a:hover{
 	border-radius:$mediumroundedcorners;
 	background: $lightestcolor;
 }
-
-#x_headerBlock {
-	border-top-right-radius: 20px;
-	border-top-left-radius: 20px;
-}
-#x_mainHolder {
-	border-radius: 20px;
-}
-#x_footerBlock {
-	border-bottom-left-radius: 20px;
-	border-bottom-right-radius: 20px;
-}
 //*****panel all pages with a panel*****/
 .panel {
 	border-radius: $mediumroundedcorners;
@@ -124,7 +112,7 @@ img {
 //******@media changes******/
 @media (min-width: 1366px) {
 	/*tablet and above css below here*/
-	#x_mainHolder{
+	body:not(.sb_right):not(.sb_left) #x_mainHolder{
 		max-width:90%;
 		max-height:92%;
 		margin:auto;
@@ -141,7 +129,7 @@ img {
 and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (orientation : portrait) {
-	#x_mainHolder{
+	body:not(.sb_right):not(.sb_left) #x_mainHolder{
 		max-width:98%;
 		max-height:98%;
 		margin:auto;

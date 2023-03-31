@@ -28,14 +28,16 @@
 			targetTxt2,
 			interactivity,
 			tooltips = [],
-			$pageContents;
+			$pageContents,
+			labelPos;
 
         // function called every time the page is viewed after it has initially loaded
         this.pageChanged = function() {
 			$pageContents = $("#pageContents");
+			labelPos = x_browserInfo.mobile == true ? "img" : x_currentPageXML.getAttribute("labelPos") != "text" ? "img" : "text"; // labels are always below image if viewed on mobile
 			interactivity = x_currentPageXML.getAttribute("interactivity") != undefined && x_currentPageXML.getAttribute("interactivity") != "" ? x_currentPageXML.getAttribute("interactivity") : "Describe";
 			
-            var resize = $("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length && x_currentPageXML.getAttribute("labelPos") != "text" ? true : false;
+            var resize = $("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length && labelPos != "text" ? true : false;
 			
             this.createLabels();
 			
@@ -49,12 +51,13 @@
 			
             $x_pageHolder.scrollTop(0);
             var $panel = $("#mainPanel");
+			labelPos = x_browserInfo.mobile == true ? "img" : x_currentPageXML.getAttribute("labelPos") != "text" ? "img" : "text"; // labels are always below image if viewed on mobile
 
 			// resize image to max that will fit space
 			var $image = $("#image"),
-					prevW = $image.width(),
-					labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
-					imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
+				prevW = $image.width(),
+				labelHolderH = labelPos != "text" ? $("#labelHolder").height() : 0,
+				imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
 
 			x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10);
 			$("#labelHolder").width($image.width());
@@ -132,13 +135,18 @@
 			// set up page
             $("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-            if (x_currentPageXML.getAttribute("labelPos") == "text") {
+            if (labelPos == "text") {
                 $("#mainText")
 					.after($("#labelHolder"))
 					.after('<hr/>');
             }
 
-            if (x_currentPageXML.getAttribute("align") == "Right") {
+			if (x_browserInfo.mobile == true) {
+				$("#textHolder")
+					.insertBefore($("#dragDropHolderLabelling"))
+					.find("hr").remove();
+				$("#infoHolder").insertAfter($("#dragDropHolderLabelling"));
+			} else if (x_currentPageXML.getAttribute("align") == "Right") {
                 $("#dragDropHolderLabelling").addClass("x_floatLeft");
             } else {
                 $("#dragDropHolderLabelling").addClass("x_floatRight");
@@ -183,7 +191,7 @@
 			
 			// describe version allows drop on correct hotspot only so no submit button required
             } else {
-                $("#submitBtn").hide();
+                $("#submitBtn").remove();
             }
 			
 			$x_pageHolder.scrollTop(0);
@@ -384,12 +392,22 @@
         this.imgLoaded = function() {
             // labels have been created and image loaded - can now resize image to fit space and create targets on it
             var $image = $("#image"),
-				labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
-				imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
-
-            x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10, true, true);
-            $("#labelHolder").width($image.width());
-
+				labelHolderH = labelPos != "text" ? $("#labelHolder").height() : 0,
+				imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.6 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.4 : 0.8;
+			
+			const maxW = x_browserInfo.mobile != true ? imgSize : 1;
+			const maxH = 1;
+			
+			let imgMaxW = Math.round($x_pageHolder.width() * maxW),
+				imgMaxH = Math.round($x_pageHolder.height() * maxH);
+			
+			imgMaxW -= ($("#mainPanel").outerWidth(true) - $("#mainPanel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width()) + ($("#dragDropHolderLabelling").outerWidth(true) - $("#dragDropHolderLabelling").width());
+			imgMaxH -= ($("#mainPanel").outerHeight(true) - $("#mainPanel").height()) + labelHolderH + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height()) + ($("#dragDropHolderLabelling").outerHeight(true) - $("#dragDropHolderLabelling").height());
+			
+            x_scaleImg($image, imgMaxW, imgMaxH, true, true);
+			
+			$("#labelHolder").width(x_browserInfo.mobile != true ? (labelPos == "text" ? "auto" : $image.width()) : "100%");
+			
             this.drawTargets();
 
             x_pageLoaded();

@@ -123,6 +123,10 @@
  .highlighted .crossword-input[type=text]{
      background-color: yellow;
  }
+ 
+ #crossword .correct {
+	 background-color: #24FF00;
+ }
 
  #pageContents-innerContainer{
      display: flex;
@@ -228,4 +232,19 @@
 }
 #pageContents input{
     padding: 0!important;
+}
+
+/*add ticks to correct answers*/
+.x_crossword_page .li-clue p.correct:after {
+	font-family: FontAwesome;
+	content: "\f00c";
+	color: green;
+	margin-left:1px;
+}
+/*show red crosses when incorrect and in tracking mode*/
+.x_crossword_page .li-clue p.incorrect:after {
+	font-family: FontAwesome;
+	content: "\f00d";
+	color: red;
+	margin-left:1px;
 }

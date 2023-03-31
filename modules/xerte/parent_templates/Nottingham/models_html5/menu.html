@@ -70,6 +70,10 @@
 					$this.removeClass("ui-state-focus");
 					$this.removeClass("ui-state-hover");
 					x_changePage(x_normalPages[$this.index() + numOffset]);
+
+					if ($('#menuHolder').parents('.featherlight').length > 0) {
+						parent.window.$.featherlight.current().close();
+					}
 				});
 			
 			if (x_pageInfo[0].type == "menu") { // 1st page is menu page
@@ -110,8 +114,22 @@
 					menu.noImg();
 				}
 				
-			} else { // menu is in dialog
+			} else { // menu is in dialog or lightbox
 				$("#menuHolder").removeClass("splitScreen");
+
+				$("#menuHolder .right").remove();
+
+				// lightbox
+				if ($('#menuHolder').parents('.featherlight').length > 0) {
+
+					$('#menuHolder').prepend('<h1 id="x_introH1">' + (x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents")) + '</h1>');
+
+					$('#menuHolder .left')
+						.height($('.featherlight-content').height() - $('#x_introH1').outerHeight())
+						.css('overflow', 'auto');
+
+					menu.showCurrent();
+				}
 			}
 			
 			$("#screenReaderInfo").html(x_getLangInfo(x_languageData.find("toc")[0], "htmlDescription", "Use the tab key to select a page. Press space to go to that page."));

@@ -665,7 +665,7 @@
 			
 			// series is being played - show next image after short delay
 			if (animate == true && $imgHolder.find('.playBtn').data('state') == 'pause' && currentImg[imgPos] < numImgs[imgPos]-1) {
-				setTimeout(function() { imageSequence.nextImg(true, imgPos); }, 100);
+				setTimeout(function() { imageSequence.nextImg(true, imgPos); }, x_currentPageXML.getAttribute('playSpeed') != undefined && x_currentPageXML.getAttribute('playSpeed') != '' ? Number(x_currentPageXML.getAttribute('playSpeed'))*1000 : 100);
 				
 			// end of animation
 			} else if (animate == true) {
@@ -681,7 +681,7 @@
 			var txtString = '';
 			if (info.text != undefined && info.text != '') {
 				if (info.name != undefined && info.name != '') {
-					txtString += '<div class="' + type + 'Title">' + info.name + '</div>';
+					txtString += '<h3 class="' + type + 'Title">' + info.name + '</h3>';
 				}
 				txtString += '<div class="' + type + 'Txt">' + info.text + '</div>';
 			}

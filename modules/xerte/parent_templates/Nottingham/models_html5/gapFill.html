@@ -309,6 +309,11 @@
 					width	:"100%"
 				});
 				
+				// manually add a transcript button to the end of the audio bar
+				if (x_currentPageXML.getAttribute('audioTranscript') != undefined && x_currentPageXML.getAttribute('audioTranscript') != '') {
+					x_addAudioTranscript($audioHolder, x_currentPageXML.getAttribute('audioTranscript'));
+				}
+
 				$audioHolder.hide();
 				
 			} else {
@@ -980,7 +985,7 @@
 						$feedbackTxt.fadeIn();
 						gapFill.audioFbResize(true);
 						x_pageContentsUpdated();
-						
+
 						finished = true;
 						
 					} else {
@@ -1109,7 +1114,7 @@
 						$feedbackTxt.fadeIn();
 						gapFill.audioFbResize(true);
 						x_pageContentsUpdated();
-						
+
 						finished = true;
 						
 					} else {
@@ -1120,7 +1125,7 @@
 						}
 						$feedbackTxt.fadeIn();
 						x_pageContentsUpdated();
-						
+
 						if (this.isTracked) {
 							$("#submitBtn").hide();
 							$("#showBtn").show();
@@ -1170,7 +1175,7 @@
 					total = 0;
 					correct_answers = 0;
 					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
-						var correctAnswer = answerData[interactionNumber][0];
+                        var correctAnswer = answerData[interactionNumber][0];
 						var labelSource = labelAnswers[correctAnswer];
 						var option = {source: labelSource, target: interactionNumber+''};
 						l_options.push(option);

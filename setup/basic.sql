@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `$user_group_members` ;
 DROP TABLE IF EXISTS `$template_group_rights` ;
 DROP TABLE IF EXISTS `$folderrights` ;
 DROP TABLE IF EXISTS `$folder_group_rights` ;
+DROP TABLE IF EXISTS `$oai_publish` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -38,7 +39,7 @@ CREATE TABLE `$additional_sharing` (
   `sharing_type` char(255) DEFAULT NULL,
   `extra` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE `$folderdetails` (
@@ -46,9 +47,9 @@ CREATE TABLE `$folderdetails` (
   `login_id` bigint(20) DEFAULT NULL,
   `folder_parent` bigint(20) DEFAULT NULL,
   `folder_name` char(255) DEFAULT NULL,
-  `date_created` date DEFAULT '2008-12-08',
+  `date_created` datetime DEFAULT '2008-12-08',
   PRIMARY KEY (`folder_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$ldap` (
   `ldap_id` bigint(20) NOT NULL auto_increment,
@@ -61,16 +62,16 @@ CREATE TABLE `$ldap` (
   `ldap_filter` text,
   `ldap_filter_attr` text,
   PRIMARY KEY  (`ldap_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$logindetails` (
   `login_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` char(255) DEFAULT NULL,
-  `lastlogin` date DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   `firstname` char(255) DEFAULT NULL,
   `surname` char(255) DEFAULT NULL,
   PRIMARY KEY (`login_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$originaltemplatesdetails` (
   `template_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -78,14 +79,14 @@ CREATE TABLE `$originaltemplatesdetails` (
   `template_name` char(255) DEFAULT NULL,
   `parent_template` char(255) DEFAULT NULL,
   `description` char(255) DEFAULT NULL,
-  `date_uploaded` date DEFAULT NULL,
+  `date_uploaded` datetime DEFAULT NULL,
   `display_name` char(255) DEFAULT NULL,
   `display_id` bigint(20) DEFAULT NULL,
   `access_rights` char(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   `template_sub_pages` text,
   PRIMARY KEY (`template_type_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',0),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
 
@@ -95,7 +96,7 @@ CREATE TABLE `$play_security_details` (
   `security_data` char(255) DEFAULT NULL,
   `security_info` char(255) DEFAULT NULL,
   PRIMARY KEY (`security_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$sitedetails` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -164,6 +165,7 @@ CREATE TABLE `$sitedetails` (
   `LRS_Secret` char(255) DEFAULT '',
   `dashboard_enabled` char(255) DEFAULT 'true',
   `dashboard_nonanonymous` char(255) DEFAULT 'true',
+  `xapi_force_anonymous_lrs` char(255) DEFAULT 'false',
   `xapi_dashboard_minrole` char(255) DEFAULT 'co-author',
   `dashboard_period` int DEFAULT 14,
   `dashboard_allowed_links` text,
@@ -177,16 +179,18 @@ CREATE TABLE `$sitedetails` (
 CREATE TABLE `$syndicationcategories` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_name` char(255) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT 0,
   PRIMARY KEY (`category_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationcategories`(`category_id`,`category_name`) values (1,'American and Canadian Studies'),(2,'Biology'),(3,'Biomedical Sciences'),(4,'Biosciences'),(5,'Built Environment, The'),(6,'Centre for English Language Education'),(7,'Chemistry'),(9,'Community Health Sciences'),(10,'Computer Science'),(11,'Contemporary Chinese Studies'),(12,'Economics'),(13,'Education'),(14,'English Studies'),(15,'Geography'),(16,'Medicine and Health'),(17,'History'),(18,'Humanities'),(20,'Mathematical Sciences'),(21,'Modern Languages and Cultures'),(22,'Nursing, Midwifery and Physiotherapy'),(23,'Pharmacy'),(24,'Physics & Astronomy'),(25,'Politics and International Relations'),(26,'Psychology'),(27,'Sociology & Social Policy'),(28,'Veterinary Medicine and Science');
 
 CREATE TABLE `$educationlevel` (
                                    `educationlevel_id` int(11) NOT NULL AUTO_INCREMENT,
                                    `educationlevel_name` char(255) DEFAULT NULL,
+                                   `parent_id` int(11) DEFAULT 0,
                                    PRIMARY KEY (`educationlevel_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert into `$educationlevel` (`educationlevel_id`,`educationlevel_name`) values (1,'University'),(2,'College'),(3,'Secondary Education'),(4,'Primary Educaton'),(5,'Vocational Education'),(6,'Adult Education'),(7,'All');
 
@@ -194,7 +198,7 @@ CREATE TABLE `$grouping` (
   `grouping_id` int(11) NOT NULL AUTO_INCREMENT,
   `grouping_name` char(255) DEFAULT NULL,
   PRIMARY KEY (`grouping_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$grouping` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10');
 
@@ -202,13 +206,13 @@ CREATE TABLE `$course` (
   `course_id` int(11) NOT NULL AUTO_INCREMENT,
   `course_name` char(255) DEFAULT NULL,
   PRIMARY KEY (`course_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$syndicationlicenses` (
   `license_id` int(11) NOT NULL AUTO_INCREMENT,
   `license_name` char(255) DEFAULT NULL,
   PRIMARY KEY (`license_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationlicenses`(`license_id`,`license_name`) values (6,'Creative Commons Attribution-ShareAlike'),(5,'Creative Commons Attribution-NonCommercial-ShareAlike'),(4,'Creative Commons Attribution-NonCommercial'),(3,'Creative Commons Attribution-NonCommercial-NoDerivs'),(2,'Creative Commons Attribution-NoDerivs');
 
@@ -217,9 +221,9 @@ CREATE TABLE `$templatedetails` (
   `creator_id` bigint(20) DEFAULT NULL,
   `template_type_id` bigint(20) DEFAULT NULL,
   `template_name` char(255) DEFAULT NULL,
-  `date_created` date DEFAULT NULL,
-  `date_modified` date DEFAULT NULL,
-  `date_accessed` date DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `date_modified` datetime DEFAULT NULL,
+  `date_accessed` datetime DEFAULT NULL,
   `number_of_uses` bigint(20) DEFAULT NULL,
   `access_to_whom` text,
   `extra_flags` varchar(45) DEFAULT NULL,
@@ -236,7 +240,7 @@ CREATE TABLE `$templatedetails` (
   `dashboard_allowed_links` text,
   `dashboard_display_options` text,
   PRIMARY KEY (`template_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templaterights` (
   `template_id` bigint(20) NOT NULL,
@@ -245,7 +249,7 @@ CREATE TABLE `$templaterights` (
   `folder` bigint(20) DEFAULT NULL,
   `notes` char(255) DEFAULT NULL,
    KEY `index1` (`template_id`,`user_id`,`role`(10))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (
   `template_id` bigint(20) NOT NULL,
@@ -256,14 +260,14 @@ CREATE TABLE `$templatesyndication` (
   `syndication` text,
   `category` char(255) DEFAULT NULL,
   `license` char(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$user_sessions` (
   `session_id` varchar(32) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
   `data` text,
   PRIMARY KEY (`session_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$user` (
   `iduser` int(11) NOT NULL AUTO_INCREMENT,
@@ -273,45 +277,56 @@ CREATE TABLE `$user` (
   `surname` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`iduser`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$user_groups` (
   `group_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `group_name` char(255) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$user_group_members` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `group_id` bigint(20) NOT NULL,
   `login_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `template_group_rights` (
+CREATE TABLE `$template_group_rights` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `group_id` bigint(20) NOT NULL,
   `template_id` bigint(20) NOT NULL,
   `role` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `folderrights` (
+CREATE TABLE `$folderrights` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `folder_id` int(11) NOT NULL,
   `login_id` int(11) NOT NULL,
   `folder_parent` int(11) NOT NULL,
   `role` char(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id`),
+  KEY `index1` (`folder_id`,`login_id`,`role`(10))
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `folder_group_rights` (
+CREATE TABLE `$folder_group_rights` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `folder_id` bigint(20) NOT NULL,
   `group_id` bigint(20) NOT NULL,
   `role` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `$oai_publish` (
+      `audith_id` int(11) NOT NULL AUTO_INCREMENT,
+      `template_id` BIGINT(20) NOT NULL,
+      `login_id` BIGINT(20) NOT NULL,
+      `user_type` VARCHAR(10),
+      `status` VARCHAR(10),
+      `timestamp` TIMESTAMP,
+      PRIMARY KEY (`audith_id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_context` (
   `lti_context_key` varchar(255) NOT NULL,
@@ -319,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `$lti_context` (
   `updated_on` datetime NOT NULL,
   PRIMARY KEY (`lti_context_key`),
   KEY `c_internal_id` (`c_internal_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_keys` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -331,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `$lti_keys` (
   `updated_on` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `oauth_consumer_key` (`oauth_consumer_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_resource` (
   `lti_resource_key` varchar(255) NOT NULL,
@@ -341,7 +356,7 @@ CREATE TABLE IF NOT EXISTS `$lti_resource` (
   PRIMARY KEY (`lti_resource_key`),
   KEY `destination2` (`internal_type`),
   KEY `destination` (`internal_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_user` (
   `lti_user_key` varchar(255) NOT NULL DEFAULT '',
@@ -349,4 +364,4 @@ CREATE TABLE IF NOT EXISTS `$lti_user` (
   `updated_on` datetime NOT NULL,
   PRIMARY KEY (`lti_user_key`),
   KEY `lti_user_equ` (`lti_user_equ`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

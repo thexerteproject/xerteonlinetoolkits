@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="168"
+   height="40"
+   id="svg3021"
+   version="1.1"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="project_intro.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs3023" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="61.696429"
+     inkscape:cy="18.571429"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2120"
+     inkscape:window-height="958"
+     inkscape:window-x="30"
+     inkscape:window-y="30"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:pagecheckerboard="0">
+    <sodipodi:guide
+       orientation="1,0"
+       position="-52.21226,21.465742"
+       id="guide3767" />
+    <sodipodi:guide
+       position="119.64286,27.142857"
+       orientation="0,-1"
+       id="guide21423" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3026">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-291,-512.36218)">
+    <rect
+       style="fill:none;fill-opacity:1;stroke:none"
+       id="rect3777"
+       width="168.39287"
+       height="40"
+       x="291"
+       y="512.54077" />
+    <g
+       id="g3764">
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         y="512.36218"
+         x="291"
+         height="40"
+         width="42"
+         id="next"
+         style="fill:none;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         style="fill:none;fill-opacity:1;stroke:none"
+         id="rect3766"
+         width="42"
+         height="40"
+         x="333"
+         y="512.36218" />
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         y="512.36218"
+         x="375"
+         height="40"
+         width="42"
+         id="rect3768"
+         style="fill:none;fill-opacity:1;stroke:none" />
+      <rect
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         style="fill:none;fill-opacity:1;stroke:none"
+         id="rect3770"
+         width="42"
+         height="40"
+         x="417"
+         y="512.36218" />
+    </g>
+    <path
+       sodipodi:type="arc"
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#1c1c1c;stroke-width:0.95918375000000000;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3807"
+       sodipodi:cx="99.464287"
+       sodipodi:cy="98.076469"
+       sodipodi:rx="16.785715"
+       sodipodi:ry="16.785715"
+       d="m 116.25,98.076469 c 0,9.270491 -7.51522,16.785711 -16.785713,16.785711 -9.270495,0 -16.785715,-7.51522 -16.785715,-16.785711 0,-9.270494 7.51522,-16.785715 16.785715,-16.785715 9.270493,0 16.785713,7.515221 16.785713,16.785715 z"
+       transform="matrix(1.0425531,0,0,1.0425531,208.3032,430.11226)"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(1.0425531,0,0,1.0425531,250.3032,430.11226)"
+       d="m 116.25,98.076469 c 0,9.270491 -7.51522,16.785711 -16.785713,16.785711 -9.270495,0 -16.785715,-7.51522 -16.785715,-16.785711 0,-9.270494 7.51522,-16.785715 16.785715,-16.785715 9.270493,0 16.785713,7.515221 16.785713,16.785715 z"
+       sodipodi:ry="16.785715"
+       sodipodi:rx="16.785715"
+       sodipodi:cy="98.076469"
+       sodipodi:cx="99.464287"
+       id="path3809"
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#1c1c1c;stroke-width:0.95918375000000000;stroke-miterlimit:4;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#1c1c1c;stroke-width:0.95918375000000000;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3811"
+       sodipodi:cx="99.464287"
+       sodipodi:cy="98.076469"
+       sodipodi:rx="16.785715"
+       sodipodi:ry="16.785715"
+       d="m 116.25,98.076469 c 0,9.270491 -7.51522,16.785711 -16.785713,16.785711 -9.270495,0 -16.785715,-7.51522 -16.785715,-16.785711 0,-9.270494 7.51522,-16.785715 16.785715,-16.785715 9.270493,0 16.785713,7.515221 16.785713,16.785715 z"
+       transform="matrix(1.0425531,0,0,1.0425531,292.3032,430.11226)"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(1.0425531,0,0,1.0425531,334.3032,430.11226)"
+       d="m 116.25,98.076469 c 0,9.270491 -7.51522,16.785711 -16.785713,16.785711 -9.270495,0 -16.785715,-7.51522 -16.785715,-16.785711 0,-9.270494 7.51522,-16.785715 16.785715,-16.785715 9.270493,0 16.785713,7.515221 16.785713,16.785715 z"
+       sodipodi:ry="16.785715"
+       sodipodi:rx="16.785715"
+       sodipodi:cy="98.076469"
+       sodipodi:cx="99.464287"
+       id="path3813"
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#1c1c1c;stroke-width:0.95918375000000000;stroke-miterlimit:4;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <circle
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       id="path2997"
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#cfcfcf;stroke-width:0.662699;stroke-miterlimit:4;stroke-dasharray:none"
+       cx="312"
+       cy="532.36218"
+       r="11.597221" />
+    <g
+       style="font-style:normal;font-weight:normal;font-size:13.371px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#cfcfcf;fill-opacity:1;stroke:none"
+       id="text3002"
+       transform="translate(-0.49999945,1.0340622)">
+      <g
+         aria-label="i"
+         id="text2082"
+         style="font-size:16px;line-height:125%;font-family:sans-serif;stroke-width:1px">
+        <path
+           d="m 314.63281,525.47266 -0.35156,1.52343 H 312.625 l 0.35156,-1.52343 z m -0.78125,2.98437 -2.01562,8.72656 h -1.46875 l 2.01562,-8.72656 z"
+           style="font-style:italic;-inkscape-font-specification:'sans-serif Italic';text-align:center;text-anchor:middle"
+           id="path23260" />
+      </g>
+    </g>
+    <circle
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#ffffff;stroke-width:0.662699;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3003"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       cx="354"
+       cy="532.36218"
+       r="11.597221" />
+    <g
+       style="font-style:normal;font-weight:normal;font-size:13.371px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="g17194"
+       transform="translate(41.500001,1.0340622)">
+      <g
+         aria-label="i"
+         id="text17192"
+         style="font-size:16px;line-height:125%;font-family:sans-serif;stroke-width:1px">
+        <path
+           d="m 314.63281,525.47266 -0.35156,1.52343 H 312.625 l 0.35156,-1.52343 z m -0.78125,2.98437 -2.01562,8.72656 h -1.46875 l 2.01562,-8.72656 z"
+           style="font-style:italic;-inkscape-font-specification:'sans-serif Italic';text-align:center;text-anchor:middle"
+           id="path23281" />
+      </g>
+    </g>
+    <circle
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       id="path3009"
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#cfcfcf;stroke-width:0.662699;stroke-miterlimit:4;stroke-dasharray:none"
+       cx="396"
+       cy="532.36218"
+       r="11.597221" />
+    <g
+       style="font-style:normal;font-weight:normal;font-size:13.371px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#cfcfcf;fill-opacity:1;stroke:none"
+       id="g19348"
+       transform="translate(83.500001,1.0340622)">
+      <g
+         aria-label="i"
+         id="text19346"
+         style="font-size:16px;line-height:125%;font-family:sans-serif;stroke-width:1px">
+        <path
+           d="m 314.63281,525.47266 -0.35156,1.52343 H 312.625 l 0.35156,-1.52343 z m -0.78125,2.98437 -2.01562,8.72656 h -1.46875 l 2.01562,-8.72656 z"
+           style="font-style:italic;-inkscape-font-specification:'sans-serif Italic';text-align:center;text-anchor:middle"
+           id="path23302" />
+      </g>
+    </g>
+    <circle
+       style="fill:#1c1c1c;fill-opacity:1;stroke:#cfcfcf;stroke-width:0.662699;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3015"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       cx="438"
+       cy="532.36218"
+       r="11.597221" />
+    <g
+       style="font-style:normal;font-weight:normal;font-size:13.371px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#cfcfcf;fill-opacity:1;stroke:none"
+       id="g21429"
+       transform="translate(125.5,1.0340622)">
+      <g
+         aria-label="i"
+         id="text21427"
+         style="font-size:16px;line-height:125%;font-family:sans-serif;stroke-width:1px">
+        <path
+           d="m 314.63281,525.47266 -0.35156,1.52343 H 312.625 l 0.35156,-1.52343 z m -0.78125,2.98437 -2.01562,8.72656 h -1.46875 l 2.01562,-8.72656 z"
+           style="font-style:italic;-inkscape-font-specification:'sans-serif Italic';text-align:center;text-anchor:middle"
+           id="path23323" />
+      </g>
+    </g>
+  </g>
+</svg>

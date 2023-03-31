@@ -244,10 +244,11 @@ if ($ok === false) {
     $connection = null;
     die;
 }
-
+#depricated
 $query = "UPDATE sitedetails SET admin_password = '" . $password . "' WHERE site_id = 1";
 $statement = $connection->prepare($query);
 $ok = $statement->execute();
+
 
 if ($ok === false) {
     _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));

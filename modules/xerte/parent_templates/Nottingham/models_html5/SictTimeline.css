@@ -1,3 +1,24 @@
+#pageContents .tl-text,
+#pageContents .tl-text p,
+#pageContents .tl-timemarker-text h2,
+#pageContents .tl-text .tl-headline-date,
+#pageContents .tl-text h3.tl-headline-date
+#pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class^="tl-icon-"],
+#pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class*=" tl-icon-"],
+#pageContents .tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-major .tl-timeaxis-tick,
+#pageContents .tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-minor .tl-timeaxis-tick {
+	color: black !important;
+}
+
+#pageContents .tl-text .tl-headline-date,
+#pageContents .tl-text h3.tl-headline-date {
+	border-bottom: 2px solid #ccc;
+}
+
+.tl-text-content li {
+	font-size: 1.6vw !important;
+}
+
 /*Audio*/
 .tl-media-content{
     display: flex;
@@ -9,34 +30,7 @@
     background-color: #0b2e13 !important;
 }
 
-/*
-.tl-timenav{
-    position: fixed !important;
-    bottom: 50px !important;
-}
-.tl-menubar{
-    position: fixed !important;
-
-}
-
-.tl-slide-content{
-    width: 490px !important;
-    padding: 0 !important;
-}
-
-.tl-slide{
-    display: flex;
-    justify-content: center;
-}
-
-.tl-slide-content-container{
-    display: flex;
-    justify-content: center;
-}
-*/
 .tl-slide .tl-slide-media-only{
-    /*display: flex !important;*/
-    /*justify-content: center !important;*/
     background-color: #0a8bee !important;
 }
 
@@ -61,16 +55,7 @@
     z-index: 1!important;
 }
 
-/*.tl-slide-content-container{*/
-/*    display: block!important;*/
-/*}*/
-
-.tl-slide-scrollable-container{
-    /* width: 100% !important; */
-}
-
 .tl-slide-content{
-    /* width: 100% !important; */
     height: 100% !important;
 }
 #pageContents h3{
@@ -82,7 +67,6 @@
 }
 
 .tl-media{
-    /* max-width: 100% !important; */
     padding-left: 7%
 }
 
@@ -128,15 +112,3 @@ h3.tl-headline-date br:after {
 .tl-text .tl-headline-date small, .tl-text h3.tl-headline-date small {
     font-size: inherit !important;
 }
-
-/*.tl-caption{*/
-/*    float: left !important;*/
-/*    margin-left: 2% !important;*/
-/*}*/
-/*.tl-slidenav-next{*/
-/*    top: 0!important; */
-/*}*/
-
-/*.tl-timeline{*/
-/*    height: 700px!important;*/
-/*}*/

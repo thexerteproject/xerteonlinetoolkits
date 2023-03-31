@@ -1,12 +1,12 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel>
     </newNodes>
   </pageWizard>
 
   <!-- DRAG DROP LABEL INTERACTION==================== -->
-  <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" remove="true">
+  <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_drag_and_drop_labelling" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text  label="Page Text" type="TextArea" height="250"/>
@@ -14,7 +14,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
 	
 	<highlight type="group" label="Hotspot Highlight">
@@ -44,7 +44,7 @@
 
     <name label="Drag Label" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true" />
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
 
   </hotspot> 
 
