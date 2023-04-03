@@ -236,7 +236,7 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id, $trans
                     db_query($q, $params);
 
                     // Move all templaterights referring to $old_folder_id to $folder_id
-                    $q = "update {$prefix}templaterights set folder=? where folder=? and role != 'creator'";
+                    $q = "update {$prefix}templaterights set folder=? where folder=?";
                     $params = array($folder_id, $old_folder_id);
                     db_query($q, $params);
                 }
