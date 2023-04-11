@@ -41,7 +41,7 @@
         <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
     </sectionGroup>
 	
-	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs">
+	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding a unique PageID and then appending #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that section ID's and page ID's are case sensitive.">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup>
 	

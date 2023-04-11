@@ -559,6 +559,7 @@ function update_site() {
 			site_xapi_secret: document.getElementById("site_xapi_secret").value,
 			site_xapi_dashboard_enable: document.getElementById("site_xapi_dashboard_enable").value,
 			site_xapi_dashboard_nonanonymous: document.getElementById("site_xapi_dashboard_nonanonymous").value,
+			site_xapi_force_anonymous_lrs: document.getElementById("site_xapi_force_anonymous_lrs").value,
 			xapi_dashboard_minrole: document.getElementById("xapi_dashboard_minrole").value,
 			xapi_dashboard_urls: document.getElementById("xapi_dashboard_urls").value,
 			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
@@ -1246,10 +1247,11 @@ function transfer_user_templates_stateChanged(response){
 	}
 }
 
-function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_private, tag_delete_user)
+function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_private, tag_transfer_shared_folders, tag_delete_user)
 {
 	var new_user = $('#' + tag_user_select).val();
 	var transfer_private = $('#' + tag_transfer_private).prop('checked');
+	var transfer_shared_folders = $('#' + tag_transfer_shared_folders).prop('checked');
 	var delete_user = $('#' + tag_delete_user).prop('checked');
 
 	$("#transfer_result").show();
@@ -1261,6 +1263,7 @@ function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_priva
 			olduserid: user_id,
 			newuserid: new_user,
 			transfer_private: transfer_private,
+			transfer_shared_folders: transfer_shared_folders,
 			delete_user: delete_user
 		},
 	})
@@ -1390,17 +1393,33 @@ function delete_member(login_id, group_id){
 	{
 		$.ajax({
 			type: "POST",
-			url: "website_code/php/management/delete_member.php",
+			url: "website_code/php/management/check_delete_member.php",
 			data: {
 				login_id: login_id,
-				group_id: group
+				group_id: group,
 			},
 		})
-		.done(function (response) {
-			list_group_members(group_id);
-		})
-		.fail(function(){
-			alert(DELETE_MEMBER_FAIL);
+		.done(function(owns_templates) {
+			do_it = true;
+			if (owns_templates != "OK") {
+				do_it = confirm(owns_templates);
+			}
+			if (do_it) {
+				$.ajax({
+					type: "POST",
+					url: "website_code/php/management/delete_member.php",
+					data: {
+						login_id: login_id,
+						group_id: group
+					},
+				})
+				.done(function (response) {
+					list_group_members(group_id);
+				})
+				.fail(function () {
+					alert(DELETE_MEMBER_FAIL);
+				})
+			}
 		});
 	}
 }

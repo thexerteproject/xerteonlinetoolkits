@@ -176,9 +176,15 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
                     $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
-                    $tracking .= "   var studentidmode = '" . $row['tsugi_xapi_student_id_mode'] . "';\n";
-                    if ($row['tsugi_xapi_student_id_mode'] == 1)
-                    {
+                    $xapi_student_id_mode = $row['tsugi_xapi_student_id_mode'];
+                    if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs)) {
+                        if ($xapi_student_id_mode == 0 || $xapi_student_id_mode == 2)
+                        {
+                            $xapi_student_id_mode = 1;
+                        }
+                    }
+                    $tracking .= "   var studentidmode = '" . $xapi_student_id_mode . "';\n";
+                    if ($xapi_student_id_mode == 1) {
                         $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
                     }
                 }
@@ -191,7 +197,14 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                         _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
                         $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
                         $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
-                        $tracking .= "   var studentidmode = 0;\n";
+                        if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs))
+                        {
+                            $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
+                            $tracking .= "   var studentidmode = 1;\n";
+                        }
+                        else {
+                            $tracking .= "   var studentidmode = 0;\n";
+                        }
                     }
                     else {
                         $tracking .= "   var studentidmode = 3;\n";
@@ -422,6 +435,20 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             $embedsupport = "";
         }
         $page_content = str_replace("%EMBED_SUPPORT%", $embedsupport, $page_content);
+
+        // Check popcorn mediasite and peertube config files
+        $popcorn_config = "";
+        $mediasite_config_js = $template_path . "common_html5/js/popcorn/config/mediasite_urls.js";
+        if (file_exists($mediasite_config_js))
+        {
+            $popcorn_config .= "<script type=\"text/javascript\" src=\"$mediasite_config_js?version=" . $version . "\"></script>\n";
+        }
+        $peertube_config_js = $template_path . "common_html5/js/popcorn/config/peertube_urls.js";
+        if (file_exists($peertube_config_js))
+        {
+            $popcorn_config .= "<script type=\"text/javascript\" src=\"$peertube_config_js?version=" . $version . "\"></script>\n";
+        }
+        $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
     }
 
     return $page_content;

@@ -51,7 +51,7 @@
 
 	var DELETE_PERMENANT_PROMPT = "Are you sure you want to permenantly delete this project";
 
-	var DELETE_FOLDER_NOT_EMPTY = "Sorry you cannot delete a folder that has projects in it. Please empty the folder first";
+	var DELETE_FOLDER_NOT_EMPTY = "Sorry you cannot delete a folder that has projects and/or folders in it. Please empty the folder first";
 
 	var NAME_FAIL = "Sorry that is not a valid name. Please use only letters and numbers.";
 	

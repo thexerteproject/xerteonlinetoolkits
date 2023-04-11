@@ -103,8 +103,8 @@ function make_new_template($type, $zip_path)
     $params = array(
         $_SESSION['toolkits_logon_id'],
         $row_template_type['template_type_id'],
-        date('Y-m-d'),
-        date('Y-m-d'),
+        date('Y-m-d H:i:s'),
+        date('Y-m-d H:i:s'),
         "Private",
         $template_name,
         "engine=javascript");

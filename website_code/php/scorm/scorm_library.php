@@ -216,7 +216,15 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $language = $_SESSION['toolkits_language'];
     $language_ISO639_1code = substr($language, 0, 2);
 
-
+    if ($parent_name == "Nottingham")
+    {
+        $common_folder = "common_html5";
+    }
+    else
+    {
+        $common_folder = "common";
+    }
+    $template_path = $xerte_toolkits_site->basic_template_path . $type . '/parent_templates/' . $parent_name . "/";
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 	
@@ -245,11 +253,11 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     {
         // Handle offline variables
         $buffer = str_replace("%OFFLINESCRIPTS%", "", $buffer);
-        if ($need_download_url) $offline_includes = "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
+        if ($need_download_url) $offline_includes .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
         $buffer = str_replace("%OFFLINEINCLUDES%", $offline_includes, $buffer);
         $buffer = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $buffer);
     }
-    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
+    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"{$common_folder}/js/xttracking_noop.js\"></script>", $buffer);
     $buffer = str_replace("%EMBED_SUPPORT%", "", $buffer);
     $buffer = str_replace("%LASTUPDATED%", $date_modified, $buffer);
     $buffer = str_replace("%DATECREATED%", $date_created, $buffer);
@@ -258,6 +266,20 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $buffer);
     $buffer = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $buffer);
     $buffer = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $buffer);
+
+    // Check popcorn mediasite and peertube config files
+    $popcorn_config = "";
+    $mediasite_config_js = $common_folder . "/js/popcorn/config/mediasite_urls.js";
+    if (file_exists($template_path . $mediasite_config_js))
+    {
+        $popcorn_config .= "<script type=\"text/javascript\" src=\"{$mediasite_config_js}?version=" . $version . "\"></script>\n";
+    }
+    $peertube_config_js = $common_folder . "/js/popcorn/config/peertube_urls.js";
+    if (file_exists($template_path . $peertube_config_js))
+    {
+        $popcorn_config .= "<script type=\"text/javascript\" src=\"{$peertube_config_js}?version=" . $version . "\"></script>\n";
+    }
+    $buffer = str_replace("%POPCORN_CONFIG%", $popcorn_config, $buffer);
 
     $index = "index.htm";
 
@@ -289,6 +311,17 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $version = getVersion();
     $language_ISO639_1code = substr($language, 0, 2);
 
+    if ($parent_name == "Nottingham")
+    {
+        $common_folder = "common_html5";
+    }
+    else
+    {
+        $common_folder = "common";
+    }
+    $template_path = $xerte_toolkits_site->basic_template_path . $type . 'parent_templates/' . $parent_name;
+
+
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $scorm_html_page_content = str_replace("%TWITTERCARD%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%VERSION%", $version, $scorm_html_page_content);
@@ -312,6 +345,19 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $scorm_html_page_content);
 
+    // Check popcorn mediasite and peertube config files
+    $popcorn_config = "";
+    $mediasite_config_js = $common_folder . "/js/popcorn/config/mediasite_urls.js";
+    if (file_exists($template_path . $mediasite_config_js))
+    {
+        $popcorn_config .= "<script type=\"text/javascript\" src=\"{$mediasite_config_js}?version=" . $version . "\"></script>\n";
+    }
+    $peertube_config_js = $common_folder . "/js/popcorn/config/peertube_urls.js";
+    if (file_exists($template_path . $peertube_config_js))
+    {
+        $popcorn_config .= "<script type=\"text/javascript\" src=\"{$peertube_config_js}?version=" . $version . "\"></script>\n";
+    }
+    $scorm_html_page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";

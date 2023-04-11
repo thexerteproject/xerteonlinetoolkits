@@ -53,7 +53,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true" tooltip="An image to display above the text">
 		<url label="Image" type="media"  optional="true" defaultValue="Select an Image"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
     <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true" deprecated="This property is deprecated"/>

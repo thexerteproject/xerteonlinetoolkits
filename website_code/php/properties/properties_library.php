@@ -480,8 +480,8 @@ function project_info($template_id){
 
 	$prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query_for_names = "select {$prefix}templatedetails.template_name, template_id, template_framework, date_created, date_modified, extra_flags from "
-        . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
+    $query_for_names = "select {$prefix}td.template_name as project_name, td.template_id, otd.template_framework, otd.template_name, otd.display_name, otd.parent_template, otd2.display_name as parent_display_name, td.date_created, td.date_modified, td.extra_flags from "
+        . "{$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd, {$prefix}originaltemplatesdetails otd2 where td.template_id= ? and otd.template_type_id = td.template_type_id and otd.parent_template = otd2.template_name";
 
     $params = array($template_id);
     $row = db_query_one($query_for_names, $params);
@@ -499,7 +499,13 @@ function project_info($template_id){
 
     $info .=  PROJECT_INFO_MODIFIED . ": " . $row['date_modified'] . "<br/>";
 
+    $info .= PROJECT_INFO_FRAMEWORK . ": " . $row['display_name'];
 
+    if ($row['parent_template'] == $row['template_name']) {
+        $info .= "<br/>";
+    } else {
+        $info .= " (" . $row['parent_display_name'] . ")<br/>";
+    }
 
     include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
@@ -593,6 +599,32 @@ function folder_info($folder_id){
 
     return $info;
 
+}
+
+function group_info($group_id)
+{
+    global $xerte_toolkits_site;
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $query = "select ld.firstname, ld.surname, ld.username from "
+        . "{$prefix}logindetails ld, {$prefix}user_group_members ugm where ld.login_id=ugm.login_id and ugm.group_id= ?";
+
+    $params = array($group_id);
+    $members = db_query($query, $params);
+
+    $query = "select group_name, group_id from "
+        . "{$prefix}user_groups where group_id= ?";
+    $group = db_query_one($query, $params);
+
+    $info = GROUP_INFO_NAME . ": " . $group['group_name'] . "<br/>";
+    $info .= GROUP_INFO_MEMBERS . ": " . "<br/><ul class='group_members'>";
+    foreach ($members as $member)
+    {
+        $info .= "<li>" . $member['firstname'] . " " . $member['surname'] . " (" . $member['username'] . ")</li>";
+    }
+    $info .= "</ul>";
+    return $info;
 }
 
 function statistics_prepare($template_id, $force=false)
@@ -777,6 +809,27 @@ function media_quota_info($template_id)
     }
 }
 
+function order_shared_folder_users($shared_users)
+{
+    //Sort array shared_users by role, then by surname, then by firstname
+    //Role sort order: creator, co-author, editor, read-only
+    usort($shared_users, function($a, $b) {
+        $role_order = array('creator', 'co-author', 'editor', 'read-only');
+        $a_role = array_search($a['role'], $role_order);
+        $b_role = array_search($b['role'], $role_order);
+        if ($a_role == $b_role) {
+            if ($a['surname'] == $b['surname']) {
+                return strcmp($a['firstname'], $b['firstname']);
+            } else {
+                return strcmp($a['surname'], $b['surname']);
+            }
+        } else {
+            return $a_role - $b_role;
+        }
+    });
+    return $shared_users;
+}
+
 function sharing_info($template_id)
 {
     global $xerte_toolkits_site;
@@ -785,7 +838,7 @@ function sharing_info($template_id)
         return "";
     }
 
-    $sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
+    $sql = "SELECT template_id, user_id, firstname, surname, username, role, folder FROM " .
         " {$xerte_toolkits_site->database_table_prefix}templaterights tr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
         " ld.login_id = tr.user_id and template_id= ?";
 
@@ -823,50 +876,139 @@ function sharing_info($template_id)
         }
     }
 
-
-
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
-            $sql.= " or ld.login_id = ?";
+            $sql .= " or ld.login_id = ?";
+            $sql_grouped .= " or ld.login_id = ?";
         }else{
-            $sql.= " where (ld.login_id = ?";
+            $sql .= " where (ld.login_id = ?";
+            $sql_grouped .= " where (ld.login_id = ?";
         }
     }
 
     if(count($params) > 0){
         $sql .= ")";
+        $sql_grouped .= ")";
     }
     $sql .= " and";
+    $sql_grouped .= " and";
 
     foreach ($related_folders as $index =>$rf){
         if($index != 0){
-            $sql.= " or fr.folder_id = ?";
+            $sql .= " or fr.folder_id = ?";
+            $sql_grouped .= " or fr.folder_id = ?";
             array_push($params, $rf["folder_id"]);
         }else{
-            $sql.= " (fr.folder_id = ?";
+            $sql .= " (fr.folder_id = ?";
+            $sql_grouped .= " (fr.folder_id = ?";
             array_push($params, $rf["folder_id"]);
 
         }
     }
-    $sql .= ")";
-    $query_shared_folder_users = db_query($sql, $params);
+    $sql .= ") ";
+    $sql_grouped .= ") group by user_id, firstname, surname, username";
+    $query_shared_folder_users_roles = db_query($sql, $params);
+    $query_shared_folder_users = db_query($sql_grouped, $params);
+
+    // Find all sub-folders and make sure they have the correct role records
+    // Loop over related folders and find and add all records in $query_shared_folder_users_roles that are not in there yet with the role of the parent record
+    foreach (array_reverse($related_folders) as $rf){
+        $parent = $rf['folder_parent'];
+        foreach ($query_shared_folder_users_roles as $role){
+            if ($role['folder_id'] == $parent){
+                // Check if this user already has a record for this folder
+                $found = false;
+                foreach ($query_shared_folder_users_roles as $role2){
+                    if ($role2['folder_id'] == $rf['folder_id'] && $role2['user_id'] == $role['user_id']){
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found){
+                    $role['folder_id'] = $rf['folder_id'];
+                    $role['parent_id'] = $parent;
+                    array_push($query_shared_folder_users_roles, $role);
+                }
+            }
+        }
+    }
+
+    $params = array();
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
+
+    foreach ($related_folders as $index =>$rf){
+        if($index != 0){
+            $sql .= " or fgr.folder_id = ?";
+            $sql_grouped .= " or fgr.folder_id = ?";
+            array_push($params, $rf["folder_id"]);
+        }else{
+            $sql .= " (fgr.folder_id = ?";
+            $sql_grouped .= " (fgr.folder_id = ?";
+            array_push($params, $rf["folder_id"]);
+        }
+    }
+    $sql .= ") ";
+    $query_shared_folders_groups = db_query($sql, $params);
+
 
     $roles = array("creator"=>4, "co-author"=>3, "editor"=>2, "read-only"=>1);
 
     foreach ($query_sharing_rows as $index => $row) {
+        $found = false;
         foreach ($query_shared_folder_users as $indexUser => $user){
-
-            if($user["role"] == "creator"){
-                $query_shared_folder_users[$indexUser]["role"] = "co-author";
+            if($row["user_id"] == $user["user_id"]){
+                $found = true;
             }
+            foreach($query_shared_folder_users_roles as $indexRole => $role) {
+                if ($role['user_id'] == $user['user_id']) {
+                    if ($row['folder'] == $role['folder_id']) {
+                        $query_shared_folder_users[$indexUser]["role"] = $role['role'];
 
-            if($row["user_id"] == $user["user_id"] && $row["role"] == "creator"){
-                $query_shared_folder_users[$indexUser]["role"] = "creator";
+                        if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
+                            $query_shared_folder_users[$indexUser]["role"] = "creator";
+                        }
+                    }
+                }
+                if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
+                    $query_shared_folder_users[$indexUser]["role"] = $row["role"];
+                    $query_shared_folder_users[$indexUser]["role_source"] = 'template';
+                }
             }
-
-            if($row["user_id"] == $user["user_id"] && $row["role"] != "creator" && $roles[$query_shared_folder_users[$indexUser]["role"]] < $roles[ $query_sharing_rows[$index]["role"]]){
-                $query_shared_folder_users[$indexUser]["role"] =  $query_sharing_rows[$index]["role"];
+        }
+        if (!$found)
+        {
+            // Add $row to $query_shared_folder_users
+            $index = count($query_shared_folder_users);
+            $query_shared_folder_users[] = $row;
+            if ($row['role'] == "creator") {
+                // Change the role of the user to co-author
+                foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                    if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                        $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    foreach ($query_sharing_rows as $index => $row) {
+        foreach ($query_shared_folder_users as $indexUser => $user) {
+            foreach ($query_shared_folder_users_roles as $indexRole => $role) {
+                if ($role['user_id'] == $user['user_id']) {
+                    if ($row['folder'] == $role['folder_id']) {
+                        if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
+                            foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                    $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -875,9 +1017,27 @@ function sharing_info($template_id)
         $query_shared_folder_users[$index]["template_id"] = $template_id;
     }
 
+    foreach ($query_group_sharing_rows as $index => $row) {
+        $found = false;
+        foreach ($query_shared_folders_groups as $indexGroup => $group){
+            if($row["group_name"] == $group["group_name"]){
+                $found = true;
+                if ($roles[$group["role"]] < $roles[$row["role"]]) {
+                    $query_shared_folders_groups[$indexGroup]["role"] = $row["role"];
+                    $query_shared_folders_groups[$indexGroup]["role_source"] = 'template';
+                }
+            }
+        }
+        if (!$found)
+        {
+            // Add $row to $query_shared_folder_users
+            $query_shared_folders_groups[] = $row;
+        }
+    }
+
     $info =  PROJECT_INFO_SHARED . ": ";
 
-    if(sizeof($query_sharing_rows)==1 && empty($query_group_sharing_rows) && empty($query_shared_folder_users)){
+    if(count($query_sharing_rows)==1 && count($query_group_sharing_rows)==0 && count($query_shared_folder_users) == 1 && count($query_shared_folders_groups) == 0){
         $info .= PROJECT_INFO_NOTSHARED . "<br/>";
         return $info;
     }
@@ -905,28 +1065,9 @@ function sharing_info($template_id)
             $info .=  ")</span></li>";
         }
     }
-
-    foreach($query_group_sharing_rows as $row) {
-        $info .=  "<li><span>" . $row['group_name'] . "  -  (";
-        switch($row['role'])
-        {
-            case "creator":
-                $info .=  SHARING_CREATOR;
-                break;
-            case "co-author":
-                $info .=  SHARING_COAUTHOR;
-                break;
-            case "editor":
-                $info .=  SHARING_EDITOR;
-                break;
-            case "read-only":
-                $info .=  SHARING_READONLY;
-                break;
-        }
-
-        $info .=  ")</span></li>";
-    }
-    if(sizeof($query_shared_folder_users)!=1) {
+    else
+    {
+        $query_shared_folder_users = order_shared_folder_users($query_shared_folder_users);
         foreach ($query_shared_folder_users as $row) {
             $info .= "<li><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ")  -  (";
             switch ($row['role']) {
@@ -944,11 +1085,90 @@ function sharing_info($template_id)
                     break;
             }
 
+            if (isset($row['role_source'])) {
+                $info .= " - " . SHARING_SOURCE;
+                switch ($row['role_source']) {
+                    case "template":
+                        $info .= SHARING_SOURCE_TEMPLATE;
+                        break;
+                    case "folder":
+                        $info .= SHARING_SOURCE_FOLDER;
+                        break;
+                }
+            }
+
             $info .= ")</span></li>";
         }
     }
+    if(empty($query_shared_folders_groups)) {
 
-    $info .=  "</ul>";
+
+        foreach ($query_group_sharing_rows as $row) {
+            $info .= "<li><span>" . $row['group_name'] . "  -  (";
+            switch ($row['role']) {
+                case "creator":
+                    $info .= SHARING_CREATOR;
+                    break;
+                case "co-author":
+                    $info .= SHARING_COAUTHOR;
+                    break;
+                case "editor":
+                    $info .= SHARING_EDITOR;
+                    break;
+                case "read-only":
+                    $info .= SHARING_READONLY;
+                    break;
+            }
+
+            if (isset($row['role_source'])) {
+                $info .= " - " . SHARING_SOURCE;
+                switch ($row['role_source']) {
+                    case "template":
+                        $info .= SHARING_SOURCE_TEMPLATE;
+                        break;
+                    case "folder":
+                        $info .= SHARING_SOURCE_FOLDER;
+                        break;
+                }
+            }
+
+            $info .= ")</span></li>";
+        }
+    }
+    else {
+        foreach ($query_shared_folders_groups as $row) {
+            $info .= "<li><span>" . $row['group_name'] . "  -  (";
+            switch ($row['role']) {
+                case "creator":
+                    $info .= SHARING_CREATOR;
+                    break;
+                case "co-author":
+                    $info .= SHARING_COAUTHOR;
+                    break;
+                case "editor":
+                    $info .= SHARING_EDITOR;
+                    break;
+                case "read-only":
+                    $info .= SHARING_READONLY;
+                    break;
+            }
+
+            if (isset($row['role_source'])) {
+                $info .= " - " . SHARING_SOURCE;
+                switch ($row['role_source']) {
+                    case "template":
+                        $info .= SHARING_SOURCE_TEMPLATE;
+                        break;
+                    case "folder":
+                        $info .= SHARING_SOURCE_FOLDER;
+                        break;
+                }
+            }
+
+            $info .= ")</span></li>";
+        }
+    }
+    $info .= "</ul>";
 
     return $info;
 }
@@ -957,7 +1177,7 @@ function folder_sharing_info($folder_id)
 {
     global $xerte_toolkits_site;
 
-    if(!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
         return "";
     }
 
@@ -972,56 +1192,327 @@ function folder_sharing_info($folder_id)
 
     $query_group_sharing_rows = db_query($sql, array($folder_id));
 
-    $info =  PROJECT_INFO_SHARED . ": ";
+    $sql = "SELECT folder_id FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ? and role =?";
+    $query_folder_id = db_query_one($sql, array($folder_id, "creator"));
 
-    if(sizeof($query_sharing_rows)==1 && empty($query_group_sharing_rows)){
+    $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ?";
+    $query_folders = db_query($sql, array($query_folder_id["folder_id"]));
+
+    $related_folders = [];
+    $params = [];
+    array_push($related_folders, $query_folders[0]);
+
+    if(!empty($related_folders)){
+        for($i =0;  $i < count($related_folders) ; $i++){
+            if($related_folders[$i]["folder_id"] != 0){
+                $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ? and folder_parent != 0";
+                $query_folders = db_query($sql, array($related_folders[$i]["folder_parent"]));
+                foreach ($query_folders as $folder){
+                    if($folder["role"] == "creator"){
+                        array_push($related_folders, $folder);
+                        array_push($params, $folder["login_id"]);
+                    }else{
+                        array_push($params, $folder["login_id"]);
+                    }
+                }
+            }
+        }
+    }
+
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    foreach ($params as $index=>$param){
+        if($index != 0){
+            $sql .= " or ld.login_id = ?";
+            $sql_grouped .= " or ld.login_id = ?";
+        }else{
+            $sql .= " where (ld.login_id = ?";
+            $sql_grouped .= " where (ld.login_id = ?";
+        }
+    }
+
+    if(count($params) > 0){
+        $sql .= ")";
+        $sql_grouped .= ")";
+    }
+    $sql .= " and";
+    $sql_grouped .= " and";
+
+    foreach ($related_folders as $index =>$rf){
+        if($index != 0){
+            $sql .= " or fr.folder_id = ?";
+            $sql_grouped .= " or fr.folder_id = ?";
+            array_push($params, $rf["folder_id"]);
+        }else{
+            $sql .= " (fr.folder_id = ?";
+            $sql_grouped .= " (fr.folder_id = ?";
+            array_push($params, $rf["folder_id"]);
+
+        }
+    }
+    $sql .= ") ";
+    $sql_grouped .= ") group by user_id, firstname, surname, username";
+    $query_shared_folder_users_roles = db_query($sql, $params);
+    $query_shared_folder_users = db_query($sql_grouped, $params);
+
+    // Find all sub-folders and make sure they have the correct role records
+    // Loop over related folders and find and add all records in $query_shared_folder_users_roles that are not in there yet with the role of the parent record
+    foreach (array_reverse($related_folders) as $rf){
+        $parent = $rf['folder_parent'];
+        foreach ($query_shared_folder_users_roles as $role){
+            if ($role['folder_id'] == $parent){
+                // Check if this user already has a record for this folder
+                $found = false;
+                foreach ($query_shared_folder_users_roles as $role2){
+                    if ($role2['folder_id'] == $rf['folder_id'] && $role2['user_id'] == $role['user_id']){
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found){
+                    $role['folder_id'] = $rf['folder_id'];
+                    $role['parent_id'] = $parent;
+                    array_push($query_shared_folder_users_roles, $role);
+                }
+            }
+        }
+    }
+
+    $params = array();
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
+
+    foreach ($related_folders as $index =>$rf){
+        if($index != 0){
+            $sql .= " or fgr.folder_id = ?";
+            $sql_grouped .= " or fgr.folder_id = ?";
+            array_push($params, $rf["folder_id"]);
+        }else{
+            $sql .= " (fgr.folder_id = ?";
+            $sql_grouped .= " (fgr.folder_id = ?";
+            array_push($params, $rf["folder_id"]);
+        }
+    }
+    $sql .= ") ";
+    $query_shared_folders_groups = db_query($sql, $params);
+
+
+    $roles = array("creator"=>4, "co-author"=>3, "editor"=>2, "read-only"=>1);
+
+    foreach ($query_sharing_rows as $index => $row) {
+        $found = false;
+        foreach ($query_shared_folder_users as $indexUser => $user){
+            if($row["login_id"] == $user["user_id"]){
+                $found = true;
+            }
+            foreach($query_shared_folder_users_roles as $indexRole => $role) {
+                if ($role['user_id'] == $user['user_id']) {
+                    if ($row['folder_id'] == $role['folder_id']) {
+                        $query_shared_folder_users[$indexUser]["role"] = $role['role'];
+                        //$query_shared_folder_users[$indexUser]["role_source"] = 'folder';
+
+                        if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
+                            $query_shared_folder_users[$indexUser]["role"] = "creator";
+                            // Change the role of the user to co-author
+                            foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                    $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
+                    $query_shared_folder_users[$indexUser]["role"] = $row["role"];
+                    $query_shared_folder_users[$indexUser]["role_source"] = 'template';
+                    if ($row['role'] == "creator") {
+                        // Change the role of the user to co-author
+                        foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                            if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!$found)
+        {
+            // Add $row to $query_shared_folder_users
+            $index = count($query_shared_folder_users);
+            $query_shared_folder_users[] = $row;
+            if ($row['role'] == "creator") {
+                // Change the role of the user to co-author
+                foreach ($query_shared_folder_users as $indexUser2 => $user2) {
+                    if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                        $query_shared_folder_users[$indexUser2]["role"] = "co-author";
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    foreach ($query_shared_folder_users as $index => $user){
+        $query_shared_folder_users[$index]["folder_id"] = $folder_id;
+    }
+
+    foreach ($query_group_sharing_rows as $index => $row) {
+        $found = false;
+        foreach ($query_shared_folders_groups as $indexGroup => $group){
+            if($row["group_name"] == $group["group_name"]){
+                $found = true;
+                if ($roles[$group["role"]] < $roles[$row["role"]]) {
+                    $query_shared_folders_groups[$indexGroup]["role"] = $row["role"];
+                    $query_shared_folders_groups[$indexGroup]["role_source"] = 'folder';
+                }
+            }
+        }
+        if (!$found)
+        {
+            // Add $row to $query_shared_folder_users
+            $query_shared_folders_groups[] = $row;
+        }
+    }
+
+
+    $info = PROJECT_INFO_SHARED . ": ";
+
+    if(count($query_sharing_rows)==1 && count($query_group_sharing_rows)==0 && count($query_shared_folder_users) == 1 && count($query_shared_folders_groups) == 0){
         $info .= PROJECT_INFO_NOTSHARED . "<br/>";
         return $info;
     }
 
     $info .=  SHARING_CURRENT_FOLDER . "<br>";
-    foreach($query_sharing_rows as $row) {
-        $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
-        switch($row['role'])
-        {
-            case "creator":
-                $info .=  SHARING_CREATOR;
-                break;
-            case "co-author":
-                $info .=  SHARING_COAUTHOR;
-                break;
-            case "editor":
-                $info .=  SHARING_EDITOR;
-                break;
-            case "read-only":
-                $info .=  SHARING_READONLY;
-                break;
+    if(sizeof($query_shared_folder_users)==1){
+        foreach($query_sharing_rows as $row) {
+            $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
+            switch($row['role'])
+            {
+                case "creator":
+                    $info .=  SHARING_CREATOR;
+                    break;
+                case "co-author":
+                    $info .=  SHARING_COAUTHOR;
+                    break;
+                case "editor":
+                    $info .=  SHARING_EDITOR;
+                    break;
+                case "read-only":
+                    $info .=  SHARING_READONLY;
+                    break;
+            }
+
+            $info .=  ")</span></li>";
         }
-
-        $info .=  ")</span></li>";
     }
-    foreach($query_group_sharing_rows as $row) {
-        $info .=  "<li><span>" . $row['group_name'] . "  -  (";
-        switch($row['role'])
-        {
-            case "creator":
-                $info .=  SHARING_CREATOR;
-                break;
-            case "co-author":
-                $info .=  SHARING_COAUTHOR;
-                break;
-            case "editor":
-                $info .=  SHARING_EDITOR;
-                break;
-            case "read-only":
-                $info .=  SHARING_READONLY;
-                break;
+    else
+    {
+        $query_shared_folder_users = order_shared_folder_users($query_shared_folder_users);
+
+        foreach ($query_shared_folder_users as $row) {
+            $info .= "<li><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ")  -  (";
+            switch ($row['role']) {
+                case "creator":
+                    $info .= SHARING_CREATOR;
+                    break;
+                case "co-author":
+                    $info .= SHARING_COAUTHOR;
+                    break;
+                case "editor":
+                    $info .= SHARING_EDITOR;
+                    break;
+                case "read-only":
+                    $info .= SHARING_READONLY;
+                    break;
+            }
+
+            if (isset($row['role_source'])) {
+                $info .= " - " . SHARING_SOURCE;
+                switch ($row['role_source']) {
+                    case "template":
+                        $info .= SHARING_SOURCE_TEMPLATE;
+                        break;
+                    case "folder":
+                        $info .= SHARING_SOURCE_FOLDER;
+                        break;
+                }
+            }
+
+            $info .= ")</span></li>";
         }
-
-        $info .=  ")</span></li>";
     }
+    if(empty($query_shared_folders_groups)) {
 
-    $info .=  "</ul>";
+
+        foreach ($query_group_sharing_rows as $row) {
+            $info .= "<li><span>" . $row['group_name'] . "  -  (";
+            switch ($row['role']) {
+                case "creator":
+                    $info .= SHARING_CREATOR;
+                    break;
+                case "co-author":
+                    $info .= SHARING_COAUTHOR;
+                    break;
+                case "editor":
+                    $info .= SHARING_EDITOR;
+                    break;
+                case "read-only":
+                    $info .= SHARING_READONLY;
+                    break;
+            }
+
+            if (isset($row['role_source'])) {
+                $info .= " - " . SHARING_SOURCE;
+                switch ($row['role_source']) {
+                    case "template":
+                        $info .= SHARING_SOURCE_TEMPLATE;
+                        break;
+                    case "folder":
+                        $info .= SHARING_SOURCE_FOLDER;
+                        break;
+                }
+            }
+
+            $info .= ")</span></li>";
+        }
+    }
+    else {
+        foreach ($query_shared_folders_groups as $row) {
+            $info .= "<li><span>" . $row['group_name'] . "  -  (";
+            switch ($row['role']) {
+                case "creator":
+                    $info .= SHARING_CREATOR;
+                    break;
+                case "co-author":
+                    $info .= SHARING_COAUTHOR;
+                    break;
+                case "editor":
+                    $info .= SHARING_EDITOR;
+                    break;
+                case "read-only":
+                    $info .= SHARING_READONLY;
+                    break;
+            }
+
+            if (isset($row['role_source'])) {
+                $info .= " - " . SHARING_SOURCE;
+                switch ($row['role_source']) {
+                    case "template":
+                        $info .= SHARING_SOURCE_TEMPLATE;
+                        break;
+                    case "folder":
+                        $info .= SHARING_SOURCE_FOLDER;
+                        break;
+                }
+            }
+
+            $info .= ")</span></li>";
+        }
+    }
+    $info .= "</ul>";
 
     return $info;
 }
@@ -1130,6 +1621,11 @@ function access_info($template_id){
 
 function oai_shared($template_id){
     global $xerte_toolkits_site;
+
+    if (!isset($xerte_toolkits_site->oai_pmh) || $xerte_toolkits_site->oai_pmh == false)
+    {
+        return "";
+    }
 
     $sql = "select status from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
     $params = array($_POST['template_id']);
@@ -1391,6 +1887,11 @@ function tsugi_display($id, $lti_def, $mesg = "")
                 {
                     if (! $lti_def->tsugi_installed && $i<3)
                     {
+                        continue;
+                    }
+                    if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs) && ($i==0 || $i==2))
+                    {
+                        // Skip email and name + email
                         continue;
                     }
                     echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");

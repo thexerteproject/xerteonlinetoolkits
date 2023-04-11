@@ -1,7 +1,7 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Description for Accessibility" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage>
+      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage>
     </newNodes>  
   </pageWizard>
 
@@ -14,7 +14,7 @@
 	<image type="group" label="Image">
 		<url label="File" type="media" />
 		<imagesize label="Size" options="Small,Medium,Large,Fixed,Full screen" data="small,medium,large,auto,full screen" type="ComboBox"  width="100"/>
-		<tip label="Description" type="TextInput" />
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" />
 	</image>
 	
 	<magnifierGroup type="group" label="Image Magnification" optional="true">

@@ -11,13 +11,13 @@
         <text label="Page Text" type="TextArea" height="150"/>
         <image type="group" label="Image" optional="true">
           <url label="File" type="media" defaultValue="Select Media" optional="true"/>
-          <tip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+          <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
         </image>
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
           <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
-          <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="Enter text for the item here" align="Left" url="Select an Image" tip="Enter a Description for Accessibility" date="Choose Date"/>]]></timelineimage>
+          <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="Enter text for the item here" align="Left" url="Select an Image" tip="" date="Choose Date"/>]]></timelineimage>
           <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
           <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="Select an Audio File" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
 
@@ -50,7 +50,7 @@
       <text label="Text" type="TextArea" height="150"/>
       <image type="group" label="Image">
         <url label="File" type="media"/>
-        <tip label="Description" type="TextInput"/>
+        <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
       </image>
       <TimeLineEndDate type="group" label="End Date" optional="true">
             		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>

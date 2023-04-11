@@ -88,6 +88,12 @@ color: $whiteorlightest;
 	background-color: $contrastcolor;
 }
 
+.navbar .nav > li.activePage > a,
+.navbar .nav > li.activePage > a:hover, .navbar .nav > li.activePage > a:hover {
+	background-color: $blackordarkest;
+	text-decoration: none;
+}
+
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
     background-color: $lightestcolor;

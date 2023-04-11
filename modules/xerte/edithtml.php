@@ -277,10 +277,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     //$pos = strrpos($edit_organisational_logo, '/') + 1;
     //$edit_organisational_logo = substr($edit_organisational_logo,0,$pos) . "edit_" . substr($edit_organisational_logo,$pos);
 
-    /**
-     * set up the onunload function used in version control
-     */
-    /* Set flag of whther oai-pmh harvesting is configured and available */
+    /* Set flag of whether oai-pmh harvesting is configured and available */
     $oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
 
     _debug("Starting editor page");

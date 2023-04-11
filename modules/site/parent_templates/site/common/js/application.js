@@ -192,7 +192,9 @@ function loadContent(){
 
 	setTimeout(function() {
 		$('div.nav-collapse li a').click(function () {
-			$('.navbar-toggler').click();
+			if ($('.navbar .btn-navbar').is(':visible')) {
+				$('.navbar-toggler').click();
+			}
 		});
 	}, 500);
 
@@ -235,7 +237,7 @@ function cssSetUp(param) {
 				$('head').append('<script src="'+ themePath + theme + '/'+ theme+ '.js"' + '</script>');
 				insertCSS(themePath + theme + '/' + theme + '.css', function() {cssSetUp('stylesheet')});
 			} else {
-				cssSetUp('stylesheet');
+				insertCSS(themePath + 'default/default.css', function() {cssSetUp('stylesheet')});
 			}
             break;
         case 'stylesheet':
@@ -1501,9 +1503,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 	// check if pageIndex exists & can be shown
 	var pageIndex;
-	// used to set active on nav item.
-	var activeIndex = pageID;
-
+	
 	// pageID might be an ID - see if it matches either a linkID or a customLinkID
 	if (pageRefType != 'index') {
 		$(data).find('page').each(function(index, value) {
@@ -1512,7 +1512,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
 				// an ID match has been found for a page
 				pageIndex = index;
-				activeIndex = index;
 				found = true;
 				pageRefType = 'id';
 
@@ -1523,7 +1522,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				if (pageID == $section.attr('linkID') || pageID == $section.attr('customLinkID')) {
 					//an ID match has been found for a section
 					pageIndex = $pageIndex;
-					activeIndex = $pageIndex;
 					found = true;
 					if (sectionNum == undefined) {
 						sectionNum = index + 1;
@@ -1536,14 +1534,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			});
 		});
 	}
-	//assign active class for current navbar
-	$("#nav li").not(':first-child').each(function(i, el){
-		if ($(el).hasClass("active") && i !== activeIndex){
-			$(el).removeClass("active")
-		} else if (i == activeIndex){
-			$(el).addClass("active")
-		}
-	})
 
 	// check if it's a valid page index
 	if (pageRefType != 'id') {
@@ -1693,6 +1683,22 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
+	
+	//assign active class for current navbar
+	var pageOffset = pageIndex - validPages.indexOf(pageIndex);
+	
+	$("#nav li").not(':first-child').each(function(i, el){
+		if ($(el).hasClass("activePage") && i !== pageIndex - pageOffset){
+			$(el)
+				.removeClass("activePage")
+				.removeAttr("aria-current");
+		} else if (i == pageIndex - pageOffset){
+			$(el)
+				.addClass("activePage")
+				.attr("aria-current", "page");
+		}
+	})
+	
 	//dynamically change the skip link for each page
 	var skipLinkTarget='#page'+(currentPage+1)+'section1';
 	$(".srskip").prop("href", skipLinkTarget)
@@ -1741,7 +1747,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName = tocName.html();
 				}
 
-				var $link = $('<li' + (sectionVisibleIndex==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
+				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 			}
 
@@ -2068,7 +2074,6 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 		pageTempInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo;
 
 		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
-
 		goToSection(pageTempInfo + 'section' + sectionNum + contentInfo);
 
 	} else {
@@ -2591,11 +2596,20 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 		var group = $('<div class="accordion-group"/>');
 
-		var header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
+		var header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
 
 		group.append(header);
+		
+		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
+		header.find('a.accordion-toggle').click(function() {
+			accDiv.find('.accordion-group a').not($(this)).addClass('collapsed');
+		});
 
 		if (index == 0){
+			
+			if (node[0].getAttribute('collapse') != 'true') {
+				header.find('a.accordion-toggle').removeClass('collapsed');
+			}
 
 			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse ' + (node[0].getAttribute('collapse') == 'true' ? "" : "in") + '"/>');
 

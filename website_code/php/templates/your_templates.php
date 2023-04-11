@@ -33,5 +33,5 @@ require_once("../user_library.php");
 
 $_SESSION['sort_type'] = "date_down";
 
-list_users_projects($_SESSION['sort_type']);		
+//list_users_projects($_SESSION['sort_type']);
 

@@ -382,7 +382,7 @@ function delete_sharing_folder(folder_id,id,who_deleted_flag, group=false){
 		if(setup_ajax()!=false){
 			$.ajax({
 				type: "POST",
-				url: "website_code/php/folderproperties/remove_sharing_folder.php",
+				url: "website_code/php/folderproperties/check_remove_sharing_folder.php",
 				data: {
 					folder_id: folder_id,
 					id: id,
@@ -390,21 +390,38 @@ function delete_sharing_folder(folder_id,id,who_deleted_flag, group=false){
 					user_deleting_self: after_sharing_deleted
 				},
 			})
-				.done(function(response){
-					$('#area3').html(response);
+			.done(function(owns_templates){
+				do_it = true;
+				if (owns_templates != "OK") {
+					do_it = confirm(owns_templates);
+				}
+				if (do_it) {
+					$.ajax({
+						type: "POST",
+						url: "website_code/php/folderproperties/remove_sharing_folder.php",
+						data: {
+							folder_id: folder_id,
+							id: id,
+							group: group,
+							user_deleting_self: after_sharing_deleted
+						},
+					})
+					.done(function (response) {
+						$('#area3').html(response);
 
-					if(after_sharing_deleted){
-						if(typeof window_reference==="undefined"){
-							window.opener.refresh_workspace();
+						if (after_sharing_deleted) {
+							if (typeof window_reference === "undefined") {
+								window.opener.refresh_workspace();
+							} else {
+								window_reference.refresh_workspace();
+							}
+
 						}
-						else {
-							window_reference.refresh_workspace();
-						}
 
-					}
-
-					sharing_status_folder()
-				});
+						sharing_status_folder()
+					});
+				}
+			})
 		}
 	}
 }

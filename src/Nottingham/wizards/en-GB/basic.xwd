@@ -4,13 +4,12 @@
 
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls,Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
-    <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" conditionTrigger="true" defaultValue="default" />
 	<themeIcons type="CheckBox" label="Update Theme Icons" mandatory="true" defaultValue="false" condition="theme_list[currtheme].imgbtns=='true'||theme==undefined||theme=='default'" tooltip="The selected theme uses images for the navigation and footer tool buttons. Most newer themes use Font Awesome icons instead, which give you greater flexibility in their appearance. Checking this box will automatically update interface buttons to use Font Awesome icons. It is recommended that you check this if you use are using any of the Customise Button Icon options so that all buttons appear consistent." />
 	<displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100" conditionTrigger="true"/>
-	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
-	
+	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true" conditionTrigger="true"/>
+	<textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100" tooltip="The default text size will only be used when responsive text is turned off. It can also be overridden when a text size is directly set in the text editor" condition="responsive!='true'"/>
 	
 	<!-- OPTIONAL PROPERTIES -->
 	
@@ -107,7 +106,7 @@
 		<intro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
-		<introTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the learning object title above the introduction"/>
@@ -161,7 +160,7 @@
 	<icon type="group" label="Header Icon/Logo" optional="true">
 		<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger='true' tooltip="If a default logo is automatically added by this template, or by the theme you have chosen, then use this checkbox to hide that logo, or leave this unchecked and use the options below to load an alternative logo."/>
 		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="Select an Image"/>
-		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="Enter a Description for Accessibility"/>
+		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100"/>
 	</icon>
 	
@@ -193,8 +192,8 @@
 		</saveSessionGroup>
 	</tracking>
 
-	<meta type="group" label="Meta data" optional="true">
-		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" mandatory="true"/>
+	<meta type="group" label="Metadata" optional="true">
+		<explanation label="Note: oai-pmh is enabled on this installation and if you wish to share this project using oai-pmh, you need to give your assent here and the relevant 'Category' and 'Education level' fields need to be added via the Metadata optional properties." type="info" condition="oai_pmh_available" mandatory="true"/>
 		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of."/>
 		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object."/>
 		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (i.e. Maths)."/>
@@ -257,7 +256,7 @@
 	<mediaFile type="group" label="Media" optional="true" deprecated="This property is deprecated and no longer supported">
 		<media optional="true" type="media" label="File" defaultValue="Select an Audio or Video File"/>
 		<mediaImage optional="true" type="media" label="Image (Audio only)" defaultValue="Select an Image"/>
-		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<mediaTranscript optional="true" type="media" label="Transcript" defaultValue="Select a Timed Text Transcript File"/>
 		<mediaTiming optional="true" type="ComboBox" options="Current Caption Only,Keep Previous Captions,Show All Captions" data="current,previous,all" label="Caption Timing" defaultValue="current" width="175"/>
 		<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Caption Position" defaultValue="below" width="175"/>

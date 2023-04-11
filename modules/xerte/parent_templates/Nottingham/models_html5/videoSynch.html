@@ -26,24 +26,16 @@ var videoSynch = new function() {
 
 	// function called every time the page is viewed after it has initially loaded
 	this.pageChanged = function() {
-		$infoHolder = $("#infoHolder");
-		$pageContents = $("#pageContents");
-
-		$infoHolder
-			.scrollTop(0)
-			.children("div").hide();
-
-		var $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
-		if ($captionAtStart.length > 0) {
-			$captionAtStart.show();
-		}
-
+		$("#pageVideo, #mainText, #infoHolder").empty();
 		this.setUp();
 	}
 
 	// function called every time the size of the LO is changed
 	this.sizeChanged = function() {
-		$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2);
+		if (x_browserInfo.mobile != true) {
+			$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2);
+			$("#mainText").height($x_pageHolder.height() - ($(".panel").outerHeight(true) + ($("#mainText").outerHeight(true) - $("#mainText").height()) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height())));
+		}
 
 		if ($infoHolder.children("div:visible").last().length > 0) {
 			$infoHolder.children("div:visible").last()[0].scrollIntoView(true);
@@ -75,7 +67,7 @@ var videoSynch = new function() {
 
 		$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-		    var	captionInfo = new Array();
+		var captionInfo = new Array();
 
 		// uses data from timedText file if there is one - otherwise use nested page info
 		if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
@@ -153,9 +145,6 @@ var videoSynch = new function() {
 			this.scrollIntoView(true);
 		});
 
-		this.sizeChanged();
-
-
 		var $pageVideo = $("#pageVideo"),
 			videoDimensions = [320,240];
 
@@ -190,7 +179,9 @@ var videoSynch = new function() {
 
 		this.addEvents(this.popcornInstance);
 		resizeEmbededMedia($(".popcornMedia.embed"), {width: videoDimensions[0], height: videoDimensions[1]})
-
+		
+		this.sizeChanged();
+		
 		// Show captions that should happen before the first timeupdate.
 		var $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
 		if ($captionAtStart.length > 0) {

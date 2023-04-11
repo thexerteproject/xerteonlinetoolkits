@@ -502,6 +502,11 @@ a:hover {
 .nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
   background-color: #666666; }
 
+.navbar .nav > li.activePage > a,
+.navbar .nav > li.activePage > a:hover, .navbar .nav > li.activePage > a:hover {
+  background-color: #666666;
+  text-decoration: none; }
+
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
   background-color: #333333;

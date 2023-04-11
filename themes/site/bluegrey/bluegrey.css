@@ -424,6 +424,11 @@ a:hover {
 .nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
   background-color: #007899; }
 
+.navbar .nav > li.activePage > a,
+.navbar .nav > li.activePage > a:hover, .navbar .nav > li.activePage > a:hover {
+  background-color: #005172;
+  text-decoration: none; }
+
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
   background-color: #F4F4F4;

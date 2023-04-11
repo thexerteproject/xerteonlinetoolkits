@@ -12,5 +12,6 @@
 	 
 
     define("COPY_OF", "Copy of ");
+    define("DUPLICATE_FOLDER_NOT_CREATOR", "Only creators or co-authors can duplicate a folder");
     define("NO_PERMISSION_TO_DUPLICATE_TEMPLATE_OF_FOLDER", "You don't have permission to duplicate '{0}' of folder '{1}'");
 

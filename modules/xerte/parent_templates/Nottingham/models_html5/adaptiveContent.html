@@ -1092,7 +1092,7 @@
       name = interaction.getAttribute("name");
       interactionType = interaction.getAttribute("interactionType");
       opinionClass = interaction.getAttribute("opinionClass");
-      if (interactionType == "open" && xertelabel.indexOf("/") == -1) {
+      if ((interactionType == "open" || interactionType == "answer") && xertelabel.indexOf("/") == -1) {
         xertelabel += "/" + xertelabel;
       }
 

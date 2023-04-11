@@ -92,17 +92,22 @@
 				weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
 			XTSetPageType(x_currentPage, 'numeric', 1, weighting);
-
+			
 			var $textHolder = $('#textHolder');
+			var $mainTxt = $('#mainTxt');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				$textHolder.remove();
+				$mainTxt.remove();
 				$("#pageContents").css("text-align", "center");
+				$("#generalFeedback, #text").css("text-align", "left");
 				// Remove panel
 				$("#panel").removeClass("panel");
 			} else {
-				$('#textHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-
-				if (x_currentPageXML.getAttribute("align") == "Right") {
+				$mainTxt.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				
+				if (x_browserInfo.mobile == true) {
+					$("#generalFeedback").insertAfter($textHolder);
+					$textHolder.insertBefore($("#panel"));
+				} else if (x_currentPageXML.getAttribute("align") == "Right") {
 					$("#panel").addClass("left");
 				} else {
 					$("#panel").addClass("right");
@@ -110,27 +115,6 @@
 			}
 			
 			$img = $("#image");
-			$img
-				.css({
-						"opacity"	:0,
-						"filter"	:'alpha(opacity=0)',
-				})
-				.one("load", function() {
-					hotSpotQuestion.resizeImg(true);
-
-					// call this function in every model once everything's loaded
-					x_pageLoaded();
-				})
-				.attr({
-					"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
-					"alt"	:x_currentPageXML.getAttribute("tip"),
-					"usemap":"#hsHolder_map"
-				})
-				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-					if (this.complete) {
-						$(this).trigger("load");
-					}
-				});
 			
 			$("#checkButton")
 				.button({label: x_currentPageXML.getAttribute("btnLabel") != undefined ? x_currentPageXML.getAttribute("btnLabel") : "Submit"})
@@ -268,7 +252,9 @@
 						$("#checkButton").hide();
 						var h3 = $('<h3>').append(scoreLabel)
 						$("#score").html(h3);
-						$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
+						if (x_currentPageXML.getAttribute("generalFeedback") != undefined && x_currentPageXML.getAttribute("generalFeedback") != "" ) {
+							$("#generalFeedback").html('<hr/>' + x_currentPageXML.getAttribute("generalFeedback"));
+						}
 
 						// score tracking
 						var setScore = 0;
@@ -358,6 +344,28 @@
 					$pageContents.data('attempts', attempts);
 				});
 			
+			$img
+				.css({
+						"opacity"	:0,
+						"filter"	:'alpha(opacity=0)',
+				})
+				.one("load", function() {
+					hotSpotQuestion.resizeImg(true);
+
+					// call this function in every model once everything's loaded
+					x_pageLoaded();
+				})
+				.attr({
+					"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
+					"alt"	:x_currentPageXML.getAttribute("tip"),
+					"usemap":"#hsHolder_map"
+				})
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
+				});
+			
 			$pageContents.data({
 				'attempts': attempts,
 				'highlightsIndexArray': highlightsIndexArray,
@@ -370,25 +378,24 @@
 			$('.mapster_el').remove(); // force this to be removes as sometimes it's not (don't know why unbind below doesn't always work)
 			$img.mapster('unbind');
 			
-			var imgMaxW, imgMaxH;
-			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
-				imgMaxH = Math.round($x_pageHolder.height() * 0.85 -20);
+			var imgMaxW, imgMaxH = .95;
+			if (x_browserInfo.mobile == true) {
+				imgMaxW = 1;
+			} else if (x_currentPageXML.getAttribute("textWidth") == "none") {
+				imgMaxW = 0.85;
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.6 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 0.6 - 20);
-
+				imgMaxW = 0.6;
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = 0.3;
 			} else {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = 0.55;
 			}
-
-			if(imgMaxH+70 > $x_pageHolder.height()){
-				imgMaxH*=0.75
-			}
+			
+			imgMaxW = Math.round($x_pageHolder.width() * imgMaxW);
+			imgMaxH = Math.round($x_pageHolder.height() * imgMaxH);
+			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
+			imgMaxH -= ($("#panel").outerHeight(true) - $("#panel").height()) + ($("#textContents").outerHeight(true) - $("#textContents").height()) + $("#checkButton").outerHeight(true) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height());
+			
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
 			$img.css({
@@ -626,13 +633,15 @@
 					<button id="checkButton"></button>
 					<div id="text">
 						<div id="score"></div>
-						<div id="generalFeedback"></div>
 					</div>
 				</div>
 				
 			</div>
 			
-			<div id="textHolder"></div>
+			<div id="textHolder">
+				<div id="mainTxt"></div>
+				<div id="generalFeedback"></div>
+			</div>
 			
 		</fieldset>
 	</div>

@@ -1411,7 +1411,8 @@ var EDITOR = (function ($, parent) {
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
                 extraAllowedContent: 'style',
-                language : language.$code.substr(0,2)
+                language : language.$code.substr(0,2),
+				editorplaceholder: options.options.placeholder
             };
 
             if (options.options.height)
@@ -1553,7 +1554,9 @@ var EDITOR = (function ($, parent) {
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                     extraPlugins : 'sourcedialog,image3,fontawesome,rubytext',
-                    language : language.$code.substr(0,2)
+                    /*extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',*/
+                    language : language.$code.substr(0,2)//,
+					//editorplaceholder: options.options.placeholder
                 });
             }
         });
@@ -4841,6 +4844,7 @@ var EDITOR = (function ($, parent) {
 						.attr('type', "text")
 						.addClass('inputtext')
 						.attr('id', id)
+						.attr('placeholder', options.placeholder)
 						.keyup({name: name, key: key, options: options}, function()
 						{
 							if (name == 'name') {

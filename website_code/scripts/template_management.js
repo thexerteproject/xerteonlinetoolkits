@@ -626,7 +626,7 @@ function properties_window(admin) {
             NewWindow.focus();
         } else {
             for (var i = 0; i < ids.length; i++) {
-                if (workspace.nodes[ids[i]].type != "folder" && workspace.nodes[ids[i]].type != "folder_shared" && workspace.nodes[ids[i]].type != "folder_group") {
+                if (workspace.nodes[ids[i]].type != "folder" && workspace.nodes[ids[i]].type != "folder_shared" && workspace.nodes[ids[i]].type != "sub_folder_shared"&& workspace.nodes[ids[i]].type != "folder_group") {
                     if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
                         var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id,
                             "height=760,width=1000,status=yes");
@@ -679,6 +679,8 @@ function refresh_workspace() {
     })
     .done(function(response){
         workspace = response;
+        // Clear the project details
+        $("#project_information").html("");
         init_workspace();
     });
 }
@@ -781,6 +783,22 @@ function getFolderInformation(user_id, folder_id) {
     });
 }
 
+function getGroupInformation(user_id, group_name, group_id)
+{
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/groups/get_group_info.php",
+        data: {
+            group_name: group_name,
+            group_id: group_id
+        },
+        dataType: "json",
+        success: function (info) {
+            document.getElementById('project_information').innerHTML = info.properties;
+            disableReadOnlyButtons(info);
+        }
+    });
+}
 
 /**
  *
@@ -1296,7 +1314,7 @@ function tutorial_created(response) {
             data = response.split(",");
 
             open_created_node(data[0], new_template_folder);
-            update_your_projects();
+            //update_your_projects();
 
             if (data[1] == "*") {
 

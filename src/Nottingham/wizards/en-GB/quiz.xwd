@@ -48,7 +48,7 @@
 
 	<imgInfo type="group" label="Image" optional="true">
 		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
 	<videoInfo type="group" label="Video" optional="true">
@@ -76,7 +76,7 @@
 	
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" defaultValue="Select an Image" optional="true" />
-		<tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
 	
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
