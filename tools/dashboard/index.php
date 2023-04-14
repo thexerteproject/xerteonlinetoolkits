@@ -181,7 +181,9 @@ if(is_numeric($id) || $id == null) {
     $info->lrs = $statistics_available->lrs;
     $info->dashboard = $statistics_available->dashboard;
     $info->role = $role;
-    $info->users = $users;
+    if ($role != "Student") {
+        $info->users = $users;
+    }
     $info->actor = $USER->email;
     $info->displayname = $USER->displayname;
     $info->firstname = $USER->firstname;

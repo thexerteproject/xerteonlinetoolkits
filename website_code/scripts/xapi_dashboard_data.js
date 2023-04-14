@@ -85,7 +85,7 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
                 var statement = body.statements[x];
                 if ($this.info.role == "Teacher") {
                     if (statement.actor.mbox != undefined) {
-                        if ($this.info.users.findIndex(u => 'email:' + u.email === statement.actor.mbox) === -1) {
+                        if ($this.info.users.findIndex(u => 'mailto:' + u.email === statement.actor.mbox) === -1) {
                             // Skip this user
                             continue;
                         }
