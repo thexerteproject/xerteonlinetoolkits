@@ -580,8 +580,8 @@ function XTResults(fullcompletion, trackingState) {
                 case "match":
                     // If unique targets, match answers by target, otherwise match by source
                     const targets = [];
-                    for (let j = 0; j < trackingState.interactions[i].nrinteractions; j++) {
-                        targets.push(trackingState.interactions[i].correctOptions[c].target);
+                    for (let j = 0; j < trackingState.interactions[i].correctOptions.length; j++) {
+                        targets.push(trackingState.interactions[i].correctOptions[j].target);
                     }
                     // Check whether values of targets are unique
                     const uniqueTargets = targets.length === new Set(targets).size;
