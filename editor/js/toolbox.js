@@ -4660,16 +4660,29 @@ var EDITOR = (function ($, parent) {
                 excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
                 excel_form.append('<input type="hidden" name="type" value=' + name + '>');
                 excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
-                html.append(excel_form);
 
+
+                html.append(excel_form);
+                var checkbox_id = "csv_merge_" + name;
+                html.append(language.UploadCSV.mergeOld.$label + '<input type="checkbox" name="merge" value="Merge" id =' + checkbox_id + '>');
                 //called if user has uploaded a file to populate a grid
                 html.find('#excel_upload_' + name).submit(function (e){
                     e.preventDefault();
-                    upload_file(new FormData(this));
+                    var grid_id = '#' + id + '_jqgrid';
+                    var current_grid_data = JSON.stringify($(grid_id).jqGrid("getRowData"))
+                    var form_data = new FormData(this);
+                    if ($('#csv_merge_categoryInfo').is(":checked")) {
+                        form_data.append("merge", "Merge");
+                    }
+                    form_data.append('old_data', current_grid_data)
+                    upload_file(form_data);
                 })
 
                 function upload_file(form_data){
-                    if(confirm(language.UploadCSV.Info.$label)) {
+                    var conf = false;
+                    $('#csv_merge_categoryInfo').is(":checked") ? conf = confirm(language.UploadCSV.Info2.$label) : conf = confirm(language.UploadCSV.Info.$label);
+
+                    if(conf) {
                         $.ajax({
                             type: 'POST',
                             dataType: 'text',
