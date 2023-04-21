@@ -697,6 +697,10 @@ select, input, textarea
 	flex-grow: 1;
 }
 
+#mainPanel input[name=merge]{
+	float: right;
+	margin-bottom: 20px;
+}
 #mainPanel select.deprecated {
 	width: 95%;
 }
