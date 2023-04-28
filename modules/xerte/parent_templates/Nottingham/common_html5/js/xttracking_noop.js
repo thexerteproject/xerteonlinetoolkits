@@ -336,7 +336,7 @@ function NoopTrackingState()
     function setPageScore(page_nr, score)
     {
     	var sit = state.findPage(page_nr);
-        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
+        if (sit != null && (state.scoremode != 'first' || sit.count <= 1))
         {
             sit.score = score;
             sit.count++;

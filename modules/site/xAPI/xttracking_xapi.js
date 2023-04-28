@@ -458,7 +458,7 @@ function XApiTrackingState() {
 
     function setPageScore(page_nr, score) {
         var sit = this.findPage(page_nr);
-        if (sit != null && (this.scoremode != 'first' || sit.count < 1)) {
+        if (sit != null && (this.scoremode != 'first' || sit.count <= 1)) {
             sit.score = score;
         }
     }

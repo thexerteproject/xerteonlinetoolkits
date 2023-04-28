@@ -71,6 +71,7 @@ function NoopTrackingState()
     this.initialise = initialise;
     this.pageCompleted = pageCompleted;
     this.getCompletionStatus = getCompletionStatus;
+    this.getCompletionPercentage = getCompletionPercentage;
     this.getSuccessStatus = getSuccessStatus;
     this.getdScaledScore = getdScaledScore;
     this.getdRawScore = getdRawScore;
@@ -128,6 +129,20 @@ function NoopTrackingState()
         {
             return "unknown"
         }
+    }
+
+    function getCompletionPercentage() {
+        var completed = true;
+        var completedpages = 0;
+        if (this.completedPages.length == 0) {
+            return 0;
+        }
+        for (var i = 0; i < this.completedPages.length; i++) {
+            if (this.completedPages[i] == true) {
+                completedpages++;
+            }
+        }
+        return (completedpages / this.completedPages.length) * 100.0;
     }
 
     function getSuccessStatus()
@@ -321,7 +336,7 @@ function NoopTrackingState()
     function setPageScore(page_nr, score)
     {
     	var sit = state.findPage(page_nr);
-        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
+        if (sit != null && (state.scoremode != 'first' || sit.count <= 1))
         {
             sit.score = score;
             sit.count++;
@@ -1027,6 +1042,9 @@ function XTSetOption(option, value)
             break;
         case "toComplete":
             state.toCompletePages = value;
+            for (i = 0; i < state.toCompletePages.length; i++) {
+                state.completedPages[i] = false;
+            }
             break;
         case "tracking-mode":
             switch(value)
@@ -1222,7 +1240,7 @@ function XTTerminate()
                     method: "POST",
                     url: url,
                     data: {
-                        grade: state.getdScaledScore()
+                        grade: state.getdScaledScore() * state.getCompletionPercentage() / 100.0,
                     }
                 })
                     .done(function (msg) {
