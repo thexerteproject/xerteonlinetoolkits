@@ -114,7 +114,7 @@ $(document).keydown(function(e) {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherlight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -1404,33 +1404,39 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button({ label: $.trim(x_params.introBtnTxt) })
 						.click(function() {
-							parent.window.$.featherlight.current().close();
+							try {
+								parent.window.$.featherlight.current().close();
+							}
+							catch(e)
+							{
+								// Do nothing
+							}
 						});
 					
 					// there are different types of content that might appear in project intro lightbox
 					if (introInfo.type == 'img') {
-						
+
 						lb = $.featherlight({
 							image: introInfo.info.img,
 							afterOpen: function() {
 								this.$content.attr('alt', introInfo.info.tip);
-								
+
 								const $holder = this.$content.parent('.featherlight-content');
-								
+
 								// include project title
 								if (x_params.introTitle == 'true') {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
 										.prependTo($holder)
 										.html(x_params.name);
 								}
-								
+
 								// include start button to close lightbox
 								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
 									$introStartBtn
 										.appendTo($holder)
 										.addClass('x_introImgBtn');
 								}
-								
+
 							}
 						});
 						
@@ -1566,7 +1572,13 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button()
 						.click(function() {
-							parent.window.$.featherlight.current().close();
+							try {
+								parent.window.$.featherlight.current().close();
+							}
+							catch(e)
+							{
+								// Do nothing
+							}
 						});
 					
 					// there are different types of content that might appear in page intro lightbox
@@ -1764,7 +1776,15 @@ function x_continueSetUp1() {
 		if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && prevIcon.customised === false) {
 			prevIcon.iconClass = "x_prev_hist";
 		}
-		
+
+		let shownInFeatherLight = false;
+		try{
+			shownInFeatherLight = parent.window.$.featherlight.current();
+		}
+		catch(e)
+		{
+			// Do nothing
+		}
 		$x_prevBtn
 			.button({
 				icons: {
@@ -1797,7 +1817,7 @@ function x_continueSetUp1() {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherLight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
