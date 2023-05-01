@@ -20,11 +20,13 @@ if ($_FILES["file"]["error"] > 0) {
     echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
 } else {
     $merge = isset($_POST['merge']);
-    $file = $_FILES['fileToUpload'];
-    $file_content = file_get_contents($file['tmp_name']);
-    $csv = array_map('str_getcsv', file($file['tmp_name']));
+    $file = file($_FILES['fileToUpload']['tmp_name']);
     $result = '';
     $nr_columns = $_POST['colNum'];
+
+    //determine separator
+    $separator = get_delimiter($file, $nr_columns);
+    $csv = array_map(function($data) use ($separator) { return str_getcsv($data, $separator);}, $file);
 
     //if $merge is set then we want to keep the old grid
     if ($merge){
@@ -65,4 +67,32 @@ function parse_data($csv_parsed, $input, $nr_columns)
         $csv_parsed .= "|";
     }
     return $csv_parsed;
+}
+
+function get_delimiter($file ,$nr_columns): string
+{
+    $top10 = array_slice($file, 0, 10);
+    //test for comma
+    $comma_scv = array_map(function($data){ return str_getcsv($data,",");}, $top10);
+    $comma_row_longer = $comma_row_smaller = 0;
+    foreach ($comma_scv as $row){
+        if(sizeof($row) > $nr_columns) {$comma_row_longer += 1;}
+        elseif (sizeof($row) < $nr_columns) {$comma_row_smaller += 1;}
+    }
+    //test for semicolon
+    $semi_scv = array_map(function($data){ return str_getcsv($data,";");}, $top10);
+    $semi_longer = $semi_smaller = 0;
+    foreach ($semi_scv as $row){
+        if(sizeof($row) > $nr_columns) {$semi_longer += 1;}
+        elseif (sizeof($row) < $nr_columns) {$semi_smaller += 1;}
+    }
+    //one of the deliminators gives perfect results.
+    if ($comma_row_longer + $comma_row_smaller == 0 and $semi_longer + $semi_smaller != 0){return ',';}
+    elseif ($semi_longer + $semi_smaller == 0 and $comma_row_longer + $comma_row_smaller != 0) {return ';';}
+    //take the deliminator that is right most often
+    elseif ($comma_row_smaller + $comma_row_longer < $semi_smaller + $semi_longer) {return ',' ;}
+    elseif ($comma_row_smaller + $comma_row_longer > $semi_smaller + $semi_longer) {return ';' ;}
+
+    //guess
+    return ";";
 }
