@@ -528,6 +528,32 @@ class OAIServer
             $langstring_node = $this->response->addChild($entry_node, 'langstring', $thumbnail_url);
             $langstring_node->setAttribute("xml:lang", "x-none");
 
+            //RELATION - download package - normal export
+            if (isset($record['metadata']['relation']['download_url']) && $record['metadata']['relation']['download_url'] != "") {
+
+                $relation_node = $this->response->addChild($schema_node, 'relation');
+                $kind_node = $this->response->addChild($relation_node, 'kind');
+                $source_node = $this->response->addChild($kind_node, 'source');
+                $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/relation_kind_nllom_20131211");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+
+                $value_node = $this->response->addChild($kind_node, 'value');
+                $langstring_node = $this->response->addChild($value_node, 'langstring', "hasformat");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+
+                $resource_node = $this->response->addChild($relation_node, 'resource');
+                $description_node = $this->response->addChild($resource_node, 'description');
+                $langstring_node = $this->response->addChild($description_node, 'langstring', "application/zip");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+                $catalogentry_node = $this->response->addChild($resource_node, 'catalogentry');
+                $this->response->addChild($catalogentry_node, 'catalog', 'URI');
+                $entry_node = $this->response->addChild($catalogentry_node, 'entry');
+                // Bleeh eascpe & in url
+                $download_url = str_replace("&", "&amp;", $record['metadata']['relation']['download_url']);
+                $langstring_node = $this->response->addChild($entry_node, 'langstring', $download_url);
+                $langstring_node->setAttribute("xml:lang", "x-none");
+            }
+
             // CLASSIFICATION - domain
             $domain = $record['metadata']['classification']['domain'];
             $domain_id = $record['metadata']['classification']['domain_id'];

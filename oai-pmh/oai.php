@@ -317,7 +317,8 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                 ),
                 'keywords' => explode("\n", $metadata->keywords),
                 'relation' => array(
-                    'thumbnail' => $metadata->thumbnail
+                    'thumbnail' => $metadata->thumbnail,
+                    'download' => $metadata->download
                 ),
                 'lifecycle' => array(
                     'author' => $metadata->author,
@@ -337,6 +338,10 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                     'levelId' => $metadata->levelId,
                 ),
             ));
+        if ($record['metadata']['relation']['download'])
+        {
+            $record['metadata']['relation']['download_url'] = $metadata->downloadUrl;
+        }
     }
     else if($metadataPrefix == "oai_dc"){
         $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
