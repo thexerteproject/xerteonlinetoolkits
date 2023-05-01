@@ -20,7 +20,7 @@
  */
 
 require_once(dirname(__FILE__) . "/Html2Text.php");
-
+require_once(dirname(__FILE__) . "/../website_code/php/url_library.php");
 function get_meta_data($template_id, $creator_user_name="", $template_type_name="", $template_owner="")
 {
     global $config;
@@ -201,6 +201,10 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     {
         $xerteMetaObj->rights = $syndication['license'];
         $xerteMetaObj->download = ($syndication['export'] == 'true' ? true : false);
+        if ($xerteMetaObj->download)
+        {
+            $xerteMetaObj->downloadUrl = $xerte_toolkits_site->site_url . url_return("export", $template_id);
+        }
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_rights where label=?";
         $params = array( $syndication['license']);
         $rights = db_query_one($q, $params);
