@@ -223,11 +223,11 @@ function _do_cleanup()
             }
             else if ($file[strlen($file)-1] !==  "/")  // wildcard
             {
-                system("rm " . $file);
+                system("rm " . $file . " &");
             }
             else  // folder
             {
-                system("rm -rf " . $file);
+                system("rm -rf " . $file . " &");
             }
         }
         else
