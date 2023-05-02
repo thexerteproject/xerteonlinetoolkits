@@ -406,12 +406,17 @@ td.x-dashboard-interaction
     background: #f4f4f4;
 }
 
-.panel{
+.panel {
     padding: 5px;
     border: solid 1px lightgray;
     border-radius: 5px;
-    margin-bottom:10px;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
     float:left;
+}
+
+.panel.col-12 {
+    margin: 0;
 }
 
 .panel.col-6 {
