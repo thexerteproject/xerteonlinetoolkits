@@ -776,8 +776,17 @@ function x_getThemeInfo(thisTheme, themeChg) {
 
 				x_setUpThemeBtns(themeInfo, themeChg);
 			},
-			error: function() {
-				x_setUpThemeBtns({}, themeChg);
+			error: function(err) {
+				if (err.status == 404)
+				{
+					// Fall back to default
+					x_params.theme = "default";
+					x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
+				}
+				else
+				{
+					x_setUpThemeBtns({}, themeChg);
+				}
 			}
 		});
 	}
