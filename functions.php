@@ -84,12 +84,13 @@ function _load_language_file($file_path) {
     } else {
         // this does some magic interrogation of $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         //$language = new Zend_Locale();
-        if (function_exists("locale_accept_from_http")) {
-            $language = locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-        }
-        else{
-            $lang = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            $language = $lang[0];
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            if (function_exists("locale_accept_from_http")) {
+                $language = locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            } else {
+                $lang = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                $language = $lang[0];
+            }
         }
         // xerte seems to use en-GB instead of the more standard en_GB. Assume this convention will persist....
         $language_name = str_replace('_', '-', $language);

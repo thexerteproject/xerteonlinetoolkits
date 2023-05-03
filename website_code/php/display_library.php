@@ -715,8 +715,20 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $titem->xot_type = "file";
         $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
         $titem->shared = $template['nrshared'] > 1;
-        $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
-        $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+        if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size)) {
+            $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
+        }
+        else
+        {
+            $titem->editor_size="1280, 768";
+        }
+        if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size)) {
+            $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+        }
+        else
+        {
+            $titem->preview_size="802, 602";
+        }
 
         $items[] = $titem;
     }
