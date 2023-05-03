@@ -1786,6 +1786,11 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 		}
 	});
 	
+	// hide section menu if there's only one section
+	if ($('#toc').find('li').length <= 1) {
+		$('#toc').empty();
+	}
+	
 	updateContent();
 
 	initSidebar();
