@@ -1035,12 +1035,13 @@ function setup() {
 	//temporary non-language option fix for collapse button aria label
 	$(".btn.btn-navbar").attr("aria-label", "collapse");
 
-    if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
+	// page menu bar is hidden if optional property says it should be (or if there's only one page in project)
+    if (($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false') || $('#nav li:not(.backBtn)').length <= 1){
 
-		$(".navbar-inner").remove();
+		$("#topnav").hide();
 
 	} else {
-
+		
 		// nav bar can be moved below header bar
 		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 
@@ -1628,22 +1629,24 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					$(".jumbotron").show();
 				}
 			}
-
+			
 			// nav bar can be hidden on standalone pages
-			if ($(".navbar-inner").length > 0) {
-				if (standAlonePage && page.attr('navbarHide') == 'hidden') {
-					$(".navbar-inner").hide();
-
+			if (standAlonePage && page.attr('navbarHide') == 'hidden') {
+				$("#topnav").hide();
+			} else {
+				if (standAlonePage && page.attr('navbarHide') == 'back') {
+					$("#nav li:not(.backBtn)").hide();
+					$("#nav .backBtn").show();
+					$("#topnav").show();
 				} else {
-					if (page.attr('navbarHide') == 'back') {
-						$("#nav li:not(.backBtn)").hide();
-						$("#nav .backBtn").show();
+					$("#nav li:not(.backBtn)").show();
+					$("#nav .backBtn").hide();
+					
+					if (($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false') || $('#nav li:not(.backBtn)').length <= 1) {
+						$("#topnav").hide();
 					} else {
-						$("#nav li:not(.backBtn)").show();
-						$("#nav .backBtn").hide();
+						$("#topnav").show();
 					}
-
-					$(".navbar-inner").show();
 				}
 			}
 
