@@ -364,6 +364,7 @@ section {
 
 section a:not(.accordion-toggle) {
   text-decoration: underline;
+  text-underline-position: under;
 }
 
 section div.navigator li a {
