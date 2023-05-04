@@ -333,6 +333,7 @@
 				});
 				l_answer.push(selectedOption.name);
 				l_feedback.push(selectedOption.feedback);
+				l_selectedOptions.push(selectedOption);
 			}
 			// if all selected are correct - check that none of the unselected options should have been
 			if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
@@ -344,12 +345,13 @@
 					}
 				}
 			}
-			l_selectedOptions.push(selectedOption);
+
 			return {
 				correct: correct,
 				options: l_options,
 				answer: l_answer,
-				feedback: l_feedback
+				feedback: l_feedback,
+				selectedOption: l_selectedOptions
 			};
 		}
 
