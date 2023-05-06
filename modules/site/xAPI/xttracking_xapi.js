@@ -1854,90 +1854,142 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
     this.context = "";
 }
 
-function getStatements(q, one, callback)
+async function httpGetStatements(url, query)
 {
-    var search = ADL.XAPIWrapper.searchParams();
-    var group = "";
-    var context_id = "";
-    if (q['group'] != undefined)
-    {
-        group = q['group'];
-        delete q['group'];
+    const auth = btoa(`${lrsUsername}:${lrsPassword}`);
+    try {
+        const result = await $.ajax({
+            url: url,
+            type: "POST",
+            headers: {
+                'X-XERTE-USEDB': 'true',
+                'Authorization': 'Basic ' + auth
+            },
+            data: query,
+            dataType: "json"
+        });
+        return result;
     }
-    if (q['lti_context_id'] != undefined)
-    {
-        context_id = q['lti_context_id'];
-        delete q['lti_context_id'];
+    catch (error) {
+        console.log(error);
+        return null;
     }
+}
+
+async function getStatementsFromDB(q, one)
+{
+    let search = {};
     $.each(q, function(i, value) {
         search[i] = value;
     });
     if (one) {
-        search['limit'] = 1;
+        limit=1;
     } else {
-        search['limit'] = 1000;
+        limit = 5000;
     }
-    var statements = [];
-    if (callback == null)
+    let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
+    let statements = [];
+    do
     {
-        var tmp=ADL.XAPIWrapper.getStatements(search);
-        for (x = 0; x < tmp.statements.length; x++) {
-            if (group != ""
-                && (tmp.statements[x].context.team == undefined
-                || tmp.statements[x].context.team.account == undefined
-                || tmp.statements[x].context.team.account.name == undefined
-                || tmp.statements[x].context.team.account.name != group)) {
-                continue;
-            }
-            if (context_id != ""
-                && (tmp.statements[x].context.extensions == undefined
-                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
-                || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
-                continue;
-            }
-            statements.push(tmp.statements[x]);
+        const response = await httpGetStatements(lrsEndpoint, query);
+        statements = [...statements, ...response.statements];
+        if (response.more) {
+            query = response.more;
         }
-        return statements;
+        else
+        {
+            query = null;
+        }
+    } while (query != null && query != "");
+    return statements;
+}
+
+function getStatements(q, one, callback)
+{
+    if (lrsUseDb && callback != null)
+    {
+        getStatementsFromDB(q, one).then((data) => callback(data, q));
     }
     else {
-        ADL.XAPIWrapper.getStatements(search, null,
-            function getmorestatements(err, res, body) {
-                var lastSubmit = null;
-
-                for (x = 0; x < body.statements.length; x++) {
-                    //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
-                    //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
-                    //}
-                    if (group != ""
-                        && (body.statements[x].context == undefined
-                            || body.statements[x].context.team == undefined
-                            || body.statements[x].context.team.account == undefined
-                            || body.statements[x].context.team.account.name == undefined
-                            || body.statements[x].context.team.account.name != group)) {
-                        continue;
-                    }
-                    if (context_id != ""
-                        && (body.statements[x].context == undefined
-                            || body.statements[x].context.extensions == undefined
-                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
-                            || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
-                        continue;
-                    }
-                    statements.push(body.statements[x]);
+        var search = ADL.XAPIWrapper.searchParams();
+        var group = "";
+        var context_id = "";
+        if (q['group'] != undefined) {
+            group = q['group'];
+            delete q['group'];
+        }
+        if (q['lti_context_id'] != undefined) {
+            context_id = q['lti_context_id'];
+            delete q['lti_context_id'];
+        }
+        $.each(q, function (i, value) {
+            search[i] = value;
+        });
+        if (one) {
+            search['limit'] = 1;
+        } else {
+            search['limit'] = 1000;
+        }
+        var statements = [];
+        if (callback == null) {
+            var tmp = ADL.XAPIWrapper.getStatements(search);
+            for (x = 0; x < tmp.statements.length; x++) {
+                if (group != ""
+                    && (tmp.statements[x].context.team == undefined
+                        || tmp.statements[x].context.team.account == undefined
+                        || tmp.statements[x].context.team.account.name == undefined
+                        || tmp.statements[x].context.team.account.name != group)) {
+                    continue;
                 }
-                //stringObjects.push(lastSubmit);
-                if (err !== null) {
-                    console.log("Failed to query statements: " + err);
-                    // TODO: do something with error, didn't get statements
-                    return;
+                if (context_id != ""
+                    && (tmp.statements[x].context.extensions == undefined
+                        || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                        || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
+                    continue;
                 }
-                if (body.more && body.more !== "") {
-                    ADL.XAPIWrapper.getStatements(null, body.more, getmorestatements);
-                } else {
-                    callback(statements, search);
-                }
+                statements.push(tmp.statements[x]);
             }
-        );
+            return statements;
+        } else {
+            ADL.XAPIWrapper.getStatements(search, null,
+                function getmorestatements(err, res, body) {
+                    var lastSubmit = null;
+
+                    for (x = 0; x < body.statements.length; x++) {
+                        //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
+                        //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                        //}
+                        if (group != ""
+                            && (body.statements[x].context == undefined
+                                || body.statements[x].context.team == undefined
+                                || body.statements[x].context.team.account == undefined
+                                || body.statements[x].context.team.account.name == undefined
+                                || body.statements[x].context.team.account.name != group)) {
+                            continue;
+                        }
+                        if (context_id != ""
+                            && (body.statements[x].context == undefined
+                                || body.statements[x].context.extensions == undefined
+                                || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] == undefined
+                                || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
+                            continue;
+                        }
+                        statements.push(body.statements[x]);
+                    }
+                    //stringObjects.push(lastSubmit);
+                    if (err !== null) {
+                        console.log("Failed to query statements: " + err);
+                        // TODO: do something with error, didn't get statements
+                        return;
+                    }
+                    if (body.more && body.more !== "") {
+                        ADL.XAPIWrapper.getStatements(null, body.more, getmorestatements);
+                    } else {
+                        callback(statements, search);
+                    }
+                }
+            );
+        }
     }
 }
 
@@ -2004,7 +2056,6 @@ function XTInitialise(category) {
     } catch (e) {
         // Do nothing
     }
-
     state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
     // Initialise actor object
     if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
