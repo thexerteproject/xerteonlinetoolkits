@@ -1906,9 +1906,9 @@ async function getStatementsFromDB(q, one)
 
 function getStatements(q, one, callback)
 {
-    if (lrsUseDb)
+    if (lrsUseDb && callback != null)
     {
-        getStatementsFromDB(q, one).then( (data) => callback(data, q));
+        getStatementsFromDB(q, one).then((data) => callback(data, q));
     }
     else {
         var search = ADL.XAPIWrapper.searchParams();
