@@ -6962,7 +6962,7 @@
     </newNodes>
 
   </opinionQuestion><opinionOption menuItem="Answer" icon="icBullet">
-    <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwig="true"/>
+    <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwyg="true"/>
 	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
   </opinionOption><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteQuestion" remove="true" thumb="thumbs/orient.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#orientation" wiki="https://xerte.org.uk/wiki/doku.php?id=text_orientation_page">
 

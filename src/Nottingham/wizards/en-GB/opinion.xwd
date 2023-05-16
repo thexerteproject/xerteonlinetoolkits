@@ -90,7 +90,7 @@
   </opinionQuestion>
 
   <opinionOption menuItem="Answer" icon="icBullet">
-    <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwig="true" />
+    <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwyg="true" />
 	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
   </opinionOption>
   
