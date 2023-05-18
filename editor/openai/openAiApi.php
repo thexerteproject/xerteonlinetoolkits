@@ -23,6 +23,8 @@ class OpenAi
     //check if answer conforms to model
     private function conform_to_model($answer): bool
     {
+        //idea if not correct drop until last closed xml and close rest manualy
+        //prevents out of token awnsers
         return true;
     }
 

@@ -1337,12 +1337,11 @@ var EDITOR = (function ($, parent) {
 		
 		return found;
 	}
-
-    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
+    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren =  false)
     {
         var lkey = parent.tree.generate_lo_key();
         var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        var extranodes = false;
+        var extranodes = addChildren;
         $(xmlData.attributes).each(function() {
             attributes[this.name] = this.value;
         });
@@ -1405,7 +1404,7 @@ var EDITOR = (function ($, parent) {
             $.each(xmlData.childNodes, function(nr, child) {   // Was children
                 if (child.nodeType == 1)
                 {
-                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false);
+                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false, addChildren);
                 }
             });
         }
@@ -1478,9 +1477,119 @@ var EDITOR = (function ($, parent) {
             return; // not found!!
         var xmlData = $.parseXML(wizard_data[topLevelObject].new_nodes_defaults[i]).firstChild;
 
-        addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
+        //addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
+        //TODO move this to proper place
+        if (nodeName == "quiz"){
+            ai_content_generator('treeroot', pos, nodeName, xmlData, tree, true);
+        } else {
+            addNodeToTree('treeroot', pos, nodeName, xmlData, tree, true);
+        }
     },
 
+    addNodeToTreeAi = function(key, pos, nodeName, xmlData, tree, select, addChildren = true)
+    {
+            var lkey = parent.tree.generate_lo_key();
+            var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
+            var extranodes = true;
+            $(xmlData.attributes).each(function() {
+                attributes[this.name] = this.value;
+            });
+            lo_data[lkey] = {};
+            lo_data[lkey]['attributes'] = attributes;
+            if (xmlData.firstChild)
+            {
+                if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
+                {
+                    lo_data[lkey]['data'] = xmlData.firstChild.data;
+                }
+                else if (xmlData.firstChild.nodeType == 1) // extra node
+                {
+                    extranodes = true;
+                }
+            }
+            // Build the JSON object for the treeview
+            // For version 3 jsTree
+
+            var treeLabel = nodeName;
+            if (xmlData.attributes['name'])
+            {
+                treeLabel = xmlData.attributes['name'].value;
+            }
+            else
+            {
+                if (wizard_data[treeLabel].menu_options.menuItem)
+                    treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+            }
+            // Add icons to the node, all should be switched off
+            // Create node text based on xml, do not use text of original node, as this is not correct
+            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+            var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
+            var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
+            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+            var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
+
+            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+            var this_json = {
+                id : lkey,
+                text : treeLabel,
+                type : nodeName,
+                state: {
+                    opened: true
+                }
+            }
+            // Add the node
+            if (validateInsert(key, nodeName, tree))
+            {
+                var newkey = tree.create_node(key, this_json, pos, function(){
+                    if (select) {
+                        tree.deselect_all();
+                        tree.select_node(lkey);
+                    }
+                });
+            }
+            // Any children to add
+            if (extranodes)
+            {
+                $.each(xmlData.childNodes, function(nr, child) {   // Was children
+                    if (child.nodeType == 1)
+                    {
+                        addNodeToTreeAi(lkey,'last',child.nodeName,child,tree,false);
+                    }
+                });
+            }
+    },
+        //TODO call from frontend
+    ai_content_generator = function(treeroot, pos, nodeName, xmlData, tree, b) {
+        //call openAI.php
+        console.log("start openai api request please wait");
+        $.ajax({
+
+            url: "editor/openai/openAI.php",
+            type: "POST",
+            data: { type: 'quiz', prompt: 'gebruik de zelfde layout, gebruik tussen de 3 tot 4 antwoorden per vraag, genereer 4 nederlandse multiple choice vragen over schoenen'},
+
+            success: function (data) {
+                var parser = new DOMParser();
+                var result = JSON.parse(data);
+                var x = parser.parseFromString(result["result"], "text/xml");
+                //merge result with xml
+                var children = x.children[0].children;
+                var size = children.length;
+                for (let i = 0; i < size; i++){
+                    xmlData.appendChild(children[0])
+                }
+                addNodeToTree('treeroot', pos, nodeName, xmlData, tree, true, true);
+                console.log("done!")
+            },
+            // Error handling
+            error: function (error) {
+                console.log(`Error ${error}`);
+            }
+        });
+        //merge openAi xml with default xml per node
+        //use xml structure to build object
+        //use addNodeToTree to build object
+    },
     validateInsert = function(key, newNode, tree)
     {
         if (wizard_data[newNode]['menu_options'].max)
