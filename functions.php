@@ -266,7 +266,7 @@ function uid()
 function getVersion()
 {
     $version = file(dirname(__FILE__) . "/version.txt", FILE_IGNORE_NEW_LINES);
-    return $version[0];
+    return str_replace(' ', '_', $version[0]);
 }
 
 function true_or_false($var)
