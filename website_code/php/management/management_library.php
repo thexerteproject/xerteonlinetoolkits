@@ -30,12 +30,12 @@
         $query_response = db_query($query);
 
         //build tree
-        $tree = [];
+        $tree = array();
         foreach ($query_response as $data){
             if (!is_null($data) or $data !== false) {
                 $child[id] = $data["category_id"];
                 $child[name] = $data["category_name"];
-                $child[children] = [];
+                $child[children] = array();
                 if (is_null($data["parent_id"])) {
                     $tree[$child["id"]] = $child;
                 } else {
@@ -82,12 +82,12 @@
         $query_response = db_query($query);
 
         //build tree
-        $tree = [];
+        $tree = array();
         foreach ($query_response as $data){
             if (!is_null($data) or $data !== false) {
                 $child[id] = $data["educationlevel_id"];
                 $child[name] = $data["educationlevel_name"];
-                $child[children] = [];
+                $child[children] = array();
                 if (is_null($data["parent_id"])) {
                     $tree[$child["id"]] = $child;
                 } else {

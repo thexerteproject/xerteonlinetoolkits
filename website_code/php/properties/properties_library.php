@@ -855,8 +855,8 @@ function sharing_info($template_id)
     $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ?";
     $query_folders = db_query($sql, array($query_folder_id[0]["folder"]));
 
-    $related_folders = [];
-    $params = [];
+    $related_folders = array();
+    $params = array();
     array_push($related_folders, $query_folders[0]);
 
     if(!empty($related_folders)){
@@ -1198,8 +1198,8 @@ function folder_sharing_info($folder_id)
     $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ?";
     $query_folders = db_query($sql, array($query_folder_id["folder_id"]));
 
-    $related_folders = [];
-    $params = [];
+    $related_folders = array();
+    $params = array();
     array_push($related_folders, $query_folders[0]);
 
     if(!empty($related_folders)){

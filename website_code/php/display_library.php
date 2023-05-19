@@ -736,7 +736,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
     //remove double items
 
 
-    $uniqueItems = [];
+    $uniqueItems = array();
     foreach ($items as $item => $value){
         /*if(!in_array($value, $uniqueItems)){
             $uniqueItems[$item] = $value;
@@ -936,7 +936,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
         _debug("Error in get_workspace_folders: " . $error_msg);
     }
 
-    $sharedFolders = [];
+    $sharedFolders = array();
     foreach ($query_response as $index => $folder){
         if(intval($folder['nrshared']) > 1){
             array_push($sharedFolders, $folder["folder_id"]);
@@ -960,7 +960,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
     }
 
     /*$query = "SELECT * FROM folderdetails where";
-    $params = [];
+    $params = array();
     foreach ($query_response as $folder){
 
         if(intval($folder['nrshared']) > 1){
@@ -1149,7 +1149,7 @@ function get_users_projects($sort_type, $copy_only=false)
     $workspace->nodes[$item->id] = $item;
     //$items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, "_top");
     $items = get_workspace_contents($item->xot_id, $item->id, $sort_type, $copy_only,"_top");
-    $sharedItems = [];
+    $sharedItems = array();
     if ($items) {
         $workspace->items = array_merge($workspace->items, $items);
         foreach($items as $item)
