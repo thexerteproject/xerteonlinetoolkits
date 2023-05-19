@@ -33,7 +33,7 @@ function get_children ($parent_id, $lookup, $column, $type) {
         return $children;
     }
     foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = [name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type)];
+        $children[] = array(name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type));
     }
     return $children;
 }
@@ -178,7 +178,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $lookup = array();
     foreach ($categories as $node){
         $node['children'] = array();
-        $lookup = $lookup + [$node['category_id'] => $node];
+        $lookup = $lookup + array($node['category_id'] => $node);
     }
     foreach ($lookup as $node){
         if ($node['parent_id'] != null){
@@ -191,7 +191,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = ['name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id')];
+            $node = array('name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id'));
             $parsed_categories[] = $node;
         }
     }
@@ -205,7 +205,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $lookup = array();
     foreach ($educationlevels as $node){
         $node['children'] = array();
-        $lookup = $lookup + [$node['educationlevel_id'] => $node];
+        $lookup = $lookup + array($node['educationlevel_id'] => $node);
     }
     foreach ($lookup as $node){
         if ($node['parent_id'] != null){
@@ -218,7 +218,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = ['name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
+            $node = array('name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id'));
             $parsed_educationlevels[] = $node;
         }
     }
