@@ -58,7 +58,7 @@ if(is_user_admin()){
     $query = "SELECT * FROM {$prefix}user_group_members WHERE group_id=? AND login_id in (" . $logins . ")";
     $exists = db_query($query, $params);
 
-    $existing_arr = [];
+    $existing_arr = array();
     foreach($exists as $row){
         array_push($existing_arr, $row['login_id']);
     }

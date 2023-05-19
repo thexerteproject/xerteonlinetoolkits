@@ -8,7 +8,7 @@ require_once('../../config.php');
 if ($argc > 1) {
     clearCategoryTable();
     createCategoryTable();
-    $lookup = [];
+    $lookup = array();
     for ($args = 1; $args < $argc; $args++) {
 
         $xmlfile = $argv[$args];
@@ -20,7 +20,7 @@ if ($argc > 1) {
         $relations = $xml->xpath("//vdex:relationship");
 
         foreach ($nodes as $node) {
-            $row = [];
+            $row = array();
             $ns = $node->getNamespaces();
             $c = $node->children($ns['vdex']);
             $row[label] = (string)$c->caption->langstring;

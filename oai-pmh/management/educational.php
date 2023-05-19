@@ -16,10 +16,10 @@ if ($argc > 1) {
 
     $nodes = $xml->xpath('//vdex:term');
     $relations = $xml->xpath("//vdex:relationship");
-    $lookup = [];
+    $lookup = array();
 
     foreach ($nodes as $node) {
-        $row = [];
+        $row = array();
         $c = $node->children($ns['vdex']);
         $row['label'] = (string)$c->caption->langstring;
         $row['ID'] = (string)$c->termIdentifier;

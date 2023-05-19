@@ -110,17 +110,17 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
             $cat = (string)$xml['category'];
         }
         $cat = explode("|", $cat);
-        $response = [];
-        $xerteMetaObj->domain = [];
-        $xerteMetaObj->domainId = [];
-        $xerteMetaObj->domainSource = [];
+        $response = array();
+        $xerteMetaObj->domain = array();
+        $xerteMetaObj->domainId = array();
+        $xerteMetaObj->domainSource = array();
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_categories where label=?";
         // query oai_categories
         foreach ($cat as $value){
             $params = array($value);
             $response[] = db_query_one($q, $params);
         }
-        $parents = [];
+        $parents = array();
         foreach ($response as $data){
             if ($data !== false and $data !== null) {
                 $xerteMetaObj->domain[] = $data["label"];
@@ -153,16 +153,16 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     if (isset($xml['metaEducation'])) {
         // query oai-education
         $edu = explode("|", (string)$xml["metaEducation"]);
-        $response = [];
-        $xerteMetaObj->level = [];
-        $xerteMetaObj->levelId = [];
+        $response = array();
+        $xerteMetaObj->level = array();
+        $xerteMetaObj->levelId = array();
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_education where label=?";
 
         foreach ($edu as $value){
             $params = array($value);
             $response[] = db_query_one($q, $params);
         }
-        $parents = [];
+        $parents = array();
         foreach ($response as $data){
             if ($data !== false and $data !== null) {
                 $xerteMetaObj->level[] = $data["label"];

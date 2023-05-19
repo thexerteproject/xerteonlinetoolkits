@@ -240,7 +240,7 @@ function getTemplates($metadataPrefix,$from,$until) {
         $q = "select template_id, status, timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish group by template_id)";
         $publish_status = db_query($q);
     }
-    $temp_added = [];
+    $temp_added = array();
 
     for($i=0;$i<count($templates);$i++)
     {
