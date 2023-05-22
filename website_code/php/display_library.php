@@ -715,8 +715,20 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $titem->xot_type = "file";
         $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
         $titem->shared = $template['nrshared'] > 1;
-        $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
-        $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+        if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size)) {
+            $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
+        }
+        else
+        {
+            $titem->editor_size="1280, 768";
+        }
+        if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size)) {
+            $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+        }
+        else
+        {
+            $titem->preview_size="802, 602";
+        }
 
         $items[] = $titem;
     }
@@ -724,7 +736,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
     //remove double items
 
 
-    $uniqueItems = [];
+    $uniqueItems = array();
     foreach ($items as $item => $value){
         /*if(!in_array($value, $uniqueItems)){
             $uniqueItems[$item] = $value;
@@ -924,7 +936,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
         _debug("Error in get_workspace_folders: " . $error_msg);
     }
 
-    $sharedFolders = [];
+    $sharedFolders = array();
     foreach ($query_response as $index => $folder){
         if(intval($folder['nrshared']) > 1){
             array_push($sharedFolders, $folder["folder_id"]);
@@ -948,7 +960,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
     }
 
     /*$query = "SELECT * FROM folderdetails where";
-    $params = [];
+    $params = array();
     foreach ($query_response as $folder){
 
         if(intval($folder['nrshared']) > 1){
@@ -1137,7 +1149,7 @@ function get_users_projects($sort_type, $copy_only=false)
     $workspace->nodes[$item->id] = $item;
     //$items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, "_top");
     $items = get_workspace_contents($item->xot_id, $item->id, $sort_type, $copy_only,"_top");
-    $sharedItems = [];
+    $sharedItems = array();
     if ($items) {
         $workspace->items = array_merge($workspace->items, $items);
         foreach($items as $item)

@@ -360,6 +360,17 @@ section {
 	color: red;
 }
 
+/* --LINKS-------------------------------------------------------------- */
+
+section a:not(.accordion-toggle) {
+  text-decoration: underline;
+  text-underline-position: under;
+}
+
+section div.navigator li a {
+  text-decoration: none;
+}
+
 /* --GLOSSARY-------------------------------------------------------------- */
 
 a.glossary {

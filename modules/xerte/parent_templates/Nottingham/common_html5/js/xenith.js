@@ -757,6 +757,7 @@ function x_getThemeInfo(thisTheme, themeChg) {
 	// some older themes use images for interface buttons (not FontAwesome icons) - it's only these themes that can fall back to use the defaultFA (all others should have FA icons set in theme)
 	// these themes should have imgbtns: true in the theme info file
 	if (thisTheme == undefined || thisTheme == "default") {
+		x_params.theme = "default";
 		x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
 		
 	} else {
@@ -776,8 +777,17 @@ function x_getThemeInfo(thisTheme, themeChg) {
 				
 				x_setUpThemeBtns(themeInfo, themeChg);
 			},
-			error: function() {
-				x_setUpThemeBtns({}, themeChg);
+			error: function(err) {
+				if (err.status == 404)
+				{
+					// Fall back to default
+					x_params.theme = "default";
+					x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
+				}
+				else
+				{
+					x_setUpThemeBtns({}, themeChg);
+				}
 			}
 		});
 	}

@@ -20,6 +20,8 @@
 
 require_once("../../../config.php");
 require_once("../user_library.php");
+require_once( "../template_library.php");
+require_once("../template_status.php");
 /**
  * 
  * gift this template, allows the site to give a template copy, or an actual template to some one else
@@ -84,9 +86,6 @@ function copy_loop($start_path, $final_path){
 
 _load_language_file("/website_code/php/properties/gift_this_template.inc");
 
-include "../template_library.php";
-include "../template_status.php";
-include "../user_library.php";
 
 
 if (!isset($_SESSION['toolkits_logon_id']))

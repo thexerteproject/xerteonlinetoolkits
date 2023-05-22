@@ -1105,6 +1105,11 @@ var EDITOR = (function ($, parent) {
                 $('#language_cb').removeAttr("disabled");
                 $('#language_cb').prop('checked', defaultLanguage);
             }
+            else
+            {
+                $('#language_cb_span').switchClass("enabled", "disabled");
+                $('#language_cb').prop("disabled", true);
+            }
         }
 
         // Extra insert buttons

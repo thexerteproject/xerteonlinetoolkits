@@ -27,13 +27,13 @@
 
 function get_children ($parent_id, $lookup, $column, $type) {
     // children
-    $children = [];
+    $children = array();
     //we are at a leaf level
     if (empty($lookup[$parent_id]['children'])){
         return $children;
     }
     foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = [name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type)];
+        $children[] = array(name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type));
     }
     return $children;
 }
@@ -175,10 +175,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
     $sql = "select category_id, category_name, parent_id from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
     $categories = db_query($sql);
-    $lookup = [];
+    $lookup = array();
     foreach ($categories as $node){
-        $node['children'] = [];
-        $lookup = $lookup + [$node['category_id'] => $node];
+        $node['children'] = array();
+        $lookup = $lookup + array($node['category_id'] => $node);
     }
     foreach ($lookup as $node){
         if ($node['parent_id'] != null){
@@ -186,12 +186,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         }
     }
 
-    $parsed_categories = [];
+    $parsed_categories = array();
     foreach ($lookup as $value){
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = ['name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id')];
+            $node = array('name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id'));
             $parsed_categories[] = $node;
         }
     }
@@ -202,10 +202,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $sql = "select educationlevel_id, educationlevel_name, parent_id from {$xerte_toolkits_site->database_table_prefix}educationlevel order by parent_id asc";
     $educationlevels = db_query($sql);
 
-    $lookup = [];
+    $lookup = array();
     foreach ($educationlevels as $node){
-        $node['children'] = [];
-        $lookup = $lookup + [$node['educationlevel_id'] => $node];
+        $node['children'] = array();
+        $lookup = $lookup + array($node['educationlevel_id'] => $node);
     }
     foreach ($lookup as $node){
         if ($node['parent_id'] != null){
@@ -213,12 +213,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         }
     }
 
-    $parsed_educationlevels = [];
+    $parsed_educationlevels = array();
     foreach ($lookup as $value){
         //find all tree origins
         if ($value['parent_id'] == null) {
             //add node and all its children recursively
-            $node = ['name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
+            $node = array('name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id'));
             $parsed_educationlevels[] = $node;
         }
     }

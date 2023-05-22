@@ -188,4 +188,14 @@
 	<course deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php">
 		<FreeText label="Anders"></FreeText>
 	</course>
+	<categoryList>
+		<error>Voeg {x} eerst aan project toe</error>
+		<errorEmpty>Voeg data eerst aan {x} toe</errorEmpty>
+	</categoryList>
+	<UploadCSV>
+		<UploadCSVBtn label = "Upload csv"/>
+		<Info label = "Let op: dit overschrijft de huidige tabel"> </Info>
+		<Info2 label = "Let op: de nieuwe tabel wordt aan de oude tabel toegevoegd. Wilt u doorgaan? NB na het toevoegen kunnen er dubbele rijen na de merge."> </Info2>
+		<mergeOld label = "Voeg nieuwe tebel toe aan huidige inhoud:"/>
+	</UploadCSV>>
 </language>

@@ -259,12 +259,14 @@ function update_oai($data){
     $user_type = '';
     //get access status
     $sql = "select access_to_whom from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id=?";
-    $status = db_query_one($sql, array($_POST['template_id']))["access_to_whom"];
+    $rec = db_query_one($sql, array($_POST['template_id']));
+    $status = $rec["access_to_whom"];
 
     if ($oaiPmhAgree !== "") {
         $sql = "select status from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
         $params = array($_POST['template_id']);
-        $last_oaiTable_status = db_query_one($sql, $params)["status"];
+        $rec = db_query_one($sql, $params);
+        $last_oaiTable_status = $rec["status"];
 
         //find user type
         if (is_user_admin()){
@@ -272,7 +274,8 @@ function update_oai($data){
         } else {
             $sql = "select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?";
             $params = array($_POST['template_id'], $_SESSION['toolkits_logon_id']);
-            $user_type = db_query_one($sql, $params)["role"];
+            $rec = db_query_one($sql, $params);
+            $user_type = $rec["role"];
         }
 
         $query = "insert into {$xerte_toolkits_site->database_table_prefix}oai_publish set template_id=?, login_id=?, user_type=?, status=?";
@@ -281,17 +284,17 @@ function update_oai($data){
         if ($oaiPmhAgree == 'true' and $category !== "" and $level !== "" and $status === "Public") {
             //add new row to oai_published to indicate current oai-pmh status
             if (is_null($last_oaiTable_status) || $last_oaiTable_status != "published") {
-                db_query_one($query, array_merge($params, ["published"]));
+                db_query_one($query, array_merge($params, array("published")));
             }
         } elseif ($oaiPmhAgree == 'true' and ($category == "" or $level == "") and $status === "Public") {
             //if the project has never been oai published we don't add it here
             if ($last_oaiTable_status != "incomplete" AND !is_null($last_oaiTable_status)){
-                db_query_one($query, array_merge($params, ["incomplete"]));
+                db_query_one($query, array_merge($params, array("incomplete")));
             }
         } else {
             //if the project has never been oai published we don't add it here
             if ($last_oaiTable_status != "deleted" AND !is_null($last_oaiTable_status)){
-                db_query_one($query, array_merge($params, ["deleted"]));
+                db_query_one($query, array_merge($params, array("deleted")));
             }
         }
     }
