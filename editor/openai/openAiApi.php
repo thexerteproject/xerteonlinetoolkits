@@ -21,11 +21,18 @@ class OpenAi
 
     //TODO add functionality
     //check if answer conforms to model
-    private function conform_to_model($answer): bool
+    private function conform_to_model($answer)
     {
-        //idea if not correct drop until last closed xml and close rest manualy
-        //prevents out of token awnsers
-        return true;
+        //TODO idea if not correct drop until last closed xml and close rest manualy
+        //prevents out of token answers
+
+        //TODO ensure answer has no html code and xml has no data fields aka remove spaces
+        //IMPORTANT GPT really wants to add \n into answers
+
+        $tmp = str_replace('\n', "", $answer);
+        $tmp = preg_replace('/\s+/', ' ', $tmp);
+        $tmp = str_replace('> <', "><", $tmp);
+        return $tmp;
     }
 
     //general class for interactions with the openai API
@@ -47,18 +54,21 @@ class OpenAi
         curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json"]);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
 
-        $result = json_decode(curl_exec($curl));
+        $result = curl_exec($curl);
 
         curl_close($curl);
 
-        if ($result->error) {
+
+        $resultConform = $this->conform_to_model($result);
+        $resultConform = json_decode($resultConform);
+
+        if ($resultConform->error) {
             return (object) ["status" => "error", "message" => "error on api call with code:" . $result->error->code];
         }
-        if (!$this->conform_to_model($result)){
-            return (object) ["status" => "error", "message" => "answer does not match model"];
-        }
-
-        return $result;
+        //if (!$this->conform_to_model($resultConform)){
+        //    return (object) ["status" => "error", "message" => "answer does not match model"];
+        //}
+        return $resultConform;
     }
 
     //TODO add functionality
