@@ -7352,6 +7352,13 @@
 		<movieSize label="Size" type="textInput" defaultValue="320,240" optional="true"/>
 	</videoInfo>
 
+	<AIGroup type="group" label="AI" optional="true">
+      <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
+      <amountOfQuestions label="Amount Of Questions" type="TextInput" wysiwyg="true" optional="true"/>
+      <amountOfAnswers label="Amount Of Answers" type="TextInput" wysiwyg="true" optional="true"/>
+      <aiButton type="aibutton" optional="true"/>
+    </AIGroup>
+
     <newNodes>
       <question><![CDATA[<question prompt="Enter question" name="Question" type="Single Answer" />]]></question>
 	</newNodes>
@@ -7430,7 +7437,7 @@
     <prompt label="Question" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
-	
+
 	<feedbackGroup type="group" label="Feedback" optional="true">
     	<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
     	<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>

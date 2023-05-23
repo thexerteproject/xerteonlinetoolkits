@@ -3734,6 +3734,13 @@ var EDITOR = (function ($, parent) {
 		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
 		switch(options.type.toLowerCase())
 		{
+            case 'aibutton':
+                var id = 'aibutton_' + form_id_offset;
+                html = $('<button>')
+                    .attr('id', id)
+                    .text('Generate')
+                    .click(ai_content_generator());
+                break;
 			case 'checkbox':
 				var id = 'checkbox_' + form_id_offset;
 				form_id_offset++;
