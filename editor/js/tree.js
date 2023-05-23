@@ -1482,13 +1482,14 @@ var EDITOR = (function ($, parent) {
             return; // not found!!
         var xmlData = $.parseXML(wizard_data[topLevelObject].new_nodes_defaults[i]).firstChild;
 
-        //addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
+        addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
         //TODO move this to proper place
-        if (nodeName == "quiz"){
+        /*if (nodeName == "quiz"){
             ai_content_generator('treeroot', pos, nodeName, xmlData, tree, true);
         } else {
             addNodeToTree('treeroot', pos, nodeName, xmlData, tree, true);
-        }
+        }*/
+
     },
 
     addNodeToTreeAi = function(key, pos, nodeName, xmlData, tree, select, addChildren = true)
