@@ -22,7 +22,7 @@ $type = $_POST["type"];
 //$type = 'quiz';
 $result = $openAI->openAI_request($prompt,$type);
 
-//TODO make good
+//TODO make good-
 if ($result->status){
     echo json_encode($result);
 } else {

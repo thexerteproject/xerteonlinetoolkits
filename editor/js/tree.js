@@ -1492,8 +1492,10 @@ var EDITOR = (function ($, parent) {
 
     },
 
-    addNodeToTreeAi = function(key, pos, nodeName, xmlData, tree, select, addChildren = true)
+    addNodeToTreeAi = function(key, tree, select, addChildren = true)
     {
+
+            var xmlData = true; //tODO
             var lkey = parent.tree.generate_lo_key();
             var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
             var extranodes = true;
@@ -1564,38 +1566,45 @@ var EDITOR = (function ($, parent) {
                 });
             }
     },
-        //TODO call from frontend
-    ai_content_generator = function(treeroot, pos, nodeName, xmlData, tree, b) {
+
+        //TODO make dynamic for all functions
+    ai_content_generator = function(event) {
         //call openAI.php
+        var pos = 'last';
+        var nodeName = "question";
+        var tree = $.jstree.reference("#treeview");
+        $('body').css("cursor", "wait");
         console.log("start openai api request please wait");
+        var prompt = 'gebruik de zelfde layout, gebruik ' + event.data.nra + ' antwoorden per vraag, genereer ' + event.data.nrq + ' nederlandse multiple choice vragen over ' + event.data.subject;
+
         $.ajax({
 
             url: "editor/openai/openAI.php",
             type: "POST",
-            data: { type: 'quiz', prompt: 'gebruik de zelfde layout, gebruik tussen de 3 tot 4 antwoorden per vraag, genereer 4 nederlandse multiple choice vragen over schoenen'},
+            data: { type: 'quiz', prompt: prompt},
 
             success: function (data) {
+                $('body').css("cursor", "default");
                 var parser = new DOMParser();
                 var result = JSON.parse(data);
-                var x = parser.parseFromString(result["result"], "text/xml");
-                //merge result with xml
-                var children = x.children[0].children;
-                var size = children.length;
-                for (let i = 0; i < size; i++){
-                    xmlData.appendChild(children[0])
+                if (result.status == 'success') {
+                    var x = parser.parseFromString(result["result"], "text/xml");
+                    pos = 'last';
+                    //merge result with xml
+                    var children = x.children[0].children;
+                    var size = children.length;
+                    //TODO check for error
+                    for (let i = 0; i < size; i++) {
+                        addNodeToTree(event.data.key, pos, nodeName, children[i], tree, true, true);
+                    }
+                    console.log("done!")
+                } else {
+                    console.log(result.message);
                 }
-                addNodeToTree('treeroot', pos, nodeName, xmlData, tree, true, true);
-                console.log("done!")
             },
-            // Error handling
-            error: function (error) {
-                console.log(`Error ${error}`);
-            }
         });
-        //merge openAi xml with default xml per node
-        //use xml structure to build object
-        //use addNodeToTree to build object
     },
+
     validateInsert = function(key, newNode, tree)
     {
         if (wizard_data[newNode]['menu_options'].max)
