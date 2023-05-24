@@ -809,11 +809,13 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 		x_btnIcons[i].btnImgs = false;
 		x_btnIcons[i].iconClass = x_btnIcons[i].defaultIconClass;
 		
+		const tempName = x_btnIcons[i].name == 'home' ? 'toc' : x_btnIcons[i].name;
+		
 		if (x_params[x_btnIcons[i].custom] == 'true') {
 			// a custom icon has individually been selected in editor for this button
 			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
 			x_btnIcons[i].customised = true;
-		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
+		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(tempName, x_sideBarBtns) != -1)) {
 			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
 			// either because update theme icons is checked or button is on side bar
 			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
