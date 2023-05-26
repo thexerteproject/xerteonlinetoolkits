@@ -139,13 +139,13 @@ if (is_numeric($id))
         $members = $user->xpath('//member');
 
         $xerte_toolkits_site->xapi_user = new stdClass();
-        $xerte_toolkits_site->xapi_user->first_name = (string) $members[0]['firstName'];
+        $xerte_toolkits_site->xapi_user->first_name = str_replace("'", "\'", (string) $members[0]['firstName']);
         if (strlen($members[0]['middleName']) > 0)
         {
-            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName'];
+            $xerte_toolkits_site->xapi_user->last_name = str_replace("'", "\'", (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName']);
         }
         else {
-            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['lastName'];
+            $xerte_toolkits_site->xapi_user->last_name = str_replace("'", "\'", (string)$members[0]['lastName']);
         }
         $xerte_toolkits_site->xapi_user->email = (string)$members[0]['emailAddressPrivate'];
         $xerte_toolkits_site->xapi_user->displayname = $xerte_toolkits_site->xapi_user->first_name . ' ' . $xerte_toolkits_site->xapi_user->last_name;
