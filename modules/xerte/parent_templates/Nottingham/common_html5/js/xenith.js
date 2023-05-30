@@ -1316,7 +1316,7 @@ function x_KeepAlive()
 {
 	const now = new Date().getTime();
 	let url = "website_code/php/keepalive.php" + "?t=" + now;
-	if (sessionParam != undefined)
+	if (typeof sessionParam !== 'undefined')
 	{
 		url = "website_code/php/keepalive.php" + sessionParam + "&t=" + now;
 	}
