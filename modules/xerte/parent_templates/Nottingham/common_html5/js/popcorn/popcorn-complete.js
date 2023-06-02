@@ -4422,7 +4422,7 @@
                 impl.readyState = self.HAVE_ENOUGH_DATA;
                 self.dispatchEvent( "canplaythrough" );
 
-                var iframe = $(".mediasite")[0].children[0];
+                var iframe = $("#mediasiteIframe")[0];
                 iframe.style.height = "100%";
                 iframe.style.width = "100%";
 
