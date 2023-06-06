@@ -1086,7 +1086,7 @@ function x_setUp() {
 
 		if (x_params.responsive == "true") {
 			// Use default font size
-			$x_body.css("font-size", "12pt");
+			$x_body.css("font-size", "10pt");
 		}
 		else {
 			$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
