@@ -1084,7 +1084,13 @@ function x_setUp() {
 		$x_nextBtn		= $("#x_nextBtn");
 		$x_background	= $("#x_background");
 
-		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
+		if (x_params.responsive == "true") {
+			// Use default font size
+			$x_body.css("font-size", "12pt");
+		}
+		else {
+			$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
+		}
 
 		if (x_params.authorSupport == "true") {
 			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
