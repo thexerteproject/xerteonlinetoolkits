@@ -1510,7 +1510,7 @@ var EDITOR = (function ($, parent) {
 
     },
 
-    ai_content_generator = function(event, p) {
+    ai_content_generator = function(event, p, node_type) {
         //call openAI.php
         //TODO pos
         var pos = 'last';
@@ -1520,12 +1520,12 @@ var EDITOR = (function ($, parent) {
         $('body').css("cursor", "wait");
 
         console.log("start openai api request please wait");
-        //TODO type
+
         $.ajax({
 
             url: "editor/openai/openAI.php",
             type: "POST",
-            data: { type: 'quiz', prompt: p},
+            data: { type: node_type, prompt: p},
 
             success: function (data) {
                 $('body').css("cursor", "default");

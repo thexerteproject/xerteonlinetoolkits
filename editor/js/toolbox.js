@@ -3743,7 +3743,8 @@ var EDITOR = (function ($, parent) {
                     .attr('class', 'ai_button')
                     .text('Generate')
                     .click({key:key}, function(event){
-                        ai_content_generator(event, {"subject": lo_data[key].attributes["subject"], "nrq": lo_data[key].attributes["amountOfQuestions"], "nra": lo_data[key].attributes["amountOfAnswers"]})});
+                        ai_content_generator(event, {"subject": lo_data[key].attributes["subject"], "nrq": lo_data[key].attributes["amountOfQuestions"], "nra": lo_data[key].attributes["amountOfAnswers"]}, lo_data[key].attributes.nodeName)}
+                    );
                 break;
 			case 'checkbox':
 				var id = 'checkbox_' + form_id_offset;
