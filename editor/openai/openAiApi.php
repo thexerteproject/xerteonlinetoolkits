@@ -112,9 +112,10 @@ class OpenAi
 
             $results = array();
 
-            //TODO check for all multiple run types
-            if ($type == "quiz"){
-                $block_size = 6;
+            //TODO check for all "multiple-run" types
+            $block_size = 6;
+            if ($type == "quiz" and $p['nrq'] > $block_size){
+
                 $nrq_remaining = $p['nrq'];
 
                 while ($nrq_remaining > $block_size) {
@@ -128,12 +129,9 @@ class OpenAi
 
                     $nrq_remaining = $nrq_remaining - $block_size;
                 }
-                //TODO not good when nrq < block_size
                 $prompt = preg_replace('/'.strval($block_size).'/', strval($nrq_remaining), $prompt, 1);
-                $results[] = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
-            } else {
-                $results[] = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
             }
+            $results[] = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
 
             $answer = "";
             $total_tokens_used = 0;
