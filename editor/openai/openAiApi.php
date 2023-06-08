@@ -7,6 +7,8 @@ class OpenAi
     function __construct() {
         require_once (dirname(__FILE__) . "/ai_preset_models.php");
         $this->preset_models = $openAI_preset_models;
+        require_once (dirname(__FILE__) . "/../../config.php");
+        $this->xerte_toolkits_site = $xerte_toolkits_site;
     }
 
 //TODO global design of function
@@ -39,8 +41,8 @@ class OpenAi
     //this should only be called if the user passed all checks
     private function POST_OpenAi($prompt, $settings)
     {
-        require_once (dirname(__FILE__) . "/../../config.php");
-        $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openAI_key;
+
+        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openAI_key;
 
         //add user supplied prompt to payload
         $settings["payload"]["messages"][max(sizeof($settings["payload"]["messages"])-1, 0)]["content"] = $prompt;
@@ -84,6 +86,19 @@ class OpenAi
         return true;
     }
 
+    private function generatePrompt($p, $type): string
+    {
+        $prompt = '';
+        foreach ($this->preset_models->prompt_list[$type] as $prompt_part){
+            if ($p[$prompt_part] == null){
+                $prompt = $prompt . $prompt_part;
+            } else {
+                $prompt = $prompt . $p[$prompt_part];
+            }
+        }
+        return $prompt;
+    }
+
     public function openAI_request($p, $type)
     {
         if (!$this->check_corp_tokens()) {
@@ -93,29 +108,48 @@ class OpenAi
                 return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
             }
 
-            $prompt = '';
-            foreach ($this->preset_models->prompt_list["quiz"] as $prompt_part){
-                if ($p[$prompt_part] == null){
-                    $prompt = $prompt . $prompt_part;
-                } else {
-                    $prompt = $prompt . $p[$prompt_part];
+            $prompt = $this->generatePrompt($p, $type);
+
+            $results = array();
+
+            //TODO check for all multiple run types
+            if ($type == "quiz"){
+                $block_size = 6;
+                $nrq_remaining = $p['nrq'];
+
+                while ($nrq_remaining > $block_size) {
+                    $prompt = preg_replace('/'.$p['nrq'].'/', strval($block_size), $prompt, 1);
+
+                    $results[] = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
+                    $tempxml = simplexml_load_string(end($results)->choices[0]->message->content);
+                    foreach ($tempxml->children() as $child){
+                        $prompt = $prompt . $child->attributes()->prompt . " ; ";
+                    }
+
+                    $nrq_remaining = $nrq_remaining - $block_size;
                 }
+                //TODO not good when nrq < block_size
+                $prompt = preg_replace('/'.strval($block_size).'/', strval($nrq_remaining), $prompt, 1);
+                $results[] = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
+            } else {
+                $results[] = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
             }
 
-
-            $result = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
-
+            $answer = "";
+            $total_tokens_used = 0;
             //if status is set something went wrong
-            if ($result->status){
-                return $result;
+            foreach ($results as $result) {
+                if ($result->status) {
+                    return $result;
+                }
+                $total_tokens_used += $result->usage->total_tokens;
+                $answer = $answer . $result->choices[0]->message->content;
             }
+            $answer = str_replace(["<". $type .">", "</". $type .">"], "", $answer);
 
-            $tokens_used = $result->usage->total_tokens;
-            $answer = $result->choices[0]->message->content;
+            $this->lower_corp_tokens($total_tokens_used);
 
-            $this->lower_corp_tokens($tokens_used);
-
-            return $answer;
+            return "<". $type .">" . $answer. "</". $type .">";
         }
     }
 
