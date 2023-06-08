@@ -1483,119 +1483,71 @@ var EDITOR = (function ($, parent) {
         var xmlData = $.parseXML(wizard_data[topLevelObject].new_nodes_defaults[i]).firstChild;
 
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
-        //TODO move this to proper place
-        /*if (nodeName == "quiz"){
-            ai_content_generator('treeroot', pos, nodeName, xmlData, tree, true);
-        } else {
-            addNodeToTree('treeroot', pos, nodeName, xmlData, tree, true);
-        }*/
-
     },
 
-    addNodeToTreeAi = function(key, tree, select, addChildren = true)
+    build_xerte_xml = function(xml_tree, parent_name, parser)
     {
+        //if not root we combine basic with openai
+        if (xml_tree.tagName !== parent_name) {
+            var index = wizard_data[parent_name].new_nodes.indexOf(xml_tree.tagName);
+            var basic_xml = parser.parseFromString(wizard_data[parent_name].new_nodes_defaults[index], "text/xml").children[0];
+            var xml_atr = xml_tree.attributes;
 
-            var xmlData = true; //tODO
-            var lkey = parent.tree.generate_lo_key();
-            var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-            var extranodes = true;
-            $(xmlData.attributes).each(function() {
-                attributes[this.name] = this.value;
-            });
-            lo_data[lkey] = {};
-            lo_data[lkey]['attributes'] = attributes;
-            if (xmlData.firstChild)
-            {
-                if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
-                {
-                    lo_data[lkey]['data'] = xmlData.firstChild.data;
-                }
-                else if (xmlData.firstChild.nodeType == 1) // extra node
-                {
-                    extranodes = true;
+            for (var i = 0; i < basic_xml.attributes.length; i++){
+                var attr = basic_xml.attributes[i];
+                if (xml_tree.getAttribute(attr.name) == null) {
+                    xml_tree.setAttribute(attr.name, attr.value)
                 }
             }
-            // Build the JSON object for the treeview
-            // For version 3 jsTree
+        }
+        //recursively do this for all children
+        if (xml_tree.hasChildNodes()) {
+            var children = xml_tree.children;
+            for (let i = 0; i < children.length; i++) {
+                build_xerte_xml(children[i], xml_tree.tagName, parser);
+            }
+        }
 
-            var treeLabel = nodeName;
-            if (xmlData.attributes['name'])
-            {
-                treeLabel = xmlData.attributes['name'].value;
-            }
-            else
-            {
-                if (wizard_data[treeLabel].menu_options.menuItem)
-                    treeLabel = wizard_data[treeLabel].menu_options.menuItem;
-            }
-            // Add icons to the node, all should be switched off
-            // Create node text based on xml, do not use text of original node, as this is not correct
-            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
-            var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
-            var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
-            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
-            var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
-
-            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
-            var this_json = {
-                id : lkey,
-                text : treeLabel,
-                type : nodeName,
-                state: {
-                    opened: true
-                }
-            }
-            // Add the node
-            if (validateInsert(key, nodeName, tree))
-            {
-                var newkey = tree.create_node(key, this_json, pos, function(){
-                    if (select) {
-                        tree.deselect_all();
-                        tree.select_node(lkey);
-                    }
-                });
-            }
-            // Any children to add
-            if (extranodes)
-            {
-                $.each(xmlData.childNodes, function(nr, child) {   // Was children
-                    if (child.nodeType == 1)
-                    {
-                        addNodeToTreeAi(lkey,'last',child.nodeName,child,tree,false);
-                    }
-                });
-            }
     },
 
-        //TODO make dynamic for all functions
-    ai_content_generator = function(event) {
+    ai_content_generator = function(event, p, selectedItem) {
         //call openAI.php
+        //TODO pos
         var pos = 'last';
-        var nodeName = "question";
         var tree = $.jstree.reference("#treeview");
+
+        //show wait icon
         $('body').css("cursor", "wait");
+
         console.log("start openai api request please wait");
-        var prompt = 'gebruik de zelfde layout, gebruik ' + event.data.nra + ' antwoorden per vraag, genereer ' + event.data.nrq + ' nederlandse multiple choice vragen over ' + event.data.subject;
 
         $.ajax({
 
             url: "editor/openai/openAI.php",
             type: "POST",
-            data: { type: 'quiz', prompt: prompt},
+            data: { type: 'quiz', prompt: p},
 
             success: function (data) {
                 $('body').css("cursor", "default");
                 var parser = new DOMParser();
                 var result = JSON.parse(data);
                 if (result.status == 'success') {
-                    var x = parser.parseFromString(result["result"], "text/xml");
-                    pos = 'last';
-                    //merge result with xml
-                    var children = x.children[0].children;
+
+                    var x = parser.parseFromString(result["result"], "text/xml").children[0];
+                    console.log(x);
+
+                    //merge xerte object root with ai result at root level.
+                    for (var i = 0; i < x.attributes.length; i++) {
+                        var attr = foo.attributes[i];
+                        //TODO how to update current (if not possible create new)
+                    }
+                    build_xerte_xml(x, x.tagName, parser);
+
+                    var children = x.children;
                     var size = children.length;
-                    //TODO check for error
+                    //add all populated children of top level object for example "quiz"
                     for (let i = 0; i < size; i++) {
-                        addNodeToTree(event.data.key, pos, nodeName, children[i], tree, true, true);
+                        addNodeToTree(event.data.key, pos, children[i].tagName, children[i], tree, true, true);
                     }
                     console.log("done!")
                 } else {

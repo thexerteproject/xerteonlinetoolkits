@@ -16,13 +16,11 @@ require_once (dirname(__FILE__) . "/openAiApi.php");
 //}
 
 $openAI = new OpenAi();
-$prompt = $_POST["prompt"];
+$prompt_params = $_POST["prompt"];
 $type = $_POST["type"];
-//$prompt = 'gebruik de zelfde layout, gebruik tussen de 3 tot 5 antwoorden per vraag, genereer 10 nederlandse multiple choice vragen over staal ';
-//$type = 'quiz';
-$result = $openAI->openAI_request($prompt,$type);
 
-//TODO make good-
+$result = $openAI->openAI_request($prompt_params,$type);
+
 if ($result->status){
     echo json_encode($result);
 } else {

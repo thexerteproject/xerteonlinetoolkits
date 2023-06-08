@@ -84,7 +84,7 @@ class OpenAi
         return true;
     }
 
-    public function openAI_request($prompt, $type)
+    public function openAI_request($p, $type)
     {
         if (!$this->check_corp_tokens()) {
             return (object) ["status" => "error", "message" => "no tokens left, please contact your administrator"];
@@ -92,6 +92,9 @@ class OpenAi
             if (is_null($this->type_list[$type]) or $type == "") {
                 return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
             }
+
+            //TODO build prompt dynamicly
+            $prompt = 'gebruik de zelfde layout, gebruik ' . $p["nra"] . ' antwoorden per vraag, genereer ' . $p["nrq"] . ' nederlandse multiple choice vragen over ' . $p["subject"] . ' met feedback';
 
             $result = $this->POST_OpenAi($prompt, $this->type_list[$type]);
 

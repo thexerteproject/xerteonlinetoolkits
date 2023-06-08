@@ -3737,13 +3737,13 @@ var EDITOR = (function ($, parent) {
             case 'aibutton':
                 var id = 'aibutton_' + form_id_offset;
                 form_id_offset++;
-                //TODO hardcoded and via data.xml both wrong.
+                //TODO hardcoded
                 html = $('<button>')
                     .attr('id', id)
                     .attr('class', 'ai_button')
                     .text('Generate')
-                    .click({key:key, subject: lo_data[key].attributes["subject"], nrq: lo_data[key].attributes["amountOfQuestions"], nra: lo_data[key].attributes["amountOfAnswers"]}, function(event){
-                        ai_content_generator(event)});
+                    .click({key:key}, function(event){
+                        ai_content_generator(event, {"subject": lo_data[key].attributes["subject"], "nrq": lo_data[key].attributes["amountOfQuestions"], "nra": lo_data[key].attributes["amountOfAnswers"]})});
                 break;
 			case 'checkbox':
 				var id = 'checkbox_' + form_id_offset;
