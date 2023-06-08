@@ -11,16 +11,6 @@ class OpenAi
         $this->xerte_toolkits_site = $xerte_toolkits_site;
     }
 
-//TODO global design of function
-//check if user is allowed
-//check if corp has tokens
-//check if prompt conforms to requirements
-//query api (done)
-//check if result matches model
-//make data usable by frontend (done)
-//lower corp token pool
-//return data to frontend (done)
-
     //TODO add functionality
     //check if answer conforms to model
     private function conform_to_model($answer)
@@ -112,9 +102,8 @@ class OpenAi
 
             $results = array();
 
-            //TODO check for all "multiple-run" types
             $block_size = 6;
-            if ($type == "quiz" and $p['nrq'] > $block_size){
+            if (in_array($type, $this->preset_models->multi_run) and $p['nrq'] > $block_size){
 
                 $nrq_remaining = $p['nrq'];
 

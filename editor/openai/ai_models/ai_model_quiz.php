@@ -11,3 +11,5 @@ $object = "<quiz><question prompt='In welke stad staat het grootste treinstation
 $openAI_preset_models->type_list["quiz"] = ["payload" => ["model" => $model, "max_tokens" => 3096, "n" => 1, "temperature" => 0.2, "messages" => [["role" => "user", "content" => $q], ["role" => "assistant", "content" => $object], ["role" => "user", "content" => ""]]], "url" => $chat_url];
 
 $openAI_preset_models->prompt_list["quiz"] = ['gebruik precies de zelfde layout, gebruik ', 'nra' , ' antwoorden per vraag, genereer ', 'nrq', ' nederlandse multiple choice vragen over ', 'subject' , ' met feedback. De vragen moeten anders zijn dan; '];
+
+$openAI_preset_models->multi_run[] = "quiz";

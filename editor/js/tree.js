@@ -1512,7 +1512,6 @@ var EDITOR = (function ($, parent) {
 
     ai_content_generator = function(event, p, node_type) {
         //call openAI.php
-        //TODO pos
         var pos = 'last';
         var tree = $.jstree.reference("#treeview");
 
