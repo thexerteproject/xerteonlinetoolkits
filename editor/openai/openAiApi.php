@@ -6,7 +6,7 @@ class OpenAi
 
     function __construct() {
         require_once (dirname(__FILE__) . "/ai_preset_models.php");
-        $this->type_list = $openAI_preset_models->type_list;
+        $this->preset_models = $openAI_preset_models;
     }
 
 //TODO global design of function
@@ -89,14 +89,21 @@ class OpenAi
         if (!$this->check_corp_tokens()) {
             return (object) ["status" => "error", "message" => "no tokens left, please contact your administrator"];
         } else {
-            if (is_null($this->type_list[$type]) or $type == "") {
+            if (is_null($this->preset_models->type_list[$type]) or $type == "") {
                 return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
             }
 
-            //TODO build prompt dynamicly
-            $prompt = 'gebruik de zelfde layout, gebruik ' . $p["nra"] . ' antwoorden per vraag, genereer ' . $p["nrq"] . ' nederlandse multiple choice vragen over ' . $p["subject"] . ' met feedback';
+            $prompt = '';
+            foreach ($this->preset_models->prompt_list["quiz"] as $prompt_part){
+                if ($p[$prompt_part] == null){
+                    $prompt = $prompt . $prompt_part;
+                } else {
+                    $prompt = $prompt . $p[$prompt_part];
+                }
+            }
 
-            $result = $this->POST_OpenAi($prompt, $this->type_list[$type]);
+
+            $result = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
 
             //if status is set something went wrong
             if ($result->status){
