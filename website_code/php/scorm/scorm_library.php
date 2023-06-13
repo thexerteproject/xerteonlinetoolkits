@@ -208,7 +208,7 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='', $logo_r='', $plugins='') {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='', $logo_r='', $plugins='', $adds7script=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -281,6 +281,15 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     }
     $buffer = str_replace("%POPCORN_CONFIG%", $popcorn_config, $buffer);
 
+    if ($type == 'site')
+    {
+        //add socialicons script
+        if ($adds7script) {
+            $buffer = str_replace("%ADDTHISSCRIPT%", '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>', $buffer);
+        } else {
+            $buffer = str_replace("%ADDTHISSCRIPT%", '', $buffer);
+        }
+    }
     $index = "index.htm";
 
 	
