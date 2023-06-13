@@ -190,9 +190,21 @@ export_folder_loop($dir_path);
 $lo_name = $xml->getName();
 
 /*
+ * Do we need the s7 script for the social icons
+*/
+$hidesocial = $xml->getLOAttribute('hidesocial');
+$footerhide = $xml->getLOAttribute('footerHide');
+$footerpos = $xml->getLOAttribute('footerPos');
+if ($hidesocial != 'true' && $footerhide != 'true' && $footerpos != 'replace' && ($xerte_toolkits_site->globalhidesocial != 'true' || $xerte_toolkits_site->globalsocialauth != 'false')) {
+    $s7script = true;
+} else {
+    $s7script = false;
+}
+
+/*
  * Create basic HTML page
  */
-basic_html5_page_create($row['template_id'], $row['template_framework'], $row['template_framework'], $lo_name, $row['date_modified'], $row['date_created'], false, false, '', false, $LO_logoL, $LO_logoR);
+basic_html5_page_create($row['template_id'], $row['template_framework'], $row['template_framework'], $lo_name, $row['date_modified'], $row['date_created'], false, false, '', false, $LO_logoL, $LO_logoR, '', $s7script);
 
 
 /*
