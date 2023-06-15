@@ -260,6 +260,19 @@ x_projectDataLoaded = function(xmlData) {
 		}
 	}
 
+	// sort any parameters in url - these will override those in xml
+	var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
+		hash;
+
+	for (var i=0; i<tempUrlParams.length; i++) {
+		var split = tempUrlParams[i].split("=");
+		if (split.length == 2) {
+			x_urlParams[split[0]] = split[1];
+		} else {
+			hash = tempUrlParams[i];
+		}
+	}
+
     x_pages = xmlData.children();
 	var pageToHide = [],
 		currActPage = 0;
@@ -506,19 +519,6 @@ x_projectDataLoaded = function(xmlData) {
             x_params.displayMode = x_params.fixDisplay.split(",");
             x_fillWindow = false; // overrides fill window for touchscreen devices
         }
-    }
-	
-    // sort any parameters in url - these will override those in xml
-    var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
-		hash;
-	
-	for (var i=0; i<tempUrlParams.length; i++) {
-		var split = tempUrlParams[i].split("=");
-		if (split.length == 2) {
-			x_urlParams[split[0]] = split[1];
-		} else {
-			hash = tempUrlParams[i];
-		}
     }
 	
 	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page

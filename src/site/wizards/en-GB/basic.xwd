@@ -18,6 +18,7 @@
 			<glossaryHover label="Show Definition on Hover" type="Checkbox" defaultValue="true" optional="true"/>
 			<glossaryPage type="ComboBox" data="none,first,last" options="None,First Page,Last Page" optional="true" label="Glossary Page" defaultValue="none" width="175"/>
 			<glossaryMenu type="ComboBox" data="both,menu,headings,neither" options="Menu and Headings,Menu Only,Headings Only,No Menu or Headings" optional="true" label="Glossary Page Navigation" defaultValue="both" width="175"/>
+			<glossaryTitle type="TextInput" label="Glossary Title" defaultValue="Glossary" optional="true" tooltip="The name of the page or menu if either is enabled" />
 		</glossaryGroup>
 		
 		<headerGroup type="group" label="Header" optional="true">
