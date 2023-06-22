@@ -1527,6 +1527,7 @@ var EDITOR = (function ($, parent) {
             data: { type: node_type, prompt: p},
 
             success: function (data) {
+                alert("Make sure to check the generated results for mistakes!!");
                 $('body').css("cursor", "default");
                 var parser = new DOMParser();
                 var result = JSON.parse(data);

@@ -3734,18 +3734,6 @@ var EDITOR = (function ($, parent) {
 		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
 		switch(options.type.toLowerCase())
 		{
-            case 'aibutton':
-                var id = 'aibutton_' + form_id_offset;
-                form_id_offset++;
-                //TODO hardcoded
-                html = $('<button>')
-                    .attr('id', id)
-                    .attr('class', 'ai_button')
-                    .text('Generate')
-                    .click({key:key}, function(event){
-                        ai_content_generator(event, {"subject": lo_data[key].attributes["subject"], "nrq": lo_data[key].attributes["amountOfQuestions"], "nra": lo_data[key].attributes["amountOfAnswers"]}, lo_data[key].attributes.nodeName)}
-                    );
-                break;
 			case 'checkbox':
 				var id = 'checkbox_' + form_id_offset;
 				form_id_offset++;
@@ -4840,6 +4828,17 @@ var EDITOR = (function ($, parent) {
                 break;
 			case 'webpage':  //Not used??
 			case 'xerteurl':
+            case 'aibutton':
+                var id = 'aibutton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('class', 'ai_button')
+                    .text('Generate')
+                    .click({key:key}, function(event){
+                        ai_content_generator(event, {"subject": lo_data[key].attributes["subject"], "nrq": lo_data[key].attributes["amountOfQuestions"], "nra": lo_data[key].attributes["amountOfAnswers"]}, lo_data[key].attributes.nodeName)}
+                    );
+                break;
 			case 'xertelo':
 			default:
 				var id = 'textinput_' + form_id_offset;

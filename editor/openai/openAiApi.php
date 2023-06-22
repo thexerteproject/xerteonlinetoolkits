@@ -2,8 +2,6 @@
 
 class OpenAi
 {
-    private $type_list ;
-
     function __construct() {
         require_once (dirname(__FILE__) . "/ai_preset_models.php");
         $this->preset_models = $openAI_preset_models;
@@ -13,14 +11,13 @@ class OpenAi
 
     //TODO add functionality
     //check if answer conforms to model
-    private function conform_to_model($answer)
+    private function clean_gpt_result($answer)
     {
         //TODO idea if not correct drop until last closed xml and close rest manualy
         //prevents out of token answers
 
         //TODO ensure answer has no html code and xml has no data fields aka remove spaces
         //IMPORTANT GPT really wants to add \n into answers
-
         $tmp = str_replace('\n', "", $answer);
         $tmp = preg_replace('/\s+/', ' ', $tmp);
         $tmp = str_replace('> <', "><", $tmp);
@@ -51,7 +48,7 @@ class OpenAi
         curl_close($curl);
 
 
-        $resultConform = $this->conform_to_model($result);
+        $resultConform = $this->clean_gpt_result($result);
         $resultConform = json_decode($resultConform);
 
         if ($resultConform->error) {
@@ -63,16 +60,17 @@ class OpenAi
         return $resultConform;
     }
 
-    //TODO add functionality
+    //TODO add functionality WAIT FOR SERVER REWORK
     //function should lower the amount of tokens the corp is still allowed to use
     private function lower_corp_tokens($usage)
         {
         }
 
-    //todo add functionality
+    //todo add functionality WAIT FOR SERVER REWORK
     //function should check the number of tokens still available to a corp
     private function check_corp_tokens(): bool
     {
+
         return true;
     }
 
@@ -103,7 +101,7 @@ class OpenAi
             $results = array();
 
             $block_size = 6;
-            if (in_array($type, $this->preset_models->multi_run) and $p['nrq'] > $block_size){
+            if (in_array($type, $this->preset_models->multi_run) and isset($p['nrq']) and $p['nrq'] > $block_size){
 
                 $nrq_remaining = $p['nrq'];
 
@@ -135,7 +133,7 @@ class OpenAi
             $answer = str_replace(["<". $type .">", "</". $type .">"], "", $answer);
 
             $this->lower_corp_tokens($total_tokens_used);
-
+            //todo change if lop level is changed
             return "<". $type .">" . $answer. "</". $type .">";
         }
     }
