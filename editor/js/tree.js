@@ -1485,34 +1485,8 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    build_xerte_xml = function(xml_tree, parent_name, parser)
-    {
-        //if not root we combine basic with openai
-        if (xml_tree.tagName !== parent_name) {
-            var index = wizard_data[parent_name].new_nodes.indexOf(xml_tree.tagName);
-            var basic_xml = parser.parseFromString(wizard_data[parent_name].new_nodes_defaults[index], "text/xml").children[0];
-            var xml_atr = xml_tree.attributes;
-
-            for (var i = 0; i < basic_xml.attributes.length; i++){
-                var attr = basic_xml.attributes[i];
-                if (xml_tree.getAttribute(attr.name) == null) {
-                    xml_tree.setAttribute(attr.name, attr.value)
-                }
-            }
-        }
-        //recursively do this for all children
-        if (xml_tree.hasChildNodes()) {
-            var children = xml_tree.children;
-            for (let i = 0; i < children.length; i++) {
-                build_xerte_xml(children[i], xml_tree.tagName, parser);
-            }
-        }
-
-    },
-
     ai_content_generator = function(event, p, node_type) {
         //call openAI.php
-        var pos = 'last';
         var tree = $.jstree.reference("#treeview");
 
         //show wait icon
@@ -1521,38 +1495,11 @@ var EDITOR = (function ($, parent) {
         console.log("start openai api request please wait");
 
         $.ajax({
-
             url: "editor/openai/openAI.php",
             type: "POST",
             data: { type: node_type, prompt: p},
-
-            success: function (data) {
-                alert("Make sure to check the generated results for mistakes!!");
-                $('body').css("cursor", "default");
-                var parser = new DOMParser();
-                var result = JSON.parse(data);
-                if (result.status == 'success') {
-
-                    var x = parser.parseFromString(result["result"], "text/xml").children[0];
-                    console.log(x);
-
-                    //merge xerte object root with ai result at root level.
-                    for (var i = 0; i < x.attributes.length; i++) {
-                        var attr = foo.attributes[i];
-                        //TODO how to update current (if not possible create new)
-                    }
-                    build_xerte_xml(x, x.tagName, parser);
-
-                    var children = x.children;
-                    var size = children.length;
-                    //add all populated children of top level object for example "quiz"
-                    for (let i = 0; i < size; i++) {
-                        addNodeToTree(event.data.key, pos, children[i].tagName, children[i], tree, true, true);
-                    }
-                    console.log("done!")
-                } else {
-                    console.log(result.message);
-                }
+            success: function(data){
+                generic_content_creator(data, event.data.key, 'last', tree)
             },
         });
     },
