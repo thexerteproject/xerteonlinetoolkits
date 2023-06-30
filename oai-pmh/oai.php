@@ -319,14 +319,14 @@ function getDeletedTemplates($metadataPrefix,$from,$until)
     {
         $q = "select template_id, timestamp from {$prefix}oai_publish op 
                 where op.status = 'deleted' 
-                and op.template_id not in (select template_id from {$prefix}templatedetails td where op.template_id = td.template_id)
+                and op.template_id not in (select template_id from {$prefix}templatedetails td where op.template_id = td.template_id and td.access_to_whom = 'Public')
                 and audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish op2 where status='deleted' and timestamp < ? group by op2.template_id)";
         $params = array($until);
     }
     else {
         $q = "select template_id, timestamp from {$prefix}oai_publish op 
                 where op.status = 'deleted' 
-                and op.template_id not in (select template_id from {$prefix}templatedetails td where op.template_id = td.template_id)
+                and op.template_id not in (select template_id from {$prefix}templatedetails td where op.template_id = td.template_id and td.access_to_whom = 'Public')
                 and audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish op2 where status='deleted' group by op2.template_id)";
         $params = array();
     }
