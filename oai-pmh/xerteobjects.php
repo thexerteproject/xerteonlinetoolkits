@@ -20,7 +20,7 @@
 
 require_once(dirname(__FILE__) . "/Html2Text.php");
 require_once(dirname(__FILE__) . "/../website_code/php/url_library.php");
-function get_meta_data($template_id, $creator_user_name="", $template_type_name="", $template_owner="")
+function get_meta_data($template_id, $template_name, $creator_user_name="", $template_type_name="", $template_owner="")
 {
     global $config;
     global $xerte_toolkits_site;
@@ -30,6 +30,10 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
 
     $html = new \Html2Text\Html2Text((string)$xml['name']);
     $xerteMetaObj->name = $html->getText();
+    if (trim($xerteMetaObj->name) == "")
+    {
+        $xerteMetaObj->name = str_replace("_", " ", $template_name);
+    }
 
     if (isset($xml['educode']))
     {

@@ -82,7 +82,7 @@ function getMetaData($templates, $publish_status)
         $template_creator = $template['owner_username'];
         $template_type = $template['template_type'];
 
-        $meta = get_meta_data($template_id, $template_creator, $template_type);
+        $meta = get_meta_data($template_id, $template['template_name'], $template_creator, $template_type);
 
         $meta->oai_published = $meta->oaiPmhAgree && $meta->domain != 'unknown' && $meta->level != 'unknown';
 
