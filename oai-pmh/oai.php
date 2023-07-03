@@ -193,7 +193,7 @@ function getSingleTemplate($metadataPrefix,$template_id) {
     if (!$response_template) {
         throw new OAIException('idDoesNotExist');
     }
-    $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]["owner_username"],$response_template[0]["template_type"],$response_template[0]['owner']);
+    $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]['template_name'],$response_template[0]["owner_username"],$response_template[0]["template_type"],$response_template[0]['owner']);
     $response_record = call_user_func(makeRecordFromTemplate,$metadataPrefix,$response_template[0], $tempMetaData);
 
     return $response_record;
@@ -266,7 +266,7 @@ function getTemplates($metadataPrefix,$from,$until) {
         $needle_key = array_search($currentTemplate['template_id'], array_column($publish_status, 'template_id'));
         if ($needle_key !== false){
             if (strcmp($publish_status[$needle_key]['status'], "published") == 0) {
-                $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
+                $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate['template_name'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
                 if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown" and $tempMetaData->oaiPmhAgree){
                     $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
                     $tmpRecords[] = $currentRecord;
