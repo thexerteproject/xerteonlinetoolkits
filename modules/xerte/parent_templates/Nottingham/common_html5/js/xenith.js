@@ -758,8 +758,19 @@ function x_getThemeInfo(thisTheme, themeChg) {
 	// these themes should have imgbtns: true in the theme info file
 	if (thisTheme == undefined || thisTheme == "default") {
 		x_params.theme = "default";
-		x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
-		
+		x_setUpThemeBtns({imgbtns: 'true'}, themeChg);
+	} else if (xot_offline) {
+		const temp = themeinfo.split('\n'),
+			themeInfo = {};
+
+		for (let i=0; i<temp.length; i++) {
+			if (temp[i].split(':').length > 1) {
+				themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+			}
+		}
+
+		x_setUpThemeBtns(themeInfo, themeChg);
+
 	} else {
 		$.ajax({
 			type: "GET",
