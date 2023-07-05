@@ -150,7 +150,7 @@
                 <permissions>Importeren is mislukt: Controleer de permissies</permissions>
                 <HTTPError>Importeren is mislukt: HTTP fout</HTTPError>
                 <IOError>Importeren is mislukt: Input/Ouput fout</IOError>
-                <security>Importeren is mislukt: Beveiligigs fout</security>
+                <security>Importeren is mislukt: Beveiligings fout</security>
             </failed>
         </upload>
 		<changeLanguage>
@@ -196,6 +196,6 @@
 		<UploadCSVBtn label = "Upload csv"/>
 		<Info label = "Let op: dit overschrijft de huidige tabel"> </Info>
 		<Info2 label = "Let op: de nieuwe tabel wordt aan de oude tabel toegevoegd. Wilt u doorgaan? NB na het toevoegen kunnen er dubbele rijen na de merge."> </Info2>
-		<mergeOld label = "Voeg nieuwe tebel toe aan huidige inhoud:"/>
+		<mergeOld label = "Voeg nieuwe tabel toe aan huidige inhoud:"/>
 	</UploadCSV>>
 </language>
