@@ -257,7 +257,7 @@
 								$(this).attr("title", targetTxt1 + " " + categoryTitle);
 								
 								// change tab index of label so it's now after the target it's on
-								var categoryIndex = $(this).attr("tabindex");
+								var categoryIndex = parseInt($(this).attr("tabindex"));
 								$(this).children(".label").each(function(i) {
 									$(this).attr("tabindex", categoryIndex + i + 1);
 								});
@@ -323,7 +323,7 @@
 						}
 						
 						// change tab index of label so it's now after the target it's on
-						var categoryIndex = ui.item.parent().attr("tabindex");
+						var categoryIndex = parseInt(ui.item.parent().attr("tabindex"));
 						ui.item.parent().children(".label").each(function(i) {
 							$(this).attr("tabindex", categoryIndex + i + 1);
 						});
