@@ -8,12 +8,10 @@ class OpenAi
         require_once (dirname(__FILE__) . "/../../config.php");
         $this->xerte_toolkits_site = $xerte_toolkits_site;
     }
-
-    //TODO add functionality
     //check if answer conforms to model
     private function clean_gpt_result($answer)
     {
-        //TODO idea if not correct drop until last closed xml and close rest manualy
+        //TODO idea if not correct drop until last closed xml and close rest manually
         //prevents out of token answers
 
         //TODO ensure answer has no html code and xml has no data fields aka remove spaces
@@ -134,7 +132,7 @@ class OpenAi
 
             $this->lower_corp_tokens($total_tokens_used);
             //todo change if lop level is changed
-            return "<". $type .">" . $answer. "</". $type .">";
+            return "<". $type ." >" . $answer. "</". $type .">";
         }
     }
 

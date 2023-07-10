@@ -51,3 +51,27 @@ function generic_content_creator(data, key, pos, tree) {
         console.log(result.message);
     }
 }
+
+function openai_request_runtime(prompt, type, callback){
+    //clean prompt
+    for (const param in prompt) {
+        prompt[param] = prompt[param].replace(/(\r\n|\n|\r)/gm, "");
+        prompt[param] = prompt[param].replace(/<\/?[^>]+(>|$)/g, "");
+    }
+
+    $.ajax({
+        url: "editor/openai/openAI.php",
+        type: "POST",
+        data: { type: type, prompt: prompt},
+        success: function(data){
+            var parser = new DOMParser();
+            var result = JSON.parse(data);
+            if (result.status == 'success') {
+                var resultXml = parser.parseFromString(result["result"], "text/xml").children[0];
+                callback(resultXml)
+            } else {
+                console.log(result.message);
+            }
+        },
+    });
+}
