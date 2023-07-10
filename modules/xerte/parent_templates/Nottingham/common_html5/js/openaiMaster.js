@@ -36,7 +36,20 @@ function generic_content_creator(data, key, pos, tree) {
         for (var i = 0; i < x.attributes.length; i++) {
             var attr = foo.attributes[i];
             //TODO change lo_data[key].attributes get key from toolbox
-        }
+            for (var prop in x.attributes) {
+                if (Object.prototype.hasOwnProperty.call(x.attributes, prop)) {
+                    const prop_name = x.attributes[prop];
+                    if (Object.prototype.hasOwnProperty.call(lo_data[key].attributes, prop_name.nodeName)) {
+                        lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                    } else {
+                        //the property does not exist (prob optional)
+                        //so we add it to the xml
+                        //todo maybe check if it is one of the possibilities
+                        lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                    }
+
+                }
+            }
         build_xerte_xml(x, x.tagName, parser);
 
         var children = x.children;
