@@ -33,8 +33,6 @@ function generic_content_creator(data, key, pos, tree) {
         console.log(x);
 
         //merge xerte object root with ai result at root level.
-        for (var i = 0; i < x.attributes.length; i++) {
-            var attr = foo.attributes[i];
             //TODO change lo_data[key].attributes get key from toolbox
             for (var prop in x.attributes) {
                 if (Object.prototype.hasOwnProperty.call(x.attributes, prop)) {
