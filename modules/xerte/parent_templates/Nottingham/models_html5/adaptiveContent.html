@@ -241,7 +241,7 @@
         borderColor: avglnColour,
       });
     }
-
+    //debugger;
     if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
       // Show mean_all and latest
       var myRadarChart = new Chart(ctx, {
@@ -1049,7 +1049,7 @@
     };
 
     this.init = function () {
-      debugger;
+      //debugger;
       var loadFiles = true;
       for (var i = 0; i < x_pageInfo.length; i++) {
         if (
@@ -1397,7 +1397,7 @@
         }
       } else if (interactionType == "opinionclasses") {
         // check open question special options
-        debugger;
+        //debugger;
         var verb = "http://adlnet.gov/expapi/verbs/answered";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -1685,13 +1685,16 @@
         if (
           interaction.getAttribute("graphType") == "pie_marks" ||
           interaction.getAttribute("graphType") == "bar_comb_marks" ||
-          interaction.getAttribute("graphType") == "polar_area_per_category"
+          interaction.getAttribute("graphType") == "polar_area_per_category" ||
+             interaction.getAttribute("graphType") == "bar_marks" ||
+             interaction.getAttribute("graphType") == "bar_answers"
         ) {
           div.append(
             "<div class='graph'><canvas id='" +
               escapeUrl(url, type, interactionIndex) +
               "-graph'></canvas></div>"
           );
+          debugger;
         } else if (
           interaction.getAttribute("graphType") == "hor_bar_comb_marks" ||
           interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
@@ -1707,6 +1710,8 @@
               escapeUrl(url, type, interactionIndex) +
               "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
           );
+          //todo add to
+           //     line_own_marks,line_average_marks
 
           //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
           //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
@@ -1724,8 +1729,8 @@
               "</div>"
           );
         }
-
         if (interaction.getAttribute("graphType") == "bar_answers") {
+           // debugger;
           var dash = new ADL.XAPIDashboard();
           dash.addStatements(data);
           var xAxisLabelBarAnswers = interaction.getAttribute(
@@ -1769,39 +1774,89 @@
             xAxisLabelBarMarks = "Score Range [%]";
           if (yAxisLabelBarMarks == undefined)
             yAxisLabelBarMarks = "% of Group";
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
+
+          let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+         debugger;
+
+
+         //todo crate labels based on Block settings
+          let labels = ["0-50", "50-75", "75-100"];
+          //todo calculate to what group all results belong
+          let tempdata = [5,3,2];
+
+          const bardata = {
+            labels: labels,
+              datasets: [
+                  {
+                      label: "My First dataset",
+                      data: tempdata,
+                      parsing: {
+                          yAxisKey: yAxisLabelBarMarks,
+                          xAxisKey: xAxisLabelBarMarks,
+                      }
+                  }
+              ]
+          }
+
+          new Chart(ctx, {
+              type: "bar",
+              data: bardata,
+              options:{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+
+                  },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            generateLabels: function (chart) {
+                                return legendLabels;
+                            },
+                        },
+                    },
+                },
+              },
           });
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: {
-              start: 0.0,
-              end: 100.0,
-              increment: Math.ceil(100 / nrbars),
-            },
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
-              chart.yAxis.axisLabel(yAxisLabelBarMarks);
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(450);
-              }
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
+
+
+          //   var dash = new ADL.XAPIDashboard();
+          //   dash.addStatements(data);
+          //   data.map(function (x) {
+          //       x.result.score.raw;
+          //       return x;
+          //   });
+          //
+          // var chart = dash.createBarChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.score.raw",
+          //   aggregate: ADL.count(),
+          //   range: {
+          //    start: 0.0,
+          //    end: 100.0,
+          //    increment: Math.ceil(100 / nrbars),
+          //   },
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //     //todo replace with chart.js
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelBarMarks);
+          //     if (fullWidth) {
+          //       chart.width(700);
+          //     } else {
+          //       chart.width(450);
+          //     }
+          //     chart.height(300);
+          //     chart.yDomain([0, 100]);
+          //   },
+          // });
+          // chart.draw();
+
         } else if (interaction.getAttribute("graphType") == "bar_comb_marks") {
           let passingGrade = x_params.trackingPassed;
           if (passingGrade == null) {
@@ -2132,6 +2187,7 @@
             labelCounter += 1;
           }
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+         // debugger;
           let options = {
             maintainAspectRatio: false,
           };
@@ -2180,7 +2236,7 @@
             }
           }
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
-
+            debugger;
           let visitedGroups = {};
           for (let statement in statements) {
             let group =
@@ -2629,7 +2685,7 @@
       jsonData = jsonData.filter(function (x) {
         return x != undefined;
       });
-      debugger;
+      //debugger;
       div = $(
         "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
       );
@@ -3393,7 +3449,7 @@
             $("p").css("font-size", "14px");
             $("ul").css("font-size", "14px");
             adaptiveContent.sizeChanged();
-            debugger;
+            //debugger;
 
             await new Promise(resolve => setTimeout(resolve, 1500));
             let opt = {
