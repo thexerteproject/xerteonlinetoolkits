@@ -1393,6 +1393,9 @@ function create_tutorial(tutorial) {
                 }
             })
             .done(function(response){
+                template_toggle(active_div);
+                active_div = "";
+
                 refresh_workspace();
                 tutorial_created(response);
             });
