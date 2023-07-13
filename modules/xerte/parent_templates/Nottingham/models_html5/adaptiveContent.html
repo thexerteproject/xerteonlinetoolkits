@@ -709,6 +709,7 @@
           url = data[0].object.id;
         }
         interaction = $(x_currentPageXML).children()[interactionIndex];
+        //debugger;
         if (
           data.length >= 1 &&
           (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)
@@ -1476,6 +1477,41 @@
       if (nrbars == undefined) {
         nrbars = 10;
       }
+      var followBlock = interaction.getAttribute("graphFollowBlock");
+      if (followBlock == undefined) {
+          followBlock = false;
+      }
+      var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
+      if (graphFitInfoInBar == undefined) {
+          graphFitInfoInBar = false;
+      }
+      debugger;
+      var barName = [];
+      var barNameValue = [];
+      var barRange = [];
+      var barColors = [
+          "#FF6384",
+          "#4BC0C0",
+          "#FFCD56",
+          "#C9CBCF",
+          "#36A2EB",
+          "#B284BE",
+      ];
+      for (let i = 0; i < interaction.children.length; i++) {
+            if (interaction.childNodes[i].getAttribute("blockName") != null && interaction.childNodes[i].getAttribute("blockName") != "") {
+                barName.push(interaction.childNodes[i].getAttribute("blockName"));
+            }
+
+            barNameValue.push(interaction.childNodes[i].getAttribute("conScoreBetween"));
+          let tempstr = interaction.childNodes[i].getAttribute("conScoreBetween").split(",");
+          barRange.push([parseInt(tempstr[0]), parseInt(tempstr[1])]);
+            //debugger;
+          if (interaction.childNodes[i].getAttribute("blockColor") != null && interaction.childNodes[i].getAttribute("blockColor") != "") {
+              barColors[i] = interaction.childNodes[i].getAttribute("blockColor").replace("0x","#");
+          }
+      }
+        //debugger;
+
       if (statements.length > 0) {
         if (statements[0].extensions !== undefined) {
           let numQuestions =
@@ -1694,7 +1730,7 @@
               escapeUrl(url, type, interactionIndex) +
               "-graph'></canvas></div>"
           );
-          debugger;
+          //debugger;
         } else if (
           interaction.getAttribute("graphType") == "hor_bar_comb_marks" ||
           interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
@@ -1770,53 +1806,210 @@
             interaction.getAttribute("xAxisLabelBarMarks");
           var yAxisLabelBarMarks =
             interaction.getAttribute("yAxisLabelBarMarks");
+          var y2AxisLabelBarMarks =
+              interaction.getAttribute("y2AxisLabelBarMarks");
+          var avgScoreLabelBarMarks =
+                interaction.getAttribute("avgScoreLabelBarMarks");
+          var ownScoreLabelBarMarks =
+                interaction.getAttribute("ownScoreLabelBarMarks");
+          var groupUserLabel = interaction.getAttribute("groupUserLabel");
           if (xAxisLabelBarMarks == undefined)
             xAxisLabelBarMarks = "Score Range [%]";
           if (yAxisLabelBarMarks == undefined)
             yAxisLabelBarMarks = "% of Group";
+          if (y2AxisLabelBarMarks == undefined)
+              y2AxisLabelBarMarks = "Score [%]";
+            if (avgScoreLabelBarMarks == undefined)
+                avgScoreLabelBarMarks = "Average in this group";
+            if (ownScoreLabelBarMarks == undefined)
+                ownScoreLabelBarMarks = "Your score";
+            debugger;
+            if (groupUserLabel == undefined)
+                groupUserLabel = "users in group";
 
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
-         debugger;
+
+         //create labels
+            let labels = [];
+            if (barName.length > 0) {
+                labels = barName;
+            } else if (followBlock) {
+                for (let i = 0; i < barNameValue.length; i++) {
+                    labels.push(barNameValue[i].replace(",", "-"))
+                }
+            } else {
+                for (let i = 0; i < 100 ; i = i + Math.ceil(100 / nrbars)) {
+                    let temp = ""
+                    labels.push(temp + i + "-" + (i + Math.ceil(100 / nrbars)))
+                }
+            }
+
+            //calculate to what group te answers belong
+            let barSizeData = new Array(barRange.length).fill(0);
+            let groupAvg = new Array(barRange.length).fill(0);
+            let tempTotal = 0;
+            let barBorderColor = barColors.slice();
+            let barScoreColor = new Array(barRange.length);
+            let barOwnScore = barSizeData.slice();
 
 
-         //todo crate labels based on Block settings
-          let labels = ["0-50", "50-75", "75-100"];
-          //todo calculate to what group all results belong
-          let tempdata = [5,3,2];
+            if (followBlock) {
+                for (let i = 0; i < statements.length; i++) {
+                    //check what bar contains 100 (might not be the last)
+                    if (statements[i].result.score.raw == 100){
+                        for (let k = 0; k < barRange.length; k++) {
+                            if (barRange[k][1] == 100){
+                                barSizeData[k] += 1;
+                                groupAvg[k] += statements[i].result.score.raw;
+                                tempTotal += 1;
+                                if (statements[i] == ownstatements[0]){
+                                    barBorderColor[k] = "#808080";
+                                    barScoreColor[k] = "#000000";
+                                    barOwnScore[k] = [score-1,score];
+                                }
+                            }
+                        }
+                    } else {
+                        for (let j = 0; j < barRange.length; j++) {
+                            if (statements[i].result.score.raw >= barRange[j][0] && statements[i].result.score.raw < barRange[j][1]) {
+                                barSizeData[j] += 1;
+                                groupAvg[j] += statements[i].result.score.raw;
+                                tempTotal += 1;
+                                if (statements[i] == ownstatements[0]){
+                                    barBorderColor[j] = "#808080";
+                                    barScoreColor[j] = "#000000";
+                                    barOwnScore[j] = [score-1,score];
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                //as we are not following the block settings we should allocate more room for bars
+                barSizeData = new Array(Number(nrbars)).fill(0);
+                groupAvg = barSizeData.slice();
+                for (let i = 0; i < statements.length; i++) {
+                    let ind = Math.floor(statements[i].result.score.raw / Math.ceil(100 / nrbars));
+                    barSizeData[ind] += 1;
+                    groupAvg[ind] += statements[i].result.score.raw;
+                    tempTotal += 1;
+                    if (statements[i] == ownstatements[0]){
+                        barBorderColor[ind] = "#808080";
+                        barScoreColor[ind] = "#000000";
+                        barOwnScore[ind] = [score-1,score];
+                    }
+                }
+            }
+
+            //add # users per group
+            if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                for (let i = 0; i < labels.length; i++) {
+                    labels[i] = [ labels[i] , barSizeData[i] + " " + groupUserLabel];
+                }
+            }
+            //convert to percentage and avg
+            for (let i = 0; i < barSizeData.length; i++) {
+                groupAvg[i] = [groupAvg[i]/barSizeData[i] - 1, groupAvg[i]/barSizeData[i]];
+                barSizeData[i] = barSizeData[i]/tempTotal * 100;
+            }
+
+            //scale to fit in bar
+            if (graphFitInfoInBar){
+                debugger
+                if (followBlock) {
+                    for (let i = 0; i < barRange.length; i++) {
+                        //use plus one to prevent out of bounds
+                        groupAvg[i][0] = ((groupAvg[i][1] - barRange[i][0]) / (barRange[i][1]- barRange[i][0])) * barSizeData[i];
+                        groupAvg[i][1] =  groupAvg[i][0] + 1;
+                        if (barOwnScore[i] !== 0){
+                            barOwnScore[i][0] = ((barOwnScore[i][1] - barRange[i][0]) / (barRange[i][1]- barRange[i][0])) * barSizeData[i];
+                            barOwnScore[i][1] =  barOwnScore[i][0] + 1;                        }
+                    }
+                    debugger
+                } else {
+                    //todo
+                }
+            }
+
 
           const bardata = {
-            labels: labels,
+                labels: labels,
               datasets: [
                   {
+                      type: "bar",
+                      label: ownScoreLabelBarMarks,
+                      data: barOwnScore,
+                      backgroundColor: barScoreColor,
+                      yID: "id1",
+                  },
+                  {
+                      type: "bar",
+                      label: avgScoreLabelBarMarks,
+                      data: groupAvg,
+                      backgroundColor: "#8f4e4e",
+                      yID: "id1",
+                  },
+                  {
+                      type: "bar",
                       label: "My First dataset",
-                      data: tempdata,
-                      parsing: {
-                          yAxisKey: yAxisLabelBarMarks,
-                          xAxisKey: xAxisLabelBarMarks,
-                      }
-                  }
-              ]
-          }
+                      data: barSizeData,
+                      backgroundColor: barColors,
+                      borderWidth: 3,
+                      borderColor: barBorderColor,
+                      yID: "id1",
+                  },
+              ],
+          };
 
+            debugger;
           new Chart(ctx, {
-              type: "bar",
               data: bardata,
               options:{
                   responsive: true,
                   maintainAspectRatio: false,
+                  events: [],
                   scales: {
-
+                      y: {
+                          title: {
+                              display: true,
+                              text: yAxisLabelBarMarks,
+                              beginAtZero: true,
+                          },
+                          position: "left",
+                          min: 0,
+                          max: 100,
+                          id: "id1",
+                      },
+                      y2: {
+                          display: (!graphFitInfoInBar),
+                          title: {
+                              display: true,
+                              text: y2AxisLabelBarMarks,
+                              beginAtZero: true,
+                          },
+                          position: "right",
+                          min: 0,
+                          max: 100,
+                          id: "id2",
+                      },
+                      x: {
+                          title: {
+                              display: !(barName.length > 0),
+                              text: xAxisLabelBarMarks
+                          },
+                          stacked: true,
+                      }
                   },
-                plugins: {
-                    legend: {
-                        display: true,
-                        labels: {
-                            generateLabels: function (chart) {
-                                return legendLabels;
-                            },
-                        },
-                    },
-                },
+                  plugins: {
+                      legend: {
+                          labels: {
+                              filter: function(item, chart) {
+                                  // Logic to remove a particular legend item goes here
+                                  return !item.text.includes('My First dataset');
+                              }
+                          }
+                      }
+                  },
               },
           });
 
@@ -1835,7 +2028,7 @@
           //   range: {
           //    start: 0.0,
           //    end: 100.0,
-          //    increment: Math.ceil(100 / nrbars),
+           //   increment: Math.ceil(100 / nrbars),
           //   },
           //   post: function (d) {
           //     d.contents.map(function (el) {
@@ -2236,7 +2429,7 @@
             }
           }
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
-            debugger;
+           // debugger;
           let visitedGroups = {};
           for (let statement in statements) {
             let group =

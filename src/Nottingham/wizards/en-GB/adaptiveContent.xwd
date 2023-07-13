@@ -24,10 +24,14 @@
         yAxisLabelBarAnswers = "Number of answers"
         xAxisLabelBarMarks = "Score Range [%]"
         yAxisLabelBarMarks = "% of Group"
+        y2AxisLabelBarMarks = "Score [%]"
         xAxisLabelLineAvgMarks = "Score Range [%]"
         yAxisLabelLineAvgMarks = "% of Group"
         xAxisLabelLineOwnMarks = "Date"
         yAxisLabelLineOwnMarks = "Grade [0-10]"
+        ownScoreLabelBarMarks = "Your score"
+        avgScoreLabelBarMarks = "Avg. score in this group"
+        groupUserLabel = "users in group"
         personalAvgLabelText = "Avg. of your attempts"
         personalLabelText = "Your last attempt"
         avgAllLabelText = "Avg. of all attempts"
@@ -40,6 +44,7 @@
         CorrectText = "Correct"
         IncorrectText = "Incorrect"
         PassingGrade = "75"
+
 
         ><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
@@ -66,6 +71,8 @@
           <graphExplanation label="Graph legend/explanation" type="textArea" height="120" optional="true" defaultValue="" wysiwyg="true" tooltip="The legend or other explanation shown next to the graph"/>
           <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
           <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" condition="interactionType!='opinion'||opinionClass!=null" tooltip="The number of bars in a bargraph, or the number of points in a line graph" />
+          <graphFollowBlock label="Use block settings for bars" type="checkbox" optional="true" defaultValue="false" condition="interactionType!='opinion'||opinionClass!=null" tooltip="Use the block 'score between' setting to determine the number of bars" />
+          <graphFitInfoInBar label="Show info in bar" type="checkbox" defaultValue="false" optional="true" condition="interactionType!='opinion'||opinionClass!=null" tooltip="Scales the user score and avg and displays them in the bars" />
           <graphColorScale label="Color scale" type="textInput" wysiwyg="false" defaultValue="#FF6384,#4BC0C0,#FFCD56,#C9CBCF,#36A2EB,#B284BE" optional="true" condition="graphType=='polar_area_per_category'||opinionGraphType=='hor_bar_comb_marks_avg'" tooltip="The color scale for the bars in a bargraph, or the color scale for the points in a polar graph" />
         </graphgroup>
         <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'||interactionType=='opinionclasses'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based" />
@@ -94,10 +101,16 @@
         <yAxisLabelBarAnswers label="Y-Axis label of answer bargraph" type="TextInput" language="true" />
         <xAxisLabelBarMarks label="X-Axis label of marks bargraph" type="TextInput" language="true" />
         <yAxisLabelBarMarks label="Y-Axis label of marks bargraph" type="TextInput" language="true" />
+        <y2AxisLabelBarMarks label="Second Y-Axis label of marks bargraph" type="TextInput" language="true" />
         <xAxisLabelLineAvgMarks label="X-Axis label of average mark linegraph" type="TextInput" language="true" />
         <yAxisLabelLineAvgMarks label="Y-Axis label of average mark linegraph" type="TextInput" language="true" />
         <xAxisLabelLineOwnMarks label="X-Axis label of own mark linegraph" type="TextInput" language="true" />
         <yAxisLabelLineOwnMarks label="Y-Axis label of own mark linegraph" type="TextInput" language="true" />
+        <ownScoreLabelBarMarks label="Label for user score in graph" type="TextInput" language="true" />
+        <avgScoreLabelBarMarks label="Label for average score per group" type="TextInput" language="true" />
+        <groupUserLabel label="Term used for a member of a group" type="TextInput" language="true" />
+
+
 
         <avgAllLabelText label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
         <personalLabelText label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
@@ -131,7 +144,9 @@
     </interaction>
     <interactionBlock menuItem="Interaction Block">
           <adaptiveContent label="Content" type="TextArea" wysiwyg="true" height="360" />
+          <blockName label="Bar name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'"/>
           <conScoreBetween label="Score between" type="TextInput" mandatory="true" defaultValue="0,100" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'" wysiwyg="false" />
           <conScoreAnswer label="Result label equals" type="TextInput" mandatory="true" defaultValue="label of answer" condition="parent.interactionType=='answer'" wysiwyg="false" />
+          <blockColor label="Bar Color" type="colourPicker" defaultValue="" optional="true" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'"/>
     </interactionBlock>
 </wizard>
