@@ -48,6 +48,7 @@
         IncorrectText = "Incorrect"
         PassingGrade = "75"
 
+
         ><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
       </newNodes>
@@ -117,7 +118,6 @@
         <groupUserLabel label="Term used for a member of a block" type="TextInput" language="true" />
         <groupScore label="Term used te describe the score of a block" type="TextInput" language="true" />
         <userScore label="Term used te describe the user score" type="TextInput" language="true" />
-
         <avgAllLabelText label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
         <personalLabelText label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
         <personalAvgLabelText label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
@@ -150,7 +150,9 @@
     </interaction>
     <interactionBlock menuItem="Interaction Block">
           <adaptiveContent label="Content" type="TextArea" wysiwyg="true" height="360" />
+          <blockName label="Bar name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'"/>
           <conScoreBetween label="Score between" type="TextInput" mandatory="true" defaultValue="0,100" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'" wysiwyg="false" />
           <conScoreAnswer label="Result label equals" type="TextInput" mandatory="true" defaultValue="label of answer" condition="parent.interactionType=='answer'" wysiwyg="false" />
+          <blockColor label="Bar Color" type="colourPicker" defaultValue="" optional="true" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'"/>
     </interactionBlock>
 </wizard>

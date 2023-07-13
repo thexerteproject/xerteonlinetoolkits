@@ -1514,12 +1514,10 @@
             barNameValue.push(interaction.childNodes[i].getAttribute("conScoreBetween"));
           let tempstr = interaction.childNodes[i].getAttribute("conScoreBetween").split(",");
           barRange.push([parseInt(tempstr[0]), parseInt(tempstr[1])]);
-
           if (interaction.childNodes[i].getAttribute("blockColor") != null && interaction.childNodes[i].getAttribute("blockColor") != "") {
               barColors[i] = interaction.childNodes[i].getAttribute("blockColor").replace("0x","#");
           }
       }
-
 
       if (statements.length > 0) {
         if (statements[0].extensions !== undefined) {
