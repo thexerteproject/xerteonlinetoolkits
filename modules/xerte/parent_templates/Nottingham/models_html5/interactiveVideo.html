@@ -319,6 +319,11 @@
                     /* files are already loaded statically */
                     loadFiles = false;
                 }
+                // comment out next loop and always load popcorn files
+                // This is because popcorn breaks if you have a mediaLesson
+                // and then a nav page which also loads popcorn with a different set of plugins
+                // Any mediaLesson after that will not work anymore
+                /*
                 for (var i=0; i<x_pageInfo.length; i++) {
                     if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
                         // a page of this type has already been loaded - don't reload popcorn files
@@ -326,7 +331,7 @@
                         break;
                     }
                 }
-
+                */
                 if (loadFiles == true ) {
                     this.loadPopcorn();
                 } else {
@@ -422,14 +427,14 @@
             // get type of media (video/audio)
             if (mediaFile.indexOf(".mp3") != -1) {
                 mediaType = "audio";
-				
+
             } else if (mediaFile.indexOf(".") == -1) {
                 // no media
                 mediaType = undefined;
                 panelData.splice(mediaPanelIndex, 1);
                 mediaPanelIndex = -1;
             }
-			
+
             // set up accordion if there's some intro text
             if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
                 var $contentCover = $("#contentCover");
@@ -504,7 +509,7 @@
             }
 
             this.resizePanels();
-			
+
             // loadMedia & sortPopcorn are called below & also in the media plus plugin which deals with additional media added to panels
 
             // _____ LOAD MEDIA _____

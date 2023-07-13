@@ -49,7 +49,7 @@ else if(isset($_POST["template_id"]))
 if(is_numeric($id) || $id == null) {
     $tsugi_enabled = true;
     $lti_enabled = true;
-    $LAUNCH = LTIX::requireData();
+    $LAUNCH = LTIX::requireData(LTIX::USER);
 
     $role = 'Student';
     if ($LAUNCH->user->instructor)

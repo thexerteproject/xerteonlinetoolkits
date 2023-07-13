@@ -1314,7 +1314,6 @@ function tutorial_created(response) {
             data = response.split(",");
 
             open_created_node(data[0], new_template_folder);
-            //update_your_projects();
 
             if (data[1] == "*") {
 
@@ -1394,6 +1393,10 @@ function create_tutorial(tutorial) {
                 }
             })
             .done(function(response){
+                template_toggle(active_div);
+                active_div = "";
+
+                refresh_workspace();
                 tutorial_created(response);
             });
         } else {

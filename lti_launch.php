@@ -52,7 +52,7 @@ if(is_numeric($id) || $id == null)
 {
 	$tsugi_enabled = true;
 	$lti_enabled = true;
-    $LAUNCH = LTIX::requireData();
+    $LAUNCH = LTIX::requireData(LTIX::USER);
 
     if (method_exists($LAUNCH, 'isLTIAdvantage'))
     {

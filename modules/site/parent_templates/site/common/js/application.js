@@ -483,7 +483,8 @@ function setup() {
 					}
 				}
 
-				var $glossaryPage = $('<page name="Glossary" subtitle=""></page>');
+				var $glossaryTitle = $(data).find('learningObject').attr('glossaryTitle') != undefined ? $(data).find('learningObject').attr('glossaryTitle') : 'Glossary';
+				var $glossaryPage = $('<page name="' + $glossaryTitle + '" subtitle=""></page>');
 				for (var i=0; i<charList.length; i++) {
 					var cDataSection = data.createCDATASection(glossaryTxt[i]);
 					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
