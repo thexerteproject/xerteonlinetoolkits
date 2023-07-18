@@ -175,8 +175,12 @@ li.select-interaction.selected {
 
 /* Style the button that is used to open and close the collapsible content */
 .collapsible {
+  background-color: #1491BB;
+  color: #ffffff;
+  /*
   background-color: #e3dbdb;
   color: #444;
+  */
   cursor: pointer;
   padding: 18px;
   width: 100%;
@@ -190,8 +194,12 @@ li.select-interaction.selected {
 }
 
 .feedback {
-  background-color: #ccc;
+  background-color: #1491BB;
+  color: #ffffff;
+  /*
+  background-color: #e3dbdb;
   color: #444;
+  */
   padding: 18px;
   width: 100%;
   border: none;
@@ -202,7 +210,10 @@ li.select-interaction.selected {
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .active, .collapsible:hover {
+  /*
   background-color: #ccc;
+   */
+  background-color: #0c6985;
 }
 
 /* Style the collapsible content. Note: hidden by default */
@@ -215,15 +226,20 @@ li.select-interaction.selected {
 }
 
 .collapsible:after {
-  content: '\02795'; /* Unicode character for "plus" sign (+) */
-  font-size: 13px;
+  /*
+  content: '\02795';
+   */
+  content: "\02B";
+  font-size: 22px;
   color: white;
   float: right;
   margin-left: 5px;
 }
 
 .active:after {
-  content: "\2796"; /* Unicode character for "minus" sign (-) */
+  /* content: "\2796"; /* Unicode character for "minus" sign (-) */
+  content: "\02212";
+  font-size: 22px;
 }
 
 .container-print{
