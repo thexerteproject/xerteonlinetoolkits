@@ -963,7 +963,7 @@
        document.head.appendChild(script);
      }
      addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
-      if (numLoaded < 5) {
+      if (numLoaded < 6) {
         var fileToLoad;
         if (numLoaded == 0) {
           fileToLoad = x_templateLocation + "common_html5/js/chart.min.js";
@@ -981,6 +981,8 @@
           fileToLoad = x_templateLocation + "common_html5/js/apexcharts.min.js";
         } else if (numLoaded == 4) {
           fileToLoad = x_templateLocation + "common_html5/js/jsPDF/jspdf.min.js";
+        } else if (numLoaded == 5) {
+            fileToLoad = x_templateLocation + "common_html5/js/chartjs-adapter-moment.js";
         }
 
         $.getScript(fileToLoad)
@@ -1755,7 +1757,10 @@
           interaction.getAttribute("graphType") == "bar_comb_marks" ||
           interaction.getAttribute("graphType") == "polar_area_per_category" ||
              interaction.getAttribute("graphType") == "bar_marks" ||
-             interaction.getAttribute("graphType") == "bar_answers" || interaction.getAttribute("graphType") == "bar_marks_score"
+              interaction.getAttribute("graphType") == "bar_marks_score" ||
+            interaction.getAttribute("graphType") == "bar_answers" ||
+            interaction.getAttribute("graphType") == "line_average_marks" ||
+            interaction.getAttribute("graphType") == "line_own_marks"
         ) {
           div.append(
             "<div class='graph'><canvas id='" +
@@ -1773,13 +1778,12 @@
               "-graph'></div></div>"
           );
         } else {
+            debugger;
           div.append(
             "<div class='graph'><svg id='" +
               escapeUrl(url, type, interactionIndex) +
               "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
           );
-          //todo add to
-           //     line_own_marks,line_average_marks
 
           //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
           //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
@@ -1798,40 +1802,125 @@
           );
         }
         if (interaction.getAttribute("graphType") == "bar_answers") {
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
-          var xAxisLabelBarAnswers = interaction.getAttribute(
-            "xAxisLabelBarAnswers"
-          );
-          var yAxisLabelBarAnswers = interaction.getAttribute(
-            "yAxisLabelBarAnswers"
-          );
-          if (xAxisLabelBarAnswers == undefined)
-            xAxisLabelBarAnswers = "Answers given";
-          if (yAxisLabelBarAnswers == undefined)
-            yAxisLabelBarAnswers = "Number of answers";
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.response",
-            aggregate: ADL.count(),
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
-              chart.yDomain([0, 100]);
-              chart.yAxis.axisLabel(yAxisLabelBarAnswers);
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(450);
-              }
-              chart.height(300);
-            },
-          });
-          chart.draw();
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+            var xAxisLabelBarAnswers = interaction.getAttribute(
+              "xAxisLabelBarAnswers"
+            );
+            var yAxisLabelBarAnswers = interaction.getAttribute(
+              "yAxisLabelBarAnswers"
+            );
+            if (xAxisLabelBarAnswers == undefined)
+              xAxisLabelBarAnswers = "Answers given";
+            if (yAxisLabelBarAnswers == undefined)
+              yAxisLabelBarAnswers = "Number of answers";
+
+            //get labels and #
+            let labels = {};
+            let barBorderColor = barColors.slice();
+
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.response)) {
+                    labels[statements[i].result.response] = 1;
+                } else {
+                    labels[statements[i].result.response] += 1;
+                }
+                if (statements[i] == ownstatements[0]) {
+                    barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
+                }
+            }
+
+            Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
+            debugger
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "data",
+                        data: Object.values(labels),
+                        backgroundColor: barColors,
+                        borderColor: barBorderColor,
+                        borderWidth: 5,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var dash = new ADL.XAPIDashboard();
+          // dash.addStatements(data);
+
+          // var xAxisLabelBarAnswers = interaction.getAttribute(
+          //   "xAxisLabelBarAnswers"
+          // );
+          // var yAxisLabelBarAnswers = interaction.getAttribute(
+          //   "yAxisLabelBarAnswers"
+          // );
+          // if (xAxisLabelBarAnswers == undefined)
+          //   xAxisLabelBarAnswers = "Answers given";
+          // if (yAxisLabelBarAnswers == undefined)
+          //   yAxisLabelBarAnswers = "Number of answers";
+
+          // var chart = dash.createBarChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.response",
+          //   aggregate: ADL.count(),
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
+          //     chart.yDomain([0, 100]);
+          //     chart.yAxis.axisLabel(yAxisLabelBarAnswers);
+          //     if (fullWidth) {
+          //       chart.width(700);
+          //     } else {
+          //       chart.width(450);
+          //     }
+          //     chart.height(300);
+          //   },
+          // });
+          // chart.draw();
         } else if (interaction.getAttribute("graphType") == "bar_marks") {
             let xAxisLabelBarMarks =
                 interaction.getAttribute("xAxisLabelBarMarks");
@@ -2098,7 +2187,7 @@
             //       el.out *= (1 / data.length) * 100;
             //     });
             //   },
-            //     //todo replace with chart.js
+            //
             //   customize: function (chart) {
             //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
             //     chart.yAxis.axisLabel(yAxisLabelBarMarks);
@@ -2489,42 +2578,107 @@
             xAxisLabelLineAvgMarks = "Score Range [%]";
           if (yAxisLabelLineAvgMarks == undefined)
             yAxisLabelLineAvgMarks = "% of Group";
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
 
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: {
-              start: 0.0,
-              end: 100.0,
-              increment: Math.ceil(100 / nrbars),
-            },
-            rangeLabel: "start",
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelLineAvgMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(450);
-              }
-              chart.tooltips(false);
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
+         //  var dash = new ADL.XAPIDashboard();
+         // dash.addStatements(data);
+         //  data.map(function (x) {
+         //    x.result.score.raw;
+         //    return x;
+         //  });
+            //get labels and #
+            let labels = {};
+
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.score.raw)) {
+                    labels[statements[i].result.score.raw] = 1;
+                } else {
+                    labels[statements[i].result.score.raw] += 1;
+                }
+            }
+
+            Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        data: Object.values(labels),
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+            //
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.score.raw",
+          //   aggregate: ADL.count(),
+          //   range: {
+          //     start: 0.0,
+          //     end: 100.0,
+          //     increment: Math.ceil(100 / nrbars),
+          //   },
+          //   rangeLabel: "start",
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelLineAvgMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
+          //     if (fullWidth) {
+          //       chart.width(700);
+          //     } else {
+          //       chart.width(450);
+          //     }
+          //     chart.tooltips(false);
+          //     chart.height(300);
+          //     chart.yDomain([0, 100]);
+          //   },
+          // });
+          // chart.draw();
         } else if (interaction.getAttribute("graphType") == "line_own_marks") {
           var xAxisLabelLineOwnMarks = interaction.getAttribute(
             "xAxisLabelLineOwnMarks"
@@ -2536,13 +2690,13 @@
             xAxisLabelLineOwnMarks = "Date";
           if (yAxisLabelLineOwnMarks == undefined)
             yAxisLabelLineOwnMarks = "Grade [0-10]";
-          var dash = new ADL.XAPIDashboard();
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+          // var dash = new ADL.XAPIDashboard();
+          // data.map(function (x) {
+          //   x.result.score.raw;
+          //   return x;
+          // });
 
-          dash.addStatements(statements);
+          //dash.addStatements(statements);
           end = new Date();
           begin = end;
           for (statement in statements) {
@@ -2555,39 +2709,112 @@
           }
 
           begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000);
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "timestamp",
-            range: {
-              start: begin.toISOString(),
-              end: end.toISOString(),
-              increment: 1000 * 60 * 15,
-            },
-            aggregate: ADL.average("result.score.raw"),
-            rangeLabel: "start",
-            customize: function (chart) {
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(700);
-              }
-              chart.height(300);
-              chart.tooltips(false);
-              chart.yDomain([0, 10]);
-              chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
-              chart.xAxis.tickFormat(function (label) {
-                return d3.time.format("%b %d")(new Date(label));
-              });
-            },
-            post: function (data) {
-              data.contents.map(function (el) {
-                el.out = el.out / 10;
-                el.in = Date.parse(el.in);
-              });
-            },
-          });
-          chart.draw();
+
+            let dataSet = [];
+            for (let i = 0; i < statements.length; i++) {
+                let temp = {};
+                temp["x"] = statements[i].timestamp;
+                temp["y"] = statements[i].result.score.raw/10;
+                dataSet.push(temp)
+            }
+
+            let bardata = {
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        data: dataSet,
+                    },
+                ],
+            };
+
+          let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxis: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                 stepSize: 2
+                            }
+                        },
+                        xAxes: {
+                            type: "time",
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'll'
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Date'
+                            },
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            min: begin,
+                            max: end,
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "timestamp",
+          //   range: {
+          //     start: begin.toISOString(),
+          //     end: end.toISOString(),
+          //     increment: 1000 * 60 * 15,
+          //   },
+          //   aggregate: ADL.average("result.score.raw"),
+          //   rangeLabel: "start",
+          //   customize: function (chart) {
+          //     if (fullWidth) {
+          //       chart.width(700);
+          //     } else {
+          //       chart.width(700);
+          //     }
+          //     chart.height(300);
+          //     chart.tooltips(false);
+          //     chart.yDomain([0, 10]);
+          //     chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
+          //     chart.xAxis.tickFormat(function (label) {
+          //       return d3.time.format("%b %d")(new Date(label));
+          //     });
+          //   },
+          //   post: function (data) {
+          //     data.contents.map(function (el) {
+          //       el.out = el.out / 10;
+          //       el.in = Date.parse(el.in);
+          //     });
+          //   },
+          // });
+          // chart.draw();
         } else if (
           interaction.getAttribute("graphType") == "polar_area_per_category"
         ) {
@@ -2794,7 +3021,7 @@
     ) {
       // remove loader
       $("#interaction_load_" + interactionIndex).remove();
-
+        debugger;
       var answerLabelText = interaction.getAttribute("answerText");
       if (answerLabelText == undefined) {
         answerLabelText = "Your answer is {0}";
@@ -2810,6 +3037,25 @@
       }
       var xertelo = interaction.getAttribute("xertelo");
       var statements = filterOwnStatements(data, xertelo);
+
+        var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
+        if (graphFitInfoInBar == undefined) {
+            graphFitInfoInBar = false;
+        }
+        var graphShowAvg = interaction.getAttribute("graphShowAvg");
+        if (graphShowAvg == undefined) {
+            graphShowAvg = false;
+        }
+
+        var barColors = [
+            "#FF6384",
+            "#4BC0C0",
+            "#FFCD56",
+            "#C9CBCF",
+            "#36A2EB",
+            "#B284BE",
+        ];
+
       if (statements.length > 0) {
         var givenAnswer = statements[0].result.response;
         if (interaction.getAttribute("showScore") == "true") {
@@ -2859,11 +3105,16 @@
         div = $(
           "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
         );
-        div.append(
-          "<div class='graph'><svg id='" +
-          escapeUrl(url, type, interactionIndex) +
-          "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
-        );
+        // div.append(
+        //   "<div class='graph'><svg id='" +
+        //   escapeUrl(url, type, interactionIndex) +
+        //   "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
+        // );
+          div.append(
+              "<div class='graph'><canvas id='" +
+              escapeUrl(url, type, interactionIndex) +
+              "-graph'></canvas></div>"
+          );
         if (showExplanation == "true" && Explanation != "") {
             var textSize = Math.round(interaction.getAttribute("labelFontSize"));
             if (textSize == null || textSize == 0) textSize = 12;
@@ -2891,17 +3142,21 @@
               answers.forEach(function(a){
                 // clone statement
                 var statement = JSON.parse(JSON.stringify(s));
-                statement.result.response = a;
+                  statement.result.response = a;
                 dataset.push(statement);
               });
             });
           }
-          var dash = new ADL.XAPIDashboard();
-          if (!multipleAnswers) {
-            dash.addStatements(data);
-          } else {
-            dash.addStatements(dataset);
-          }
+
+          //var dash = new ADL.XAPIDashboard();
+          //if (!multipleAnswers) {
+          //  dash.addStatements(data);
+          //} else {
+          //  dash.addStatements(dataset);
+          //}
+
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
           var xAxisLabelBarAnswers = interaction.getAttribute(
             "xAxisLabelBarAnswers"
           );
@@ -2923,30 +3178,126 @@
               xDomain[i] = choices[i].id;
             }
           }
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.response",
-            aggregate: ADL.count(),
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
-              chart.yDomain([0, 100]);
-              if (xDomain.length > 0) {
-                chart.xDomain(xDomain);
-              }
-              chart.yAxis.axisLabel(yAxisLabelBarAnswers);
-              chart.width(700);
-              chart.height(300);
-            },
-          });
-          chart.draw();
+
+            //get used labels and #
+            let labels = {};
+            if (!multipleAnswers) {
+                for (let i = 0; i < statements.length; i++) {
+                    if (!labels.hasOwnProperty(statements[i].result.response)) {
+                        labels[statements[i].result.response] = 1;
+                    } else {
+                        labels[statements[i].result.response] += 1;
+                    }
+                }
+            } else {
+                for (let i = 0; i < dataset.length; i++) {
+                    if (!labels.hasOwnProperty(dataset[i].result.response)) {
+                        labels[dataset[i].result.response] = 1;
+                    } else {
+                        labels[dataset[i].result.response] += 1;
+                    }
+                }
+            }
+            var barData = [];
+            //match used labels and # to xDomain
+            if (xDomain.length == 0) {
+                xDomain = Object.keys(labels);
+                barData = Object.values(labels);
+            } else {
+                barData = new Array(xDomain.length).fill(0);
+                for (let i = 0; i < xDomain.length; i++) {
+                    if (labels[xDomain[i]] !== undefined){
+                        barData[i] = labels[xDomain[i]];
+                    }
+                }
+            }
+            if (!multipleAnswers) {
+                for (let i = 0; i < barData.length; i++) {
+                    barData[i] = barData[i] / statements.length * 100;
+                }
+            } else {
+                for (let i = 0; i < barData.length; i++) {
+                    barData[i] = barData[i] / dataset.length * 100;
+                }
+            }
+
+            let bardata = {
+                labels: xDomain,
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "data",
+                        data: barData,
+                        borderWidth: 5,
+                        backgroundColor: barColors,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createBarChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.response",
+          //   aggregate: ADL.count(),
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
+          //     chart.yDomain([0, 100]);
+          //     if (xDomain.length > 0) {
+          //       chart.xDomain(xDomain);
+          //     }
+          //     chart.yAxis.axisLabel(yAxisLabelBarAnswers);
+          //     chart.width(700);
+          //     chart.height(300);
+          //   },
+          // });
+          // chart.draw();
         } else if (interaction.getAttribute("graphType") == "bar_marks") {
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
+          //var dash = new ADL.XAPIDashboard();
+          //dash.addStatements(data);
           var xAxisLabelBarMarks =
             interaction.getAttribute("xAxisLabelBarMarks");
           var yAxisLabelBarMarks =
@@ -2955,39 +3306,107 @@
             xAxisLabelBarMarks = "Score Range [%]";
           if (yAxisLabelBarMarks == undefined)
             yAxisLabelBarMarks = "% of Group";
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+          // data.map(function (x) {
+          //   x.result.score.raw;
+          //   return x;
+          // });
+            debugger;
 
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: {
-              start: 0.0,
-              end: 100.0,
-              increment: Math.ceil(100 / nrbars),
-            },
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
-              chart.yAxis.axisLabel(yAxisLabelBarMarks);
-              chart.width(700);
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
+            //get used labels and #
+            let labels = {};
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.score.raw)) {
+                    labels[statements[i].result.score.raw] = 1;
+                } else {
+                    labels[statements[i].result.score.raw] += 1;
+                }
+            }
+            debugger
+            Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
+
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "data",
+                        data: Object.values(labels),
+                        borderWidth: 5,
+                        backgroundColor: barColors,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelBarMarks,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createBarChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.score.raw",
+          //   aggregate: ADL.count(),
+          //   range: {
+          //     start: 0.0,
+          //     end: 100.0,
+          //     increment: Math.ceil(100 / nrbars),
+          //   },
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelBarMarks);
+          //     chart.width(700);
+          //     chart.height(300);
+          //     chart.yDomain([0, 100]);
+          //   },
+          // });
+          // chart.draw();
         } else if (
           interaction.getAttribute("graphType") == "line_average_marks"
         ) {
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
+          //var dash = new ADL.XAPIDashboard();
+          //dash.addStatements(data);
           var xAxisLabelLineAvgMarks = interaction.getAttribute(
             "xAxisLabelLineAvgMarks"
           );
@@ -2998,32 +3417,98 @@
             xAxisLabelLineAvgMarks = "Score Range [%]";
           if (yAxisLabelLineAvgMarks == undefined)
             yAxisLabelLineAvgMarks = "% of Group";
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+          // data.map(function (x) {
+          //   x.result.score.raw;
+          //   return x;
+          // });
 
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: { start: 0.0, end: 100, increment: Math.ceil(100 / nrbars) },
-            rangeLabel: "start",
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(yAxisLabelLineAvgMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
-              chart.width(700);
-              chart.tooltips(false);
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
+            let labels = {};
+
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.score.raw)) {
+                    labels[statements[i].result.score.raw] = 1;
+                } else {
+                    labels[statements[i].result.score.raw] += 1;
+                }
+            }
+            Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
+
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        data: Object.values(labels),
+                        backgroundColor: barColors,
+                        borderColor: barColors,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.score.raw",
+          //   aggregate: ADL.count(),
+          //   range: { start: 0.0, end: 100, increment: Math.ceil(100 / nrbars) },
+          //   rangeLabel: "start",
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(yAxisLabelLineAvgMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
+          //     chart.width(700);
+          //     chart.tooltips(false);
+          //     chart.height(300);
+          //     chart.yDomain([0, 100]);
+          //   },
+          // });
+          // chart.draw();
         } else if (interaction.getAttribute("graphType") == "line_own_marks") {
           var xAxisLabelLineOwnMarks = interaction.getAttribute(
             "xAxisLabelLineOwnMarks"
@@ -3035,13 +3520,13 @@
             xAxisLabelLineOwnMarks = "Date";
           if (yAxisLabelLineOwnMarks == undefined)
             yAxisLabelLineOwnMarks = "Grade [0-10]";
-          var dash = new ADL.XAPIDashboard();
-          data.map(function (x) {
-            x.result.score.raw /= 10;
-            return x;
-          });
+          //var dash = new ADL.XAPIDashboard();
+          // data.map(function (x) {
+          //   x.result.score.raw /= 10;
+          //   return x;
+          // });
 
-          dash.addStatements(statements);
+          //dash.addStatements(statements);
           end = new Date();
           begin = end;
           for (statement in statements) {
@@ -3054,34 +3539,114 @@
           }
 
           begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000);
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "timestamp",
-            range: {
-              start: begin.toISOString(),
-              end: end.toISOString(),
-              increment: 1000 * 60 * 15,
-            },
-            aggregate: ADL.average("result.score.raw"),
-            rangeLabel: "start",
-            customize: function (chart) {
-              chart.width(700);
-              chart.height(300);
-              chart.tooltips(false);
-              chart.yDomain([0, 10]);
-              chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
-              chart.xAxis.tickFormat(function (label) {
-                return d3.time.format("%b %d")(new Date(label));
-              });
-            },
-            post: function (data) {
-              data.contents.map(function (el) {
-                el.in = Date.parse(el.in);
-              });
-            },
-          });
-          chart.draw();
+
+            let dataSet = [];
+            for (let i = 0; i < statements.length; i++) {
+                let temp = {};
+                temp["x"] = statements[i].timestamp;
+                temp["y"] = statements[i].result.score.raw/10;
+                dataSet.push(temp)
+            }
+            dataSet.push({x:end.toISOString(), y:0});
+            dataSet.unshift({x:begin.toISOString(), y:0});
+            //ensure dates are in order
+            dataSet.sort(function( a, b ) {
+                if ( a.x < b.x ){
+                    return -1;
+                }
+                if ( a.x > b.x ){
+                    return 1;
+                }
+                return 0;
+            })
+
+            debugger
+            let bardata = {
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        data: dataSet,
+                        backgroundColor: barColors,
+                        borderColor: barColors,
+                        spanGaps: false,
+                    },
+                ],
+            };
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+        debugger
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            type: 'time',
+                            min: begin,
+                            max: end,
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "timestamp",
+          //   range: {
+          //     start: begin.toISOString(),
+          //     end: end.toISOString(),
+          //     increment: 1000 * 60 * 15,
+          //   },
+          //   aggregate: ADL.average("result.score.raw"),
+          //   rangeLabel: "start",
+          //   customize: function (chart) {
+          //     chart.width(700);
+          //     chart.height(300);
+          //     chart.tooltips(false);
+          //     chart.yDomain([0, 10]);
+          //     chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
+          //     chart.xAxis.tickFormat(function (label) {
+          //       return d3.time.format("%b %d")(new Date(label));
+          //     });
+          //   },
+          //   post: function (data) {
+          //     data.contents.map(function (el) {
+          //       el.in = Date.parse(el.in);
+          //     });
+          //   },
+          // });
+          // chart.draw();
         }
       }
     };
@@ -3096,7 +3661,7 @@
     ) {
       // remove loader
       $("#interaction_load_" + interactionIndex).remove();
-
+        debugger
       var scoreLabelText = interaction.getAttribute("scoreText");
       if (scoreLabelText == null) {
         scoreLabelText = "Your score is {0}";
