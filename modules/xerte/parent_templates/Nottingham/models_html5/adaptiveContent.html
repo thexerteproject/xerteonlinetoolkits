@@ -615,6 +615,7 @@
     secondHandler
   ) {
     var url;
+    debugger
     var q = {}
     if (type != "grouping" && type != "opinionclasses") {
       url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -677,6 +678,8 @@
       var date = moment(endDate).add(1, "days").toISOString();
       q["until"] = date;
     }
+//todo check if current or all users
+      // if set add current users to q
 
     /*
         queryStatements(
@@ -2602,6 +2605,8 @@
                     {
                         type: "line",
                         label: "data",
+                        backgroundColor: barColors,
+                        borderColor: barColors,
                         data: Object.values(labels),
                         yID: "id1",
                     },
@@ -2722,6 +2727,8 @@
                         type: "line",
                         label: "data",
                         data: dataSet,
+                        borderColor: barColors,
+                        backgroundColor: barColors,
                     },
                 ],
             };
