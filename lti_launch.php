@@ -41,19 +41,22 @@ _debug("LTI launch request: " . print_r($_POST, true));
 
 if (isset($_GET["template_id"])) {
     $id = $_GET["template_id"];
+    _debug("HERE?1");
 }
 else if(isset($_POST["template_id"]))
 {
     $id = $_POST["template_id"];
     // Hack for the rest of Xerte
     $_GET['template_id'] = $id;
+    _debug("HERE?2");
 }
+_debug("HERE3");
 if(is_numeric($id) || $id == null)
 {
 	$tsugi_enabled = true;
 	$lti_enabled = true;
     $LAUNCH = LTIX::requireData();
-
+    _debug("HERE2");
     if (method_exists($LAUNCH, 'isLTIAdvantage'))
     {
         $islti13 = $LAUNCH->isLTIAdvantage();
@@ -64,6 +67,11 @@ if(is_numeric($id) || $id == null)
     if ($islti13) {
         $msg = array();
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
+        //TODO: get all emails of current users add to array
+        // https://gitlab.tor.nl/xerte-dashboard/dashboard/-/blob/master/index.php line 80
+        //add as $xerte_toolkits_site->lti_users =
+        _debug("pls" . print_r($nrps, true));
+        _debug("msg" . print_r($msg, true));
     }
 
     if ($id == null)

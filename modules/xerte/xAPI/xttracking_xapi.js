@@ -1947,6 +1947,7 @@ function getStatements(q, one, callback)
                         || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                     continue;
                 }
+                //todo add check if statemettns are from current users if userlist > 0
                 statements.push(tmp.statements[x]);
             }
             return statements;
