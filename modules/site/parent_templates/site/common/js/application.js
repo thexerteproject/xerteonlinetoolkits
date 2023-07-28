@@ -2833,7 +2833,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-	var xotLink = $this.attr('link'),
+	var xotLink = $this.attr('link').trim(),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 
