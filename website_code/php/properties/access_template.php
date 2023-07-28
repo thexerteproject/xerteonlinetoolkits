@@ -72,12 +72,12 @@ if(is_numeric($_POST['template_id'])){
 
     }else{
 
-        access_display_fail();
+        access_display_fail(true);
 
     }		
 
 }else{
-
-    echo "<p>" . PROPERTIES_LIBRARY_ACCESS_FAIL . "</p>";
+	
+	access_display_fail(false);
 
 }

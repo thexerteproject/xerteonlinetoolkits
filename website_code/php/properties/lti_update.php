@@ -32,7 +32,7 @@ use \Tsugi\Core\LTIX;
 $template_id = $_REQUEST["template_id"];
 if(!is_numeric($template_id))
 {
-    tsugi_display_fail();
+    tsugi_display_fail(false);
 }
 if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
     if ($tsugi_installed) {
@@ -151,9 +151,11 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
             $template_id
         )
     );
-    tsugi_display($template_id, $lti_def, "Updated.");
+    tsugi_display($template_id, $lti_def, PROPERTIES_LIBRARY_TSUGI_UPDATED);
 
     _debug("Done");
 
+} else {
+	tsugi_display_fail(true);
 }
 ?>

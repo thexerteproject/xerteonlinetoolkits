@@ -46,9 +46,12 @@ if(is_numeric($_POST['template_id'])){
 
     }else{
 
-        xml_template_display_fail();
+        xml_template_display_fail(true);
 
     }
 
-
+} else{
+	
+    xml_template_display_fail(false);
+	
 }

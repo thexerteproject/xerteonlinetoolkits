@@ -39,41 +39,39 @@ include "workspace_library.php";
  * connect to the database
  */
 
-$prefix =  $xerte_toolkits_site->database_table_prefix;
+$database_connect_id = database_connect("workspace_template.php connect success","workspace_template.php connect failed");
 
-$database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
+$prefix =  $xerte_toolkits_site->database_table_prefix ;
 
-$query_for_shared_templates = "select * from {$prefix}logindetails, "
-. "{$prefix}templatedetails, {$prefix}templaterights where "
-. "user_id= ? and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and creator_id = login_id";
+$query_for_created_templates = "select * from {$prefix}templatedetails where creator_id= ? ORDER BY date_created DESC";
 
 $params = array($_SESSION['toolkits_logon_id']);
 
-$query_shared_response = db_query($query_for_shared_templates, $params);
+$query_created_response = db_query($query_for_created_templates, $params);
 
-usort($query_shared_response, function($first, $second){
+usort($query_created_response, function($first, $second){
     return $first['template_id'] > $second['template_id'];
 });
 
 echo "<table class=\"workspaceProjectsTable\">";
 
-echo "<caption>" . SHARED_TEMPLATE_INTRO . "</caption>";
+echo "<caption>" . WORKSPACE_LIBRARY_MY_PROJECTS_INTRO . "</caption>";
 
-echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th><th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th><th>" . SHARED_TEMPLATE_CREATOR . "</th></tr>";
+echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th>";
 
-foreach($query_shared_response as $row_template_name) {
+echo "<th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th></tr>";
+
+foreach($query_created_response as $row_template_name) {
 	
 	$path = $xerte_toolkits_site->site_url . "preview.php?template_id=";
+	
+	echo "<tr><td>" . $row_template_name['template_id'] . "</td><td><a href=\"" . $path . $row_template_name['template_id'] . "\" target=\"_blank\">";
 
-    echo "<tr><td>" . $row_template_name['template_id'] . "</td>";
-	
-	echo "<td><a href=\"" . $path . $row_template_name['template_id'] . "\" target=\"_blank\">";
-	
 	echo str_replace("_","",$row_template_name['template_name']);
 	
-	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td>";
-
-	echo "<td>" . $row_template_name['firstname'] . " " . $row_template_name['surname'] . "</td></tr>";
+	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a>";
+	
+	echo "</td></tr>";
 
 }
 

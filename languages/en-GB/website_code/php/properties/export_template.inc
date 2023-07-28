@@ -12,8 +12,10 @@
 
 	define("EXPORT_TITLE","Export");
 	
-	define("EXPORT_FAIL","Sorry you do not have rights to this project");
+	define("EXPORT_ERROR","You do not have rights to this project");
 	
-	define("EXPORT_NOT_AVAILABLE","Sorry, no export function available for this template");
+	define("EXPORT_FAIL","Only the creator and co-authors of the project can export this project");
+	
+	define("EXPORT_NOT_AVAILABLE","Export is not available for this template");
 
 

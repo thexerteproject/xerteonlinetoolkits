@@ -33,7 +33,6 @@ _load_language_file("/website_code/php/display_library.inc");
 
 // level is a global variable used to stylise the folder nesting
 
-
 $level = -1;
 
 /**
@@ -47,7 +46,6 @@ $level = -1;
 
 function list_folders_in_this_folder_event_free($folder_id, $path = '', $item = false, $input_method = 'link') {
 
-
   global $xerte_toolkits_site,$level;
 
   $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -55,23 +53,21 @@ function list_folders_in_this_folder_event_free($folder_id, $path = '', $item = 
   $rows = db_query($query, array($folder_id));
   
   foreach($rows as $row) { 
-    $extra='<p>';
-    $extra1='</p>';
-$extra2='';
+    $extra='';
+    $extra1='';
+	$extra2='';
     if($item!==false) {
       $extra='';
       $extra1='';
       $extra2=" style=\"padding-left:" . ($level*10) . "px\" ";
     }
 
-    echo "<div id=\"dynamic_area_folder\" $extra2>$extra<img style=\"\" src=\"{$path}website_code/images/Icon_Folder.gif\" />" . 
-            str_replace("_", " ", $row['folder_name']) . "$extra1</div><div id=\"dynamic_area_folder_content\">";
-
+    echo "<li class=\"dynamic_area_folder\" $extra2>$extra<i class=\"fa fa-folder-open fa-fw xerte-icon\"></i>&nbsp;" . 
+            str_replace("_", " ", $row['folder_name']) . "$extra1" . "<ul class=\"dynamic_area_folder\">";
 
     $item = list_folder_contents_event_free($row['folder_id'], $path, $item, $input_method);
 
-
-    echo "</div>";
+    echo "</ul></li>";
 
   }
 
@@ -98,8 +94,8 @@ function list_files_in_this_folder_event_free($folder_id, $path = '', $item = fa
 
   $rows = db_query($query, array($folder_id));
   foreach($rows as $row) {
-    $extra='<p>';
-    $extra1='</p>';
+    $extra='';
+    $extra1='';
     $extra2='';
 if($item!==false) {
 if($input_method=='radio') {
@@ -115,8 +111,8 @@ $extra="<input type=\"radio\" name=\"xerteID\" id=\"xerteID-$item\" value=\"$ite
     $extra2=" style=\"padding-left:" . ($level*10) . "px\" ";
 
 }
-    echo "<div class=\"dynamic_area_file\" $extra2 >$extra<img src=\"{$path}website_code/images/Icon_Page.gif\" />" . str_replace("_", " ", $row['template_name']) . "$extra1</div>\r\n";
 
+    echo "<li class=\"dynamic_area_file\" $extra2 >$extra<i class=\"fa fa-file-text fa-fw xerte-icon\"></i>&nbsp;$extra3" . str_replace("_", " ", $row['template_name']) . "$extra1</li>\r\n";
 
   }
 
@@ -716,20 +712,19 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
         $titem->shared = $template['nrshared'] > 1;
         if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size)) {
-            $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
-        }
-        else
-        {
-            $titem->editor_size="1280, 768";
-        }
-        if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size)) {
-            $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
-        }
-        else
-        {
-            $titem->preview_size="802, 602";
-        }
-
+			$titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
+		}
+		else
+		{
+			$titem->editor_size="1280, 768";
+		}
+		if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size)) {
+			$titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+		}
+		else
+		{
+			$titem->preview_size="802, 602";
+		}
         $items[] = $titem;
     }
 
