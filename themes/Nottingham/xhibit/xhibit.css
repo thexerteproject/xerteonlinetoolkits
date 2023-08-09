@@ -18,39 +18,62 @@
 
 /* Use FontAwesome icons for buttons */
 
-#x_footerBlock button span, #x_sideBarBtnHolder button .ui-icon {
+#x_footerBlock button span, #x_sideBar button span {
     background: none; /* Hide any PNG buttons */
 }
 
-#x_footerBlock button.ui-button { /* Setup for FontAwesome icons */
+.ui-button:after { /* Setup for FontAwesome icons */
     font-family: FontAwesome;
-}
-
-#x_footerBlock button.ui-button .ui-icon:before { /* Setup for FontAwesome icons */
     color: white;
+    position: absolute;
+    top: 0;
     width: 100%;
     font-size: 1.9em;
+    line-height: 1.5em;
 }
 
-.filter_inv .ui-button:after {
+#x_footerBlock .ui-button .ui-icon:before {
+	color: white;
+}
+
+.filter_inv .ui-button:after, .filter_inv .ui-button .ui-icon:before {
     color: black; /* Ensures accessibility invert works */
 }
 
-.ui-button.ui-state-hover:after {
+.ui-button.ui-state-hover:after, #x_footerBlock .ui-button.ui-state-hover .ui-icon:before {
     color: #ff9900;
 }
 
-#x_nextBtn:not(.customIconBtn) .ui-icon:before { content: "\f138"; }
-#x_prevBtn:not(.customIconBtn) .ui-icon:before { content: "\f137"; }
-#x_cssBtn:not(.customIconBtn) .ui-icon:before { content: "\f0b2"; }
-#x_colourChangerBtn:not(.customIconBtn) .ui-icon:before { content: "\f06e"; }
-#x_mediaBtn:not(.customIconBtn) .ui-icon:before {content: "\f16a"; }
-#x_glossaryBtn:not(.customIconBtn) .ui-icon:before { content: "\f02d"; }
-#x_helpBtn:not(.customIconBtn) .ui-icon:before { content: "\f128"; }
-#x_introBtn:not(.customIconBtn) .ui-icon:before { content: "\f129"; }
-#x_menuBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
-#x_saveSessionBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c7"; }
+#x_nextBtn:after,
+#x_sideBar #x_nextBtn:not(.customIconBtn) .ui-icon:before { content: "\f138"; }
 
-button:not(.customIconBtn) .ui-icon:before {
+#x_prevBtn:after,
+#x_sideBar #x_prevBtn:not(.customIconBtn) .ui-icon:before { content: "\f137"; }
+
+#x_cssBtn:after,
+#x_sideBar #x_cssBtn:not(.customIconBtn) .ui-icon:before { content: "\f0b2"; }
+
+#x_colourChangerBtn:after,
+#x_sideBar #x_colourChangerBtn:not(.customIconBtn) .ui-icon:before { content: "\f06e"; }
+
+#x_mediaBtn:after,
+#x_sideBar #x_mediaBtn:not(.customIconBtn) .ui-icon:before  { content: "\f16a"; }
+
+#x_glossaryBtn:after,
+#x_sideBar #x_glossaryBtn:not(.customIconBtn) .ui-icon:before { content: "\f02d"; }
+
+#x_helpBtn:after,
+#x_sideBar #x_helpBtn:not(.customIconBtn) .ui-icon:before { content: "\f128"; }
+
+#x_introBtn:after,
+#x_sideBar #x_introBtn:not(.customIconBtn) .ui-icon:before { content: "\f129"; }
+
+#x_menuBtn:after,
+#x_sideBar #x_menuBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
+
+#x_saveSessionBtn:after,
+#x_sideBar #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c7"; }
+
+#x_sideBar button:not(.customIconBtn):after {
 	content: none !important;
 }
