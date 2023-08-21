@@ -11,9 +11,15 @@
 	 */
 	 
 
-	define("FOLDER_RSS_TEMPLATE_MY", "My Feeds");
+	define("FOLDER_RSS_TEMPLATE_MY", "My feeds");
 	
-	define("FOLDER_RSS_TEMPLATE_MY_FEED", "My RSS feed is");
+	define("FOLDER_RSS_TEMPLATE_MY_FEED", "RSS feed");
 	
-	define("FOLDER_RSS_TEMPLATE_MY_FOLDER_FEED", "The RSS feeds for my folders are");
+	define("FOLDER_RSS_TEMPLATE_MY_FOLDER_FEED", "Folder RSS feeds");
+	
+	define("FOLDER_RSS_TEMPLATE_LINKS", " (opens in new window)");
+
+	define("FOLDER_RSS_TEMPLATE_LINKS_NEW", "All links open in new window");
+	
+	define("FOLDER_RSS_TEMPLATE_ERROR", "You do not have rights to this workspace");
 	

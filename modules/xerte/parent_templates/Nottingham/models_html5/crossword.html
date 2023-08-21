@@ -741,16 +741,18 @@
 			//store all the words and hints
 			var words = [];
 			var hints = [];
+			var wordsWithSpaces = [];
 			
 			$(x_currentPageXML).children().each(function (i) {
 				if (this.getAttribute("text") != '' && this.getAttribute("wordAnswer") != '') {
 					hints.push(this.getAttribute("text"));
-					words.push(this.getAttribute("wordAnswer"));
+					words.push(this.getAttribute("wordAnswer").replace(/\s/g,''));
+					wordsWithSpaces.push(this.getAttribute("wordAnswer"));
 				}
 			});
 
 			// Create crossword object with the words and clues
-			var cw = getCrossword(words, hints)
+			var cw = getCrossword(words, hints, wordsWithSpaces)
 			
 			if (cw !== false) {
 				// create the crossword grid (try to make it have a 1:1 width to height ratio in 10 tries)
@@ -831,7 +833,7 @@
         }
 
         var cw = ""
-        function getCrossword(words, hints){
+        function getCrossword(words, hints, wordsWithSpaces){
 		    if(cw === ""){
 				if (words.length < 2) {
 					alert("A crossword must have at least 2 words");
@@ -840,7 +842,7 @@
 					alert("The number of words must equal the number of clues");
 					return false;
 				} else {
-					cw = new Crossword(words, hints);
+					cw = new Crossword(words, hints, wordsWithSpaces);
 					return cw;
 				}
             } else {
@@ -852,7 +854,13 @@
             for (var k in groups) {
                 var html = [];
                 for (var i = 0; i < groups[k].length; i++) {
-                    html.push("<li class='li-clue' name='"+k+"' id='clue"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] +"</p></li>");
+					var temp = groups[k][i]['wordWithSpaces'].split(' ');
+					var letterCount = '';
+					for (var j=0; j<temp.length; j++) {
+						if (j!=0) { letterCount += ','; };
+						letterCount += temp[j].length;
+					}
+                    html.push("<li class='li-clue' name='"+k+"' id='clue"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] + "&nbsp;(" + letterCount + ")</p></li>");
                 }
                 document.getElementById(k).innerHTML = html.join("\n");
             }
@@ -879,7 +887,7 @@
 			this.index = index; // use to map this node to its word or clue
 		}
 
-		function Crossword(words_in, clues_in) {
+		function Crossword(words_in, clues_in, wordsWithSpaces_in) {
 			var GRID_ROWS = 50;
 			var GRID_COLS = 50;
 			// This is an index of the positions of the char in the crossword (so we know where we can potentially place words)
@@ -999,7 +1007,8 @@
 									"position": position,
 									"index": index,
 									"clue": clues_in[index],
-									"word": words_in[index]
+									"word": words_in[index],
+									"wordWithSpaces": wordsWithSpaces_in[index]
 								});
 								increment_position = true;
 							}

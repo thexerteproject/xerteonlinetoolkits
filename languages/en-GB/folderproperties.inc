@@ -14,11 +14,11 @@
 
 	define("FOLDERPROPERTIES_DISPLAY_TITLE", "Folder Properties");
 
-	define("FOLDERPROPERTIES_TAB_FOLDER", "Folder Properties");
+	define("FOLDERPROPERTIES_TAB_FOLDER", "Folder");
 
-	define("FOLDERPROPERTIES_TAB_CONTENT", "Folder Contents");
+	define("FOLDERPROPERTIES_TAB_CONTENT", "Contents");
 
-	define("FOLDERPROPERTIES_TAB_RSS", "Folder RSS feed");
+	define("FOLDERPROPERTIES_TAB_RSS", "RSS");
 
 	define("FOLDERPROPERTIES_TAB_SHARED",  "Shared settings");
 ?>

@@ -332,7 +332,7 @@ function new_template_name() {
 
         } else {
 
-            document.getElementById("namewrong").innerHTML = NAME_FAIL_IMPORT;
+            document.getElementById("namewrong").innerHTML = '<p aria-live="polite" class="alert_msg"><i class="fa fa-exclamation-circle" style="height: 14px; color:#f86718;"></i> ' + NAME_FAIL_IMPORT + '</p>';
 
         }
 

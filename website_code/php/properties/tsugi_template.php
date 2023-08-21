@@ -109,13 +109,13 @@
 
 		}
 		else{
-		    tsugi_display_fail();
+		    tsugi_display_fail(true);
         }
 
 	}
     else
     {
-        tsugi_display_fail();
+        tsugi_display_fail(false);
     }
 
 ?>

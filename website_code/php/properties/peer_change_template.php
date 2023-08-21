@@ -82,8 +82,12 @@ if(is_numeric($_POST['template_id'])){
 
     }else{
 
-        peer_display_fail();
+        peer_display_fail(true);
 
     }
 
+} else {
+	
+	peer_display_fail(false);
+	
 }

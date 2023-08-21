@@ -41,6 +41,9 @@ if(is_numeric($_POST['template_id'])){
        $row_notes = db_query_one($query_for_template_notes, array($_POST['template_id']));
        notes_display($row_notes['notes'],false, $_POST['template_id']);
        exit(0);
-    }
+    } else {
+		notes_display_fail(true);
+	}
+} else {
+	notes_display_fail(false);
 }
-notes_display_fail();

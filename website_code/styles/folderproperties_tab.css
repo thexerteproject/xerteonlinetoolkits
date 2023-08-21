@@ -24,29 +24,13 @@ div#dynamic_area form{
 	padding-left:10px;
 }
 
-div#dynamic_area div#dynamic_area_folder{
+div#dynamic_area ul.dynamic_area_folder{
 	padding-left:5px; 
 	float:left; 
 	position:relative; 
-	width:100%
-}
-
-div#dynamic_area div#dynamic_area_folder p{
-	margin:2px; 
-	padding:4px;
-}
-
-div#dynamic_area div#dynamic_area_folder p img{
-	vertical-align:middle; 
-	padding-right:5px;
-}
-
-div#dynamic_area div#dynamic_area_folder_content{
-	padding-left:20px; 
-	float:left; 
-	position:relative; 
-	width:100%; 
-	margin:0px;
+	width:100%;
+	list-style-type: none;
+	list-style-image: none;
 }
 
 div#dynamic_area .dynamic_area_file{
@@ -67,7 +51,6 @@ div#dynamic_area .dynamic_area_file p img{
 }
 
 .mini_folder_content{
-
 	margin-left:10px; 
 	width:80%; 
 	height:90%;
