@@ -173,6 +173,75 @@ li.select-interaction.selected {
   width: 100%;
 }
 
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #1491BB;
+  color: #ffffff;
+  /*
+  background-color: #e3dbdb;
+  color: #444;
+  */
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  border-bottom-width: thin;
+  border-bottom-color: #ccc;
+  border-bottom-style: solid;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.feedback {
+  background-color: #1491BB;
+  color: #ffffff;
+  /*
+  background-color: #e3dbdb;
+  color: #444;
+  */
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+  /*
+  background-color: #ccc;
+   */
+  background-color: #0c6985;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.collapsibleContent {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+  border: thin solid #ccc;
+}
+
+.collapsible:after {
+  /*
+  content: '\02795';
+   */
+  content: "\02B";
+  font-size: 22px;
+  color: white;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  /* content: "\2796"; /* Unicode character for "minus" sign (-) */
+  content: "\02212";
+  font-size: 22px;
+}
+
 .container-print{
   display: flex;
   flex-direction: column;
