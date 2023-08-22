@@ -185,7 +185,22 @@ global $last_file_check_error;
 $dir = opendir(dirname(__FILE__) . "/modules/");
 
 // I'm not sure why we allow this path to be set via the DB. It'd make more sense to fix it to dirname(__FILE__), which will cope with the site moving.
-$xerte_toolkits_site->root_file_path = dirname(__FILE__) . '/';
+$xerte_toolkits_site->root_file_path = realpath(__DIR__) . '/';
+$xerte_toolkits_site->import_path = realpath(__DIR__) . '/import/';
+
+// Try to get site_url in the same way
+$host = $_SERVER['SERVER_NAME'];
+$scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
+// get subdir from $xerte_toolkits_site->site_url path stored in Db
+$subdir = '/';
+$subdir_pos = strpos($xerte_toolkits_site->site_url, '/', 8);
+if ($subdir_pos !== false)
+{
+    $subdir = substr($xerte_toolkits_site->site_url, $subdir_pos);
+}
+$site_url = $scheme . $host . $subdir;
+
+$xerte_toolkits_site->site_url = $site_url;
 
 $learning_objects = new StdClass();
 

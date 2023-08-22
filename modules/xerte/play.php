@@ -394,9 +394,11 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 }
                 if (isset($xerte_toolkits_site->lti_users))
                 {
-                    $tracking .= "   var lti_users = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_users) . "';\n";
+                    $tracking .= "   var lti_users = '" . str_replace("'", "\'", implode(",",$xerte_toolkits_site->lti_users)) . "';\n";
+                } else {
+                    $tracking .= "   var lti_users = 'is empty';\n";
                 }
-                //todo if lti_users is set create js varaible
+                //DONE if lti_users is set create js varaible
             }
 	    $tracking .= "</script>\n";
             //$tracking .= "var lti_context_id = '1390';  var lti_context_name = 'Don Bosco College';\n</script>\n";

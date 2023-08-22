@@ -42,16 +42,14 @@ _debug("LTI launch request: " . print_r($_POST, true));
 
 if (isset($_GET["template_id"])) {
     $id = $_GET["template_id"];
-    _debug("HERE?1");
 }
 else if(isset($_POST["template_id"]))
 {
     $id = $_POST["template_id"];
     // Hack for the rest of Xerte
     $_GET['template_id'] = $id;
-    _debug("HERE?2");
 }
-_debug("HERE3");
+_debug("test123");
 if(is_numeric($id) || $id == null)
 {
 	$tsugi_enabled = true;
@@ -71,11 +69,12 @@ if(is_numeric($id) || $id == null)
     if ($islti13) {
         $msg = array();
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
-        //TODO: get all emails of current users add to array
+        //DONE: get all emails of current users add to array
         // https://gitlab.tor.nl/xerte-dashboard/dashboard/-/blob/master/index.php line 80
-        //add as $xerte_toolkits_site->lti_users =
-        _debug("pls" . print_r($nrps, true));
-        _debug("msg" . print_r($msg, true));
+        $xerte_toolkits_site->lti_users = array();
+        foreach ($nrps->members as $member){
+            $xerte_toolkits_site->lti_users[] = sha1('mailto:'.$member->email);
+        }
     }
 
     if ($id == null)
