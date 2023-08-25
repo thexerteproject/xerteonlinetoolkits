@@ -2039,7 +2039,6 @@
             }
 
             //add block avg to labels
-            debugger;
             if (graphShowAvg == "true") {
                 for (let i = 0; i < labels.length; i++) {
                     labels[i].push(groupScore + ": " + (groupAvg[i]/ Math.max(barSizeData[i], 1)).toFixed(2))
@@ -2095,7 +2094,6 @@
             }
 
             let bardata = {};
-            debugger
             if (graphShowAvgBar == "true" && graphShowAvg == "true") {
                 bardata = {
                     labels: labels,
