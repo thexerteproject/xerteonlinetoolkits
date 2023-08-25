@@ -1495,6 +1495,10 @@
         if (graphShowAvg == undefined) {
             graphShowAvg = false;
         }
+        var graphShowAvgBar = interaction.getAttribute("graphShowAvgBar");
+        if (graphShowAvgBar == undefined) {
+            graphShowAvgBar = false;
+        }
 
       var barName = [];
       var barNameValue = [];
@@ -2095,7 +2099,8 @@
             }
 
             let bardata = {};
-            if (graphShowAvg == "true") {
+            debugger
+            if (graphShowAvgBar == "true" && graphShowAvg == "true") {
                 bardata = {
                     labels: labels,
                     datasets: [
@@ -3077,10 +3082,6 @@
         var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
         if (graphFitInfoInBar == undefined) {
             graphFitInfoInBar = false;
-        }
-        var graphShowAvg = interaction.getAttribute("graphShowAvg");
-        if (graphShowAvg == undefined) {
-            graphShowAvg = false;
         }
 
         var barColors = [
