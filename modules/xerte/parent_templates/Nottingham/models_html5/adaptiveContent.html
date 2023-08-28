@@ -1705,10 +1705,10 @@
 
                 if (score >= lowerBound && score <= upperBound) {
                   $("#" + escapeUrl(url, type, interactionIndex) + " .message").prepend('<button type="button" class="feedback">' + blockName + '</button>\n' +
-                      '<div class="collapsibleContent" style="display: block; margin-bottom: 25px">' + block.getAttribute("adaptiveContent") + '</div>');
+                      '<div class="collapsibleContent block' + blockIndex + '" style="display: block; margin-bottom: 25px">' + block.getAttribute("adaptiveContent") + '</div>');
                 } else if (showOtherBlockContent == 'true'){
                     $("#" + escapeUrl(url, type, interactionIndex) + " .message").append('<button type="button" class="collapsible">' + blockName + '</button>\n' +
-                         '<div class="collapsibleContent">' + block.getAttribute("adaptiveContent") + '</div>');
+                         '<div class="collapsibleContent block' + blockIndex + '">' + block.getAttribute("adaptiveContent") + '</div>');
 
                     $("#" + escapeUrl(url, type, interactionIndex) + " .message").children("button").slice(-1).on('click', function () {
                         this.classList.toggle("active");
