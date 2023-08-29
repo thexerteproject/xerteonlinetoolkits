@@ -180,38 +180,46 @@
 						}
 					});
 			});
-			
-			if (x_currentPageXML.getAttribute("url").split(".")[1].slice(0, -1) != "swf") {
-				
-				$img
-					.data('firstLoad', true)
-					.css({
-						"opacity": 0,
-						"filter": 'alpha(opacity=0)'
-					})
-					.one("load", function() {
-						annotatedDiagram.setUp();
-						
-						// call this function in every model once everything's loaded
-						x_pageLoaded();
-					})
-					.attr({
-						"src": x_evalURL(x_currentPageXML.getAttribute("url")),
-						"alt": x_currentPageXML.getAttribute("tip")
-					})
-					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-						if (this.complete) {
-							setTimeout(function(){ $(this).trigger("load"); }, 1);
-						}
-					});
-				
-				if ($pageContents.data("hsType") == "flex") {
-					$img.attr("usemap", "#hsHolder_map");
+			let url = x_currentPageXML.getAttribute("url").split(".");
+			if (url.length > 1) {
+				if (url[1].slice(0, -1) != "swf") {
+
+					$img
+							.data('firstLoad', true)
+							.css({
+								"opacity": 0,
+								"filter": 'alpha(opacity=0)'
+							})
+							.one("load", function () {
+								annotatedDiagram.setUp();
+
+								// call this function in every model once everything's loaded
+								x_pageLoaded();
+							})
+							.attr({
+								"src": x_evalURL(x_currentPageXML.getAttribute("url")),
+								"alt": x_currentPageXML.getAttribute("tip")
+							})
+							.each(function () { // called if loaded from cache as in some browsers load won't automatically trigger
+								if (this.complete) {
+									setTimeout(function () {
+										$(this).trigger("load");
+									}, 1);
+								}
+							});
+
+					if ($pageContents.data("hsType") == "flex") {
+						$img.attr("usemap", "#hsHolder_map");
+					}
+
+				} else {
+					// have had to add this in I found one old project where a swf was used instead of an image on this page
+					$("#imageHolder").html('<p>Flash files (.swf) are no longer supported</p>');
+					x_pageLoaded();
 				}
-				
-			} else {
-				// have had to add this in I found one old project where a swf was used instead of an image on this page
-				$("#imageHolder").html('<p>Flash files (.swf) are no longer supported</p>');
+			}else{
+				// If no image was selected
+				$("#imageHolder").html('<p>No image selected.</p>');
 				x_pageLoaded();
 			}
 
