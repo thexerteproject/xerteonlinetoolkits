@@ -1290,7 +1290,7 @@ DashboardState.prototype.filterNotPassedFailed = function (allInteractions) {
 };
 
 DashboardState.prototype.getInteractions = function (learningObject) {
-  if (this.interactions == undefined) {
+  if (this.interactions === undefined || this.interactions.length === 0) {
     this.getAllInteractions();
   }
   return this.interactions[learningObject];
