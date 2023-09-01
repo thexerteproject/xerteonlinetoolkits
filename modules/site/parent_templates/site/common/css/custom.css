@@ -362,7 +362,7 @@ section {
 
 /* --LINKS-------------------------------------------------------------- */
 
-section a:not(.accordion-toggle) {
+section a:not(.accordion-toggle,.top-round) {
   text-decoration: underline;
   text-underline-position: under;
 }
