@@ -1889,7 +1889,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'text'){
-			section.append( '<p>' + $(this).text() + '</p>');
+			section.append( $(this).text());
 		}
 
 		if (this.nodeName == 'script'){
@@ -2478,7 +2478,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				tab.append( '<p>' + $(this).text() + '</p>');
+				tab.append( $(this).text());
 
 				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
 					iframe.push(i);
@@ -2649,7 +2649,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				inner.append( '<p>' + $(this).text() + '</p>');
+				inner.append( $(this).text());
 			}
 
 			if (this.nodeName == 'image'){
@@ -2765,7 +2765,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				pane.append( '<p>' + $(this).text() + '</p>');
+				pane.append( $(this).text());
 			}
 
 			if (this.nodeName == 'image'){
