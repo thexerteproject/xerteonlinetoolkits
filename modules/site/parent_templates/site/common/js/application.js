@@ -42,7 +42,7 @@ var fullscreenBannerTitleMargin=10;
 
 function init(){
 	loadContent();
-};
+}
 
 // called after all content loaded to set up mediaelement.js players
 function initMedia($media){
@@ -1684,7 +1684,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		}
 	} else {
 		//TOOD add section num, if we are already at page
-
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
 	
@@ -1767,7 +1766,8 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 				subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
 
 			var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
-			var section = $('<section id="' + pageHash + 'section' + (sectionVisibleIndex+1) + '">' + pageHeader + '</section>');
+			var sectionId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'section' + (sectionVisibleIndex+1);
+			var section = $('<section id="' + pageHash + sectionId + '">' + pageHeader + '</section>');
 			
 			var pswds = [];
 			if ($.trim($(this).attr('password')).length > 0) {
@@ -2077,7 +2077,6 @@ function updateContent($section) {
 }
 
 function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
-	
 	XBOOTSTRAP.VARIABLES.handleSubmitButton();
 
 	if (sectionNum != undefined) {
@@ -2087,10 +2086,10 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 			section =  page.find('section').eq(sectionNum-1);
 
 		//if direct navigation using customLink for sections
-		pageTempInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo;
+		var sectionInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : 'section' + sectionNum;
 
 		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
-		goToSection(pageTempInfo + 'section' + sectionNum + contentInfo);
+		goToSection(pageTempInfo + sectionInfo + contentInfo);
 
 	} else {
 		goToSection('alwaysTop');
