@@ -415,7 +415,7 @@ function setup() {
 				};
 				
 				// add events to control what happens when you rollover glossary words
-				$("body > .container")
+				$("#aboveFooter > .container")
 					.on("mouseenter", ".glossary", function(e) {
 						$activeTooltip = $(this);
 						$activeTooltip.trigger("mouseleave");
@@ -655,10 +655,10 @@ function setup() {
 
 			// some categories exist - create menu
 			if (categories.length > 0) {
-				var $categorySearch = $('<div id="categorySearch"></div>');
+				var $categorySearch = $('<form id="categorySearch"></form>');
 
 				for (var i=0; i<categories.length; i++) {
-					var $optGroup = $('<div id="cat' + i + '" class="catBlock"><div class="catContents"><h2 class="catName">' + categories[i].name + ':</h2></div></div>').appendTo($categorySearch);
+					var $optGroup = $('<div id="cat' + i + '" class="catBlock"><fieldset class="catContents"><legend class="catName">' + categories[i].name + ':</legend></fieldset></div>').appendTo($categorySearch);
 
 					for (var j=0; j<categories[i].options.length; j++) {
 						$optGroup.find('.catContents').append('<div class="inputGroup"><input type="checkbox" name="' + categories[i].name + '" id="cat' + i + '_' + j + '" value="cat' + i + '_' + j + '"><label for="cat' + i + '_' + j + '">' + categories[i].options[j].name + '</label></div>');
@@ -1731,9 +1731,11 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			//expand mainContent if section menu hidden and expand option is true
 			if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
 				$('#mainContent').addClass("expandMain");
+				$('#contentTable').addClass("expandMain");
 
 			}else{
 				$('#mainContent').removeClass("expandMain");
+				$('#contentTable').removeClass("expandMain");
 			}
 
 			// add section menu unless turned off
@@ -1753,6 +1755,10 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
+
+				$('#contentTable').removeClass("hideSectionMenu");
+			} else {
+				$('#contentTable').addClass("hideSectionMenu");
 			}
 
 			//add the section header
@@ -1889,7 +1895,8 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'text'){
-			section.append( $(this).text());
+
+			section.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 		}
 
 		if (this.nodeName == 'script'){
@@ -2478,7 +2485,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				tab.append( $(this).text());
+				tab.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 
 				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
 					iframe.push(i);
@@ -2649,7 +2656,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				inner.append( $(this).text());
+				inner.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 			}
 
 			if (this.nodeName == 'image'){
@@ -2765,7 +2772,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				pane.append( $(this).text());
+				pane.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 			}
 
 			if (this.nodeName == 'image'){
