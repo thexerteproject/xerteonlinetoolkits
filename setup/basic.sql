@@ -248,7 +248,8 @@ CREATE TABLE `$templaterights` (
   `role` char(255) DEFAULT NULL,
   `folder` bigint(20) DEFAULT NULL,
   `notes` char(255) DEFAULT NULL,
-   KEY `index1` (`template_id`,`user_id`,`role`(10))
+   KEY `index1` (`template_id`,`user_id`,`role`(10)),
+   KEY `index2` (`folder`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (
@@ -307,7 +308,8 @@ CREATE TABLE `$folderrights` (
   `folder_parent` int(11) NOT NULL,
   `role` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `index1` (`folder_id`,`login_id`,`role`(10))
+  KEY `index1` (`folder_id`,`login_id`,`role`(10)),
+  KEY `index2` (`folder_parent`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$folder_group_rights` (
