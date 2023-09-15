@@ -4678,7 +4678,7 @@ var EDITOR = (function ($, parent) {
                     var grid_id = '#' + id + '_jqgrid';
                     var current_grid_data = JSON.stringify($(grid_id).jqGrid("getRowData"))
                     var form_data = new FormData(this);
-                    if ($('#csv_merge_categoryInfo').is(":checked")) {
+                    if ($('#csv_merge_glossary').is(":checked")) {
                         form_data.append("merge", "Merge");
                     }
                     form_data.append('old_data', current_grid_data)
@@ -4687,7 +4687,7 @@ var EDITOR = (function ($, parent) {
 
                 function upload_file(form_data){
                     var conf = false;
-                    $('#csv_merge_categoryInfo').is(":checked") ? conf = confirm(language.UploadCSV.Info2.$label) : conf = confirm(language.UploadCSV.Info.$label);
+                    $('#csv_merge_glossary').is(":checked") ? conf = confirm(language.UploadCSV.Info2.$label) : conf = confirm(language.UploadCSV.Info.$label);
 
                     if(conf) {
                         $.ajax({
