@@ -240,9 +240,14 @@ if ($fullArchive) {
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/timeline/timeline3.js\"></script>\n";
 
 
-            // Offline theme js file
+            // Offline theme
             $offline_includes .= "   <!-- theme file, normally loaded dynamically -->\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"themes/" . $row['parent_template'] . "/" . $xml->getTheme() . "/" . $xml->getTheme() . ".js\"></script>\n";
+
+            create_offline_file("themeinfo", "themes/" . $row['parent_template'] . "/" . $xml->getTheme() . "/" . $xml->getTheme() . ".info", "offline/offline_themeinfo.js");
+            $offline_includes .= "   <!-- Offline theme info -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_themeinfo.js\"></script>\n";
+            $offline_includes .= "\n";
         }
         else {
             foreach ($models as $model) {
@@ -316,6 +321,10 @@ copy_extra_files();
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/blackonyellow/');
 copy_extra_files();
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/highcontrast/');
+copy_extra_files();
+
+// Add default theme
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/default/');
 copy_extra_files();
 
 

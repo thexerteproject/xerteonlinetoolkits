@@ -260,6 +260,19 @@ x_projectDataLoaded = function(xmlData) {
 		}
 	}
 
+	// sort any parameters in url - these will override those in xml
+	var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
+		hash;
+
+	for (var i=0; i<tempUrlParams.length; i++) {
+		var split = tempUrlParams[i].split("=");
+		if (split.length == 2) {
+			x_urlParams[split[0]] = split[1];
+		} else {
+			hash = tempUrlParams[i];
+		}
+	}
+
     x_pages = xmlData.children();
 	var pageToHide = [],
 		currActPage = 0;
@@ -508,19 +521,6 @@ x_projectDataLoaded = function(xmlData) {
         }
     }
 	
-    // sort any parameters in url - these will override those in xml
-    var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
-		hash;
-	
-	for (var i=0; i<tempUrlParams.length; i++) {
-		var split = tempUrlParams[i].split("=");
-		if (split.length == 2) {
-			x_urlParams[split[0]] = split[1];
-		} else {
-			hash = tempUrlParams[i];
-		}
-    }
-	
 	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
 	var customStartPage = false;
 	
@@ -758,8 +758,19 @@ function x_getThemeInfo(thisTheme, themeChg) {
 	// these themes should have imgbtns: true in the theme info file
 	if (thisTheme == undefined || thisTheme == "default") {
 		x_params.theme = "default";
-		x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
-		
+		x_setUpThemeBtns({imgbtns: 'true'}, themeChg);
+	} else if (xot_offline) {
+		const temp = themeinfo.split('\n'),
+			themeInfo = {};
+
+		for (let i=0; i<temp.length; i++) {
+			if (temp[i].split(':').length > 1) {
+				themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+			}
+		}
+
+		x_setUpThemeBtns(themeInfo, themeChg);
+
 	} else {
 		$.ajax({
 			type: "GET",

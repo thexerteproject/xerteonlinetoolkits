@@ -55,11 +55,11 @@ if(is_numeric($_POST['template_id'])){
                 set rss=?, export=?, description=? WHERE template_id = ?";
             $status = db_query($query_to_change_rss_status, array($_POST['rss'], $_POST['export'], $_POST['desc'], $_POST['template_id']));
         }
-
-        // Update templatedetails modify date
-        $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
-        $params = array(date("Y-m-d H:i:s"), $_POST['template_id']);
-        db_query_one($sql, $params);
+		
+		// Update templatedetails modify date
+		$sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
+		$params = array(date("Y-m-d H:i:s"), $_POST['template_id']);
+		db_query_one($sql, $params);
 
         if($status === false) {
             echo "<p class='error'>Error saving change to template.</p>"; 
@@ -79,10 +79,14 @@ if(is_numeric($_POST['template_id'])){
 
     }else{
 
-        rss_display_fail();
+        rss_display_fail(true);
 
     }
 
+} else {
+	
+	rss_display_fail(false);
+	
 }
 
 ?>

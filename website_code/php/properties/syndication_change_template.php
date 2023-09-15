@@ -59,12 +59,12 @@ if(is_numeric($_POST['tutorial_id'])){
         }
 
         $query_to_change_syndication_status_response = db_query($query_to_change_syndication_status, $params);
-
+        
         // Update templatedetails modify date
         $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
         $params = array(date("Y-m-d H:i:s"), $_POST['tutorial_id']);
         db_query_one($sql, $params);
-
+        
         /**
          * Check template is public
          */
@@ -82,9 +82,13 @@ if(is_numeric($_POST['tutorial_id'])){
 
     }else{
 
-        syndication_display_fail();
+        syndication_display_fail(true);
 
     }
 
+} else {
+	
+	syndication_display_fail(false);
+	
 }
 

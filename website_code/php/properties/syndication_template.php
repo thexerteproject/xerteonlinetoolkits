@@ -36,11 +36,11 @@ include "../url_library.php";
 include "properties_library.php";
 
 if(!is_numeric($_POST['tutorial_id'])){
-    syndication_display_fail();
+    syndication_display_fail(false);
     exit(0);
 }
 if(!is_user_creator_or_coauthor((int) $_POST['tutorial_id']) && !is_user_admin()){
-    syndication_display_fail();
+    syndication_display_fail(true);
     exit(0);
 }
 

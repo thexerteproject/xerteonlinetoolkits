@@ -157,7 +157,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
             rename($base_path . $tutorial_id . "-" . $row_rename['username'] . "-" . $row_rename['template_name'] . "/", $base_path . $tutorial_id . "-" . $row_new_login['username'] . "-" . $row_rename['template_name'] . "/");
 
-            echo "<p>" . GIFT_RESPONSE_FAIL . "</p>";
+            echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . GIFT_RESPONSE_FAIL . "</p>";
 
         } else {
 
@@ -201,25 +201,9 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $row_new_login = db_query_one($query_for_new_login, $params);
 
-            /*
-            $new_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short .
-                $new_template_id . "-" . $row_new_login['username'] . "-" . $row_currentdetails['template_name'] . "/";
-
-            mkdir($new_directory);
-
-            chmod($new_directory, 0777);
-
-            mkdir($new_directory . "media/");
-
-            chmod($new_directory . "media/", 0777);
-
-            $current_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $tutorial_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_currentdetails['template_name'] . "/";
-
-            copy_loop($current_directory, $new_directory);
-            */
             duplicate_template($row_currentdetails['template_framework'], $new_template_id, $tutorial_id, $row_currentdetails['template_name']);
 
-            echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
+            echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p>";
 
         }
     }

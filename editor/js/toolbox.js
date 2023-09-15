@@ -688,11 +688,18 @@ var EDITOR = (function ($, parent) {
 			group.addClass("wizarddeprecated");
 
 			legend
-				.append($('<img>')
+				.append($('<i>')
 				.attr('id', 'deprbtn_' + name)
-				.attr('src', 'editor/img/deprecated.png')
+				.addClass('fa')
+				.addClass('fa-exclamation-triangle')
+				.addClass("xerte-icon")
 				.attr('title', options.deprecated)
-				.addClass("deprecated"));
+				.height(14)
+				.addClass("deprecated deprecatedIcon"));
+			
+			if (options.optional == 'true') {
+				group.addClass("wizardoptional");
+			}
 
 			if (options.optional == 'true' && options.group == undefined) { // nested groups don't have delete btn
 				legend
@@ -3740,7 +3747,7 @@ var EDITOR = (function ($, parent) {
 				html = $('<input>')
 					.attr('id', id)
 					.attr('type',  "checkbox")
-					.prop('checked', value && value == 'true')
+					.prop('checked', value && (value == 'true' || value == '1'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
 						cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
 						if (event.data.trigger)

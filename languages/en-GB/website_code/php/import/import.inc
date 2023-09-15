@@ -24,7 +24,7 @@
 
 	define("IMPORT_NO_EQUIVALENT_FAIL","No valid template equivalent found on this site. Please contact your system administrators.");
 
-	define("IMPORT_ZIP_FAIL","You can only import Zip Files");
+	define("IMPORT_ZIP_FAIL","You can only import zip files");
 	
 	define("IMPORT_XERTE_ONLY","Only Xerte templates are currently imported");
 	

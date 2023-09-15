@@ -316,6 +316,11 @@
                     /* files are already loaded statically */
                     loadFiles = false;
                 }
+				// comment out next loop and always load popcorn files
+				// This is because popcorn breaks if you have a mediaLesson
+				// and then a nav page which also loads popcorn with a different set of plugins
+				// Any mediaLesson after that will not work anymore
+				/*
 				for (var i=0; i<x_pageInfo.length; i++) {
 					if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
 						// a page of this type has already been loaded - don't reload popcorn files
@@ -323,7 +328,7 @@
 						break;
 					}
 				}
-				
+				*/
 				if (loadFiles == true ) {
 					this.loadPopcorn();
 				} else {
