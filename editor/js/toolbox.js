@@ -4687,7 +4687,6 @@ var EDITOR = (function ($, parent) {
 
                 function upload_file(form_data){
                     var conf = false;
-                    debugger;
                     $('#csv_merge_glossary').is(":checked") ? conf = confirm(language.UploadCSV.Info2.$label) : conf = confirm(language.UploadCSV.Info.$label);
 
                     if(conf) {
