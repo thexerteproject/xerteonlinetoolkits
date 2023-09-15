@@ -87,6 +87,11 @@ a:hover{
 .nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
   background-color: $panelcolor;
 }
+.navbar .nav > li.activePage > a,
+.navbar .nav > li.activePage > a:hover, .navbar .nav > li.activePage > a:hover {
+  background-color: $panelcolor;
+  text-decoration: none;
+}
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
@@ -260,4 +265,21 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 }
 .oddSection {
   background: #3e3c3c;
+}
+
+/*lightboxes with dark background*/
+.featherlight .featherlight-content {
+  background: $darkestcolor;
+}
+
+#categorySearch .inputGroup:hover {
+  background-color: $panelcolor;
+}
+
+#searchHolder legend {
+  color: $lightestcolor;
+}
+
+#searchResults #noSearchResults {
+  color: $alertcolor;
 }

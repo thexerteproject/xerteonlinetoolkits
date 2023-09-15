@@ -28,8 +28,10 @@
  */
 
 require_once("../../../config.php");
-include "../folder_status.php";
-include "../user_library.php";
+require_once "../folder_status.php";
+require_once "../folder_library.php";
+require_once "../group_library.php";
+require_once "../user_library.php";
 
 if (!isset($_SESSION['toolkits_logon_username']))
 {
@@ -46,8 +48,10 @@ if(is_numeric($_POST['folder_id'])){
     if(is_user_creator_or_coauthor_folder($_POST['folder_id'])||is_user_admin()||$_POST['user_deleting_self']=="true"){
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        $database_id = database_connect("Folder sharing database connect failed", "Folder sharing database connect failed");
+        // Get creator of folder
+        $creator = get_folder_creator($folder_id);
 
+        //remove from folderrights or folder_group_rights
         if ($group=="false"){
             $query_to_delete_share = "delete from {$prefix}folderrights where folder_id = ? AND login_id = ?";
         }else{
@@ -57,40 +61,128 @@ if(is_numeric($_POST['folder_id'])){
         db_query($query_to_delete_share, $params);
 
 
-        $query_to_get_user_workspace = "SELECT * FROM {$prefix}folderdetails where login_id = ? and folder_name != ?";
-        $workspaceId = db_query($query_to_get_user_workspace, array($id, "recyclebin"));
+        // Check whether the user's templates need to be moved out of the folder
+        // 1. Not needed if user is part of a group that still has access to the folder
+        // Get shared groups
+        $shared_groups = get_shared_groups_of_folder($folder_id, true);
+        $shared_users = get_shared_users_of_folder($folder_id, true);
+        if ($group !== "false")
+        {
+            // Remove the group from the list of shared groups
+            $shared_groups = array_diff($shared_groups, array($id));
+        }else{
+            // Remove the user from the list of shared users
+            $shared_users = array_diff($shared_users, array($id));
+        }
 
-        //uit folderrights halen
-        $query_to_get_folders = "SELECT folder_id, folder_parent FROM {$prefix}folderdetails where folder_parent != 0";
-        $folders = db_query($query_to_get_folders, array());
 
-        $foldersToCheck = array($folder_id);
-        for ($i = 0; $i < count($foldersToCheck); $i++){
-            foreach ($folders as $index =>$folder){
-                if($foldersToCheck[$i] == $folder['folder_parent']){
-                    array_push($foldersToCheck, $folder['folder_id']);
+        $users = array();
+        foreach($shared_groups as $shared_group) {
+            $users = array_merge($users, get_users_from_group($shared_group));
+        }
+
+        // Check if we want to remove group
+        if ($group !== "false")
+        {
+            // Get users from group
+            $removeusers = get_users_from_group($id);
+        }
+        else
+        {
+            // Add user to array
+            $removeusers[] = $id;
+        }
+
+        // For all users in $removeusers, move the projects to the root of the respective workspace
+        $query_to_change_folder = "";
+        $changeParams = array();
+        foreach($removeusers as $user_id) {
+            if (in_array($user_id, $users, true) === false && in_array($user_id, $shared_users, true) === false) {
+                // User is not in the list of shared users
+                // User is not in a shared group
+
+                // Place all items that are not shared anymore in the user's private folder
+                // - 1. Templates owned by the user
+                // - 2. Folders owned by the user
+                // - 3. Templates owned by anyone else then the user and stored in folders from 2.
+                //
+                // Step 1. Templates owned by the user (that is being unshared)
+                $workspaceId = get_user_root_folder_by_id($user_id);
+                $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
+
+                array_push($changeParams, $workspaceId);
+                array_push($changeParams, $user_id);
+
+                $query_to_change_folder .= "UPDATE {$prefix}templaterights SET folder = ? where user_id = ? and role = 'creator' and folder in (";
+                $first = true;
+                foreach ($foldersToCheck as $folder) {
+                    if (!$first) {
+                        $query_to_change_folder .= ", ";
+                    }
+                    $first = false;
+                    $query_to_change_folder .= "?";
+                    array_push($changeParams, $folder);
                 }
+
+                $query_to_change_folder .= ");";
             }
         }
+        if ($query_to_change_folder !== "") {
+            db_query($query_to_change_folder, $changeParams);
+        }
 
-        $changeParams = array($workspaceId[0]["folder_id"], $id, "creator");
-        $query_to_change_folder = "UPDATE {$prefix}templaterights SET folder = ? where user_id = ? and role = ? and (";
+        /*
+
+        // Step 2. Folders owned by the user (that is being unshared)
+        // Do not only update the folders, but get the ids of the folders as well, we will use those again in step 3.
+        $getParams = array($id);
+        $changeParams = array($workspaceId, $id);
+
+        $query_to_get_folders = "SELECT folder_id FROM {$prefix}folderrights where login_id = ? and role='creator' and folder_parent in (";
+        $query_to_change_folders = "UPDATE {$prefix}folderrights SET folder_parent = ? where login_id = ? and role='creator' and folder_parent in (";
+        $first = true;
         foreach ($foldersToCheck as $folder){
-            if($folder_id == $folder){
-                $query_to_change_folder .= " folder = ? ";
-                array_push($changeParams, $folder);
-            }else{
-                $query_to_change_folder .= " or folder = ? ";
-                array_push($changeParams, $folder);
+            if(!$first){
+                $query_to_get_folder .= ", ";
+                $query_to_change_folder .= ", ";
             }
+            $query_to_get_folder .= "?";
+            $query_to_change_folder .= "?";
+            array_push($getParams, $folder);
+            array_push($changeParams, $folder);
         }
+        $query_to_get_folders .= ")";
+        $query_to_change_folders .= ")";
+        $folders = db_query($query_to_get_folders, $getParams);
+        db_query($query_to_change_folders, $changeParams);
 
-        $query_to_change_folder .= ")";
+        // Step 3. Templates owned by anyone else then the user and stored in folders from 2 need to be moved to the workspace of the owner
+        $getParams = array($id);
+        $query_to_get_templates = "SELECT template_id, user_id FROM {$prefix}templaterights where user_id != ? and role='creator' and folder in (";
+        $first = true;
+        foreach ($folders as $folder){
+            if(!$first){
+                $query_to_get_templates .= ", ";
+            }
+            $query_to_get_templates .= "?";
+            array_push($getParams, $folder);
+        }
+        $query_to_get_templates .= ")";
 
-        db_query($query_to_change_folder, $changeParams);
+        $templates = db_query($query_to_get_templates, $getParams);
+        // Step 3b for each user, move templates to the root folder of that user
+        $changeParams = array();
+        $query_to_change_folder = "";
+        foreach ($templates as $template)
+        {
+            $workspaceId = get_user_root_folder_by_id($template['user_id']);
+            $query_to_change_folder .= "UPDATE {$prefix}templaterights SET folder = ? where template_id = ? and user_id = ?;";
+            $changeParams[] = $workspaceId;
+            $changeParams[] = $template['template_id'];
+            $changeParams[] = $template['user_id'];
+        }
+        db_query($query_to_change_folder, $params);
 
-
-
-
+        */
     }
 }

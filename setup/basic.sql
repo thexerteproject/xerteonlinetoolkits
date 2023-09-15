@@ -47,7 +47,7 @@ CREATE TABLE `$folderdetails` (
   `login_id` bigint(20) DEFAULT NULL,
   `folder_parent` bigint(20) DEFAULT NULL,
   `folder_name` char(255) DEFAULT NULL,
-  `date_created` date DEFAULT '2008-12-08',
+  `date_created` datetime DEFAULT '2008-12-08',
   PRIMARY KEY (`folder_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -67,7 +67,7 @@ CREATE TABLE `$ldap` (
 CREATE TABLE `$logindetails` (
   `login_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` char(255) DEFAULT NULL,
-  `lastlogin` date DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   `firstname` char(255) DEFAULT NULL,
   `surname` char(255) DEFAULT NULL,
   PRIMARY KEY (`login_id`)
@@ -79,7 +79,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   `template_name` char(255) DEFAULT NULL,
   `parent_template` char(255) DEFAULT NULL,
   `description` char(255) DEFAULT NULL,
-  `date_uploaded` date DEFAULT NULL,
+  `date_uploaded` datetime DEFAULT NULL,
   `display_name` char(255) DEFAULT NULL,
   `display_id` bigint(20) DEFAULT NULL,
   `access_rights` char(255) DEFAULT NULL,
@@ -165,6 +165,7 @@ CREATE TABLE `$sitedetails` (
   `LRS_Secret` char(255) DEFAULT '',
   `dashboard_enabled` char(255) DEFAULT 'true',
   `dashboard_nonanonymous` char(255) DEFAULT 'true',
+  `xapi_force_anonymous_lrs` char(255) DEFAULT 'false',
   `xapi_dashboard_minrole` char(255) DEFAULT 'co-author',
   `dashboard_period` int DEFAULT 14,
   `dashboard_allowed_links` text,
@@ -173,7 +174,7 @@ CREATE TABLE `$sitedetails` (
   `globalhidesocial` char(255) DEFAULT 'false',
   `globalsocialauth` char(255) DEFAULT 'true',
   PRIMARY KEY (`site_id`)
-) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$syndicationcategories` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -247,7 +248,8 @@ CREATE TABLE `$templaterights` (
   `role` char(255) DEFAULT NULL,
   `folder` bigint(20) DEFAULT NULL,
   `notes` char(255) DEFAULT NULL,
-   KEY `index1` (`template_id`,`user_id`,`role`(10))
+   KEY `index1` (`template_id`,`user_id`,`role`(10)),
+   KEY `index2` (`folder`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (
@@ -305,8 +307,9 @@ CREATE TABLE `$folderrights` (
   `login_id` int(11) NOT NULL,
   `folder_parent` int(11) NOT NULL,
   `role` char(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-  KEY `index1` (`folder_id`,`login_id`,`role`(10))
+  PRIMARY KEY (`id`),
+  KEY `index1` (`folder_id`,`login_id`,`role`(10)),
+  KEY `index2` (`folder_parent`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$folder_group_rights` (
@@ -325,7 +328,7 @@ CREATE TABLE IF NOT EXISTS `$oai_publish` (
       `status` VARCHAR(10),
       `timestamp` TIMESTAMP,
       PRIMARY KEY (`audith_id`)
-)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_context` (
   `lti_context_key` varchar(255) NOT NULL,

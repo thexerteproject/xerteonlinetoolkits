@@ -101,16 +101,21 @@
 							correctAnswer = x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined ? answers[j].options[x].trim() : answers[j].options[x].trim().toLowerCase();
 						
 						if (givenAnswer === correctAnswer) {
-							isCorrect = true;
-							checkAnswers[i].correct = true;
-							answers[j].counter++;
-
-							if (answers[j].counter > 1) {
+							if (answers[j].counter == 1) {
+								// probably a duplicate that will be marked wrong but continue checking in case more than 1 identical answer is allowed
+								isCorrect = true;
 								checkAnswers[i].correct = false;
 								checkAnswers[i].comment = "Duplicate";
+							} else {
+								isCorrect = true;
+								checkAnswers[i].correct = true;
+								answers[j].counter++;
+								break;
 							}
-							break;
 						}
+					}
+					if (checkAnswers[i].correct == true) {
+						break;
 					}
 				}
 				
@@ -230,7 +235,7 @@
                 var $attempts = $("#attempts");
                 var amountofTries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
 				if (amountofTries != undefined && $.isNumeric(amountofTries)) {
-					$attempts.html(attemptLabel+ ": "+ amountofTries).show();
+					$attempts.html('<p>' + attemptLabel+ ": "+ amountofTries + '</p>').show();
 					$pageContents.data('amountofTries', amountofTries);
 				} else {
 					$attempts.remove();
@@ -296,230 +301,268 @@
 						label: checkBtnTxt
 					})
 					.click(function () {
-						var tries;
-						if (x_currentPageXML.getAttribute("amountOfTries") != undefined && $.isNumeric(x_currentPageXML.getAttribute("amountOfTries"))) {
-							tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
-							$pageContents.data('amountofTries', $pageContents.data('amountofTries')-1);
-							
-							if ($pageContents.data('amountofTries') > 0) {
-								$attempts.html(attemptLabel + ": "+ $pageContents.data('amountofTries'));
-							}else{
-								$attempts.html("");
-							}
-						}
-
-						var blankAnswers = [];
-						for (i = 0; i < x_currentPageXML.getAttribute("numberAnswers"); i++) {
-							blankAnswers.push("-");
-						}
 						
-						for (i = 0; i < blankAnswers.length; i++) {
-							XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", blankAnswers[i], $pageContents.data('correctOptionsFeedback'), x_currentPageXML.getAttribute("grouping"));
-						}
-						
-						if (!$pageContents.data('hasExited')) {
-							$pageContents.data('hasExited', true);
-						}
-
-						showFeedback = function () {
-							var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel"),
-								answers = $pageContents.data('answers');
-
-							$("#correctAnswer").html('');
-							if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
-								$("#correctAnswer").append('<h3>' + correctAnswersLabel + '</h3><ul>');
-								
-								if ($('#correctAnswer ul').has("li").length === 0) {
-									for (i = 0; i < answers.length; i++) {
-										$("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>");
-									}
-								}
-								
-								$('#correctAnswer').show();
-							}
-
-							AllAnswersCheckt = function(){
-								var inputs = $pageContents.data('inputs'),
-									answers = $pageContents.data('answers');
-								
-								for (i=0; i<answers.length; i++) {
-									answers[i].counter2 = 0;
-								}
-				
-								var amountOfGood = 0;
-								if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
-
-									for (i = 0; i < inputs.length; i++) {
-										for (j = 0; j < answers.length; j++) {
-											for (x = 0; x < answers[j].options.length; x++) {
-
-												var givenAnswer = inputs[i];
-												var correctAnswer = answers[j].options[x].trim();
-												if (givenAnswer === correctAnswer) {
-													answers[j].counter2++;
-													amountOfGood++;
-													if (answers[j].counter2 > 1) {
-														amountOfGood--;
-													}
-													break;
-												}
-											}
-										}
-									}
-								} else {
-									for (i = 0; i < inputs.length; i++) {
-										var isCorrect = false;
-										for (j = 0; j < answers.length; j++) {
-											for (x = 0; x < answers[j].options.length; x++) {
-
-												var givenAnswer = inputs[i].toLowerCase();
-												var correctAnswer = answers[j].options[x].trim().toLowerCase();
-
-												if (givenAnswer === correctAnswer) {
-													answers[j].counter2++;
-													amountOfGood++;
-													if (answers[j].counter2 > 1) {
-														amountOfGood--;
-													}
-													break;
-												}
-											}
-										}
-
-									}
-								}
-								
-								$pageContents.data('answers', answers);
-								
-								if (amountOfGood === inputs.length){
-									return true;
-								}
-							};
-
-							var passedTxt = x_currentPageXML.getAttribute("passed");
-							if (passedTxt === undefined) {
-								passedTxt = "Well done, you have completed the activity";
-							}
-
-							var failedTxt = x_currentPageXML.getAttribute("failed");
-							if (failedTxt === undefined) {
-								failedTxt = "Not all of the answers are correct";
-							}
-
-							var passedOrFailed = "";
-
-							var passed = AllAnswersCheckt();
-							if (passed === true){
-								passedOrFailed = passedTxt;
-							}else{
-								passedOrFailed = failedTxt;
-							}
-
-							$("#result")
-								.html('<p><span id="finalResult"></span>' + passedOrFailed + '</p>')
-								.show();
-                            
-							if(passed=== true){
-							    if(passedTxt !== ""){
-                                    $("#finalResult")
-                                        .removeClass("fa-x-cross")
-                                        .addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-                                }
-							}else{
-							    if(failedTxt !== ""){
-                                    $("#finalResult")
-                                        .removeClass("fa-x-tick")
-                                        .addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
-                                }
-
+						if ($('#OptionHolder .input-answer').length == $('#OptionHolder .input-answer').filter(function(){ return !$(this).val(); }).length) {
+							if ($(".noAttempt").length == 0) {
+								$("#attempts").append('<p class="noAttempt">' + (x_currentPageXML.getAttribute("noAttemptTxt") != undefined ? x_currentPageXML.getAttribute("noAttemptTxt") : "Please attempt the activity") + '</p>');
 							}
 							
-							var mainFeedback = x_currentPageXML.getAttribute("feedback");
-							if (mainFeedback === null) {
-								mainFeedback = "";
-							}
-
-							if (mainFeedback != '') {
-								$("#mainFeedback")
-									.html((x_currentPageXML.getAttribute("feedbackLabel") != undefined && x_currentPageXML.getAttribute("feedbackLabel").trim() != '' ? '<h3>' + x_currentPageXML.getAttribute("feedbackLabel") + '</h3>' : '') + mainFeedback)
-									.show();
-							}
-							
-							$('#attempts').hide();
-						};
-						
-						topXQ.fillInputs();
-						
-						var checkAnswers = $pageContents.data('checkAnswers'),
-							wrong = checkAnswers.length;
-
-						if ((attempt < tries && wrong > 0) || tries == undefined) {
-							for (var i = 0; i < checkAnswers.length; i++) {
-								if (checkAnswers[i].correct === false) {
-									topXQ.checkSingleAnswer(i);
-									if(checkAnswers[i].correct === false){
-										$("#input-answer-" + i).val("");
-									}
-
-								}
-								if (checkAnswers[i].correct === true) {
-									//disable the input field
-									$("#input-answer-" + i).prop('readonly', true);
-									$("#topXQ-result-" + i)
-										.removeClass("fa-x-cross")
-										.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-									wrong --;
-								}else{
-									$("#topXQ-result-" + i)
-										.removeClass("fa-x-tick")
-										.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
-								}
-
-							}
-							attempt++;
-							
-							if (tries === undefined) {
-								showFeedback();
-								topXQ.exitPage();
-							}
-							
-
 						} else {
-							$('#checkButton').hide();
-							
-							for (var i = 0; i < checkAnswers.length; i++) {
-								$("#input-answer-" + i).prop('readonly', true);
+						
+							var tries;
+							if (x_currentPageXML.getAttribute("amountOfTries") != undefined && $.isNumeric(x_currentPageXML.getAttribute("amountOfTries"))) {
+								tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
+								$pageContents.data('amountofTries', $pageContents.data('amountofTries')-1);
 								
-								if (tries == 1 && checkAnswers[i].correct === true){
-									$("#topXQ-result-" + i)
-										.removeClass("fa-x-cross")
-										.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+								if ($pageContents.data('amountofTries') > 0) {
+									$attempts.html('<p>' + attemptLabel + ": "+ $pageContents.data('amountofTries') + '</p>');
+								}else{
+									$attempts.html("");
+								}
+							}
+
+							var blankAnswers = [];
+							for (i = 0; i < x_currentPageXML.getAttribute("numberAnswers"); i++) {
+								blankAnswers.push("-");
+							}
+							
+							for (i = 0; i < blankAnswers.length; i++) {
+								XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", blankAnswers[i], $pageContents.data('correctOptionsFeedback'), x_currentPageXML.getAttribute("grouping"));
+							}
+							
+							if (!$pageContents.data('hasExited')) {
+								$pageContents.data('hasExited', true);
+							}
+
+							showFeedback = function () {
+								var answers = $pageContents.data('answers');
+
+								$("#correctAnswer").html('');
+								// show all answers
+								if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
+									var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
+									$("#correctAnswer").append('<h3>' + correctAnswersLabel + '</h3><ul>');
+									
+									if ($('#correctAnswer ul').has("li").length === 0) {
+										for (i = 0; i < answers.length; i++) {
+											$("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>");
+										}
+									}
+									
+									$('#correctAnswer').show();
+									
+								// only show answers that haven't been submitted
+								} else if (x_currentPageXML.getAttribute("showAnswers") === "others") {
+									var otherCorrectAnswersLabel = x_currentPageXML.getAttribute("otherCorrectAnswersLabel") != undefined ? x_currentPageXML.getAttribute("otherCorrectAnswersLabel") : 'Other possible answers';
+									$("#correctAnswer").append('<h3>' + otherCorrectAnswersLabel + '</h3><ul>');
+									
+									if ($('#correctAnswer ul').has("li").length === 0) {
+										for (i=0; i<answers.length; i++) {
+											var used = false;
+											for (j=0; j<answers[i].options.length; j++) {
+												var inputs = $pageContents.data('inputs');
+												for (k=0; k<inputs.length; k++) {
+													if (inputs[k] === answers[i].options[j].trim()) {
+														used = true;
+													}
+												}
+											}
+											if (used == false) {
+												$("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>");
+											}
+										}
+									}
+									
+									if ($("#correctAnswer ul li").length > 0) {
+										$('#correctAnswer').show();
+									} else {
+										$('#correctAnswer').empty();
+									}
 								}
 
-								if (checkAnswers[i].correct === false) {
-									topXQ.checkSingleAnswer(i);
-									if(checkAnswers[i].correct === false) {
-										if (attempt === tries) {
-											$("#topXQ-result-" + i)
-												.removeClass("fa-x-tick")
-												.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+								AllAnswersCheckt = function(){
+									var inputs = $pageContents.data('inputs'),
+										answers = $pageContents.data('answers');
+									
+									for (i=0; i<answers.length; i++) {
+										answers[i].counter2 = 0;
+									}
+					
+									var amountOfGood = 0;
+									if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
+
+										for (i = 0; i < inputs.length; i++) {
+											for (j = 0; j < answers.length; j++) {
+												for (x = 0; x < answers[j].options.length; x++) {
+
+													var givenAnswer = inputs[i];
+													var correctAnswer = answers[j].options[x].trim();
+													if (givenAnswer === correctAnswer) {
+														answers[j].counter2++;
+														amountOfGood++;
+														if (answers[j].counter2 > 1) {
+															amountOfGood--;
+														}
+														break;
+													}
+												}
+											}
 										}
+									} else {
+										for (i = 0; i < inputs.length; i++) {
+											var isCorrect = false;
+											for (j = 0; j < answers.length; j++) {
+												for (x = 0; x < answers[j].options.length; x++) {
+
+													var givenAnswer = inputs[i].toLowerCase();
+													var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+													if (givenAnswer === correctAnswer) {
+														answers[j].counter2++;
+														amountOfGood++;
+														if (answers[j].counter2 > 1) {
+															amountOfGood--;
+														}
+														break;
+													}
+												}
+											}
+
+										}
+									}
+									
+									$pageContents.data('answers', answers);
+									
+									if (amountOfGood === inputs.length){
+										return true;
+									}
+								};
+
+								var passedTxt = x_currentPageXML.getAttribute("passed");
+								if (passedTxt === undefined) {
+									passedTxt = "Well done, you have completed the activity";
+								}
+
+								var failedTxt = x_currentPageXML.getAttribute("failed");
+								if (failedTxt === undefined) {
+									failedTxt = "Not all of the answers are correct";
+								}
+
+								var passedOrFailed = "";
+
+								var passed = AllAnswersCheckt();
+								if (passed === true){
+									passedOrFailed = passedTxt;
+								}else{
+									passedOrFailed = failedTxt;
+								}
+
+								$("#result")
+									.html('<p><span id="finalResult"></span>' + passedOrFailed + '</p>')
+									.show();
+								
+								if(passed=== true){
+									if(passedTxt !== ""){
+										$("#finalResult")
+											.removeClass("fa-x-cross")
+											.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+									}
+								}else{
+									if(failedTxt !== ""){
+										$("#finalResult")
+											.removeClass("fa-x-tick")
+											.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+									}
+
+								}
+								
+								var mainFeedback = x_currentPageXML.getAttribute("feedback");
+								if (mainFeedback === null) {
+									mainFeedback = "";
+								}
+
+								if (mainFeedback != '') {
+									$("#mainFeedback")
+										.html((x_currentPageXML.getAttribute("feedbackLabel") != undefined && x_currentPageXML.getAttribute("feedbackLabel").trim() != '' ? '<h3>' + x_currentPageXML.getAttribute("feedbackLabel") + '</h3>' : '') + mainFeedback)
+										.show();
+								}
+								
+								$('#attempts').hide();
+							};
+							
+							topXQ.fillInputs();
+							
+							var checkAnswers = $pageContents.data('checkAnswers'),
+								wrong = checkAnswers.length;
+
+							if ((attempt < tries && wrong > 0) || tries == undefined) {
+								for (var i = 0; i < checkAnswers.length; i++) {
+									if (checkAnswers[i].correct === false) {
+										topXQ.checkSingleAnswer(i);
+										/*if(checkAnswers[i].correct === false){
+											$("#input-answer-" + i).val("");
+										}*/
+
+									}
+									if (checkAnswers[i].correct === true) {
+										//disable the input field
+										$("#input-answer-" + i).prop('readonly', true);
+										$("#topXQ-result-" + i)
+											.removeClass("fa-x-cross")
+											.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+										wrong --;
 									}else{
+										$("#topXQ-result-" + i)
+											.removeClass("fa-x-tick")
+											.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+									}
+
+								}
+								attempt++;
+								
+								if (tries === undefined) {
+									showFeedback();
+									topXQ.exitPage();
+								}
+								
+
+							} else {
+								$('#checkButton').hide();
+								
+								for (var i = 0; i < checkAnswers.length; i++) {
+									$("#input-answer-" + i).prop('readonly', true);
+									
+									if (tries == 1 && checkAnswers[i].correct === true){
 										$("#topXQ-result-" + i)
 											.removeClass("fa-x-cross")
 											.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
 									}
+
+									if (checkAnswers[i].correct === false) {
+										topXQ.checkSingleAnswer(i);
+										if(checkAnswers[i].correct === false) {
+											if (attempt === tries) {
+												$("#topXQ-result-" + i)
+													.removeClass("fa-x-tick")
+													.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+											}
+										}else{
+											$("#topXQ-result-" + i)
+												.removeClass("fa-x-cross")
+												.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+										}
+									}
 								}
+								
+								showFeedback();
+								topXQ.exitPage();
 							}
 							
-							showFeedback();
-							topXQ.exitPage();
-						}
-						
-						if (wrong === 0) {
-							$('#checkButton').hide();
-							showFeedback();
-							topXQ.exitPage();
+							if (wrong === 0) {
+								$('#checkButton').hide();
+								showFeedback();
+								topXQ.exitPage();
+							}
 						}
 					})
 					.show();

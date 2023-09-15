@@ -18,6 +18,7 @@
 			<glossaryHover label="Show Definition on Hover" type="Checkbox" defaultValue="true" optional="true"/>
 			<glossaryPage type="ComboBox" data="none,first,last" options="None,First Page,Last Page" optional="true" label="Glossary Page" defaultValue="none" width="175"/>
 			<glossaryMenu type="ComboBox" data="both,menu,headings,neither" options="Menu and Headings,Menu Only,Headings Only,No Menu or Headings" optional="true" label="Glossary Page Navigation" defaultValue="both" width="175"/>
+			<glossaryTitle type="TextInput" label="Glossary Title" defaultValue="Glossary" optional="true" tooltip="The name of the page or menu if either is enabled" />
 		</glossaryGroup>
 		
 		<headerGroup type="group" label="Header" optional="true">
@@ -75,7 +76,7 @@
 		</wcagGroup>
 
 		<meta type="group" label="Meta data" optional="true">
-		    <explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" mandatory="true"/>
+		    <explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
 			<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
 			<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
 			<metaCategory label="Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object (i.e. Maths), stored in xAPI events, to be used for categorising in xAPI reports"/>
@@ -85,7 +86,7 @@
 			<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
 			<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the eduction."/>
 			<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
-			<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" mandatory="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
+			<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" optional="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
 		</meta>
 
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>

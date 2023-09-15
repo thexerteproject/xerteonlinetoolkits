@@ -1,4 +1,22 @@
 <?php
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 require_once('oaiexception.php');
 require_once('oaixml.php');
@@ -424,9 +442,9 @@ class OAIServer
             $vcard = "BEGIN:VCARD\nFN:{$publisher_name}\nN:;{$publisher_name}\nORG:{$publisher_name}\nVERSION:3.0 END:VCARD";
             $this->response->addChild($centity_node, 'vcard', $vcard);
 
-            $publish_date = $record['metadata']['lifecycle']['publishdate'];
+            $publish_date = $this->formatDatestamp($record['metadata']['lifecycle']['publishdate']);
             $date_node = $this->response->addChild($contribute_node, 'date');
-            $this->response->addChild($date_node, 'datetime', ($publish_date . "T00:00:00+00:00"));
+            $this->response->addChild($date_node, 'datetime', ($publish_date));
             $description_node = $this->response->addChild($date_node, 'description');
             $langstring_node = $this->response->addChild($description_node, 'langstring', "The date the object was published.");
             $langstring_node->setAttribute("xml:lang", $language);
@@ -527,6 +545,32 @@ class OAIServer
             $thumbnail_url = $record['metadata']['relation']['thumbnail'];
             $langstring_node = $this->response->addChild($entry_node, 'langstring', $thumbnail_url);
             $langstring_node->setAttribute("xml:lang", "x-none");
+
+            //RELATION - download package - normal export
+            if (isset($record['metadata']['relation']['download_url']) && $record['metadata']['relation']['download_url'] != "") {
+
+                $relation_node = $this->response->addChild($schema_node, 'relation');
+                $kind_node = $this->response->addChild($relation_node, 'kind');
+                $source_node = $this->response->addChild($kind_node, 'source');
+                $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/relation_kind_nllom_20131211");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+
+                $value_node = $this->response->addChild($kind_node, 'value');
+                $langstring_node = $this->response->addChild($value_node, 'langstring', "hasformat");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+
+                $resource_node = $this->response->addChild($relation_node, 'resource');
+                $description_node = $this->response->addChild($resource_node, 'description');
+                $langstring_node = $this->response->addChild($description_node, 'langstring', "application/zip");
+                $langstring_node->setAttribute("xml:lang", "x-none");
+                $catalogentry_node = $this->response->addChild($resource_node, 'catalogentry');
+                $this->response->addChild($catalogentry_node, 'catalog', 'URI');
+                $entry_node = $this->response->addChild($catalogentry_node, 'entry');
+                // Bleeh eascpe & in url
+                $download_url = str_replace("&", "&amp;", $record['metadata']['relation']['download_url']);
+                $langstring_node = $this->response->addChild($entry_node, 'langstring', $download_url);
+                $langstring_node->setAttribute("xml:lang", "x-none");
+            }
 
             // CLASSIFICATION - domain
             $domain = $record['metadata']['classification']['domain'];
@@ -650,12 +694,13 @@ class OAIServer
     }
 
     /**
-     * All datestamps used in this system are GMT even
-     * return value from database has no TZ information
+     * All datestamps used in this system are localtime even
+     * return value from database has no information
+     * MAKE SURE date_timezone is correct in php.ini
      */
     private function formatDatestamp($datestamp)
     {
-        return date("Y-m-d\TH:i:s\Z", strtotime($datestamp));
+        return gmdate("Y-m-d\TH:i:s\Z", strtotime($datestamp));
     }
 
     /**

@@ -40,7 +40,10 @@ include "properties_library.php";
 if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
+	
+	peer_display_fail(false);
+	
+	die();
 }
 
 if(is_numeric($_POST['template_id'])){
@@ -53,9 +56,17 @@ if(is_numeric($_POST['template_id'])){
 
         } else {
 
-            peer_display_fail();
+            peer_display_fail(true);
 
         }
-    }
+    } else {
+
+		peer_display_fail(true);
+
+	}
+
+} else {
+
+	peer_display_fail(false);
 
 }

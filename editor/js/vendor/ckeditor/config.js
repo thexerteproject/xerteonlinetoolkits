@@ -22,7 +22,7 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'others' }
     ];
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,xotrecorder,xotcolumns,rubytext,wrapstyle,link,emoji,xotlightbox,numericinput,lineheight,codesnippet,a11ychecker,find';
+    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,xotrecorder,xotcolumns,rubytext,wrapstyle,link,emoji,xotlightbox,numericinput,lineheight,codesnippet,a11ychecker,find,editorplaceholder';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor,Smiley';
@@ -39,7 +39,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.uploadUrl = '';
 
     config.contentsCss = ['modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/css/editorStyles.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/css/editorstyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/v4-shims.min.css',

@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
+	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
     </newNodes>
   </pageWizard>
 
@@ -26,7 +26,7 @@
 		
 		<mediaGroup type="group" label="Video" tooltip="Add video (file or url)">
 			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
+			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
@@ -35,7 +35,7 @@
 
 	</ivMediaPanel>
 
-	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" max="1">
+	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" duplicate="false">
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
@@ -90,14 +90,14 @@
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
 		<newNodes>
-			<ivSynchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
+			<ivSynchSlide><![CDATA[<synchSlide name="" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
 		</newNodes>
 
 	</ivSynchSlides>
 	
 	<ivSynchSlide menuItem="Slide" icon="icBullet" remove="true">
 
-		<name label="Image Description" type="TextInput"/>
+		<name label="Image Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>

@@ -182,6 +182,7 @@ optional: feedback page synch play enable
 					.html(feedbackLabel + feedbackTxt)
 					.show();
 				$continueBtn.show();
+				x_pageContentsUpdated();
 
 				//#Warning: unused by Xerte at the current time.
 				if (action >= 0) {
@@ -633,6 +634,7 @@ optional: feedback page synch play enable
 					}).show();
 				}
 				$target.show();
+				x_pageContentsUpdated();
 			},
 			
 			end: function(event, options) {

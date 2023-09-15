@@ -688,11 +688,18 @@ var EDITOR = (function ($, parent) {
 			group.addClass("wizarddeprecated");
 
 			legend
-				.append($('<img>')
+				.append($('<i>')
 				.attr('id', 'deprbtn_' + name)
-				.attr('src', 'editor/img/deprecated.png')
+				.addClass('fa')
+				.addClass('fa-exclamation-triangle')
+				.addClass("xerte-icon")
 				.attr('title', options.deprecated)
-				.addClass("deprecated"));
+				.height(14)
+				.addClass("deprecated deprecatedIcon"));
+			
+			if (options.optional == 'true') {
+				group.addClass("wizardoptional");
+			}
 
 			if (options.optional == 'true' && options.group == undefined) { // nested groups don't have delete btn
 				legend
@@ -1411,7 +1418,8 @@ var EDITOR = (function ($, parent) {
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
                 extraAllowedContent: 'style',
-                language : language.$code.substr(0,2)
+                language : language.$code.substr(0,2),
+				editorplaceholder: options.options.placeholder
             };
 
             if (options.options.height)
@@ -1553,7 +1561,9 @@ var EDITOR = (function ($, parent) {
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                     extraPlugins : 'sourcedialog,image3,fontawesome,rubytext',
-                    language : language.$code.substr(0,2)
+                    /*extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',*/
+                    language : language.$code.substr(0,2)//,
+					//editorplaceholder: options.options.placeholder
                 });
             }
         });
@@ -3737,7 +3747,7 @@ var EDITOR = (function ($, parent) {
 				html = $('<input>')
 					.attr('id', id)
 					.attr('type',  "checkbox")
-					.prop('checked', value && value == 'true')
+					.prop('checked', value && (value == 'true' || value == '1'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
 						cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
 						if (event.data.trigger)
@@ -4657,16 +4667,29 @@ var EDITOR = (function ($, parent) {
                 excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
                 excel_form.append('<input type="hidden" name="type" value=' + name + '>');
                 excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
-                html.append(excel_form);
 
+
+                html.append(excel_form);
+                var checkbox_id = "csv_merge_" + name;
+                html.append(language.UploadCSV.mergeOld.$label + '<input type="checkbox" name="merge" value="Merge" id =' + checkbox_id + '>');
                 //called if user has uploaded a file to populate a grid
                 html.find('#excel_upload_' + name).submit(function (e){
                     e.preventDefault();
-                    upload_file(new FormData(this));
+                    var grid_id = '#' + id + '_jqgrid';
+                    var current_grid_data = JSON.stringify($(grid_id).jqGrid("getRowData"))
+                    var form_data = new FormData(this);
+                    if ($('#csv_merge_categoryInfo').is(":checked")) {
+                        form_data.append("merge", "Merge");
+                    }
+                    form_data.append('old_data', current_grid_data)
+                    upload_file(form_data);
                 })
 
                 function upload_file(form_data){
-                    if(confirm(language.UploadCSV.Info.$label)) {
+                    var conf = false;
+                    $('#csv_merge_categoryInfo').is(":checked") ? conf = confirm(language.UploadCSV.Info2.$label) : conf = confirm(language.UploadCSV.Info.$label);
+
+                    if(conf) {
                         $.ajax({
                             type: 'POST',
                             dataType: 'text',
@@ -4841,6 +4864,7 @@ var EDITOR = (function ($, parent) {
 						.attr('type', "text")
 						.addClass('inputtext')
 						.attr('id', id)
+						.attr('placeholder', options.placeholder)
 						.keyup({name: name, key: key, options: options}, function()
 						{
 							if (name == 'name') {

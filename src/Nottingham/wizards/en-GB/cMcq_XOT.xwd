@@ -23,8 +23,6 @@
     <confirmBtnTip label="Confirm Button Tip" type="textInput"  language="true" deprecated="This property is no longer required" />	
     <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
 
-    <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
-
     <newNodes>
       <cOption><![CDATA[<cOption name="Answer" text="Here is an option" destination="" />]]></cOption>
     </newNodes>

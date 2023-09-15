@@ -30,7 +30,7 @@
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 
-		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this Section" info="Create a link directly to this section by adding #yourSectionID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs">
+		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this Section" info="Create a link directly to this section by adding a unique SectionID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that section ID's and page ID's are case sensitive.">
             <customLinkID label="Section ID" type="TextInput" optional="true"/>
         </customSectionLinkGroup>
 

@@ -84,18 +84,14 @@ DashboardState.prototype.getStatementsxAPI = function (q, one, callback) {
           if (statement.actor.mbox != undefined) {
             if (
               $this.info.users.findIndex(
-                (u) => "email:" + u.email === statement.actor.mbox
-              ) === -1
-            ) {
+                (u) => "mailto:" + u.email === statement.actor.mbox) === -1) {
               // Skip this user
               continue;
             }
           } else if (statement.actor.mbox_sha1sum != undefined) {
             if (
               $this.info.users.findIndex(
-                (u) => u.sha1 === statement.actor.mbox.mbox_sha1sum
-              ) === -1
-            ) {
+                (u) => u.sha1 === statement.actor.mbox.mbox_sha1sum) === -1) {
               // Skip this user
               continue;
             }

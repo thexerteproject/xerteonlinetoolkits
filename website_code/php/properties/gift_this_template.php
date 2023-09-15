@@ -20,6 +20,8 @@
 
 require_once("../../../config.php");
 require_once("../user_library.php");
+require_once( "../template_library.php");
+require_once("../template_status.php");
 /**
  * 
  * gift this template, allows the site to give a template copy, or an actual template to some one else
@@ -84,8 +86,6 @@ function copy_loop($start_path, $final_path){
 
 _load_language_file("/website_code/php/properties/gift_this_template.inc");
 
-include "../template_library.php";
-include "../template_status.php";
 
 
 if (!isset($_SESSION['toolkits_logon_id']))
@@ -136,14 +136,10 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $ok = db_query($query_to_gift, $params);
 
-            $query_for_root_folder = "select folder_id from {prefix}folderdetails where login_id= ? and folder_name != ?";
-            $params = array($user_id, 'recyclebin');
-
-            $row_folder = db_query_one($query_for_root_folder, $params);
-
+            $root_folder = get_user_root_folder_by_id($user_id);
 
             $query_to_gift = "update {$prefix}templaterights set user_id =  ?, folder = ? WHERE template_id = ?";
-            $params = array($user_id, $row_folder['folder_id'], $tutorial_id);
+            $params = array($user_id, $root_folder, $tutorial_id);
 
             db_query($query_to_gift, $params);
 
@@ -161,7 +157,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
             rename($base_path . $tutorial_id . "-" . $row_rename['username'] . "-" . $row_rename['template_name'] . "/", $base_path . $tutorial_id . "-" . $row_new_login['username'] . "-" . $row_rename['template_name'] . "/");
 
-            echo "<p>" . GIFT_RESPONSE_FAIL . "</p>";
+            echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . GIFT_RESPONSE_FAIL . "</p>";
 
         } else {
 
@@ -192,18 +188,12 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $row_currentrights = db_query_one($query_for_currentdetails, $params);
 
-            $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ?  AND folder_parent=0";
-            $params = array($user_id, 'recyclebin');
-
-            $row_folder = db_query_one($query_for_root_folder, $params);
+            $root_folder = get_user_root_folder_by_id($user_id);
 
             $create_rights_query = "INSERT INTO {$prefix}templaterights (template_id, user_id, role,folder,notes) VALUES (?,?,?,?,?)";
-            $params = array($new_template_id, $user_id, "creator", $row_folder['folder_id'], '');
+            $params = array($new_template_id, $user_id, "creator", $root_folder, '');
 
             db_query($create_rights_query, $params);
-
-
-
 
             $query_for_new_login = "select firstname, surname, username from {$prefix}logindetails where login_id= ?";
             $params = array($user_id);
@@ -211,25 +201,9 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $row_new_login = db_query_one($query_for_new_login, $params);
 
-            /*
-            $new_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short .
-                $new_template_id . "-" . $row_new_login['username'] . "-" . $row_currentdetails['template_name'] . "/";
-
-            mkdir($new_directory);
-
-            chmod($new_directory, 0777);
-
-            mkdir($new_directory . "media/");
-
-            chmod($new_directory . "media/", 0777);
-
-            $current_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $tutorial_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_currentdetails['template_name'] . "/";
-
-            copy_loop($current_directory, $new_directory);
-            */
             duplicate_template($row_currentdetails['template_framework'], $new_template_id, $tutorial_id, $row_currentdetails['template_name']);
 
-            echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
+            echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p>";
 
         }
     }

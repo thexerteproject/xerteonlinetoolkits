@@ -37,6 +37,13 @@
 			if(x_browserInfo.touchScreen){
 				document.body.classList.add("stop-scrolling");
 			}
+			
+			if (x_browserInfo.mobile == true) {
+				$("#infoHolder").removeClass("panel");
+				
+				$("#textHolder").insertBefore("#infoHolder");
+			}
+			
 			// add colour styles that can be changed by optional properties
 			var colourStyles = "<style type='text/css'>",
 				colour;
@@ -152,7 +159,7 @@
 				words = words.toLowerCase();
 			else if (puzzleCase === 'uppercase')
 				words = words.toUpperCase();
-
+			
 			words = $.trim(words).split("\n");
 
 			switch(x_currentPageXML.getAttribute("order")) {
@@ -162,6 +169,17 @@
 				case 'alphabetical':
 					words.sort();
 			}
+			
+			var wordsAndSpaces = [];
+			
+			for (var i=0; i<words.length; i++) {
+				var temp = words[i];
+				words[i] = words[i].replace(/\s/g,'');
+				
+				if (words[i] != temp) {
+					wordsAndSpaces.push(temp);
+				}
+			}
 
 			// Replace alphabet if the option is selectedIndex
 			var options = {};
@@ -169,13 +187,20 @@
 				options.fillCharacters = x_currentPageXML.getAttribute('fillChars');
 			}
 
-				// start a word find game
-				puzzle = wordfindgame.create(words, "#puzzle", "#words", options);
+			// start a word find game
+			puzzle = wordfindgame.create(words, "#puzzle", "#words", options);
 
 			// style the grid according to options
 
 			if (puzzleCase !== '') {
 				$("#puzzle .puzzleSquare").css('text-transform', (puzzleCase === 'lowercase' ? 'lowercase' : puzzleCase === 'uppercase' || puzzleCase == undefined ? 'uppercase' : 'initial') );
+			}
+
+			if (wordsAndSpaces.length > 0) {
+				for (var i=0; i<wordsAndSpaces.length; i++) {
+					var noSpaces = wordsAndSpaces[i].replace(/\s/g,'');
+					$("#words li." + noSpaces).html(wordsAndSpaces[i]);
+				}
 			}
 
 			// hide word list or make sure word list height is no greater than wordsearch height
@@ -219,8 +244,10 @@
 			});
 			minW += (parseInt($("#puzzle").css("padding-left")) + parseInt($("#puzzle").css("margin-left"))) * 2;
 			minW += Math.ceil($("#words").outerWidth(true));
-
-			$("#infoHolder").css("min-width", minW);
+			
+			if (x_browserInfo.mobile != true) {
+				$("#infoHolder").css("min-width", minW);
+			}
 		}
 	}
 

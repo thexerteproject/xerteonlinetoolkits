@@ -223,11 +223,11 @@ function _do_cleanup()
             }
             else if ($file[strlen($file)-1] !==  "/")  // wildcard
             {
-                system("rm " . $file);
+                system("rm " . $file . " &");
             }
             else  // folder
             {
-                system("rm -rf " . $file);
+                system("rm -rf " . $file . " &");
             }
         }
         else
@@ -1353,6 +1353,86 @@ function upgrade_38()
     if ($result !== false && $result['count'] == '0') {
         $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index1` (`folder_id` ASC, `login_id` ASC, `role`(10) ASC);");
         $message = "Creating index on table folderrights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on folderrights table is already present';
+    return $message;
+}
+
+function upgrade_39(){
+    $table = table_by_key('logindetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `lastlogin` `lastlogin` DATETIME NULL DEFAULT NULL;");
+    $message = "Changing lastlogin column of logindetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folderdetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_created` `date_created` DATETIME NULL DEFAULT NULL;");
+    $message .= "Changing date_created column of folderdetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('originaltemplatesdetails');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `date_uploaded` `date_uploaded` DATETIME NULL DEFAULT NULL;");
+    $message .= "Changing date_uploaded column of originaltemplatesdetails to datetime - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+
+    return $message;
+}
+
+function upgrade_40(){
+    //Guarantee that the collation of logindetails.username and folderdetails.folder_name is the same utf8_unicode_ci
+    $table = table_by_key('logindetails');
+    $ok = _upgrade_db_query("ALTER TABLE `$table` MODIFY username CHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci;");
+    $message = "Changing collation of username column of logindetails to utf_unicode_ci - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folderdetails');
+    $ok = _upgrade_db_query("ALTER TABLE `$table` MODIFY folder_name CHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci;");
+    $message .= "Changing collation of folder_name column of folderdetails to utf_unicode_ci - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}
+
+function upgrade_41()
+{
+    // Add xapi_force_anonymous_lrs columns to sitedetails
+    $error = _db_add_field('sitedetails', 'xapi_force_anonymous_lrs', 'char(255)', 'false', 'dashboard_nonanonymous');
+    $message = "Adding xapi_force_anonymous_lrs column to sitedetails - ok ? " . ($error ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_42()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for templaterights
+    $table = table_by_key('templaterights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index2'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index2` (`folder` ASC);");
+        $message = "Creating index2 on table templaterights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on templaterights table is already present';
+    return $message;
+}
+
+function upgrade_43()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for folderrights.folder_parent
+    $table = table_by_key('folderrights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index2'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index2` (`folder_parent` ASC);");
+        $message = "Creating index2 on table folderrights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
 
         return $message;
     }

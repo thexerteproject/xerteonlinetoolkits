@@ -697,6 +697,10 @@ select, input, textarea
 	flex-grow: 1;
 }
 
+#mainPanel input[name=merge]{
+	float: right;
+	margin-bottom: 20px;
+}
 #mainPanel select.deprecated {
 	width: 95%;
 }
@@ -718,6 +722,11 @@ select, input, textarea
 {
     width: 100%;
 }
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+	background: #FDF5C7;
+}
+
 table.wizard, table.wizardgroup_table{
     vertical-align: middle;
     width: 100%;
@@ -1383,6 +1392,12 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 
 #panoramaHolder .pnlm-dragfix {
 	cursor: default;
+}
+
+[data-cke-editorplaceholder]::before {
+	padding: 4px;
+	overflow: hidden;
+	height: 1.2em;
 }
 
 /* start of xertecss.css

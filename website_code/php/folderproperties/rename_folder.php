@@ -50,28 +50,26 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
     $ok = db_query($query, $params);
     
     if($ok) {
+		
+		echo "<h2 class=\"header\">" . FOLDER_PROPERTIES_PROPERTIES . "</h2>";
 
-        echo "<p class=\"header\"><span>" . FOLDER_PROPERTIES_PROPERTIES . "</span></p>";			
+		echo "<div id=\"mainContent\">";
+		
+		echo "<form id=\"rename_form\" action=\"javascript:rename_folder('" .
+			$_POST['folder_id'] ."', 'rename_form')\">"
+			. "<label class=\"block\" for=\"newfoldername\">" . FOLDER_PROPERTIES_CALLED . ":</label>"
+			. "<input type=\"text\" value=\"" . htmlspecialchars(str_replace("_", " ", $_POST['folder_name'])) . "\" name=\"newfoldername\" id=\"newfoldername\" />"
+			. "<button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . FOLDER_PROPERTIES_BUTTON_SAVE . "</button>";
 
-        echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . htmlspecialchars($_POST['folder_name']) . "</p>";
-
-        echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
-
-        echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . $_POST['folder_id'] ."',"
-                . " 'rename_form')\"><input style=\"padding-bottom:5px\" type=\"text\" value=\"" .
-                htmlspecialchars(str_replace("_", " ", $_POST['folder_name'])) . "\" name=\"newfoldername\" />"
-                . "<button type=\"submit\" class=\"xerte_button\"  align=\"top\" style=\"padding-left:5px\">" . 
-                FOLDER_PROPERTIES_BUTTON_SAVE . "</button></form>";
-
-        echo "<p>" . FOLDER_RENAMED . "</p>";
-
+		echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . FOLDER_PROPERTIES_CHANGED . "</p>";
+		
+		echo "</form>";
+		
         /**
          * Extra bit of code to tell the ajax back on the web page what to rename the folder to be
          */
 
         echo "~*~" . $_POST['folder_name'];
-
-    }else{
 
     }
 

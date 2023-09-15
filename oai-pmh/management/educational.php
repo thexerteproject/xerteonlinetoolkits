@@ -1,4 +1,24 @@
 <?php
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+(PHP_SAPI !== 'cli' || isset($_SERVER['HTTP_USER_AGENT'])) && die('cli only');
 
 require_once('../../config.php');
 
@@ -16,22 +36,22 @@ if ($argc > 1) {
 
     $nodes = $xml->xpath('//vdex:term');
     $relations = $xml->xpath("//vdex:relationship");
-    $lookup = [];
+    $lookup = array();
 
     foreach ($nodes as $node) {
-        $row = [];
+        $row = array();
         $c = $node->children($ns['vdex']);
-        $row[label] = (string)$c->caption->langstring;
-        $row[ID] = (string)$c->termIdentifier;
+        $row['label'] = (string)$c->caption->langstring;
+        $row['ID'] = (string)$c->termIdentifier;
         foreach ($relations as $relation){
             $relationChild = $relation->children($ns['vdex']);
-                if ((string)$relationChild->sourceTerm == $row[ID] and (string)$relationChild->relationshipType == "BT") {
-                    $row[parent] = (string)$relationChild->targetTerm;
-                    $lookup[$row[ID]] = $row;
+                if ((string)$relationChild->sourceTerm == $row['ID'] and (string)$relationChild->relationshipType == "BT") {
+                    $row['parent'] = (string)$relationChild->targetTerm;
+                    $lookup[$row['ID']] = $row;
                     break;
             }
         }
-        $lookup[$row[ID]] = $row;
+        $lookup[$row['ID']] = $row;
     }
     insertEducational($lookup);
 
@@ -43,7 +63,7 @@ function createEducationalTable() {
     $q = "CREATE TABLE IF NOT EXISTS {$prefix}oai_education(
     education_id INT(11) PRIMARY KEY NOT NULL,
     term_id VARCHAR(63) NOT NULL,
-    label VARCHAR(255) NOT NULL
+    label VARCHAR(255) NOT NULL,
     parent_id INT(11))";
 
     db_query($q);
@@ -67,17 +87,17 @@ function insertEducational($lookup, $termID = null, $label = null, $parent = nul
     foreach ($lookup as $i => $row){
         //generate serversideID populate both tables
         $q = "INSERT INTO {$prefix}educationlevel(educationlevel_name) VALUES (?)";
-        $serverside_id = db_query_one($q,array($row[label]));
-        $lookup[$i][serverID] = $serverside_id;
+        $serverside_id = db_query_one($q,array($row['label']));
+        $lookup[$i]['serverID'] = $serverside_id;
         $q2 = "INSERT INTO {$prefix}oai_education(education_id,term_id,label) VALUES (?,?,?)";
-        $params = array($serverside_id, $row[ID], $row[label]);
+        $params = array($serverside_id, $row['ID'], $row['label']);
         $res = db_query($q2, $params);
     }
     foreach ($lookup as $row){
-        if (!is_null($row[parent])){
+        if (isset($row['parent'])){
             $q3 = "update {$prefix}educationlevel SET parent_id = ? WHERE educationlevel_id = ?";
-            $parent_id = $lookup[$row[parent]][serverID];
-            $params = array($parent_id, $row[serverID]);
+            $parent_id = $lookup[$row['parent']]['serverID'];
+            $params = array($parent_id, $row['serverID']);
             $res = db_query($q3, $params);
             $q4 = "update {$prefix}oai_education SET parent_id = ? WHERE education_id = ?";
             $res = db_query($q4, $params);

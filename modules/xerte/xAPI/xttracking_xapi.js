@@ -1906,9 +1906,9 @@ async function getStatementsFromDB(q, one)
 
 function getStatements(q, one, callback)
 {
-    if (lrsUseDb)
+    if (lrsUseDb && callback != null)
     {
-        getStatementsFromDB(q, one).then( (data) => callback(data, q));
+        getStatementsFromDB(q, one).then((data) => callback(data, q));
     }
     else {
         var search = ADL.XAPIWrapper.searchParams();
@@ -2011,301 +2011,303 @@ function XTInitialise(category) {
     // Specifically when the standalone page is shown in a lightbox
     // We make use of the fact that in javascript, assigning a variable is done through reference, so we actually
     // point the state variable (of the standalone page) to the parent state variable (of the main LO)
-    if (parent != self && parent.x_TemplateId != undefined && parent.x_TemplateId == x_TemplateId && parent.state != undefined) {
-        state = parent.state;
-        actor = parent.actor;
-        try {
-            /*
-            lrsInstance = new TinCan.LRS(
-                {
-                    endpoint: lrsEndpoint,
-                    username: lrsUsername,
-                    password: lrsPassword,
-                    allowFail: false,
-                    version: "1.0.2"
-                }
-            );
-            */
+    try {
+        if (parent != self && parent.x_TemplateId != undefined && parent.x_TemplateId == x_TemplateId && parent.state != undefined) {
+            state = parent.state;
+            actor = parent.actor;
+            try {
+                /*
+                lrsInstance = new TinCan.LRS(
+                    {
+                        endpoint: lrsEndpoint,
+                        username: lrsUsername,
+                        password: lrsPassword,
+                        allowFail: false,
+                        version: "1.0.2"
+                    }
+                );
+                */
 
-            // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
-            // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
-            // {
-            //     state.aggregate = true;
-            //     state.lrsAggregateEndpoint = lrsEndpont;
-            //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
-            //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
-            // }
-            // else {
-            //     state.aggregate = false;
-            // }
-            var conf = {
-                "endpoint": lrsEndpoint + '/',
-                "user": lrsUsername,
-                "password": lrsPassword,
-                "strictCallbacks": true
-            };
-            ADL.XAPIWrapper.log.debug = true;
-            ADL.XAPIWrapper.changeConfig(conf);
+                // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+                // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+                // {
+                //     state.aggregate = true;
+                //     state.lrsAggregateEndpoint = lrsEndpont;
+                //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+                //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+                // }
+                // else {
+                //     state.aggregate = false;
+                // }
+                var conf = {
+                    "endpoint": lrsEndpoint + '/',
+                    "user": lrsUsername,
+                    "password": lrsPassword,
+                    "strictCallbacks": true
+                };
+                ADL.XAPIWrapper.log.debug = true;
+                ADL.XAPIWrapper.changeConfig(conf);
 
-        } catch (ex) {
-            //alert("Failed LRS setup. Error: " + ex);
-            state.mode = "none";
+            } catch (ex) {
+                //alert("Failed LRS setup. Error: " + ex);
+                state.mode = "none";
+            }
         }
+    } catch (e) {
+        // Do nothing
+    }
+    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
+    // Initialise actor object
+    if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
+        studentidmode = parseInt(studentidmode);
+    }
+    if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
+        // set actor to global group
+        actor = {
+            objectType: "Group",
+            account: {
+                name: "global",
+                homePage: baseUrl() + state.templateId
+            }
+        };
     } else {
-        state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
-        // Initialise actor object
-        if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
-            studentidmode = parseInt(studentidmode);
+        if (typeof username == "undefined" || username == "") {
+            userEMail = "mailto:email@test.com"
+        } else {
+            userEMail = "mailto:" + username;
         }
-        if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
-            // set actor to global group
-            actor = {
+        if (typeof fullusername == 'undefined' || fullusername == "")
+            fullusername = "Unknown";
+        if (typeof groupname != "undefined" && groupname != "") {
+            state.group = {
                 objectType: "Group",
                 account: {
-                    name: "global",
-                    homePage: baseUrl() + state.templateId
+                    name: groupname,
+                    homePage: baseUrl()
                 }
             };
         } else {
-            if (typeof username == "undefined" || username == "") {
-                userEMail = "mailto:email@test.com"
-            } else {
-                userEMail = "mailto:" + username;
-            }
-            if (typeof fullusername == 'undefined' || fullusername == "")
-                fullusername = "Unknown";
-            if (typeof groupname != "undefined" && groupname != "") {
-                state.group = {
-                    objectType: "Group",
-                    account: {
-                        name: groupname,
-                        homePage: baseUrl()
-                    }
-                };
-            } else {
-                state.group = "";
-            }
-            if (typeof coursename != "undefined" && coursename != "") {
-                state.course = {
-                    id: baseUrl() + 'course/' + coursename
-                };
-                state.coursename = coursename;
-            } else if (typeof x_params['course'] != "undefined" && x_params['course'] != "") {
-                state.course = {
-                    id: baseUrl() + 'course/' + x_params['course']
-                };
-                state.coursename = x_params['course'];
-            } else {
-                state.course = "";
-                state.coursename = "";
-            }
-            if (typeof modulename != "undefined" && modulename != "") {
-                state.module = {
-                    id: baseUrl() + 'module/' + modulename
-                };
-                state.modulename = modulename;
-            } else if (typeof x_params['module'] != "undefined" && x_params['module'] != "") {
-                state.module = {
-                    id: baseUrl() + 'module/' + x_params['module']
-                };
-                state.modulename = x_params['module'];
-            } else {
-                state.module = "";
-                state.modulename = "";
-            }
-            if (typeof lti_context_id != "undefined" && lti_context_id != "") {
-                state.lti_context_id = lti_context_id;
-            } else if (typeof x_params['lti_context_id'] != "undefined" && x_params['lti_context_id'] != "") {
-                state.lti_context_id = x_params['lti_context_id'];
-            } else {
-                state.lti_context_id = "";
-            }
-            if (typeof lti_context_name != "undefined" && lti_context_name != "") {
-                state.lti_context_name = lti_context_name;
-            } else if (typeof x_params['lti_context_name'] != "undefined" && x_params['lti_context_name'] != "") {
-                state.lti_context_name = x_params['lti_context_name'];
-            } else {
-                state.lti_context_name = "";
-            }
-            switch (studentidmode) {
-                case 0: //mbox
-                    actor = {
-                        objectType: "Agent",
-                        mbox: userEMail
-                    };
-                    break;
-                case 1:
-                    actor = {
-                        objectType: "Agent",
-                        mbox_sha1sum: mboxsha1
-                    };
-                    break;
-                case 2:
-                    actor = {
-                        objectType: "Agent",
-                        mbox: userEMail,
-                        name: fullusername
-                    };
-                    break;
-                case 3:
-                    if (groupname != undefined && groupname != "") {
-                        actor = {
-                            objectType: "Group",
-                            account: {
-                                name: groupname,
-                                homePage: baseUrl() + state.templateId
-                            }
-                        };
-                    } else {
-                        actor = {
-                            objectType: "Group",
-                            account: {
-                                name: "global",
-                                homePage: baseUrl() + state.templateId
-                            }
-                        };
-                    }
-
-            }
+            state.group = "";
         }
-        if (typeof x_urlParams.embedded_from != "undefined") {
-            state.embedded = true;
-            state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
-            state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
-            state.embedded_fromSessionId = decodeURIComponent(x_urlParams.embedded_fromSessionId);
-            if (state.embedded_fromSessionId != undefined && state.embedded_fromSessionId != "") {
-                state.sessionId = state.embedded_fromSessionId;
-            }
+        if (typeof coursename != "undefined" && coursename != "") {
+            state.course = {
+                id: baseUrl() + 'course/' + coursename
+            };
+            state.coursename = coursename;
+        } else if (typeof x_params['course'] != "undefined" && x_params['course'] != "") {
+            state.course = {
+                id: baseUrl() + 'course/' + x_params['course']
+            };
+            state.coursename = x_params['course'];
         } else {
-            state.embedded = false;
+            state.course = "";
+            state.coursename = "";
         }
-
-        if (!state.initialised) {
-            state.initialised = true;
-            state.initialise();
-        }
-        state.mode = "normal";
-        if (typeof category != "undefined" && category != "") {
-            state.category = category;
+        if (typeof modulename != "undefined" && modulename != "") {
+            state.module = {
+                id: baseUrl() + 'module/' + modulename
+            };
+            state.modulename = modulename;
+        } else if (typeof x_params['module'] != "undefined" && x_params['module'] != "") {
+            state.module = {
+                id: baseUrl() + 'module/' + x_params['module']
+            };
+            state.modulename = x_params['module'];
         } else {
-            state.category = "";
+            state.module = "";
+            state.modulename = "";
         }
-        if (x_params.language != "undefined" && x_params.language != "") {
-            state.language = x_params.language.substr(0, 2);
+        if (typeof lti_context_id != "undefined" && lti_context_id != "") {
+            state.lti_context_id = lti_context_id;
+        } else if (typeof x_params['lti_context_id'] != "undefined" && x_params['lti_context_id'] != "") {
+            state.lti_context_id = x_params['lti_context_id'];
+        } else {
+            state.lti_context_id = "";
         }
-
-        //    if(lrsInstance == undefined){
-        try {
-            /*
-            lrsInstance = new TinCan.LRS(
-                {
-                    endpoint: lrsEndpoint,
-                    username: lrsUsername,
-                    password: lrsPassword,
-                    allowFail: false,
-                    version: "1.0.2"
+        if (typeof lti_context_name != "undefined" && lti_context_name != "") {
+            state.lti_context_name = lti_context_name;
+        } else if (typeof x_params['lti_context_name'] != "undefined" && x_params['lti_context_name'] != "") {
+            state.lti_context_name = x_params['lti_context_name'];
+        } else {
+            state.lti_context_name = "";
+        }
+        switch (studentidmode) {
+            case 0: //mbox
+                actor = {
+                    objectType: "Agent",
+                    mbox: userEMail
+                };
+                break;
+            case 1:
+                actor = {
+                    objectType: "Agent",
+                    mbox_sha1sum: mboxsha1
+                };
+                break;
+            case 2:
+                actor = {
+                    objectType: "Agent",
+                    mbox: userEMail,
+                    name: fullusername
+                };
+                break;
+            case 3:
+                if (groupname != undefined && groupname != "") {
+                    actor = {
+                        objectType: "Group",
+                        account: {
+                            name: groupname,
+                            homePage: baseUrl() + state.templateId
+                        }
+                    };
+                } else {
+                    actor = {
+                        objectType: "Group",
+                        account: {
+                            name: "global",
+                            homePage: baseUrl() + state.templateId
+                        }
+                    };
                 }
-            );
-            */
 
-            // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
-            // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
-            // {
-            //     state.aggregate = true;
-            //     state.lrsAggregateEndpoint = lrsEndpont;
-            //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
-            //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
-            // }
-            // else {
-            //     state.aggregate = false;
-            // }
-            var conf = {
-                "endpoint": lrsEndpoint + '/',
-                "user": lrsUsername,
-                "password": lrsPassword,
-                "strictCallbacks": true
-            };
-            ADL.XAPIWrapper.log.debug = true;
-            ADL.XAPIWrapper.changeConfig(conf);
-
-        } catch (ex) {
-            //alert("Failed LRS setup. Error: " + ex);
-            state.mode = "none";
         }
-
-
-        //TinCan.enableDebug();
-        //    }
-        if (surf_course != undefined && surf_recipe != undefined) {
-            surf_mode = true;
+    }
+    if (typeof x_urlParams.embedded_from != "undefined") {
+        state.embedded = true;
+        state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
+        state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
+        state.embedded_fromSessionId = decodeURIComponent(x_urlParams.embedded_fromSessionId);
+        if (state.embedded_fromSessionId != undefined && state.embedded_fromSessionId != "") {
+            state.sessionId = state.embedded_fromSessionId;
         }
+    } else {
+        state.embedded = false;
+    }
 
-        //    if(lrsInstance != undefined)
-        //    {
-        this.initStamp = new Date();
+    if (!state.initialised) {
+        state.initialised = true;
+        state.initialise();
+    }
+    state.mode = "normal";
+    if (typeof category != "undefined" && category != "") {
+        state.category = category;
+    } else {
+        state.category = "";
+    }
+    if (x_params.language != "undefined" && x_params.language != "") {
+        state.language = x_params.language.substr(0, 2);
+    }
 
-        if (!surf_mode) {
-            var statement = {
-                actor: actor,
-                context: {
-                    extensions: {
-                        "http://xerte.org.uk/learningObjectLevel": "lo"
-                    }
-                },
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/launched",
-                    display: {
-                        "en-US": "launched"
-                    }
-                },
-                object: {
-                    objectType: "Activity",
-                    id: baseUrl() + state.templateId,
-                    definition: {
-                        name: {
-                            "en": x_params.name
-                        }
-                    }
-                },
-                timestamp: this.initStamp
-            };
-            statement.object.definition.name[state.language] = x_params.name;
+    //    if(lrsInstance == undefined){
+    try {
+        /*
+        lrsInstance = new TinCan.LRS(
+            {
+                endpoint: lrsEndpoint,
+                username: lrsUsername,
+                password: lrsPassword,
+                allowFail: false,
+                version: "1.0.2"
+            }
+        );
+        */
 
-            SaveStatement(statement);
-        }
-        if (surf_mode) {
-            var statement = {
-                actor: actor,
-                verb: {
-                    id: "http://lrs.surfuni.org/verb/joined",
-                    display: {
-                        "en-US": "Joined"
+        // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+        // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+        // {
+        //     state.aggregate = true;
+        //     state.lrsAggregateEndpoint = lrsEndpont;
+        //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+        //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+        // }
+        // else {
+        //     state.aggregate = false;
+        // }
+        var conf = {
+            "endpoint": lrsEndpoint + '/',
+            "user": lrsUsername,
+            "password": lrsPassword,
+            "strictCallbacks": true
+        };
+        ADL.XAPIWrapper.log.debug = true;
+        ADL.XAPIWrapper.changeConfig(conf);
+
+    } catch (ex) {
+        //alert("Failed LRS setup. Error: " + ex);
+        state.mode = "none";
+    }
+
+
+    //TinCan.enableDebug();
+    //    }
+    if (surf_course != undefined && surf_recipe != undefined) {
+        surf_mode = true;
+    }
+
+    //    if(lrsInstance != undefined)
+    //    {
+    this.initStamp = new Date();
+
+    if (!surf_mode) {
+        var statement = {
+            actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel": "lo"
+                }
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/launched",
+                display: {
+                    "en-US": "launched"
+                }
+            },
+            object: {
+                objectType: "Activity",
+                id: baseUrl() + state.templateId,
+                definition: {
+                    name: {
+                        "en": x_params.name
                     }
-                },
-                object: {
-                    objectType: "Activity",
-                    id: "http://lrs.surfuni.org/object/course",
-                    definition: {
-                        name: {
-                            "en-US": "Course"
-                        }
+                }
+            },
+            timestamp: this.initStamp
+        };
+        statement.object.definition.name[state.language] = x_params.name;
+
+        SaveStatement(statement);
+    }
+    if (surf_mode) {
+        var statement = {
+            actor: actor,
+            verb: {
+                id: "http://lrs.surfuni.org/verb/joined",
+                display: {
+                    "en-US": "Joined"
+                }
+            },
+            object: {
+                objectType: "Activity",
+                id: "http://lrs.surfuni.org/object/course",
+                definition: {
+                    name: {
+                        "en-US": "Course"
                     }
-                },
-                context: {
-                    extensions: {
-                        "http://lrs.surfuni.org/context/course": surf_course,
-                        "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                        "http://lrs.surfuni.org/context/label": ""
-                    }
-                },
-                target: {
-                    id: baseUrl() + state.templateId
-                },
-                timestamp: this.initStamp
-            };
-            SaveStatement(statement);
-        }
-        //    }
+                }
+            },
+            context: {
+                extensions: {
+                    "http://lrs.surfuni.org/context/course": surf_course,
+                    "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                    "http://lrs.surfuni.org/context/label": ""
+                }
+            },
+            target: {
+                id: baseUrl() + state.templateId
+            },
+            timestamp: this.initStamp
+        };
+        SaveStatement(statement);
     }
 }
 

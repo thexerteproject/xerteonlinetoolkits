@@ -750,8 +750,8 @@ table.headerCol.shaded td.header {
 }
 
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
-  color: #FCBC2B;
-  background-color: #3F4957;
+  background-color: #FCBC2B;
+  color: #3F4957;
 }
 
 #x_sideBarBtnHolder button {
@@ -766,14 +766,18 @@ table.headerCol.shaded td.header {
   border-color: #3F4957;
 }
 
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover .ui-button-text, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus .ui-button-text, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active .ui-button-text {
+  color: #3F4957;
+}
+
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
-  background-color: #3F4957;
-  color: #ffffff;
+  background-color: #FCBC2B;
+  color: #3F4957;
 }
 
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
-  background-color: #3F4957;
-  color: #ffffff;
+  background-color: #FCBC2B;
+  color: #3F4957;
 }
 
 @media only screen and (max-width: 500px) {

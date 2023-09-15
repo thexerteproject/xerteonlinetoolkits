@@ -731,8 +731,7 @@ div#workspace{
 }
 
 #sort-selector {
-    background-color:#f86718;
-    color:#fff;
+    background-color:#fff;
     border-radius:4px;
     border:#fff 1px solid;
     padding:2px;
@@ -843,6 +842,7 @@ div.ui-layout-center {
 }
 
 /*class for hidden screenreader only content*/
+/* colour is black on white to surpress contrast errors from some accessibility checkers */
 .sr-only {
 	position:absolute;
 	left:-10000px;
@@ -850,4 +850,6 @@ div.ui-layout-center {
 	width:1px;
 	height:1px;
 	overflow:hidden;
+	background-color: white;
+	color: black;
 }

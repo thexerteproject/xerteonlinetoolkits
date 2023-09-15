@@ -171,7 +171,7 @@ function clear_recyclebin($templates)
     return "<p>" . $feedback . "</p>";
 }
 
-function createGetFolderId($folder_structure, $newuserid, $old_folder_id)
+function createGetFolderId($folder_structure, $newuserid, $old_folder_id, $transfer_shared_folders)
 {
     global $prefix;
     for ($i=0; $i, count($folder_structure); $i++)
@@ -185,7 +185,7 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id)
             else
             {
                 if ($folder_structure[$i]['folder_parent'] != 0) {
-                    $parent_folder_id = createGetFolderId($folder_structure, $newuserid, $folder_structure[$i]['folder_parent']);
+                    $parent_folder_id = createGetFolderId($folder_structure, $newuserid, $folder_structure[$i]['folder_parent'], $transfer_shared_folders);
                 }
                 else
                 {
@@ -207,13 +207,38 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id)
                 }
                 // Not found, create
                 $q = "insert into {$prefix}folderdetails set login_id=?, folder_parent=?, folder_name=?, date_created=?";
-                $params = array($newuserid, $parent_folder_id, $folder_structure[$i]['folder_name'], date('Y-m-d'));
+                $params = array($newuserid, $parent_folder_id, $folder_structure[$i]['folder_name'], date('Y-m-d H:i:s'));
                 $folder_id = db_query($q, $params);
                 $folder_structure[$i]['newid'] = $folder_id;
                 if ($folder_id !== false){
                     $query = "INSERT INTO {$prefix}folderrights (folder_id, login_id, folder_parent, role) values (?,?,?,?)";
                     $params = array($folder_id, $newuserid, $parent_folder_id, "creator");
                     $ok = db_query($query, $params);
+                }
+                if ($transfer_shared_folders)
+                {
+                    // Check whether old_folder_id is shared, and change to new $folder_id
+                    // Both for folderrights table as for folder_group_rights_table
+
+                    // 1. folderrights
+                    $q = "update {$prefix}folderrights set folder_id=? where folder_id=? and role != 'creator'";
+                    $params = array($folder_id, $old_folder_id);
+                    db_query($q, $params);
+
+                    // Delete any sharing records with login_id
+                    $q = "delete from {$prefix}folderrights where login_id=? and role != 'creator'";
+                    $params = array($newuserid);
+                    db_query($q, $params);
+
+                    // 2. folder_group_rights_table
+                    $q = "update {$prefix}folder_group_rights_table set folder_id=? where folder_id=? and role != 'creator'";
+                    $params = array($folder_id, $old_folder_id);
+                    db_query($q, $params);
+
+                    // Move all templaterights referring to $old_folder_id to $folder_id
+                    $q = "update {$prefix}templaterights set folder=? where folder=?";
+                    $params = array($folder_id, $old_folder_id);
+                    db_query($q, $params);
                 }
                 return $folder_id;
             }
@@ -225,7 +250,7 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id)
 
 if(is_user_admin())
 {
-    if (isset($_REQUEST['olduserid']) && isset($_REQUEST['newuserid']) && isset($_REQUEST['transfer_private']) && isset($_REQUEST['delete_user'])) {
+    if (isset($_REQUEST['olduserid']) && isset($_REQUEST['newuserid']) && isset($_REQUEST['transfer_private']) && isset($_REQUEST['transfer_shared_folders']) && isset($_REQUEST['delete_user'])) {
         // Get username of olduserid
         $q = "select * from {$prefix}logindetails where login_id=?";
         $params = array($_REQUEST['olduserid']);
@@ -239,8 +264,10 @@ if(is_user_admin())
         $newuser_rec = db_query_one($q, $params);
 
         $newuser = $newuser_rec['username'];
+        $newuserid = $_REQUEST['newuserid'];
 
         $transfer_private = ($_REQUEST['transfer_private'] == 'true' ? true : false);
+        $transfer_shared_folders = ($_REQUEST['transfer_shared_folders'] == 'true' ? true : false);
         $delete_user = ($_REQUEST['delete_user'] == 'true' ? true : false);
 
         $q = "select td.*, tr.*, otd.template_name as orgtemplate_name, f.folder_id, f.folder_parent, f.folder_name from {$prefix}templatedetails td, {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd, {$prefix}folderdetails f, {$prefix}logindetails ld 
@@ -271,12 +298,8 @@ if(is_user_admin())
             }
 
             // Get folder parent name of newuser
-            $q = "select fd.folder_id, fd.login_id from {$prefix}folderdetails fd, {$prefix}logindetails ld where ld.login_id=fd.login_id and ld.username=? AND folder_name = ?";
-            $rootfolder = db_query_one($q, array($newuser, $newuser));
-            if ($rootfolder === false)
-            {
-                die("Could not find workspace folder of user " . $newuser);
-            }
+            $rootfolder = get_user_root_folder_by_id($newuserid);
+
             // Check if folder $foldername exists for user 'newuser'
             $q = "select folder_id from {$prefix}folderdetails fd, {$prefix}logindetails ld where ld.login_id=fd.login_id and ld.username=? AND folder_name = ?";
             $folder = db_query_one($q, array($newuser, $foldername));
@@ -289,7 +312,7 @@ if(is_user_admin())
             {
                 // create folder
                 $folder_create_query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-                $folder_create_params = array($rootfolder['login_id'], $rootfolder['folder_id'], $foldername, date('Y-m-d'));
+                $folder_create_params = array($rootfolder['login_id'], $rootfolder['folder_id'], $foldername, date('Y-m-d H:i:s'));
                 //$folderid = db_query($q, $params);
                 // Create folder only if needed
             }
@@ -335,7 +358,7 @@ if(is_user_admin())
 
                     // 2. templaterights
                     // 2a. Make sure new folder exists
-                    $folder_id = createGetFolderId($folder_structure, $_REQUEST['newuserid'], $template['folder_id']);
+                    $folder_id = createGetFolderId($folder_structure, $_REQUEST['newuserid'], $template['folder_id'], $transfer_shared_folders);
                     // 2b. put in correct folder
                     $q = "insert {$prefix}templaterights set template_id=?, user_id=?, role='creator', folder=?";
                     $params = array($template['template_id'], $rootfolder['login_id'], $folder_id);
@@ -396,7 +419,7 @@ if(is_user_admin())
                 $feedback = str_replace("{count}", $res, $feedback);
                 echo $feedback;
 
-                if ($transfer_private) {
+                if ($transfer_private && $transfer_shared_folders) {
                     // Empty recyclebin (and delete templates)
                     $feedback = clear_recyclebin($templates_recyclebin);
                     $feedback = str_replace("{user}", $olduser, $feedback);

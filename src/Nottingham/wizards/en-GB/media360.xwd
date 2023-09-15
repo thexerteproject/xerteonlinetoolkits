@@ -35,7 +35,7 @@
 	<lockPswdWrong label="Wrong Password" type="TextInput" wysiwyg="true" language="true"/>
 	
     <newNodes>
-	  <file360><![CDATA[<file360 name="Enter Scene Title" file="Select an Image" tip="Enter a Description for Accessibility" title="false"/>]]></file360>
+	  <file360><![CDATA[<file360 name="Enter Scene Title" file="Select an Image" tip="" title="false"/>]]></file360>
     </newNodes>
 
   </media360>
@@ -52,12 +52,12 @@
   
     <media type="group" label="Image" condition="cubemapcb!='true'">
 		<file label="File" type="media" condition="cubemapcb!='true'"/>
-		<tip label="Description" type="TextInput" condition="cubemapcb!='true'"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" condition="cubemapcb!='true'"/>
 	</media>
 	
 	<cubemapimages type="group" label="Cubemap Images" optional="true" tooltip="Upload and use 6 cube faces instead of a single image. All 6 faces are required. When including multiple Cubemap scenes be careful to use unique image names e.g. image1234_front.jpg, image1235_front.jpg etc or use subfolders for each Cubemap scene.">
 		<cubemapcb label="Cubemap" optional="true" type="CheckBox" defaultValue="true" tooltip="Uncheck Cubemap or remove this optional property group to return to using a single image for this scene." conditionTrigger="true"/>
-		<cubemaptip label="Description" optional="true" type="TextInput" defaultValue="Enter a Description for Accessibility" condition="cubemapcb!='false'"/>
+		<cubemaptip label="Description" optional="true" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="cubemapcb!='false'"/>
 		<front label="Front" optional="true" type="media" condition="cubemapcb!='false'"/>
 		<right label="Right" optional="true" type="media" condition="cubemapcb!='false'"/>
 		<back label="Back" optional="true" type="media" condition="cubemapcb!='false'"/>
@@ -118,7 +118,7 @@
 	
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" optional="true" defaultValue="Select an Image"/>
-		<imageTip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<imageTip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgGroup>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
@@ -134,7 +134,7 @@
 	
 	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
 		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select a Video"/>
-		<tip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</video>
 	
 	<videoTiming type="group" label="Video Start &amp; End Times" condition="hotspotMovie!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole video will play">

@@ -46,11 +46,6 @@
                 $(this).data("popcornInstance").pause();
             });
 
-            // if audio is in footer (outside pageHolder) it will need reloading on every page change
-            if ($("#pageContents").data("audioBar") == true && $x_footerBlock.find(".mainMedia").length == 0) {
-                this.loadAudioInFooter();
-            }
-
             this.setUp();
         };
 
@@ -69,41 +64,21 @@
         };
 
         this.resizePanels = function() {
-            var zoomLevel = window.devicePixelRatio;
-            var zoomCorrection = -1/zoomLevel;
             // make sure no scroll bars are on screen during panel sizing
             var curroverflow = $x_pageHolder.css("overflow");
             $x_pageHolder.css("overflow", "hidden");
-            var numTileH = $("#panelHolder .panel.tileH").length,
-                numTileV = $("#panelHolder .panel.tileV").length;
-
-            if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0) {
-                numTileH = $("#panelHolder .top .panel.tileH").length;
-            }
-
-            var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseFloat($panelHolder.find(".panel.tileH").css("margin-right"));
-
-            $panelHolder.find(".panel.tileH")
-                .width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2 + zoomCorrection);
-
-            $panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
-
-            $panelHolder.find(".panel.tileV")
-                .height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseFloat($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseFloat($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2)
-                .css('width', '');
-
+			
             var infoHolderHeight = 0;
             if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
-                var infoHolderHeight = $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2
+                infoHolderHeight = $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2
             }
+			
+			$panelHolder.css("margin-top", infoHolderHeight);
 
-            $panelHolder.find(".panel.fullH")
+            $panelHolder.find(".panel")
                 .height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() -
-                    (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2
+                    (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel").css("padding-top")) * 2
                     + infoHolderHeight) - 5);
-
-            $panelHolder.find(".panel.halfH")
-                .height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 
             $x_pageHolder.css("overflow", curroverflow);
 
@@ -160,12 +135,6 @@
                 resizeEmbededMedia($(this), {ratio: ratio});
             });
 
-            $(".audioImg").each(function() {
-                var $this = $(this);
-                x_scaleImg($this, $this.closest(".panel").width(), $this.closest(".panel").height() - x_audioBarH, true, false);
-                $this.closest(".mediaHolder").width($this.width());
-            });
-
             $(".popcornMedia audio").each(function(i) {
                 var audioBarW = 0;
                 $(this).closest(".mejs-inner").find(".mejs-controls").children().each(function() {
@@ -216,7 +185,7 @@
                 $("#panelHolder").html("No media was loaded.");
             }
 
-            $panelHolder.find(".panel .fullH").each(function() {
+            $panelHolder.find(".panel").each(function() {
                 interactiveVideo.resizeContent($(this));
             });
 
@@ -227,8 +196,7 @@
 
         // function resizes contentBlocks that should fill available space
         this.resizeContent = function($holder) {
-            var excludeH = $holder.data("exclude") != undefined ? $holder.data("exclude").outerHeight(true) : 0,
-                $panel = $holder.parents(".panel");
+            var $panel = $holder.parents(".panel");
 
             // if content is overlay on media then use media for max sizes
             if ($holder.parents(".panelContent").length == 0) {
@@ -236,13 +204,9 @@
             }
 
             if (!$holder.data("max")) {
-                $holder.height($panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
+                $holder.height($panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight());
             } else {
-                $holder.css("max-height", $panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
-            }
-
-            if ($holder.hasClass("googlemapHolder")) {
-                //google.maps.event.trigger($holder.find(".gm-style")[0], "resize");
+                $holder.css("max-height", $panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight());
             }
         }
 
@@ -355,6 +319,11 @@
                     /* files are already loaded statically */
                     loadFiles = false;
                 }
+                // comment out next loop and always load popcorn files
+                // This is because popcorn breaks if you have a mediaLesson
+                // and then a nav page which also loads popcorn with a different set of plugins
+                // Any mediaLesson after that will not work anymore
+                /*
                 for (var i=0; i<x_pageInfo.length; i++) {
                     if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
                         // a page of this type has already been loaded - don't reload popcorn files
@@ -362,7 +331,7 @@
                         break;
                     }
                 }
-
+                */
                 if (loadFiles == true ) {
                     this.loadPopcorn();
                 } else {
@@ -439,16 +408,12 @@
             // _____ SORT PAGE LAYOUT _____
 
             $panelHolder = $("#panelHolder");
-
-            // Clear panelholder
             $panelHolder.html("");
 
-            var	panelData = $(x_currentPageXML).children(),
-                panelLayout = "grid";
+            var	panelData = $(x_currentPageXML).children();
 
             var	mediaFile = $(x_currentPageXML).children("ivMediaPanel").attr("media"),
                 mediaType = "video",
-                maxPanels = 4,
                 mediaPanelIndex;
 
             // get index of media panel
@@ -463,30 +428,11 @@
             if (mediaFile.indexOf(".mp3") != -1) {
                 mediaType = "audio";
 
-                // will audio appear in its own panel or across the bottom like narration?
-                var audioPosition = panelData[mediaPanelIndex].getAttribute("audioPosition") == "bottom" && (panelData[mediaPanelIndex].getAttribute("audioImage") == "" || panelData[mediaPanelIndex].getAttribute("audioImage") == undefined) ? "bottom" : "panel";
-
-                if (audioPosition == "bottom") {
-                    $("#pageContents").data("audioBar",true);
-                    this.popcornInstance = this.loadAudioInFooter();
-                    mediaPanelIndex = -1;
-                }
-
             } else if (mediaFile.indexOf(".") == -1) {
                 // no media
                 mediaType = undefined;
                 panelData.splice(mediaPanelIndex, 1);
                 mediaPanelIndex = -1;
-            }
-
-            // if media is in a panel then make sure the number of panels doesn't exceed maxPanels
-            if (mediaPanelIndex != -1 && panelData.length > maxPanels) {
-                if (mediaPanelIndex >= maxPanels) {
-                    panelData.splice(maxPanels - 1, 0, panelData[mediaPanelIndex]);
-                    panelData.splice(mediaPanelIndex + 1, 1);
-                    mediaPanelIndex = maxPanels - 1;
-                }
-                panelData.splice(maxPanels, panelData.length - maxPanels);
             }
 
             // set up accordion if there's some intro text
@@ -535,13 +481,8 @@
                 $("#contentCover").hide();
             }
 
-            // create all panels, including the overlay panel
+            // create media panel and sort info about overlay panel
             for (var i=0; i<panelData.length; i++) {
-                var title = "";
-                // give the panel a name
-                if (panelData[i].getAttribute("name") != "") {
-                    title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
-                }
                 // mark the overlay panel and all its relevant children as such
                 if (panelData[i].nodeName == "ivOverlayPanel") {
                     $(panelData[i].children).each(function(j){
@@ -555,102 +496,19 @@
                         this.setAttribute("clearPanel", "true");
                     });
                 }
-                // name and id all other panels
+                // name and id media panels
                 else{
+					var title = "";
+					if (panelData[i].getAttribute("name") != "") {
+						title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
+					}
                     $('<div class="panel">' + title + '</div>')
                         .appendTo($panelHolder)
                         .attr("id", interactiveVideo.panelbaseid + i);
                 }
             }
-            // layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
-            if (panelLayout == "tileH") {
-                $panelHolder.find(".panel").addClass("tileH fullH");
-
-            } else if (panelLayout == "tileV") {
-                $panelHolder.find(".panel").addClass("tileV fullW");
-
-            } else if (panelLayout == "grid") {
-                if (panelData.length > 2) {
-                    $panelHolder.append('<div class="top"></div><div class="bottom"></div>');
-
-                    var panels = $panelHolder.find(".panel");
-
-                    for (var i=0; i<panels.length; i++) {
-                        if (i < 2) {
-                            $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
-                        } else {
-                            $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
-                        }
-                    }
-
-                } else if (panelData.length > 1) {
-                    var $mainHolder = $("#x_mainHolder");
-                    // Two panels. If in portrait mode, stack vertical, otherwise show horizontal
-                    // Use mainHolder, because height of panelHolder is not set on touch/mobile devices
-                    if ($mainHolder.width() >= $mainHolder.height() ) {
-                        $panelHolder.find(".panel").addClass("tileH fullH");
-                    }
-                    else
-                    {
-                        $panelHolder.find(".panel").addClass("tileV fullW");
-                    }
-
-                } else {
-                    $panelHolder.find(".panel").addClass("fullH");
-                }
-
-            // layouts where screen is split with large panel on one side and smaller panels on other side - can be horizontally or vertically
-            } else if (panelLayout == "top" || panelLayout == "bottom") {
-                $panelHolder.append('<div class="top"></div><div class="bottom"></div>');
-
-                var panels = $panelHolder.find(".panel");
-
-                if (panelLayout == "top") {
-                    for (var i=0; i<panels.length; i++) {
-                        if (i == 0) {
-                            $(panels[i]).appendTo($panelHolder.find(".top")).addClass("fullW halfH");
-                        } else {
-                            $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
-                        }
-                    }
-
-                } else if (panelLayout == "bottom") {
-                    for (var i=0; i<panels.length; i++) {
-                        if (i == panels.length - 1) {
-                            $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("fullW halfH");
-                        } else {
-                            $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
-                        }
-                    }
-                }
-
-            } else {
-                $panelHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
-
-                var panels = $panelHolder.find(".panel");
-
-                if (panelLayout == "left") {
-                    for (var i=0; i<panels.length; i++) {
-                        if (i == 0) {
-                            $(panels[i]).appendTo($panelHolder.find(".left")).addClass("fullH");
-                        } else {
-                            $(panels[i]).appendTo($panelHolder.find(".right")).addClass("tileV");
-                        }
-                    }
-
-                } else if (panelLayout == "right") {
-                    for (var i=0; i<panels.length; i++) {
-                        if (i == panels.length - 1) {
-                            $(panels[i]).appendTo($panelHolder.find(".right")).addClass("fullH");
-                        } else {
-                            $(panels[i]).appendTo($panelHolder.find(".left")).addClass("tileV");
-                        }
-                    }
-                }
-            }
 
             this.resizePanels();
-
 
             // loadMedia & sortPopcorn are called below & also in the media plus plugin which deals with additional media added to panels
 
@@ -662,9 +520,7 @@
                for (var i = 0; i < childs.length; i++) {
                    if (childs[i].nodeName === 'synchMCQ') {
                        mcqBool = false;
-                       console.log(childs[i].nodeName);
                    }
-                   console.log(childs[i].nodeName);
                    this.isMCQ(childs[i]);
                }
             }
@@ -944,22 +800,6 @@
                 this.popcornInstance.off("ended");
             }
         };
-
-
-        // function loads audio in the footer bar (like narration) when it doesn't go in a panel
-        this.loadAudioInFooter = function() {
-            var $mainAudio = $('<div class="x_pageNarration popcornMedia mainMedia"/>').insertBefore($("#x_footerBlock div:first"));
-                $mainAudio
-                .attr("title", $(x_currentPageXML).children("ivMediaPanel").attr("tip"))
-                .mediaPlayer({
-                    type		:"audio",
-                    source		:$(x_currentPageXML).children("ivMediaPanel").attr("media"),
-                    width       :"100%",
-                    autoPlay    :$(x_currentPageXML).children("ivMediaPanel").attr("autoplay")
-                });
-            return Popcorn(".mainMedia audio");
-            x_updateCss(false);
-        }
 
         // the following three functions sort synchData (so events have correct start / end points),
         // creates popcorn instance and calls plugins to create synch points

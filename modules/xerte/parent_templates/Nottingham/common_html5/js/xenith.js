@@ -114,7 +114,7 @@ $(document).keydown(function(e) {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherlight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -257,6 +257,19 @@ x_projectDataLoaded = function(xmlData) {
 	if (x_params.authorSupport == "true") {
 		if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
 			x_params.authorSupport = "false";
+		}
+	}
+
+	// sort any parameters in url - these will override those in xml
+	var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
+		hash;
+
+	for (var i=0; i<tempUrlParams.length; i++) {
+		var split = tempUrlParams[i].split("=");
+		if (split.length == 2) {
+			x_urlParams[split[0]] = split[1];
+		} else {
+			hash = tempUrlParams[i];
 		}
 	}
 
@@ -508,19 +521,6 @@ x_projectDataLoaded = function(xmlData) {
         }
     }
 	
-    // sort any parameters in url - these will override those in xml
-    var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
-		hash;
-	
-	for (var i=0; i<tempUrlParams.length; i++) {
-		var split = tempUrlParams[i].split("=");
-		if (split.length == 2) {
-			x_urlParams[split[0]] = split[1];
-		} else {
-			hash = tempUrlParams[i];
-		}
-    }
-	
 	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
 	var customStartPage = false;
 	
@@ -757,8 +757,20 @@ function x_getThemeInfo(thisTheme, themeChg) {
 	// some older themes use images for interface buttons (not FontAwesome icons) - it's only these themes that can fall back to use the defaultFA (all others should have FA icons set in theme)
 	// these themes should have imgbtns: true in the theme info file
 	if (thisTheme == undefined || thisTheme == "default") {
-		x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
-		
+		x_params.theme = "default";
+		x_setUpThemeBtns({imgbtns: 'true'}, themeChg);
+	} else if (xot_offline) {
+		const temp = themeinfo.split('\n'),
+			themeInfo = {};
+
+		for (let i=0; i<temp.length; i++) {
+			if (temp[i].split(':').length > 1) {
+				themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+			}
+		}
+
+		x_setUpThemeBtns(themeInfo, themeChg);
+
 	} else {
 		$.ajax({
 			type: "GET",
@@ -776,8 +788,17 @@ function x_getThemeInfo(thisTheme, themeChg) {
 				
 				x_setUpThemeBtns(themeInfo, themeChg);
 			},
-			error: function() {
-				x_setUpThemeBtns({}, themeChg);
+			error: function(err) {
+				if (err.status == 404)
+				{
+					// Fall back to default
+					x_params.theme = "default";
+					x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
+				}
+				else
+				{
+					x_setUpThemeBtns({}, themeChg);
+				}
 			}
 		});
 	}
@@ -799,11 +820,13 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 		x_btnIcons[i].btnImgs = false;
 		x_btnIcons[i].iconClass = x_btnIcons[i].defaultIconClass;
 		
+		const tempName = x_btnIcons[i].name == 'home' ? 'toc' : x_btnIcons[i].name;
+		
 		if (x_params[x_btnIcons[i].custom] == 'true') {
 			// a custom icon has individually been selected in editor for this button
 			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
 			x_btnIcons[i].customised = true;
-		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(x_btnIcons[i].name, x_sideBarBtns) != -1)) {
+		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(tempName, x_sideBarBtns) != -1)) {
 			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
 			// either because update theme icons is checked or button is on side bar
 			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
@@ -1072,7 +1095,13 @@ function x_setUp() {
 		$x_nextBtn		= $("#x_nextBtn");
 		$x_background	= $("#x_background");
 
-		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
+		if (x_params.responsive == "true") {
+			// Use default font size
+			$x_body.css("font-size", "10pt");
+		}
+		else {
+			$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
+		}
 
 		if (x_params.authorSupport == "true") {
 			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
@@ -1304,7 +1333,7 @@ function x_KeepAlive()
 {
 	const now = new Date().getTime();
 	let url = "website_code/php/keepalive.php" + "?t=" + now;
-	if (sessionParam != undefined)
+	if (typeof sessionParam !== 'undefined')
 	{
 		url = "website_code/php/keepalive.php" + sessionParam + "&t=" + now;
 	}
@@ -1404,33 +1433,39 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button({ label: $.trim(x_params.introBtnTxt) })
 						.click(function() {
-							parent.window.$.featherlight.current().close();
+							try {
+								parent.window.$.featherlight.current().close();
+							}
+							catch(e)
+							{
+								// Do nothing
+							}
 						});
 					
 					// there are different types of content that might appear in project intro lightbox
 					if (introInfo.type == 'img') {
-						
+
 						lb = $.featherlight({
 							image: introInfo.info.img,
 							afterOpen: function() {
 								this.$content.attr('alt', introInfo.info.tip);
-								
+
 								const $holder = this.$content.parent('.featherlight-content');
-								
+
 								// include project title
 								if (x_params.introTitle == 'true') {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
 										.prependTo($holder)
 										.html(x_params.name);
 								}
-								
+
 								// include start button to close lightbox
 								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
 									$introStartBtn
 										.appendTo($holder)
 										.addClass('x_introImgBtn');
 								}
-								
+
 							}
 						});
 						
@@ -1566,7 +1601,13 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button()
 						.click(function() {
-							parent.window.$.featherlight.current().close();
+							try {
+								parent.window.$.featherlight.current().close();
+							}
+							catch(e)
+							{
+								// Do nothing
+							}
 						});
 					
 					// there are different types of content that might appear in page intro lightbox
@@ -1764,7 +1805,15 @@ function x_continueSetUp1() {
 		if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && prevIcon.customised === false) {
 			prevIcon.iconClass = "x_prev_hist";
 		}
-		
+
+		let shownInFeatherLight = false;
+		try{
+			shownInFeatherLight = parent.window.$.featherlight.current();
+		}
+		catch(e)
+		{
+			// Do nothing
+		}
 		$x_prevBtn
 			.button({
 				icons: {
@@ -1797,7 +1846,7 @@ function x_continueSetUp1() {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherLight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -2189,6 +2238,10 @@ function x_sideBarBtnInfo() {
 					}
 				}
 			}
+		}
+		
+		if (x_sideBarBtns.length > 0 && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
+			x_params.displayMode = 'full screen';
 		}
 	}
 }
@@ -2675,7 +2728,7 @@ function x_checkPages(type, id, pageArray) {
 
 function x_setMaxWidth() {
 	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
-		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss','interactiveVideo'];
 		var styleString = '<style>';
 		for (var i=0; i<workingPages.length; i++) {
 			if (i>0) { styleString += ', '; }

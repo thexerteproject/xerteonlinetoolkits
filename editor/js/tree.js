@@ -370,7 +370,10 @@ var EDITOR = (function ($, parent) {
         })
         .fail(function() {
             $('#loader').hide();
-            alert( "error" );
+			// alert from play button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
         });
     },
 
@@ -400,7 +403,10 @@ var EDITOR = (function ($, parent) {
         })
         .fail(function() {
             $('#loader').hide();
-            alert( "error" );
+			// alert from publish button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
         });
     },
 
@@ -435,7 +441,8 @@ var EDITOR = (function ($, parent) {
                 })
             .fail(function() {
                 $('#loader').hide();
-                alert( "error" );
+				// alert from close editor
+				alert( "error" );
             });
     },
 
@@ -535,6 +542,11 @@ var EDITOR = (function ($, parent) {
         // Be careful. You cannot just find $("#" + current_node.id + "_text").html(), because if the node is collapsed this will return undefined!
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
+        // Nodes that are created in this session are different, and only contain the text. The above line will return undefined for these nodes.
+        if (nodeText == undefined)
+        {
+            nodeText = current_node.text;
+        }
 
         var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
@@ -1097,6 +1109,11 @@ var EDITOR = (function ($, parent) {
                 $('#language_cb_span').switchClass("disabled", "enabled");
                 $('#language_cb').removeAttr("disabled");
                 $('#language_cb').prop('checked', defaultLanguage);
+            }
+            else
+            {
+                $('#language_cb_span').switchClass("enabled", "disabled");
+                $('#language_cb').prop("disabled", true);
             }
         }
 

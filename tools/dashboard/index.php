@@ -49,7 +49,7 @@ else if(isset($_POST["template_id"]))
 if(is_numeric($id) || $id == null) {
     $tsugi_enabled = true;
     $lti_enabled = true;
-    $LAUNCH = LTIX::requireData();
+    $LAUNCH = LTIX::requireData(LTIX::USER);
 
     $role = 'Student';
     if ($LAUNCH->user->instructor)
@@ -181,7 +181,9 @@ if(is_numeric($id) || $id == null) {
     $info->lrs = $statistics_available->lrs;
     $info->dashboard = $statistics_available->dashboard;
     $info->role = $role;
-    $info->users = $users;
+    if ($role != "Student") {
+        $info->users = $users;
+    }
     $info->actor = $USER->email;
     $info->displayname = $USER->displayname;
     $info->firstname = $USER->firstname;

@@ -276,6 +276,8 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_NONANONYMOUS_VIEW . "<form><textarea id=\"site_xapi_dashboard_nonanonymous\">" . $row['dashboard_nonanonymous'] . "</textarea></form></p>";
 
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_FORCE_ANONYMOUS_LRS . "<form><textarea id=\"site_xapi_force_anonymous_lrs\">" . $row['xapi_force_anonymous_lrs'] . "</textarea></form></p>";
+
     echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE . "<form>";
 
     echo "<select name=\"xapi_dashboard_minrole\" id=\"xapi_dashboard_minrole\" style=\"padding: 0.4em 0.15em; \">";

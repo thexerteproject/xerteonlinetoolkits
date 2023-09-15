@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -20,8 +19,8 @@
  */
 
 require_once(dirname(__FILE__) . "/Html2Text.php");
-
-function get_meta_data($template_id, $creator_user_name="", $template_type_name="", $template_owner="")
+require_once(dirname(__FILE__) . "/../website_code/php/url_library.php");
+function get_meta_data($template_id, $template_name, $creator_user_name="", $template_type_name="", $template_owner="")
 {
     global $config;
     global $xerte_toolkits_site;
@@ -31,6 +30,10 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
 
     $html = new \Html2Text\Html2Text((string)$xml['name']);
     $xerteMetaObj->name = $html->getText();
+    if (trim($xerteMetaObj->name) == "")
+    {
+        $xerteMetaObj->name = str_replace("_", " ", $template_name);
+    }
 
     if (isset($xml['educode']))
     {
@@ -110,17 +113,17 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
             $cat = (string)$xml['category'];
         }
         $cat = explode("|", $cat);
-        $response = [];
-        $xerteMetaObj->domain = [];
-        $xerteMetaObj->domainId = [];
-        $xerteMetaObj->domainSource = [];
+        $response = array();
+        $xerteMetaObj->domain = array();
+        $xerteMetaObj->domainId = array();
+        $xerteMetaObj->domainSource = array();
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_categories where label=?";
         // query oai_categories
         foreach ($cat as $value){
             $params = array($value);
             $response[] = db_query_one($q, $params);
         }
-        $parents = [];
+        $parents = array();
         foreach ($response as $data){
             if ($data !== false and $data !== null) {
                 $xerteMetaObj->domain[] = $data["label"];
@@ -153,16 +156,16 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     if (isset($xml['metaEducation'])) {
         // query oai-education
         $edu = explode("|", (string)$xml["metaEducation"]);
-        $response = [];
-        $xerteMetaObj->level = [];
-        $xerteMetaObj->levelId = [];
+        $response = array();
+        $xerteMetaObj->level = array();
+        $xerteMetaObj->levelId = array();
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_education where label=?";
 
         foreach ($edu as $value){
             $params = array($value);
             $response[] = db_query_one($q, $params);
         }
-        $parents = [];
+        $parents = array();
         foreach ($response as $data){
             if ($data !== false and $data !== null) {
                 $xerteMetaObj->level[] = $data["label"];
@@ -201,6 +204,10 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     {
         $xerteMetaObj->rights = $syndication['license'];
         $xerteMetaObj->download = ($syndication['export'] == 'true' ? true : false);
+        if ($xerteMetaObj->download)
+        {
+            $xerteMetaObj->downloadUrl = $xerte_toolkits_site->site_url . url_return("export", $template_id);
+        }
         $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_rights where label=?";
         $params = array( $syndication['license']);
         $rights = db_query_one($q, $params);

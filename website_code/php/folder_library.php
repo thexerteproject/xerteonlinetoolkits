@@ -30,6 +30,7 @@ if (file_exists('../../../config.php')) {
 }
 require_once('file_library.php');
 require_once('user_library.php');
+require_once('folder_status.php');
 
 _load_language_file("/website_code/php/folder_library.inc");
 
@@ -56,7 +57,7 @@ function make_new_folder($folder_id,$folder_name){
         $folder_id = get_user_root_folder();
     }
     $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-    $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d'));
+    $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d H:i:s'));
 
 
     $new_folder_id = db_query($query, $params);
@@ -118,6 +119,7 @@ function delete_folder($folder_id){
 
 }
 
+
 /**
  * 
  * Function move file
@@ -151,6 +153,24 @@ function move_file($template_id,$destination)
         $ok = db_query($query_file, $params);
 
         if ($ok !== false) {
+            if ($ok != 1)
+            {
+                // Not updated, so this is probably a project in a shared folder not owned by you
+                // Check if the project has a shared folder that is the same as the destination folder
+                $ancestor = get_shared_ancestor($template_id);
+                if ($ancestor !== false && $ancestor === get_shared_folder_ancestor($destination))
+                {
+                    // The project is in a shared folder, and the destination is the same shared folder
+                    // So we may update the project
+                    $query_file = "UPDATE {$prefix}templaterights SET folder = ? WHERE template_id = ?  AND role = 'creator'";
+                    $params = array($destination, $template_id);
+                    $ok = db_query($query_file, $params);
+                }
+                else
+                {
+                    echo MOVE_FILE_FAILED_NOT_OWNER;
+                }
+            }
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "Template " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
         } else {
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $$template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
@@ -207,3 +227,103 @@ function has_rights_to_this_folder($folder_id, $user_id){
 }
 */
 
+function get_all_subfolders_of_folder_for_user($folder_id, $user_id){
+    global $xerte_toolkits_site;
+    $query = "select * from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_parent = ? AND login_id=? ";
+    $result = db_query($query, array($folder_id, $user_id));
+
+    $folders = array();
+    foreach($result as $row) {
+        $folders[] = $row['folder_id'];
+        $folders = array_merge($folders, get_all_subfolders_of_folder_for_user($row['folder_id'], $user_id));
+    }
+    return $folders;
+}
+
+function get_folder_creator($folder)
+{
+    global $xerte_toolkits_site;
+    $sql = "select login_id from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? and role='creator'";
+    $params = array($folder);
+    $row = db_query_one($sql, $params);
+    if (!empty($row)) {
+        return $row['login_id'];
+    }
+
+    return null;
+}
+
+function get_all_templates_of_user_in_folder($folder_id, $user_id){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    // Get creator of folder
+    $creator = get_folder_creator($folder_id);
+
+    $checkParams = array($user_id);
+    $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
+
+    $query_to_check_folder = "SELECT template_id from {$prefix}templaterights where user_id = ? and role = 'creator' and folder in (";
+    $first = true;
+    foreach ($foldersToCheck as $folder) {
+        if (!$first) {
+            $query_to_check_folder .= ", ";
+        }
+        $first = false;
+        $query_to_check_folder .= "?";
+        array_push($checkParams, $folder);
+    }
+
+    $query_to_check_folder .= ")";
+
+    $result = db_query($query_to_check_folder, $checkParams);
+
+    $templates = array();
+    foreach($result as $row) {
+        $templates[] = $row['template_id'];
+    }
+    return $templates;
+}
+
+function get_all_templates_of_users_in_folder($folder_id, $user_ids){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    // Get creator of folder
+    $creator = get_folder_creator($folder_id);
+
+    $checkParams = array($user_ids);
+    $foldersToCheck = get_all_subfolders_of_folder_for_user($folder_id, $creator);
+
+    $questionmarks = str_repeat("?,", count($user_ids) - 1) . "?";
+
+    $query_to_check_folder = "SELECT template_id, user_id from {$prefix}templaterights where user_id in {$questionmarks} and role = 'creator' and folder in (";
+    $first = true;
+    foreach ($foldersToCheck as $folder) {
+        if (!$first) {
+            $query_to_check_folder .= ", ";
+        }
+        $first = false;
+        $query_to_check_folder .= "?";
+        array_push($checkParams, $folder);
+    }
+
+    $query_to_check_folder .= ")";
+
+    $result = db_query($query_to_check_folder, $checkParams);
+
+    return $result;
+}
+
+function get_all_folders_shared_with_group($group)
+{
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $sql = "select fd.* from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr where group_id=? and role != 'creator' and fd.folder_id=fgr.folder_id";
+    $params = array($group);
+
+    $rows = db_query($sql, $params);
+
+    return $rows;
+}

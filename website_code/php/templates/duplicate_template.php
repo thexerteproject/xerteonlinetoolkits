@@ -85,8 +85,8 @@ if(is_numeric($_POST['template_id'])){
         $params = array(
                 $_SESSION['toolkits_logon_id'],
             $row_template_type['template_type_id'],
-            date('Y-m-d'), 
-            date('Y-m-d'),
+            date('Y-m-d H:i:s'),
+            date('Y-m-d H:i:s'),
             "Private",
             COPY_OF . htmlspecialchars($_POST['template_name']),
             $row_template_type['extra_flags']);

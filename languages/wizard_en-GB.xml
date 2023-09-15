@@ -100,6 +100,7 @@
 		</fileexists>
 	</importMedia>
 	<Alert>
+		<sessionError>Error: Session expired - please log in!\nReturn to the Xerte workspace and refresh the page to log in again.\nClosing the editor without logging in first may result in a loss of data.</sessionError>
 		<oklabel>Ok</oklabel>
 		<cancellabel>Cancel</cancellabel>
 		<nolabel>No</nolabel>
@@ -240,5 +241,7 @@
 	<UploadCSV>
 		<UploadCSVBtn label = "Upload csv"/>
 		<Info label = "Warning: This will overwrite the current table, are you sure?"> </Info>
+		<Info2 label = "Warning: This will add the new table to the current table, are you sure? Please note that there might be duplicate entries after merge."> </Info2>
+		<mergeOld label = "Keep the old table when importing a csv file:"/>
 	</UploadCSV>>
 </language>
