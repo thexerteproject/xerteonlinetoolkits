@@ -117,6 +117,19 @@
       this.pdfDownload(true);
     };
 
+    this.secondsTOHHMMSS = function (totalSeconds){
+      var hours = Math.floor(totalSeconds / 3600);
+      var minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+      var seconds = totalSeconds - (hours * 3600) - (minutes * 60);
+
+      // Padding the values to ensure they are two digits
+      if (hours < 10) { hours = "0" + hours; }
+      if (minutes < 10) { minutes = "0" + minutes; }
+      if (seconds < 10) { seconds = "0" + seconds; }
+
+      return hours + ':' + minutes + ':' + seconds;
+    };
+
     this.init = function() {
 
       if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
@@ -193,7 +206,8 @@
       var altfullrow = false;
       $("#averageScore").html(xtresults.averageScore + "%");
       $("#completion").html(xtresults.completion + "%");
-      $("#totalDuration").html(xtresults.totalDuration + "s");
+
+      $("#totalDuration").html(results.secondsTOHHMMSS(xtresults.totalDuration));
       $("#startTime").html(xtresults.start);
       var detailstables = 0;
       var firstnormalrow = true;
