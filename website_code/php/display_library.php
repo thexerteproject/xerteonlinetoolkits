@@ -879,8 +879,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
         }
         else
         {
-            if ($query_response[$index]['role'] == 'creator')
-                $unassigned_found = true;
+            $unassigned_found = true;
         }
         $shared = "";
         if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
