@@ -35,7 +35,7 @@ _load_language_file("/website_code/php/properties/name_select_gift_template.inc"
 $search = $_POST['search_string'];
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
