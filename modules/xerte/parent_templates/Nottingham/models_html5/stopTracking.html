@@ -28,7 +28,10 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+            if (x_browserInfo.mobile == false) {
+                var $panel = $("#infoHolder .panel");
+                $panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+            }
 		}
 		
 		this.init = function() {
@@ -78,8 +81,7 @@
                 $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
             }
 
-
-			// call this function in every model once everything's loaded
+            this.sizeChanged();
 			x_pageLoaded();
 		}
 	}
@@ -93,9 +95,11 @@
 <div id="pageContents">
     <div class="splitScreen">
         <div id="textHolder" class="left"></div>
-        <div class="panel right" id="infoHolder">
-            <div id="closingText"></div>
-            <div class="center"><button id="closeBtn"></button></div>
+        <div class="right" id="infoHolder">
+            <div class="panel">
+                <div id="closingText"></div>
+                <div class="center"><button id="closeBtn"></button></div>
+            </div>
         </div>
 
     </div>
