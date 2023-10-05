@@ -1433,13 +1433,8 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button({ label: $.trim(x_params.introBtnTxt) })
 						.click(function() {
-							try {
-								parent.window.$.featherlight.current().close();
-							}
-							catch(e)
-							{
-								// Do nothing
-							}
+							$.featherlight.current().close();
+
 						});
 					
 					// there are different types of content that might appear in project intro lightbox
@@ -1601,13 +1596,7 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button()
 						.click(function() {
-							try {
-								parent.window.$.featherlight.current().close();
-							}
-							catch(e)
-							{
-								// Do nothing
-							}
+							$.featherlight.current().close();
 						});
 					
 					// there are different types of content that might appear in page intro lightbox
