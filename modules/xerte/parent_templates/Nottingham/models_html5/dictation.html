@@ -59,7 +59,7 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
 			var $panel = $("#pageContents .panel");
-			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
 
 			var	audioBarW = 0,
 					$pageAudio = $("#pageAudio");
@@ -401,19 +401,21 @@
 		<div class="right">
 			<div class="panel">
 				<h3 id="count" aria-live="polite"></h3>
-				<div id="prompt"></div>
-				<div id="audioHolder">
-					<div id="pageAudio"></div>
+				<div id="panelContent">
+					<div id="prompt"></div>
+					<div id="audioHolder">
+						<div id="pageAudio"></div>
+					</div>
+					<textarea id="answerTxt" rows="6"></textarea>
+					<div id="btnHolder">
+						<button id="showBtn"></button>
+						<button id="nextBtn"></button>
+						<button id="restartBtn"></button>
+					</div>
+					<div id="answer" aria-live="polite"/>
+					<div id="correct"aria-live="polite"></div>
+					<div id="incorrect"aria-live="polite"></div>
 				</div>
-				<textarea id="answerTxt" rows="6"></textarea>
-				<div id="btnHolder">
-					<button id="showBtn"></button>
-					<button id="nextBtn"></button>
-					<button id="restartBtn"></button>
-				</div>
-				<div id="answer" aria-live="polite"/>
-				<div id="correct"aria-live="polite"></div>
-				<div id="incorrect"aria-live="polite"></div>
 			</div>
 		</div>
 

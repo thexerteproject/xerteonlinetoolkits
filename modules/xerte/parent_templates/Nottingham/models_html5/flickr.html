@@ -48,10 +48,10 @@
 		};
 		
 		this.setPanelSize = function(firstLoad) {
-			this.$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt(this.$panel.css("padding-top")) * 2 - 5);
+			this.$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt(this.$panel.css("padding-top")) - parseInt(this.$panel.css("padding-bottom")) - 5);
 			
 			var $btnHolder = $("#btnHolder");
-			$("#flickrHolder").height(this.$panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+			$("#flickrHolder").height(this.$panel.height() - $btnHolder.outerHeight(true));
 			
 			if (firstLoad == 1) {
 				$btnHolder.hide();
@@ -60,7 +60,7 @@
 		
 		this.setMaxSizes = function() {
 			this.maxImageWidth = $("#flickrHolder").width();
-			this.maxImageHeight = $("#flickrHolder").height() - $("#headerHolder").height() - $("#licenseHolder").height() - 10;
+			this.maxImageHeight = $("#flickrHolder").height() - $("#headerHolder").outerHeight(true) - $("#licenseHolder").outerHeight(true) - 10;
 		}
 		
 		
