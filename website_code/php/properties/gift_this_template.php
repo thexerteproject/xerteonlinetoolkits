@@ -136,7 +136,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $ok = db_query($query_to_gift, $params);
 
-            $root_folder = get_user_root_folder_by_id($user_id);
+            $root_folder = get_user_root_folder_id_by_id($user_id);
 
             $query_to_gift = "update {$prefix}templaterights set user_id =  ?, folder = ? WHERE template_id = ?";
             $params = array($user_id, $root_folder, $tutorial_id);
@@ -188,7 +188,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
             $row_currentrights = db_query_one($query_for_currentdetails, $params);
 
-            $root_folder = get_user_root_folder_by_id($user_id);
+            $root_folder = get_user_root_folder_id_by_id($user_id);
 
             $create_rights_query = "INSERT INTO {$prefix}templaterights (template_id, user_id, role,folder,notes) VALUES (?,?,?,?,?)";
             $params = array($new_template_id, $user_id, "creator", $root_folder, '');
