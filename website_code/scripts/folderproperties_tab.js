@@ -17,91 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	/**	
-	 * 
-	 * folderproperties, javascript for the folder properties tab
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @package
-	 */
 
-	 /**
-	 * 
-	 * Function folders ajax send prepare
- 	 * This function sorts out the URL for most of the queries in the folder properties window
-	 * @param string url = the extra part of the url for this ajax query
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-function folders_ajax_send_prepare(url){
-
-   	xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
-	xmlHttp.onreadystatechange=folder_properties_stateChanged;
-	xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	
-}
-
- 	/**
-	 * 
-	 * Function folders properties state changed
- 	 * This function handles all of the responses from the ajax queries
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-function folder_properties_stateChanged(){ 
-
-	if (xmlHttp.readyState==4){ 
-			
-		if(xmlHttp.responseText!=""){
-			
-			document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
-
-		}
+function tab_stateChanged(response, tabId){
+	if(response!=""){
+		$("#dynamic_area .tabPanel").empty().hide();
+		
+		$("#" + tabId).html(response).show();
 	}
-} 
-
- 	/**
-	 * 
-	 * Function folder name state changed
- 	 * This function handles ajax responses for the folder rename query as this requires extra bits of work
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-
-function folder_rename_stateChanged(){ 
-
-	if (xmlHttp.readyState==4){ 
-
-		if(xmlHttp.responseText!=""){
-
-			/*
-			* the response contains the new html and the new file name, so split them
-			*/
-
-			array_response = xmlHttp.responseText.split("~*~");
-
-			/*
-			* set the html
-			*/
-
-			document.getElementById('dynamic_area').innerHTML = array_response[0];
-
-			/*
-			 * set the file name in the file_area
-			 */
-			if(typeof window_reference==="undefined"){
-				window.opener.refresh_workspace();
-			}
-			else {
-				window_reference.refresh_workspace();
-			}
-		}
-	}		
-
 }
 
  /**
@@ -113,24 +35,13 @@ function folder_rename_stateChanged(){
 	 */
 
 function folder_rss(){
-	/*
-	if(setup_ajax()!=false){
-    
-		var url="folder_rss.php";
-
-		folders_ajax_send_prepare(url);
-
-		xmlHttp.send('folder_id=' + window.name); 
-
-	 }
-	 */
 	 $.ajax({
 		 type: "POST",
 		 url: "website_code/php/folderproperties/folder_rss.php",
 		 data: {folder_id: window.name},
 	 })
 	 .done(function(response){
-		 $('#dynamic_area').html(response);
+		 tab_stateChanged(response, 'panelRss');
 	 })
 }
 
@@ -149,7 +60,7 @@ function folderproperties(){
 		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
 	 })
 	 .done(function(response){
-		 $('#dynamic_area').html(response);
+		tab_stateChanged(response, 'panelFolder');
 	 })
 }
 
@@ -170,32 +81,10 @@ function folder_content(){
 		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
 	})
 	.done(function(response){
-		$('#dynamic_area').html(response);
+		tab_stateChanged(response, 'panelContent');
 	})
 
 }
-
- /**  CHECK THIS - OBSOLETE?
-	 * 
-	 * Function folders ajax send prepare
- 	 * This function sorts out the URL for most of the queries in the folder properties window
-	 * @param string url = the extra part of the url for this ajax query
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-
-function folder_name_a() {
-
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/folderproperties/folder_name.php",
-		 data: {folder_id: window.name},
-	 })
-	 .done(function (response) {
-		 $('#dynamic_area').html(response);
-	 })
- }
 
  	/**
 	 * 
@@ -227,7 +116,7 @@ function rename_folder(folder_id,form_tag){
 			var array_response = response.split("~*~");
 
 			// set the html
-			$('#dynamic_area').html(array_response[0]);
+			tab_stateChanged(array_response[0], 'panelFolder');
 
 			// set the file name in the file_area
 			if (typeof window_reference === "undefined") {
@@ -260,7 +149,7 @@ function sharing_status_folder(){
 		data: {folder_id: window.name},
 	})
 	.done(function(response){
-		$('#dynamic_area').html(response);
+		tab_stateChanged(response, 'panelSyn');
 	})
 }
 
@@ -277,7 +166,7 @@ function name_select_folder(){
 
 	if(setup_ajax()!=false){
 
-		search_string = document.getElementById('share_form').childNodes[0].value;
+		search_string = document.getElementById('searcharea').value;
 
 		if(search_string==""){
 			document.getElementById('area2').innerHTML="<p>" + NAMES_APPEAR + "</p>";
@@ -348,7 +237,10 @@ function share_this_folder(folder, id, group=false){
 }
 
 
-function set_sharing_rights_folder(role, folder, id, group=false){
+function set_sharing_rights_folder(folder, id, group){
+	
+	var idPrefix = group == true ? 'groupRole' : 'role';
+	var role = document.getElementById(idPrefix + '_' + id).value.split('_')[0];
 
 	if(setup_ajax()!=false){
 		$.ajax({
@@ -369,9 +261,8 @@ function set_sharing_rights_folder(role, folder, id, group=false){
 
 }
 
-
-function delete_sharing_folder(folder_id,id,who_deleted_flag, group=false){
-
+function delete_sharing_folder(folder_id,id,who_deleted_flag, group){
+	
 	var answer = confirm(SHARING_CONFIRM_FOLDER_PROPERTIES);
 	var after_sharing_deleted = false;
 	if(answer){

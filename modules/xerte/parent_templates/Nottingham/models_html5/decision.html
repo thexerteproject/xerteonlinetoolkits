@@ -50,8 +50,8 @@
 				var $panel = $("#pageContents .panel"),
 					$btnHolder = $("#btnHolder");
 				
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$("#contentHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
+				$("#contentHolder").height($panel.height() - $btnHolder.outerHeight(true));
 			}
 		}
 		

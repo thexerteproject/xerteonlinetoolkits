@@ -54,7 +54,7 @@ else if (file_exists($xwd_path . "wizards/plugins/en-GB"))
 
 if ($plugin_path != "")
 {
-    require_once ("../../../../../website_code/php/mergexml.php");
+    require_once (__DIR__ . "/../../../../../website_code/php/mergexml.php");
     $merged = new MergeXML();
     $merged->addFile($xwd_file_path);
     $plugin_files = scandir($plugin_path);

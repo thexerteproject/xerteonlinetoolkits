@@ -46,11 +46,22 @@ $params = array($_SESSION['toolkits_logon_id']);
 
 $row_user = db_query_one($query_for_user, $params);
 
+echo "<h2 class=\"header\">" . MY_PROPERTIES_DETAILS . "</h2>";
 
-echo "<p class=\"header\"><span>" . MY_PROPERTIES_DETAILS . "</span></p>";
+echo "<div id=\"mainContent\">";
 
-echo "<p>" . MY_PROPERTIES_NAME_DETAILS . " " . $row_user['firstname'] . " " . $row_user['surname'] . "</p>";
+if($_SESSION['toolkits_logon_id']) {
 
-echo "<p>" . MY_PROPERTIES_LOGIN_DETAILS . " " . $row_user['lastlogin'] . "</p>";
+	echo "<p>" . MY_PROPERTIES_NAME_DETAILS . ": " . $row_user['firstname'] . " " . $row_user['surname'] . "</p>";
 
-echo "<p>" . MY_PROPERTIES_USERNAME_DETAILS . " " . $row_user['username'] . "</p>";
+	echo "<p>" . MY_PROPERTIES_USERNAME_DETAILS . ": " . $row_user['username'] . "</p>";
+
+	echo "<p>" . MY_PROPERTIES_LOGIN_DETAILS . ": " . $row_user['lastlogin'] . "</p>";
+
+} else {
+
+	echo "<p>" . MY_PROPERTIES_ERROR . "</p>";
+
+}
+
+echo "</div>";

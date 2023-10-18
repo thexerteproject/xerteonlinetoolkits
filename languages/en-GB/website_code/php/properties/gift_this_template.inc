@@ -12,7 +12,7 @@
 	 
 	// XML SHARING TAB
 
-	define("GIFT_RESPONSE_FAIL", "Sorry you no longer have rights to this project");
+	define("GIFT_RESPONSE_FAIL", "You no longer have rights to this project");
 	
 	define("GIFT_RESPONSE_SUCCESS", "Project successfully gifted to");
 			

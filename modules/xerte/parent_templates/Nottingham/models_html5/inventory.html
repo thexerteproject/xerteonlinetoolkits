@@ -36,7 +36,7 @@
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
 				var $panel = $("#infoHolder .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
 			}
 		}
 		
@@ -388,7 +388,7 @@
             if (chartHolder.getContext) {
 				var	$panel = $("#pageContents .panel"),
 					availW = Math.min(550, Math.max(300, $panel.width())),
-					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15 - $("#restartBtn").height() - $("#chartTitle").height()));
+					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 15 - $("#restartBtn").height() - $("#chartTitle").outerHeight(true)));
 				
 				chartHolder.width = availW;
 				chartHolder.height = availH;
@@ -621,22 +621,26 @@
 				
 				<div class="quiz">
 					<h3 id="qNo"></h3>
-					<div id="qTxt"></div>
-					<div id="optionHolder"></div>
-					<div id="buttonHolder">
-						<button id="checkBtn"></button>
-						<button id="nextBtn"></button>
-					</div>
-					<div id="qFeedback">
-						<h3 id="qFeedbackTitle"></h3>
-						<p id="qFeedbackTxt"></p>
+					<div class="qContent">
+						<div id="qTxt"></div>
+						<div id="optionHolder"></div>
+						<div id="buttonHolder">
+							<button id="checkBtn"></button>
+							<button id="nextBtn"></button>
+						</div>
+						<div id="qFeedback">
+							<h3 id="qFeedbackTitle"></h3>
+							<p id="qFeedbackTxt"></p>
+						</div>
 					</div>
 				</div>
 				
 				<div class="chart">
 					<h3 id="chartTitle"></h3>
-					<canvas id="chartHolder"></canvas>
-					<button id="restartBtn"></button>
+					<div class="qContent">
+						<canvas id="chartHolder"></canvas>
+						<button id="restartBtn"></button>
+					</div>
 				</div>
 			</div>
 		</div>

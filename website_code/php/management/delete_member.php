@@ -42,7 +42,7 @@ if(is_user_admin()){
 
     // Get all folders shared with this group
     $shared_folders = get_all_folders_shared_with_group($group_id);
-    $workspaceId = get_user_root_folder_by_id($login_id);
+    $workspaceId = get_user_root_folder_id_by_id($login_id);
     $templates = array();
 
     foreach ($shared_folders as $folder_id)

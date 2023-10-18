@@ -1399,3 +1399,43 @@ function upgrade_41()
 
     return $message;
 }
+
+function upgrade_42()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for templaterights
+    $table = table_by_key('templaterights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index2'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index2` (`folder` ASC);");
+        $message = "Creating index2 on table templaterights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on templaterights table is already present';
+    return $message;
+}
+
+function upgrade_43()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for folderrights.folder_parent
+    $table = table_by_key('folderrights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index2'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index2` (`folder_parent` ASC);");
+        $message = "Creating index2 on table folderrights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on folderrights table is already present';
+    return $message;
+}

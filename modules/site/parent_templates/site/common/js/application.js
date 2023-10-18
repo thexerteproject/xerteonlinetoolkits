@@ -42,7 +42,7 @@ var fullscreenBannerTitleMargin=10;
 
 function init(){
 	loadContent();
-};
+}
 
 // called after all content loaded to set up mediaelement.js players
 function initMedia($media){
@@ -415,7 +415,7 @@ function setup() {
 				};
 				
 				// add events to control what happens when you rollover glossary words
-				$("body > .container")
+				$("#aboveFooter > .container")
 					.on("mouseenter", ".glossary", function(e) {
 						$activeTooltip = $(this);
 						$activeTooltip.trigger("mouseleave");
@@ -655,10 +655,10 @@ function setup() {
 
 			// some categories exist - create menu
 			if (categories.length > 0) {
-				var $categorySearch = $('<div id="categorySearch"></div>');
+				var $categorySearch = $('<form id="categorySearch"></form>');
 
 				for (var i=0; i<categories.length; i++) {
-					var $optGroup = $('<div id="cat' + i + '" class="catBlock"><div class="catContents"><h2 class="catName">' + categories[i].name + ':</h2></div></div>').appendTo($categorySearch);
+					var $optGroup = $('<div id="cat' + i + '" class="catBlock"><fieldset class="catContents"><legend class="catName">' + categories[i].name + ':</legend></fieldset></div>').appendTo($categorySearch);
 
 					for (var j=0; j<categories[i].options.length; j++) {
 						$optGroup.find('.catContents').append('<div class="inputGroup"><input type="checkbox" name="' + categories[i].name + '" id="cat' + i + '_' + j + '" value="cat' + i + '_' + j + '"><label for="cat' + i + '_' + j + '">' + categories[i].options[j].name + '</label></div>');
@@ -1684,7 +1684,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		}
 	} else {
 		//TOOD add section num, if we are already at page
-
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
 	
@@ -1731,9 +1730,11 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			//expand mainContent if section menu hidden and expand option is true
 			if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
 				$('#mainContent').addClass("expandMain");
+				$('#contentTable').addClass("expandMain");
 
 			}else{
 				$('#mainContent').removeClass("expandMain");
+				$('#contentTable').removeClass("expandMain");
 			}
 
 			// add section menu unless turned off
@@ -1753,6 +1754,10 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
+
+				$('#contentTable').removeClass("hideSectionMenu");
+			} else {
+				$('#contentTable').addClass("hideSectionMenu");
 			}
 
 			//add the section header
@@ -1761,7 +1766,8 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 				subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
 
 			var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
-			var section = $('<section id="' + pageHash + 'section' + (sectionVisibleIndex+1) + '">' + pageHeader + '</section>');
+			var sectionId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'section' + (sectionVisibleIndex+1);
+			var section = $('<section id="' + pageHash + sectionId + '">' + pageHeader + '</section>');
 			
 			var pswds = [];
 			if ($.trim($(this).attr('password')).length > 0) {
@@ -1889,7 +1895,8 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'text'){
-			section.append( '<p>' + $(this).text() + '</p>');
+
+			section.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 		}
 
 		if (this.nodeName == 'script'){
@@ -2070,7 +2077,6 @@ function updateContent($section) {
 }
 
 function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
-	
 	XBOOTSTRAP.VARIABLES.handleSubmitButton();
 
 	if (sectionNum != undefined) {
@@ -2080,10 +2086,10 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 			section =  page.find('section').eq(sectionNum-1);
 
 		//if direct navigation using customLink for sections
-		pageTempInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo;
+		var sectionInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : 'section' + sectionNum;
 
 		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
-		goToSection(pageTempInfo + 'section' + sectionNum + contentInfo);
+		goToSection(pageTempInfo + sectionInfo + contentInfo);
 
 	} else {
 		goToSection('alwaysTop');
@@ -2478,7 +2484,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				tab.append( '<p>' + $(this).text() + '</p>');
+				tab.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 
 				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
 					iframe.push(i);
@@ -2603,7 +2609,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 	node.children().each( function(index, value){
 
-		var group = $('<div class="accordion-group"/>');
+		var group = $('<div class="accordion-group collapsed"/>');
 
 		var header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
 
@@ -2611,13 +2617,22 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		
 		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
 		header.find('a.accordion-toggle').click(function() {
-			accDiv.find('.accordion-group a').not($(this)).addClass('collapsed');
+			accDiv.find('.accordion-group a').not($(this))
+				.addClass('collapsed')
+				.parents('.accordion-group').addClass('collapsed');
+
+			if ($(this).hasClass('collapsed')) {
+				$(this).parents('.accordion-group').removeClass('collapsed');
+			} else {
+				$(this).parents('.accordion-group').addClass('collapsed');
+			}
 		});
 
 		if (index == 0){
 			
 			if (node[0].getAttribute('collapse') != 'true') {
 				header.find('a.accordion-toggle').removeClass('collapsed');
+				group.removeClass('collapsed');
 			}
 
 			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse ' + (node[0].getAttribute('collapse') == 'true' ? "" : "in") + '"/>');
@@ -2640,7 +2655,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				inner.append( '<p>' + $(this).text() + '</p>');
+				inner.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 			}
 
 			if (this.nodeName == 'image'){
@@ -2756,7 +2771,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				pane.append( '<p>' + $(this).text() + '</p>');
+				pane.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 			}
 
 			if (this.nodeName == 'image'){
@@ -2833,7 +2848,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-	var xotLink = $this.attr('link'),
+	var xotLink = $this.attr('link').trim(),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 

@@ -36,7 +36,7 @@ include "properties_library.php";
 
 require_once (__DIR__ . "/../XerteProjectDecoder.php");
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");

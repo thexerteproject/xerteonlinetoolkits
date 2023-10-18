@@ -33,7 +33,6 @@ _load_language_file("/website_code/php/display_library.inc");
 
 // level is a global variable used to stylise the folder nesting
 
-
 $level = -1;
 
 /**
@@ -47,7 +46,6 @@ $level = -1;
 
 function list_folders_in_this_folder_event_free($folder_id, $path = '', $item = false, $input_method = 'link') {
 
-
   global $xerte_toolkits_site,$level;
 
   $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -55,23 +53,21 @@ function list_folders_in_this_folder_event_free($folder_id, $path = '', $item = 
   $rows = db_query($query, array($folder_id));
   
   foreach($rows as $row) { 
-    $extra='<p>';
-    $extra1='</p>';
-$extra2='';
+    $extra='';
+    $extra1='';
+	$extra2='';
     if($item!==false) {
       $extra='';
       $extra1='';
       $extra2=" style=\"padding-left:" . ($level*10) . "px\" ";
     }
 
-    echo "<div id=\"dynamic_area_folder\" $extra2>$extra<img style=\"\" src=\"{$path}website_code/images/Icon_Folder.gif\" />" . 
-            str_replace("_", " ", $row['folder_name']) . "$extra1</div><div id=\"dynamic_area_folder_content\">";
-
+    echo "<li class=\"dynamic_area_folder\" $extra2>$extra<i class=\"fa fa-folder-open fa-fw xerte-icon\"></i>&nbsp;" . 
+            str_replace("_", " ", $row['folder_name']) . "$extra1" . "<ul class=\"dynamic_area_folder\">";
 
     $item = list_folder_contents_event_free($row['folder_id'], $path, $item, $input_method);
 
-
-    echo "</div>";
+    echo "</ul></li>";
 
   }
 
@@ -98,8 +94,8 @@ function list_files_in_this_folder_event_free($folder_id, $path = '', $item = fa
 
   $rows = db_query($query, array($folder_id));
   foreach($rows as $row) {
-    $extra='<p>';
-    $extra1='</p>';
+    $extra='';
+    $extra1='';
     $extra2='';
 if($item!==false) {
 if($input_method=='radio') {
@@ -115,8 +111,8 @@ $extra="<input type=\"radio\" name=\"xerteID\" id=\"xerteID-$item\" value=\"$ite
     $extra2=" style=\"padding-left:" . ($level*10) . "px\" ";
 
 }
-    echo "<div class=\"dynamic_area_file\" $extra2 >$extra<img src=\"{$path}website_code/images/Icon_Page.gif\" />" . str_replace("_", " ", $row['template_name']) . "$extra1</div>\r\n";
 
+    echo "<li class=\"dynamic_area_file\" $extra2 >$extra<i class=\"fa fa-file-text fa-fw xerte-icon\"></i>&nbsp;$extra3" . str_replace("_", " ", $row['template_name']) . "$extra1</li>\r\n";
 
   }
 
@@ -367,6 +363,65 @@ if (!function_exists('str_contains')) {
         return '' === $needle || false !== strpos($haystack, $needle);
     }
 }
+
+function get_subfolders_of_shared_folder($folder_id, $role, $sort_type){
+
+    /*
+    * use the global level for folder indenting
+    */
+    global $xerte_toolkits_site;
+
+    $items = array();
+    /*
+    * select the folders in this folder
+    */
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+
+    $query = "select fd.folder_id, fd.folder_name, fr.role, fr.folder_parent from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.folder_parent = ?";
+    $params = array($folder_id);
+
+    /*
+    * Add some more to the query to sort the files
+    */
+
+    if ($sort_type == "alpha_down") {
+        $query .= " order by fd.folder_name DESC";
+    } elseif ($sort_type == "alpha_up") {
+        $query .= " order by fd.folder_name ASC";
+    } elseif ($sort_type == "date_down") {
+        $query .= " order by fd.date_created DESC";
+    } elseif ($sort_type == "date_up") {
+        $query .= " order by fd.date_created ASC";
+    }
+
+    $query_response = db_query($query, $params);
+
+    /*
+    * recurse through the folders
+    */
+
+    foreach($query_response as $row) {
+
+        $item = array();
+        $item['folder_id'] = $row['folder_id'];
+        $item['folder_name'] = $row['folder_name'];
+        $item['folder_parent'] = $row['folder_parent'];
+        $item['role'] = $role;
+        $item['type'] = "sub_folder_shared";
+
+        $items[] = $item;
+
+        $folders = get_subfolders_of_shared_folder($item['folder_id'], $role, $sort_type);
+        if ($folders) {
+            $items = array_merge($items, $folders);
+        }
+    }
+
+    return $items;
+}
+
 
 /**
  * Builds an array with the folders only of the folder suitable for jsTree
@@ -621,7 +676,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $item->xot_id = $folder['folder_id'];
         $item->parent = $folder['tree_parent_id'];
         $item->text = $folder['folder_name'];
-        if($folder['nrshared'] > 1){
+        if(isset($folder['nrshared']) &&  $folder['nrshared'] > 1){
             $folder['type'] = "folder_shared";
             $item->type = $folder['type'];
         }else{
@@ -656,8 +711,6 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                         array_push($items, $file);
                     }
                 }
-
-
             }
         }
         else {
@@ -691,6 +744,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         }
     }
 
+
     // And now the items of the workspace itself
     $foldertemplates = array_filter($templates, function($template) use ($folder_id){
         return $template['folder'] == $folder_id;
@@ -716,20 +770,19 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
         $titem->shared = $template['nrshared'] > 1;
         if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size)) {
-            $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
-        }
-        else
-        {
-            $titem->editor_size="1280, 768";
-        }
-        if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size)) {
-            $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
-        }
-        else
-        {
-            $titem->preview_size="802, 602";
-        }
-
+			$titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
+		}
+		else
+		{
+			$titem->editor_size="1280, 768";
+		}
+		if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size)) {
+			$titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+		}
+		else
+		{
+			$titem->preview_size="802, 602";
+		}
         $items[] = $titem;
     }
 
@@ -854,6 +907,35 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
         }
     }
 
+    // Get all sub-folders of shared folders
+    $subfolders = array();
+    foreach($query_response as $folder) {
+
+        if ($folder['nrshared'] > 1 && $folder['role'] !== 'creator') {
+            $folders = get_subfolders_of_shared_folder($folder['folder_id'], $folder['role'], $sort_type);
+
+            if ($folders) {
+                $subfolders = array_merge($subfolders, $folders);
+            }
+        }
+    }
+    // Only add folders that have not been found yet (these are probably shared by their own)
+    foreach($subfolders as $folder)
+    {
+        $found = false;
+        foreach($query_response as $index=>$row)
+        {
+            if ($row['folder_id'] == $folder['folder_id'])
+            {
+                $found = true;
+                break;
+            }
+        }
+        if (!$found)
+        {
+            $query_response[] = $folder;
+        }
+    }
 
     // Build tree
     // Loop until all the tree_id's have a value
@@ -879,16 +961,17 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
         }
         else
         {
-            if ($query_response[$index]['role'] == 'creator')
-                $unassigned_found = true;
+            $unassigned_found = true;
         }
-        $shared = "";
-        if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
-            $shared = 'shared';
+        if (!isset($query_response[$index]['type'])) {
+            $shared = "";
+            if ($query_response[$index]['role'] != 'creator' && $newtype != 'group') {
+                $shared = 'shared';
+            }
+            $query_response[$index]['type'] = ($shared == "") ? "folder" : "folder_" . $shared;
         }
-        $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder_" .$shared;
-
     }
+
     $max_depth = 50;
     $level = 0;
     while ($unassigned_found && $level < $max_depth)
@@ -902,15 +985,18 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
             {
                 $query_response[$index]['tree_id']  = $currlevel[$row['folder_parent']] . '_F' . $row['folder_id'];
                 $query_response[$index]['tree_parent_id'] = $currlevel[$row['folder_parent']];
-                $shared = "";
-                if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
-                    $shared = 'shared';
+                if (!isset($query_response[$index]['type'])) {
+                    $shared = "";
+
+                    if ($query_response[$index]['role'] != 'creator' && $newtype != 'group') {
+                        $shared = 'shared';
+                    }
+                    $query_response[$index]['type'] = ($shared == "") ? "folder" : "folder_" . $shared;
                 }
-                $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder_" .$shared;
                 $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id'];
             }
             else{
-                if (!isset($row['tree_id']) && $query_response[$index]['role'] == 'creator')
+                if (!isset($row['tree_id']))
                 {
                     $unassigned_found = true;
                 }
@@ -935,6 +1021,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
         error_log("Error in get_workspace_folders: " . $error_msg);
         _debug("Error in get_workspace_folders: " . $error_msg);
     }
+
 
     $sharedFolders = array();
     foreach ($query_response as $index => $folder){
@@ -1147,7 +1234,6 @@ function get_users_projects($sort_type, $copy_only=false)
     //workspace content (this includes shared content, group content is handled seperately
     $workspace->items[] = $item;
     $workspace->nodes[$item->id] = $item;
-    //$items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, "_top");
     $items = get_workspace_contents($item->xot_id, $item->id, $sort_type, $copy_only,"_top");
     $sharedItems = array();
     if ($items) {

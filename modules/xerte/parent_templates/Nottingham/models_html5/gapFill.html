@@ -291,10 +291,13 @@
 			});
 			
 			if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
+				$("#dragDropHolder").addClass('dragDrop');
 				this.setUpDragDrop();
 			} else if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu") {
+				$("#dragDropHolder").addClass('dropDown');
 				this.setUpDropDown();
 			} else { // text fill in blank
+				$("#dragDropHolder").addClass('fillBlank');
 				this.setUpFillBlank();
 			}
 			
