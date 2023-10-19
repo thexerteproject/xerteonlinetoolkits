@@ -197,7 +197,12 @@
 							closeOnEscape:	true,
 							title:			copyShortcutTxt,
 							closeText:		x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"),
-							close: function() {$thisDialog.parent().detach();}
+							close: function() {$thisDialog.parent().detach();},
+							create: function(event, ui) {
+								$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+										.removeClass("ui-icon-closethick")
+										.addClass("fa fa-x-close");
+							}
 						});
 						
 						$thisDialog.html(x_pageInfo[x_currentPage].savedData);

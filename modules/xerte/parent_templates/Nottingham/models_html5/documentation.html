@@ -238,7 +238,7 @@
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($downloadBtn);
+				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($downloadBtn);
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);

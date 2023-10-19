@@ -304,7 +304,12 @@
 								.dialog({
 									closeOnEscape:  true,
 									title:		x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information",
-									closeText:	x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close")
+									closeText:	x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"),
+									create: function(event, ui) {
+										$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+												.removeClass("ui-icon-closethick")
+												.addClass("fa fa-x-close");
+										}
 									})
 								.html(x_addLineBreaks(currentStepInfo.helpTxt));
 							

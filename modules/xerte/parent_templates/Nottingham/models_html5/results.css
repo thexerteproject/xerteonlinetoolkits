@@ -92,3 +92,7 @@
 	background: white;
 	border-radius: 12px;
 }
+
+#pdfContent {
+	overflow: auto;
+}
