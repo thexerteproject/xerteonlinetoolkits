@@ -1494,9 +1494,9 @@
         if (graphShowAvg == undefined) {
             graphShowAvg = false;
         }
-        var graphShowAvgBar = interaction.getAttribute("graphShowAvgBar");
-        if (graphShowAvgBar == undefined) {
-            graphShowAvgBar = false;
+        var graphShowAvgLine = interaction.getAttribute("graphShowAvgBar");
+        if (graphShowAvgLine == undefined) {
+            graphShowAvgLine = false;
         }
 
       var barName = [];
@@ -2094,7 +2094,7 @@
             }
 
             let bardata = {};
-            if (graphShowAvgBar == "true" && graphShowAvg == "true") {
+            if (graphShowAvgLine == "true" && graphShowAvg == "true") {
                 bardata = {
                     labels: labels,
                     datasets: [
@@ -2862,8 +2862,17 @@
             "#36A2EB",
             "#B284BE",
           ];
-          if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "") {
-            backgroundColors = interaction.getAttribute("graphColorScale").split(",");
+            //quick check if we use simple colors or specific color/group pairs
+            // under the assumption that only one of the systems is used
+          if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "" && !interaction.getAttribute("graphColorScale").includes(":")) {
+              backgroundColors = interaction.getAttribute("graphColorScale").split(",");
+          } else if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != ""){
+              backgroundColors = {};
+              let groupColorPairs = interaction.getAttribute("graphColorScale").split(",")
+              for (key of groupColorPairs){
+                  let keyValue = key.split(":")
+                  backgroundColors[keyValue[0]] = keyValue[1]
+              }
           }
           let visitedGroups = {};
           for (let statement in statements) {
@@ -2881,29 +2890,42 @@
           for (key in visitedGroups) {
             legendLabels.push({
               text: key,
-              fillStyle: backgroundColors[labelCounter],
+              fillStyle: typeof(backgroundColors[key]) == 'undefined' ? backgroundColors[labelCounter] : backgroundColors[key],
             });
             labelCounter += 1;
           }
           labelCounter = 0;
           let questions = statements.map(
-            (statement) =>
-              statement.result.extensions[
-                "http://xerte.org.uk/result/grouping/scores"
-              ]
+            (statement) => ({
+                question : statement.result.extensions[
+                    "http://xerte.org.uk/result/grouping/scores"
+                    ],
+                groupName : statement.context.contextActivities.grouping[0]
+                    .definition.name["en-US"]
+                    })
           );
           let labels = [];
           let backgroundColor = [];
           let dataValues = [];
           for (let index in questions) {
-            let questionsGroup = questions[index];
+            let questionsGroup = questions[index]["question"];
+            let groupName = questions[index]["groupName"]
             for (let index in questionsGroup) {
               let singleQuestion = questionsGroup[index];
               labels.push(singleQuestion[0][0]);
               dataValues.push(singleQuestion[1]);
-              if (labelCounter < backgroundColors.length) {
-                backgroundColor.push(backgroundColors[labelCounter]);
-              }
+              //again differentiate between simple colors and color/group pairs
+                if (Array.isArray(backgroundColors)) {
+                    if (labelCounter < backgroundColors.length) {
+                        backgroundColor.push(backgroundColors[labelCounter]);
+                    }
+                }else {
+                    if (labelCounter < Object.keys(backgroundColors).length){
+                        if (typeof(backgroundColors[groupName]) !== 'undefined'){
+                         backgroundColor.push(backgroundColors[groupName])
+                         }
+                    }
+                }
             }
             labelCounter += 1;
           }
