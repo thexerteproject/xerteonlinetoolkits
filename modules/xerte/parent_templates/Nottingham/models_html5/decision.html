@@ -50,8 +50,8 @@
 				var $panel = $("#pageContents .panel"),
 					$btnHolder = $("#btnHolder");
 				
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$("#contentHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
+				$("#contentHolder").height($panel.height() - $btnHolder.outerHeight(true));
 			}
 		}
 		
@@ -304,7 +304,12 @@
 								.dialog({
 									closeOnEscape:  true,
 									title:		x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information",
-									closeText:	x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close")
+									closeText:	x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"),
+									create: function(event, ui) {
+										$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+												.removeClass("ui-icon-closethick")
+												.addClass("fa fa-x-close");
+										}
 									})
 								.html(x_addLineBreaks(currentStepInfo.helpTxt));
 							

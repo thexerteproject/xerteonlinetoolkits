@@ -964,9 +964,7 @@ button.customIconBtn:after {
 }
 
 .wcagLogo{
-	position:absolute;
-	top:3%;
-	right:1%;
+	float: right;
 }
 a:focus .wcagLogo {
 	outline: -webkit-focus-ring-color auto 1px;

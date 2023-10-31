@@ -266,3 +266,20 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 .oddSection {
   background: #3e3c3c;
 }
+
+/*lightboxes with dark background*/
+.featherlight .featherlight-content {
+  background: $darkestcolor;
+}
+
+#categorySearch .inputGroup:hover {
+  background-color: $panelcolor;
+}
+
+#searchHolder legend {
+  color: $lightestcolor;
+}
+
+#searchResults #noSearchResults {
+  color: $alertcolor;
+}

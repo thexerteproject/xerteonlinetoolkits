@@ -37,11 +37,11 @@
 					$btnHolder = $("#btnHolder"),
 					$slideTxt = $("#slideTxt");
 				
-				var btnHolderH = $btnHolder.length > 0 ? $btnHolder.height() + parseInt($btnHolder.css("margin-top")) : 0,
-					slideTxtH = $slideTxt.length > 0 ? $slideTxt.height() + parseInt($slideTxt.css("margin-top")) + (parseInt($slideTxt.css("padding-top")) * 2) : 0;
+				var btnHolderH = $btnHolder.length > 0 ? $btnHolder.outerHeight(true) : 0,
+					slideTxtH = $slideTxt.length > 0 ? $slideTxt.height() + parseInt($slideTxt.css("margin-top")) + parseInt($slideTxt.css("padding-top")) + parseInt($slideTxt.css("padding-bottom")) : 0;
 				var footerH = Math.max(btnHolderH, slideTxtH);
 				
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
 				$("#pages").height($panel.height() - footerH);
 			}
 		}
@@ -238,7 +238,7 @@
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($downloadBtn);
+				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($downloadBtn);
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);

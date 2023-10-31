@@ -298,7 +298,7 @@ if(is_user_admin())
             }
 
             // Get folder parent name of newuser
-            $rootfolder = get_user_root_folder_by_id($newuserid);
+            $rootfolder = get_user_root_folder_record_by_id($newuserid);
 
             // Check if folder $foldername exists for user 'newuser'
             $q = "select folder_id from {$prefix}folderdetails fd, {$prefix}logindetails ld where ld.login_id=fd.login_id and ld.username=? AND folder_name = ?";

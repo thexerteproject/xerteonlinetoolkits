@@ -114,61 +114,63 @@
 <div id="fb-root"></div>
 <script src="%TEMPLATEPATH%common/js/initFB.js%VERSION_PARAM%" defer></script>
 
-<div id="alwaysTop"></div>
+<div id="aboveFooter">
+    <div id="alwaysTop"></div>
 
-<div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation" aria-label="pages">
-    <div class="navbar-inner"><a class="srskip sr-only" href="#mainContent">Skip to main content</a>
+    <div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation" aria-label="pages">
+        <div class="navbar-inner"><a class="srskip sr-only" href="#mainContent">Skip to main content</a>
 
-        <div class="container">
+            <div class="container">
 
-            <button type="button" class="btn btn-navbar navbar-toggler" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+                <button type="button" class="btn btn-navbar navbar-toggler" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
 
-            <div class="nav-collapse collapse">
-                <ul class="nav" id="nav">
-                    <!--<li class=""><a href="./index.html">Home</a></li>-->
-                </ul>
+                <div class="nav-collapse collapse">
+                    <ul class="nav" id="nav">
+                        <!--<li class=""><a href="./index.html">Home</a></li>-->
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!--Learning Object Title-->
-<header class="jumbotron hide" id="overview"><a class="skip-link srskip sr-only sr-only-focusable" href="#mainContent">Skip to main content</a>
+    <!--Learning Object Title-->
+    <header class="jumbotron hide" id="overview"><a class="skip-link srskip sr-only sr-only-focusable" href="#mainContent">Skip to main content</a>
+        <div class="container">
+
+            <div class="logoL">
+                %LOGO_L%
+            </div>
+            <div class="logoR">
+                %LOGO_R%
+            </div>
+
+            <div class="titles">
+                <h1 id="pageTitle">Learning Object Title</h1>
+                <p id="pageSubTitle">Overview title for the content below</p>
+            </div>
+
+        </div>
+    </header>
+
+    <!--main page content: nav bar and sections-->
     <div class="container">
+        <div class="row-fluid">
+            <!--navigation-->
+            <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation" aria-label="sections">
 
-		<div class="logoL">
-            %LOGO_L%
-        </div>
-        <div class="logoR">
-            %LOGO_R%
-        </div>
+                <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
+                    <!--<li><a href="#section1ID">Section 1</a></li>-->
+                </ul>
+            </div>
 
-        <div class="titles">
-            <h1 id="pageTitle">Learning Object Title</h1>
-            <p id="pageSubTitle">Overview title for the content below</p>
-        </div>
+            <!--content-->
+            <div class="span9" id="mainContent" role="main">
 
-    </div>
-</header>
-
-<!--main page content: nav bar and sections-->
-<div class="container">
-    <div class="row-fluid">
-        <!--navigation-->
-        <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation" aria-label="sections">
-
-            <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
-                <!--<li><a href="#section1ID">Section 1</a></li>-->
-            </ul>
-        </div>
-
-        <!--content-->
-        <div class="span9" id="mainContent" role="main">
-
+            </div>
         </div>
     </div>
 </div>

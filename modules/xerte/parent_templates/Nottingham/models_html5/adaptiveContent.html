@@ -712,7 +712,6 @@
           url = data[0].object.id;
         }
         interaction = $(x_currentPageXML).children()[interactionIndex];
-
         if (
           data.length >= 1 &&
           (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)
@@ -1519,12 +1518,10 @@
             barNameValue.push(interaction.childNodes[i].getAttribute("conScoreBetween"));
           let tempstr = interaction.childNodes[i].getAttribute("conScoreBetween").split(",");
           barRange.push([parseInt(tempstr[0]), parseInt(tempstr[1])]);
-
           if (interaction.childNodes[i].getAttribute("blockColor") != null && interaction.childNodes[i].getAttribute("blockColor") != "") {
               barColors[i] = interaction.childNodes[i].getAttribute("blockColor").replace("0x","#");
           }
       }
-
 
       if (statements.length > 0) {
         if (statements[0].extensions !== undefined) {
@@ -1708,10 +1705,10 @@
 
                 if (score >= lowerBound && score <= upperBound) {
                   $("#" + escapeUrl(url, type, interactionIndex) + " .message").prepend('<button type="button" class="feedback">' + blockName + '</button>\n' +
-                      '<div class="collapsibleContent" style="display: block; margin-bottom: 25px">' + block.getAttribute("adaptiveContent") + '</div>');
+                      '<div class="collapsibleContent block' + blockIndex + '" style="display: block; margin-bottom: 25px">' + block.getAttribute("adaptiveContent") + '</div>');
                 } else if (showOtherBlockContent == 'true'){
                     $("#" + escapeUrl(url, type, interactionIndex) + " .message").append('<button type="button" class="collapsible">' + blockName + '</button>\n' +
-                         '<div class="collapsibleContent">' + block.getAttribute("adaptiveContent") + '</div>');
+                         '<div class="collapsibleContent block' + blockIndex + '">' + block.getAttribute("adaptiveContent") + '</div>');
 
                     $("#" + escapeUrl(url, type, interactionIndex) + " .message").children("button").slice(-1).on('click', function () {
                         this.classList.toggle("active");
@@ -1773,7 +1770,6 @@
               escapeUrl(url, type, interactionIndex) +
               "-graph'></canvas></div>"
           );
-
         } else if (
           interaction.getAttribute("graphType") == "hor_bar_comb_marks" ||
           interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
@@ -2043,7 +2039,6 @@
             }
 
             //add block avg to labels
-            debugger;
             if (graphShowAvg == "true") {
                 for (let i = 0; i < labels.length; i++) {
                     labels[i].push(groupScore + ": " + (groupAvg[i]/ Math.max(barSizeData[i], 1)).toFixed(2))
@@ -2099,7 +2094,6 @@
             }
 
             let bardata = {};
-            debugger
             if (graphShowAvgLine == "true" && graphShowAvg == "true") {
                 bardata = {
                     labels: labels,
@@ -2984,7 +2978,6 @@
             }
           }
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
-
           let visitedGroups = {};
           for (let statement in statements) {
             let group =

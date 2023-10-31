@@ -105,18 +105,18 @@ function media_folder_loop($folder_name){
 			
 			$result = new stdClass();
             $result->filename = $folder_name . $f;
-
-            if($dataInspector->fileIsUsed($result->filename) || $previewInspector->fileIsUsed($result->filename)){
-                $result->html = "<tr><td class=\"filename found\"><button class=\"filenameBtn\" onclick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $result->filename . "')\">" . $result->filename . "</button></td><td class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</td><td class=\"fileinuse found foundtextcolor\"><i class=\"fa fa-check\"></i><span class=\"sr-only\">" . MEDIA_AND_QUOTA_USE . "</span></td></tr>";
+			
+            if($dataInspector->fileIsUsed($folder_name . $f) || $previewInspector->fileIsUsed($folder_name . $f)){
+                $result->html = "<tr><td class=\"filename found\"><button class=\"filenameBtn\" onclick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</button></td><td class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</td><td class=\"fileinuse found foundtextcolor\"><i class=\"fa fa-check\"></i><span class=\"sr-only\">" . MEDIA_AND_QUOTA_USE . "</span></td></tr>";
 
             }else{
-                $result->html = "<tr><td class=\"filename notfound\"><button class=\"filenameBtn\" onclick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $result->filename . "')\">" . $result->filename . "</button></td><td class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</td><td class=\"fileinuse notfound notfoundtextcolor\"><button class=\"deleteFile\" onclick=\"javascript:delete_file('" . str_replace("'", "\\'", $dir_path . $result->filename) . "')\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"><i class=\"fa fa-times\"></i><span class=\"sr-only\">" . MEDIA_AND_QUOTA_NOT_IN_USE . ": " . MEDIA_AND_QUOTA_DELETE . " " . $result->filename . "</span></button></td></tr>";
+                $result->html = "<tr><td class=\"filename notfound\"><button class=\"filenameBtn\" onclick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</button></td><td class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</td><td class=\"fileinuse notfound notfoundtextcolor\"><button class=\"deleteFile\" onclick=\"javascript:delete_file('" . str_replace("'", "\\'", $dir_path . $folder_name . $f) . "')\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"><i class=\"fa fa-times\"></i><span class=\"sr-only\">" . MEDIA_AND_QUOTA_NOT_IN_USE . ": " . MEDIA_AND_QUOTA_DELETE . " " . $folder_name . $f . "</span></button></td></tr>";
 
                 /**
                  * add the files to the delete array that are not in use  so they can be listed for use in the delete function
                  */
-
-                array_push($delete_string, $result->filename);
+				
+				array_push($delete_string, $folder_name . $f);
 
             }
             $quota += filesize($full);
@@ -125,7 +125,7 @@ function media_folder_loop($folder_name){
         }
         else if (strlen($f) > 0 && $f[0] != '.')
         {
-            media_folder_loop($result->filename . '/');
+			media_folder_loop($folder_name . $f . '/');
         }
 
     }
