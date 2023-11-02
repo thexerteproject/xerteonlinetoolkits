@@ -360,6 +360,18 @@ section {
 	color: red;
 }
 
+/* --LINKS-------------------------------------------------------------- */
+
+section a:not(.accordion-toggle,.top-round,.carousel-control,.glossary),
+footer a:not(.glossary) {
+    text-decoration: underline;
+    text-underline-position: under;
+}
+
+section div.navigator li a {
+  text-decoration: none;
+}
+
 /* --GLOSSARY-------------------------------------------------------------- */
 
 a.glossary {
