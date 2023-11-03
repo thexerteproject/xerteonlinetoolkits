@@ -92,3 +92,15 @@
 	background: white;
 	border-radius: 12px;
 }
+
+#pdfContent {
+	overflow: auto;
+}
+
+fieldset {
+	border: 0;
+}
+
+fieldset button {
+	margin-left: 1em;
+}
