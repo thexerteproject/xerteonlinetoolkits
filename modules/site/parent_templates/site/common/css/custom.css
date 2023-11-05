@@ -399,7 +399,8 @@ section {
 
 /* --LINKS-------------------------------------------------------------- */
 
-section a:not(.accordion-toggle,.top-round,.carousel-control,.glossary) {
+section a:not(.accordion-toggle,.top-round,.carousel-control,.glossary),
+footer a:not(.glossary) {
     text-decoration: underline;
     text-underline-position: under;
 }
