@@ -316,7 +316,6 @@ xAPIDashboard.prototype.drawInteraction = function (
   interactionIndex,
   localJcId
 ) {
-  debugger;
   let pageState = this;
   let $this = this;
   if (interaction.children.length == 0 && interaction.type == "interaction") {
@@ -343,7 +342,6 @@ xAPIDashboard.prototype.drawInteraction = function (
       statements,
       "https://w3id.org/xapi/video/verbs/paused"
     );
-    debugger;
     if (question != undefined) {
       switch (question.interactionType) {
         case "matching":
@@ -2742,7 +2740,8 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function (
       tup.forEach(function (t) {
         statement = JSON.parse(JSON.stringify(s));
         arr = t.split("[.]");
-        statement.result.pairs = arr[0] + " > " + arr[1];
+        const pair = `${arr[0]} > ${arr[1]}`;
+        statement.result.pairs = this.data.stripHtml(pair);
         pairStatements.push(statement);
       });
     }

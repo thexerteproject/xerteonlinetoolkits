@@ -413,6 +413,7 @@ td.x-dashboard-interaction
     margin-bottom: 1rem;
     margin-left: 1rem;
     float:left;
+    word-break: break-all;
 }
 
 .panel.col-12 {
