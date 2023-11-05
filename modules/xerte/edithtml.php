@@ -25,6 +25,7 @@
  * Time: 12:24
  */
 
+require_once (__DIR__ . "/../../website_code/php/xmlInspector.php");
 
 function get_children ($parent_id, $lookup, $column, $type) {
     // children
@@ -87,6 +88,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
 
+    $xml = new XerteXMLInspector();
+    $xml->loadTemplateXML($preview);
+    $theme = $xml->getTheme();
 
     // Derived templates
     $xwd_url = "modules/" . $row_edit['template_framework'] . "/templates/" . $row_edit['template_name'] . "/";
@@ -476,6 +480,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
+    echo "theme=\"" . $theme . "\";\n";
     ?>
 
     function bunload(){
