@@ -1138,7 +1138,7 @@ xAPIDashboard.prototype.handleCollapse = function(rowid, div, userdata, learning
 
 
 xAPIDashboard.prototype.getExtraUserData = function(rowid, div, userdata, objIdx) {
-    var statementidxs = this.data.getStatementidxsList(userdata['statementidxs'], "http://adlnet.gov/expapi/verbs/completed");
+    var statementidxs = this.data.getStatementidxsList(userdata['statementidxs'], "http://adlnet.gov/expapi/verbs/exited");
     var statement = undefined;
     if (statementidxs[0] != undefined) {
         statement = this.data.rawData[statementidxs[0]];
@@ -2348,7 +2348,7 @@ xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, li
             chart.width($(base + '#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
 
             chart.height(300);
-            chart.tooltips(false);
+            chart.tooltips(true);
             chart.interpolate("monotone");
             chart.yAxis.axisLabel(XAPI_ACTIVITY_CHART_YAXIS);
 
@@ -2368,6 +2368,12 @@ xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, li
             });
             chart.xAxis.tickValues(vals);
             chart.color(['#f86718']);
+            chart.tooltipContent(function(key, x, y, e, graph) {
+                //console.log("key=" + key + ", x=" + x + ", y=" + y + ", e=" + e + "graph=" + graph);
+                return x + ': ' + y;
+            });
+
+                //.headerFormatter(function(d) { return ""; });
         },
         post: function(data) {
             data.contents.map(function(el) {
