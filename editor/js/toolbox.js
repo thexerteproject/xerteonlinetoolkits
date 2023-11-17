@@ -1484,15 +1484,15 @@ var EDITOR = (function ($, parent) {
     stripP = function (val) {
         if (val.indexOf('<p>') == 0)
         {
-            var strippedValue = val.substr(3);
+            var strippedValue = val.substring(3);
             if (strippedValue.lastIndexOf('</p>') != strippedValue.length - 4)
             {
                 // Strip extra newline
-                strippedValue = strippedValue.substr(0, strippedValue.length-5);
+                strippedValue = strippedValue.substring(0, strippedValue.length-5);
             }
             else
             {
-                strippedValue = strippedValue.substr(0, strippedValue.length-4);
+                strippedValue = strippedValue.substring(0, strippedValue.length-4);
             }
             return strippedValue.trim();
         }
@@ -4844,9 +4844,14 @@ var EDITOR = (function ($, parent) {
 					html = $('<div>')
 						.attr('id', id)
 						.addClass('inlinewysiwyg')
-						.attr('contenteditable', 'true')
-						.append('<p>' + value + '</p>');
+						.attr('contenteditable', 'true');
 
+                    // Do not always add a paragraph tag if the value already starts with a <p tag (with for example a class attribute)
+                    if (value.indexOf('<p') === 0) {
+                        html = html.append(value);
+                    } else {
+                        html = html.append('<p>' + value + '</p>');
+                    }
 					textinputs_options.push({id: id, key: key, name: name, options: options});
 				}
 				else {

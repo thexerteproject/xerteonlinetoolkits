@@ -266,7 +266,7 @@
 				});
 			
 			if ($pageContents.data("hsType") == "centre" && align == "Left") {
-				$(".listItem").css("minWidth", $x_pageDiv.width() - $panel.outerWidth(true) - 50);
+				$(".listItem").css("minWidth", $x_pageDiv.width() - $panel.outerWidth(true) - parseInt($(".listItem").css('padding-left')) - parseInt($(".listItem").css('padding-right')) - 20);
 			}
 			
 			// now get info about hotspots & create them
