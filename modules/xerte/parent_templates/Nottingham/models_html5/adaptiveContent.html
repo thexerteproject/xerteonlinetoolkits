@@ -677,9 +677,14 @@
       var date = moment(endDate).add(1, "days").toISOString();
       q["until"] = date;
     }
-//todo check if current or all users
-      // if set add current users to q
-
+    //todo not like this add indicator to q if only current users.
+      let current_users = interaction.getAttribute("contextUsersFilter")
+      if (current_users == 'true') {
+          q["filter_current_users"] = current_users;
+      } else {
+          q["filter_current_users"] = 'false';
+      }
+      //debugger
     /*
         queryStatements(
             lrsEndpoint + '/api/connection/statement',
@@ -1054,7 +1059,6 @@
     };
 
     this.init = function () {
-
       var loadFiles = true;
       for (var i = 0; i < x_pageInfo.length; i++) {
         if (
@@ -1403,7 +1407,6 @@
         }
       } else if (interactionType == "opinionclasses") {
         // check open question special options
-
         var verb = "http://adlnet.gov/expapi/verbs/answered";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -3757,7 +3760,6 @@
       jsonData = jsonData.filter(function (x) {
         return x != undefined;
       });
-
       div = $(
         "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
       );
