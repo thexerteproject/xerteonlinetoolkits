@@ -65,7 +65,11 @@
 			} else if (opts.source.indexOf("vimeo.com") != -1) {
 				uploadedFile = false;
 				mimeType = "video/vimeo";
+			} else if (opts.source.indexOf("yuja") != -1) {
+				uploadedFile = false;
+				mimeType = "video/mp4";
 			}
+
 		}
 		
 		if (thisMedia.children().length > 0) {
