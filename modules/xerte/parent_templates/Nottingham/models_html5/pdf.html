@@ -79,7 +79,7 @@
 			}
 			
 			// swap positions of text & pdf
-			if (x_currentPageXML.getAttribute("position") == "R") {
+			if (x_currentPageXML.getAttribute("position") == "R" && x_browserInfo.mobile == false) {
 				
 				$(".splitScreen .right")
 					.removeClass("right")
