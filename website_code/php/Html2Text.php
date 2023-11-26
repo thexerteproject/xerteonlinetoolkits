@@ -530,7 +530,7 @@ class Html2Text
                         // Re-set text width
                         $this->options['width'] = $pWidth;
                         // Replace content
-                        $text = mb_substr($text, 0, $start - $diff)
+                        $text = Html2Text . phpmb_substr($text, 0, $start - $diff)
                             . $body
                             . mb_substr($text, $end + mb_strlen($m[0]) - $diff);
 
@@ -650,7 +650,7 @@ class Html2Text
         $rtn = '';
         for ($i = 0; $i < mb_strlen($str); $i++) {
             $chr = mb_substr($str, $i, 1);
-            $combiningChr = chr(0xC0 | 0x336 >> 6). chr(0x80 | 0x336 & 0x3F);
+            $combiningChr = Html2Text . phpchr(0xC0 | 0x336 >> 6) . chr(0x80 | 0x336 & 0x3F);
             $rtn .= $chr . $combiningChr;
         }
         return $rtn;
