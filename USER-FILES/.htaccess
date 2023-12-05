@@ -9,5 +9,5 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule .*/media/.*\.(xml.*|json.*)$ - [L,NC]
-    RewriteRule .*\.(php|php[0-9]|phtml|pl|sh|java|py|xml.*|json.*)$ - [F,NC]
+    RewriteRule .*\.(php|php[0-9]|phar|phtml|pl|sh|java|py|xml.*|json.*)$ - [F,NC]
 </IfModule>

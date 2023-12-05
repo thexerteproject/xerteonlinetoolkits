@@ -126,20 +126,15 @@ if (isset($_REQUEST['langCode']))
                 uiOptions : {
                     // toolbar configuration
                     toolbar : [
-                        // ['back', 'forward'],
                         ['reload'],
-                        // ['home', 'up'],
                         ['home'],
-                        //['mkdir', 'mkfile', 'upload'],
                         ['mkdir', 'upload'],
-                        //['open', 'download', 'getfile'],
                         ['download', 'getfile'],
                         ['info'],
                         ['quicklook'],
                         ['copy', 'cut', 'paste'],
                         ['rm'],
                         ['duplicate', 'rename', 'edit', 'resize'],
-                        //['extract', 'archive'],
                         ['search'],
                         ['view'],
                         ['help']
