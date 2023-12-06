@@ -188,7 +188,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
     if (($_POST["login"] == $xerte_toolkits_site->admin_username) && (hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) {
-
+        session_regenerate_id(true);
         $_SESSION['toolkits_logon_id'] = "site_administrator";
 
         $msg = "Admin user logged in successfully from " . $_SERVER['REMOTE_ADDR'];

@@ -459,6 +459,9 @@ function login_processing($exit = true) {
       if (empty($errors)) {
         if ($authmech->check()) {
           $success = $authmech->login($_POST['login'], $_POST['password']);
+          if ($success) {
+            session_regenerate_id(true);
+          }
         }
         $errors = $authmech->getErrors();
       }
@@ -527,3 +530,5 @@ function login_processing2($firstname = false, $surname = false, $username = fal
   $msg = "User " . $_SESSION['toolkits_logon_username'] . " logged in successfully from " . $_SERVER['REMOTE_ADDR'];
   receive_message($_SESSION['toolkits_logon_username'], "SYSTEM", "LOGINS", "Successful login", $msg);
 }
+
+

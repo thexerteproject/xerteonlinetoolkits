@@ -164,15 +164,8 @@ if (isset($_REQUEST['langCode']))
                     // navbarfolder menu
                     navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'mkdir', '|', 'info'],
 
-                    // current directory menu
-                    //cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'info'],
                     cwd    : ['reload', '|', 'upload', 'mkdir', 'paste', '|', 'info'],
 
-                    // current directory file menu
-                    //files  : [
-                    //    'getfile', '|','open', 'quicklook', '|', 'download', '|', 'copy', 'cut', 'paste', 'duplicate', '|',
-                    //    'rm', '|', 'edit', 'rename', 'resize', '|', 'archive', 'extract', '|', 'info'
-                    //]
                     files  : [
                         'getfile', '|','quicklook', '|', 'download', '|', 'copy', 'cut', 'paste', 'duplicate', '|',
                         'rm', '|', 'edit', 'rename', 'resize', '|', 'info'
