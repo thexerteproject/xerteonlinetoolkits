@@ -1763,7 +1763,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			//add the section header
 			var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
 				links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
-				subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
+				subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h2 class="sectionTitle">' + $(this).attr('name') + '</h2>' : '';
 
 			var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
 			var sectionId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'section' + (sectionVisibleIndex+1);
@@ -1891,7 +1891,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 			}
 
-			section.append( '<h2 id="' + pageHash + 'section' + (sectionIndex+1) + 'content' + (itemIndex+1) + '">' + $(this).attr('name') + '</h2>');
+			section.append( '<h3 id="' + pageHash + 'section' + (sectionIndex+1) + 'content' + (itemIndex+1) + '" class="contentTitle">' + $(this).attr('name') + '</h3>');
 		}
 
 		if (this.nodeName == 'text'){
