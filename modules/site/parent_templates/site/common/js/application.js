@@ -1036,12 +1036,16 @@ function setup() {
 	//temporary non-language option fix for collapse button aria label
 	$(".btn.btn-navbar").attr("aria-label", "collapse");
 
-	// page menu bar is hidden if optional property says it should be (or if there's only one page in project)
-    if (($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false') || $('#nav li:not(.backBtn)').length <= 1){
+	// page menu bar is hidden if optional property says it should be
+    if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
 
 		$("#topnav").hide();
 
 	} else {
+		// if just 1 page, don't remove page menu bar (in case the theme requires it) but hide the links on it
+		if ($('#nav li:not(.backBtn)').length <= 1) {
+			$(".navbar-toggler, .navbar-inner #nav li:not(.backBtn) a").hide();
+		}
 		
 		// nav bar can be moved below header bar
 		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
@@ -1639,14 +1643,19 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					$("#nav li:not(.backBtn)").hide();
 					$("#nav .backBtn").show();
 					$("#topnav").show();
+					if ($('#nav li:not(.backBtn)').length <= 1) {
+						$(".navbar .btn-navbar").show();
+					}
 				} else {
 					$("#nav li:not(.backBtn)").show();
 					$("#nav .backBtn").hide();
-					
-					if (($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false') || $('#nav li:not(.backBtn)').length <= 1) {
+
+					if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false') {
 						$("#topnav").hide();
 					} else {
-						$("#topnav").show();
+						if ($('#nav li:not(.backBtn)').length <= 1) {
+							$(".navbar-toggler, .navbar-inner #nav li:not(.backBtn) a").hide();
+						}
 					}
 				}
 			}
@@ -1792,11 +1801,6 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			sectionVisibleIndex++;
 		}
 	});
-	
-	// hide section menu if there's only one section
-	if ($('#toc').find('li').length <= 1) {
-		$('#toc').empty();
-	}
 	
 	updateContent();
 
