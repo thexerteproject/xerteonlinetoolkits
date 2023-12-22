@@ -37,6 +37,7 @@ global $xerte_toolkits_site;
 global $x_embed;
 global $x_embed_activated;
 
+_debug("SERVER: " . print_r($_SERVER, true));
 _debug("LTI launch request: " . print_r($_POST, true));
 
 if (isset($_GET["template_id"])) {
@@ -52,7 +53,10 @@ if(is_numeric($id) || $id == null)
 {
 	$tsugi_enabled = true;
 	$lti_enabled = true;
+    _debug("Start launch");
     $LAUNCH = LTIX::requireData(LTIX::USER);
+
+    _debug("LTI launch: " . print_r($LAUNCH, true));
 
     if (method_exists($LAUNCH, 'isLTIAdvantage'))
     {
@@ -79,6 +83,10 @@ if(is_numeric($id) || $id == null)
 
     _debug("LTI user: " . print_r($USER, true));
     $xerte_toolkits_site->lti_user = $USER;
+    if (!isset($xerte_toolkits_site->lti_user->email))
+    {
+        $xerte_toolkits_site->lti_user->email = $xerte_toolkits_site->lti_user->id . '@test.com';
+    }
 
     $group = $LAUNCH->ltiParameter('group');
     if ($group === false)
