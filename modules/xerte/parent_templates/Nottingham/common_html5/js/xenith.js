@@ -5148,8 +5148,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
 				// replace with the variable text
 				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));
-				
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
 			} else {
 				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
 				// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
