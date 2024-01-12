@@ -33,7 +33,7 @@ function get_children ($parent_id, $lookup, $column, $type) {
         return $children;
     }
     foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = array(name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type));
+        $children[] = array('name' => $node[$column], 'value' => $node[$column], 'children' => get_children($node[$type], $lookup, $column, $type));
     }
     return $children;
 }
