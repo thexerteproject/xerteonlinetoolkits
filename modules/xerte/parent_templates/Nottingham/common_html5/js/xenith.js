@@ -138,11 +138,6 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
-	// Load the loadjs dependency loader
-    if (!xot_offline) {
-        // TODO - we should move this to play/preview and let it kickstart the loading of all files
-        $.getScript(x_templateLocation + "common_html5/js/loadjs.min.js");
-    }
 
     $x_mainHolder = $("#x_mainHolder");
 
