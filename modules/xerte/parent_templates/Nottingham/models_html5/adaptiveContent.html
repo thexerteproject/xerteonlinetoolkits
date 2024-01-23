@@ -2864,17 +2864,19 @@
           ];
             //quick check if we use simple colors or specific color/group pairs
             // under the assumption that only one of the systems is used
+            let namedBackgroundColors = false;
           if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "" && !interaction.getAttribute("graphColorScale").includes(":")) {
               backgroundColors = interaction.getAttribute("graphColorScale").split(",");
           } else if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != ""){
-              backgroundColors = {};
+              backgroundColors = [];
               let groupColorPairs = interaction.getAttribute("graphColorScale").split(",")
               for (key of groupColorPairs){
                   let keyValue = key.split(":")
-                  backgroundColors[keyValue[0]] = keyValue[1]
+                  backgroundColors[keyValue[0]] = keyValue[1];
+                  namedBackgroundColors = true;
               }
           }
-          let visitedGroups = {};
+          let visitedGroups = [];
           for (let statement in statements) {
             let group =
               statements[statement].context.contextActivities.grouping[0]
@@ -2884,6 +2886,22 @@
             } else {
               visitedGroups[group].push(statements[statement].result.score.raw);
             }
+          }
+          if (namedBackgroundColors && Object.keys(visitedGroups).length == Object.keys(backgroundColors).length){
+              // Order the keys in visitedGroups to match the order of backgroundColors
+              let newVisitedGroups = [];
+              let matched = true;
+              for (let i = 0; i < Object.keys(backgroundColors).length; i++){
+                  let key = Object.keys(backgroundColors)[i];
+                  if (typeof(visitedGroups[key]) == 'undefined'){
+                      matched = false;
+                      break;
+                  }
+                  newVisitedGroups[key] = visitedGroups[key];
+              }
+              if (matched) {
+                  visitedGroups = newVisitedGroups;
+              }
           }
           let labelCounter = 0;
           let legendLabels = [];
@@ -2904,6 +2922,17 @@
                     .definition.name["en-US"]
                     })
           );
+          // Arrange questions in the same order as visitedGroups
+          let newQuestions = [];
+          for (key in visitedGroups) {
+              for (let i = 0; i < questions.length; i++) {
+                  if (questions[i].groupName == key) {
+                      newQuestions.push(questions[i]);
+                      break;
+                  }
+              }
+          }
+          questions = newQuestions;
           let labels = [];
           let backgroundColor = [];
           let dataValues = [];
@@ -2915,7 +2944,7 @@
               labels.push(singleQuestion[0][0]);
               dataValues.push(singleQuestion[1]);
               //again differentiate between simple colors and color/group pairs
-                if (Array.isArray(backgroundColors)) {
+                if (!namedBackgroundColors) {
                     if (labelCounter < backgroundColors.length) {
                         backgroundColor.push(backgroundColors[labelCounter]);
                     }
