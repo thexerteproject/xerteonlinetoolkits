@@ -26,13 +26,13 @@
  * @version 1.0
  * @package
  */
-
+$tsugi_disable_xerte_session = true;
 require_once(dirname(__FILE__) . "/config.php");
 
 require_once(dirname(__FILE__) . "/website_code/php/template_library.php");
 require_once(dirname(__FILE__) . "/website_code/php/user_library.php");
 
-_load_language_file('load_registrations.inc');
+_load_language_file('/load_registrations.inc');
 
 // Retrieve all projects from templatedetails and put them in tsugi_lti_external
 // Only do this if LTI is enabled in this installation
@@ -41,12 +41,10 @@ _load_language_file('load_registrations.inc');
 function loadRegistrations()
 {
     global $xerte_toolkits_site;
-    $prefix = $xerte_toolkits_site->database_table_prefix;
 
     if (file_exists($xerte_toolkits_site->tsugi_dir)) {
         $prefix = $xerte_toolkits_site->database_table_prefix;
-        //$site_url = $xerte_toolkits_site->site_url;
-        $site_url = "https://latest.dlearning.nl/";
+        $site_url = $xerte_toolkits_site->site_url;
 
         $sql = "SELECT td.*, ld.username as creator_user_name, otd.template_name as template_type_name FROM {$prefix}templatedetails td, {$prefix}logindetails ld, {$prefix}originaltemplatesdetails otd WHERE td.tsugi_published = 1 and ld.login_id = td.creator_id and td.template_type_id = otd.template_type_id";
         $templates = db_query($sql);
@@ -67,6 +65,9 @@ function loadRegistrations()
                 } else {
                     $tool['description'] .= $tool['name'];
                 }
+                if (isset($metadata->course) && $metadata->course != "") {
+                    $tool['description'] .= ",\n " . LTI_DEEPLINK_COURSE . $metadata->course;
+                }
                 if (isset($metadata->author)) {
                     $tool['description'] .= ",\n " . LTI_DEEPLINK_AUTHORS . $metadata->author;
                 }
@@ -80,9 +81,9 @@ function loadRegistrations()
                 if ($template['tsugi_xapi_enabled']) {
                     $dtool = array();
                     $dtool['url'] = $site_url . "tools/dashboard/index.php?template_id=" . $template['template_id'];
-                    $dtool['name'] = "Dashboard for " . $metadata->name;
-                    $dtool['short_name'] = "Dashboard for " . $tool['short_name'];
-                    $dtool['description'] = "Dashboard for " . $tool['description'];
+                    $dtool['name'] = LTI_DEEPLINK_DASHBOARD_PREFIX . $metadata->name;
+                    $dtool['short_name'] = LTI_DEEPLINK_DASHBOARD_PREFIX . $tool['short_name'];
+                    $dtool['description'] = LTI_DEEPLINK_DASHBOARD_PREFIX . $tool['description'];
                     $dtool['FontAwesome'] = "fa-chart-bar";
                     $tools[] = $dtool;
                 }
