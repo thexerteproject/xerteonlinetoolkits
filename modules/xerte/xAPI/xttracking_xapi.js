@@ -1954,7 +1954,7 @@ function getStatements(q, one, callback)
                     continue;
                 }
                 //todo add check if statemettns are from current users if userlist > 0
-                debugger
+
                 if (filter_current_users){
                     if (!lti_user_list.includes(tmp.statements[x].actor.mbox.split(':')[1])) {
                         continue;
@@ -1964,7 +1964,7 @@ function getStatements(q, one, callback)
             }
             return statements;
         } else {
-            debugger;
+
             ADL.XAPIWrapper.getStatements(search, null,
                 function getmorestatements(err, res, body) {
                     var lastSubmit = null;
@@ -1989,7 +1989,7 @@ function getStatements(q, one, callback)
                                 || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                             continue;
                         }
-                        debugger;
+
                         if (filter_current_users == 'true'){
                             //done also check for field mbox_sha1sum (has of mailto:mail@mail.nl)
                             if (body.statements[x].actor.mbox !== undefined) {
@@ -2018,7 +2018,7 @@ function getStatements(q, one, callback)
                 }
             );
         }
-        debugger;
+
     }
 }
 
@@ -2090,7 +2090,7 @@ function XTInitialise(category) {
     if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
         studentidmode = parseInt(studentidmode);
     }
-    debugger
+
     if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
         // set actor to global group
         actor = {
