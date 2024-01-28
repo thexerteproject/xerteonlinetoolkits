@@ -599,6 +599,87 @@
     }
   }
 
+  function filterRelevantStatements(statements, type) {
+      if (type == "all") {return statements}
+      var groupedData = {};
+      statements.forEach(function(statement, i) {
+          var participant = {
+              'attemptkeys' : [],
+              'attempts': [],
+          };
+
+          if (statement.actor.mbox != undefined) {
+              var key = statement.actor.mbox.substr(7).trim();
+              if (groupedData[key] == undefined) {
+                  participant['key'] = key;
+                  groupedData[key] = participant;
+              }
+          } else if (statement.actor.mbox_sha1sum != undefined) {
+              var key = statement.actor.mbox_sha1sum;
+              if (groupedData[key] == undefined) {
+                  participant['key'] = key;
+                  groupedData[key] = participant;
+              }
+          } else {
+              // Key is group, session_id (if group is available), otherwise just session
+              var group = (statement.actor.group != undefined ? statement.actor.group.name : 'global');
+              if (statement.context != undefined &&
+                  statement.context.extensions != undefined &&
+                  statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
+                  var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                  if (key == undefined) {
+                      key = statement.context.extensions[site_url + "sessionId"];
+                  }
+                  if (key != undefined) {
+                      key = group + ' ' + key;
+                      if (groupedData[key] == undefined) {
+                          participant['key'] = key;
+                          groupedData[key] = participant;
+                      }
+                  }
+              }
+          }
+          if (key != undefined) {
+              if (statement.context != undefined &&
+                  statement.context.extensions != undefined &&
+                  statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
+                  var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                  if (groupedData[key]['attempts'][attemptkey] == undefined) {
+                      groupedData[key]['attempts'].push(statement)
+                      groupedData[key]['attemptkeys'].push(
+                          {
+                              key: attemptkey,
+                          }
+                      );
+                  }
+              }
+          }
+      });
+      var statements = [];
+      for (var user in groupedData) {
+          if (type == "first") {
+              statements.push(groupedData[user].attempts[0])
+          } else if (type == "last") {
+              statements.push(groupedData[user].attempts[groupedData[user].attempts.length - 1])
+          } else if (type == 'best'){
+              //todo check if correct
+              var bestAttempt = null;
+              for (var attempt in groupedData[user].attempts){
+                  if (bestAttempt != null) {
+                      if (bestAttempt.result.score.raw < groupedData[user].attempts[attempt].result.score.raw) {
+                          bestAttempt = groupedData[user].attempts[attempt]
+                      }
+                  } else {
+                      bestAttempt = groupedData[user].attempts[attempt]
+                  }
+              }
+              statements.push(bestAttempt)
+          }
+      }
+      debugger
+      return statements
+  }
+
   function getStatements(
     xerteurl,
     xertelo,
@@ -677,7 +758,6 @@
       var date = moment(endDate).add(1, "days").toISOString();
       q["until"] = date;
     }
-    //todo not like this add indicator to q if only current users.
       let current_users = interaction.getAttribute("contextUsersFilter")
       if (current_users == 'true') {
           q["filter_current_users"] = current_users;
@@ -1475,7 +1555,12 @@
       }
       var xertelo = interaction.getAttribute("xertelo");
       var ownstatements = filterOwnStatements(data, xertelo);
-      var statements = data;
+
+      var graphAnswerType = interaction.getAttribute("graphAnswerType");
+      if (graphAnswerType == undefined) {
+          graphAnswerType = "all";
+      }
+      var statements = filterRelevantStatements(data, graphAnswerType);
       xerteurl = interaction.getAttribute("xerteurl");
       xertelabel = interaction.getAttribute("label");
       name = interaction.getAttribute("name");
@@ -1494,13 +1579,13 @@
           graphFitInfoInBar = false;
       }
       var graphShowAvg = interaction.getAttribute("graphShowAvg");
-        if (graphShowAvg == undefined) {
-            graphShowAvg = false;
-        }
-        var graphShowAvgLine = interaction.getAttribute("graphShowAvgBar");
-        if (graphShowAvgLine == undefined) {
-            graphShowAvgLine = false;
-        }
+      if (graphShowAvg == undefined) {
+          graphShowAvg = false;
+      }
+      var graphShowAvgLine = interaction.getAttribute("graphShowAvgBar");
+      if (graphShowAvgLine == undefined) {
+          graphShowAvgLine = false;
+      }
 
       var barName = [];
       var barNameValue = [];
@@ -1987,7 +2072,6 @@
             let barBorderColor = barColors.slice();
             let barScoreColor = new Array(barRange.length);
             let barOwnScore = barSizeData.slice();
-
 
             if (followBlock == "true") {
                 for (let i = 0; i < statements.length; i++) {
