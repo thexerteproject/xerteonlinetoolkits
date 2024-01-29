@@ -88,6 +88,10 @@ function loadRegistrations()
                     $tools[] = $dtool;
                 }
             }
+            $others = findAllRegistrationsInternal();
+            $tools = array_merge($tools, $others);
+
+
             return $tools;
         }
     }
