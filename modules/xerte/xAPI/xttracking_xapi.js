@@ -2560,8 +2560,9 @@ function XThelperConsolidateSegments(videostate) {
     while (i < segments.length) {
         var segment = $.extend(true, {}, segments[i]);
         i++;
-        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
-            segment.end = segments[i].end;
+        while (i < segments.length && parseFloat(segments[i].start) >= parseFloat(segment.start) && parseFloat(segments[i].start) <= parseFloat(segment.end)) {
+            if (parseFloat(segments[i].end) > parseFloat(segment.end))
+                segment.end = segments[i].end;
             i++;
         }
         csegments.push(segment);
@@ -2831,7 +2832,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                 played_segments += videostate.segments[i].start + "[.]" + videostate.segments[i].end;
             }
             var progress = XThelperDetermineProgress(videostate);
-            // 3. Determine whther to use completed or terminated
+            // 3. Determine whether to use completed or terminated
             if (progress >= 99.9) {
                 // Use completed
                 var statement = {
