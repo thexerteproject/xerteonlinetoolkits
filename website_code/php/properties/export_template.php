@@ -33,7 +33,7 @@ require_once("../template_library.php");
 
 include "../template_status.php";
 
-include "../url_library.php";
+require_once("../url_library.php");
 
 include "../user_library.php";
 
