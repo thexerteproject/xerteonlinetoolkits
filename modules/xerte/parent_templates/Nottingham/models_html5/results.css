@@ -19,8 +19,12 @@
 		margin-top: 0px;
 	}
 
-	h3{
+	h3, h4 {
 		padding: 8px;
+	}
+
+	h4 {
+		margin: 0;
 	}
 
 	td, th{
@@ -51,6 +55,11 @@
 	}
 	.td-center{
 		text-align:center;
+	}
+
+	.td-small{
+		width: 1px;
+		white-space: nowrap;
 	}
 
 	.td-right{
@@ -101,6 +110,6 @@ fieldset {
 	border: 0;
 }
 
-fieldset button {
+#x_results_userName fieldset button {
 	margin-left: 1em;
 }
