@@ -644,13 +644,9 @@
                   statement.context.extensions != undefined &&
                   statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
                   var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
-                  if (groupedData[key]['attempts'][attemptkey] == undefined) {
+                  if (!groupedData[key]['attemptkeys'].includes(attemptkey)) {
                       groupedData[key]['attempts'].push(statement)
-                      groupedData[key]['attemptkeys'].push(
-                          {
-                              key: attemptkey,
-                          }
-                      );
+                      groupedData[key]['attemptkeys'].push(attemptkey)
                   }
               }
           }
