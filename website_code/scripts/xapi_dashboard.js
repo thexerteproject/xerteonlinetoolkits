@@ -1488,7 +1488,7 @@ xAPIDashboard.prototype.consolidateSegments = function(stringRanges)
     while (i < segments.length) {
         var segment = $.extend(true, {}, segments[i]);
         i++;
-        while (i < segments.length && segment.end >= segments[i].start) {
+        while (i < segments.length && segments[i].start >= segment.start && segments[i].start <= segment.end) {
             if (segment.end <= segments[i].end) {
                 segment.end = segments[i].end;
             }
