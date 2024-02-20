@@ -1876,6 +1876,23 @@ async function httpGetStatements(url, query)
     }
 }
 
+function getMboxSha1(statement)
+{
+    if (statement.actor == undefined) {
+        if (statement.actor.mbox != undefined) {
+            return toSHA1(statement.actor.mbox);
+        } else if (statement.actor.mbox_sha1sum != undefined) {
+            return statement.actor.mbox_sha1sum;
+        }
+        else {
+            return null;
+        }
+    }
+    else {
+        return null;
+    }
+}
+
 async function getStatementsFromDB(q, one)
 {
     let search = {};
@@ -1886,6 +1903,11 @@ async function getStatementsFromDB(q, one)
         limit=1;
     } else {
         limit = 5000;
+    }
+    if (q['filter_current_users'] != undefined) {
+        const lti_user_list = lti_users.split(',');
+        search['actor'] = lti_user_list;
+        delete q['filter_current_users'];
     }
     let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
     let statements = [];
@@ -1922,6 +1944,10 @@ function getStatements(q, one, callback)
             context_id = q['lti_context_id'];
             delete q['lti_context_id'];
         }
+        if (q['filter_current_users'] != undefined) {
+            filter_current_users = q['filter_current_users'];
+            delete q['filter_current_users'];
+        }
         $.each(q, function (i, value) {
             search[i] = value;
         });
@@ -1931,8 +1957,10 @@ function getStatements(q, one, callback)
             search['limit'] = 1000;
         }
         var statements = [];
+
         if (callback == null) {
             var tmp = ADL.XAPIWrapper.getStatements(search);
+            var lti_user_list = lti_users.split(',');
             for (x = 0; x < tmp.statements.length; x++) {
                 if (group != ""
                     && (tmp.statements[x].context.team == undefined
@@ -1947,13 +1975,21 @@ function getStatements(q, one, callback)
                         || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                     continue;
                 }
+                //todo add check if statements are from current users if userlist > 0
+                if (filter_current_users == 'true'){
+                    if (!lti_user_list.includes(getMboxSha1(tmp.statements[x]))) {
+                        continue;
+                    }
+                }
                 statements.push(tmp.statements[x]);
             }
             return statements;
         } else {
+
             ADL.XAPIWrapper.getStatements(search, null,
                 function getmorestatements(err, res, body) {
                     var lastSubmit = null;
+                    var lti_user_list = lti_users.split(',');
 
                     for (x = 0; x < body.statements.length; x++) {
                         //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
@@ -1974,6 +2010,13 @@ function getStatements(q, one, callback)
                                 || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                             continue;
                         }
+
+                        if (filter_current_users == 'true'){
+                            //done also check for field mbox_sha1sum (has of mailto:mail@mail.nl)
+                            if (!lti_user_list.includes(getMboxSha1(body.statements[x]))) {
+                                continue;
+                            }
+                        }
                         statements.push(body.statements[x]);
                     }
                     //stringObjects.push(lastSubmit);
@@ -1990,6 +2033,7 @@ function getStatements(q, one, callback)
                 }
             );
         }
+
     }
 }
 
@@ -2061,6 +2105,7 @@ function XTInitialise(category) {
     if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
         studentidmode = parseInt(studentidmode);
     }
+
     if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
         // set actor to global group
         actor = {
