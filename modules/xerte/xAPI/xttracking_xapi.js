@@ -1876,6 +1876,23 @@ async function httpGetStatements(url, query)
     }
 }
 
+function getMboxSha1(statement)
+{
+    if (statement.actor == undefined) {
+        if (statement.actor.mbox != undefined) {
+            return toSHA1(statement.actor.mbox);
+        } else if (statement.actor.mbox_sha1sum != undefined) {
+            return statement.actor.mbox_sha1sum;
+        }
+        else {
+            return null;
+        }
+    }
+    else {
+        return null;
+    }
+}
+
 async function getStatementsFromDB(q, one)
 {
     let search = {};
@@ -1886,6 +1903,11 @@ async function getStatementsFromDB(q, one)
         limit=1;
     } else {
         limit = 5000;
+    }
+    if (q['filter_current_users'] != undefined) {
+        const lti_user_list = lti_users.split(',');
+        search['actor'] = lti_user_list;
+        delete q['filter_current_users'];
     }
     let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
     let statements = [];
@@ -1953,10 +1975,9 @@ function getStatements(q, one, callback)
                         || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                     continue;
                 }
-                //todo add check if statemettns are from current users if userlist > 0
-
-                if (filter_current_users){
-                    if (!lti_user_list.includes(tmp.statements[x].actor.mbox.split(':')[1])) {
+                //todo add check if statements are from current users if userlist > 0
+                if (filter_current_users == 'true'){
+                    if (!lti_user_list.includes(getMboxSha1(tmp.statements[x]))) {
                         continue;
                     }
                 }
@@ -1992,14 +2013,8 @@ function getStatements(q, one, callback)
 
                         if (filter_current_users == 'true'){
                             //done also check for field mbox_sha1sum (has of mailto:mail@mail.nl)
-                            if (body.statements[x].actor.mbox !== undefined) {
-                                if (!lti_user_list.includes(toSHA1(body.statements[x].actor.mbox))) {
-                                    continue;
-                                }
-                            } else {
-                                if (!lti_user_list.includes(body.statements[x].actor.mbox_sha1sum)) {
-                                    continue;
-                                }
+                            if (!lti_user_list.includes(getMboxSha1(body.statements[x]))) {
+                                continue;
                             }
                         }
                         statements.push(body.statements[x]);
