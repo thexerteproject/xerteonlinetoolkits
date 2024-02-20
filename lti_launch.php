@@ -72,7 +72,8 @@ if(is_numeric($id) || $id == null)
         //DONE: get all emails of current users add to array
         // https://gitlab.tor.nl/xerte-dashboard/dashboard/-/blob/master/index.php line 80
         $xerte_toolkits_site->lti_users = array();
-        foreach ($nrps->members as $member){
+        foreach ($nrps->members as $i => $member){
+            if ($member->status == 'Active' && in_array('Learner', $member->roles))
             $xerte_toolkits_site->lti_users[] = sha1('mailto:'.$member->email);
         }
     }

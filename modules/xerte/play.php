@@ -396,7 +396,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 {
                     $tracking .= "   var lti_users = '" . str_replace("'", "\'", implode(",",$xerte_toolkits_site->lti_users)) . "';\n";
                 } else {
-                    $tracking .= "   var lti_users = 'is empty';\n";
+                    $tracking .= "   var lti_users = '';\n";
                 }
                 //DONE if lti_users is set create js varaible
             }
