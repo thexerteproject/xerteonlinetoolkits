@@ -698,7 +698,7 @@
 					drop:	function(event, ui) {
 						gapFill.dropLabel($(this), ui.draggable); // target, label
 					}
-					});
+				});
 			
 			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
 				$targetHolder.find("span:not(.target)").css("line-height", parseInt($targetHolder.find(".target").css("line-height")) + 10 + "px");
@@ -758,7 +758,7 @@
 					containment:	"#dragDropHolder",
 					stack:			"#dragDropHolder .label", // item being dragged is always on top (z-index)
 					revert:			"invalid", // snap back to original position if not dropped on target
-					start:			function() {
+					start:			function(event, ui) {
 						// remove any focus/selection highlights made by tabbing to labels/targets
 						if ($("#labelHolder .label.focus").length > 0) {
 							$("#labelHolder .label.focus").attr("title", labelTxt1);
@@ -774,6 +774,11 @@
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
 						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
+						ui.helper.css("opacity", 1);
+					},
+					stop: function(event, ui){
+						if(ui.helper.data("dragged"))
+							ui.helper.css("opacity", 0);
 					}
 					})
 				.disableSelection();
@@ -789,18 +794,20 @@
 				});
 			}
 		}
-		
+
 		// function called when label dropped on target - by mouse or keyboard
 		this.dropLabel = function($thisTarget, $thisLabel) {
 			$feedbackTxt.hide();
+			$thisLabel.data("dragged", true);
 			
 			$thisLabel
-				.removeAttr("title")
+				//.removeAttr("title")
 				.removeClass("selected")
-				.draggable("disable")
-				.off("keypress focusin focusout")
+				//.draggable("disable")
+				//.off("keypress focusin focusout")
 				.css("opacity", 0);
-			
+
+						
 			if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
 				if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
 					score++;
@@ -815,15 +822,43 @@
 			}
 			
 			$thisTarget
-				.removeAttr("title")
+				//.removeAttr("title")
 				.html($thisLabel.html())
 				.off("keypress focusin focusout")
 				.droppable("option", "disabled", true)
 				.removeClass("highlight highlightDark ui-state-disabled");
 			
 			$pageContents.data("selectedLabel", "");
-			
+
+			if($thisLabel.data("prevHolder")){
+				let prevHolder = $thisLabel.data("prevHolder");
+				prevHolder.html("").on("keypress focusin, focusout").droppable("option", "disabled", false).addClass("highlight").remove("ui-dropable-disabled");
+				if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
+					if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+						score--;
+						$thisLabel.add(prevHolder).data("correct", false);
+					}
+				} else {
+					prevHolder.removeClass("correct");
+					if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+						score--;
+						$thisLabel.add(prevHolder).data("correct", false);
+					}
+				}
+				delete labelAnswers[prevHolder.data("answer")];
+			}
+
+			if(x_currentPageXML.getAttribute("markEnd") == "true") {
+				$thisLabel.data("prevHolder", $thisTarget);
+			}
+			else {
+				$thisLabel.draggable("disable").off("keypress focusin focusout").removeAttr("title").removeAttr("tabindex");
+				$thisTarget.removeAttr("title").removeAttr("tabindex");
+			}
+
 			labelAnswers[$thisTarget.data("answer")] = $thisLabel.data("answer");
+
+			console.log(labelAnswers);
 
 			// if it's marked as completed (can only drop on correct targets) then show feedback immediately when complete
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target.highlight").length == 0)) {

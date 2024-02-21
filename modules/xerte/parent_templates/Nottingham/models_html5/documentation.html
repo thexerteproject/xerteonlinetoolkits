@@ -363,6 +363,9 @@
 						if (xml.getAttribute('rows')) rows = parseInt(xml.getAttribute('rows'));
 						
 						switch(xml.getAttribute("width")) {
+							case "Full":
+							        width = "full-textarea";
+							        break;
 							case "Small":
 								width = "width40";
 								break;
@@ -575,7 +578,11 @@
 							case "Large":
 								width = "width80";
 								break;
-								
+
+							case "Full":
+							        width = "full-textbox";
+							        break;
+	
 							default:
 								width = "width60";
 						}

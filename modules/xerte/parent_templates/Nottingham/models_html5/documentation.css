@@ -109,3 +109,11 @@
 	.table table td.editable {
 		text-align: center;
 	}
+
+.full-textbox{
+    width: calc(100% - 8px);
+}
+
+.full-textarea{
+    width: calc(100% - 1.3em);
+}

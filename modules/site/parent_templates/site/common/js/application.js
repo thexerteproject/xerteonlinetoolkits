@@ -482,10 +482,28 @@ function setup() {
 						glossaryTxt.splice(glossaryTxt.length - 1, 1, glossaryTxt[glossaryTxt.length - 1] + '<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
 					}
 				}
-
+				
+				
 				var $glossaryTitle = $(data).find('learningObject').attr('glossaryTitle') != undefined ? $(data).find('learningObject').attr('glossaryTitle') : 'Glossary';
 				var $glossaryPage = $('<page name="' + $glossaryTitle + '" subtitle=""></page>');
-				for (var i=0; i<charList.length; i++) {
+
+				if($(data).find('learningObject').attr("glossaryPageID") != undefined){
+						$glossaryPage[0]
+								.setAttributeNS('', 'customLinkID', $(data).find('learningObject').attr("glossaryPageID"));
+				}
+
+				let headerImage = $(data).find('learningObject').attr('glossaryHeaderImage');
+				
+				if(headerImage != undefined && headerImage != ""){
+						let element = $glossaryPage[0];
+	
+						element.setAttributeNS('', 'header', headerImage);
+						element.setAttributeNS('', 'headerSize', 'cover');
+						element.setAttributeNS('', 'headerRepeat', 'no-repeat');
+						element.setAttributeNS('', 'headerPos', 'left');
+				}
+
+				for (var i=0; i<charList.length; i++) { 
 					var cDataSection = data.createCDATASection(glossaryTxt[i]);
 					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
 					$section.find('text').append(cDataSection);
@@ -543,7 +561,7 @@ function setup() {
 	});
 
 	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
-	$(data).find('page').each( function(index, value){
+	$(data).find('page').each( function(index, value){	
 		var tempID = $(this).attr('customLinkID');
 		var $page = $(this);
 		if (tempID != undefined && tempID != "") {
