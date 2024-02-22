@@ -141,6 +141,8 @@ $xerte_toolkits_site->news_text = base64_decode($row['news_text']);
 $xerte_toolkits_site->pod_one = base64_decode($row['pod_one']);
 $xerte_toolkits_site->pod_two = base64_decode($row['pod_two']);
 //$xerte_toolkits_site->copyright = utf8_decode($row['copyright']);
+$xerte_toolkits_site->default_theme_xerte = $row['default_theme_xerte'];
+$xerte_toolkits_site->default_theme_site = $row['default_theme_site'];
 
 $site_texts = explode("~~~", $row['site_text']);
 if (count($site_texts) > 1) {

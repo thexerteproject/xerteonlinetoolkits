@@ -86,6 +86,10 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_FEEDBACK . "<form><textarea id=\"feedback_list\">" . $row['feedback_list'] . "</textarea></form></p>";
 
+	echo "<p>" . MANAGEMENT_SITE_DEFAULT_XERTE . "<form><textarea id=\"default_theme_xerte\">" . $row['default_theme_xerte'] . "</textarea></form></p>";
+	
+	echo "<p>" . MANAGEMENT_SITE_DEFAULT_SITE . "<form><textarea id=\"default_theme_site\">" . $row['default_theme_site'] . "</textarea></form></p>";
+
     echo "</div>";
 
     echo "<div class=\"template\" id=\"serverdetails\"><p>" . MANAGEMENT_SITE_SERVER . " <button type=\"button\" class=\"xerte_button\" id=\"serverdetails_btn\" onclick=\"javascript:templates_display('serverdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"serverdetails_child\">";

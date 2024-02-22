@@ -564,7 +564,9 @@ function update_site() {
 			xapi_dashboard_urls: document.getElementById("xapi_dashboard_urls").value,
 			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
 			globalhidesocial: document.getElementById("site_socialicon_globaldisable").value,
-			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value
+			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value,
+			default_theme_xerte: document.getElementById("default_theme_xerte").value,
+			default_theme_site: document.getElementById("default_theme_site").value
 		},
 	})
 	.done(function (response) {

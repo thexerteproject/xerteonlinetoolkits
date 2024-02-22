@@ -119,6 +119,13 @@ function create_new_template($folder_name_id,$template_name,$parent_template_nam
         if(@chmod($path,0777)){
             $ok = copy_r($dir_path, $path);
             _debug("Copy_r returned " . print_r($ok, true));
+			if($ok){
+				$str=file_get_contents($path . "/data.xml");
+				$str=str_replace("default", $xerte_toolkits_site->default_theme_site, $str);
+				$result = file_put_contents($path . "/data.xml", $str);
+				_debug("Theme replace returned " . print_r($result, true));
+				return $result;
+			}
             return $ok;
         }else{
             _debug("Failed to set rights ");

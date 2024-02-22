@@ -130,7 +130,7 @@ function create_new_template($folder_name_id,$template_name,$parent_template_nam
         }else{
             _debug("Failed to set rights ");
             receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "MAJOR", "Failed to set rights on parent folder for template", "Failed to set rights on parent folder " . $path);
-            return false;
+            return false 
         }
     }else{
         _debug("Can't create $path");
