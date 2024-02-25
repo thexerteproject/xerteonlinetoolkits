@@ -81,9 +81,12 @@ function loadRegistrations()
                 if ($template['tsugi_xapi_enabled']) {
                     $dtool = array();
                     $dtool['url'] = $site_url . "tools/dashboard/index.php?template_id=" . $template['template_id'];
-                    $dtool['name'] = LTI_DEEPLINK_DASHBOARD_PREFIX . $metadata->name;
-                    $dtool['short_name'] = LTI_DEEPLINK_DASHBOARD_PREFIX . $tool['short_name'];
-                    $dtool['description'] = LTI_DEEPLINK_DASHBOARD_PREFIX . $tool['description'];
+                    $name = str_replace("{0}", $metadata->name, LTI_DEEPLINK_DASHBOARD_PREFIX);
+                    $dtool['name'] = $name;
+                    $short_name = str_replace("{0}", $tool['short_name'], LTI_DEEPLINK_DASHBOARD_PREFIX);
+                    $dtool['short_name'] = $short_name;
+                    $description = str_replace("{0}", $tool['description'], LTI_DEEPLINK_DASHBOARD_PREFIX);
+                    $dtool['description'] = $description;
                     $dtool['FontAwesome'] = "fa-chart-bar";
                     $tools[] = $dtool;
                 }
