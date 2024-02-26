@@ -352,8 +352,38 @@ function get_user_root_folder_record_by_id($id){
  * @package
  */
 function is_user_admin(){
-    if(isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id']=="site_administrator"){
+    /*if(isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id']=="site_administrator"){
         return true;
     }
-    return false;
+    return false;*/
+	return is_user_permitted("super");
+}
+
+function getRolesFromUser($userID){
+	global $xerte_toolkits_site;
+	
+	$prefix = $xerte_toolkits_site->database_table_prefix;
+	$query = "select name from role join {$prefix}logindetailsrole on {$prefix}role.roleid={$prefix}logindetailsrole.roleid where {$prefix}logindetailsrole.userid=?;";
+	$params = array($userID);
+	$result = db_query($query, $params);
+	$roles = array();
+	foreach($result as $role){
+		$roles[] = $role['name'];
+	}
+	return $roles;
+}
+
+
+function is_user_permitted($neededPermision){
+	if(!isset($_SESSION['toolkits_logon_id'])) 
+		return false;
+	if($_SESSION['toolkits_logon_id'] == "site_administrator")
+		return true;
+	$toolkits_logon_id = $_SESSION['toolkits_logon_id'];
+	$roles = getRolesFromUser($toolkits_logon_id);
+	
+	if(in_array($neededPermision, $roles, true))
+		return true;
+
+	return false;
 }

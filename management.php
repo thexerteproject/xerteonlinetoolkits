@@ -154,6 +154,19 @@ function mgt_page($xerte_toolkits_site, $extra)
 
     <?PHP
 }
+function get_user_id(){
+
+    global $xerte_toolkits_site;
+
+    $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($_SESSION['toolkits_logon_username']));
+
+    if(!empty($row)) { 
+        return $row['login_id'];	
+    }else{
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users login ID number", "Failed to get users login ID number: User: " . $_SESSION['toolkits_logon_username']);
+    }
+
+}
 
 /*
  * As with index.php, check for posts and similar
@@ -187,11 +200,23 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
         $xerte_toolkits_site->authentication_method = 'Db';
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if (($_POST["login"] == $xerte_toolkits_site->admin_username) && (hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) {
+//	$dbloggedin = false;
 
-        $_SESSION['toolkits_logon_id'] = "site_administrator";
+	if($xerte_toolkits_site->authentication_method == 'Db')
+		$dbloggedin = $authmech->login($_POST["login"], $_POST["password"]);
 
-        $msg = "Admin user logged in successfully from " . $_SERVER['REMOTE_ADDR'];
+    if ((($_POST["login"] == $xerte_toolkits_site->admin_username) && (hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) || $dbloggedin) {
+
+		if($dbloggedin){
+			$_SESSION['toolkits_firstname'] = $authmech->getFirstname();
+			$_SESSION['toolkits_surname'] = $authmech->getSurname();
+			$_SESSION['toolkits_logon_username'] = $authmech->getUsername();
+			$_SESSION['toolkits_logon_id'] = get_user_id();
+		}else {
+			$_SESSION['toolkits_logon_id'] = "site_administrator";
+			$_SESSION['toolkits_logon_username'] = $xerte_toolkits_site->admin_username;
+		}
+        $msg = "Admin user: " . $_SESSION['toolkits_logon_username'] ." logged in successfully from " . $_SERVER['REMOTE_ADDR'];
         receive_message("", "SYSTEM", "MGMT", "Successful login", $msg);
 
         $mysql_id = database_connect("management.php database connect success", "management.php database connect fail");
@@ -210,7 +235,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
                 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
-                <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
+                 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
                 <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css">
                 <?php
                 if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -243,7 +268,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <!--
 
                 HTML to use to set up the login page
-                The {{}} pairs are replaced in the page formatting functions in display library
+                The {{ }} pairs are replaced in the page formatting functions in display library
 
                 Version 1.0
 
@@ -324,7 +349,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                    <div class="userbar">
                         <?php // echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " ";
-                        echo "Admin"; ?>
+                        echo isset($_SESSION['toolkits_logon_username'])? $_SESSION['toolkits_logon_username']: $xerte_toolkits_site->admin_username; ?>
                         <button title="<?php echo MANAGEMENT_LOGOUT; ?>"
                             type="button" class="xerte_button_c_no_width"
                             onclick="javascript:logout()" style="margin-bottom: 8px;">
