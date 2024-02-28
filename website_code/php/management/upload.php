@@ -34,7 +34,7 @@ function cleardir($src) {
     closedir($dir);
 }
 
-if (!is_user_admin())
+if (!is_user_permitted("super","templateadmin"))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");

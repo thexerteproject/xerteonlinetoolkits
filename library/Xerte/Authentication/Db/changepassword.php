@@ -21,11 +21,11 @@ if (isset($_SESSION['toolkits_logon_username'])){
     $real_user = $_SESSION['toolkits_logon_username'];
 }
 
-if (!is_user_admin() && $real_user == ""){
+if (!is_user_permitted("useradmin") && $real_user == ""){
     return;
 }
 
-if(is_user_admin() || $supposed_user == $real_user){
+if(is_user_permitted("useradmin") || $supposed_user == $real_user){
 
     global $authmech, $xerte_toolkits_site;
 

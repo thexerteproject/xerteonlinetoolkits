@@ -34,7 +34,7 @@ if(!is_numeric($template_id))
 {
     tsugi_display_fail(false);
 }
-if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
     if ($tsugi_installed) {
         $tsugi_publish = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
     }

@@ -25,7 +25,7 @@ _load_language_file("/management.inc");
 require("../user_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("super","useradmin")){
     global $authmech;
     if (!isset($authmech))
     {

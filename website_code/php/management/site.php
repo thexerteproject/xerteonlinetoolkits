@@ -28,7 +28,7 @@ _load_language_file( "/website_code/php/properties/sharing_status_template.inc")
 require_once("../user_library.php");
 require_once("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("super","system")){
 
     $database_id = database_connect("templates list connected","template list failed");
 

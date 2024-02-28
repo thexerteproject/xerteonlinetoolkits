@@ -41,7 +41,7 @@ $database_id=database_connect("xml change template database connect success","xm
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
 
         if($_POST['xml_status']=="off"){
 

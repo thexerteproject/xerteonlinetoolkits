@@ -107,7 +107,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
 	$row_template_name = db_query_one($query_for_template_name, $params);
 
-    if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_permitted("projectadmin")){
 
         echo "<form id=\"rename_form\" action=\"javascript:rename_template('" . $_POST['template_id'] ."', 'rename_form')\"><label class=\"block\" for=\"newfilename\">" . PROPERTIES_LIBRARY_PROJECT_NAME . ":</label><input type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['template_name']) . "\" name=\"newfilename\" id=\"newfilename\" /><button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_RENAME . "</button>";
 
@@ -184,7 +184,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
     }
 	
-	if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_admin()){
+	if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_permitted("projectadmin")){
 		
 		if(function_exists("display_property_engines")){
 			
@@ -220,7 +220,7 @@ function publish_display($template_id)
     $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
 
     // User has to have some rights to do this
-    if( has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin() ){
+    if( has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin") ){
 		
 		echo "<h2 class=\"header\">" . PUBLISH_TITLE . "</h2>";
 
@@ -857,7 +857,7 @@ function media_quota_info($template_id)
     global $xerte_toolkits_site;
     $quota=0;
 
-    if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+    if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin")) {
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
         $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " .
@@ -927,7 +927,7 @@ function sharing_info($template_id)
 {
     global $xerte_toolkits_site;
 
-    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
@@ -1270,7 +1270,7 @@ function folder_sharing_info($folder_id)
 {
     global $xerte_toolkits_site;
 
-    if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
@@ -1627,7 +1627,7 @@ function rss_syndication($template_id)
 {
     global $xerte_toolkits_site;
 
-    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 

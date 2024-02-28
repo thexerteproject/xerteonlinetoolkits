@@ -42,7 +42,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
 }
 
 if(is_numeric($_POST['template_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
         $tutorial_id = (int)$_POST['template_id'];
 
         $database_id = database_connect("Template name select share access database connect success", "Template name select share database connect failed");

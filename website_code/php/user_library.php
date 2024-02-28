@@ -356,7 +356,8 @@ function is_user_admin(){
         return true;
     }
     return false;*/
-	return is_user_permitted("super");
+    xdebug_break();
+	return is_user_permitted();
 }
 
 function getRolesFromUser($userID){
@@ -373,17 +374,40 @@ function getRolesFromUser($userID){
 	return $roles;
 }
 
+function getUserPermissions($userID){
+	global $xerte_toolkits_site;
+	
+	$prefix = $xerte_toolkits_site->database_table_prefix;
+	$query = "SELECT p.name AS 'name' FROM {$prefix}loginDetailsRole ldr
+	JOIN {$prefix}Role r ON ldr.roleid = r.roleid
+	JOIN {$prefix}rolePermission rp ON r.roleid = rp.roleid
+	JOIN {$prefix}permission p ON rp.permissionid = p.permissionid
+	WHERE ldr.userid = ?;
+	";
+	$params = array($userID);
+	$result = db_query($query, $params);
+	$permissions = array();
+	foreach($result as $permission){
+		$permissions[] = $permission['name'];
+	}
+	return array_unique($permissions);
+}
 
-function is_user_permitted($neededPermision){
+function is_user_permitted(... $neededPermisions){
 	if(!isset($_SESSION['toolkits_logon_id'])) 
 		return false;
 	if($_SESSION['toolkits_logon_id'] == "site_administrator")
 		return true;
 	$toolkits_logon_id = $_SESSION['toolkits_logon_id'];
 	$roles = getRolesFromUser($toolkits_logon_id);
-	
-	if(in_array($neededPermision, $roles, true))
+	$perms = getUserPermissions($toolkits_logon_id);
+
+	if(in_array("super", $roles, true))
 		return true;
+
+	foreach($neededPermisions as $neededPermision)
+		if(in_array($neededPermision, $roles, true))
+			return true;
 
 	return false;
 }

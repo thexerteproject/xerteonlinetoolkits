@@ -45,7 +45,7 @@ $database_id=database_connect("Export template database connect success","Export
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_permitted("projectadmin")){
 		
 		echo "<h2 class=\"header\">" . EXPORT_TITLE . "</h2>";
 	

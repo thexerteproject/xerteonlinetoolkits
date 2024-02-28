@@ -31,7 +31,7 @@ require_once("../user_library.php");
 require("../url_library.php");
 require_once("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     $group_id = $_POST['group_id'];
 

@@ -33,7 +33,7 @@ _load_language_file("/website_code/php/language/import_language.inc");
 
 ini_set('memory_limit','64M');
 
-if(!is_user_admin()){
+if(!is_user_permitted("system")){
     management_fail();
 }
 

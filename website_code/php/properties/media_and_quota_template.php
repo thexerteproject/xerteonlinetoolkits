@@ -133,7 +133,7 @@ function media_folder_loop($folder_name){
 }
 
 if(is_numeric($_POST['template_id'])) {
-    if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+    if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin")) {
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
         $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " . 
