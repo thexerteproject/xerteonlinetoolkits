@@ -6861,8 +6861,8 @@
     <align label="Align Text" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
-    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
-    <feedback label="Feedback" type="textArea" height="120" condition="showfeedback!='false'"/>
+    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" deprecated="This optional property is now deprecated"/>
+    <feedback label="Feedback" type="textArea" height="120" condition="showfeedback!='false'" optional="true"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
@@ -6884,7 +6884,7 @@
 		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
 
-    <disableprinting label="Disable Download" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'"/>
+    <disableprinting label="Disable PDF export" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'"/>
 
     <layout label="Layout" type="group" optional="true">
       <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
@@ -6971,8 +6971,10 @@
 
     <newNodes>
       <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Enter a Prompt" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <classFeedback><![CDATA[<classFeedback name="Enter feedback title" minScore="0" maxScore="50" feedbackTxt="Enter tailored feedback here" />]]></classFeedback>
     </newNodes>
-  </opinionClass><opinionQuestion menuItem="Question">
+
+  </opinionClass><opinionQuestion menuItem="Question" icon="icComment">
     <prompt label="Question" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false"/>
@@ -6997,7 +6999,14 @@
   </opinionQuestion><opinionOption menuItem="Answer" icon="icBullet">
     <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwyg="true"/>
 	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
-  </opinionOption><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteQuestion" remove="true" thumb="thumbs/orient.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#orientation" wiki="https://xerte.org.uk/wiki/doku.php?id=text_orientation_page">
+  </opinionOption><classFeedback menuItem="Tailored feedback" icon="icTranscript2" remove="true">
+      <name label="Title" type="TextInput" wysiwyg="true"/>
+      <feedbackTxt label="Text" type="TextArea" height="200" tooltip="The feedback text and title will be shown when the parameters below are met for this class"/>
+      <score type="group" label="Score" tooltip="The maximum and minimum (rounded down) score % values for this class used to determine whether the feedback will be shown">
+          <minScore label="Minimum value" defaultValue="0" type="TextInput"/>
+          <maxScore label="Maximum value" defaultValue="50" type="TextInput"/>
+      </score>
+  </classFeedback><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteQuestion" remove="true" thumb="thumbs/orient.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#orientation" wiki="https://xerte.org.uk/wiki/doku.php?id=text_orientation_page">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	

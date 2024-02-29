@@ -146,7 +146,7 @@
 			$pageContents.data('currentQuestion', 0);
 			var questions = []; // array of questions to use (index)
 			
-			var numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
+			var numberOfQuestions = $(x_currentPageXML).children().children('opinionQuestion').length; // Can't be 0
 
             for(var i = 0; i < $(x_currentPageXML).children().length; i++)
             {
@@ -270,7 +270,7 @@
 			}
 			else
 			{
-				var $thisQ = $(x_currentPageXML).children().children()[questions[currentQuestion]];
+				var $thisQ = $(x_currentPageXML).children().children('opinionQuestion')[questions[currentQuestion]];
 				let classQ = $($thisQ).parent();
 				var infoString = $thisQ.getAttribute("prompt");
 
@@ -507,7 +507,7 @@
 		this.trackQuestion = function(currentQuestion, goingBack)
 		{
 			var questions = $pageContents.data('questions'),
-				currentQ = $(x_currentPageXML).children().children()[questions[currentQuestion]],
+				currentQ = $(x_currentPageXML).children().children('opinionQuestion')[questions[currentQuestion]],
 				selected = 0,
             	options = $(currentQ).children();
 				l_options = [],
@@ -603,13 +603,36 @@
             }
             myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
 
-			var feedbackText = x_currentPageXML.getAttribute("feedback") != '' ? "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>" : '';
-            if ($pageContents.data('showfeedback') && feedbackText != '') {
-                $("#feedback").html(feedbackText);
-            } else {
-				$("#feedback").remove();
+			$("#questionAudio, #feedback").empty();
+
+			// add main feedback
+            if ($pageContents.data('showfeedback') && x_currentPageXML.getAttribute("feedback") != '') {
+                $("#feedback").append("<div id='mainFb' class='fbBlock'>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</div>');
+            }
+
+			// add relevant tailored class feedback
+			if ($(x_currentPageXML).children().children('classFeedback').length > 0) {
+
+				$(x_currentPageXML).children().each(function() {
+					const thisClass = this;
+					$(thisClass).children('classFeedback').each(function() {
+						var thisScore;
+						for (let i=0; i<JSONGraph.classnames.length; i++) {
+							if (thisClass.getAttribute('name') == JSONGraph.classnames[i]) {
+								thisScore = JSONGraph.classvalues[i];
+							}
+						}
+
+						if ((($.isNumeric(this.getAttribute('minScore')) && thisScore >= Number(this.getAttribute('minScore'))) || !$.isNumeric(this.getAttribute('minScore'))) && (($.isNumeric(this.getAttribute('maxScore')) && thisScore <= Number(this.getAttribute('maxScore'))) || !$.isNumeric(this.getAttribute('maxScore')))) {
+							$('#feedback').append('<div class="fbBlock">' + (this.getAttribute('name') != '' ? '<h3>' + this.getAttribute('name') + '</h3>' : '') + x_addLineBreaks(this.getAttribute('feedbackTxt')) + '</div>');
+						}
+					});
+				})
 			}
-            $("#questionAudio").empty();
+
+			if ($('#feedback .fbBlock').length == 0) {
+				$('#feedback').hide();
+			}
 
             $("#qHolder").hide();
             $("#checkBtn").hide();
@@ -760,7 +783,7 @@
                 $pageContents.data('pageSize', parseInt(x_currentPageXML.getAttribute("pagesize")));
 				if ($pageContents.data('listMode') === 'all') {
 					// Set page size to number of items
-					const numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
+					const numberOfQuestions = $(x_currentPageXML).children().children('opinionQuestion').length; // Can't be 0
 					$pageContents.data('pageSize', numberOfQuestions);
 				}
             }
@@ -894,7 +917,7 @@
 					label: submitBtnText
 				})
 				.click(function() {
-          $("#mainPanel").animate({ scrollTop: 0 }, "fast");
+          			$("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
 			
