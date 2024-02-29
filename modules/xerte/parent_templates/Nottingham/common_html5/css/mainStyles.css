@@ -59,6 +59,10 @@ ul, ol {
 	overflow: hidden;
 }
 
+a {
+	word-wrap: break-word;
+}
+
 .optionTxt p {
 	padding-top: 0;
 }
