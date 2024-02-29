@@ -50,4 +50,7 @@
 	#chartTitle {
 		text-align:	center;
 	}
-	
+
+	.fbBlock h3 {
+		padding-top: .5em;
+	}

@@ -45,7 +45,7 @@
 			
 			// set fixed text fields and page layout
 			$("#mainTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
-			$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+			$("#feedbackTxt .chart").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -94,7 +94,7 @@
 				$("#optionHolder input").attr("disabled", "disabled");
 				
 				// add question weighted score to class score
-				var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+				var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 				
 				$("#optionHolder input:checked").each(function() {
 					// calculate and store new score for this option's class based on it's previous score and this option's weight
@@ -114,7 +114,7 @@
 				.attr("disabled", "disabled")
 				.click(function() {
 					// get feedback for selected options
-					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]],
+					var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]],
 						feedbackTxt = "";
 					
 					$("#optionHolder input:checked").each(function() {
@@ -142,7 +142,7 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+					var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 					if (currentQuestion.getAttribute("questionFeedback") != "yes") {
 						scoreQ($(this));
 					} else {
@@ -166,7 +166,7 @@
 					inventory.startQs();
 				});
 			
-			if ($(x_currentPageXML).children().length == 0) {
+			if ($(x_currentPageXML).children('invQuestion').length == 0) {
 				$("#infoHolder .panel").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
 			} else {
 				// store data needed later - class info and string to base qNoTxt on
@@ -200,14 +200,15 @@
 		this.startQs = function() {
 			$("#pageContents .quiz").show();
 			$("#pageContents .chart").hide();
+			$("#pageContents .fbBlock").remove();
 			$("#nextBtn, #checkBtn").attr("disabled", "disabled");
 			
 			var questions = [],
 				scores = [],
 				totals = [],
-				numQs = $(x_currentPageXML).children().length,
+				numQs = $(x_currentPageXML).children('invQuestion').length,
 				i;
-			
+
 			// get list of the order questions will be shown
 			if (x_currentPageXML.getAttribute("order") == "random") {
 				var qNums = [];
@@ -244,7 +245,7 @@
 		
 		
 		this.loadQ = function() {
-			var thisQ = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+			var thisQ = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 			
 			// set up question text, image, feedback text
 			$("#qNo").html($pageContents.data("qNoTxt").replace("{i}", $pageContents.data("currentQ") + 1).replace("{n}", $pageContents.data("questions").length));
@@ -380,7 +381,17 @@
 				for (i=0; i<scores.length; i++) {
 					maxScore = Math.max(maxScore, scores[i]);
 				}
-				
+			}
+
+			// add relevant tailored class feedback
+			$('#feedbackTxt .fbBlock').remove();
+			for (let i=0; i<$(x_currentPageXML).children('invClassFeedback').length; i++) {
+				const thisFb = $(x_currentPageXML).children('invClassFeedback')[i];
+				const classScore = scores[thisFb.getAttribute('class')];
+
+				if ((($.isNumeric(thisFb.getAttribute('minScore')) && classScore >= Number(thisFb.getAttribute('minScore'))) || !$.isNumeric(thisFb.getAttribute('minScore'))) && (($.isNumeric(thisFb.getAttribute('maxScore')) && classScore <= Number(thisFb.getAttribute('maxScore'))) || !$.isNumeric(thisFb.getAttribute('maxScore')))) {
+					$('#feedbackTxt').append('<div class="fbBlock">' + (thisFb.getAttribute('name') != '' ? '<h3>' + thisFb.getAttribute('name') + '</h3>' : '') + x_addLineBreaks(thisFb.getAttribute('feedbackTxt')) + '</div>');
+				}
 			}
 			
 			// draw everything on canvas - predominately John Smith's code from chart page model
@@ -613,7 +624,9 @@
 
 		<div id="textHolder" class="left" tabindex="1">
 			<div id="mainTxt" class="quiz"></div>
-			<div id="feedbackTxt" class="chart"></div>
+			<div id="feedbackTxt">
+				<div class="chart"></div>
+			</div>
 		</div>
 
 		<div id="infoHolder" class="right">
