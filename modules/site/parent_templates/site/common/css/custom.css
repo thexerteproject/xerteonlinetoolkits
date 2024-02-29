@@ -244,6 +244,10 @@ h3.contentTitle {
         display: block;
     }
 
+    .img-polaroid {
+       box-sizing: border-box;
+    }
+
     /* --HEADER-------------------------------------------------------------- */
     /*#overview div.logoR, #overview div.logoL {
       //display:none;
