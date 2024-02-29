@@ -381,7 +381,7 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalAverage="true" generalCompletion="true" generalStartTime="true" generalDuration="true" globalName="true" globalScore="true" globalDuration="true" globalWeighting="true" globalCompleted="true" specificName="true" specificAnswer="true" specificCorrect="true" specificCheck="true" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter Full Name" userNamePrompt="Your name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><rssdownload><![CDATA[<rssdownload name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rssdownload><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><rssdownload><![CDATA[<rssdownload name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rssdownload><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
 	   actionTitle="Actions you can take..." scoresTitle="Scores"
@@ -877,6 +877,7 @@
           <graphShowAvgBar label="Display the avg and score with a bar" type="checkbox" defaultValue="false" optional="true" condition="graphType=='bar_marks'" tooltip="Adds a line in the graph for the avg and user score"/>
           <graphFitInfoInBar label="Show info in bar" type="checkbox" defaultValue="false" optional="true" condition="graphType=='bar_marks'" tooltip="Scales the user score and avg and displays them in the bars"/>
           <graphColorScale label="Color scale" type="textInput" wysiwyg="false" defaultValue="#FF6384,#4BC0C0,#FFCD56,#C9CBCF,#36A2EB,#B284BE" optional="true" condition="graphType=='polar_area_per_category'||opinionGraphType=='hor_bar_comb_marks_avg'" tooltip="The color scale for the bars in a bargraph, or the color scale for the points in a polar graph"/>
+          <graphAnswerType label="Answer used" type="combobox" data="first,last,best,all" options="First,Last,Best,All" default="last" optional="true"/>
         </graphgroup>
         <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'||interactionType=='opinionclasses'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true"/>
@@ -943,6 +944,7 @@
              <groupFromUrl label="Filter on group from URL" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on groupname, where the groupname is extracted from the URL (group=groupname)"/>
              <groupName label="Filter group name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" tooltip="Filter on groupname, use this groupname, if the group is not specified on the URL (group=groupname). You have to enable filter on group from URL as well."/>
              <contextFilter label="Filter on LTI context" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on LTI context, where the LTI context retrieved from the LTI launch or the URL (lti_context_id=id)"/>
+             <contextUsersFilter label="Filter on current users" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on the current users to prevent old users from appearing in results"/>
         </group>
 
       <newNodes>
@@ -7563,53 +7565,56 @@
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <resultmode label="Results Mode" type="ComboBox" options="Minimal,Normal,Full" data="minimal-results,normal-results,full-results" conditionTrigger="true"/>
 
-        <generalGroup type="group" label="General results" tooltip="The information shown in the general results section.">
-            <generalAverage label="Average %" type="Checkbox" defaultValue="true" mandatory="true"/>
-            <generalCompletion label="Completion %" type="Checkbox" defaultValue="true" mandatory="true"/>
-            <generalStartTime label="Start time" type="Checkbox" defaultValue="true" mandatory="true"/>
-            <generalDuration label="Duration" type="Checkbox" defaultValue="true" mandatory="true"/>
-        </generalGroup>
+        <customiseResults type="group" label="Customise results" tooltip="Customise the information shown on the results page" optional="true" info="Customise the information shown in each block on the results page. The blocks shown are determined by the results mode property.">
+            <generalGroup type="group" label="Results summary" tooltip="The information shown in the results summary section." optional="true">
+                <generalAverage label="Score %" type="Checkbox" defaultValue="true" optional="true"/>
+                <generalCompletion label="Completion %" type="Checkbox" defaultValue="true" optional="true"/>
+                <generalStartTime label="Start time" type="Checkbox" defaultValue="true" optional="true"/>
+                <generalDuration label="Duration" type="Checkbox" defaultValue="true" optional="true"/>
+            </generalGroup>
 
-        <globalResults type="group" label="Global results" tooltip="The information shown in the global results section. The global results section is shown when results mode is set to full or normal." condition="resultmode!='minimal-results'">
-            <globalName label="Page name" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" mandatory="true"/>
-            <globalScore label="Score %" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" mandatory="true"/>
-            <globalDuration label="Duration" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" mandatory="true"/>
-            <globalWeighting label="Weighting" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" mandatory="true"/>
-            <globalCompleted label="Completed" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" mandatory="true"/>
-            <globalDetails label="Details" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" mandatory="true"/>
-        </globalResults>
+            <globalResults type="group" label="Page overview" tooltip="The information shown in the page overview section. The page overview section is shown when results mode is set to full or normal." condition="resultmode!='minimal-results'" optional="true">
+                <globalName label="Page name" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalScore label="Score %" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalDuration label="Duration" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalWeighting label="Weighting" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalCompleted label="Completed" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalDetails label="Details" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+            </globalResults>
 
-        <specificResults type="group" label="Specific results" tooltip="The information shown in the specific results section. The specific results section is shown when results mode is set to full." condition="resultmode=='full-results'">
-            <specificName label="Page name" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" mandatory="true"/>
-            <specificAnswer label="Your answer" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" mandatory="true"/>
-            <specificCorrect label="Correct answer" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" mandatory="true"/>
-            <specificCheck label="Tick/Cross" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" mandatory="true"/>
-        </specificResults>
+            <specificResults type="group" label="Interactivity results" tooltip="The information shown in the interactivity results section. The interactivity results section is shown when results mode is set to full." condition="resultmode=='full-results'" optional="true">
+                <specificName label="Page name" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+                <specificAnswer label="Your answer" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+                <specificCorrect label="Correct answer" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+                <specificCheck label="Tick/Cross" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+            </specificResults>
+        </customiseResults>
 
         <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full learning object."/>
-        <givename label="Ask user name" type="Checkbox" defaultValue="true" optional="true" tooltip="Ask your learner for his name to be placed on the results page"/>
 
-        <textGroup type="group" label="Page Text" optional="true">
-            <text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
-            <textPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false"/>
-        </textGroup>
+        <text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
 
-        <disableexportpdf label="Disable export to PDF" type="Checkbox" optional="true" defaultValue="true"/>
+        <pdfOptions type="group" label="PDF Options" optional="true">
+            <disableexportpdf label="Disable PDF export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>
+            <givename label="Name prompt" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask learner for their name so that it can be included in the PDF" condition="disableexportpdf!='true'"/>
+            <!--<textPDF label="Include page text" type="Checkbox" optional="true" defaultValue="false" condition="text!=null&amp;&amp;text!=''"/>-->
+        </pdfOptions>
+
         <showweightingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="true"/>
 
-        <generalResultsTxt label="General results text label" type="TextInput" wysiwyg="true" language="true"/>
-        <averageTxt label="Average text label" type="TextInput" wysiwyg="true" language="true"/>
+        <generalResultsTxt label="Results summary text label" type="TextInput" wysiwyg="true" language="true"/>
+        <averageTxt label="Score text label" type="TextInput" wysiwyg="true" language="true"/>
         <completionTxt label="Completion text label" type="TextInput" wysiwyg="true" language="true"/>
         <startTimeTxt label="Start Time text label" type="TextInput" wysiwyg="true" language="true"/>
         <durationTxt label="Duration text label" type="TextInput" wysiwyg="true" language="true"/>
-        <interactivityResultsTxt label="Interactivity Results text label" type="TextInput" wysiwyg="true" language="true"/>
-        <globalResultsTxt label="Global Results text label" type="TextInput" wysiwyg="true" language="true"/>
+        <interactivityResultsTxt label="Detailed results text label" type="TextInput" wysiwyg="true" language="true"/>
+        <globalResultsTxt label="Page overview text label" type="TextInput" wysiwyg="true" language="true"/>
         <nameTxt label="Name text label" type="TextInput" wysiwyg="true" language="true"/>
         <scoreTxt label="Score text label" type="TextInput" wysiwyg="true" language="true"/>
         <weightingTxt label="Weighting text label" type="TextInput" wysiwyg="true" language="true"/>
         <completedTxt label="Completed text label" type="TextInput" wysiwyg="true" language="true"/>
         <detailsTxt label="Details text label" type="TextInput" wysiwyg="true" language="true"/>
-        <specificResultsTxt label="Specific Results text label" type="TextInput" wysiwyg="true" language="true"/>
+        <specificResultsTxt label="Interactivity results text label" type="TextInput" wysiwyg="true" language="true"/>
         <yourAnswerTxt label="Your answer text label" type="TextInput" wysiwyg="true" language="true"/>
         <correctAnswerTxt label="Correct answer text label" type="TextInput" wysiwyg="true" language="true"/>
         <downloadPdfTxt label="Download pdf text label" type="TextInput" wysiwyg="true" language="true"/>

@@ -6,13 +6,11 @@
     #questionScores
 	{
 		width: 97%;
-		margin: auto;
 	}
 
 	table.details
 	{
 		width: 97%;
-		margin: auto;
 	}
 
 	#pageContents p:first-child {
@@ -91,6 +89,13 @@
 	padding-bottom: 1em;
 	margin-bottom: 1em;
 }
+
+#general_summary + #specific {
+	border-top: 1px solid #ccc;
+	padding-top: 1em;
+	margin-top: 1em;
+}
+
 .fas.fa-check-circle{
 	color:green;
 	background: white;
@@ -112,4 +117,8 @@ fieldset {
 
 #x_results_userName fieldset button {
 	margin-left: 1em;
+}
+
+#general_summary td:first-child {
+	padding-left: 8px !important;
 }

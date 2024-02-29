@@ -470,19 +470,19 @@
 
     // get language strings
     this.getLabels = function() {
-      generalResultsTxt = x_currentPageXML.getAttribute("generalResultsTxt") != undefined && x_currentPageXML.getAttribute("generalResultsTxt") != "" ? x_currentPageXML.getAttribute("generalResultsTxt") : "General Results";
-      averageTxt = x_currentPageXML.getAttribute("averageTxt") != undefined && x_currentPageXML.getAttribute("averageTxt") != "" ? x_currentPageXML.getAttribute("averageTxt") : "Average: ";
+      generalResultsTxt = x_currentPageXML.getAttribute("generalResultsTxt") != undefined && x_currentPageXML.getAttribute("generalResultsTxt") != "" ? x_currentPageXML.getAttribute("generalResultsTxt") : "Results summary";
+      averageTxt = x_currentPageXML.getAttribute("averageTxt") != undefined && x_currentPageXML.getAttribute("averageTxt") != "" ? x_currentPageXML.getAttribute("averageTxt") : "Score: ";
       completionTxt = x_currentPageXML.getAttribute("completionTxt") != undefined && x_currentPageXML.getAttribute("completionTxt") != "" ? x_currentPageXML.getAttribute("completionTxt") : "Completion: ";
       durationTxt = x_currentPageXML.getAttribute("durationTxt") != undefined && x_currentPageXML.getAttribute("durationTxt") != "" ? x_currentPageXML.getAttribute("durationTxt") : "Duration: ";
       startTimeTxt = x_currentPageXML.getAttribute("startTimeTxt") != undefined && x_currentPageXML.getAttribute("startTimeTxt") != "" ? x_currentPageXML.getAttribute("startTimeTxt") : "Start Time";
-      interactivityResultsTxt = x_currentPageXML.getAttribute("interactivityResultsTxt") != undefined && x_currentPageXML.getAttribute("interactivityResultsTxt") != "" ? x_currentPageXML.getAttribute("interactivityResultsTxt") : "Interactivity Results";
-      globalResultsTxt = x_currentPageXML.getAttribute("globalResultsTxt") != undefined && x_currentPageXML.getAttribute("globalResultsTxt") != "" ? x_currentPageXML.getAttribute("globalResultsTxt") : "Global Results";
+      interactivityResultsTxt = x_currentPageXML.getAttribute("interactivityResultsTxt") != undefined && x_currentPageXML.getAttribute("interactivityResultsTxt") != "" ? x_currentPageXML.getAttribute("interactivityResultsTxt") : "Detailed results";
+      globalResultsTxt = x_currentPageXML.getAttribute("globalResultsTxt") != undefined && x_currentPageXML.getAttribute("globalResultsTxt") != "" ? x_currentPageXML.getAttribute("globalResultsTxt") : "Page overview";
       nameTxt = x_currentPageXML.getAttribute("nameTxt") != undefined && x_currentPageXML.getAttribute("nameTxt") != "" ? x_currentPageXML.getAttribute("nameTxt") : "Name";
       scoreTxt = x_currentPageXML.getAttribute("scoreTxt") != undefined && x_currentPageXML.getAttribute("scoreTxt") != "" ? x_currentPageXML.getAttribute("scoreTxt") : "Score";
       weightingTxt = x_currentPageXML.getAttribute("weightingTxt") != undefined && x_currentPageXML.getAttribute("weightingTxt") != "" ? x_currentPageXML.getAttribute("weightingTxt") : "Weighting";
       completedTxt = x_currentPageXML.getAttribute("completedTxt") != undefined && x_currentPageXML.getAttribute("completedTxt") != "" ? x_currentPageXML.getAttribute("completedTxt") : "Completed";
       detailsTxt = x_currentPageXML.getAttribute("detailsTxt") != undefined && x_currentPageXML.getAttribute("detailsTxt") != "" ? x_currentPageXML.getAttribute("detailsTxt") : "Details";
-      specificResultsTxt = x_currentPageXML.getAttribute("specificResultsTxt") != undefined && x_currentPageXML.getAttribute("specificResultsTxt") != "" ? x_currentPageXML.getAttribute("specificResultsTxt") : "Specific Results";
+      specificResultsTxt = x_currentPageXML.getAttribute("specificResultsTxt") != undefined && x_currentPageXML.getAttribute("specificResultsTxt") != "" ? x_currentPageXML.getAttribute("specificResultsTxt") : "Interactivity results";
       yourAnswerTxt = x_currentPageXML.getAttribute("yourAnswerTxt") != undefined && x_currentPageXML.getAttribute("yourAnswerTxt") != "" ? x_currentPageXML.getAttribute("yourAnswerTxt") : "Your Answer";
       correctAnswerTxt = x_currentPageXML.getAttribute("correctAnswerTxt") != undefined && x_currentPageXML.getAttribute("correctAnswerTxt") != "" ? x_currentPageXML.getAttribute("correctAnswerTxt") : "Correct Answer";
       downloadPdfTxt = x_currentPageXML.getAttribute("downloadPdfTxt") != undefined && x_currentPageXML.getAttribute("downloadPdfTxt") != "" ? x_currentPageXML.getAttribute("downloadPdfTxt") : "Download PDF File";
@@ -523,8 +523,8 @@
     this.pdfDownload = function(skip) {
       // show user name dialog when required
       if (skip !== true && x_currentPageXML.getAttribute("givename") == 'true') {
-        var userNameDialogTitle = x_currentPageXML.getAttribute("userNameDialogTitle") != undefined && x_currentPageXML.getAttribute("userNameDialogTitle") != "" ? x_currentPageXML.getAttribute("userNameDialogTitle") : "Enter Full Name";
-        var userNamePrompt = x_currentPageXML.getAttribute("userNamePrompt") != undefined && x_currentPageXML.getAttribute("userNamePrompt") != "" ? x_currentPageXML.getAttribute("userNamePrompt") : "Your name:";
+        var userNameDialogTitle = x_currentPageXML.getAttribute("userNameDialogTitle") != undefined && x_currentPageXML.getAttribute("userNameDialogTitle") != "" ? x_currentPageXML.getAttribute("userNameDialogTitle") : "Enter name for PDF";
+        var userNamePrompt = x_currentPageXML.getAttribute("userNamePrompt") != undefined && x_currentPageXML.getAttribute("userNamePrompt") != "" ? x_currentPageXML.getAttribute("userNamePrompt") : "Name: ";
         var okButtonTxt = x_currentPageXML.getAttribute("okButtonTxt") != undefined && x_currentPageXML.getAttribute("okButtonTxt") != "" ? x_currentPageXML.getAttribute("okButtonTxt") : "Submit";
         var dialogContents = '<form action="javascript:results.userNameEntered()"><fieldset><label id="namelabel" for="name">' + userNamePrompt + ' </label><input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"><button type="submit">' + okButtonTxt + '</button></fieldset></form>';
 
