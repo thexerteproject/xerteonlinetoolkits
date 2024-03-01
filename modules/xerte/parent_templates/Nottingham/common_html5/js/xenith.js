@@ -138,7 +138,7 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
-
+	
     $x_mainHolder = $("#x_mainHolder");
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
@@ -3569,9 +3569,12 @@ function x_setUpPage() {
     if (x_firstLoad == true) {
         // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
 		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
-			$x_introBtn
-				.data('autoOpen', true)
-				.click();
+			// don't auto-open if stand-alone page
+			if (x_pageInfo[x_currentPage].standalone != true) {
+				$x_introBtn
+					.data('autoOpen', true)
+					.click();
+			}
 		}
 		
         $x_mainHolder.css("visibility", "visible");
