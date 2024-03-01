@@ -226,9 +226,10 @@
 				.click(function() {
 					var $this = $(this);
 					$this.hide();
-					//do ai here if needed
+					//do ai evaluation here if enabled
+					//todo make api = "openai" dynamic
 					if (x_currentPageXML.getAttribute("aiEvaluation") == "true" ) {
-						openai_request_runtime({"answer": $("#answerTxt").val(),"model": x_currentPageXML.getAttribute("feedback"), "question": x_currentPageXML.getAttribute("prompt")}, "modelanswer", function (result){
+						ai_request_runtime({"answer": $("#answerTxt").val(),"model": x_currentPageXML.getAttribute("feedback"), "question": x_currentPageXML.getAttribute("prompt")}, "modelanswer", "openai", function (result){
 							$("#fbTxt")
 								.empty()
 								.html(result.childNodes[0]);})

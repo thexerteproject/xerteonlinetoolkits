@@ -1486,20 +1486,20 @@ var EDITOR = (function ($, parent) {
     },
 
     ai_content_generator = function(event, p, node_type) {
-        //call openAI.php
+        //call aiAPI.php
         var tree = $.jstree.reference("#treeview");
 
         //show wait icon
         $('body').css("cursor", "wait");
 
         console.log("start openai api request please wait");
-
+        //todo add api selector
         $.ajax({
-            url: "editor/openai/openAI.php",
+            url: "editor/ai/aiAPI.php",
             type: "POST",
-            data: { type: node_type, prompt: p},
+            data: { type: node_type, prompt: p, api: "openai"},
             success: function(data){
-                generic_content_creator(data, event.data.key, 'last', tree)
+                ai_to_xerte_content(data, event.data.key, 'last', tree)
             },
         });
     },

@@ -1,7 +1,6 @@
 <?php
 
-require_once (dirname(__FILE__) . "/openAiApi.php");
-
+//todo add authentication!
 //if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin()) {
 //    _debug("Session is invalid or expired");
 //    die('{"status": "error", "message": "Session is invalid or expired"}');
@@ -15,11 +14,17 @@ require_once (dirname(__FILE__) . "/openAiApi.php");
 //    die('{"status": "error", "message": "prompt must not be empty"}');
 //}
 
-$openAI = new OpenAi();
 $prompt_params = $_POST["prompt"];
 $type = $_POST["type"];
+$ai_api = $_POST["api"];
 
-$result = $openAI->openAI_request($prompt_params,$type);
+//todo IMPORTANT check if $ai_api is valid IMPORTANT
+//prob combine with check for allowed apis
+
+require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
+$aiApi = new AiApi($ai_api);
+
+$result = $aiApi->ai_request($prompt_params,$type);
 
 if ($result->status){
     echo json_encode($result);

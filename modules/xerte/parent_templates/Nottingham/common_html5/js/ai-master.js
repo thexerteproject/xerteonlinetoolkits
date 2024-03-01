@@ -1,6 +1,5 @@
-
-function build_xerte_xml(xml_tree, parent_name, parser)
-{
+//combines xml from xerte with xml from ai api
+function build_xerte_xml(xml_tree, parent_name, parser){
     //if not root we combine basic with openai
     if (xml_tree.tagName !== parent_name) {
         var index = wizard_data[parent_name].new_nodes.indexOf(xml_tree.tagName);
@@ -20,10 +19,10 @@ function build_xerte_xml(xml_tree, parent_name, parser)
             build_xerte_xml(children[i], xml_tree.tagName, parser);
         }
     }
-
 }
 
-function generic_content_creator(data, key, pos, tree) {
+//changes ai api result into data usable by xerte, also adds it to the xerte data tree
+function ai_to_xerte_content(data, key, pos, tree) {
     $('body').css("cursor", "default");
     var parser = new DOMParser();
     var result = JSON.parse(data);
@@ -63,17 +62,29 @@ function generic_content_creator(data, key, pos, tree) {
     }
 }
 
-function openai_request_runtime(prompt, type, callback){
+//cleaner function for prompts, removes unwanted sequences
+function clean_prompt(prompt, api){
     //clean prompt
-    for (const param in prompt) {
-        prompt[param] = prompt[param].replace(/(\r\n|\n|\r)/gm, "");
-        prompt[param] = prompt[param].replace(/<\/?[^>]+(>|$)/g, "");
+    if (api === "openai") {
+        for (const param in prompt) {
+            prompt[param] = prompt[param].replace(/(\r\n|\n|\r)/gm, "");
+            prompt[param] = prompt[param].replace(/<\/?[^>]+(>|$)/g, "");
+        }
+    } else {
+        //no api match
     }
+    return prompt;
+}
+
+//handles ai api calls originated from users during xerte usage at runtime
+function ai_request_runtime(prompt, type, api, callback){
+
+    prompt = clean_prompt(prompt, api);
 
     $.ajax({
         url: "editor/openai/openAI.php",
         type: "POST",
-        data: { type: type, prompt: prompt},
+        data: { type: type, prompt: prompt, api: api},
         success: function(data){
             var parser = new DOMParser();
             var result = JSON.parse(data);

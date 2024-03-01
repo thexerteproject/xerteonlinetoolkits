@@ -4829,6 +4829,9 @@ var EDITOR = (function ($, parent) {
 			case 'webpage':  //Not used??
 			case 'xerteurl':
             case 'aibutton':
+                //todo add api selector
+                //todo needs rework or renaming to quizaibutton not sure
+                //if rework needs selector for content type type currently hardcoded to quiz
                 var id = 'aibutton_' + form_id_offset;
                 form_id_offset++;
                 html = $('<button>')

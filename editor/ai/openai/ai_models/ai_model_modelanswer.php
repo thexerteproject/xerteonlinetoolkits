@@ -1,7 +1,7 @@
 <?php
 //quiz model using gpt-3.5 turbo
-require_once(dirname(__FILE__) . "/../../../config.php");
-_load_language_file("/editor/ai_models/model_modelanswer_ai.inc");
+require_once(dirname(__FILE__) . "/../../../../config.php");
+_load_language_file("/editor/ai_models/openai_model_modelanswer_ai.inc");
 
 //generates questions
 $chat_url = "https://api.openai.com/v1/chat/completions";
