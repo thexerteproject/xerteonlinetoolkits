@@ -2,6 +2,7 @@
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/users.inc");
+_load_language_file("/management.inc");
 
 require("../user_library.php");
 require("management_library.php");
@@ -15,7 +16,7 @@ if(is_user_permitted("useradmin")){
 
 	if(count($role_names) == 0){
 		$result = db_query("delete from logindetailsrole where (userid=? and roleid=any (select roleid from role))", array($userid));
-		echo $result === false? "failed to remove roles" : "success";
+		echo $result === false? USERS_FAILED_REMOVE_ROLES : USERS_ROLES_SUCCESS;
 		return;
 	}
 
@@ -49,7 +50,7 @@ if(is_user_permitted("useradmin")){
 		$query = "delete from logindetailsrole where userid=? and roleid in ({$questionMarks})";
 		$result = db_query($query, array($userid, ...$roles_to_unassign));
 		if($result ===  false){
-			$return .= "failed to remove roles" . PHP_EOL;
+			$return .= USERS_FAILED_REMOVE_ROLES . PHP_EOL;
 		}
 	}
 
@@ -67,12 +68,12 @@ if(is_user_permitted("useradmin")){
 
 		$result = db_query($query, $params);
 		if($result ===  false){
-			$return .= "failed to add roles" . PHP_EOL;
+			$return .= USERS_FAILED_ADD_ROLES . PHP_EOL;
 		}
 	}
 
 	if($return == "")
-		$return = "success";
+		$return =  USERS_ROLES_SUCCESS;
 
 
 	echo $return;

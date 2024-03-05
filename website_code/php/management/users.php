@@ -17,13 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once("../../../config.php");
+require("../../../config.php");
 
 _load_language_file("/website_code/php/management/users.inc");
 _load_language_file("/management.inc");
 
 require("../user_library.php");
 require("management_library.php");
+require("get_user_roles.php");
 
 if(is_user_permitted("useradmin")){
     global $authmech;
@@ -46,6 +47,9 @@ if(is_user_permitted("useradmin")){
         echo "<div id=\"manage_auth_users\">";
         $authmech->getUserList(false, "");
         echo "</div>";
+		echo "<div id=\"manage_user_roles\">";
+		get_user_roles();
+		echo "</div>";
         echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
     }
 
@@ -53,38 +57,15 @@ if(is_user_permitted("useradmin")){
 
     $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails";
 
-    $query_response = db_query($query);
-	
-	$roles_query = "select * from " . $xerte_toolkits_site->database_table_prefix . "role";
-	$user_roles_query = "select roleid from " . $xerte_toolkits_site->database_table_prefix . "logindetails " .
-					  "inner join logindetailsrole on logindetailsrole.userid=logindetails.login_id " .
-					  "where logindetails.login_id=?";
-
-	$roles_query_result = db_query($roles_query);
+	$query_response = db_query($query);
 
     foreach($query_response as $row) { 
-
-		$user_roles_results = db_query($user_roles_query, array($row['login_id']));
-
-		$user_roles = array();
-
-		foreach($user_roles_results as $user_role){
-			$user_roles[] = $user_role["roleid"];
-		}
-
         echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
         echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
         echo "<p>" . USERS_FIRST . "<form><textarea id=\"firstname" . $row['login_id'] .  "\">" . $row['firstname'] . "</textarea></form></p>";
         echo "<p>" . USERS_KNOWN . "<form><textarea id=\"surname" . $row['login_id'] .  "\">" . $row['surname'] . "</textarea></form></p>";
         echo "<p>" . USERS_USERNAME . "<form><textarea id=\"username" . $row['login_id'] .  "\">" . $row['username'] . "</textarea></form></p>";
-		echo "<form id=\"roles" . $row["login_id"] . "\"><div class=\"grid\">";
-		foreach($roles_query_result as $role){
-			$input = "<input name=\"" . $role["name"] . "\" id=\"" .$role["name"] . $row["login_id"] . "\" type=\"checkbox\" " . (in_array($role["roleid"], $user_roles)? "checked" : "") . "/>";
-			echo "<p>" . $role["name"] . "</p> " . $input;
-		}
-		echo "</div></form>";
-		echo "<button class=\"xerte_button\" onclick=\"javascript:update_roles(" . $row["login_id"] . ")\">modify roles</button>";
         echo "</div>";
 
     }

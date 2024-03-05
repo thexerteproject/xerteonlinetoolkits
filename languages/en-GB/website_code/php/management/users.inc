@@ -24,3 +24,13 @@
     define("USERS_MANAGE_AUTH", "Authorized users");
 
     define("USERS_MANAGE_ACTIVE", "Active users with Learning Objects");
+
+	define("USERS_ROLES_SUCCESS", "SUCCESS");
+	
+	define("USERS_FAILED_REMOVE_ROLES", "Failed to remove roles");
+	
+	define("USERS_FAILED_ADD_ROLES", "Failed to add roles");
+	
+	define("USERS_MODIFY_ROLES", "Modify user roles");
+
+    define("USERS_MANAGE_ROLES", "Manage user roles");

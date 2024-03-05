@@ -1485,8 +1485,25 @@ function delete_group( group_tag ){
 	}
 }
 
+function changeUserSelection_user_roles(){
+		let role_user_select = document.getElementById("user_roles");
+		if(role_user_select){
+				$.ajax({
+						type: "POST",
+						url: "website_code/php/management/get_user_roles.php",
+						data : {
+								userid: role_user_select.value,
+						},
+				}).done(function (response){
+						document.getElementById("manage_user_roles").innerHTML = response;
+				}).fail(function (){
+						alert("something went wrong");
+				});
+		}
+}
+
 function update_roles(userid){
-		let formdata = new FormData(document.getElementById("roles"+userid));
+		let formdata = new FormData(document.getElementById("roles"));
 		let data = {};
 		formdata.forEach((value, key) =>{
 				data[key] = value == "on"? true : value;
