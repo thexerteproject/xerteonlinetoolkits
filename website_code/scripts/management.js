@@ -1485,3 +1485,30 @@ function delete_group( group_tag ){
 	}
 }
 
+function update_roles(userid){
+		let formdata = new FormData(document.getElementById("roles"+userid));
+		let data = {};
+		formdata.forEach((value, key) =>{
+				data[key] = value == "on"? true : value;
+		});
+		if(userid != null){
+				if(confirm("are you sure want to modify the roles of the user")){
+						data["id"]=userid;
+						$.ajax({
+								type: "POST",
+								url: "website_code/php/management/modify_roles.php",
+								data: data
+						}).done(function (response) {
+								alert(response);
+								users_list();
+						}).fail(function () {
+								alert("failed");
+								users_list();
+						});
+						
+				}
+		}
+}
+
+
+ 

@@ -318,3 +318,11 @@ form[name='user_templates'] {
 	padding-bottom: 5px;
 }
 
+.grid{
+	display: grid;
+	grid-template-columns: min-content min-content;
+}
+
+.hidden{
+	display: none;
+}

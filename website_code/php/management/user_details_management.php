@@ -23,7 +23,7 @@ _load_language_file("/website_code/php/management/user_details_management.inc");
 
 require("../user_library.php");
 
-if(is_user_permitted("super","useradmin")){
+if(is_user_permitted("useradmin")){
 
     $database_id = database_connect("templates list connected","template list failed");
 

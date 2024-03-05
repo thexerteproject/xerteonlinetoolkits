@@ -24,7 +24,7 @@ _load_language_file("/website_code/php/management/sync.inc");
 require("../user_library.php");
 require("management_library.php");
 
-if(is_user_permitted("super","templateadmin")){
+if(is_user_permitted("templateadmin")){
 
 	$dir = opendir($xerte_toolkits_site->root_file_path . "modules/");
 	
