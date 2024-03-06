@@ -285,7 +285,7 @@
 			// Now loop through new cards array and rebuild
 			$(cardArray).each(function(i){
 				var thisInfo = this;
-
+				
 				$thisCard = $('<div>')
 								.addClass('card')
 								.append(
@@ -304,14 +304,25 @@
 				
 				$thisFront.add($thisBack).each(function(j) {
 					var $this = $(this),
-						index = j + 1;
-					
+						index = j + 1,
+						$contentHolder = $('<div class="text-content">');
+				
 					if (thisInfo.getAttribute('name') != '') {
 						$this.append('<h3>' + thisInfo.getAttribute('name') + '</h3>');
 					}
 					
+					if(thisInfo.getAttribute('textAlign') != undefined && thisInfo.getAttribute('textAlign') != ''){
+						$contentHolder.css('text-align', thisInfo.getAttribute('textAlign'));
+					}
+					
+					if(thisInfo.getAttribute('contentAlign') != undefined && thisInfo.getAttribute('contentAlign') != ''){
+						$contentHolder.css('justify-content', thisInfo.getAttribute('contentAlign'));
+					}
+					
+					$this.append($contentHolder);
+					
 					if (thisInfo.getAttribute('side' + index) != '') {
-						$this.append(thisInfo.getAttribute('side' + index));
+						$contentHolder.append(thisInfo.getAttribute('side' + index));
 					}
 					
 					// add media to card
@@ -367,13 +378,9 @@
 							$mediaHolder.addClass('mediaHolder');
 							
 							if (thisInfo.getAttribute('align' + index) == 'Top') {
-								if (thisInfo.getAttribute('name') != '') {
-									$mediaHolder.insertAfter($this.find('h3')[0]);
-								} else {
-									$this.prepend($mediaHolder);
-								}
+								$contentHolder.prepend($mediaHolder);
 							} else {
-								$this.append($mediaHolder);
+								$contentHolder.append($mediaHolder);
 							}
 							
 							if ($mediaHolder.hasClass('cardVideo')) {
