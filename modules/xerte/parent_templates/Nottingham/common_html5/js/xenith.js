@@ -3740,7 +3740,6 @@ function x_addNarration(funct, arguments) {
 
 // function adds transcript button to the end of audio bars, e.g. page narration - but also called from page models
 function x_addAudioTranscript($audioHolder, transcriptTxt, decode) {
-	
 	if (decode == true) {
 		transcriptTxt = $("<div/>").html(transcriptTxt).text();
 	}
@@ -3935,9 +3934,9 @@ function x_updateCss(updatePage) {
 					audioBarW += $(this).outerWidth();
 				});
 				
-				if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -2 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 2) {
-					$x_window.resize();
-				}
+				// if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -7 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 7) {
+				// 	$x_window.resize();
+				// }
 			}
 			
 		}
