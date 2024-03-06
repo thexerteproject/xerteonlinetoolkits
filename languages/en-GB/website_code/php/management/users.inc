@@ -25,7 +25,7 @@
 
     define("USERS_MANAGE_ACTIVE", "Active users with Learning Objects");
 
-	define("USERS_ROLES_SUCCESS", "SUCCESS");
+	define("USERS_ROLES_SUCCESS", "Success");
 	
 	define("USERS_FAILED_REMOVE_ROLES", "Failed to remove roles");
 	
