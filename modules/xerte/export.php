@@ -550,7 +550,7 @@ elseif ($xAPI)
 else
 	$export_type = "_deployment";
 
-$row['zipname'] .= $export_engine . $export_type;
+$row['zipname'] .= $export_engine . '_' . $_GET['template_id'] . $export_type;
 
 /*
  * Add the files to the zip file, create the archive, then send it to the user
