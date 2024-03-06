@@ -21,8 +21,12 @@ $ai_api = $_POST["api"];
 //todo IMPORTANT check if $ai_api is valid IMPORTANT
 //prob combine with check for allowed apis
 
+//dynamically load needed api methods
 require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
-$aiApi = new AiApi($ai_api);
+
+//dynamically initiate correct api class
+$api_type = $ai_api . 'Api';
+$aiApi = new $api_type($ai_api);
 
 $result = $aiApi->ai_request($prompt_params,$type);
 

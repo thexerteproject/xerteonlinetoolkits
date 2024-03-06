@@ -2,7 +2,7 @@
 //openai api master class
 //file name must be $api . Api.php for example openaiApi.php when adding new api
 //class name AiApi mandatory when adding new api
-class AiApi
+class openaiApi
 {
     //constructor must be like this when adding new api
     function __construct(string $api) {
@@ -61,6 +61,7 @@ class AiApi
     }
 
     //generates prompt for openai from preset prompts and user input
+    //todo rework to use wildcards
     private function generatePrompt($p, $type): string
     {
         $prompt = '';
@@ -81,6 +82,7 @@ class AiApi
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
         }
+        //todo check for corresponding key to api
         if ($this->xerte_toolkits_site->openAI_key == "") {
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }

@@ -4834,6 +4834,7 @@ var EDITOR = (function ($, parent) {
                 //if rework needs selector for content type type currently hardcoded to quiz
                 var id = 'aibutton_' + form_id_offset;
                 form_id_offset++;
+
                 html = $('<button>')
                     .attr('id', id)
                     .attr('class', 'ai_button')
