@@ -228,23 +228,17 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
         }
 
-       // regex($_FILES['filenameuploaded']['name'])
-        $version = "";
-
+		//regex for getting "x.xx" where x are numbers
         $regex = '/[0-9]*\\.[0-9]+/i';
         $matches = "";
-        $regex = preg_match($regex, $_FILES['filenameuploaded']['name'], $matches);
-        if($regex == 0){
-            $version = "-";
-        }else{
+        $result = preg_match($regex, $_FILES['filenameuploaded']['name'], $matches);
+        if($result != 0){
             $version = $matches[0];
+			$fp = fopen($xerte_toolkits_site->root_file_path . "languages/" . $lang_dir . "/version", "w");
+			fwrite($fp, $version);
+			fclose($fp);
+			
         }
-
-        $fp = fopen($xerte_toolkits_site->root_file_path . "languages/" . $lang_dir . "/version", "w");
-
-        fwrite($fp, $version);
-
-        fclose($fp);
 
         $zip->close();
 

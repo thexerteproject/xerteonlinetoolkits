@@ -487,7 +487,9 @@ function setup() {
 				var $glossaryTitle = $(data).find('learningObject').attr('glossaryTitle') != undefined ? $(data).find('learningObject').attr('glossaryTitle') : 'Glossary';
 				var $glossaryPage = $('<page name="' + $glossaryTitle + '" subtitle=""></page>');
 
+				// setAttributeNS is used because it doesn't convert the attribute name to lowercase 
 				if($(data).find('learningObject').attr("glossaryPageID") != undefined){
+
 						$glossaryPage[0]
 								.setAttributeNS('', 'customLinkID', $(data).find('learningObject').attr("glossaryPageID"));
 				}

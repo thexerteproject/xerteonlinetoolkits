@@ -6,9 +6,14 @@ _load_language_file("/management.inc");
 
 require_once("../user_library.php");
 require_once("management_library.php");
+
+/**
+ * prints the ui to screen wit the user with userid selected
+ */
 function changeuserselection_roles($userid){
 	global $xerte_toolkits_site;
-	$database_id = database_connect("templates list connected","template list failed");
+
+	database_connect();
 	
     $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails order by surname,firstname,username");
 
@@ -24,14 +29,12 @@ function changeuserselection_roles($userid){
 	
 	$roles_query_result = db_query($roles_query);
 	
-	$user_roles_results = db_query($user_roles_query, array($userid));
-	
+	$user_roles_results = db_query($user_roles_query, array($userid));	
 	$user_roles = array();
-	
 	foreach($user_roles_results as $user_role){
 		$user_roles[] = $user_role["roleid"];
 	}
-    
+    echo "<div style=\"margin-left:20px\">";
 	echo "<select onchange=\"changeUserSelection_user_roles()\" id=\"user_roles\">";
 	
     foreach($result as $row_users){
@@ -54,8 +57,12 @@ function changeuserselection_roles($userid){
 	
 	echo "</div></form>";
 	echo "<button class=\"xerte_button\" onclick=\"javascript:update_roles(" . $userid . ")\">" . USERS_MODIFY_ROLES . "</button>";
+	echo "</div>";
 }
 
+/**
+ * prints the ui to screen the user that is selected is the db order by surname, firstname and username
+ */
 function get_user_roles(){
 	global $xerte_toolkits_site;
 

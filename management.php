@@ -215,6 +215,8 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 		}else {
 			$_SESSION['toolkits_logon_id'] = "site_administrator";
 			$_SESSION['toolkits_logon_username'] = $xerte_toolkits_site->admin_username;
+			$_SESSION['toolkits_firstname'] = "Admin";
+			$_SESSION['toolkits_surname'] = "User";
 		}
         $msg = "Admin user: " . $_SESSION['toolkits_logon_username'] ." logged in successfully from " . $_SERVER['REMOTE_ADDR'];
         receive_message("", "SYSTEM", "MGMT", "Successful login", $msg);

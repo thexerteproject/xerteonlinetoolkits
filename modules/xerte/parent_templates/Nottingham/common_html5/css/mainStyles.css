@@ -695,47 +695,31 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
 
 .x_pswdInput {
-	/* margin-top: 1em; */
-	/* padding: 0.3em; */
 	width: 40%;
-	/* height: 75px; */
 	background: #B7B7B7;
 	border-radius: 10px;
 	position: relative;
-	/* overflow: hidden; */
 	box-shadow: 0 0 12px 0px rgba(1, 1, 1, 0.25);
 	display: grid;
 	grid-template-columns: 8% auto min-content;
 }
 
 input#x_pagePswd {
-	/* margin-bottom: 0; */
 	background: none;
 	border: none;
-	/* color: #575DBF; */
-	/* position: absolute; */
 	width: 100%;
-	/* left: calc(10px + 9%); */
-	/* top: 50%; */
-	/* transform: translateY(-50%); */
-	/* font-size: 4vmin; */
 	letter-spacing: 2px;
 	transition: all 0.5s;
 	outline: none;
-	/* font-family: "Open Sans Condensed", sans-serif; */
 	-webkit-text-security: none;
 	grid-column: 2;
 }
 
 #x_pagePswdBtn {
-	/* margin-left: 1em; */
-	/* position: absolute; */
 	width: min-content;
 	height: min-content;
 	background: #AAAAAA;
 	border: #626262 solid;
-	/* right: 10px; */
-	/* top: 10px; */
 	z-index: 1;
 	-webkit-appearance: none;
     -moz-appearance: none;

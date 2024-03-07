@@ -32,18 +32,17 @@ function languageInstalled($langcode)
     return (is_dir(dirname(__FILE__) . "/../../languages/" . $langcode) || is_dir(dirname(__FILE__) . "/../../modules/xerte/parent_templates/Nottingham/wizards/" . $langcode));
 }
 
-function versionLanguagesInstalled($langcode){
+function versionLanguageInstalled($langcode){
     $filePath = dirname(__FILE__) . "/../../languages/" . $langcode . "/version";
     $content = "";
 
     if(is_file($filePath)) {
         $fp = fopen($filePath, "r");
         
+		//read the entire file
         $content = fread($fp, filesize($filePath));
         
         fclose($fp);
-        
-        if($content == "-") $content = "";
     }
 
     return $content;
@@ -61,7 +60,7 @@ function getLanguages()
         {
             $langs[(string)$xml_lang['code']] = (object)[
                 "name"  => (string)$xml_lang['name'],
-                "version" => versionLanguagesInstalled((string)$xml_lang['code'])
+                "version" => versionLanguageInstalled((string)$xml_lang['code'])
             ];
         }
     }

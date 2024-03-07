@@ -15,6 +15,7 @@
 			$(".image_holder").width(width).height(this.aspectratio * width);
 		}
 
+		// updates the ui with the position in javascript
 		this.updatePosition = function() {
 			let img2Elem = $("#img2");
 			let slider = $("#slider");
@@ -39,6 +40,7 @@
 
 			let slider = $("#slider");
 
+			// use of temperary images to ensure all images are load and fullsize with loaded to get original aspectratio
 			let tempImg1 = new Image();
 			let tempImg2 = new Image();
 
@@ -52,8 +54,8 @@
 				}
 			};
 
-			img1Elem.onload = onImageLoad;
-			img2Elem.onload = onImageLoad;
+			tempImg1.onload = onImageLoad;
+			tempImg2.onload = onImageLoad;
 
 			if(this.isVertical)
 				$("#slider").addClass("vertical");
@@ -67,8 +69,9 @@
 				prevEvent = event;
 			});
 			
+			//this on the image holder because then you don't have to move slowly and stay on the slider
 			$(".image_holder").on("mousemove", (event) => {
-				if(!slider.data("dragging")) return;
+ 				if(!slider.data("dragging")) return;
 				event.preventDefault();
 				let deltaPosition;
 				if(this.isVertical)

@@ -120,6 +120,7 @@ function create_new_template($folder_name_id,$template_name,$parent_template_nam
             $ok = copy_r($dir_path, $path);
             _debug("Copy_r returned " . print_r($ok, true));
 			if($ok){
+				// replace "default" in the template data xml with the theme in the config
 				$str=file_get_contents($path . "/data.xml");
 				$str=str_replace("default", $xerte_toolkits_site->default_theme_site, $str);
 				$result = file_put_contents($path . "/data.xml", $str);

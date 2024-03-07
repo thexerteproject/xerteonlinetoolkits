@@ -352,11 +352,9 @@ function get_user_root_folder_record_by_id($id){
  * @package
  */
 function is_user_admin(){
-    /*if(isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id']=="site_administrator"){
-        return true;
-    }
-    return false;*/
-    xdebug_break();
+    // to allow everthing that isn't converted to is_user_permitted
+	// TODO: remove the line below when done with transition to is_user_permitted
+	xdebug_break();
 	return is_user_permitted();
 }
 
@@ -367,6 +365,8 @@ function getRolesFromUser($userID){
 	$query = "select name from role join {$prefix}logindetailsrole on {$prefix}role.roleid={$prefix}logindetailsrole.roleid where {$prefix}logindetailsrole.userid=?;";
 	$params = array($userID);
 	$result = db_query($query, $params);
+
+	//put the roles in a indexed array for easy access
 	$roles = array();
 	foreach($result as $role){
 		$roles[] = $role['name'];
@@ -374,6 +374,7 @@ function getRolesFromUser($userID){
 	return $roles;
 }
 
+// maybe use permission in is_user_permitted instead of roles
 function getUserPermissions($userID){
 	global $xerte_toolkits_site;
 	
@@ -393,20 +394,27 @@ function getUserPermissions($userID){
 	return array_unique($permissions);
 }
 
-function is_user_permitted(... $neededPermisions){
+/**
+ * check if the user has any roles that are allowed
+ * @param mixed $neededRoles all roles(rolename) that are permitted except super because it can access everything
+ */
+function is_user_permitted(... $neededRoles){
 	if(!isset($_SESSION['toolkits_logon_id'])) 
 		return false;
+
+	// allow old admin account to do everything
 	if($_SESSION['toolkits_logon_id'] == "site_administrator")
 		return true;
+
 	$toolkits_logon_id = $_SESSION['toolkits_logon_id'];
 	$roles = getRolesFromUser($toolkits_logon_id);
-	$perms = getUserPermissions($toolkits_logon_id);
 
+	// allows a user with the super role to do everything
 	if(in_array("super", $roles, true))
 		return true;
 
-	foreach($neededPermisions as $neededPermision)
-		if(in_array($neededPermision, $roles, true))
+	foreach($neededRoles as $neededRole)
+		if(in_array($neededRole, $roles, true))
 			return true;
 
 	return false;

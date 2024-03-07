@@ -20,25 +20,27 @@ if(is_user_permitted("useradmin")){
 		return;
 	}
 
+	// convert the role names to roleids
 	$questionMarks = "?";
 	for($i = 1; $i < count($role_names);$i++){
 		$questionMarks .= ", ?";
 	}
-
 	$query = "select distinct roleid from role where name in ({$questionMarks})";
 	$result = db_query($query, $role_names);
 	$roles = array();
 	foreach($result as $row){
 		$roles[] = array_values($row)[0];
 	}
-
+	
+	// gat all role ids from the roles of the user
 	$query = "select distinct roleid from logindetailsrole where userid=?";
 	$result = db_query($query, array($userid));
 	$user_roles = array();
 	foreach($result as $row){
 		$user_roles[] = $row["roleid"];
 	}
-
+	
+	//array_values is used to reindex the arrays here
 	$roles_to_unassign = array_values(array_diff($user_roles, $roles));
 	$roles_to_assign = array_values(array_diff($roles, $user_roles));
 
@@ -55,6 +57,7 @@ if(is_user_permitted("useradmin")){
 	}
 
 	if(count($roles_to_assign) > 0){
+		// named parameters are used because you only have to include the userid once in the parameters array; 
 		$questionMarks = "(:userid, :param0)";
 		for($i = 1; $i < count($roles_to_assign); $i++){
 			$questionMarks .= ", (:userid, :param{$i})";
@@ -64,7 +67,7 @@ if(is_user_permitted("useradmin")){
 		$params = array("userid" => $userid);
 		for($i = 0; $i < count($roles_to_assign); $i++){
 			$params["param{$i}"] = $roles_to_assign[$i];
-		}
+		} 
 
 		$result = db_query($query, $params);
 		if($result ===  false){

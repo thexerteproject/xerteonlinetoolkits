@@ -1503,6 +1503,7 @@ function changeUserSelection_user_roles(){
 }
 
 function update_roles(userid){
+		// usage of fromdata because you don't have to hard code the roles
 		let formdata = new FormData(document.getElementById("roles"));
 		let data = {};
 		formdata.forEach((value, key) =>{
@@ -1519,7 +1520,7 @@ function update_roles(userid){
 								alert(response);
 								users_list();
 						}).fail(function () {
-								alert("failed");
+								alert("failed to load modify_roles.php");
 								users_list();
 						});
 						
