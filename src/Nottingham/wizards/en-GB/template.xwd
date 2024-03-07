@@ -3420,8 +3420,10 @@
 	<side1 label="Side 1 Text" type="TextArea" height="120"/>
 	<side2 label="Side 2 Text" type="TextArea" height="120"/>
 
-	<textAlign label="Align text" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true"/>
-	<contentAlign label="Align content" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true"/>
+	<alignment type="group" label="Content alignment" optional="true">
+	  <textAlign label="Align text" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true"/>
+	  <contentAlign label="Align content" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true"/>
+	</alignment>
 	
 	<side1Media type="group" label="Side 1 Media" optional="true" tooltip="Media (e.g. image) shown on the front of this card">
 		<media1 label="File" type="Media" optional="true" defaultValue="Select a File"/>
