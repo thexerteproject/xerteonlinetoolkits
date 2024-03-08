@@ -2,7 +2,7 @@
 
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
-    <name type="TextInput" wysiwyg="true" label="Project Title" placeholder="Enter project title"/>
+    <name type="TextInput" wysiwyg="true" label="Project Title"/>
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with page controls,Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" conditionTrigger="true" defaultValue="default" />
@@ -63,7 +63,7 @@
 	</toc>
 	
 	<homePageGroup type="group" label="Home Page" optional="true" tooltip="Customise which page is classed as the home page and create a link from the project title to the home page" info="The default home page is either the first page or the page menu (when navigation is menu or menu with page controls).">
-		<homePageLink optional="true" type="CheckBox" label="Link Project Title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the learning object title a link which returns users to the home page" />
+		<homePageLink optional="true" type="CheckBox" label="Link Project Title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the project title a link which returns users to the home page" />
 		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="Select which page is classed as the home page (linked to from project title or home button when navigation is set to 'Historic'). The first page will be the home page if no page selected here."/>
 	</homePageGroup>
 	
@@ -112,7 +112,7 @@
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
-		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the learning object title above the introduction"/>
+		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the project title above the introduction"/>
 		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
 		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Get Started" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
 		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" condition="introType=='text'||introType==undefined" optional="true"/>
@@ -197,11 +197,11 @@
 	
 	<meta type="group" label="Metadata" optional="true" tooltip="The metadata for this project used, for example, when shared using oai-pmh">
 		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
-		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of"/>
-		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object"/>
-		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (e.g. Maths)"/>
-		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning object, e.g. its subject, learning goals and expected level."/>
-		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords that will be useful in enabling people to find this learning object. Use a new line for each keyword."/>
+		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this project is part of"/>
+		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this project"/>
+		<category label="Category" type="Category" optional="true" tooltip="The category of this project (e.g. Maths)"/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this project, e.g. its subject, learning goals and expected level."/>
+		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords that will be useful in enabling people to find this project. Use a new line for each keyword."/>
 		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) will be published when publishing the metadata. If not specified, the creator and co-author names are used."/>
 		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the metadata as oai-pmh (optional functionality). If disabled, the name of the institution that runs the Xerte install will be used." condition="oai_pmh_available"/>
 		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, e.g. primary education"/>

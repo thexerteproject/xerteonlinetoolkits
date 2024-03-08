@@ -1560,9 +1560,10 @@ var EDITOR = (function ($, parent) {
                     uploadAudioUrl : 'editor/uploadAudio.php?mode=record&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+                    //extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
                     extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
                     language : language.$code.substr(0,2),
-					editorplaceholder: options.options.placeholder
+					//editorplaceholder: options.options.placeholder
                 });
             }
         });
