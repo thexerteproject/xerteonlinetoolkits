@@ -4603,6 +4603,7 @@ var EDITOR = (function ($, parent) {
 					.append($('<input>')
 						.attr('type', "text")
 						.attr('id', id)
+                        .attr('placeholder', options.placeholder)
 						.addClass('media')
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
