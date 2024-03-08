@@ -110,7 +110,6 @@ function initSidebar(){
 	var bottom = 270
 
 	//TOC
-
 	$('.bs-docs-sidenav').affix
 	(
 		{
@@ -153,16 +152,17 @@ function loadContent(){
     }
 
 	// does URL specify which page & section to start on?
-	var pageSectionInfo;
-	
-	if (urlParams.linkID != undefined) { // URL?linkID=XXX
-		pageSectionInfo = getHashInfo(urlParams.linkID);
-		if (pageSectionInfo != false) {
-			startPage = pageSectionInfo[0];
-		}
+	// there are several different ways that a page/section/content can be referenced in URLS...
+
+	// URL?linkID=XXX - probably used very rarely but was old way of linking to a specific page
+	if (urlParams.linkID != undefined && urlParams.linkID.length > 0) {
+		startPage = urlParams.linkID;
 	}
 
-	pageSectionInfo = getHashInfo(window.location.hash); // URL#pageXXXsectionXXXcontentXXX
+	// #pageXXXsectionXXXcontentXXX (using indexes alone)
+	// #pageId|sectionId (using ids)
+	// ids can't be added to content blocks so these must be referenced by index
+	const pageSectionInfo = getHashInfo(window.location.hash);
 	if (pageSectionInfo != false) {
 		startPage = pageSectionInfo[0];
 		startSection = pageSectionInfo[1];
@@ -1504,7 +1504,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
 	var pageRefType = pageRef.type,
 		pageID = pageRef.id,
-		pageLinkType = true;
+		pageLinkType = true,
 		found = false;
 
 	// check if pageIndex exists & can be shown
@@ -1523,6 +1523,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 				return false;
 			}
+
 			$page.find('section').each(function (index, value) {
 				var $section = $(this);
 				if (pageID == $section.attr('linkID') || pageID == $section.attr('customLinkID')) {
@@ -1537,6 +1538,23 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 					return false;
 				}
+
+				$section.find('pane').each(function (i, value) {
+					var $navPane = $(this);
+					if (pageID == $navPane.attr('customLinkID')) {
+						//an ID match has been found for a navigator pane
+						pageIndex = $pageIndex;
+						found = true;
+						if (sectionNum == undefined) {
+							sectionNum = index + 1;
+						}
+						pageLinkType = false;
+						pageRefType = 'id';
+						contentNum = pageID;
+
+						return false;
+					}
+				});
 			});
 		});
 	}
@@ -1590,17 +1608,10 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		}
 
 		var page = $(data).find('page').eq(pageIndex);
+		var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex) + 1));
 
-		var pageHash = ""
-		if (pageLinkType) {
-			pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex) + 1));
-			//pageHash = pageHash.replace(/\./g, '_');  //TOR delete for now
-		} else {
-			var section = page.find('section').eq(sectionNum - 1); //
-			pageHash = section.attr('customLinkID');
-		}
 		// Load page as normal as it's not opening in a new window
-		if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
+		if (!standAlonePage || (standAlonePage && page.attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
 
 			// make sure correct hash is used in url history
 			if (addHistory != false) {
@@ -1692,7 +1703,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			}
 		}
 	} else {
-		//TOOD add section num, if we are already at page
+		// TOOD add section num, if we are already at page
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
 	
@@ -1717,7 +1728,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
-	
 	if (authorSupport == true && page.attr('passwordPass') == 'true') {
 		$('#pageSubTitle').append(' <span class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('pageSupport') != null ? languageData.find("password")[0].getAttribute('pageSupport') : 'In live projects, an access code must be entered to view this page') + ': ' + pswds + '</span>');
 	}
@@ -1746,6 +1756,8 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 				$('#contentTable').removeClass("expandMain");
 			}
 
+			const sectionId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : pageHash + 'section' + (sectionVisibleIndex+1);
+
 			// add section menu unless turned off
 			if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither' && page.attr('sectionMenu') != 'true') {
 
@@ -1761,7 +1773,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName = tocName.html();
 				}
 
-				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + pageHash + 'section' + (sectionVisibleIndex+1) + '"></a></li>').appendTo('#toc');
+				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + sectionId + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 
 				$('#contentTable').removeClass("hideSectionMenu");
@@ -1775,8 +1787,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 				subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h2 class="sectionTitle">' + $(this).attr('name') + '</h2>' : '';
 
 			var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
-			var sectionId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'section' + (sectionVisibleIndex+1);
-			var section = $('<section id="' + pageHash + sectionId + '">' + pageHeader + '</section>');
+			var section = $('<section id="' + sectionId + '">' + pageHeader + '</section>');
 			
 			var pswds = [];
 			if ($.trim($(this).attr('password')).length > 0) {
@@ -1892,10 +1903,11 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 				var tempLink = validPages.indexOf(pageIndex) != -1 ? 'page' + (validPages.indexOf(pageIndex)+1) : (page.attr("customLinkID") != "" && page.attr("customLinkID") != undefined ? page.attr("customLinkID") : page.attr('linkID'));
 				var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#' + tempLink + 'section' + (sectionIndex+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
 				$link.find('a').append(subLinkName);
-
 			}
 
-			section.append( '<h3 id="' + pageHash + 'section' + (sectionIndex+1) + 'content' + (itemIndex+1) + '" class="contentTitle">' + $(this).attr('name') + '</h3>');
+			var sectionInfo = $(thisSection).attr('customLinkID') != undefined && $(thisSection).attr('customLinkID') != '' ? $(thisSection).attr('customLinkID') : pageHash + 'section' + (sectionIndex+1);
+
+			section.append( '<h3 id="' + sectionInfo + 'content' + (itemIndex+1) + '" class="contentTitle">' + $(this).attr('name') + '</h3>');
 		}
 
 		if (this.nodeName == 'text'){
@@ -2085,15 +2097,35 @@ function afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage) {
 
 	if (sectionNum != undefined) {
 
+		if (contentNum != undefined && !$.isNumeric(contentNum)) {
+			// scroll to navigator & change to specified navigator pane
+			const $navPane = $('#' + contentNum);
+			const $nav = $navPane.parents('.navigator');
+
+			if ($nav.hasClass('tabbable')) {
+				// tabs or pills
+				// there's a timeout in the nav setup that's used to sort videos on the panes - so just save which tab is going to be first for later use
+				$nav.data('first', $nav.find('.nav li:eq(' + $navPane.index() + ') a'));
+
+			} else if ($nav.hasClass('accordion')) {
+				$navPane.parent().find('.accordion-heading a').click();
+
+			} else if ($nav.hasClass('carousel')) {
+				$navPane.click(); // this is the carousel indicator circle for this pane, not the pane itself
+			}
+
+			contentNum = undefined;
+		}
+
+		// scroll down to specified section
+		// get id of element to scroll to (different depending on whether page & sections have custom IDs)
 		var page = $(data).find('page').eq(pageIndex),
-			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1)),
-			section =  page.find('section').eq(sectionNum-1);
+			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex) + 1)),
+			section = page.find('section').eq(sectionNum - 1),
+			sectionInfo = section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : pageTempInfo + 'section' + sectionNum,
+			contentInfo = contentNum != undefined && $.isNumeric(contentNum) ? 'content' + contentNum : '';
 
-		//if direct navigation using customLink for sections
-		var sectionInfo =  section.attr('customLinkID') != undefined && section.attr('customLinkID') != '' ? section.attr('customLinkID') : 'section' + sectionNum;
-
-		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
-		goToSection(pageTempInfo + sectionInfo + contentInfo);
+		goToSection(sectionInfo + contentInfo);
 
 	} else {
 		goToSection('alwaysTop');
@@ -2210,52 +2242,34 @@ function passwordSection(thisSection, $section, sectionIndex, page, pageHash, pa
 // Get the page / section info from the URL (called on project load & when page changed via browser fwd/back btns)
 function getHashInfo(urlHash) {
 	if (urlHash.length > 0) {
-		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
-			thisPage,
-			thisSection,
-			thisContent;
+		const pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash;
+		const splitBy = ['page', 'section', 'content', '\\|'];
+		let linkDetails = pageLink.split(new RegExp(splitBy.join('|'), 'g'));
 
-		var tempStartIndex = [];
+		// if the page is referenced with a number (e.g. #2 or #page2) then make sure the index will be correctly adjusted
+		// confusingly the page index used needs to be from 0 but section numbering is from 1
+		let minus1 = pageLink.indexOf('page') === 0 || $.isNumeric(linkDetails[0]) ? 1 : 0;
 
-		if (pageLink.substring(0,4) == "page") {
-			tempStartIndex.push(4);
-
-			if (pageLink.substring(tempStartIndex[0]).indexOf('section') > -1) {
-				tempStartIndex.push(pageLink.indexOf('section'));
-				thisPage = parseInt(pageLink.substring(tempStartIndex[0], tempStartIndex[1]), 10) - 1;
-
-				if (pageLink.substring(tempStartIndex[1] + 7).indexOf('content') > -1) {
-					tempStartIndex.push(pageLink.indexOf('content'));
-					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7, tempStartIndex[2]), 10);
-					thisContent = parseInt(pageLink.substring(tempStartIndex[2] + 7), 10);
-				} else {
-					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7), 10);
-				}
-			} else {
-				thisPage = parseInt(pageLink.substring(tempStartIndex[0]), 10) - 1;
-			}
-
-			thisPage = thisPage < 0 ? 0 : thisPage;
-
-		} else {
-			if (pageLink.indexOf('section') > -1) {
-				tempStartIndex.push(0);
-				tempStartIndex.push(pageLink.indexOf('section'));
-				thisPage = pageLink.substring(tempStartIndex[0], tempStartIndex[1]);
-
-				if (pageLink.substring(tempStartIndex[1] + 7).indexOf('content') > -1) {
-					tempStartIndex.push(pageLink.indexOf('content'));
-					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7, tempStartIndex[2]), 10);
-					thisContent = parseInt(pageLink.substring(tempStartIndex[2] + 7), 10);
-				} else {
-					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7), 10);
-				}
-			} else {
-				thisPage = pageLink;
-			}
+		// if only section is referenced then assume it's 1st page (& assume 1st section too if only content is referenced)
+		if (pageLink.indexOf('section') === 0) {
+			linkDetails.unshift(0);
+		} else if (pageLink.indexOf('content') === 0) {
+			linkDetails.unshift(0,0);
 		}
 
-		return [thisPage, thisSection, thisContent];
+		// string to numbers and remove empty strings
+		linkDetails.forEach((info, i) => {
+			if ($.isNumeric(info)) {
+				linkDetails.splice(i, 1, parseInt(info) - minus1);
+				minus1 = 0;
+			} else if (i>0 && !$.isNumeric(info) && info != '') {
+				// if section or content are using an id (not index) then ignore all info before this as search will just be done for that ID
+				linkDetails.splice(i-1, 1, '')
+			}
+		});
+		linkDetails = linkDetails.filter((info) => info !== '');
+
+		return linkDetails;
 
 	} else {
 		return false;
@@ -2465,18 +2479,14 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		video = [];
 
 	node.children().each( function(index, value){
-		if (index == 0){
 
-			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
+		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'tab' + sectionIndex + '_' + itemIndex + '_' + index;
+		let tab = $('<li><a href="#' + paneId + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
+		let pane = $('<div id="' + paneId + '" class="tab-pane" tabindex="0"/>');
 
-			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane active" tabindex="0"/>')
-
-		} else {
-
-			tabs.append( $('<li><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
-
-			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane" tabindex="0"/>')
-
+		if (index == 0) {
+			tab.addClass("active");
+			pane.addClass("active");
 		}
 
 		var i = index;
@@ -2484,11 +2494,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		$(this).children().each( function(x, value){
 			
 			if ($(this).attr('name') != '' && $(this).attr('name') != undefined && ($(this).attr('showTitle') == 'true' || $(this).attr('showTitleFix') == 'true')) {
-				tab.append('<h3>' + $(this).attr('name') + '</h3>');
+				pane.append('<h3>' + $(this).attr('name') + '</h3>');
 			}
 
 			if (this.nodeName == 'text'){
-				tab.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
+				pane.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
 
 				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
 					iframe.push(i);
@@ -2496,23 +2506,23 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'image'){
-				tab.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 
 			if (this.nodeName == 'video'){
 				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
-				tab.append('<p>' + videoInfo[0] + '</p>');
+				pane.append('<p>' + videoInfo[0] + '</p>');
 
 				if (videoInfo[1] != undefined) {
-					tab.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
 				}
 
-				video.push(tab.find('video'));
-				video.push(tab.find('.vidHolder.iframe'));
+				video.push(pane.find('video'));
+				video.push(pane.find('.vidHolder.iframe'));
 			}
 
 			if (this.nodeName == 'link'){
@@ -2529,24 +2539,24 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
 				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
 
-				tab.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+				pane.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
 
 			}
 
 			if (this.nodeName == 'pdf'){
 
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
-				pdf.push(tab.find('object'));
+				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
+				pdf.push(pane.find('object'));
 
 			}
 
 			if (this.nodeName == 'xot'){
-				tab.append(loadXotContent($(this)));
+				pane.append(loadXotContent($(this)));
 			}
 
 		});
 
-		content.append(tab);
+		content.append(pane);
 	});
 
 	tabDiv.append(tabs);
@@ -2556,8 +2566,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	section.append(tabDiv);
 
 	setTimeout( function() {
-
-		var $first = $('#tab' + sectionIndex + '_' + itemIndex + ' a:first');
+		// 1st tab may not be the 1st shown so check this before changing which is shown
+		var $first = $('#tab' + sectionIndex + '_' + itemIndex).parents('.navigator').data('first') != undefined ? $('#tab' + sectionIndex + '_' + itemIndex).parents('.navigator').data('first') : $('#tab' + sectionIndex + '_' + itemIndex + ' a:first');
 		$first
 			.tab("show")
 			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
@@ -2613,9 +2623,9 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 	node.children().each( function(index, value){
 
-		var group = $('<div class="accordion-group collapsed"/>');
-
-		var header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
+		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'collapse' + sectionIndex + '_' + itemIndex + '_' + index;
+		let group = $('<div class="accordion-group collapsed"/>');
+		let header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#' + paneId +  '">' + $(this).attr('name') + '</a></div>');
 
 		group.append(header);
 		
@@ -2632,21 +2642,18 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 		});
 
+		var outer = $('<div id="' + paneId + '" class="accordion-body collapse"/>');
+
 		if (index == 0){
-			
+
 			if (node[0].getAttribute('collapse') != 'true') {
 				header.find('a.accordion-toggle').removeClass('collapsed');
 				group.removeClass('collapsed');
 			}
 
-			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse ' + (node[0].getAttribute('collapse') == 'true' ? "" : "in") + '"/>');
-
-		} else {
-
-			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse"/>');
+			outer.addClass(node[0].getAttribute('collapse') == 'true' ? "" : "in");
 
 		}
-
 
 		var inner = $('<div class="accordion-inner" tabindex="0">');
 
@@ -2718,7 +2725,6 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 	setTimeout( function() {
 		initMedia(accDiv.find('.vidHolder video'));
 	}, 0);
-
 }
 
 
@@ -2751,20 +2757,19 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	node.children().each( function(index, value){
 
-		var pane;
+		let indicator = $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '"></li>');
+		let pane = $('<div class="item">');
 
-		if (index == 0){
-
-			indicators.append( $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '" class="active"></li>') );
-
-			pane = $('<div class="active item">');
-
-		} else {
-
-			indicators.append( $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '"></li>') );
-
-			pane = $('<div class="item">');
+		if (index == 0) {
+			indicator.addClass('active');
+			pane.addClass('active');
 		}
+
+		if ($(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '') {
+			indicator.attr('id', $(this).attr('customLinkID'));
+		}
+
+		indicators.append(indicator);
 
 		$(this).children().each( function(i, value){
 			
