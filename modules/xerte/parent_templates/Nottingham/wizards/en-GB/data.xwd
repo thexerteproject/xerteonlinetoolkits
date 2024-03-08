@@ -226,11 +226,15 @@
 		<globalVars type="CheckBox" label="Enable Global Variables" defaultValue="true" optional="true"/>
 	</globalVarsGroup>
 	
-	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, images will open in a lightbox when clicked. Use these properties to customise this functionality or turn it off completely. A lightbox optional property is also available on each page where you can turn this functionality on/off on a page by page basis.">
-		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below image,Above image" data="false,below,above" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-		<lightboxColour type="ColourPicker" label="Background Colour" defaultValue="0x000000" optional="true" tooltip="The colour of the overlay behind the lightbox."/>
-		<lightboxOpacity type="NumericStepper" label="Background Opacity" min="0" max="100" step="1" defaultValue="80" optional="true" tooltip="The opacity of the overlay behind the lightbox, where 0 is completely transparent and 100 is not transparent at all"/>
+	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="Some information within the project may open in a lightbox, which lies above the main project. These properties allow the customisation of these lightboxes.">
+    	<lightboxAppearanceGroup type="group" label="Background Appearance" optional="true">
+            <lightboxColour type="ColourPicker" label="Colour" defaultValue="0x000000" optional="true" tooltip="The colour of the overlay behind lightboxes"/>
+            <lightboxOpacity type="NumericStepper" label="Opacity" min="0" max="100" step="1" defaultValue="80" optional="true" tooltip="The opacity of the overlay behind lightboxes, where 0 is completely transparent and 100 is not transparent at all"/>
+    	</lightboxAppearanceGroup>
+		<lightboxImgGroup type="group" label="Images" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off throughout the project. A lightbox optional property is also available on each page where you can turn this functionality on/off on a page by page basis.">
+            <lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Uncheck to disable images throughout the project from opening in a lightbox"/>
+            <lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" condition="lightbox!='false'" options="None,Below image,Above image" data="false,below,above" tooltip="Add a caption to image lightboxes. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+        </lightboxImgGroup>
 	</lightboxGroup>
 	
 	<twittercard type="group" label="Twitter Card" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter">
