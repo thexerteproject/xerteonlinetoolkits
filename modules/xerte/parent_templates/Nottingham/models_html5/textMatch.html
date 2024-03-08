@@ -376,7 +376,11 @@
 				}else{
 					l_placeholder = "";
 				}
-        		var l_draglabel	= $this.find("div").text().trim(); 
+
+				var l_draglabel	= $this.find("div.labelTxt").clone();
+				l_draglabel.find('.audioHolder').remove();
+				l_draglabel = l_draglabel.text().trim();
+
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
                 l_options.push(l_option);
