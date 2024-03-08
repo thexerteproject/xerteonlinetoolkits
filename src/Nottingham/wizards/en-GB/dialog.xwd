@@ -23,7 +23,7 @@
     <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 
     <newNodes>
-      <dialogStep><![CDATA[<dialogStep name="Question - tree label" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
+      <dialogStep><![CDATA[<dialogStep name="Question" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
     </newNodes>
 
   </dialog>
@@ -31,7 +31,7 @@
 
   <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - tree label" />
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make questions easier to locate for editing at a later date." />
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true" tooltip="Where there is more than possible correct answer, list each one separated by a comma"/>
     <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 

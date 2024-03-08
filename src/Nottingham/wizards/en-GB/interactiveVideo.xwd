@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
+	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Overlay"/></interactiveVideo>]]></interactiveVideo>
     </newNodes>
   </pageWizard>
 
@@ -37,7 +37,7 @@
 
 	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" duplicate="false">
 
-		<name label="Overlay Panel Title" type="TextInput"/>
+		<name label="Overlay" type="TextInput"/>
 
 		<newNodes>
 			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
@@ -158,7 +158,7 @@
 	<ivSynchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
 		<text label="Answer" type="TextArea" wysiwyg="true"/>
-	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
 	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>

@@ -30,7 +30,7 @@
 
   <cOption menuItem="Answer" icon="icBullet" remove="true">
     <text label="Answer" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
     <destination label="Destination Page" type="pageList" defaultValue=""/>
   </cOption>
 

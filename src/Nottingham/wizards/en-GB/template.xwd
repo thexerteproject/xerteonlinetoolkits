@@ -340,7 +340,7 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="" scoreType="absolute" chartTitle="" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Overlay"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="" scoreType="absolute" chartTitle="" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -352,7 +352,7 @@
 	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle" 
 	  pageError="Destination page not found"
 	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
-	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
+	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
 	  feedbackBtnTxt="Feedback" 
 	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
 	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
@@ -1677,7 +1677,7 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></cMcq><cOption menuItem="Answer" icon="icBullet" remove="true">
     <text label="Answer" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
     <destination label="Destination Page" type="pageList" defaultValue=""/>
   </cOption><captivate menu="Media" menuItem="Captivate Movie" hint="A page for incorporating Captivate swfs. Captivate provides a convenient way of displaying screen captures in your presentation." icon="icPageWhiteC" thumb="thumbs/captivate.jpg" remove="true" deprecated="Captivate is no longer supported.">
 
@@ -2367,7 +2367,7 @@
     </pageHeaderGroup></crossword><wordAndHint menuItem="Word" icon="icBullet">
 	<wordAnswer label="Word" type="TextInput" wysiwyg="false" tooltip="The word (answer) that will appear in the crossword"/>
     <text label="Hint" type="TextArea" height="50" tooltip="The clue for the word"/>
-	<name label="Label" type="TextInput" mandatory="true" defaultValue="Label" wysiwyg="false"/>
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Label" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make words easier to locate for editing at a later date."/>
   </wordAndHint><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true" deprecated="This page is now deprecated as Flash (used by the diagram editor) will be unavailable after 2020. Existing pages will continue to work after this date but will not be editable. Try the Hotspot Image, Annotated Diagram, Drag &amp; Drop Labelling and Hotspot Image Connector pages for similar functionality.">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -2748,7 +2748,7 @@
     <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 
     <newNodes>
-      <dialogStep><![CDATA[<dialogStep name="Question - tree label" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
+      <dialogStep><![CDATA[<dialogStep name="Question" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -2822,7 +2822,7 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></dialog><dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - tree label"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make questions easier to locate for editing at a later date."/>
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true" tooltip="Where there is more than possible correct answer, list each one separated by a comma"/>
     <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
@@ -3091,7 +3091,7 @@
       <selectitem><![CDATA[<selectitem name="Option" text="Enter text for this option here" />]]></selectitem>
     </newNodes>
   </selectlist><selectitem menuItem="Option" icon="icBullet">
-    <name label="Label" type="TextInput"/>
+    <name label="Label" type="TextInput" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make options easier to locate for editing at a later date."/>
     <text label="Option" type="TextArea" height="100"/>
   </selectitem><description menuItem="Description" icon="icComment">
     <name label="Description Title" type="TextInput" wysiwyg="true"/>
@@ -4720,7 +4720,7 @@
 
 	</ivMediaPanel><ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" duplicate="false">
 
-		<name label="Overlay Panel Title" type="TextInput"/>
+		<name label="Overlay" type="TextInput"/>
 
 		<newNodes>
 			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
@@ -4830,7 +4830,7 @@
 	</ivSynchMCQ><ivSynchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
 		<text label="Answer" type="TextArea" wysiwyg="true"/>
-	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
 	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
@@ -4975,7 +4975,7 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></inventory><invQuestion menuItem="Question" remove="true" icon="icComment">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make questions easier to locate for editing at a later date."/>
     <prompt label="Question" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
@@ -4991,7 +4991,7 @@
 
   </invQuestion><invOption menuItem="Option" icon="icBullet" remove="true">
     <text label="Answer" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
     <class label="Class" options="1,2,3,4,5,6,7,8,9,10" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
 	<weight label="Weight or Score" options="0,1,2,3,4,5" type="ComboBox" data="0,1,2,3,4,5" defaultValue="1" width="100"/>
@@ -5635,7 +5635,7 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></mcq><option menuItem="Answer" icon="icBullet">
     <text label="Answer" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label is used to identify this answer on the results page and when tracking results, e.g. via xAPI"/>
     <feedback label="Feedback" type="TextArea" height="100" tooltip="Feedback shown when this answer is submitted"/>
     <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 	
@@ -6109,7 +6109,7 @@
 	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
 		<text label="Answer" type="TextArea" wysiwyg="true"/>
-	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
 	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
@@ -6905,7 +6905,7 @@
     </layout>
 
       <newNodes>
-        <opinionClass><![CDATA[<opinionClass title="Title used on graph" name="Class"/>]]></opinionClass>
+        <opinionClass><![CDATA[<opinionClass title="Class title" name="Class"/>]]></opinionClass>
       </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -6978,8 +6978,8 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></opinion><opinionClass menuItem="Class">
-      <title label="Title" type="TextInput" mandatory="true" defaultValue="Title used on graph" wysiwyg="true"/>
-	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false"/>
+      <title label="Title" type="TextInput" mandatory="true" defaultValue="Class title" wysiwyg="true" tooltip="The title that will appear on the graph for this class"/>
+	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make classes easier to locate for editing at a later date."/>
 
     <newNodes>
       <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Enter a Prompt" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
@@ -6988,7 +6988,7 @@
 
   </opinionClass><opinionQuestion menuItem="Question" icon="icComment">
     <prompt label="Question" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via xAPI"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false"/>
 	<interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
 	
@@ -7010,7 +7010,7 @@
 
   </opinionQuestion><opinionOption menuItem="Answer" icon="icBullet">
     <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwyg="true"/>
-	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
   </opinionOption><classFeedback menuItem="Tailored feedback" icon="icTranscript2" remove="true">
       <name label="Title" type="TextInput" wysiwyg="true"/>
       <feedbackTxt label="Text" type="TextArea" height="200" tooltip="The feedback text and title will be shown when the parameters below are met for this class"/>
@@ -7479,10 +7479,10 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></quiz><question menuItem="Question">
+    </pageHeaderGroup></quiz><question menuItem="Question" icon="icComment">
   
     <prompt label="Question" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via xAPI"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
 	
 	<feedbackGroup type="group" label="Feedback" optional="true">
@@ -9357,7 +9357,7 @@
 		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</audioGroup>
 	
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence" wysiwyg="false" tooltip="The label is read by screen readers when the drop area (containing text 1) is in focus. Brief, unique and meaningful labels will ensure screen reader users understand where the label they have selected will be dropped."/>
 
   </sentence><textSWF menu="Media" menuItem="Flash Animation" hint="A page for integrating Flash animations and movies with your presentation." label="Page Text" icon="icPageWhiteFlash" thumb="thumbs/textSWF.jpg" type="text" height="300" remove="true" deprecated="This page is no longer supported.">
 
@@ -9920,8 +9920,8 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></topXQ><optionXQ menuItem="Answer" icon="icBullet">
-        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true"/>
-        <name label="Label" type="TextInput"/>
+        <name label="Label" type="TextInput" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
+        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true" tooltip="A comma-separated list of all possible answers for this item"/>
     </optionXQ><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Synchronise a transcript to an audio file." icon="icTranscript2" thumb="thumbs/transcriptReader.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#transcriptreader" wiki="https://xerte.org.uk/wiki/doku.php?id=media_transcript_reader_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -10005,7 +10005,7 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Synch point"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Synch point" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make synch points easier to locate for editing at a later date."/>
     <text label="Text" type="TextArea" height="250"/>
     <synch label="Synch Point" type="TextInput"/>	
 
