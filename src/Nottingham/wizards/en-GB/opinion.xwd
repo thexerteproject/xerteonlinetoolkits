@@ -51,14 +51,14 @@
     </layout>
 
       <newNodes>
-        <opinionClass><![CDATA[<opinionClass title="Title used on graph" name="Class"/>]]></opinionClass>
+        <opinionClass><![CDATA[<opinionClass title="Class title" name="Class"/>]]></opinionClass>
       </newNodes>
 
   </opinion>
 
   <opinionClass menuItem="Class">
-      <title label="Title" type="TextInput" mandatory="true" defaultValue="Title used on graph" wysiwyg="true" />
-	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false"/>
+      <title label="Title" type="TextInput" mandatory="true" defaultValue="Class title" wysiwyg="true" tooltip="The title that will appear on the graph for this class"/>
+	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make classes easier to locate for editing at a later date."/>
 
     <newNodes>
       <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Enter a Prompt" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
@@ -69,7 +69,7 @@
 
   <opinionQuestion menuItem="Question" icon="icComment">
     <prompt label="Question" type="TextArea"  height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via xAPI"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false" />
 	<interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
 	
@@ -93,7 +93,7 @@
 
   <opinionOption menuItem="Answer" icon="icBullet">
     <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwyg="true" />
-	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
   </opinionOption>
 
   <classFeedback menuItem="Tailored feedback" icon="icTranscript2" remove="true">

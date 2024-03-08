@@ -49,8 +49,8 @@
 </topXQ>
 
     <optionXQ menuItem="Answer" icon="icBullet">
-        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true"/>
-        <name label="Label" type="TextInput" />
+        <name label="Label" type="TextInput" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
+        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true" tooltip="A comma-separated list of all possible answers for this item"/>
     </optionXQ>
 
 </wizard>

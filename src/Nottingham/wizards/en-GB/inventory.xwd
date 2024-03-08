@@ -48,7 +48,7 @@
   </inventory>
 
   <invQuestion menuItem="Question" remove="true" icon="icComment">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" />
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make questions easier to locate for editing at a later date." />
     <prompt label="Question" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
@@ -66,7 +66,7 @@
 
   <invOption menuItem="Option" icon="icBullet" remove="true">
     <text label="Answer" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" />
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
     <class label="Class" options="1,2,3,4,5,6,7,8,9,10" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100" />
     <feedback label="Feedback" type="TextArea" height="100"/>
 	<weight label="Weight or Score" options="0,1,2,3,4,5" type="ComboBox" data="0,1,2,3,4,5" defaultValue="1" width="100"/>
