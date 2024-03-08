@@ -116,6 +116,7 @@
             interactivity = x_currentPageXML.getAttribute("interactivity") != undefined && x_currentPageXML.getAttribute("interactivity") != "" ? x_currentPageXML.getAttribute("interactivity") : "Describe";
 			$pageContents = $("#pageContents");
 			$pageContents.data("tryTxt", x_currentPageXML.getAttribute("tryAgainTxt") != undefined && x_currentPageXML.getAttribute("tryAgainTxt") != '' ? x_currentPageXML.getAttribute("tryAgainTxt") : "Try again");
+            labelPos = x_browserInfo.mobile == true ? "img" : x_currentPageXML.getAttribute("labelPos") != "text" ? "img" : "text"; // labels are always below image if viewed on mobile
 			
 			// set up css for highlighting focus
             var borderwidth="1px";
@@ -134,7 +135,7 @@
 			
 			// set up page
             $("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-
+            
             if (labelPos == "text") {
                 $("#mainText")
 					.after($("#labelHolder"))
