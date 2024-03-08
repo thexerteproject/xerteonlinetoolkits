@@ -85,6 +85,10 @@ ul, ol {
 	padding:	10px;
 }
 
+#x_pageDiv {
+	height: calc(100% - 20px);
+}
+
 #x_headerBlock img {
 	max-height: 200px;
 }
@@ -695,38 +699,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
 
 .x_pswdInput {
-	width: 40%;
-	background: #B7B7B7;
-	border-radius: 10px;
-	position: relative;
-	box-shadow: 0 0 12px 0px rgba(1, 1, 1, 0.25);
-	display: grid;
-	grid-template-columns: 8% auto min-content;
-}
-
-input#x_pagePswd {
-	background: none;
-	border: none;
-	width: 100%;
-	letter-spacing: 2px;
-	transition: all 0.5s;
-	outline: none;
-	-webkit-text-security: none;
-	grid-column: 2;
-}
-
-#x_pagePswdBtn {
-	width: min-content;
-	height: min-content;
-	background: #AAAAAA;
-	border: #626262 solid;
-	z-index: 1;
-	-webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-	outline: none;
-	grid-column: 3;
-	color: unset;
+	width: 90vmin;
 }
 
 #x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
@@ -738,6 +711,105 @@ input#x_pagePswd {
 	margin-top: 1em;
 	font-size: 0.9em;
 	color: #c0392b;
+}
+
+.vault {
+	width: 50%;
+	aspect-ratio: 1/1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #707070;
+	border-radius: 5%;
+}
+
+.vault-door-frame {
+	width: 94%;
+	height: 94%;
+	background-color: #808080;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+}
+
+.vault-door {
+	width: 94%;
+	height: 94%;
+	background-color: #909090;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border-radius: 50%;
+	position: relative;
+}
+
+.vault-door-handle{
+	width: 30%;
+	height: 30%;
+	background-color: #A0A0A0;
+	border-radius: 50%;
+	position: relative;
+}
+
+.vault-door-handle *{
+}
+
+.vault-door-handle-inside{
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	width: 80%;
+	height: 80%;
+	border-radius: 50%;
+	background-color: #909090;
+}
+
+.vault-door-handle-rod{
+	background-color: #A0A0A0;
+	position: absolute;
+	top: 5%;
+	left: 45%;
+	width: 10%;
+	height: 90%;
+	rotate: z 45deg;
+}
+.vault-door-handle-rod.rotated{
+	rotate: z -45deg;
+}
+
+.vault input{
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	width: 300%;
+	background-color: #00000000;
+	border: 2px solid #ffffff40;
+	z-index: 2;
+	font-size: 10pt;
+}
+
+.vault input:focus, .vault input:hover{
+	border: 2px solid #ffffff;
+	outline: none;
+}
+
+.vault button {
+	position: absolute;
+	top: 70%;
+	width: 70%;
+	font-size: 10pt;
+	background-color: #A0A0A0;
+	border: 2px solid #505050;
+	border-radius: 20px;
+}
+
+.vault button:hover {
+	background-color: #808080;
+	border-color: #4A4A4A;
 }
 
 /* Specifically for grayscale handling on IE browsers */
