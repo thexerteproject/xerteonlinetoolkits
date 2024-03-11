@@ -700,6 +700,17 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 
 .x_pswdInput {
 	width: 90vmin;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.x_pswdBlock {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 }
 
 #x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
@@ -711,6 +722,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	margin-top: 1em;
 	font-size: 0.9em;
 	color: #c0392b;
+	text-align: center;
 }
 
 .vault {
@@ -745,7 +757,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	position: relative;
 }
 
-.vault-door-handle{
+.vault-door-dial{
 	width: 30%;
 	height: 30%;
 	background-color: #A0A0A0;
@@ -753,10 +765,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	position: relative;
 }
 
-.vault-door-handle *{
-}
-
-.vault-door-handle-inside{
+.vault-door-dial-inside{
 	position: absolute;
 	transform: translate(-50%, -50%);
 	top: 50%;
@@ -767,7 +776,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	background-color: #909090;
 }
 
-.vault-door-handle-rod{
+.vault-door-dial-rod{
 	background-color: #A0A0A0;
 	position: absolute;
 	top: 5%;
@@ -776,7 +785,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	height: 90%;
 	rotate: z 45deg;
 }
-.vault-door-handle-rod.rotated{
+.vault-door-dial-rod.rotated{
 	rotate: z -45deg;
 }
 

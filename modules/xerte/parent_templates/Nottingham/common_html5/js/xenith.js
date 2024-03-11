@@ -3141,9 +3141,9 @@ function x_passwordPage(pswds) {
 			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
 			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
 				
-			$pswdBlock.find('.x_pswdInput').html('<div class="vault"><div class="vault-door-frame"><div class="vault-door"><div class="vault-door-handle"><div class="vault-door-handle-inside"></div><div class="vault-door-handle-rod"></div><div class="vault-door-handle-rod rotated"></div></div></div></div></div>');
+			$pswdBlock.find('.x_pswdInput').html('<div class="vault"><div class="vault-door-frame"><div class="vault-door"><div class="vault-door-dial"><div class="vault-door-dial-inside"></div><div class="vault-door-dial-rod"></div><div class="vault-door-dial-rod rotated"></div></div></div></div></div>');
 
-			$pswdBlock.find('.vault-door-handle').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">');
+			$pswdBlock.find('.vault-door-dial').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">');
 			$pswdBlock.find('.vault-door').append('<button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
 			
 			$pswdBlock.find('#x_pagePswdBtn')
