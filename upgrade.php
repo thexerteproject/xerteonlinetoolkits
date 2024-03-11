@@ -1471,3 +1471,41 @@ function upgrade_44()
         return "Default theme xerte and site fields already present - ok ? true";
     }
 }
+
+function upgrade_45(){
+	$roleTable = table_by_key("role");
+	$loginDetailsRoleTable = table_by_key("loginDetailsRole");
+	$loginDetailsTable = table_by_key("logindetails");
+
+	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
+        `roleid` int NOT NULL AUTO_INCREMENT,
+        `name` varchar(45) NOT NULL UNIQUE,
+        PRIMARY KEY (`roleid`)
+      )"
+	);
+
+	$message = "Creating role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
+        `roleid` int NOT NULL,
+        `userid` bigint(20) NOT NULL,
+        PRIMARY KEY (`roleid`, `userid`),
+        FOREIGN KEY (`roleid`) REFERENCES `$roleTable`(`roleid`),
+        FOREIGN KEY (`userid`) REFERENCES `$loginDetailsTable`(`login_id`)
+      )"
+	);
+	
+	$message .= "Creating logindetailsrole table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+	$ok = db_query("insert into $roleTable(`roleid`, `name`) values
+          (1, 'super'),
+          (2, 'system'),
+          (3, 'templateadmin'),
+          (4, 'metaadmin'),
+          (5, 'useradmin'),
+          (6, 'projectadmin');"
+	);
+	$message .= "creating default roles - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+	
+	return $message;
+}
