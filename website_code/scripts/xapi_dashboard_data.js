@@ -1857,3 +1857,11 @@ DashboardState.prototype.getStatementidxsFromGroupedData = function (
     )
   return statements;
 }
+
+DashboardState.prototype.stripHtml = function (
+  inputText
+) {
+  const div = document.createElement("div");
+  div.innerHTML = inputText;
+  return div.firstChild.innerText ?? inputText;
+}
