@@ -3225,6 +3225,7 @@
   // Popcorn.smart will attempt to find you a wrapper or player. If it can't do that,
   // it will default to using an HTML5 video in the target.
   Popcorn.smart = function( target, src, options ) {
+    debugger;
     var node = typeof target === "string" ? Popcorn.dom.find( target ) : target,
         i, srci, j, media, mediaWrapper, popcorn, srcLength, 
         // We leave HTMLVideoElement and HTMLAudioElement wrappers out
@@ -5195,7 +5196,7 @@
   // Helper for identifying URLs we know how to play.
   Popcorn.HTMLYujaVideoElement._canPlaySrc = function( url ) {
     debugger
-    return (/\/videos\/embed\/[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}$/).test( url ) || isPeertubeVideo(url)
+    return (/.+yuja\.com.+/).test( url )
         ? "probably"
         : "";
   };
