@@ -13,23 +13,19 @@ if(is_user_permitted("useradmin")){
 	$role_names = array_keys($data);
 	$userid = $_POST["id"];
 	$return = "";
+	$roles = array(); 
 
-	if(count($role_names) == 0){
-		$result = db_query("delete from logindetailsrole where (userid=? and roleid=any (select roleid from role))", array($userid));
-		echo $result === false? USERS_FAILED_REMOVE_ROLES : USERS_ROLES_SUCCESS;
-		return;
-	}
-
-	// convert the role names to roleids
-	$questionMarks = "?";
-	for($i = 1; $i < count($role_names);$i++){
-		$questionMarks .= ", ?";
-	}
-	$query = "select distinct roleid from role where name in ({$questionMarks})";
-	$result = db_query($query, $role_names);
-	$roles = array();
-	foreach($result as $row){
-		$roles[] = array_values($row)[0];
+	if(count($role_names) !== 0){
+		// convert the role names to roleids
+		$questionMarks = "?";
+		for($i = 1; $i < count($role_names);$i++){
+			$questionMarks .= ", ?";
+		}
+		$query = "select distinct roleid from role where name in ({$questionMarks})";
+		$result = db_query($query, $role_names);
+		foreach($result as $row){
+			$roles[] = array_values($row)[0];
+		}
 	}
 	
 	// gat all role ids from the roles of the user
@@ -39,10 +35,38 @@ if(is_user_permitted("useradmin")){
 	foreach($result as $row){
 		$user_roles[] = $row["roleid"];
 	}
+
+	if(!is_user_permitted()){
+		$super = array_search(1, $roles);
+		$system = array_search(2, $roles);
+		if($super !== false)
+			unset($roles[$super]);
+
+		if($system !== false)
+			unset($roles[$system]);
+	}
 	
 	//array_values is used to reindex the arrays here
 	$roles_to_unassign = array_values(array_diff($user_roles, $roles));
 	$roles_to_assign = array_values(array_diff($roles, $user_roles));
+	
+	if(!is_user_permitted()){
+		$super = array_search(1, $roles_to_assign);
+		$system = array_search(2, $roles_to_assign);
+		if($super !== false)
+			unset($roles_to_assign[$super]);
+
+		if($system !== false)
+			unset($roles_to_assign[$system]);
+
+		$super = array_search(1, $roles_to_unassign);
+		$system = array_search(2, $roles_to_unassign);
+		if($super !== false)
+			unset($roles_to_unassign[$super]);
+
+		if($system !== false)
+			unset($roles_to_unassign[$system]);
+	}
 
 	if(count($roles_to_unassign) > 0){
 		$questionMarks = "?";

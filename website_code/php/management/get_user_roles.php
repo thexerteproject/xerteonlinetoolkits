@@ -22,7 +22,7 @@ function changeuserselection_roles($userid){
 	}
 
 	echo "<h2>" . USERS_MANAGE_ROLES . "</h2>";
-	$roles_query = "select * from " . $xerte_toolkits_site->database_table_prefix . "role";
+	$roles_query = "select * from " . $xerte_toolkits_site->database_table_prefix . "role order by roleid";
 	$user_roles_query = 
 		"select roleid from " . $xerte_toolkits_site->database_table_prefix . "logindetailsrole " .
 		"where userid=?";
@@ -49,8 +49,13 @@ function changeuserselection_roles($userid){
     echo "</select>";
 	
 	echo "<form id=\"roles\"><div class=\"grid\">";
+	$isSuper = is_user_permitted();
 	foreach($roles_query_result as $role){
-		$input = "<input name=\"" . $role["name"] . "\" type=\"checkbox\" " . (in_array($role["roleid"], $user_roles)? "checked" : "") . "/>";
+		$disabled = "";
+		
+		if(!$isSuper && in_array($role["roleid"], array(1, 2)))
+			$disabled = "disabled";
+		$input = "<input name=\"" . $role["name"] . "\" type=\"checkbox\" " . (in_array($role["roleid"], $user_roles)? "checked" : "") . " " . $disabled . "/>";
 		echo "<p>" . $role["name"] . "</p> " . $input;
 	}
 	
