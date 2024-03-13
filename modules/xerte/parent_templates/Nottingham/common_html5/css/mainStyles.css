@@ -735,6 +735,11 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	border-radius: 5%;
 }
 
+.numeric {
+	aspect-ratio:1/1.25;
+	border-radius: 20px;
+}
+
 .vault-door-frame {
 	width: 94%;
 	height: 94%;
@@ -755,6 +760,25 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	flex-direction: column;
 	border-radius: 50%;
 	position: relative;
+}
+
+.numeric .vault-door, .numeric .vault-door-frame{
+	border-radius: 20px;
+}
+
+.numeric .vault-door{
+	display: grid;
+	padding: 5%;
+	box-sizing: border-box;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(6, 1fr);
+	grid-template-areas: 
+		"input  input  input "
+		"one    two    three "
+		"four   five   six   "
+		"seven  eight  nine  "
+		"unused zero   reset "
+		"button button button";1
 }
 
 .vault-door-dial{
@@ -789,16 +813,18 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	rotate: z -45deg;
 }
 
-.vault input{
+.vault:not(.numeric) input{
 	position: absolute;
 	transform: translate(-50%, -50%);
 	top: 50%;
 	left: 50%;
 	width: 300%;
+}
+.vault input{
 	background-color: #00000000;
 	border: 2px solid #ffffff40;
 	z-index: 2;
-	font-size: 10pt;
+	font-size: 3.5vmin;
 }
 
 .vault input:focus, .vault input:hover{
@@ -806,14 +832,23 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	outline: none;
 }
 
-.vault button {
+.vault:not(.numeric) button#x_pagePswdBtn {
 	position: absolute;
 	top: 70%;
 	width: 70%;
-	font-size: 10pt;
+}
+
+.vault button {
+	font-size: 3vmin;
 	background-color: #A0A0A0;
 	border: 2px solid #505050;
 	border-radius: 20px;
+}
+
+.vault button:not(#x_pagePswdBtn){
+	border-radius: 0px;
+	height: calc(100% - 1px);
+	margin: 1px;
 }
 
 .vault button:hover {
