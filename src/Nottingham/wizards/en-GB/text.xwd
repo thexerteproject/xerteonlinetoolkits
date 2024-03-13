@@ -1,7 +1,7 @@
 <wizard menus="Text">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text> 
+      <text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text>
 	</newNodes>  
   </pageWizard>
   

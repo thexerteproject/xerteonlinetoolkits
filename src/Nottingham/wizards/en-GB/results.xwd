@@ -38,14 +38,14 @@
             </specificResults>
         </customiseResults>
 
-        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full learning object." />
+        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" />
 
-        <text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+        <text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
 
         <pdfOptions type="group" label="PDF Options" optional="true">
-            <disableexportpdf label="Disable PDF export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>
-            <givename label="Name prompt" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask learner for their name so that it can be included in the PDF" condition="disableexportpdf!='true'"/>
-            <!--<textPDF label="Include page text" type="Checkbox" optional="true" defaultValue="false" condition="text!=null&amp;&amp;text!=''"/>-->
+            <disableexportpdf label="Disable PDF Export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>
+            <givename label="Name Prompt" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask learner for their name so that it can be included in the PDF" condition="disableexportpdf!='true'"/>
+            <!--<textPDF label="Include Page Text" type="Checkbox" optional="true" defaultValue="false" condition="text!=null&amp;&amp;text!=''"/>-->
         </pdfOptions>
 
         <showweightingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="true" />
@@ -79,14 +79,14 @@
         <durationSecondsTxt label="Duration seconds text" defaultValue="s" type="TextInput" wysiwyg="false" language="true" mandatory="true" />
 
         <newNodes>
-          <feedback><![CDATA[<feedback name="Enter feedback title" minScore="0" maxScore="50" feedbackTxt="Enter tailored feedback here" />]]></feedback>
+          <feedback><![CDATA[<feedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></feedback>
         </newNodes>
 
     </results>
 
     <feedback menuItem="Tailored feedback" icon="icBullet" remove="true">
         <name label="Title" type="TextInput" wysiwyg="true"/>
-        <feedbackTxt label="Text" type="TextArea" height="200" tooltip="The feedback text and title will be shown when the parameters below are met"/>
+        <feedbackTxt label="Text" type="TextArea" height="200" placeholder="Enter tailored feedback here" tooltip="The feedback text and title will be shown when the parameters below are met"/>
         <score type="group" label="Score" optional="true" tooltip="The maximum and minimum (rounded down) score % values used to determine whether the feedback will be shown">
             <minScore label="Minimum value" defaultValue="0" type="TextInput" optional="true"/>
             <maxScore label="Maximum value" defaultValue="50" type="TextInput" optional="true"/>

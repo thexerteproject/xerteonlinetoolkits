@@ -10,11 +10,11 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
-	<backurl label="Card Back Image" type="Media" optional="true"/>
-	<text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+	<backurl label="Card Back Image" type="Media" optional="true" placeholder="Select an image"/>
+	<text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
 
     <newNodes>
-      <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
+      <matchItem><![CDATA[<matchItem name="Enter Card Label" url=""/>]]></matchItem>
     </newNodes>
 
   </memory>
@@ -22,8 +22,8 @@
   <matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
 
     <name label="Label" type="TextInput" wysiwyg="true"/>
-    <url label="Image" type="Media"/>
-	<url2 label="Label Image" type="Media" optional="true"/>
+    <url label="Image" type="Media" placeholder="Select an image"/>
+	<url2 label="Label Image" type="Media" optional="true" placeholder="Select an image"/>
 
   </matchItem>
 
