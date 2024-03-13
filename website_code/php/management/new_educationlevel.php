@@ -23,7 +23,7 @@ require("../user_library.php");
 require("management_library.php");
 
 if(is_user_permitted("metaadmin")){
-    if ($_POST[parent] == "") {
+    if ($_POST["parent"] == "") {
         $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}educationlevel (educationlevel_name) values (?)";
         $param = array($_POST['educationlevel']);
     } else {
