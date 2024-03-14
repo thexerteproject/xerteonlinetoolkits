@@ -10,12 +10,12 @@
         <introduction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
         
 		<wrongTextGroup type="group" label="Incorrect Text">
-			<wrongText label="Text" type="script" height="150" placeholder="Enter the wrong text here"/>
+			<wrongText label="Text" type="script" height="150" />
 			<copyText label="Use As Prompt" defaultValue="false" type="CheckBox" tooltip="Pre-populate answer box with incorrect text" mandatory="true"/>
 		</wrongTextGroup>
 		
 		<answerTextGroup type="group" label="Correct Text">
-			<answer label="Text" type="script" height="150" placeholder="Enter the correct text here"/>
+			<answer label="Text" type="script" height="150" />
 			<disableAnswers label="Show At End" type="CheckBox" mandatory="true" defaultValue="true" tooltip="Show the correct answer after the maximum number of attempts have been made (unless the correct answer has been submitted)."/>
 		</answerTextGroup>
 		
