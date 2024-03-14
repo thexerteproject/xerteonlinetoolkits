@@ -29,7 +29,7 @@
     <backBtnText label="Back Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Back" language="true" />
 	<downloadBtnText label="Download Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Download" language="true" />
 
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
 	<imgGroup type="group" label="Image" optional="true">
 		<img label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>

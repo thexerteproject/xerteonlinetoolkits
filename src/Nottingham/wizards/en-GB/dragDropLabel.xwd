@@ -30,8 +30,8 @@
 	<imgWidth label="Image Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" optional="true"/>
 	
 	<labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
-	
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 	
     <newNodes>
 	  <hotspot><![CDATA[<hotspot name="Enter Label Title" text="" x="0" y="0" w="100" h="100" />]]></hotspot>

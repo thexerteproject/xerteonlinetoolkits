@@ -15,7 +15,7 @@
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
 
-		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+		<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 		<trackVideo label="Track Video Progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs"  tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)." />
 
 	</interactiveVideo>

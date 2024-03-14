@@ -13,7 +13,7 @@
     <interactivity label="Interactivity" options="Explore,Show Me (By Name),Show Me (In Order),Find,Find (Mark at end),MCQ" type="ComboBox" data="explore,show,show2,find,find2,mcq" conditionTrigger="true"/>
 	<highlight label="Underline Text" type="CheckBox"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
     <findOptions type="group" label="Distractors" optional="true">
         <findAllowSelectionOfAllWords label="Automatic distractors" condition="interactivity=='find'||interactivity=='find2'" tooltip="Allow the selection of all the individual words, not only delimited ones" type="CheckBox" defaultValue="false" optional="true" />

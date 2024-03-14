@@ -24,7 +24,7 @@
     <judge label="Judge Questions" type="CheckBox" defaultValue="true" />
 	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
     <feedback label="Feedback" type="textArea"  height="120" placeholder="Enter feedback here" tooltip="The feedback that appears once all questions in the quiz have been answered"/>
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" width="120" optional="true"/>
 	
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
