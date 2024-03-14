@@ -66,7 +66,7 @@
              * in the HTML editor enclosed in <p></p>
              */
 
-			var text = x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue),
+			var text = x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue),
 				bulletArray,
 				contentsStr = "",
 				startTag = '<p class="bullet">',

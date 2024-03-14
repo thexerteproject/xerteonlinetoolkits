@@ -328,7 +328,6 @@ var EDITOR = (function ($, parent) {
 
     // Recursive function to traverse the xml and build
     build_lo_data = function (xmlData, parent_id) {
-
         // First lets generate a unique key
         var key = parent.tree.generate_lo_key();
         if (parent_id == null)
@@ -375,10 +374,11 @@ var EDITOR = (function ($, parent) {
                 attributes[key] = makeAbsolute(attributes[key]);
             }
         });
+
+        // cdata-section
         lo_data[key] = {};
         lo_data[key]['attributes'] = attributes;
-        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
-        {
+        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4) {
             lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
 
 			if (!alreadyUpgraded)
@@ -3816,30 +3816,30 @@ var EDITOR = (function ($, parent) {
 			case 'script':
 			case 'html':
             case 'textarea':
-				var id = "textarea_" + form_id_offset;
-				var textvalue = "";
+                var id = "textarea_" + form_id_offset;
+                var textvalue = "";
+                form_id_offset++;
 
-				form_id_offset++;
-
-				// Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
-                const lcvalue=value.toLowerCase();
-				if (lcvalue.indexOf('<textarea') == -1
+                // Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
+                // if value is in cdata and placeholder is used, the empty value will be undefined - change this to empty string
+                const lcvalue = value == undefined && options.placeholder != undefined ? '' : value.toLowerCase();
+                if (lcvalue.indexOf('<textarea') == -1
                     && lcvalue.indexOf('<pre>') == -1
                     && lcvalue.indexOf('<code>') == -1)
-				    textvalue = value;
+                    textvalue = value == undefined && options.placeholder != undefined ? '' : value;
 
-				var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-				if (options.height) textarea += "height:" + options.height + "px";
-				textarea += "\">" + textvalue + "</textarea>";
-				$textarea = $(textarea);
+                var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                if (options.height) textarea += "height:" + options.height + "px";
+                textarea += "\">" + textvalue + "</textarea>";
+                $textarea = $(textarea);
 
-				if (textvalue.length == 0) $textarea.data('afterckeditor', value);
+                if (textvalue.length == 0) $textarea.data('afterckeditor', value);
 
-				html = $('<div>')
-					.attr('style', 'width:100%')
-					.append($textarea);
+                html = $('<div>')
+                    .attr('style', 'width:100%')
+                    .append($textarea);
 
-				textareas_options.push({id: id, key: key, name: name, options: options});
+                textareas_options.push({id: id, key: key, name: name, options: options});
 				break;
 			case 'numericstepper':
 				var min = Number(options.min);

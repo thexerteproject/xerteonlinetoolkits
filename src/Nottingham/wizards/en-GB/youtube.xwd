@@ -8,7 +8,7 @@
   <youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Media" remove="true" thumb="thumbs/youtube.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubevideo" wiki="https://xerte.org.uk/wiki/doku.php?id=media_youtube_video_page" hint="Include video content from YouTube in your project." icon="icYoutube">>
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-    <text type="textArea" label="Instructions" height="300" placeholder="Enter text for the page here"/>
+    <text type="textArea" label="Page Text" height="300" placeholder="Enter text for the page here"/>
 
     <autoplay type="Checkbox" label="Auto-Play" optional="true" deprecated="This property is deprecated"/>
 	<toggle type="Checkbox" label="Toggle Full Screen" optional="true" deprecated="This property is no longer required"/>
