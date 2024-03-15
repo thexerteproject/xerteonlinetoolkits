@@ -4964,8 +4964,9 @@
     // Mark type as Mediasite
     self._util.type = "Peertube";
 
-    elem.id = "peertubeIframe";
+    elem.id = "yujaIframe";
     elem.addClass = " .iframe ";
+    elem.allow= 'fullscreen';
 
     function addPlayerReadyCallback( callback ) {
       playerReadyCallbacks.push( callback );
@@ -4990,8 +4991,9 @@
       elem.height="100%";
       elem.src=aSrc + "?api=1";
       elem.frameborder="0";
-      elem.allowfullscreen="";
-      elem.sandbox="allow-same-origin allow-scripts allow-popups";
+      elem.webkitAllowFullScreen = true;
+      elem.mozAllowFullScreen = true;
+      elem.allowFullScreen = true;
 
       if (!xot_offline && typeof PeerTubePlayer !== undefined) {
         $.getScript("https://unpkg.com/@peertube/embed-api/build/player.min.js")
@@ -5195,7 +5197,6 @@
 
   // Helper for identifying URLs we know how to play.
   Popcorn.HTMLYujaVideoElement._canPlaySrc = function( url ) {
-    debugger
     return (/.+yuja\.com.+/).test( url )
         ? "probably"
         : "";
