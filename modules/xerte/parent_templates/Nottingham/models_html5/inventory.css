@@ -54,3 +54,12 @@
 	.fbBlock h3 {
 		padding-top: .5em;
 	}
+
+	#qNo {
+		font-weight: bold;
+		padding-top: 0;
+	}
+
+	#qTxt {
+		padding: 0;
+	}

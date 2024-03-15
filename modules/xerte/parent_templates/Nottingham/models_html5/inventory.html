@@ -631,22 +631,26 @@
 
 		<div id="infoHolder" class="right">
 			<div class="panel">
-				
-				<div class="quiz">
-					<h3 id="qNo"></h3>
+
+				<fieldset class="quiz noStyle">
+
+					<p id="qNo" aria-live="polite"></p>
+
 					<div class="qContent">
-						<div id="qTxt"></div>
+						<span><legend id="qTxt"></legend></span>
 						<div id="optionHolder"></div>
 						<div id="buttonHolder">
 							<button id="checkBtn"></button>
 							<button id="nextBtn"></button>
 						</div>
-						<div id="qFeedback">
+						<div id="qFeedback" aria-live="polite">
 							<h3 id="qFeedbackTitle"></h3>
 							<p id="qFeedbackTxt"></p>
 						</div>
 					</div>
-				</div>
+
+
+				</fieldset>
 				
 				<div class="chart">
 					<h3 id="chartTitle"></h3>
