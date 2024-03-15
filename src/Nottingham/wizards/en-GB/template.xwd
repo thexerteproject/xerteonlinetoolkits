@@ -7227,7 +7227,8 @@
 	<playTip label="Play All Text" type="TextInput" wysiwyg="true" language="true"/>
 	
 	<thumbs type="group" label="Thumbnail Bar" optional="true">
-		<thumbPos label="Position" type="ComboBox" options="Top,Bottom,Grid" data="top,bottom,grid" defaultValue="top" width="200" optional="true"/>
+		<thumbPos label="Position" type="ComboBox" options="Top,Bottom,Grid" data="top,bottom,grid" conditionTrigger="true" defaultValue="top" width="200" optional="true"/>
+		<target label="Display In" type="ComboBox" data="page,lightbox" options="Page,Lightbox" defaultValue="page" conditionTrigger="true" condition="thumbPos=='grid'" optional="true" mandatory="true" tooltip="When the thumbnails are shown in a grid, select whether the information is shown in the main page or in a lightbox"/>
 		<thumbH label="Height" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" width="200" optional="true"/>
 		<thumbType label="Type" type="ComboBox" options="Image and Caption,Image and Number,Image Only" data="both,imgNum,image" defaultValue="both" width="200" optional="true"/>
 		<thumbBorder label="Border" type="Checkbox" defaultValue="true" optional="true"/>
@@ -7236,8 +7237,8 @@
 	</thumbs>
 	
 	<play type="group" label="Play All" optional="true">
-		<playAll label="Include Play All Button" type="Checkbox" defaultValue="true" optional="true"/>
-		<playImgTime label="Image Play Time" type="NumericStepper" min="1" max="60" step="1" defaultValue="5" optional="true"/>
+		<playAll label="Include Play All Button" type="Checkbox" defaultValue="true" optional="true" condition="thumbPos!='grid'||target!='lightbox'"/>
+		<playImgTime label="Image Play Time" type="NumericStepper" min="1" max="60" step="1" defaultValue="5" optional="true" condition="thumbPos!='grid'||target!='lightbox'"/>
 	</play>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
