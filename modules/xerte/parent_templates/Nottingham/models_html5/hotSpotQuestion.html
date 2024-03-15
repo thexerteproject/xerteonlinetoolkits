@@ -250,8 +250,8 @@
 						$('#hsHolder').addClass('complete');
 						
 						$("#checkButton").hide();
-						var h3 = $('<h3>').append(scoreLabel)
-						$("#score").html(h3);
+						var p = $('<p>').append(scoreLabel);
+						$("#score").html(p);
 						if (x_currentPageXML.getAttribute("generalFeedback") != undefined && x_currentPageXML.getAttribute("generalFeedback") != "" ) {
 							$("#generalFeedback").html('<hr/>' + x_currentPageXML.getAttribute("generalFeedback"));
 						}
@@ -328,14 +328,14 @@
 								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
 							}
 
-							var h3 = $('<h3>').append(scoreTxt);
-							$("#score").html(h3);
+							var p = $('<p>').append(scoreTxt);
+							$("#score").html(p);
 							
 						}else{
 							// no attempt was made
 							var warning = x_currentPageXML.getAttribute("warning") != undefined ? x_currentPageXML.getAttribute("warning") : "You have not selected anything";
-							var h3 = $('<h3>').append(warning)
-							$("#score").html(h3);
+							var p = $('<p>').append(warning)
+							$("#score").html(p);
 							attempts--;
 						}
 
@@ -632,7 +632,7 @@
 				<div id="textContents">
 					<button id="checkButton"></button>
 					<div id="text">
-						<div id="score"></div>
+						<div id="score" aria-live="polite"></div>
 					</div>
 				</div>
 				

@@ -1,6 +1,7 @@
 /* interactiveText.html */
 
-	h3 {
+	h3, #qNum {
+		font-weight: bold;
 		padding: 5px;
 	}
 

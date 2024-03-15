@@ -66,8 +66,9 @@
 	margin-bottom: 10px;
 }
 
-#targetHolder h3 {
+#targetHolder .fixedTxt {
 	width: 48%;
+	font-weight: bold;
 }
 
 #targetHolder .hint {

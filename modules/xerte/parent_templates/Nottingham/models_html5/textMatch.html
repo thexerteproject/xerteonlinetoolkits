@@ -53,7 +53,7 @@
 			
 			$labels.each(function() {
 				var $this = $(this);
-				$this.width($target.find("h3").width() + 5); // + 5 is so drop shadow width is ignored
+				$this.width($target.find(".fixedTxt").width() + 5); // + 5 is so drop shadow width is ignored
 				if ($this.find(".audioHolder").length > 0) {
 					$this.find(".labelTxt").width($this.width() - $("#pageContents").data("audioW"));
 				} else {
@@ -91,8 +91,8 @@
 					// adjust label absolute position on target
 					var $thisTarget = $this.data("currentTarget");
 					$this.css({
-						"top"	:$thisTarget.find("h3").position().top,
-						"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $this.width() + 5
+						"top"	:$thisTarget.find(".fixedTxt").position().top,
+						"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $this.outerWidth() + 5
 					});
 				}
 			});
@@ -285,7 +285,7 @@
 							"correct":this.getAttribute("p2"),
 							"id"	:i
 							})
-						.find("h3").html(x_addLineBreaks(this.getAttribute("p1")));
+						.find(".fixedTxt").html(x_addLineBreaks(this.getAttribute("p1")));
 						
 					labels.push({text:this.getAttribute("p2"), correct:$thisTarget, audio:this.getAttribute("audioFeedback"), transcript:this.getAttribute("audioTranscript")});
 				});
@@ -604,13 +604,12 @@
 			}
 			
 			$thisTarget.attr("title", targetTxt1 + " '" + $thisTarget.data("name") + " " + ($thisTarget.index() + 1) + "'");
-			
 			$thisLabel
 				.attr("title", labelTxt1)
 				.removeClass("selected")
 				.css({
-					"top"	:$thisTarget.find("h3").position().top + $("div#x_pageHolder").scrollTop(),
-					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.width() + 5
+					"top"	:$thisTarget.find(".fixedTxt").position().top + $("div#x_pageHolder").scrollTop(),
+					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.outerWidth() + 5
 				});
 		}
 	}
@@ -630,7 +629,7 @@
 
 		<div id="targetHolder">
 			<div class="target highlight">
-				<h3></h3>
+				<div class="fixedTxt"></div>
 			</div>
 		</div>
 

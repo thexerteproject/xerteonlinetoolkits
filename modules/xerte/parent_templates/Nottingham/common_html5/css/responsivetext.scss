@@ -216,22 +216,22 @@ table {
 #hint {
 	font-size: $pagecontentsmedium;
 }
-#thumbBar #thumbHolder .thumbBox h3 {
+#thumbBar #thumbHolder .thumbBox h3, #thumbBar #thumbHolder .thumbBox .thumbTitle {
 	font-size: $pagecontentsmedium;
 }
-#thumbBar.large #thumbHolder .thumbBox h3 {
+#thumbBar.large #thumbHolder .thumbBox h3, #thumbBar.large #thumbHolder .thumbBox .thumbTitle {
 	font-size: $pagecontentslarge;
 }
 #gridBack {
 	font-size: $pagecontentslarge;
 }
-#thumbHolder .playAll h3 {
+#thumbHolder .playAll .thumbTitle {
 	font-size: $perspectivesmedium !important;
 }
-#thumbBar.small #thumbHolder .playAll h3 {
+#thumbBar.small #thumbHolder .playAll .thumbTitle {
 	font-size: $perspectivessmall !important;
 }
-#thumbBar.large #thumbHolder .playAll h3 {
+#thumbBar.large #thumbHolder .playAll .thumbTitle {
 	font-size: $perspectiveslarge !important;
 }
 #x_glossaryHover, .splitScreen .tip {

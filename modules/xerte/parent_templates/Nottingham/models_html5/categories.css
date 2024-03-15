@@ -44,8 +44,10 @@
 		margin-top:		10px;
 	}
 	
-	#categoryHolder h3 {
+	#categoryHolder .categoryTitle {
 		text-align:		center;
+		font-weight: bold;
+		padding: 0;
 	}
 	
 	#button {
