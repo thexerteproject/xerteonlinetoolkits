@@ -48,9 +48,9 @@
 			
 			$("#initHolder").height(tallestLabel);
 			
-			var $categoryHolder = $("#categoryHolder"),
-				$category = $categoryHolder.find(".category");
-			$category.css("min-height", $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($categoryHolder.position().top) - parseInt($category.css("padding-top")) * 2 - $("#button").height() - 25);
+			var $category = $("#categoryHolder .category"),
+				$categoryTitle = $("#categoryHolder .categoryTitle");
+			$category.css("min-height", $categoryTitle.height() + 100);
 		}
 
         this.leavePage = function()
