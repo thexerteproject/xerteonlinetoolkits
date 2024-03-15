@@ -75,7 +75,7 @@ function loadRegistrations()
                 if (isset($metadata->thumbnail)) {
                     $tool['screenshots'] = array($metadata->thumbnail);
                 }
-                $tools[] = $tool;
+                $tools["id_" . $template["template_id"]] = $tool;
 
                 // Create the dashboard entry
                 if ($template['tsugi_xapi_enabled']) {
@@ -88,7 +88,7 @@ function loadRegistrations()
                     $description = str_replace("{0}", $tool['description'], LTI_DEEPLINK_DASHBOARD_PREFIX);
                     $dtool['description'] = $description;
                     $dtool['FontAwesome'] = "fa-chart-bar";
-                    $tools[] = $dtool;
+                    $tools["id_" . $template["template_id"] . "_db"] = $dtool;
                 }
             }
             $others = findAllRegistrationsInternal();
