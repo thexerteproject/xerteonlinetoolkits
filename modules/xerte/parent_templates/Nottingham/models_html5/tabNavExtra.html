@@ -166,7 +166,6 @@
 									// 1st tab and 1st nested page in highlighted topic
 									$thisHolder.find(".tabHeader:eq(0) a").trigger("click").parent().focus();
 								}
-								
 								tabNavExtra.scaleImages();
 								tabNavExtra.loadCustomHTML();
 								tabNavExtra.sizeChanged();
@@ -459,8 +458,8 @@
 					firstScale = true;
 				}
 				$img.data("count", $pageContents.data("count"));
-				
-				x_scaleImg($img, $img.parent().width(), $pageContents.find(".infoHolder:visible .paneHolder:visible").height() - 10, true, firstScale);
+
+				x_scaleImg($img, $img.parents('.paneImg').width(), $pageContents.find(".infoHolder:visible .paneHolder:visible").height() - 10, true, firstScale);
 				$img.css({
 					"opacity"	:1,
 					"filter"	:'alpha(opacity=100)'
