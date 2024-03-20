@@ -1474,7 +1474,7 @@ function upgrade_44()
 
 function upgrade_45(){
 	$roleTable = table_by_key("role");
-	$loginDetailsRoleTable = table_by_key("loginDetailsRole");
+	$loginDetailsRoleTable = table_by_key("logindetailsrole");
 	$loginDetailsTable = table_by_key("logindetails");
 
 	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
@@ -1489,9 +1489,7 @@ function upgrade_45(){
 	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
         `roleid` int NOT NULL,
         `userid` bigint(20) NOT NULL,
-        PRIMARY KEY (`roleid`, `userid`),
-        FOREIGN KEY (`roleid`) REFERENCES `$roleTable`(`roleid`),
-        FOREIGN KEY (`userid`) REFERENCES `$loginDetailsTable`(`login_id`)
+        PRIMARY KEY (`roleid`, `userid`)
       )"
 	);
 	
