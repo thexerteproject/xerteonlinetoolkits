@@ -4295,10 +4295,9 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageCompare menu="Interactivity" menuItem="image Compare" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_hotspot_image_page" remove="true">
+    </pageHeaderGroup></iSpring><imageCompare menu="Interactivity" menuItem="image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
-	<!-- <text label="Page Text" type="TextArea" height="250"/> -->
 	
 	<image1 type="group" label="Image 1">
 		<url1 label="File" type="media"/>

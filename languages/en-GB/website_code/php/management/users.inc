@@ -34,3 +34,15 @@
 	define("USERS_MODIFY_ROLES", "Modify user roles");
 
     define("USERS_MANAGE_ROLES", "Manage user roles");
+
+    define("USERS_ROLE_SUPER", "Super Admin");
+
+    define("USERS_ROLE_SYSTEM", "System Admin");
+    
+    define("USERS_ROLE_TEMPLATEADMIN", "Template Admin");
+    
+    define("USERS_ROLE_METAADMIN", "Meta Admin");
+    
+    define("USERS_ROLE_USERADMIN", "User Admin");
+    
+    define("USERS_ROLE_PROJECTADMIN", "Project Admin");
