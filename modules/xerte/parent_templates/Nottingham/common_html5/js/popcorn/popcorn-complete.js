@@ -3225,7 +3225,6 @@
   // Popcorn.smart will attempt to find you a wrapper or player. If it can't do that,
   // it will default to using an HTML5 video in the target.
   Popcorn.smart = function( target, src, options ) {
-    debugger;
     var node = typeof target === "string" ? Popcorn.dom.find( target ) : target,
         i, srci, j, media, mediaWrapper, popcorn, srcLength, 
         // We leave HTMLVideoElement and HTMLAudioElement wrappers out
@@ -4925,6 +4924,39 @@
 {
   var CURRENT_TIME_MONITOR_MS = 16;
 
+  function YujaPlayer( yujaIFrame ) {
+    var self = this,
+        url = yujaIFrame.src.split('?')[0],
+        muted = 0;
+
+    if( url.substr(0, 2) === '//' ) {
+      url = window.location.protocol + url;
+    }
+    function sendMessage( method, params ) {
+      var data = JSON.stringify({
+        name: method,
+      });
+
+      // The iframe has been destroyed, it just doesn't know it
+      if ( !yujaIFrame.contentWindow ) {
+        return;
+      }
+      yujaIFrame.contentWindow.postMessage( {name: 'Play'} );
+    }
+
+    var methods = ( "Play pause paused seekTo unload getCurrentTime getDuration " +
+        "getVideoEmbedCode getVideoHeight getVideoWidth getVideoUrl " +
+        "getColor setColor setLoop getVolume setVolume addEventListener enableTextTrack" ).split(" ");
+
+    methods.forEach( function( method ) {
+      // All current methods take 0 or 1 args, always send arg0
+      self[ method ] = function( arg0 ) {
+        debugger
+        sendMessage( method, arg0 );
+      };
+    });
+  }
+
   function HTMLYujaVideoElement(id)
   {
     debugger
@@ -4957,12 +4989,12 @@
         currentTimeInterval;
 
     // Namespace all events we'll produce
-    self._eventNamespace = Popcorn.guid( "HTMLPeerTubeVideoElement::" );
+    self._eventNamespace = Popcorn.guid( "HTMLYujaVideoElement::" );
 
     self.parentNode = parent;
 
     // Mark type as Mediasite
-    self._util.type = "Peertube";
+    self._util.type = "Yuja";
 
     elem.id = "yujaIframe";
     elem.addClass = " .iframe ";
@@ -4995,24 +5027,13 @@
       elem.mozAllowFullScreen = true;
       elem.allowFullScreen = true;
 
-      if (!xot_offline && typeof PeerTubePlayer !== undefined) {
-        $.getScript("https://unpkg.com/@peertube/embed-api/build/player.min.js")
-            .done(function () {
-                  onReady();
-                }
-            ).fail(function () {
-        });
-      }
-      else {
-        onReady();
-      }
+      onReady();
     }
 
     //Called when the player script has loaded
     function onReady()
     {
-      const PeerTubePlayer = window['PeerTubePlayer']
-      player = new PeerTubePlayer(elem);
+      player = new YujaPlayer(elem);
       player.addEventListener("playbackStatusUpdate", function(videoState) {monitorCurrentTime(videoState)}, false);
 
       impl.readyState = self.HAVE_FUTURE_DATA;
@@ -5087,13 +5108,14 @@
     }
 
     self.play = function() {
+      debugger;
       impl.paused = false;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
 
-      player.play();
+      player.Play();
     };
 
     function onPause () {
@@ -6413,7 +6435,7 @@
     }
 
     var methods = ( "play pause paused seekTo unload getCurrentTime getDuration " +
-                    "etVideoEmbedCode getVideoHeight getVideoWidth getVideoUrl " +
+                    "getVideoEmbedCode getVideoHeight getVideoWidth getVideoUrl " +
                     "getColor setColor setLoop getVolume setVolume addEventListener enableTextTrack" ).split(" ");
     methods.forEach( function( method ) {
       // All current methods take 0 or 1 args, always send arg0
