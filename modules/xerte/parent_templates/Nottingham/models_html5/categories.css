@@ -36,8 +36,9 @@
 	}
 	
 	#categoryHolder .category {
-		padding:			1%;
-		float:				left;
+		padding: 1%;
+		float: left;
+		cursor: pointer;
 	}
 	
 	#categoryHolder .category .label {

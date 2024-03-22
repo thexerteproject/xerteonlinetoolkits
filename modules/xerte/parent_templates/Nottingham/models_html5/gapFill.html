@@ -301,9 +301,7 @@
 				this.setUpFillBlank();
 			}
 			
-			$feedbackTxt
-				.hide()
-				.find("#txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+			$feedbackTxt.find("#txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			
 			if (x_currentPageXML.getAttribute("audioFeedback") != "" && x_currentPageXML.getAttribute("audioFeedback") != undefined) {
 				$audioHolder.mediaPlayer({
@@ -396,6 +394,7 @@
 		}
 		
 		this.setUpDropDown = function() {
+			$feedbackTxt.hide();
 			$("#labelHolder").remove();
 			
 			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
@@ -444,6 +443,7 @@
 		}
 		
 		this.setUpFillBlank = function() {
+			$feedbackTxt.hide();
 			$("#labelHolder").remove();
 
 			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
@@ -623,9 +623,11 @@
 		}
 		
 		this.setUpDragDrop = function() {
+			$("#feedbackTxt #txt").hide();
 			// if mark at end is off but tracking is on then it will mark at end anyway
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
                 $("#submitBtn").hide();
+				$("#feedbackTxt").prepend("<div id='tryAgain' aria-live='polite'></div>");
 				
 			} else {
 				$("#submitBtn")
@@ -649,7 +651,7 @@
 							.addClass("answerShown")
 							.removeClass("highlight highlightDark ui-state-disabled")
 							.removeAttr("title")
-							.off("keypress focusin focusout")
+							.off("keypress focusin focusout click")
 							.each(function() {
 								$(this).html($(this).data("answer"));
 							});
@@ -658,8 +660,7 @@
 						
 						$(this).hide();
 						$("#submitBtn").hide();
-						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-						$feedbackTxt.fadeIn();
+						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback"))).fadeIn();
 						x_pageContentsUpdated();
 						gapFill.audioFbResize(true);
 						
@@ -792,13 +793,13 @@
 		
 		// function called when label dropped on target - by mouse or keyboard
 		this.dropLabel = function($thisTarget, $thisLabel) {
-			$feedbackTxt.hide();
+			$feedbackTxt.find('#txt').hide();
 			
 			$thisLabel
 				.removeAttr("title")
 				.removeClass("selected")
 				.draggable("disable")
-				.off("keypress focusin focusout")
+				.off("keypress focusin focusout click")
 				.css("opacity", 0);
 			
 			if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
@@ -817,7 +818,7 @@
 			$thisTarget
 				.removeAttr("title")
 				.html($thisLabel.html())
-				.off("keypress focusin focusout")
+				.off("keypress focusin focusout click")
 				.droppable("option", "disabled", true)
 				.removeClass("highlight highlightDark ui-state-disabled");
 			
@@ -828,8 +829,7 @@
 			// if it's marked as completed (can only drop on correct targets) then show feedback immediately when complete
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target.highlight").length == 0)) {
 				$("#labelHolder").hide();
-				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-				$feedbackTxt.fadeIn();
+				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback"))).fadeIn();
 				gapFill.audioFbResize(true);
                 gapFill.dragDropSubmit();
 				x_pageContentsUpdated();
@@ -841,7 +841,8 @@
 			$targets
 				.focusin(targetFocusIn)
 				.focusout(targetFocusOut)
-				.keypress(targetKeyPress);
+				.keypress(targetKeyPress)
+				.click(targetClick);
 		}
 		
 		var targetFocusIn = function(e) {
@@ -862,16 +863,24 @@
 		var targetKeyPress = function(e) {
 			var charCode = e.charCode || e.keyCode;
 			if (charCode == 32) {
-				var $selectedLabel = $pageContents.data("selectedLabel");
-				if ($selectedLabel != undefined && $selectedLabel != "") {
-					if (answerData[$(this).data("index")].indexOf($selectedLabel.html()) != -1 || (x_currentPageXML.getAttribute("markEnd") != undefined && x_currentPageXML.getAttribute("markEnd") != "false") || (this.isTracked)) {
-						gapFill.dropLabel($(this), $selectedLabel); // target, label
-					} else {
-						$(this).attr("title", targetTxt1 + " " + ($(this).data("index") + 1));
-						$selectedLabel
+				$(this).click();
+			}
+		}
+
+		var targetClick = function() {
+			var $selectedLabel = $pageContents.data("selectedLabel");
+			if ($selectedLabel != undefined && $selectedLabel != "") {
+				if (answerData[$(this).data("index")].indexOf($selectedLabel.html()) != -1 || (x_currentPageXML.getAttribute("markEnd") != undefined && x_currentPageXML.getAttribute("markEnd") != "false") || (this.isTracked)) {
+					gapFill.dropLabel($(this), $selectedLabel); // target, label
+				} else {
+					$(this).attr("title", targetTxt1 + " " + ($(this).data("index") + 1));
+					$selectedLabel
 							.removeClass("selected")
 							.attr("title", labelTxt1);
-						$pageContents.data("selectedLabel", "");
+					$pageContents.data("selectedLabel", "");
+
+					if (x_currentPageXML.getAttribute("tryAgain") != undefined && x_currentPageXML.getAttribute("tryAgain") != "") {
+						$("#tryAgain").html('<p>'+x_currentPageXML.getAttribute("tryAgain")+'</p>');
 					}
 				}
 			}
@@ -883,7 +892,8 @@
 			$labels
 				.focusin(labelFocusIn)
 				.focusout(labelFocusOut)
-				.keypress(labelKeyPress);
+				.keypress(labelKeyPress)
+				.click(labelClick);
 		}
 		
 		var labelFocusIn = function(e) {
@@ -906,22 +916,28 @@
 		var labelKeyPress = function(e) {
 			var charCode = e.charCode || e.keyCode;
 			if (charCode == 32) {
-				if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-					$pageContents.data("selectedLabel")
-						.removeClass("selected")
-						.attr("title", labelTxt1);
-				}
-				var $this = $(this);
-				$this
-					.removeClass("focus")
-					.addClass("selected")
-					.attr("title", labelTxt1 + ' - ' + labelTxt2);
-				$pageContents.data("selectedLabel", $this);
+				$(this).click();
 			}
 		};
 
+		var labelClick = function() {
+			$("#tryAgain").empty();
+			if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+				$pageContents.data("selectedLabel")
+					.removeClass("selected")
+					.attr("title", labelTxt1);
+			}
+			var $this = $(this);
+			$this
+				.removeClass("focus")
+				.addClass("selected")
+				.attr("title", labelTxt1 + ' - ' + labelTxt2);
+			$pageContents.data("selectedLabel", $this);
+		}
+
 		this.dropDownSubmit = function(forced) {
-		
+			$feedbackTxt.hide();
+
 			// no answers given
 			if ($targetHolder.find('select option:selected[value=" "]').parent().length == $targetHolder.find('select').length) {
 				// prompt to complete exercise unless this has been triggered by leaving the page
@@ -1150,8 +1166,7 @@
 			if ($targetHolder.find(".target:not(.highlight)").length == 0) {
 				// prompt to complete exercise unless this has been triggered by leaving the page
 				if (forced != true) {
-					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
-					$feedbackTxt.fadeIn();
+					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>').fadeIn();
 					x_pageContentsUpdated();
 				}
 				
@@ -1178,7 +1193,7 @@
 					total = 0;
 					correct_answers = 0;
 					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
-            var correctAnswer = answerData[interactionNumber][0];
+           				var correctAnswer = answerData[interactionNumber][0];
 						var labelSource = labelAnswers[correctAnswer];
 						var option = {source: labelSource, target: interactionNumber+''};
 						l_options.push(option);
@@ -1237,6 +1252,7 @@
 							.focusin(targetFocusIn)
 							.focusout(targetFocusOut)
 							.keypress(targetKeyPress)
+							.click(targetClick)
 							.droppable("option", "disabled", false)
 							.addClass("highlight");
 						
@@ -1251,6 +1267,7 @@
 							.focusin(labelFocusIn)
 							.focusout(labelFocusOut)
 							.keypress(labelKeyPress)
+							.click(labelClick)
 							.css({
 								"opacity": 1,
 								"left": "auto",
@@ -1281,8 +1298,7 @@
 					// feedback...
 					if (score == $("#targetHolder .target").length) {
 						$("#labelHolder").hide();
-						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-						$feedbackTxt.fadeIn();
+						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback"))).fadeIn();
 						x_pageContentsUpdated();
 						gapFill.audioFbResize(true);
 						finished = true;
@@ -1292,14 +1308,13 @@
 						} else {
 							$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillPartWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillPartWrongTracking") : "Your correct answers are shown in green.") + '</p>');
 						}
-						$feedbackTxt.fadeIn();
+						$feedbackTxt.find("#txt").fadeIn();
 						x_pageContentsUpdated();
 					}
 
 				// if force tracking mode is on then you must fully complete before checking answers
 				} else {
-					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>');
-					$feedbackTxt.fadeIn();
+					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>').fadeIn();
 					x_pageContentsUpdated();
 				}
 			}

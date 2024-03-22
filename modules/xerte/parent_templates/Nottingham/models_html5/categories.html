@@ -240,29 +240,32 @@
 					if ($(e.target).hasClass("category")) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
-							var $pageContents = $("#pageContents");
-							var $selectedLabel = $pageContents.data("selectedLabel");
-							// drop selected label on target, remove selection and show next label
-							if ($selectedLabel != undefined && $selectedLabel != "") {
-								if ($selectedLabel.parent().is($("#initHolder"))) {
-									$("#initHolder .label:eq(1)").show();
-								}
-								$selectedLabel
-									.removeClass("selected")
-									.attr("title", labelTxt1)
-									.appendTo($(this));
-								$pageContents.data("selectedLabel", "");
-								var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
-
-								$(this).attr("title", targetTxt1 + " " + categoryTitle);
-								
-								// change tab index of label so it's now after the target it's on
-								var categoryIndex = parseInt($(this).attr("tabindex"));
-								$(this).children(".label").each(function(i) {
-									$(this).attr("tabindex", categoryIndex + i + 1);
-								});
-							}
+							$(this).click();
 						}
+					}
+				})
+				.click(function(){
+					var $pageContents = $("#pageContents");
+					var $selectedLabel = $pageContents.data("selectedLabel");
+					// drop selected label on target, remove selection and show next label
+					if ($selectedLabel != undefined && $selectedLabel != "") {
+						if ($selectedLabel.parent().is($("#initHolder"))) {
+							$("#initHolder .label:eq(1)").show();
+						}
+						$selectedLabel
+							.removeClass("selected")
+							.attr("title", labelTxt1)
+							.appendTo($(this));
+						$pageContents.data("selectedLabel", "");
+						var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
+
+						$(this).attr("title", targetTxt1 + " " + categoryTitle);
+
+						// change tab index of label so it's now after the target it's on
+						var categoryIndex = parseInt($(this).attr("tabindex"));
+						$(this).children(".label").each(function(i) {
+							$(this).attr("tabindex", categoryIndex + i + 1);
+						});
 					}
 				});
 			
@@ -373,22 +376,27 @@
 				.keypress(function(e) {
 					var charCode = e.charCode || e.keyCode;
 					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel")
-								.removeClass("selected")
-								.attr("title", labelTxt1);
-						}
-						var $this = $(this);
-						$this
-							.removeClass("focus")
-							.addClass("selected")
-							.attr("title", labelTxt1 + ' - ' + labelTxt2);
-						$pageContents.data("selectedLabel", $this);
-						
-						$("#feedback").hide();
-						$("#dragDropHolder .tick").remove();
+						$(this).click();
 					}
+				})
+				.click(function(e) {
+					var $pageContents = $("#pageContents");
+					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+						$pageContents.data("selectedLabel")
+							.removeClass("selected")
+							.attr("title", labelTxt1);
+					}
+					var $this = $(this);
+					$this
+						.removeClass("focus")
+						.addClass("selected")
+						.attr("title", labelTxt1 + ' - ' + labelTxt2);
+					$pageContents.data("selectedLabel", $this);
+
+					$("#feedback").hide();
+					$("#dragDropHolder .tick").remove();
+
+					e.stopPropagation();
 				});
 		}
 	}

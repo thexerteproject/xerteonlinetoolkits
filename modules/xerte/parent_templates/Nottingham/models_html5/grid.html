@@ -395,7 +395,7 @@
                             $("#feedback").show();
                             $("#grid .listHolder ul li.ui-draggable")
                                 .draggable( "option", "disabled", true )
-                                .off("focusin focusout keypress");
+                                .off("focusin focusout keypress click");
                         }
                     } else {
                         $(this)
@@ -406,7 +406,7 @@
                         $("#grid .tick").remove();
                         $("#grid .listHolder ul li.ui-draggable")
                             .draggable( "option", "disabled", false )
-                            .on("focusin focusout keypress"); //
+                            .on("focusin focusout keypress click");
                         grid.randomiseLabels();
                     }
                 })
@@ -882,36 +882,38 @@
 					.on("keypress", function(e) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
-							var $this = $(this);
-							if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") { // a label has been selected...
-								if ($this.is($pageContents.data("selectedLabel")) == false) { // ...it's not the label in focus...
-									if ($this.parent().is($pageContents.data("selectedLabel").parent())) { // ... and the label in focus can have the selected label dropped on it
-										$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
+							$(this).click();
+						}
+					})
+					.on("click", function() {
+						var $this = $(this);
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") { // a label has been selected...
+							if ($this.is($pageContents.data("selectedLabel")) == false) { // ...it's not the label in focus...
+								if ($this.parent().is($pageContents.data("selectedLabel").parent())) { // ... and the label in focus can have the selected label dropped on it
+									$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
 
-										$pageContents.data("selectedLabel")
-											.removeClass("selected")
-											.addClass("focus");
-
-										$this.removeClass("focus");
-
-										grid.dropEvent($this, $pageContents.data("selectedLabel"));
-									}
-
-								} else {
-									$this
+									$pageContents.data("selectedLabel")
 										.removeClass("selected")
 										.addClass("focus");
-								}
 
-								$pageContents.data("selectedLabel", "");
+									$this.removeClass("focus");
+									grid.dropEvent($this, $pageContents.data("selectedLabel"));
+								}
 
 							} else {
 								$this
-									.removeClass("focus")
-									.addClass("selected");
-
-								$pageContents.data("selectedLabel", $this);
+									.removeClass("selected")
+									.addClass("focus");
 							}
+
+							$pageContents.data("selectedLabel", "");
+
+						} else {
+							$this
+								.removeClass("focus")
+								.addClass("selected");
+
+							$pageContents.data("selectedLabel", $this);
 						}
 					})
 					.disableSelection()

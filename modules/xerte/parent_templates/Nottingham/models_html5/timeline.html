@@ -243,13 +243,16 @@
 					if ($(e.target).hasClass("target")) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
-							var $selectedLabel = $("#pageContents").data("selectedLabel");
-							if ($selectedLabel != undefined && $selectedLabel != "") {
-								timeline.dropLabel($(this), $selectedLabel); // target, label
-							}
+							$(this).click();
 						}
 					}
-					})
+				})
+				.click(function() {
+					var $selectedLabel = $("#pageContents").data("selectedLabel");
+					if ($selectedLabel != undefined && $selectedLabel != "") {
+						timeline.dropLabel($(this), $selectedLabel); // target, label
+					}
+				})
 				.data("currentLabel", "");
 			
 			// set tab index for targets - leaving space between them for a label to be put on it
@@ -429,23 +432,26 @@
 				.keypress(function(e) {
 					var charCode = e.charCode || e.keyCode;
 					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel")
+						$(this).click();
+					}
+				})
+				.click(function() {
+					var $pageContents = $("#pageContents");
+					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+						$pageContents.data("selectedLabel")
 								.removeClass("selected")
 								.attr("title", labelTxt1);
-						}
-						var $this = $(this);
-						$this
+					}
+					var $this = $(this);
+					$this
 							.removeClass("focus")
 							.addClass("selected")
 							.attr("title", labelTxt1 + ' - ' + labelTxt2);
-						$pageContents.data("selectedLabel", $this);
-						
-						$feedback.hide();
-						$("#dragDropHolder .tick").remove();
-					}
-					})
+					$pageContents.data("selectedLabel", $this);
+
+					$feedback.hide();
+					$("#dragDropHolder .tick").remove();
+				})
 				.css("position", "absolute")
 				.data("currentTarget", "")
 				.disableSelection();

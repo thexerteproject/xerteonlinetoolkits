@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback="" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill>
+      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback="" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer" tryAgain="Try again"/>]]></gapFill>
     </newNodes>
   </pageWizard>
 
@@ -21,9 +21,9 @@
 	<gapFillPartWrong label="Gap Fill Part Wrong" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillIncomplete label= "Gap Fill Incomplete" type="TextInput" wysiwyg="true" language="true"/>
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
-	
 	<gapFillWrongTracking label="Gap Fill All Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillPartWrongTracking label="Gap Fill Part Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
+	<tryAgain label="Try Again" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue=""/>
 	
 	<delimiters type="group" label="Delimiters" optional="true">
 		<mainDelimiter label="Marked Word" type="textInput" defaultValue="|" optional="true" tooltip="The character used to mark words for the exercise"/>
