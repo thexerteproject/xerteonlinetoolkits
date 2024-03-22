@@ -9480,11 +9480,11 @@
     <transcriptTabWidth label="Check Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="90" language="true" deprecated="Width is now set automatically"/>		
 
     <startFrame label="Start Time" type="textInput" defaultValue="0" optional="true" tooltip="Enter the start frame in seconds"/>
-    <endFrame label="End Time" type="textInput" defaultValue="0" optional="true" tooltip="enter the end frame in seconds"/>
-    <movieSize label="Video Size" type="textInput" defaultValue="" placeholder="e.g. 320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+    <endFrame label="End Time" type="textInput" defaultValue="0" optional="true" tooltip="Enter the end frame in seconds"/>
+    <movieSize label="Maximum Size" type="textInput" defaultValue="" placeholder="e.g. 320,240" conditionTrigger="true" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option sets the maximum video size in pixels (width,height)."/>
+    <iframeMax label="Maximum Relative Width" type="TextInput" defaultValue="" placeholder="0.6" tooltip="The maximum width of the video in relation to the width of the whole page. Enter a number between 0.1 and 1. Default value is 0.6 (60% of page width)" optional="true"/>
+    <iframeRatio label="Aspect Ratio" type="TextInput" defaultValue="" placeholder="16:9" tooltip="Aspect ratio of video, e.g. 16:9" condition="movieSize==null" optional="true"/>
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
-	<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio of iframes when used instead of uploaded videos" optional="true"/>
-	<iframeMax label="iframe Max Size" type="TextInput" defaultValue="0.6" tooltip="The maximum width of the iframe in relation to the width of the whole page. Enter a number between 0.1 and 1" optional="true"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
