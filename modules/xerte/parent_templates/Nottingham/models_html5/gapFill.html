@@ -857,10 +857,14 @@
 					$thisLabel.add($thisTarget).data("correct", true);
                 }
 			}
-			
+
+			// this ensures that MathJax isn't duplicated next time x_pageContentsUpdated()
+			var $labelClone = $thisLabel.clone();
+			$labelClone.find("script[id^='MathJax-Element']").remove();
+
 			$thisTarget
 				.removeAttr("title")
-				.html($thisLabel.html())
+				.html($labelClone.html())
 				.off("keypress focusin focusout click")
 				.droppable("option", "disabled", true)
 				.removeClass("highlightDark ui-state-disabled");

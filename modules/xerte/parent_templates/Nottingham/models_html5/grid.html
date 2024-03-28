@@ -1076,8 +1076,12 @@
 				newTxt.splice(lowest == indexDrag ? 0 : newTxt.length-1, 1);
 
 				for (i=0; i<toPreview.length; i++) {
+					// this ensures that MathJax isn't duplicated next time x_pageContentsUpdated()
+					var $labelClone = $thisParent.find("li:eq(" + newTxt[i] + ")").clone();
+					$labelClone.find("script[id^='MathJax-Element']").remove();
+
 					$thisParent.prev(".preview").find("li:eq(" + toPreview[i] + ")")
-						.html($thisParent.find("li:eq(" + newTxt[i] + ")").html())
+						.html($labelClone.html())
 						.css("visibility", "visible");
 
 					var $label = $thisParent.find("li:eq(" + toPreview[i] + ")");
@@ -1088,9 +1092,14 @@
 
 			} else {
 				// show preview for two labels that will be swapped
+
+				// this ensures that MathJax isn't duplicated next time x_pageContentsUpdated()
+				var $labelClone = $this.clone();
+				$labelClone.find("script[id^='MathJax-Element']").remove();
+
 				$thisParent.prev(".preview").find("li:eq(" + draggable.index() + ")")
 					.css("visibility","visible")
-					.html($this.html());
+					.html($labelClone.html());
 
 				if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 					$pageContents.data("selectedLabel").css("visibility", "hidden");
