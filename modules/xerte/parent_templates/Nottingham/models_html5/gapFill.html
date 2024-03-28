@@ -646,10 +646,16 @@
 						var $incorrectTargets = $("#targetHolder .target").filter(function () {
 							return $(this).data("correct") != true;
 						});
-						
+
+						$incorrectTargets.each(function() {
+							if ($(this).data("width") != undefined) {
+								$(this).width("auto");
+							}
+						});
+
 						$incorrectTargets
 							.addClass("answerShown")
-							.removeClass("highlight highlightDark ui-state-disabled")
+							.removeClass("highlightDark")
 							.removeAttr("title")
 							.off("keypress focusin focusout click")
 							.each(function() {
@@ -677,9 +683,34 @@
 			
 			// set up targets
 			var	maxW = 0,
-				i;
-			for (i=0; i<$targetHolder.find(".target").length; i++) {
-				maxW = Math.max(maxW, $targetHolder.find(".target:eq(" + i + ")").width());
+				i,
+				tolerance = "pointer",  // to make it easier to drop labels on different gap sizes, use a different tolerance depending on whether the gap is as long as widest text or smaller
+				compress = true;
+
+			// there are options for how wide the gap will be
+			if (x_currentPageXML.getAttribute("gapSize") == "bespoke" && $.isNumeric(x_currentPageXML.getAttribute("gapBespokeSize"))) {
+				// bespoke - author can enter width (in pixels) in editor
+				maxW = Number(x_currentPageXML.getAttribute("gapBespokeSize"));
+			} else if (x_currentPageXML.getAttribute("gapSize") == "correct") {
+				// gap is as wide as the correct text
+				maxW = "auto";
+			} else if (x_currentPageXML.getAttribute("gapSize") == "min") {
+				// gap is compressed to 40px wide
+				maxW = 40;
+			} else {
+				// gap is as wide as the longest text
+				for (i = 0; i < $targetHolder.find(".target").length; i++) {
+					maxW = Math.max(maxW, $targetHolder.find(".target:eq(" + i + ")").width());
+				}
+				maxW += 30;
+				$("#dragDropHolder").addClass("contain");
+				tolerance = "intersect";
+
+				if (x_currentPageXML.getAttribute("gapSizeFilled") != "true") {
+					// gap will maintain its width and not be compressed after label has been dropped - other width options will always compress
+					compress = false;
+					$("#targetHolder").addClass("noCompress");
+				}
 			}
 			
 			$($targetHolder.find(".target")).each(function(i) {
@@ -688,18 +719,26 @@
 					.data("index", i); // stored here as using .index() won't return result needed as there are other elements (line breaks etc.) in $targetHolder
 			});
 			
-			$targetHolder.find(".target")
-				.css({
-					"width":maxW + 30,
-					"height":$targetHolder.find(".target").height() + 10,
-					"line-height":$targetHolder.find(".target").height() + 10 + "px"
+			$targetHolder.find(".target").each(function() {
+				$(this)
+					.css({
+						"width": maxW == "auto" ? $(this).width() : maxW,
+						"height":$(this).height() + 10,
+						"line-height":$(this).height() + 10 + "px"
 					})
-				.html("")
-				.droppable({
-					drop:	function(event, ui) {
-						gapFill.dropLabel($(this), ui.draggable); // target, label
-					}
+					.html("")
+					.droppable({
+						tolerance: tolerance,
+						drop:	function(event, ui) {
+							gapFill.dropLabel($(this), ui.draggable); // target, label
+						}
 					});
+
+				if (compress == true) {
+					// gap may reduce in width after label has been dropped on it - keep track of original width in case it's reset later
+					$(this).data("width", $(this).width())
+				}
+			});
 			
 			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
 				$targetHolder.find("span:not(.target)").css("line-height", parseInt($targetHolder.find(".target").css("line-height")) + 10 + "px");
@@ -756,7 +795,7 @@
 			// set up drag events (mouse and keyboard controlled)
 			$("#dragDropHolder .label")
 				.draggable({
-					containment:	"#dragDropHolder",
+					containment:	$("#dragDropHolder").hasClass("contain") ? "#dragDropHolder" : false, // don't restrict labels to dragDropHolder when target areas may be small as this can make it very hard to drop labels
 					stack:			"#dragDropHolder .label", // item being dragged is always on top (z-index)
 					revert:			"invalid", // snap back to original position if not dropped on target
 					start:			function() {
@@ -789,6 +828,10 @@
 						}) : $("#labelHolder .label")
 				});
 			}
+
+			// customise the appearance of hotpots via style & determine whether the styling is kept after label is dropped
+			$("#targetHolder").addClass(x_currentPageXML.getAttribute("gapLook") == null ? "bg" : x_currentPageXML.getAttribute("gapLook"));
+			$("#targetHolder").addClass(x_currentPageXML.getAttribute("gapLookFilled") == null ? "gapStyle_false" : "gapStyle_" + x_currentPageXML.getAttribute("gapLookFilled"));
 		}
 		
 		// function called when label dropped on target - by mouse or keyboard
@@ -820,14 +863,23 @@
 				.html($thisLabel.html())
 				.off("keypress focusin focusout click")
 				.droppable("option", "disabled", true)
-				.removeClass("highlight highlightDark ui-state-disabled");
+				.removeClass("highlightDark ui-state-disabled");
+
+			// appearance of gap is maintained even after label has been dropped
+			if ($("#targetHolder").hasClass("gapStyle_false")) {
+				$thisTarget.removeClass("highlight");
+			}
+
+			if ($thisTarget.data("width") != undefined) {
+				$thisTarget.width("auto");
+			}
 			
 			$pageContents.data("selectedLabel", "");
 			
 			labelAnswers[$thisTarget.data("answer")] = $thisLabel.data("answer");
 
 			// if it's marked as completed (can only drop on correct targets) then show feedback immediately when complete
-			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target.highlight").length == 0)) {
+			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0)) {
 				$("#labelHolder").hide();
 				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback"))).fadeIn();
 				gapFill.audioFbResize(true);
@@ -1163,7 +1215,7 @@
 		this.dragDropSubmit = function(forced) {
 			
 			// no blanks completed
-			if ($targetHolder.find(".target:not(.highlight)").length == 0) {
+			if ($targetHolder.find(".target.ui-droppable-disabled").length == 0) {
 				// prompt to complete exercise unless this has been triggered by leaving the page
 				if (forced != true) {
 					$("#feedbackTxt #txt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise.") + '</p>').fadeIn();
@@ -1173,13 +1225,13 @@
 			// an attempt (even if partial) has been made
 			} else {
 				// mark exercise (unless force tracking mode is on & exercise is incomplete)
-				if ($targetHolder.find(".target.highlight").length == 0 || !this.isTracked) {
+				if ($targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0 || !this.isTracked) {
 					$("#targetHolder .target").filter(function () {
 						return $(this).data("correct") == true;
 					}).addClass("correct");
 					
 					var $incorrectTargets = $("#targetHolder .target").filter(function () {
-						return !($(this).data("correct") == true || $(this).hasClass("correct")) && !$(this).hasClass("highlight");
+						return !($(this).data("correct") == true || $(this).hasClass("correct")) && $(this).hasClass("ui-droppable-disabled");
 					});
 					
 					var $incorrectLabels = $("#labelHolder .label").filter(function () {
@@ -1214,39 +1266,17 @@
 
 					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, feedback);
 
-
-					/* fill-in
-					// track before moving back labels or else results page looks like you haven't attempted to answer
-					total = 0;
-					correct_answers = 0;
-
-					for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
-						var feedback = "Correct",
-							correct = false,
-							correctAnswer = answerData[interactionNumber][0],
-							labelSource = labelAnswers[correctAnswer] == undefined ? '' : labelAnswers[correctAnswer],
-							option = {source: labelSource, target: correctAnswer};
-
-						if (option.source == option.target) {
-							correct_answers++;
-							correct = true;
-						}
-
-						var result = {
-							success: correct,
-							score: (correct ? 100.0 : 0.0)
-						};
-						if (!correct) { feedback = "Incorrect"; }
-
-						total++;
-						XTExitInteraction(x_currentPage, interactionNumber, result, [], labelSource, feedback, x_currentPageXML.getAttribute("trackinglabel"));
-					}
-					var allCorrect = (total == correct_answers);
-					 */
 					gapFill.finishTracking();
 					
 					if (!this.isTracked) {
 						// reset incorrect labels so you can try again
+
+						$incorrectTargets.each(function() {
+							if ($(this).data("width") != undefined) {
+								$(this).width($(this).data("width"));
+							}
+						});
+
 						$incorrectTargets
 							.html("")
 							.focusin(targetFocusIn)
@@ -1274,7 +1304,7 @@
 								"top": "auto"
 							});
 						
-						if ($targetHolder.find(".target.highlight").length == 0) {
+						if ($targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0) {
 							$("#submitBtn, #showBtn").hide();
 						} else if (x_currentPageXML.getAttribute("showHint") != "false") {
 							attempts++;
