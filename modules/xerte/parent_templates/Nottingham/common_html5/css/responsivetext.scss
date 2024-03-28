@@ -117,8 +117,7 @@ input#x_pagePswd {
 }
 #targetHolder .target {
     font-size: $pagecontentsmedium;
-    //*remove padding in gap fill targets*/
-    padding: 0.6vmin !important;
+    /*padding: 0.6vmin !important;*/
 }
 #targetHolder p {
     font-size: $pagecontentsmedium;

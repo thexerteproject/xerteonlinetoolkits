@@ -104,7 +104,7 @@
   }
   #targetHolder .target {
     font-size: 2vmin;
-    padding: 0.6vmin !important;
+    /*padding: 0.6vmin !important;*/
   }
   #targetHolder p {
     font-size: 2vmin;
