@@ -1878,7 +1878,7 @@ async function httpGetStatements(url, query)
 
 function getMboxSha1(statement)
 {
-    if (statement.actor == undefined) {
+    if (statement.actor != undefined) {
         if (statement.actor.mbox != undefined) {
             return toSHA1(statement.actor.mbox);
         } else if (statement.actor.mbox_sha1sum != undefined) {
@@ -1896,6 +1896,13 @@ function getMboxSha1(statement)
 async function getStatementsFromDB(q, one)
 {
     let search = {};
+    if (q['filter_current_users'] != undefined) {
+        if (q['filter_current_users'] == 'true') {
+            const lti_user_list = lti_users.split(',');
+            search['actor'] = lti_user_list;
+        }
+        delete q['filter_current_users'];
+    }
     $.each(q, function(i, value) {
         search[i] = value;
     });
@@ -1904,11 +1911,7 @@ async function getStatementsFromDB(q, one)
     } else {
         limit = 5000;
     }
-    if (q['filter_current_users'] != undefined) {
-        const lti_user_list = lti_users.split(',');
-        search['actor'] = lti_user_list;
-        delete q['filter_current_users'];
-    }
+
     let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
     let statements = [];
     do
@@ -1936,6 +1939,7 @@ function getStatements(q, one, callback)
         var search = ADL.XAPIWrapper.searchParams();
         var group = "";
         var context_id = "";
+	var filter_current_users = false;
         if (q['group'] != undefined) {
             group = q['group'];
             delete q['group'];
