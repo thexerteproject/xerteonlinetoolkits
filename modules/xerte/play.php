@@ -32,6 +32,11 @@ require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 // (pl)
 // Set up the preview window for a xerte piece
 
+function escape_javascript($string)
+{
+    return str_replace(array("\r", "\n"), array('\r', '\n'), addslashes($string));
+}
+
 function show_template_page($row, $datafile="", $xapi_enabled = false)
 {
     global $xerte_toolkits_site;
@@ -175,7 +180,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
-                    $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
+                    $tracking .= "   var fullusername = '" . escape_javascript($xerte_toolkits_site->lti_user->displayname) . "';\n";
                     $xapi_student_id_mode = $row['tsugi_xapi_student_id_mode'];
                     if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs)) {
                         if ($xapi_student_id_mode == 0 || $xapi_student_id_mode == 2)
@@ -196,7 +201,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                         // actor is set
                         _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
                         $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
-                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var fullusername = '" . escape_javascript($xerte_toolkits_site->xapi_user->displayname) . "';\n";
                         if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs))
                         {
                             $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
@@ -212,15 +217,15 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
-                    $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                    $tracking .= "   var groupname = '" . escape_javascript($xerte_toolkits_site->group) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->course))
                 {
-                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                    $tracking .= "   var coursename = '" . escape_javascript($xerte_toolkits_site->course) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->module))
                 {
-                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
+                    $tracking .= "   var modulename = '" . escape_javascript($xerte_toolkits_site->module) . "';\n";
                 }
             }
             $tracking .= "</script>\n";
@@ -350,12 +355,9 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
-                    $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
+                    $tracking .= "   var fullusername = '" . escape_javascript($xerte_toolkits_site->lti_user->displayname) . "';\n";
                     $tracking .= "   var studentidmode = '" . $row['tsugi_xapi_student_id_mode'] . "';\n";
-                    if ($row['tsugi_xapi_student_id_mode'] == 1)
-                    {
-                        $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
-                    }
+                    $tracking .= "   var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
                 }
                 else
                 {
@@ -365,8 +367,9 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                         // actor is set
                         _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
                         $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
-                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var fullusername = '" . escape_javascript($xerte_toolkits_site->xapi_user->displayname) . "';\n";
                         $tracking .= "   var studentidmode = " . $xerte_toolkits_site->xapi_user->studentidmode . ";\n";
+                        $tracking .= "   var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
                     }
                     else {
                         $tracking .= "   var studentidmode = 3;\n";
@@ -374,27 +377,27 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
-                    $tracking .= "   var groupname = '" . str_replace("'", "\'", $xerte_toolkits_site->group) . "';\n";
+                    $tracking .= "   var groupname = '" . escape_javascript($xerte_toolkits_site->group) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->course))
                 {
-                    $tracking .= "   var coursename = '" . str_replace("'", "\'", $xerte_toolkits_site->course) . "';\n";
+                    $tracking .= "   var coursename = '" . escape_javascript($xerte_toolkits_site->course) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->module))
                 {
-                    $tracking .= "   var modulename = '" . str_replace("'", "\'", $xerte_toolkits_site->module) . "';\n";
+                    $tracking .= "   var modulename = '" . escape_javascript($xerte_toolkits_site->module) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->lti_context_id))
                 {
-                    $tracking .= "   var lti_context_id = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_id) . "';\n";
+                    $tracking .= "   var lti_context_id = '" . escape_javascript($xerte_toolkits_site->lti_context_id) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->lti_context_name))
                 {
-                    $tracking .= "   var lti_context_name = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_name) . "';\n";
+                    $tracking .= "   var lti_context_name = '" . escape_javascript($xerte_toolkits_site->lti_context_name) . "';\n";
                 }
                 if (isset($xerte_toolkits_site->lti_users))
                 {
-                    $tracking .= "   var lti_users = '" . str_replace("'", "\'", implode(",",$xerte_toolkits_site->lti_users)) . "';\n";
+                    $tracking .= "   var lti_users = '" . escape_javascript(implode(",",$xerte_toolkits_site->lti_users)) . "';\n";
                 } else {
                     $tracking .= "   var lti_users = '';\n";
                 }
