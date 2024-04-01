@@ -313,7 +313,7 @@
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
 	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" imgWidth="Medium" url="" interactivity="Describe" submitText="Submit" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src=""/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
-	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback="" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="" feedback="" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="" words=""
+	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback="" panelWidth="Medium" gapLook="bg" gapLookFilled="true" gapSize="max" gapBespokeSize="20" gapSizeFilled="true" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer" tryAgain="Try again"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="" feedback="" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="" words=""
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="" text="" url="" tip="" answers="true" align="Left" attempts="1"
@@ -368,7 +368,7 @@
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
 	  ></modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="" text="" prompt="" answer="" answerType="true"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
-	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="" url="" tip1="" url2="" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="" url="" descrip="" target="new" previewImage="" tip="" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="" showfeedback="true" feedback=""
+	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="" url="" tip1="" url2="" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="" url="" descrip="" target="new" previewImage="" tip="" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="" feedback=""
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
@@ -3614,6 +3614,18 @@
     <interactivity label="Interactivity" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100" conditionTrigger="true"/>
     <feedback label="Feedback" type="TextArea" height="50" placeholder="Enter feedback here"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+
+    <gapOptions type="group" label="Gap Options" condition="interactivity=='Drag Drop'" tooltip="Customise the appearance of the gaps where labels can be dropped" mandatory="true">
+        <gapLookGroup label="Gap Appearance" type="group" mandatory="true" condition="interactivity=='Drag Drop'" tooltip="Customise how the gaps look before labels are dropped and whether this appearance is kept after the gap has been filled">
+            <gapLook label="Appearance" type="ComboBox" defaultValue="bg" data="bg,outline,underline" options="Background Colour,Outline,Underline" mandatory="true" condition="interactivity=='Drag Drop'"/>
+            <gapLookFilled label="Keep When Filled" type="CheckBox" defaultValue="false" mandatory="true" condition="interactivity=='Drag Drop'"/>
+        </gapLookGroup>
+        <gapSizeGroup label="Gap Width" type="group" mandatory="true" condition="interactivity=='Drag Drop'" tooltip="By default, the gaps where labels can be dropped will all be as wide as the widest label's text. Use these options to customise the width of the gap, e.g. make the gap as wide as the correct text or have the gap compressed until a label is placed in the gap.">
+            <gapSize label="Width" type="ComboBox" data="max,correct,min,bespoke" options="Longest Text,Correct Text,Compressed,Bespoke" defaultValue="max" condition="interactivity=='Drag Drop'" conditionTrigger="true" mandatory="true"/>
+            <gapBespokeSize label="Width (in pixels)" defaultValue="20" type="NumericStepper" min="5" max="200" step="1" mandatory="true" condition="interactivity=='Drag Drop'&amp;&amp;gapSize=='bespoke'"/>
+            <gapSizeFilled label="Compress When Filled" type="CheckBox" defaultValue="false" mandatory="true" condition="interactivity=='Drag Drop'&amp;&amp;gapSize!='correct'&amp;&amp;gapSize!='min'&amp;&amp;gapSize!='bespoke'"/>
+        </gapSizeGroup>
+    </gapOptions>
 	
 	<checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<showBtn label="Show Button Text" type="TextInput" wysiwyg="true" language="true"/>
@@ -3621,10 +3633,10 @@
 	<gapFillPartWrong label="Gap Fill Part Wrong" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillIncomplete label="Gap Fill Incomplete" type="TextInput" wysiwyg="true" language="true"/>
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
-	
 	<gapFillWrongTracking label="Gap Fill All Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillPartWrongTracking label="Gap Fill Part Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
-	
+	<tryAgain label="Try Again" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue=""/>
+
 	<delimiters type="group" label="Delimiters" optional="true">
 		<mainDelimiter label="Marked Word" type="textInput" defaultValue="|" optional="true" tooltip="The character used to mark words for the exercise"/>
 		<answerDelimiter label="Correct Answer" type="textInput" defaultValue="," optional="true" tooltip="The character separating each correct answer, where there is more than one correct answer for a gap, e.g. |Doctor,Dr|"/>
@@ -3642,7 +3654,7 @@
 		<audioFeedback label="File" type="media" optional="true" placeholder="Select an audio file"/>
 		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</audioGroup>
-	
+
 	<spaceLines label="Space Lines Evenly" type="CheckBox" defaultValue="true" optional="true"/>
 
     <hints type="group" label="Hints" optional="true" tooltip="Show a hint tooltip (fill in blank) or show answers button (drag drop/drop down menu) if answered incorrectly">
@@ -6247,6 +6259,7 @@
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<backurl label="Card Back Image" type="Media" optional="true" placeholder="Select an image"/>
 	<text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
+	<imgFit label="Image Scaling" optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="cover" tooltip="How the images fill the cards. 'Stretch to fit' will stretch the image vertically or horizontally to fill the whole card area, while 'Crop to fit' will crop the image to fit without distorting it"/>
 
     <newNodes>
       <matchItem><![CDATA[<matchItem name="Enter Card Label" url=""/>]]></matchItem>
@@ -7226,7 +7239,8 @@
 	<playTip label="Play All Text" type="TextInput" wysiwyg="true" language="true"/>
 	
 	<thumbs type="group" label="Thumbnail Bar" optional="true">
-		<thumbPos label="Position" type="ComboBox" options="Top,Bottom,Grid" data="top,bottom,grid" defaultValue="top" width="200" optional="true"/>
+		<thumbPos label="Position" type="ComboBox" options="Top,Bottom,Grid" data="top,bottom,grid" conditionTrigger="true" defaultValue="top" width="200" optional="true"/>
+		<target label="Display In" type="ComboBox" data="page,lightbox" options="Page,Lightbox" defaultValue="page" conditionTrigger="true" condition="thumbPos=='grid'" optional="true" mandatory="true" tooltip="When the thumbnails are shown in a grid, select whether the information is shown in the main page or in a lightbox"/>
 		<thumbH label="Height" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" width="200" optional="true"/>
 		<thumbType label="Type" type="ComboBox" options="Image and Caption,Image and Number,Image Only" data="both,imgNum,image" defaultValue="both" width="200" optional="true"/>
 		<thumbBorder label="Border" type="Checkbox" defaultValue="true" optional="true"/>
@@ -7235,8 +7249,8 @@
 	</thumbs>
 	
 	<play type="group" label="Play All" optional="true">
-		<playAll label="Include Play All Button" type="Checkbox" defaultValue="true" optional="true"/>
-		<playImgTime label="Image Play Time" type="NumericStepper" min="1" max="60" step="1" defaultValue="5" optional="true"/>
+		<playAll label="Include Play All Button" type="Checkbox" defaultValue="true" optional="true" condition="thumbPos!='grid'||target!='lightbox'"/>
+		<playImgTime label="Image Play Time" type="NumericStepper" min="1" max="60" step="1" defaultValue="5" optional="true" condition="thumbPos!='grid'||target!='lightbox'"/>
 	</play>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
@@ -9478,11 +9492,11 @@
     <transcriptTabWidth label="Check Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="90" language="true" deprecated="Width is now set automatically"/>		
 
     <startFrame label="Start Time" type="textInput" defaultValue="0" optional="true" tooltip="Enter the start frame in seconds"/>
-    <endFrame label="End Time" type="textInput" defaultValue="0" optional="true" tooltip="enter the end frame in seconds"/>
-    <movieSize label="Video Size" type="textInput" defaultValue="" placeholder="e.g. 320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+    <endFrame label="End Time" type="textInput" defaultValue="0" optional="true" tooltip="Enter the end frame in seconds"/>
+    <movieSize label="Maximum Size" type="textInput" defaultValue="" placeholder="e.g. 320,240" conditionTrigger="true" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option sets the maximum video size in pixels (width,height)."/>
+    <iframeMax label="Maximum Relative Width" type="TextInput" defaultValue="" placeholder="0.6" tooltip="The maximum width of the video in relation to the width of the whole page. Enter a number between 0.1 and 1. Default value is 0.6 (60% of page width)" optional="true"/>
+    <iframeRatio label="Aspect Ratio" type="TextInput" defaultValue="" placeholder="16:9" tooltip="Aspect ratio of video, e.g. 16:9" condition="movieSize==null" optional="true"/>
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
-	<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio of iframes when used instead of uploaded videos" optional="true"/>
-	<iframeMax label="iframe Max Size" type="TextInput" defaultValue="0.6" tooltip="The maximum width of the iframe in relation to the width of the whole page. Enter a number between 0.1 and 1" optional="true"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">

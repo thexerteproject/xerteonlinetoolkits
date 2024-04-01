@@ -48,9 +48,9 @@
 			
 			$("#initHolder").height(tallestLabel);
 			
-			var $categoryHolder = $("#categoryHolder"),
-				$category = $categoryHolder.find(".category");
-			$category.css("min-height", $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($categoryHolder.position().top) - parseInt($category.css("padding-top")) * 2 - $("#button").height() - 25);
+			var $category = $("#categoryHolder .category"),
+				$categoryTitle = $("#categoryHolder .categoryTitle");
+			$category.css("min-height", $categoryTitle.height() + 100);
 		}
 
         this.leavePage = function()
@@ -178,7 +178,7 @@
 						$thisCategory = $firstCategory;
 					}
                     catName = this.getAttribute("name");
-					$thisCategory.find("h3").html(catName);
+					$thisCategory.find(".categoryTitle").html(catName);
                     $thisCategory.data("name", catName);
                     $(this).children().each(function(j) {
                         var correctOption={};
@@ -222,7 +222,7 @@
 					if ($(e.target).hasClass("category")) {
 						$(this).addClass("highlightDark");
 						var $pageContents = $("#pageContents");
-						var categoryTitle = $("<div>").html($(this).find("h3").html()).text();
+						var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
 						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 							$(this).attr("title", targetTxt1 + " " + categoryTitle + " - " + targetTxt2);
 						}
@@ -230,7 +230,7 @@
 					})
 				.focusout(function() {
 					var $pageContents = $("#pageContents");
-					var categoryTitle = $("<div>").html($(this).find("h3").html()).text();
+					var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
 
 					$(this)
 						.removeClass("highlightDark")
@@ -240,29 +240,32 @@
 					if ($(e.target).hasClass("category")) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
-							var $pageContents = $("#pageContents");
-							var $selectedLabel = $pageContents.data("selectedLabel");
-							// drop selected label on target, remove selection and show next label
-							if ($selectedLabel != undefined && $selectedLabel != "") {
-								if ($selectedLabel.parent().is($("#initHolder"))) {
-									$("#initHolder .label:eq(1)").show();
-								}
-								$selectedLabel
-									.removeClass("selected")
-									.attr("title", labelTxt1)
-									.appendTo($(this));
-								$pageContents.data("selectedLabel", "");
-								var categoryTitle = $("<div>").html($(this).find("h3").html()).text();
-
-								$(this).attr("title", targetTxt1 + " " + categoryTitle);
-								
-								// change tab index of label so it's now after the target it's on
-								var categoryIndex = parseInt($(this).attr("tabindex"));
-								$(this).children(".label").each(function(i) {
-									$(this).attr("tabindex", categoryIndex + i + 1);
-								});
-							}
+							$(this).click();
 						}
+					}
+				})
+				.click(function(){
+					var $pageContents = $("#pageContents");
+					var $selectedLabel = $pageContents.data("selectedLabel");
+					// drop selected label on target, remove selection and show next label
+					if ($selectedLabel != undefined && $selectedLabel != "") {
+						if ($selectedLabel.parent().is($("#initHolder"))) {
+							$("#initHolder .label:eq(1)").show();
+						}
+						$selectedLabel
+							.removeClass("selected")
+							.attr("title", labelTxt1)
+							.appendTo($(this));
+						$pageContents.data("selectedLabel", "");
+						var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
+
+						$(this).attr("title", targetTxt1 + " " + categoryTitle);
+
+						// change tab index of label so it's now after the target it's on
+						var categoryIndex = parseInt($(this).attr("tabindex"));
+						$(this).children(".label").each(function(i) {
+							$(this).attr("tabindex", categoryIndex + i + 1);
+						});
 					}
 				});
 			
@@ -271,7 +274,7 @@
 			for (i=0; i<$categoryHolder.find(".category").length; i++) {
 				tabIndex = (i + 1) * ($pageContents.data("labels").length + 1) + 1;
 				var $category = $categoryHolder.find(".category:eq(" + i + ")");
-				var categoryTitle = $("<div>").html($category.find("h3").html()).text();
+				var categoryTitle = $("<div>").html($category.find(".categoryTitle").html()).text();
 
 				$category.attr({
 					"tabindex"	:tabIndex,
@@ -340,7 +343,7 @@
 					}
 					var targetInFocus = $("#dragDropHolder .category.highlightDark");
 					if (targetInFocus.length > 0) {
-						var categoryTitle = $("<div>").html(targetInFocus.find("h3").html()).text();
+						var categoryTitle = $("<div>").html(targetInFocus.find(".categoryTitle").html()).text();
 						targetInFocus.attr("title", targetTxt1 + " " + categoryTitle);
 					}
 					$("#dragDropHolder .selected").removeClass("selected");
@@ -373,22 +376,27 @@
 				.keypress(function(e) {
 					var charCode = e.charCode || e.keyCode;
 					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel")
-								.removeClass("selected")
-								.attr("title", labelTxt1);
-						}
-						var $this = $(this);
-						$this
-							.removeClass("focus")
-							.addClass("selected")
-							.attr("title", labelTxt1 + ' - ' + labelTxt2);
-						$pageContents.data("selectedLabel", $this);
-						
-						$("#feedback").hide();
-						$("#dragDropHolder .tick").remove();
+						$(this).click();
 					}
+				})
+				.click(function(e) {
+					var $pageContents = $("#pageContents");
+					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+						$pageContents.data("selectedLabel")
+							.removeClass("selected")
+							.attr("title", labelTxt1);
+					}
+					var $this = $(this);
+					$this
+						.removeClass("focus")
+						.addClass("selected")
+						.attr("title", labelTxt1 + ' - ' + labelTxt2);
+					$pageContents.data("selectedLabel", $this);
+
+					$("#feedback").hide();
+					$("#dragDropHolder .tick").remove();
+
+					e.stopPropagation();
 				});
 		}
 	}
@@ -407,7 +415,7 @@
 		<div id="textHolder" tabindex="1"></div>
 		
 		<div id="categoryHolder">
-			<ul class="category highlight"><h3></h3></ul>
+			<ul class="category highlight"><div class="categoryTitle"></div></ul>
 		</div>
 		
 	</div>

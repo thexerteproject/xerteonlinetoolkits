@@ -182,15 +182,17 @@
 
 		<div id="infoHolder" class="right">
 			<div class="panel">
-				<h3 id="question"></h3>
-				<div id="optionHolder">
-					<div class="optionGroup">
-						<input type="radio" name="option" />
-						<label class="optionTxt"></label>
+				<fieldset class="noStyle">
+					<legend id="question"></legend>
+					<div id="optionHolder">
+						<div class="optionGroup">
+							<input type="radio" name="option" />
+							<label class="optionTxt"></label>
+						</div>
 					</div>
-				</div>
-				<button id="confirmBtn"></button>
-				<div id="feedback" class="alert"></div>
+					<button id="confirmBtn"></button>
+					<div id="feedback" aria-live="polite" class="alert"></div>
+				</fieldset>
 			</div>
 		</div>
 

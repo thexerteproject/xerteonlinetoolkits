@@ -198,6 +198,21 @@ background-image: none;
 	color: #1c1c1c;
 }
 
+.x_gapFill_page #targetHolder .highlight {
+	background:#000;
+}
+
+.x_gapFill_page #targetHolder .target.answerShown {
+	color: #888;
+}
+
+.x_gapFill_page #targetHolder.outline .target.highlight {
+	border: 1px dashed #cfcfcf;
+}
+.x_gapFill_page #targetHolder.underline .target.highlight {
+	border-bottom: 1px solid #cfcfcf;
+}
+
 
 #x_headerBlock #x_pageIntroBtn {
 	color: #cfcfcf;

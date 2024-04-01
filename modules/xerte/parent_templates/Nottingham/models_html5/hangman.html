@@ -24,7 +24,9 @@
 		var words,
 			currentWord,
 			attemptCount,
-			qNoTxt;
+			qNoTxt,
+			imgDimensions = [245,197],
+			imgScale = 1;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -39,6 +41,21 @@
 				var	$panel = $("#pageContents .panel"),
 					$footerInfo = $("#footerInfo");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - $footerInfo.height() - parseInt($footerInfo.css("padding-top")) * 2 - 5);
+
+				if ($panel.width() >= imgDimensions[0]) {
+					imgScale = 1;
+				} else {
+					imgScale = $panel.width()/imgDimensions[0];
+				}
+
+				const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
+				$("#img")
+					.width(imgDimensions[0]*imgScale)
+					.height(imgDimensions[1]*imgScale)
+					.css({
+						"background-size": bgSize[0] + 'px ' + bgSize[1] + 'px',
+						"background-position": -(bgSize[0]/11) * attemptCount + "px 0px"
+					});
 			}
 		}
 
@@ -71,10 +88,9 @@
 					$input.focus();
 				});
 			}
-			
-			this.createQuiz();
 
 			this.sizeChanged();
+			this.createQuiz();
 			x_pageLoaded();
 		}
 
@@ -113,10 +129,16 @@
 
 			// reset divs
 			$clue.add($letters).add($qCount).empty();
-			$img.css({
-				"background-image"		:'url("' + x_templateLocation + 'common_html5/hangman.png' + '")',
-				"background-position"	:-245 * attemptCount + "px 0px"
-			});
+
+			const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
+			$img
+				.width(imgDimensions[0]*imgScale)
+				.height(imgDimensions[1]*imgScale)
+				.css({
+					"background-image": 'url("' + x_templateLocation + 'common_html5/hangman.png' + '")',
+					"background-size": bgSize[0] + 'px' + bgSize[1] + 'px',
+					"background-position": -(bgSize[0]/11) * attemptCount + "px 0px"
+				});
 
 			$nextBtn.hide();
 
@@ -187,7 +209,9 @@
 							} else {
 								$letters.html(char);
 							}
-							$img.css("background-position", -245 * attemptCount + "px 0px");
+
+							const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
+							$img.css("background-position", -(bgSize[0]/11) * attemptCount + "px 0px");
 
 							// max no. wrong attempts reached?
 							if (attemptCount == 10) {

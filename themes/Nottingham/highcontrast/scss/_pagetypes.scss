@@ -278,7 +278,16 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-color: lighten($blackordarkest, 10%);
   color:$whiteorlightest;
 }
-
+.x_gapFill_page #targetHolder .target.answerShown {
+  color: $whiteorlightest;
+}
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed $whiteorlightest;
+}
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid $whiteorlightest;
+  border-top: 1px solid transparent;
+}
 
 
 //*****hotspot image*****/
