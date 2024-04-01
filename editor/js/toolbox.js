@@ -3767,6 +3767,9 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
 				var s_options = options.options.split(',');
+                for (var i=0; i<s_options.length; i++) {
+                    s_options[i] = decodeURIComponent(s_options[i].replace(/%%/g, '%'));
+                }
 				var s_data = [];
 				if (options.data)
 				{
