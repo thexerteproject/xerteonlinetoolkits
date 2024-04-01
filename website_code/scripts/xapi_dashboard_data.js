@@ -91,7 +91,7 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
                         }
                     }
                     else if (statement.actor.mbox_sha1sum != undefined) {
-                        if ($this.info.users.findIndex(u => u.sha1 === statement.actor.mbox.mbox_sha1sum) === -1) {
+                        if ($this.info.users.findIndex(u => u.sha1 === statement.actor.mbox_sha1sum) === -1) {
                             // Skip this user
                             continue;
                         }
@@ -1351,8 +1351,10 @@ DashboardState.prototype.consolidateSegments = function (pausedSegments) {
     while (i < segments.length) {
         var segment = $.extend(true, {}, segments[i]);
         i++;
-        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
-            segment.end = segments[i].end;
+        while (i < segments.length && segments[i].start >= segment.start && segments[i].start <= segment.end) {
+            if (segment.end <= segments[i].end) {
+                segment.end = segments[i].end;
+            }
             i++;
         }
         csegments.push(segment);
