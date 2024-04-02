@@ -200,7 +200,8 @@ if ($subdir_pos !== false)
 }
 $site_url = $scheme . $host . $subdir;
 
-$xerte_toolkits_site->site_url = $site_url;
+// Not yet in Master, this does NOT work in all reverse proxy scenarios
+//$xerte_toolkits_site->site_url = $site_url;
 
 $learning_objects = new StdClass();
 
