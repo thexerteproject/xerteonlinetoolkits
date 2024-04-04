@@ -31,7 +31,8 @@ DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
 DROP TABLE IF EXISTS `$lti_resource` ;
 DROP TABLE IF EXISTS `$lti_user` ;
-
+DROP TABLE IF EXISTS `$lti_resource` ;
+DROP TABLE IF EXISTS `$lti_user` ;
 
 CREATE TABLE `$additional_sharing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -361,9 +362,29 @@ CREATE TABLE IF NOT EXISTS `$lti_resource` (
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_user` (
-  `lti_user_key` varchar(255) NOT NULL DEFAULT '',
+  `lti_user_key` varchar(255) NOT NULL DEFAULT ''comint,
   `lti_user_equ` varchar(255) NOT NULL,
   `updated_on` datetime NOT NULL,
   PRIMARY KEY (`lti_user_key`),
   KEY `lti_user_equ` (`lti_user_equ`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `$role` (	
+  `roleid` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL UNIQUE,
+  PRIMARY KEY (`roleid`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `$logindetailsrole` (
+  `roleid` int NOT NULL,
+  `userid` bigint(20) NOT NULL,
+  PRIMARY KEY (`roleid`, `userid`),
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert into `$role`(`roleid`, `name`) values
+  (1, 'super'),
+  (2, 'system'),
+  (3, 'templateadmin'),
+  (4, 'metaadmin'),
+  (5, 'useradmin'),
+  (6, 'projectadmin');
