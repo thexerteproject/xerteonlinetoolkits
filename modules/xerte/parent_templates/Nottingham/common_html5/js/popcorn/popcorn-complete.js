@@ -4648,6 +4648,7 @@
 
     function HTMLPeerTubeVideoElement(id) 
     {
+
         var self = new Popcorn._MediaElementProto(),
             parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
             elem = document.createElement( "iframe" ),
@@ -4927,7 +4928,7 @@
 
   function HTMLYujaVideoElement(id)
   {
-    debugger
+
     var self = new Popcorn._MediaElementProto(),
         parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
         elem = document.createElement( "iframe" ),

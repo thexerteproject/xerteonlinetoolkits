@@ -23,6 +23,8 @@ require(dirname(__FILE__) . "/module_functions.php");
 //
 // (pl)
 // Set up the preview window for a xerte piece
+
+//popcorn bestanden toevoegen
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {

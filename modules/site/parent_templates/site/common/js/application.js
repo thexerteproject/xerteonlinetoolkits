@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+
+
 $(document).ready(init);
 
 var XBOOTSTRAP = {};
@@ -45,41 +47,82 @@ function init(){
 };
 
 // called after all content loaded to set up mediaelement.js players
+// function initMedia($media){
+
+// 	$media.mediaelementplayer({
+// 		pauseOtherPlayers: true,
+// 		enableAutosize: true,
+// 		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
+
+// 		success: function (mediaElement, domObject) {
+
+// 			var $mediaElement = $(mediaElement);
+
+// 			// iframe scaling to maintain aspect ratio
+// 			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
+// 				iframeInit($mediaElement);
+
+// 				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
+// 				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
+// 					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
+// 				}
+// 			}
+
+// 			// stops mp4 videos being shown larger than original
+// 			mediaElement.addEventListener("loadedmetadata", function(e) {
+// 				var $video = $(e.detail.target);
+// 				$video.add($video.parents('.mejs-container')).css({
+// 					'max-width': e.detail.target.videoWidth,
+// 					'max-height': e.detail.target.videoHeight
+// 				});
+// 			});
+// 		},
+// 		error: function(mediaElement) {
+// 			console.log('mediaelement problem is detected: ', mediaElement);
+// 		}
+// 	});
+
+// }
+// function initMedia($media){
+
+// 			this.popcornInstance = loadContent($("#pageVideo"), "video",
+// 			{
+				  	  
+// 					// tip: x_currentPageXML.getAttribute("tip"),
+// 					// width: videoDimensions ? Number(videoDimensions[0]) : 0,
+// 					// height: videoDimensions ? Number(videoDimensions[1]) : 0,
+// 					media: $("video").attr("src"),
+// 					// autoplay: "false",
+// 					// aspect: ratio,
+// 					// transcript: x_currentPageXML.getAttribute("transcript"),
+// 					// transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
+// 					// audioImage: undefined,
+// 					// audioImageTip: "",
+// 					// pageName: "textVideo",
+// 					// trackMedia: true,
+					
+// 				}, true);
+// }
+
 function initMedia($media){
-
-	$media.mediaelementplayer({
-		pauseOtherPlayers: true,
-		enableAutosize: true,
-		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
-
-		success: function (mediaElement, domObject) {
-
-			var $mediaElement = $(mediaElement);
-
-			// iframe scaling to maintain aspect ratio
-			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
-				iframeInit($mediaElement);
-
-				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
-				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
-					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
-				}
-			}
-
-			// stops mp4 videos being shown larger than original
-			mediaElement.addEventListener("loadedmetadata", function(e) {
-				var $video = $(e.detail.target);
-				$video.add($video.parents('.mejs-container')).css({
-					'max-width': e.detail.target.videoWidth,
-					'max-height': e.detail.target.videoHeight
-				});
-			});
-		},
-		error: function(mediaElement) {
-			console.log('mediaelement problem is detected: ', mediaElement);
-		}
-	});
-}
+	debugger
+	this.popcornInstance = loadMedia($(".vidHolder"), "video",
+					{	
+						
+						// tip: $(data).find.attr("tip"),
+						// width: videoDimensions ? Number(videoDimensions[0]) : 0,
+						// height: videoDimensions ? Number(videoDimensions[1]) : 0,
+						media: $(data).find('video').attr('url'),
+						// autoplay: "false",
+						// aspect: ratio,
+						// transcript: x_currentPageXML.getAttribute("transcript"),
+						// transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
+						// audioImage: undefined,
+						// audioImageTip: "",
+						// pageName: "textVideo",
+						// trackMedia: true,
+					}, true);
+	}
 
 // function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
 function iframeInit($mediaElement) {
