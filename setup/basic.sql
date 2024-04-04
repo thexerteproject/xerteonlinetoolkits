@@ -362,7 +362,7 @@ CREATE TABLE IF NOT EXISTS `$lti_resource` (
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_user` (
-  `lti_user_key` varchar(255) NOT NULL DEFAULT ''comint,
+  `lti_user_key` varchar(255) NOT NULL DEFAULT '',
   `lti_user_equ` varchar(255) NOT NULL,
   `updated_on` datetime NOT NULL,
   PRIMARY KEY (`lti_user_key`),
