@@ -174,6 +174,8 @@ CREATE TABLE `$sitedetails` (
   `tsugi_dir` text,
   `globalhidesocial` char(255) DEFAULT 'false',
   `globalsocialauth` char(255) DEFAULT 'true',
+  `default_theme_xerte` char(255) DEFAULT 'default',
+  `default_theme_site` char(255) DEFAULT 'default',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
