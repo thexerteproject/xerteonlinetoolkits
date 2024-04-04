@@ -3225,7 +3225,6 @@
   // Popcorn.smart will attempt to find you a wrapper or player. If it can't do that,
   // it will default to using an HTML5 video in the target.
   Popcorn.smart = function( target, src, options ) {
-    debugger;
     var node = typeof target === "string" ? Popcorn.dom.find( target ) : target,
         i, srci, j, media, mediaWrapper, popcorn, srcLength, 
         // We leave HTMLVideoElement and HTMLAudioElement wrappers out
@@ -4926,6 +4925,59 @@
 {
   var CURRENT_TIME_MONITOR_MS = 16;
 
+  function YujaOriginFromSrc(src)
+  {
+    var url = new URL(src);
+    return url.origin;
+  }
+
+  function YujaOrigin( yujaIFrame ) {
+    var url = yujaIFrame.src;
+    return YujaOriginFromSrc(url);
+  }
+
+  function YujaPlayer( yujaIFrame ) {
+    var self = this,
+        childOrigin = YujaOrigin( yujaIFrame ),
+        muted = 0;
+
+    function sendMessage( method, params ) {
+      var data = {
+        name: method,
+      };
+      if ( typeof params !== "undefined" ) {
+        switch (method)
+        {
+          case "AdjustVolume":
+            data.value = params*100.0;
+            break;
+          case "SeekTo":
+            data.value = params;
+        }
+      }
+
+      // The iframe has been destroyed, it just doesn't know it
+      if ( !yujaIFrame.contentWindow ) {
+        return;
+      }
+      yujaIFrame.contentWindow.postMessage( data, childOrigin);
+    }
+
+    function getChildOrigin () {
+        return childOrigin;
+    }
+
+    var methods = ( "Play Pause SeekTo AdjustVolume SeekBack10 SeekAhead10 ToggleCaptions" ).split(" ");
+
+    methods.forEach( function( method ) {
+      // All current methods take 0 or 1 args, always send arg0
+      self[ method ] = function( arg0 ) {
+        debugger
+        sendMessage( method, arg0 );
+      };
+    });
+  }
+
   function HTMLYujaVideoElement(id)
   {
 
@@ -4934,6 +4986,7 @@
         elem = document.createElement( "iframe" ),
         impl = {
           src: "",
+          origin: "",
           networkState: self.NETWORK_EMPTY,
           readyState: self.HAVE_NOTHING,
           seeking: false,
@@ -4958,12 +5011,12 @@
         currentTimeInterval;
 
     // Namespace all events we'll produce
-    self._eventNamespace = Popcorn.guid( "HTMLPeerTubeVideoElement::" );
+    self._eventNamespace = Popcorn.guid( "HTMLYujaVideoElement::" );
 
     self.parentNode = parent;
 
     // Mark type as Mediasite
-    self._util.type = "Peertube";
+    self._util.type = "Yuja";
 
     elem.id = "yujaIframe";
     elem.addClass = " .iframe ";
@@ -4985,6 +5038,7 @@
         return;
       }
       impl.src = aSrc;
+      impl.origin = YujaOriginFromSrc( aSrc );
       parent.appendChild(elem);
       self.dispatchEvent("loadstart");
       self.dispatchEvent("progress");
@@ -4995,32 +5049,55 @@
       elem.webkitAllowFullScreen = true;
       elem.mozAllowFullScreen = true;
       elem.allowFullScreen = true;
+      window.addEventListener( "message", onStateChange, false );
+    }
 
-      if (!xot_offline && typeof PeerTubePlayer !== undefined) {
-        $.getScript("https://unpkg.com/@peertube/embed-api/build/player.min.js")
-            .done(function () {
-                  onReady();
-                }
-            ).fail(function () {
-        });
+    function onStateChange( event ) {
+
+      if( event.origin !== impl.origin ) {
+        return;
       }
-      else {
-        onReady();
+
+      // Events
+      var data = event.data;
+      if ( typeof data.name !== 'undefined') {
+        switch (data.name) {
+          case "ready":
+            onReady();
+            break;
+          case "playbackPlayed":
+            onPlay();
+            break;
+          case "playbackPaused":
+            onPause();
+            break;
+          case "playbackEnded":
+            onEnded();
+            break;
+          case "playbackSeeked":
+            onCurrentTime(parseFloat(data.data.seconds));
+            onSeeked();
+            break;
+        }
+      }
+      else
+      {
+        console.log("Unknown event: " + event.data);
       }
     }
 
     //Called when the player script has loaded
     function onReady()
     {
-      const PeerTubePlayer = window['PeerTubePlayer']
-      player = new PeerTubePlayer(elem);
-      player.addEventListener("playbackStatusUpdate", function(videoState) {monitorCurrentTime(videoState)}, false);
+      player = new YujaPlayer(elem);
 
       impl.readyState = self.HAVE_FUTURE_DATA;
       self.dispatchEvent( "canplay" );
 
       impl.readyState = self.HAVE_ENOUGH_DATA;
       self.dispatchEvent( "canplaythrough" );
+
+      setVolume(1);
 
       playerReady = true;
     }
@@ -5070,7 +5147,7 @@
       }
       impl.currentTime = aTime;
       onSeeking();
-      player.seek(aTime);
+      player.Seek(aTime);
     }
 
     function onPlay() {
@@ -5088,13 +5165,14 @@
     }
 
     self.play = function() {
+      debugger;
       impl.paused = false;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
 
-      player.play();
+      player.Play();
     };
 
     function onPause () {
@@ -5111,7 +5189,7 @@
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.pause(); } );
       }
-      player.pause();
+      player.Pause();
     };
 
     function onSeeking() {
@@ -5127,6 +5205,50 @@
       self.dispatchEvent( "seeked" );
       self.dispatchEvent( "canplay" );
       self.dispatchEvent( "canplaythrough" );
+    }
+
+    function setMuted( aMute ) {
+      if( !playerReady ) {
+        impl.muted = aMute ? 1 : 0;
+        addPlayerReadyCallback( function() {
+          setMuted( aMute );
+        });
+        return;
+      }
+
+      // Move the existing volume onto muted to cache
+      // until we unmute, and set the volume to 0.
+      if( aMute ) {
+        impl.muted = impl.volume;
+        setVolume( 0 );
+      } else {
+        setVolume( impl.muted );
+        impl.muted = 0;
+      }
+    }
+
+    function getMuted() {
+      return impl.muted > 0;
+    }
+
+    function onVolume( aValue ) {
+      if( impl.volume !== aValue ) {
+        impl.volume = aValue;
+        self.dispatchEvent( "volumechange" );
+      }
+    }
+
+    function setVolume( aValue ) {
+      impl.volume = aValue;
+
+      if( !playerReady ) {
+        addPlayerReadyCallback( function() {
+          setVolume( aValue );
+        });
+        return;
+      }
+      player.AdjustVolume( aValue );
+      self.dispatchEvent( "volumechange" );
     }
 
     function onEnded() {
@@ -5149,9 +5271,30 @@
         }
       },
 
+      autoplay: {
+        get: function() {
+          return impl.autoplay;
+        },
+        set: function( aValue ) {
+          impl.autoplay = self._util.isAttributeSet( aValue );
+        }
+      },
+
       seeking: {
         get: function() {
           return impl.seeking;
+        }
+      },
+
+      width: {
+        get: function() {
+          return self.parentNode.offsetWidth;
+        }
+      },
+
+      height: {
+        get: function() {
+          return self.parentNode.offsetHeight;
         }
       },
 
@@ -5164,6 +5307,12 @@
         }
       },
 
+      ended: {
+        get: function() {
+          return impl.ended;
+        }
+      },
+
       paused: {
         get: function() {
           return impl.paused;
@@ -5173,6 +5322,46 @@
       duration: {
         get: function() {
           return impl.duration;
+        }
+      },
+
+      readyState: {
+        get: function() {
+          return impl.readyState;
+        }
+      },
+
+      networkState: {
+        get: function() {
+          return impl.networkState;
+        }
+      },
+
+      volume: {
+        get: function() {
+          return impl.volume;
+        },
+        set: function( aValue ) {
+          if( aValue < 0 || aValue > 1 ) {
+            throw "Volume value must be between 0.0 and 1.0";
+          }
+          impl.volume = aValue;
+          setVolume( aValue );
+        }
+      },
+
+      muted: {
+        get: function() {
+          return getMuted();
+        },
+        set: function( aValue ) {
+          setMuted( self._util.isAttributeSet( aValue ) );
+        }
+      },
+
+      error: {
+        get: function() {
+          return impl.error;
         }
       },
 
@@ -6414,7 +6603,7 @@
     }
 
     var methods = ( "play pause paused seekTo unload getCurrentTime getDuration " +
-                    "etVideoEmbedCode getVideoHeight getVideoWidth getVideoUrl " +
+                    "getVideoEmbedCode getVideoHeight getVideoWidth getVideoUrl " +
                     "getColor setColor setLoop getVolume setVolume addEventListener enableTextTrack" ).split(" ");
     methods.forEach( function( method ) {
       // All current methods take 0 or 1 args, always send arg0
