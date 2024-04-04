@@ -73,7 +73,7 @@ function get_user_roles(){
 
     $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails order by surname,firstname,username");
 	
-	if(!($result===false)){
+	if(!($result===false) && count($result) > 0){
 		changeuserselection_roles($result[0]["login_id"]);
 	}
 }
