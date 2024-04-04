@@ -1488,7 +1488,7 @@ function upgrade_45(){
 	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
         `roleid` int NOT NULL,
         `userid` bigint(20) NOT NULL,
-        PRIMARY KEY (`roleid`, `userid`),
+        PRIMARY KEY (`roleid`, `userid`)
       )"
 	);
 	

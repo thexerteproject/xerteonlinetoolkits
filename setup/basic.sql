@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `$role` (
 CREATE TABLE IF NOT EXISTS `$logindetailsrole` (
   `roleid` int NOT NULL,
   `userid` bigint(20) NOT NULL,
-  PRIMARY KEY (`roleid`, `userid`),
+  PRIMARY KEY (`roleid`, `userid`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert into `$role`(`roleid`, `name`) values
