@@ -4309,7 +4309,7 @@
 		<tip2 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image2>
 
-	<vertical label="drag Vertically" type="CheckBox" defaultValue="true" optional="true"/>
+	<vertical label="Drag Vertically" type="CheckBox" defaultValue="true" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an audio file" optional="true"/>
