@@ -91,7 +91,6 @@
                 }
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
             }
-			
 			$("#pageContents").data("judge", judge);
 			
             // Create fallback label
@@ -268,10 +267,15 @@
 
             $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
 
+			if(!$("#pageContents").data("judge")){
+				correct = true;
+			}
+
             var result = {
                 success: correct,
-                score: correct ? 100.0 : 0.0
+                score: correct ? 100.0 : 0.0,
             };
+			debugger;
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
             XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
             if (XTGetMode() == "normal")

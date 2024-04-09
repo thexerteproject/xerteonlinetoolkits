@@ -1367,6 +1367,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             // We have an options as an array of numbers
                             // and we have corresponding array of answers strings
                             // Construct answers like a:Answerstring
+												    debugger;
                             var scormAnswerArray = [];
                             var i = 0;
 
@@ -1417,11 +1418,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
                                 score: {
-                                    raw: result.score,
-                                    min: 0.0,
-                                    max: 100.0,
-                                    scaled: result.score / 100.0
-                                },
+																		raw: result.score,
+																		min: 0.0,
+																		max: 100.0,
+																		scaled: result.score / 100
+																},
                                 response: scorm_lanswer,
                                 success: result.success,
                                 completion: true,
