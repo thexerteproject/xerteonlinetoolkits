@@ -699,6 +699,35 @@
 						gapFill.dropLabel($(this), ui.draggable); // target, label
 					}
 				});
+			$("#labelHolder").droppable({
+				drop: function(event, ui){
+					$thisLabel = ui.draggable;
+					if ($thisLabel.data("prevHolder")) {
+						let prevHolder = $thisLabel.data("prevHolder");
+						prevHolder.html("")
+								  .on("keypress focusin, focusout")
+								  .droppable("option", "disabled", false)
+								  .addClass("highlight")
+								  .remove("ui-dropable-disabled");
+						if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
+							if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+								score--;
+								$thisLabel.add(prevHolder).data("correct", false);
+							}
+						} else {
+							prevHolder.removeClass("correct");
+							if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+								score--;
+								$thisLabel.add(prevHolder).data("correct", false);
+							}
+						}
+						delete labelAnswers[prevHolder.data("answer")];
+					}
+					ui.helper.data("dragged", false);
+					$thisLabel.css({"opacity": 1,"left": 0, "top": 0});
+					$thisLabel.data("prevHolder", null);
+				}
+			});
 			
 			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
 				$targetHolder.find("span:not(.target)").css("line-height", parseInt($targetHolder.find(".target").css("line-height")) + 10 + "px");
