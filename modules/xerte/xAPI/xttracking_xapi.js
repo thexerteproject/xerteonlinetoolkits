@@ -1414,22 +1414,29 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 choices: scormArray,
                                 correctResponsesPattern: scorm_canswer
                             };
-                            statement.object.definition.name[state.language] = description;
-                            statement.result = {
-                                duration: calcDuration(this.start, this.end),
-                                score: {
+														let judge = result.judge?? true;
+														statement.object.definition.name[state.language] = description;
+														statement.result = {
+																duration: calcDuration(this.start, this.end),
+																response: scorm_lanswer,
+																score: {
 																		raw: result.score,
 																		min: 0.0,
 																		max: 100.0,
 																		scaled: result.score / 100
 																},
-                                response: scorm_lanswer,
-                                success: result.success,
-                                completion: true,
-                                extensions: {
-                                    "http://xerte.org.uk/result/multiplichoice": scorm_lanswer
-                                }
-                            };
+																success: result.success,
+																completion: true,
+																extensions: {
+																		"http://xerte.org.uk/result/multiplichoice": scorm_lanswer
+																}
+														};
+														if(!judge){
+																// statement.result.score.raw = 100;
+																// statement.result.score.scaled = 1;
+																statement.result.success = true;
+																statement.result.score = null;
+														}
                             break;
                         case 'numeric':
                             statement.object.definition = {
@@ -3547,6 +3554,7 @@ function XTTerminate() {
 }
 
 function SaveStatement(statement, async) {
+		debugger;
     var key = "http://xerte.org.uk/sessionId";
     extension = {
         "http://xerte.org.uk/sessionId": state.sessionId,

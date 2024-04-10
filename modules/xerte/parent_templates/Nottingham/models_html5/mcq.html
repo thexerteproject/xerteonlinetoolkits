@@ -266,18 +266,21 @@
 				});
 
             $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+			
+			let judge = $("#pageContents").data("judge");
 
-			if(!$("#pageContents").data("judge")){
-				correct = true;
-			}
+			//if(!$judge){
+			//	correct = true;
+			//}
 
             var result = {
-                success: correct,
+                success: correct || !judge,
                 score: correct ? 100.0 : 0.0,
-            };
+				judge: judge
+			};
 			debugger;
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
             if (XTGetMode() == "normal")
             {
                 // Disable all options
