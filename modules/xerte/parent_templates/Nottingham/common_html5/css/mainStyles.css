@@ -697,15 +697,14 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
-
-.x_pswdInput {
+.x_pswdInput:not(.old) {
 	width: 90vmin;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
-.x_pswdBlock {
+.x_pswdBlock:not(.old) {
 	height: 100%;
 	display: flex;
 	align-items: center;
@@ -722,8 +721,24 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	margin-top: 1em;
 	font-size: 0.9em;
 	color: #c0392b;
-	text-align: center;
 }
+
+:not(.old) .x_pswdError {
+	text-align: centers;
+}
+
+.x_pswdInput.old {
+	margin-top: 1em;
+	padding: 0.3em;
+}
+
+input#x_pagePswd.old {
+	margin-bottom: 0;
+}
+
+/* #x_pagePswdBtn.old { */
+/* 	margin-top: 1em; */
+/* } */
 
 .vault {
 	width: 50%;
