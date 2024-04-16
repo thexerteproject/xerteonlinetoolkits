@@ -1128,6 +1128,8 @@
 					var wrong = 0;
 					total = 0;
 					correct_answers = 0;
+
+					let judge = x_currentPageXML.getAttribute("judge") == "true";
 					
 					$targetHolder.find("input").each(function() {
 						var $this = $(this),
@@ -1136,7 +1138,7 @@
 						var correct = false;
 						var answer = currvalue;
 
-						if (answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
+						if ((answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) || !judge) { // correct
 							$this.attr("readonly", "readonly");
 							$this.attr("correct", "correct");
 							$this.addClass("correct");

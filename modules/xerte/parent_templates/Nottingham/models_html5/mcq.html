@@ -57,7 +57,7 @@
             var correctOptions = [],
                correctAnswer = [],
                correctFeedback = [],
-               judge = false; // is there a correct answer for the question?
+               judge = false || x_currentPageXML.getAttribute("judge") == "true"; // is there a correct answer for the question?
 
             this.checked = false;
             // Track the quiz page
@@ -278,7 +278,6 @@
                 score: correct ? 100.0 : 0.0,
 				judge: judge
 			};
-			debugger;
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
             XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
             if (XTGetMode() == "normal")

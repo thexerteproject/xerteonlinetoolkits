@@ -1274,6 +1274,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         var pweighting = 1.0;
                         var nrinteractions = 1.0;
                     }
+										let judge = result.judge?? true;
                     switch (this.ia_type) {
                         case 'match':
                             // We have an options as an array of objects with source and target
@@ -1362,15 +1363,20 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     "http://xerte.org.uk/result/match": scorm_lanswer
                                 }
                             };
+														if(!judge){
+																// statement.result.score.raw = 100;
+																// statement.result.score.scaled = 1;
+																statement.result.success = true;
+																delete statement.result.score;
+														}
                             break;
                         case 'multiplechoice':
                             // We have an options as an array of numbers
                             // and we have corresponding array of answers strings
                             // Construct answers like a:Answerstring
-												    debugger;
                             var scormAnswerArray = [];
                             var i = 0;
-
+												    debugger;
                             for (i = 0; i < learnerOptions.length; i++) {
                                 var entry = learnerOptions[i]['answer'].replace(
                                     / /g, "_");
@@ -1414,7 +1420,6 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 choices: scormArray,
                                 correctResponsesPattern: scorm_canswer
                             };
-														let judge = result.judge?? true;
 														statement.object.definition.name[state.language] = description;
 														statement.result = {
 																duration: calcDuration(this.start, this.end),
@@ -1435,7 +1440,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 																// statement.result.score.raw = 100;
 																// statement.result.score.scaled = 1;
 																statement.result.success = true;
-																statement.result.score = null;
+																delete statement.result.score;
 														}
                             break;
                         case 'numeric':
@@ -3554,7 +3559,6 @@ function XTTerminate() {
 }
 
 function SaveStatement(statement, async) {
-		debugger;
     var key = "http://xerte.org.uk/sessionId";
     extension = {
         "http://xerte.org.uk/sessionId": state.sessionId,
