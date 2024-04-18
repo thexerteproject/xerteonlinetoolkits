@@ -65,7 +65,7 @@
   <question menuItem="Question" icon="icComment">
   
     <prompt label="Question" type="TextArea"  height="100" placeholder="Enter question text here"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via xAPI"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
 	
 	<feedbackGroup type="group" label="Feedback" optional="true">
@@ -94,7 +94,7 @@
 
   <option menuItem="Answer" icon="icBullet">
       <text label="Answer" type="TextArea" height="100" placeholder="Enter an answer option here"/>
-      <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label is used to identify this answer on the results page and when tracking results, e.g. via xAPI"/>
+      <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label is used to identify this answer on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
       <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter the feedback for this option" tooltip="Feedback shown when this answer is submitted"/>
       <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100" />
 

@@ -69,7 +69,7 @@
 
   <opinionQuestion menuItem="Question" icon="icComment">
     <prompt label="Question" type="TextArea"  height="100" placeholder="Enter question text here"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via xAPI"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false" />
 	<interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
 	
