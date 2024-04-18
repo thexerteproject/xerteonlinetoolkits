@@ -131,7 +131,6 @@
     };
 
     this.init = function() {
-
       if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
         $('#txtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
       } else {
@@ -273,15 +272,26 @@
           altnormalrow = !altnormalrow;
           altfullrow = false;
           if (x.subinteractions.length > 0 && x.type != 'page') {
-            detailstable.append("<tr class='header'><th class='correct th'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>" + correctAnswerTxt + "</th></tr>");
-            var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
+			if(x.judge){
+				detailstable.append("<tr class='header'><th class='correct th'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>" + correctAnswerTxt + "</th></tr>");
+				var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
+			}else{
+				detailstable.append("<tr class='header'><th class='correct th'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "<th class='correctanswer'></th></tr>");
+				var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, ""];
+			}
             var detailstablerows = [];
             altfullrow = false;
             x.subinteractions.forEach(function(y) {
               var question = y.question;
               var learnerAnswer = y.learnerAnswer;
               var correctAnswer = y.correctAnswer;
-              if (learnerAnswer == correctAnswer || y.correct) {
+			  let judge = y.judge?? true;
+			  if(!judge){
+				  // leave first and last row empty
+                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-check-circle' style='opacity:0;' ><span class='ui-helper-hidden-accessible'></span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td class='correctanswer'><td></td></tr>");
+                var detailstablerow = ["", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), ""];
+                detailstablerows.push(detailstablerow);
+			  }else if (learnerAnswer == correctAnswer || y.correct) {
                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-check-circle' title='" + correctTooltip + "'><span class='ui-helper-hidden-accessible'>" + correctTooltip +
                   "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
                 var detailstablerow = ["correct", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
@@ -565,10 +575,12 @@
               },
               didDrawCell: function(chd) {
                 if (chd.section === 'body' && chd.column.dataKey === 0) {
-                  pdf.addImage(
-                    chd.cell.raw === 'correct' ? checkmark : cross, 'png',
-                    chd.cell.x + (chd.cell.width - pdfIconSize) / 2, chd.cell.y + (chd.cell.contentHeight - pdfIconSize) / 2, pdfIconSize, pdfIconSize
-                  );
+				  if(chd.cell.raw !== ''){
+					  pdf.addImage(
+						  chd.cell.raw === 'correct' ? checkmark : cross, 'png',
+						  chd.cell.x + (chd.cell.width - pdfIconSize) / 2, chd.cell.y + (chd.cell.contentHeight - pdfIconSize) / 2, pdfIconSize, pdfIconSize
+					  );
+				  }
                 }
               }
             });

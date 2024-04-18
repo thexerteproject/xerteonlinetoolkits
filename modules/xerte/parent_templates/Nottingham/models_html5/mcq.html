@@ -57,7 +57,7 @@
             var correctOptions = [],
                correctAnswer = [],
                correctFeedback = [],
-               judge = false || x_currentPageXML.getAttribute("judge") == "true"; // is there a correct answer for the question?
+               judge = true; // is there a correct answer for the question?
 
             this.checked = false;
             // Track the quiz page
@@ -91,6 +91,9 @@
                 }
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
             }
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				judge = false;
+			}
 			$("#pageContents").data("judge", judge);
 			
             // Create fallback label
