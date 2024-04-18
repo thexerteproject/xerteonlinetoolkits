@@ -2192,6 +2192,10 @@
                 barOwnScore = barSizeData.slice();
                 for (let i = 0; i < statements.length; i++) {
                     let ind = Math.floor(statements[i].result.score.raw / Math.ceil(100 / nrbars));
+                    if (ind >= Number(nrbars))
+                    {
+                        ind = Number(nrbars) - 1;
+                    }
                     barSizeData[ind] += 1;
                     groupAvg[ind] += statements[i].result.score.raw;
                     tempTotal += 1;
@@ -2478,6 +2482,10 @@
 
                 for (let i = 0; i < statements.length; i++) {
                     let ind = Math.floor(statements[i].result.score.raw / Math.ceil(100 / nrbars));
+                    if (ind >= Number(nrbars))
+                    {
+                        ind = Number(nrbars) - 1;
+                    }
                     barSizeData[ind] += 1;
                     groupAvg[ind] += statements[i].result.score.raw;
                     if (statements[i] == ownstatements[0]) {
