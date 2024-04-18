@@ -375,6 +375,8 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
 		
 		echo "<p>" . PROPERTIES_LIBRARY_PEER_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . PROPERTIES_LIBRARY_PEER_LINKS . "</a></p>";
 		
+		echo "<p>" . PROPERTIES_LIBRARY_PWPLAY_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("passwordplay", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("passwordplay", $template_id)  . PROPERTIES_LIBRARY_PEER_LINKS . "</a></p>";
+		
 	}
 	
 	echo "<form id=\"peer\" action=\"javascript:peer_change_template()\" name=\"peer\" >";
