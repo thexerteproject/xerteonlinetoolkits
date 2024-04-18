@@ -331,7 +331,7 @@
 							var blankAnswers = [];
 							let numberAnswers = x_currentPageXML.getAttribute("numberAnswers") == "*"? answers.length : x_currentPageXML.getAttribute("numberAnswers");
 							for (i = 0; i < numberAnswers; i++) {
-								let answersString = "";
+								/* let answersString = "";
 								let answer = answers[i];
 								
 								for(j = 0; j < answer.options.length; j++){
@@ -340,9 +340,9 @@
 									}else {
 										answersString += ", " + answer.options[j];
 									}
-								}
+								} */
 								
-								blankAnswers.push(answersString);
+								blankAnswers.push("-");
 							}
 							for (i = 0; i < blankAnswers.length; i++) {
 								XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", blankAnswers[i], $pageContents.data('correctOptionsFeedback'), x_currentPageXML.getAttribute("grouping"));
