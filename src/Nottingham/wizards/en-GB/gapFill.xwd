@@ -11,7 +11,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
     <passage label="Gap Fill Text" type="TextArea" height="150"/>
-    <interactivity label="Interactivity" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100" conditionTrigger="true"/>
+    <interactivity label="Interactivity" contidionTrigger="true" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100" conditionTrigger="true"/>
     <feedback label="Feedback" type="TextArea" height="50"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
@@ -35,6 +35,7 @@
 	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" condition="interactivity=='Drop Down Menu'" width="100" optional="true" />
 
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<judge label="judge" optional="true" condition="interactivity=='Fill in Blank'" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
 	

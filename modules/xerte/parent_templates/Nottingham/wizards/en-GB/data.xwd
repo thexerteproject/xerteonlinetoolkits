@@ -471,7 +471,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -557,7 +557,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -679,7 +679,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -810,7 +810,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1009,7 +1009,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1110,7 +1110,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1225,7 +1225,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1306,7 +1306,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1388,7 +1388,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1470,7 +1470,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1551,7 +1551,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1641,7 +1641,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1720,7 +1720,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1776,6 +1776,7 @@
 	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true"/>
 
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
     <newNodes>
       <category><![CDATA[<category name="Enter Category Name Here"/>]]></category>
@@ -1806,7 +1807,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1900,7 +1901,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -1985,7 +1986,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2091,7 +2092,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2236,7 +2237,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2338,7 +2339,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2457,7 +2458,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2559,7 +2560,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2709,7 +2710,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2760,6 +2761,7 @@
     <text label="Page Text" type="TextArea" height="100"/>
     <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Large" width="100" mandatory="true"/>
+	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
@@ -2798,7 +2800,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -2903,7 +2905,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3007,7 +3009,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3223,7 +3225,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3304,7 +3306,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3357,6 +3359,13 @@
     <amountToShow label="Cards To Show" type="NumericStepper" min="1" max="1000" step="1" defaultValue="1" optional="true" tooltip="Use with 'Randomise Cards' to show a limited number of randomly selected cards"/>
 	<displayStyle label="Card Layout" type="ComboBox" options="One at a time,In a row,In a column" data="one,horizontal,vertical" optional="true" defaultValue="one" tooltip="Display cards one at a time or in a row/column"/>
 
+	<alignment type="group" label="Content alignment" optional="true" tooltip="sets the alignment of all card without alignment set">
+	  <textAlign label="Align text" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true" tooltip="aligns horizontaly"/>
+	  <contentAlign label="Align content" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true" tooltip="aligns vertically"/>
+	</alignment>
+
+	<alignTitle label="Align Title" type="CheckBox" defaultValue="false" optional="true" tooltip="if enabled the title is aligned as well"/>
+
 	<sizing type="group" label="Card Size" optional="true">
 		<cardSize label="Width" type="ComboBox" options="Small,Medium,Large,Full" data="small,medium,large,full" defaultValue="medium" width="100" optional="true"/>
 		<cardHeight label="Height" type="ComboBox" options="Fill Space,Fit to Content,Match Tallest Card" data="default,fit,match" defaultValue="default" width="100" optional="true"/>
@@ -3398,7 +3407,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3449,9 +3458,11 @@
 	<side2 label="Side 2 Text" type="TextArea" height="120"/>
 
 	<alignment type="group" label="Content alignment" optional="true">
-	  <textAlign label="Align text" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true"/>
-	  <contentAlign label="Align content" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true"/>
+	  <textAlign label="Align text" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true" tooltip="aligns horizontaly"/>
+	  <contentAlign label="Align content" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true" tooltip="aligns vertically"/>
 	</alignment>
+	
+	<alignTitle label="Align Title" type="CheckBox" defaultValue="false" optional="true" tooltip="if enabled the title is aligned as well"/>
 	
 	<side1Media type="group" label="Side 1 Media" optional="true" tooltip="Media (e.g. image) shown on the front of this card">
 		<media1 label="File" type="Media" optional="true" defaultValue="Select a File"/>
@@ -3497,7 +3508,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3580,7 +3591,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3630,7 +3641,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
     <passage label="Gap Fill Text" type="TextArea" height="150"/>
-    <interactivity label="Interactivity" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100" conditionTrigger="true"/>
+    <interactivity label="Interactivity" contidionTrigger="true" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100" conditionTrigger="true"/>
     <feedback label="Feedback" type="TextArea" height="50"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
@@ -3654,6 +3665,7 @@
 	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" condition="interactivity=='Drop Down Menu'" width="100" optional="true"/>
 
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<judge label="judge" optional="true" condition="interactivity=='Fill in Blank'" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
 	
@@ -3696,7 +3708,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3773,7 +3785,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3847,6 +3859,7 @@
 
 	<url label="CSV File" type="Media" optional="true"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an audio file" optional="true"/>
@@ -3873,7 +3886,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -3953,7 +3966,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4062,7 +4075,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4167,7 +4180,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4250,7 +4263,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4309,7 +4322,7 @@
 		<tip2 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image2>
 
-	<vertical label="drag Vertically" type="CheckBox" defaultValue="true" optional="true"/>
+	<vertical label="Drag Vertically" type="CheckBox" defaultValue="true" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an audio file" optional="true"/>
@@ -4336,7 +4349,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4448,7 +4461,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4576,7 +4589,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4703,7 +4716,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -4792,7 +4805,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5058,7 +5071,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5156,7 +5169,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5258,7 +5271,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5344,7 +5357,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5436,7 +5449,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5527,7 +5540,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5611,7 +5624,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5679,6 +5692,7 @@
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 	
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
+	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 	
 	<feedbackGroup type="group" label="Feedback" optional="true">
 		<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
@@ -5715,7 +5729,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -5823,7 +5837,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6000,6 +6014,7 @@
 
 		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
+		<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 		<newNodes>
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
@@ -6029,7 +6044,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6385,7 +6400,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6496,7 +6511,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6575,7 +6590,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6669,7 +6684,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6760,7 +6775,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6852,7 +6867,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -6958,7 +6973,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7069,7 +7084,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7195,7 +7210,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7279,7 +7294,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7381,7 +7396,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7566,7 +7581,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7669,7 +7684,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7777,7 +7792,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7857,7 +7872,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -7948,7 +7963,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8058,7 +8073,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8272,7 +8287,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8354,7 +8369,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8432,7 +8447,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8516,7 +8531,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8599,7 +8614,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8686,7 +8701,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8780,7 +8795,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8878,7 +8893,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -8979,7 +8994,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9056,7 +9071,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9155,7 +9170,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9295,7 +9310,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9391,7 +9406,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9485,7 +9500,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9579,7 +9594,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9661,7 +9676,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9769,7 +9784,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9868,7 +9883,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -9929,6 +9944,7 @@
     </delimiters>
     <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" tooltip="Attempts allowed before feedback is given"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true"/>
@@ -9969,7 +9985,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -10055,7 +10071,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -10146,7 +10162,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -10236,7 +10252,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -10329,7 +10345,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -10407,7 +10423,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -10489,7 +10505,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
@@ -10570,7 +10586,7 @@
 	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordNumeric label="Numeric" type="CheckBox" optional="true" defaultValue="false" tooltip="Access codes must be numeric when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard Centered,Vault,Vault Numeric" optional="true" defaultValue="standard" tooltip="Access codes must be numeric when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
 		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>

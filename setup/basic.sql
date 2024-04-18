@@ -31,7 +31,8 @@ DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
 DROP TABLE IF EXISTS `$lti_resource` ;
 DROP TABLE IF EXISTS `$lti_user` ;
-
+DROP TABLE IF EXISTS `$lti_resource` ;
+DROP TABLE IF EXISTS `$lti_user` ;
 
 CREATE TABLE `$additional_sharing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -173,6 +174,8 @@ CREATE TABLE `$sitedetails` (
   `tsugi_dir` text,
   `globalhidesocial` char(255) DEFAULT 'false',
   `globalsocialauth` char(255) DEFAULT 'true',
+  `default_theme_xerte` char(255) DEFAULT 'default',
+  `default_theme_site` char(255) DEFAULT 'default',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -367,3 +370,23 @@ CREATE TABLE IF NOT EXISTS `$lti_user` (
   PRIMARY KEY (`lti_user_key`),
   KEY `lti_user_equ` (`lti_user_equ`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `$role` (	
+  `roleid` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL UNIQUE,
+  PRIMARY KEY (`roleid`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `$logindetailsrole` (
+  `roleid` int NOT NULL,
+  `userid` bigint(20) NOT NULL,
+  PRIMARY KEY (`roleid`, `userid`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert into `$role`(`roleid`, `name`) values
+  (1, 'super'),
+  (2, 'system'),
+  (3, 'templateadmin'),
+  (4, 'metaadmin'),
+  (5, 'useradmin'),
+  (6, 'projectadmin');

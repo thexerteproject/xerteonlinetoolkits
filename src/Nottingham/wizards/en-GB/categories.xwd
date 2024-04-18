@@ -17,6 +17,7 @@
 	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true" />
 
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
     <newNodes>
       <category><![CDATA[<category name="Enter Category Name Here"/>]]></category>

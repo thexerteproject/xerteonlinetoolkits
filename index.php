@@ -50,6 +50,12 @@ if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
 login_processing();
 login_processing2();
 
+if($_SESSION["toManagement"]){
+	unset($_SESSION["toManagement"]);
+	header("location: management.php");
+	exit();
+}
+
 // Check if any redirection needs to take place for Password protected files...
 if (isset($_SESSION['pwprotected_url']))
 {

@@ -469,7 +469,7 @@ function setup() {
 					if(a.word < b.word) return -1;
 					if(a.word > b.word) return 1;
 					return 0;
-				})
+				});
 
 				var charList = [],
 					glossaryTxt = [];
@@ -494,15 +494,26 @@ function setup() {
 								.setAttributeNS('', 'customLinkID', $(data).find('learningObject').attr("glossaryPageID"));
 				}
 
-				let headerImage = $(data).find('learningObject').attr('glossaryHeaderImage');
+				let learningObject = $(data).find('learningObject');
+				let headerImage = learningObject.attr('glossaryHeaderImage');
 				
-				if(headerImage != undefined && headerImage != ""){
+				if(headerImage != undefined){
 						let element = $glossaryPage[0];
-	
-						element.setAttributeNS('', 'header', headerImage);
-						element.setAttributeNS('', 'headerSize', 'cover');
-						element.setAttributeNS('', 'headerRepeat', 'no-repeat');
-						element.setAttributeNS('', 'headerPos', 'left');
+	// header="FileLocation + 'media/header.jpg'" headerPos="left" headerRepeat="repeat" headerSize="not-set" headerTitleAlign="center" headerColour="" headerTextColour="" headerBanner="fullscreen" headerTopMargin="20" bannerCollapse="true" bannerFixedHeight="false" bannerHeight="20" bannerFullScrolldownInfo="true" bannerFullScrolldownText=""
+						element.setAttributeNS('', 'header', headerImage !== ""? headerImage: "");
+						element.setAttributeNS('', 'headerPos', learningObject.attr('glossaryHeaderPos')?? 'left');
+						element.setAttributeNS('', 'headerRepeat', learningObject.attr('glossaryHeaderRepeat')?? 'no-repeat');
+						element.setAttributeNS('', 'headerSize', learningObject.attr('glossaryHeaderSize')?? 'cover');
+						element.setAttributeNS('', 'headerTitleAlign', learningObject.attr('glossaryHeaderTitleAlign')?? 'center');
+						element.setAttributeNS('', 'headerColour', learningObject.attr('glossaryHeaderColour')?? '');
+						element.setAttributeNS('', 'headerTextColour', learningObject.attr('glossaryHeaderTextColour')?? '');
+						element.setAttributeNS('', 'headerBanner', learningObject.attr('glossaryHeaderBanner')?? 'fixedheight');
+						element.setAttributeNS('', 'headerTopMargin', learningObject.attr('glossaryHeaderTopMargin')?? '20');
+						element.setAttributeNS('', 'bannerCollapse', learningObject.attr('glossaryBannerCollapse')?? 'true');
+						element.setAttributeNS('', 'bannerFixedHeight', learningObject.attr('glossaryBannerFixedHeight')?? 'false');
+						element.setAttributeNS('', 'bannnerHeight', learningObject.attr('glossaryBannerHeight')?? '20');
+						element.setAttributeNS('', 'bannerFullScrolldownInfo', learningObject.attr('glossaryBannerFullScrolldownInfo')?? 'true');
+						element.setAttributeNS('', 'bannerFullScrolldownText', learningObject.attr('glossaryBannerFullScrolldownText')?? '');
 				}
 
 				for (var i=0; i<charList.length; i++) { 

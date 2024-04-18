@@ -103,7 +103,8 @@
 		overflow: auto;
 		backface-visibility: hidden;
 		margin: 1em 1em 0;
-		height: 100%;
+		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
+
 	}
 	
 	#cards.hideOverflow .cardInner {
@@ -203,7 +204,7 @@
 	.ui-effects-wrapper {
 		overflow: visible !important;
 	}
-	.text-content {
+	.flex {
 		display: flex;
 		flex-direction: column;
 		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
