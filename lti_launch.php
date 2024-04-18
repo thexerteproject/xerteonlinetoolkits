@@ -139,30 +139,25 @@ if(is_numeric($id) || $id == null)
     if (isset($LAUNCH->context->context_id))
     {
         $lticontextid = $LAUNCH->context->context_id;
-	_debug('Context id set from context->context_id');
+	    _debug('Context id set from context->context_id');
     }
-    else
-    {
-    $lticontextid = $LAUNCH->ltiParameter('context_id');
-    if ($lticontextid !== false)
-    {
-	_debug('Context id set from parameter');
-    }
-    if ($lticontextid === false)
-    {
-        $lticontextid = $LAUNCH->ltiCustomGet('context_id');
-	_debug('Context id set from custom parameter');
-    }
-    if ($lticontextid===false && isset($_REQUEST['context_id']))
-    {
-        $lticontextid = $_REQUEST['context_id'];
-	_debug('Context id set from request');
-    }
-    if ($lticontextid === false)
-    {
-        $lticontextid = $LAUNCH->context->id;
-	_debug('Context id set from context->id');
-    }
+    else {
+        $lticontextid = $LAUNCH->ltiParameter('context_id');
+        if ($lticontextid !== false) {
+            _debug('Context id set from parameter');
+        }
+        if ($lticontextid === false) {
+            $lticontextid = $LAUNCH->ltiCustomGet('context_id');
+            _debug('Context id set from custom parameter');
+        }
+        if ($lticontextid === false && isset($_REQUEST['context_id'])) {
+            $lticontextid = $_REQUEST['context_id'];
+            _debug('Context id set from request');
+        }
+        if ($lticontextid === false) {
+            $lticontextid = $LAUNCH->context->id;
+            _debug('Context id set from context->id');
+        }
     }
     if ($lticontextid !== false)
     {
