@@ -68,7 +68,11 @@
                 l_feedback = [],
                 l_total=0,
                 l_correct=0,
-				l_judge=x_currentPageXML.getAttribute("judge") == 'true';
+				l_judge=true;
+
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				l_judge = false;
+			}
 
             $("#dragDropHolder .tick").remove();
 			
@@ -99,6 +103,7 @@
 			$("#scoreTxt").html(l_correct);
 			$("#totalTxt").html(this.totaloptions);
 			$("#feedback").show();
+
 			var result = {
 			    success: (l_correct == this.totaloptions),
 			    score: (l_correct * 100.0)/this.totaloptions,

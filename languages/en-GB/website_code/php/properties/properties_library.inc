@@ -152,6 +152,8 @@
 	define("PROPERTIES_LIBRARY_PEER_STATUS", "Peer review");
 
     define("PROPERTIES_LIBRARY_PEER_LINK", "The link for peer review is");
+    
+	define("PROPERTIES_LIBRARY_PWPLAY_LINK", "The link for password play is");
 
     define("PROPERTIES_LIBRARY_PEER_PASSWORD_PROMPT", "Password to give to reviewers");
 

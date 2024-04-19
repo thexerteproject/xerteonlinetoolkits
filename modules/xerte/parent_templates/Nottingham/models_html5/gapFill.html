@@ -1129,7 +1129,10 @@
 					total = 0;
 					correct_answers = 0;
 
-					let judge = x_currentPageXML.getAttribute("judge") == "true";
+					let judge = true;
+					if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+						judge = false;
+					}
 					
 					$targetHolder.find("input").each(function() {
 						var $this = $(this),
@@ -1158,7 +1161,8 @@
 						total++;
 						var result = {
 							success: correct,
-							score: (correct ? 100.0 : 0.0)
+							score: (correct ? 100.0 : 0.0),
+							judge: judge
 						};
 						
 						XTExitInteraction(x_currentPage, $this.data("index") , result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));

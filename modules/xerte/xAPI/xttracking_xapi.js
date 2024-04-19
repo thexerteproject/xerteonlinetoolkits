@@ -417,7 +417,6 @@ function XApiTrackingState() {
 
         sit.exitInteraction(result, learneranswer, learneroptions, feedback,
             page_name);
-
         if (ia_nr < 0) {
             var temp = false;
             var i = 0;
@@ -3778,6 +3777,7 @@ function XTResults(fullcompletion) {
 
         } else if (results.mode == "full-results") {
             var subinteraction = {};
+						let judge = true;
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
@@ -3829,6 +3829,8 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
+												matchSub.judge = state.interactions[i].result.judge ?? true;
+												judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;
@@ -3867,9 +3869,12 @@ function XTResults(fullcompletion) {
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
+								subinteraction.judge = state.interactions[i].result.judge ?? true;
+								judge &= subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(
                     subinteraction);
             }
+						results.interactions[nrofquestions - 1].judge = judge;
         }
     }
     results.completion = completion;

@@ -269,7 +269,11 @@
                 l_feedback,
                 counter = 0;
                 allCorrectLocal = true,
-				judge = x_currentPageXML.getAttribute("judge") == "true";
+				judge = true;
+
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				judge = false;
+			}
 				
             $("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
                 Correct = true;
@@ -299,10 +303,11 @@
                 l_feedbacks.push(l_feedback);
                 counter++;
             });
-          this.allCorrect = allCorrectLocal;
+			this.allCorrect = allCorrectLocal;
             var result = {
                 success: this.allCorrect,
-                score: ((correct/numOfQuestions)*100.0)
+                score: ((correct/numOfQuestions)*100.0),
+				judge: judge
             };
 
 			this.checked = true;
