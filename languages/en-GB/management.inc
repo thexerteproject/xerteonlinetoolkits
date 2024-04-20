@@ -65,6 +65,8 @@
 	define("MANAGEMENT_MENUBAR_COURSES","Courses");
 
 	define("MANAGEMENT_MENUBAR_LICENCES","Licences");
+
+	define("MANAGEMENT_MENUBAR_AI","Ai");
 	
 	define("MANAGEMENT_MENUBAR_FEEDS","Feeds");
 	

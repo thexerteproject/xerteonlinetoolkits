@@ -18,8 +18,11 @@ $prompt_params = $_POST["prompt"];
 $type = $_POST["type"];
 $ai_api = $_POST["api"];
 
-//todo IMPORTANT check if $ai_api is valid IMPORTANT
-//prob combine with check for allowed apis
+$allowed_apis = ['openai', 'anthropic'];
+//todo combine with api check from admin page
+if (!in_array($ai_api, $allowed_apis)){
+    json_encode(["status" => "error", "message" => "api is not allowed"]);
+}
 
 //dynamically load needed api methods
 require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");

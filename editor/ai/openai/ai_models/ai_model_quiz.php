@@ -5,7 +5,7 @@ _load_language_file("/editor/ai_models/openai_model_quiz_ai.inc");
 
 //generates questions
 $chat_url = "https://api.openai.com/v1/chat/completions";
-$model = "gpt-3.5-turbo";
+$model = "gpt-4-turbo-preview";
 $q = LEARNING_PROMPT;
 $object = LEARNING_RESULT;
 

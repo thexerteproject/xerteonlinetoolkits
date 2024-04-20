@@ -1,7 +1,6 @@
 <?php
-//aggregator for all openai models
-global $openAI_preset_models;
-
+//aggregator for all copilot models
+global $anthropic_preset_models;
 
 //dynamically grows when more models are placed in /openai/ai_models/
 //workaround to prevent __FILE__ and __dir__ being xdebug in ide
