@@ -4332,8 +4332,8 @@
             }
 
             parent.appendChild(elem);
-
-            if (!xot_offline && typeof Mediasite !== undefined) {
+            
+            if (!(typeof modelfilestrs === 'undefined') && typeof Mediasite !== undefined) {
               $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
                   .done(function () {
                     //$("#mediasiteIframe").parent()[0].style.visibility = "hidden";

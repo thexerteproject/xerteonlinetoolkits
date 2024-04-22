@@ -105,8 +105,10 @@ function init(){
 // }
 
 function initMedia($media){
-	debugger
-	this.popcornInstance = loadMedia($(".vidHolder"), "video",
+	$media.forEach(function(element){
+
+	
+	this.popcornInstance = loadMedia($(element), "video",
 					{	
 						
 						// tip: $(data).find.attr("tip"),
@@ -122,6 +124,7 @@ function initMedia($media){
 						// pageName: "textVideo",
 						// trackMedia: true,
 					}, true);
+				});
 	}
 
 // function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios

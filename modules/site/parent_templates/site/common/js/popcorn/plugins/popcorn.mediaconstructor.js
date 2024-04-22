@@ -19,7 +19,9 @@
 
 
       
- 
+
+   
+
 this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     var $mediaHolder,
         popcornInstance,
@@ -30,6 +32,9 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     }
     
     if (mediaType == "video") {
+        // $('video').each(function() {
+
+
         if (typeof x_peertube_urls === 'undefined') {
             x_peertube_urls = [];
         }
@@ -49,6 +54,16 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
             mediaData.media += urlsep + "controls=2&playsinline=1"
         }
+
+
+         $(".vidHolder").each(function(index){
+            // Check if the div element does not already have an ID
+            if(!$(this).attr('id')) {
+                // Assign a unique ID to the div element
+                $(this).attr('id', 'unique-id-' + index);
+            }
+        });
+        
         // is it from youtube or vimeo or mediasite?
         if (mediaData.media.indexOf('youtu') > 0 
          || mediaData.media.indexOf('vimeo') > 0 
@@ -66,6 +81,29 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             if (mediaData.autoplay == "true") {
                 popcornInstance.play();
             }
+
+
+            $(".navbar .nav > li a").on("click", function() {
+               
+            });
+            //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
+            var prevvideocss = $('.popcornMedia').prev('video');
+
+            var prevvideocsswidth = $(prevvideocss).width();
+            var prevvideocssheight = $(prevvideocss).height();
+
+            console.log(prevvideocssheight, prevvideocsswidth)
+            
+       
+            setTimeout(function() {
+                $('.vidHolder iframe').css({
+                    'width': prevvideocsswidth,
+                    'height': prevvideocssheight
+                });
+            }, 200);
+
+            $('.popcornMedia').prev('video').css('display', 'none');
+           
         } 
         else {
             $myVideo
@@ -93,8 +131,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
         {
             var videoState = initVideoState(mediaData);
             addBasicTracking(popcornInstance, videoState);
-        }
-        
+         
     } else if (mediaType == "audio") {
         // load audio in panel - width is either with of audioImage (if exists) or full width of panel
         $mediaHolder = $('<div class="mediaHolder"></div>').appendTo($holder);
@@ -167,6 +204,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
         }
     }
     return popcornInstance;
+    // })
 }
 
 this.isMediaSiteVideo = function(mediaData) {
@@ -408,4 +446,6 @@ function getTrackingLabel() {
         trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
     }
     return trackinglabel;
-}
+}}
+
+
