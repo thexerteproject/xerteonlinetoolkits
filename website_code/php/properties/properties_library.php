@@ -375,8 +375,6 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
 		
 		echo "<p>" . PROPERTIES_LIBRARY_PEER_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . PROPERTIES_LIBRARY_PEER_LINKS . "</a></p>";
 		
-		echo "<p>" . PROPERTIES_LIBRARY_PWPLAY_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("passwordplay", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("passwordplay", $template_id)  . PROPERTIES_LIBRARY_PEER_LINKS . "</a></p>";
-		
 	}
 	
 	echo "<form id=\"peer\" action=\"javascript:peer_change_template()\" name=\"peer\" >";
@@ -620,9 +618,14 @@ function project_info($template_id){
 
         $info .= '<br/>' . PROJECT_INFO_URL . ": ";
 
-        $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
-            url_return("play", $_POST['template_id']) . "'>" .
-            $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a><br/>";
+		$play_page = "play";
+		
+		if(substr(template_access_settings($template_id), 0, 12)=="PasswordPlay"){
+			$play_page = "passwordplay";
+		}
+		$info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url . 
+				  url_return($play_page, $_POST['template_id']) . "'>" .
+				  $xerte_toolkits_site->site_url . url_return($play_page, $_POST['template_id']) . "</a><br/>";
 
         $template = explode("_", get_template_type($_POST['template_id']));
 
@@ -667,7 +670,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  '<br/><form><label class=\"block\" for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
+        $info .=  '<br/><form><label class=\"block\" for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return($play_page, $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
 
     }
     return $info;
@@ -760,7 +763,6 @@ function statistics_prepare($template_id, $force=false)
 
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
-
             $query_for_names = "select td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
@@ -776,7 +778,7 @@ function statistics_prepare($template_id, $force=false)
             {
                 $info->published = false;
             }
-            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
+            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "")) && template_access_settings($template_id)!='Private') {
                 $info->info = $html;
                 $info->xapi_linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
                 $info->xapi_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
@@ -1698,7 +1700,13 @@ function access_info($template_id){
                 $accessStr = "Other";
                 $nrViews = $row_access["number_of_uses"];
             }
-            else
+            else if (substr($accessStr,0,12) == "PasswordPlay")
+		    {
+				$accessTranslation = "PasswordPlay";
+                $accessStr = "PasswordPlay";
+                $nrViews = $row_access["number_of_uses"];
+			}
+		    else
             {
                 $accessTranslation = "'" . $accessStr . "'";
                 $nrViews = $row_access["number_of_uses"];
@@ -1781,6 +1789,33 @@ function access_display($xerte_toolkits_site, $change){
     echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED . "</p>";
 
 	echo "<div><input ";
+	if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
+		echo "checked ";
+	}
+	echo "type=\"radio\" id=\"PasswordPlay\" name=\"share_status\" value=\"PasswordPlay\"><label for=\"Password\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY . "</label></div>";
+    echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY_EXPLAINED . "</p><form id=\"PWPlay_pwd\"><textarea id=\"pwd\" style=\"width:90%; height:20px;\">";
+
+	if(isset($_POST['password'])){
+
+        echo $_POST['password'];
+
+    }else{
+		if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
+			
+			$pos = strpos($row_access['access_to_whom'], "-");
+
+			if($pos !== false){
+
+				echo substr($row_access['access_to_whom'], $pos+1);
+
+			}
+		}
+
+    }
+
+	echo "</textarea></form>";
+
+	echo "<div><input ";
 	if(substr(template_access_settings($_POST['template_id']),0,5) == "Other"){
 		echo "checked ";
 	}
@@ -1791,14 +1826,13 @@ function access_display($xerte_toolkits_site, $change){
         echo " - " . $_POST['server_string'];
 
     }else{
-
-        $pos = strpos($row_access['access_to_whom'], "-");
-
-        if($pos !== false){
-
-            echo " - " . substr($row_access['access_to_whom'], $pos+1);
-
-        }
+		if(substr(template_access_settings($_POST['template_id']),0,5) == "Other"){
+			$pos = strpos($row_access['access_to_whom'], "-");
+			
+			if($pos !== false){
+				echo " - " . substr($row_access['access_to_whom'], $pos+1);	
+			}
+		}
 
     }
 	
