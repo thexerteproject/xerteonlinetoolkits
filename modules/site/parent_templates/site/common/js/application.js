@@ -104,28 +104,45 @@ function init(){
 // 				}, true);
 // }
 
-function initMedia($media){
-	$media.forEach(function(element){
+// Create parameters needed by the popcorn library and coming from xenith.js
+const xot_offline = false;
+let x_params = new Object();
+x_params.language = "en-GB";
 
-	
-	this.popcornInstance = loadMedia($(element), "video",
-					{	
-						
-						// tip: $(data).find.attr("tip"),
-						// width: videoDimensions ? Number(videoDimensions[0]) : 0,
-						// height: videoDimensions ? Number(videoDimensions[1]) : 0,
-						media: $(data).find('video').attr('url'),
-						// autoplay: "false",
-						// aspect: ratio,
-						// transcript: x_currentPageXML.getAttribute("transcript"),
-						// transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
-						// audioImage: undefined,
-						// audioImageTip: "",
-						// pageName: "textVideo",
-						// trackMedia: true,
-					}, true);
-				});
+function initMedia($media) {
+	for(let i=0; i<$media.length; i++) {
+		let element = $media[i];
+		const id= $(element).attr('id');
+		const url = $(element).attr('src');
+		let div = $("<div>")
+			.attr('id', id)
+			.attr('class', 'x_videoContainer');
+		element = $(element).replaceWith(div);
+		let width = div.width();
+		let height = width * 9 / 16;
+
+		this.popcornInstance = loadMedia($('#' + id), "video",
+			{
+				// tip: $(data).find.attr("tip"),
+				width: width,
+				height: height,
+				media: url,
+				// autoplay: "false",
+				aspect: 16/9,
+				// transcript: x_currentPageXML.getAttribute("transcript"),
+				// transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
+				// audioImage: undefined,
+				// audioImageTip: "",
+				// pageName: "textVideo",
+				trackMedia: false,
+			}, false);
+
+		$('#' + id)
+			.width(width)
+			.height(height);
+		resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: 16/9});
 	}
+}
 
 // function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
 function iframeInit($mediaElement) {

@@ -18,215 +18,6 @@
  */
 
 
-      
-
-   
-
-this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
-    var $mediaHolder,
-        popcornInstance,
-        classes = "popcornMedia";
-    
-    if (mainMedia == true) {
-        classes += " mainMedia";
-    }
-    
-    if (mediaType == "video") {
-        // $('video').each(function() {
-
-
-        if (typeof x_peertube_urls === 'undefined') {
-            x_peertube_urls = [];
-        }
-        if (typeof x_mediasite_urls === 'undefined') {
-            x_mediasite_urls = [];
-        }
-
-        //load video - max dimensions set in mediaMetaData function below when dimensions received
-        // Normalize url
-        mediaData.media = Popcorn.fixYouTubeVimeo(mediaData.media);
-        $mediaHolder = $holder;
-        var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
-
-        // Add playervars to youtube.
-        // Controls should appear and inline for iPhone (havent checked)
-        if (mediaData.media.indexOf('youtu') > 0) {
-            urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
-            mediaData.media += urlsep + "controls=2&playsinline=1"
-        }
-
-
-         $(".vidHolder").each(function(index){
-            // Check if the div element does not already have an ID
-            if(!$(this).attr('id')) {
-                // Assign a unique ID to the div element
-                $(this).attr('id', 'unique-id-' + index);
-            }
-        });
-        
-        // is it from youtube or vimeo or mediasite?
-        if (mediaData.media.indexOf('youtu') > 0 
-         || mediaData.media.indexOf('vimeo') > 0 
-         || mediaData.media.indexOf('videos/embed') > 0 // Peertube
-         || mediaData.media.indexOf('mediamission') > 0 
-         || mediaData.media.indexOf('mediasite') > 0
-         || mediaData.media.indexOf('deltion') > 0
-         || isMediaSiteVideo(mediaData.media)
-         || isPeertubeVideo(mediaData.media)
-         || mediaData.media.indexOf('yuja.com') > 0) {
-            popcornInstance = Popcorn.smart("." + $holder.attr("class") + " .popcornMedia", mediaData.media);
-            var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
-            $videoHolder.attr("aspect", mediaData.aspect);
-            $videoHolder.data("popcornInstance", popcornInstance);
-            if (mediaData.autoplay == "true") {
-                popcornInstance.play();
-            }
-
-
-            $(".navbar .nav > li a").on("click", function() {
-               
-            });
-            //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
-            var prevvideocss = $('.popcornMedia').prev('video');
-
-            var prevvideocsswidth = $(prevvideocss).width();
-            var prevvideocssheight = $(prevvideocss).height();
-
-            console.log(prevvideocssheight, prevvideocsswidth)
-            
-       
-            setTimeout(function() {
-                $('.vidHolder iframe').css({
-                    'width': prevvideocsswidth,
-                    'height': prevvideocssheight
-                });
-            }, 200);
-
-            $('.popcornMedia').prev('video').css('display', 'none');
-           
-        } 
-        else {
-            $myVideo
-                .attr("title", mediaData.tip)
-                .css("margin", "0 auto")
-                .mediaPlayer({
-                    type		:"video",
-                    source		:mediaData.media,
-                    width		:"100%",
-                    height		:"100%",
-                    autoPlay	:mediaData.autoplay,
-                    pageName	:mediaData.pageName ? mediaData.pageName : "mediaLesson"
-                });
-
-            popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
-            if (mainMedia == true) {
-                $("#" + $holder.attr("id") + " video").attr('id', 'mainVideo');
-            } else {
-                $("#" + $holder.attr("id") + " video").attr('id', 'video_' 
-                    + $("#" + $holder.attr("id") + " video").parents('.mejs-video').attr('id'));
-            }
-        }
-
-        if(mediaData.trackMedia)
-        {
-            var videoState = initVideoState(mediaData);
-            addBasicTracking(popcornInstance, videoState);
-         
-    } else if (mediaType == "audio") {
-        // load audio in panel - width is either with of audioImage (if exists) or full width of panel
-        $mediaHolder = $('<div class="mediaHolder"></div>').appendTo($holder);
-        var $myAudio = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
-        
-        $myAudio
-            .attr("title", mediaData.tip)
-            .mediaPlayer({
-                type		:"audio",
-                source		:mediaData.media,
-                width       :"100%",
-                autoPlay    :mediaData.autoplay
-            });
-        
-        popcornInstance = Popcorn("#" + $holder.attr("id") + " audio");
-        if (mainMedia == true) {
-            $("#" + $holder.attr("id") + " audio").attr('id', 'mainAudio');
-        } else {
-            $("#" + $holder.attr("id") + " audio").attr('id', 'audio_' + 
-                $("#" + $holder.attr("id") + " audio").parents('.mejs-audio').attr('id'));
-        }
-        
-        if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
-            var $imgHolder = $('<div class="audioImgHolder"></div>').insertBefore($myAudio),
-                $img = $('<img class="audioImg" style="visibility: hidden" />').appendTo($imgHolder);
-            
-            $img
-                .one("load", function() {
-                    x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
-                    $mediaHolder.width($(this).width());
-                })
-                .attr("src", x_evalURL(mediaData.audioImage))
-                .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-                    if (this.complete) {
-                        $(this).trigger("load");
-                    }
-                });
-            if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
-                $img.attr("alt", mediaData.audioImageTip);
-            }
-        }
-    }
-    
-    // add transcript to media panel if required
-    if (mediaData.transcript) {
-        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">'
-            + x_addLineBreaks(mediaData.transcript) + '</div></div>');
-        $mediaHolder.find(".transcript").hide();
-        $mediaHolder.find(".transcriptBtn")
-            .button({
-                icons:	{secondary:"fa fa-x-btn-hide"},
-                label:	mediaData.transcriptBtnTxt ? mediaData.transcriptBtnTxt : "Transcript"
-            })
-            .click(function() {
-                // transcript slides in and out of view on click
-                var $transcript = $(this).next(".transcript");
-                if ($transcript.is(":hidden") == true) {
-                    $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
-                    $transcript.slideDown();
-                } else {
-                    $transcript.slideUp();
-                    $(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
-                }
-            });
-        
-        if (mediaType == "video") {
-            $mediaHolder.find(".transcriptHolder")
-                //.width($mediaHolder.find(".popcornMedia").width())
-                .css("margin", "0 auto");
-        }
-    }
-    return popcornInstance;
-    // })
-}
-
-this.isMediaSiteVideo = function(mediaData) {
-    // Check if one of the elements in x_mediasite_urls is a prefix of mediaData
-    for (let i = 0; i < x_mediasite_urls.length; i++) {
-        if (mediaData.indexOf(x_mediasite_urls[i]) == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-this.isPeertubeVideo = function(mediaData) {
-    // Check if one of the elements in x_peertube_urls is a prefix of mediaData
-    for (let i = 0; i < x_peertube_urls.length; i++) {
-        if (mediaData.indexOf(x_peertube_urls[i]) == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
 this.initVideoState = function(mediaData)
 {
     return {
@@ -259,10 +50,10 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
 
     var ww = $holder.width(),                   // max width
         wh = Math.floor(ww / ratio);            // height from widths perspective
-        hh = $holder.height() - heightClaimed,  // max height
+    hh = $holder.height() - heightClaimed,  // max height
         hw = Math.floor(hh * ratio);            // width from heights perspective
 
-    var w = ww < hw ? ww : hw; 
+    var w = ww < hw ? ww : hw;
     var h = ww < hw ? wh : hh;
     //console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
     //console.log("aspect    = " + ($video[0].getAttribute("aspect")?$video[0].getAttribute("aspect"):"UNDEF"));
@@ -411,6 +202,215 @@ this.addTrackingOnLeavePage = function(popcornInstance, videoState) {
         $("div.popcornMedia").remove();
     }
 }
+
+this.isMediaSiteVideo = function(mediaData) {
+    // Check if one of the elements in x_mediasite_urls is a prefix of mediaData
+    for (let i = 0; i < x_mediasite_urls.length; i++) {
+        if (mediaData.indexOf(x_mediasite_urls[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+this.isPeertubeVideo = function(mediaData) {
+    // Check if one of the elements in x_peertube_urls is a prefix of mediaData
+    for (let i = 0; i < x_peertube_urls.length; i++) {
+        if (mediaData.indexOf(x_peertube_urls[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+
+this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
+    var $mediaHolder,
+        popcornInstance,
+        classes = "popcornMedia";
+    
+    if (mainMedia == true) {
+        classes += " mainMedia";
+    }
+    
+    if (mediaType == "video") {
+        // $('video').each(function() {
+
+
+        if (typeof x_peertube_urls === 'undefined') {
+            x_peertube_urls = [];
+        }
+        if (typeof x_mediasite_urls === 'undefined') {
+            x_mediasite_urls = [];
+        }
+
+        //load video - max dimensions set in mediaMetaData function below when dimensions received
+        // Normalize url
+        mediaData.media = Popcorn.fixYouTubeVimeo(mediaData.media);
+        $mediaHolder = $holder;
+        var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+
+        // Add playervars to youtube.
+        // Controls should appear and inline for iPhone (havent checked)
+        if (mediaData.media.indexOf('youtu') > 0) {
+            urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
+            mediaData.media += urlsep + "controls=2&playsinline=1"
+        }
+
+
+         $(".vidHolder").each(function(index){
+            // Check if the div element does not already have an ID
+            if(!$(this).attr('id')) {
+                // Assign a unique ID to the div element
+                $(this).attr('id', 'unique-id-' + index);
+            }
+        });
+        
+        // is it from youtube or vimeo or mediasite?
+        if (mediaData.media.indexOf('youtu') > 0 
+         || mediaData.media.indexOf('vimeo') > 0 
+         || mediaData.media.indexOf('videos/embed') > 0 // Peertube
+         || mediaData.media.indexOf('mediamission') > 0 
+         || mediaData.media.indexOf('mediasite') > 0
+         || mediaData.media.indexOf('deltion') > 0
+         || isMediaSiteVideo(mediaData.media)
+         || isPeertubeVideo(mediaData.media)
+         || mediaData.media.indexOf('yuja.com') > 0) {
+            popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
+            var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
+            $videoHolder.attr("aspect", mediaData.aspect);
+            $videoHolder.data("popcornInstance", popcornInstance);
+            if (mediaData.autoplay == "true") {
+                popcornInstance.play();
+            }
+
+
+            $(".navbar .nav > li a").on("click", function() {
+               
+            });
+            //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
+            var prevvideocss = $('.popcornMedia').prev('video');
+
+            var prevvideocsswidth = $(prevvideocss).width();
+            var prevvideocssheight = $(prevvideocss).height();
+
+            console.log(prevvideocssheight, prevvideocsswidth)
+            
+       
+            setTimeout(function() {
+                $('.vidHolder iframe').css({
+                    'width': prevvideocsswidth,
+                    'height': prevvideocssheight
+                });
+            }, 200);
+
+            $('.popcornMedia').prev('video').css('display', 'none');
+           
+        } 
+        else {
+            $myVideo
+                .attr("title", mediaData.tip)
+                .css("margin", "0 auto")
+                .mediaPlayer({
+                    type		:"video",
+                    source		:mediaData.media,
+                    width		:"100%",
+                    height		:"100%",
+                    autoPlay	:mediaData.autoplay,
+                    pageName	:mediaData.pageName ? mediaData.pageName : "mediaLesson"
+                });
+
+            popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
+            if (mainMedia == true) {
+                $("#" + $holder.attr("id") + " video").attr('id', 'mainVideo');
+            } else {
+                $("#" + $holder.attr("id") + " video").attr('id', 'video_' 
+                    + $("#" + $holder.attr("id") + " video").parents('.mejs-video').attr('id'));
+            }
+        }
+
+        if(mediaData.trackMedia)
+        {
+            var videoState = initVideoState(mediaData);
+            addBasicTracking(popcornInstance, videoState);
+         
+    } else if (mediaType == "audio") {
+        // load audio in panel - width is either with of audioImage (if exists) or full width of panel
+        $mediaHolder = $('<div class="mediaHolder"></div>').appendTo($holder);
+        var $myAudio = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+        
+        $myAudio
+            .attr("title", mediaData.tip)
+            .mediaPlayer({
+                type		:"audio",
+                source		:mediaData.media,
+                width       :"100%",
+                autoPlay    :mediaData.autoplay
+            });
+        
+        popcornInstance = Popcorn("#" + $holder.attr("id") + " audio");
+        if (mainMedia == true) {
+            $("#" + $holder.attr("id") + " audio").attr('id', 'mainAudio');
+        } else {
+            $("#" + $holder.attr("id") + " audio").attr('id', 'audio_' + 
+                $("#" + $holder.attr("id") + " audio").parents('.mejs-audio').attr('id'));
+        }
+        
+        if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
+            var $imgHolder = $('<div class="audioImgHolder"></div>').insertBefore($myAudio),
+                $img = $('<img class="audioImg" style="visibility: hidden" />').appendTo($imgHolder);
+            
+            $img
+                .one("load", function() {
+                    x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
+                    $mediaHolder.width($(this).width());
+                })
+                .attr("src", x_evalURL(mediaData.audioImage))
+                .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                    if (this.complete) {
+                        $(this).trigger("load");
+                    }
+                });
+            if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
+                $img.attr("alt", mediaData.audioImageTip);
+            }
+        }
+    }
+    
+    // add transcript to media panel if required
+    if (mediaData.transcript) {
+        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">'
+            + x_addLineBreaks(mediaData.transcript) + '</div></div>');
+        $mediaHolder.find(".transcript").hide();
+        $mediaHolder.find(".transcriptBtn")
+            .button({
+                icons:	{secondary:"fa fa-x-btn-hide"},
+                label:	mediaData.transcriptBtnTxt ? mediaData.transcriptBtnTxt : "Transcript"
+            })
+            .click(function() {
+                // transcript slides in and out of view on click
+                var $transcript = $(this).next(".transcript");
+                if ($transcript.is(":hidden") == true) {
+                    $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
+                    $transcript.slideDown();
+                } else {
+                    $transcript.slideUp();
+                    $(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
+                }
+            });
+        
+        if (mediaType == "video") {
+            $mediaHolder.find(".transcriptHolder")
+                //.width($mediaHolder.find(".popcornMedia").width())
+                .css("margin", "0 auto");
+        }
+    }
+    return popcornInstance;
+    // })
+}
+
 
 /*___HELPER FUNCTIONS___*/
 

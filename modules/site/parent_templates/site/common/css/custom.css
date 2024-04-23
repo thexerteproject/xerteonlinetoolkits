@@ -811,3 +811,7 @@ and (max-width :600px) {
     -webkit-animation: x_bounce 2s infinite;
     animation: x_bounce 2s infinite;
 }
+
+.x_videoContainer {
+    width: 100%;
+}
