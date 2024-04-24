@@ -770,7 +770,6 @@
                 statements.push(bestAttempt)
             }
         }
-        debugger
         return statements
     }
 
@@ -876,6 +875,16 @@
           url = data[0].object.id;
         }
         interaction = $(x_currentPageXML).children()[interactionIndex];
+        var sessionStatementUsed = interaction.getAttribute("sessionStatementUsed");
+        if (sessionStatementUsed == undefined) {
+            sessionStatementUsed = "all";
+        }
+        debugger;
+        // You can only do this if you have a very targeted query
+        // If type is grouping, groupings  or opinionclasses, we should NOT filter the data on sessions
+        if (type != "grouping" && type != "groupings" && type != "opinionclasses") {
+            data = filterRelevantStatements(data, sessionStatementUsed);
+        }
         if (
           data.length >= 1 &&
           (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)
@@ -1635,11 +1644,7 @@
       var xertelo = interaction.getAttribute("xertelo");
       var ownstatements = filterOwnStatements(data, xertelo);
 
-      var graphAnswerType = interaction.getAttribute("graphAnswerType");
-      if (graphAnswerType == undefined) {
-          graphAnswerType = "all";
-      }
-      var statements = filterRelevantStatements(data, graphAnswerType);
+
       xerteurl = interaction.getAttribute("xerteurl");
       xertelabel = interaction.getAttribute("label");
       name = interaction.getAttribute("name");
@@ -1689,7 +1694,7 @@
               barColors[i] = interaction.childNodes[i].getAttribute("blockColor").replace("0x","#");
           }
       }
-
+      var statements = data;
       if (statements.length > 0) {
         if (statements[0].extensions !== undefined) {
           let numQuestions =
@@ -1870,7 +1875,7 @@
                     blockName = block.getAttribute("conScoreBetween")
                 }
 
-                if (score >= lowerBound && score <= upperBound) {
+                if (score >= lowerBound && score < upperBound) {
                   $("#" + escapeUrl(url, type, interactionIndex) + " .message").prepend('<button type="button" class="feedback">' + blockName + '</button>\n' +
                       '<div class="collapsibleContent block' + blockIndex + '" style="display: block; margin-bottom: 25px">' + block.getAttribute("adaptiveContent") + '</div>');
                 } else if (showOtherBlockContent == 'true'){
