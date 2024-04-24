@@ -45,6 +45,33 @@
 				$("#pages").height($panel.height() - footerH);
 			}
 		}
+
+		this.startTracking = function(data) {
+		
+			let itemCount = 0;
+			let items = [];
+
+			for(let page of data.pages) {
+				let pageName = page.pageName;
+				for(let section of page.sections){
+					let prefix = pageName + " - "
+					if(section.sectionName != null){
+						prefix += section.sectionName + " - ";
+					}
+					for(let item of section.items){
+						if(item.itemName == null) 
+							continue;
+						items.push(prefix + item.itemName);
+						itemCount += 1;
+					}
+				}
+			}
+            XTSetPageType(x_currentPage, 'numeric', itemCount, 1);
+			for(i = 0; i < items.length; i++){
+				let name = items[i];
+				XTEnterInteraction(x_currentPage, i, 'fill-in', name, ["-"], ["-"], null /* never used*/, x_currentPageXML.getAttribute("grouping"));
+			}
+		}
 		
 		this.init = function() {
 			// styles used in downloaded word doc
@@ -220,38 +247,49 @@
 					$('#pages').append($page);
 				}
 			}
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				this.startTracking(docData);
+			}
 			
 			// Add download button
-			var $downloadBtn = $('<button id="downloadBtn">');
-			var $downloadSection = $('<div class="item"/>');
-			$downloadBtn.appendTo($downloadSection);
+			var $finishBtn = $('<button id="downloadBtn">');
+			var $finishSection = $('<div class="item"/>');
+			$finishBtn.appendTo($finishSection);
 			if (x_currentPageXML.getAttribute('download') && x_currentPageXML.getAttribute('download') == 'extra') {
 				$page = $('<div>')
 					.attr('id', 'page' + pageIndex)
 					.attr('class', 'page hidepage');
 				
-				$downloadSection.appendTo($page);
+				$finishSection.appendTo($page);
 				$('#pages').append($page);
 			}
 			else {
-				$downloadSection.insertAfter($('#pages').children().last().children().last());
+				$finishSection.insertAfter($('#pages').children().last().children().last());
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($downloadBtn);
+				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($finishBtn);
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);
-			
-			$downloadBtn.button({
-				icons: {
-					primary: "fa fa-x-download"
-				},
-				label:	x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Download"
-			})
-			.click(function() {
-				documentation.download();
-			})
+
+
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				$finishBtn.button({
+					label: x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Submit"
+				}).click(function () {
+					documentation.track();
+				});
+			} else {
+				$finishBtn.button({
+					icons: {
+						primary: "fa fa-x-download"
+					},
+					label: x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Download"
+				}).click(function () {
+					documentation.download();
+				});
+			}
 			
 
 			// Wire up navigation buttons or hide them
@@ -754,9 +792,65 @@
     		}
 		};
 		
+		this.track = function() {
+			if (documentation.checkRequired(currentPage)) {
+				documentation.sendToXAPI($("#pageContents").data("docData"));
+    		}
+			$("#downloadBtn").hide().prev().hide();
+		}
+		
 		this.showPage = function (page) {
 			$('#pagenumber').html(page + " / " + $('#pages').children().length);
 		};
+
+		this.sendToXAPI = function(data){
+			let itemCount = 0;
+			let items = [];
+
+			for(let page of data.pages) {
+				let pageName = page.pageName;
+				for(let section of page.sections){
+					let prefix = pageName + " - "
+					if(section.sectionName != null){
+						prefix += section.sectionName + " - ";
+					}
+					for(let item of section.items){
+						if(item.itemName == null) 
+							continue;
+						let result = {
+							success: true,
+							score: 100,
+							judge: false
+						}
+						debugger;
+						if (item.itemValue.indexOf("<table") == -1) {
+							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, item.itemValue, null/*not used*/);
+						} else {
+							let tableCSV = "";
+							let columnCount = 0;
+							$(item.itemValue).find("table thead tr th").each(function(index){
+								columnCount++;
+								if(index === 0){
+									tableCSV += $(this).text();
+								} else {	
+									tableCSV += "," + $(this).text();
+								}
+							});
+							$(item.itemValue).find("table tbody tr td").each(function(index){
+								if(index%columnCount == 0){
+									tableCSV += "\n" + $(this).text();
+								} else {
+									tableCSV += "," + $(this).text();
+								}
+							});
+							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, tableCSV, null/*not used*/);
+						}
+						itemCount += 1;
+					}
+				}
+			}
+			XTSetPageScore(x_currentPage, 100, x_currentPageXML.getAttribute("trackinglabel"));
+		}
 		
 		this.postData = function (data) {
 			// remove anything that's excluded from document

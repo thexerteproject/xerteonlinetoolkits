@@ -218,7 +218,7 @@
 								let result = {
 									success: true,
 									score: 100,
-									judge: true
+									judge: judge
 								}
 								XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
 								correctAnswers += 1;
@@ -257,7 +257,7 @@
 									let result = {
 										success: false,
 										score: 0,
-										judge: true
+										judge: judge
 									};
 									XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
 									if($pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length){
