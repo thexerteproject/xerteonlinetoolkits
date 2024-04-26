@@ -6,7 +6,7 @@ body {
 	font-family:	Arial, sans-serif;
 	color: #cfcfcf;
 }
-a, a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active{
+a, #x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
 	color: #cfcfcf;
 }
 
