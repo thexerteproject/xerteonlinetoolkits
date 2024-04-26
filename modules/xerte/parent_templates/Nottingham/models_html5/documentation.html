@@ -66,7 +66,7 @@
 					}
 				}
 			}
-            XTSetPageType(x_currentPage, 'numeric', itemCount, 1);
+            XTSetPageType(x_currentPage, 'numeric', itemCount, this.weighting);
 			for(i = 0; i < items.length; i++){
 				let name = items[i];
 				XTEnterInteraction(x_currentPage, i, 'fill-in', name, ["-"], ["-"], null /* never used*/, x_currentPageXML.getAttribute("grouping"));
@@ -81,6 +81,12 @@
 			$('#pageContents').data('downloadStyles', styles);
 		
 			var pageIndex = 0;
+
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
 			
 			// Set up main layout structure & add in all non-subpage text
 			$("#textHolder").append(x_currentPageXML.getAttribute("text"));
@@ -822,7 +828,6 @@
 							score: 100,
 							judge: false
 						}
-						debugger;
 						if (item.itemValue.indexOf("<table") == -1) {
 							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, item.itemValue, null/*not used*/);
 						} else {

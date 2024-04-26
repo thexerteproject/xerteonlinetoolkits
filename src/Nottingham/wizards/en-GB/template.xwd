@@ -2761,7 +2761,8 @@
     <text label="Page Text" type="TextArea" height="100"/>
     <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Large" width="100" mandatory="true"/>
-	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<judge label="Judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
@@ -2964,6 +2965,7 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 
 	<track label="Should Be Tracked" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
+	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
 	
     <filename condition="track!='true'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
 	<fileOrientation condition="track!='true'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>

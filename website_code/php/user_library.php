@@ -354,7 +354,7 @@ function get_user_root_folder_record_by_id($id){
 function is_user_admin(){
     // to allow everthing that isn't converted to is_user_permitted
 	// TODO: remove the line below when done with transition to is_user_permitted
-	xdebug_break();
+	//xdebug_break();
 	return is_user_permitted();
 }
 
