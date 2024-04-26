@@ -41,9 +41,9 @@ h3 {
 	margin:		0;
 }
 
-a{color:$linkcolor;}
-a:hover{color:$linkhover;}
-a:visited{color:$linkvisited;}
+a, .ui-widget-content a {color:$linkcolor;}
+a:hover, .ui-widget-content a:hover {color:$linkhover;}
+a:visited, .ui-widget-content a:visited {color:$linkvisited;}
 
 table.glossary tr {
 	background: #000000;

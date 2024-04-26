@@ -1400,15 +1400,15 @@ h3 {
   margin: 0;
 }
 
-a {
+a, .ui-widget-content a {
   color: #ffffff;
 }
 
-a:hover {
+a:hover, .ui-widget-content a:hover {
   color: lightgrey;
 }
 
-a:visited {
+a:visited, .ui-widget-content a:visited {
   color: lightgrey;
 }
 
