@@ -286,28 +286,88 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
                 popcornInstance.play();
             }
 
-
+        
             $(".navbar .nav > li a").on("click", function() {
-               
-            });
-            // //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
-            // var prevvideocss = $('.popcornMedia').prev('video');
+                setTimeout(function() {
+                 //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
+            var prevvideocss = $('.popcornMedia').prev('video');
 
-            // var prevvideocsswidth = $(prevvideocss).width();
-            // var prevvideocssheight = $(prevvideocss).height();
+            var prevvideocsswidth = $(prevvideocss).width();
+            var prevvideocssheight = $(prevvideocss).height();
 
-            // console.log(prevvideocssheight, prevvideocsswidth)
+            console.log(prevvideocssheight, prevvideocsswidth)
             
        
-            // setTimeout(function() {
-            //     $('.vidHolder iframe').css({
-            //         'width': prevvideocsswidth,
-            //         'height': prevvideocssheight
-            //     });
-            // }, 200);
+            setTimeout(function() {
+                $('.vidHolder iframe').css({
+                    'width': prevvideocsswidth,
+                    'height': prevvideocssheight
+                });
+            }, 200);
+        }, 200);
+        });
 
-            // $('.popcornMedia').prev('video').css('display', 'none');
-           
+        //     $('.popcornMedia').prev('video').css('display', 'none');
+            $(window).resize(function() {
+                setTimeout(function() {
+                  //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
+            var prevvideocss = $('.popcornMedia').prev('video');
+
+            var prevvideocsswidth = $(prevvideocss).width();
+            var prevvideocssheight = $(prevvideocss).height();
+
+            console.log(prevvideocssheight, prevvideocsswidth)
+            
+       
+          
+                $('.vidHolder iframe').css({
+                    'width': prevvideocsswidth,
+                    'height': prevvideocssheight
+                });
+          
+            $('.popcornMedia').prev('video').css('display', 'none');
+        }, 200);
+
+            });
+        //     });
+        //     //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
+        //     var prevvideocss = $('.popcornMedia').prev('video');
+
+        //     var prevvideocsswidth = $(prevvideocss).width();
+        //     var prevvideocssheight = $(prevvideocss).height();
+
+        //     console.log(prevvideocssheight, prevvideocsswidth)
+            
+       
+        //     setTimeout(function() {
+        //         $('.vidHolder iframe').css({
+        //             'width': prevvideocsswidth,
+        //             'height': prevvideocssheight
+        //         });
+        //     }, 200);
+
+        //     $('.popcornMedia').prev('video').css('display', 'none');
+        //     $(window).resize(function() {
+        //         setTimeout(function() {
+        //           //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
+        //     var prevvideocss = $('.popcornMedia').prev('video');
+
+        //     var prevvideocsswidth = $(prevvideocss).width();
+        //     var prevvideocssheight = $(prevvideocss).height();
+
+        //     console.log(prevvideocssheight, prevvideocsswidth)
+            
+       
+          
+        //         $('.vidHolder iframe').css({
+        //             'width': prevvideocsswidth,
+        //             'height': prevvideocssheight
+        //         });
+          
+        //     $('.popcornMedia').prev('video').css('display', 'none');
+        // }, 200);
+
+        //     });
         } 
         else {
             $myVideo
