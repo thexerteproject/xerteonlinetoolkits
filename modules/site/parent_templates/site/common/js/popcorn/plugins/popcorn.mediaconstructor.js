@@ -290,23 +290,23 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             $(".navbar .nav > li a").on("click", function() {
                
             });
-            //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
-            var prevvideocss = $('.popcornMedia').prev('video');
+            // //werkt niet goed bij meerdere video's op de pagina met verschillende hogtes en breedtes
+            // var prevvideocss = $('.popcornMedia').prev('video');
 
-            var prevvideocsswidth = $(prevvideocss).width();
-            var prevvideocssheight = $(prevvideocss).height();
+            // var prevvideocsswidth = $(prevvideocss).width();
+            // var prevvideocssheight = $(prevvideocss).height();
 
-            console.log(prevvideocssheight, prevvideocsswidth)
+            // console.log(prevvideocssheight, prevvideocsswidth)
             
        
-            setTimeout(function() {
-                $('.vidHolder iframe').css({
-                    'width': prevvideocsswidth,
-                    'height': prevvideocssheight
-                });
-            }, 200);
+            // setTimeout(function() {
+            //     $('.vidHolder iframe').css({
+            //         'width': prevvideocsswidth,
+            //         'height': prevvideocssheight
+            //     });
+            // }, 200);
 
-            $('.popcornMedia').prev('video').css('display', 'none');
+            // $('.popcornMedia').prev('video').css('display', 'none');
            
         } 
         else {
