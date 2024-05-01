@@ -141,7 +141,27 @@ function initMedia($media) {
 			.width(width)
 			.height(height);
 		resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: 16/9});
+
+		var heightCalc = $('.popcornMedia').width();
+		var heightCalc2 = heightCalc * 9 / 16;
+
+		$('.x_videoContainer').css('width', '100%');
+		$('.popcornMedia').css('width', '100%');
+		$('.x_videoContainer').css('height', height);
+		$('.popcornMedia').css('height', height);
+		$(window).resize(function() {
+			setTimeout(function() {
+				$('.x_videoContainer').css('width', '100%');
+				$('.popcornMedia').css('width', '100%');
+				$('.x_videoContainer').css('height',  height);
+				$('.popcornMedia').css('height',  height);
+			
+			}, 200);
+		});
+		
 	}
+
+	
 }
 
 // function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
