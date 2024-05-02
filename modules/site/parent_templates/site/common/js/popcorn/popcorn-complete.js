@@ -4957,12 +4957,12 @@
         currentTimeInterval;
 
     // Namespace all events we'll produce
-    self._eventNamespace = Popcorn.guid( "HTMLPeerTubeVideoElement::" );
+    self._eventNamespace = Popcorn.guid( "HTMLYujaVideoElement::" );
 
     self.parentNode = parent;
 
     // Mark type as Mediasite
-    self._util.type = "Peertube";
+    self._util.type = "yuja";
 
     elem.id = "yujaIframe";
     elem.addClass = " .iframe ";
