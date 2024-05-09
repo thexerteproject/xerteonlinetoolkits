@@ -185,6 +185,12 @@ function _upgrade_db_query($sql, $params = array()) {
     return $result;
 }
 
+function _table_exists($table) {
+    $sql = "select 1 from $table limit 1";
+    $r = db_query($sql);
+    return $r!==false;
+}
+
 function _do_cleanup()
 {
     // Cleanup files that are really in the way of functionality, i.e. the responsivetext.css files in some of the themes prior to v3.6
@@ -1319,11 +1325,17 @@ function upgrade_35(){
 
 function upgrade_36(){
     $table = table_by_key('oai_education');
-    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
-    $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    $table = table_by_key('oai_categories');
-    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
-    $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $exists = _table_exists($table);
+    if ($exists) {
+        $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+        $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    $exists = _table_exists($table);
+    if ($exists) {
+        $table = table_by_key('oai_categories');
+        $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+        $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
     $table = table_by_key('educationlevel');
     $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
     $message .= "Adding parent_id column to educationlevel - ok ? " . ($ok ? 'true' : 'false') . "<br>";
