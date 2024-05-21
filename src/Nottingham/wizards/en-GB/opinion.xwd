@@ -69,8 +69,8 @@
     <prompt label="Question" type="TextArea"  height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false" />
-	<interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
-	
+	<interactivity label="Interactivity" options="Radio Buttons, Slider" conditionTrigger="true" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
+	<defaultSliderValue label="Default Slider Value" type="NumericStepper" min="0" max="100" step="1" optional="true" defaultValue="50" condition="interactivity=='slider'" tooltip="The default value for the slider"/>
 	<imgGroup type="group" label="Image" optional="true">
 		<image label="File" type="media" defaultValue="Select an Image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
