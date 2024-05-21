@@ -406,6 +406,11 @@
 						{
 							selected = max * answers[currentQuestion]/100;
 						}
+						else if ($thisQ.getAttribute("defaultSliderValue") != undefined)
+						{
+							const defaultVal = $thisQ.getAttribute("defaultSliderValue");
+							selected = max * defaultVal/100;
+						}
 
 						$rangeHolder.html('<form id="form' + currentQuestion + '"> <input id="slider' + currentQuestion + '" aria-label="slider' + currentQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
 
