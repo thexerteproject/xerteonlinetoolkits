@@ -2882,8 +2882,12 @@ function loadXotContent($this) {
 	xotLink += separator + 'hide=' + (hide != '' ? hide : 'none');
 	separator = '&';
 
-	if ($this.attr('pageNum') != undefined && $.isNumeric($this.attr('pageNum'))) {
-		xotLink += separator + 'page=' + $this.attr('pageNum');
+	if ($this.attr('pageNum') != undefined) {
+		if ($.isNumeric($this.attr('pageNum'))) {
+			xotLink += separator + 'page=' + $this.attr('pageNum');
+		} else {
+			xotLink += separator + $this.attr('pageNum');
+		}
 	}
 
 	// If this bootstrap LO is started using LTI, launch Xerte as an LTI tool as well.

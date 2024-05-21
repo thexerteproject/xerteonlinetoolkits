@@ -2959,6 +2959,7 @@ function x_changePageStep5(x_gotoPage) {
     }
 	
     // If special_theme_css does not exist yet, create a disabled special_theme_css
+
     if (x_specialTheme != undefined && x_specialTheme != '') {
         x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
             x_changePageStep5a(x_gotoPage);
@@ -3005,7 +3006,7 @@ function x_changePageStep5a(x_gotoPage) {
 		}
 
 		$("#x_mainBg").show();
-        $(".x_pageNarration").remove(); // narration flash / html5 audio player
+        $(".x_pageNarration").remove(); // narration audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
@@ -4308,6 +4309,7 @@ function x_insertCSS(href, func, disable, id, keep) {
 				}
             }
             func();
+			css.onload = null; // in FF this continues to be called every time theme is changed (via accessibility options) so force it to only trigger onload once - calling multiple times causes issues such as duplicated narration bar
         };
 		css.onload = f;
 

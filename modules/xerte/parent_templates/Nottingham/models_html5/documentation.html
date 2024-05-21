@@ -526,7 +526,7 @@
 														$("input[name='" + ('idP' + page + 'S' + section + 'I' + item) + "']:checked").map(function(_, el) {
 															checkbox.push($(el).val());
 														}).get();
-														documentation.updateData(p, s, i, (checkbox.length >0 ) ? checkbox.join(', ') : notAnsweredText);
+														documentation.updateData(p, s, i, checkbox.length > 0 ? checkbox.join('') : notAnsweredText);
 													})
 												})(page, section, item, display);
 												break;
