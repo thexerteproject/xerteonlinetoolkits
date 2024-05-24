@@ -281,7 +281,9 @@
 	</mediaFile>
 
     <newNodes>
-    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro="" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium"
+    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioRecord><![CDATA[<audioRecord name="Enter Page Title" text="" panelWidth="Medium" randomise="false"
+	    prevText="Previous" nextText="Next" restartText="Restart" restartConfirmText="Restarting will remove all recordings. Do you want to restart?" countText="Clip {i} of {n}" recText="Record" stopText="Stop" downloadText="Download" deleteText="Delete" clipNameLabel="Enter audio clip name" defaultClipName="Unnamed clip" clipNameRenameLabel="Edit audio clip name" micErrorLabel="Try Again"
+	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro="" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="" textWidth="narrow" url="" tip="" highlight="false" align="Left"
@@ -1077,7 +1079,121 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot"/>
   	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
-  </flexhotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_audio_slideshow_page" remove="true">
+  </flexhotspot><audioRecord menu="Interactivity" menuItem="Audio Recorder" hint="An interaction allowing a user to record short audio clips and compare them to example audio files." icon="icMicrophone" thumb="thumbs/audioRecord.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioRecord" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_audioRecord" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
+    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small"/>
+	<randomise label="Clip Order" type="ComboBox" data="false,true" options="Sequence,Random"/>
+
+	<downloadGroup label="Download" type="group" tooltip="A download button will allow audio files (audio examples and/or recordings) to be downloaded once the required number of recordings have been made" optional="true">
+    	<downloadExamples label="Example Audio" type="CheckBox" optional="true"/>
+    	<download label="Recorded Audio" type="CheckBox" optional="true"/>
+    </downloadGroup>
+
+	<feedback label="Feedback" type="TextArea" height="200" defaultValue="" placeholder="Enter feedback text" optional="true" tooltip="Add feedback once recordings for all audio clips have been made"/>
+	
+	<nextText label="Next Button" type="TextInput" wysiwyg="true" language="true"/>
+	<prevText label="Previous Button" type="TextInput" wysiwyg="true" language="true"/>
+	<restartText label="Restart Button" type="TextInput" wysiwyg="true" language="true"/>
+	<restartConfirmText label="Restart Confirm Text" type="TextInput" language="true"/>
+	<countText label="Clip {i} of {n}" type="TextInput" wysiwyg="true" language="true"/>
+	<recText label="Record Button" type="TextInput" wysiwyg="true" language="true"/>
+	<stopText label="Stop Record Button" type="TextInput" wysiwyg="true" language="true"/>
+	<downloadText label="Download Button" type="TextInput" wysiwyg="true" language="true"/>
+	<deleteText label="Delete Clip Button" type="TextInput" wysiwyg="true" language="true"/>
+	<clipNameLabel label="Clip Name Text" type="TextInput" language="true"/>
+	<defaultClipName label="Default Clip Name" type="TextInput" language="true"/>
+	<clipNameRenameLabel label="Clip Rename Text" type="TextInput" language="true"/>
+	<micErrorLabel label="Microphone Error Button" type="TextInput" wysiwyg="true" language="true"/>
+
+    <newNodes>
+      <nestedAudio><![CDATA[<nestedAudio name="Title" text="" feedback="" feedbackAfter="1"/>]]></nestedAudio>
+    </newNodes>
+
+  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
+		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this page" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times by leaving the 'From' &amp; 'Until' fields empty or specify a date (and optional time) in the 'From' &amp; 'Until' fields to specify when it should be available." common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideOnDate!=''&amp;&amp;hideOnDate!=undefined"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideUntilDate!=''&amp;&amp;hideUntilDate!=undefined"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu / table of contents so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPage=='true'" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing this page. This may be desirable when viewing the page in a lightbox."/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPage=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing this page. This is likely to be desirable when viewing the page in a lightbox."/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
+	</passwordGroup><introGroup type="group" label="Introduction" optional="true" tooltip="Add a Page Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the page first loads." common="true">
+		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this page"/>
+		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
+		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
+		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
+		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
+		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
+		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
+		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Start" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
+		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" condition="introType=='text'||introType==undefined" optional="true"/>
+		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="Every time this page is viewed,The first time this page is viewed,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the page is viewed"/>
+	</introGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="parent.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use (instead of page number) as tracking identifier"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page. This will override any background image added at project level." common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, while 'Crop to fit' will crop the image to fit without distorting it. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="0" max="100" step="10" defaultValue="30" optional="true" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" condition="showTimer=='true'" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up" condition="showTimer=='true'"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining" condition="showTimer=='true'"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" condition="parent.variables!=undefined" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" condition="parent.variables!=undefined" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" condition="parent.variables!=undefined" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" condition="lightbox=='true'" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
+		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
+		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
+    </pageHeaderGroup></audioRecord><nestedAudio menuItem="Audio" icon="icBullet" remove="true">
+	
+	<name label="Title" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="200" placeholder="Enter text here"/>
+
+    <feedbackAfter label="Recordings Required" type="NumericStepper" min="1" max="100" step="1" tooltip="The number of recordings that must be made before the feedback is shown and the user can move on"/>
+    <feedback label="Feedback" type="TextArea" height="200" placeholder="Enter feedback text here" tooltip="Feedback will be shown once the required number of recordings have been made"/>
+
+	<audioGroup label="Audio Example" type="group" optional="true" tooltip="An example audio file that is shown before or after a recording has been made">
+        <audio label="File" type="Media" placeholder="Select an audio file" optional="true"/>
+        <showAudio label="Show Example" type="ComboBox" data="always,fb" options="Initially,After Feedback" defaultValue="always" tooltip="Select whether the example audio player is shown before or after recordings are made" optional="true"/>
+    </audioGroup>
+
+  </nestedAudio><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_audio_slideshow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <sound label="Sound" type="Media" placeholder="Select an audio file"/>
