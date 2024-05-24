@@ -1212,3 +1212,7 @@ a:focus .wcagLogo {
 	background-color: #212121;
 	color: white;
 }
+
+[data-cke-editorplaceholder]::before {
+	padding: 0.3em;
+}
