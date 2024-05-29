@@ -69,7 +69,7 @@ foreach($query_shared_response as $row_template_name) {
 	
 	echo "<td><a href=\"" . $path . $row_template_name['template_id'] . "\" target=\"_blank\">";
 	
-	echo str_replace("_","",$row_template_name['template_name']);
+	echo str_replace("_"," ",$row_template_name['template_name']);
 	
 	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td>";
 

@@ -25,9 +25,7 @@ if (!file_exists("oai_config.php"))
     die("oai-pmh is not available");
 }
 require_once('oai_config.php');
-require_once('xerteobjects.php');
-
-//require $xerte_toolkits_site->php_library_path  . "template_library.php";
+require_once(__DIR__ . "/../website_code/php/template_library.php");
 
 /**
  * Identifier settings. It needs to have proper values to reflect the settings of the data provider.

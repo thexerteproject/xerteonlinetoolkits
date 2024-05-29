@@ -80,7 +80,12 @@
 				.hide();
 			
 			this.createCards();
-			
+
+			// crop images to fill cards (default is to stretch)
+			if (x_currentPageXML.getAttribute("imgFit") == "cover") {
+				$("#cardHolder").addClass("bgImgCover");
+			}
+
 			if (x_browserInfo.mobile == true) {
 				$("#pageContents").height($("#cardTopHolder").height());
 			}

@@ -2,7 +2,7 @@
 
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
-    <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
+    <name type="TextInput" wysiwyg="true" label="Project Title"/>
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with page controls,Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170" conditionTrigger="true"/>
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" conditionTrigger="true" defaultValue="default" />
@@ -63,8 +63,8 @@
 	</toc>
 	
 	<homePageGroup type="group" label="Home Page" optional="true" tooltip="Customise which page is classed as the home page and create a link from the project title to the home page" info="The default home page is either the first page or the page menu (when navigation is menu or menu with page controls).">
-		<homePageLink optional="true" type="CheckBox" label="Link LO Title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the learning object title a link which returns users to the home page" />
-		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="Select which page is classed as the home page (linked to from LO title or home button when navigation is set to 'Historic'). The first page will be the home page if no page selected here."/>
+		<homePageLink optional="true" type="CheckBox" label="Link Project Title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the project title a link which returns users to the home page" />
+		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="Select which page is classed as the home page (linked to from project title or home button when navigation is set to 'Historic'). The first page will be the home page if no page selected here."/>
 	</homePageGroup>
 	
 	<progressBar optional="true" type="ComboBox" options="Show progress bar,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress Bar" defaultValue="pBar" width="100" tooltip="Add a progress bar (indicating the percentage completed) to the footer bar"/>
@@ -97,7 +97,7 @@
 	</accessibilityGroup>
 	
 	<helpGroup type="group" label="Help File" optional="true" tooltip="Add a Help button to the footer tools, which opens a file or URL when clicked">
-		<nfo label="File" type="media" optional="true" tooltip="Upload a file (e.g. pdf) or enter a URL"/>
+		<nfo label="File" type="media" optional="true" placeholder="Select a file (e.g. PDF) or enter a URL"/>
 		<helpTarget type="ComboBox" label="Open in" defaultValue="new" options="New window,Lightbox" data="new,lightbox" tooltip="Where the help file will open - by default it will open in a new browser tab/window" optional="true"/>
 		<helpLabel label="Tooltip" type="TextInput" defaultValue="Help" optional="true" tooltip="The tooltip description for the Help button"/>
 		<helpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
@@ -107,12 +107,12 @@
 	<introGroup type="group" label="Project Introduction" optional="true" tooltip="Add a Project Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the project first loads.">
 		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this project"/>
 		<intro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
-		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
-		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
+		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
+		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
-		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
-		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the learning object title above the introduction"/>
+		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
+		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
+		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the project title above the introduction"/>
 		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
 		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Get Started" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
 		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" condition="introType=='text'||introType==undefined" optional="true"/>
@@ -162,26 +162,26 @@
 	
 	<icon type="group" label="Header Icon/Logo" optional="true" tooltip="Add, hide or customise the logo image shown on the header bar">
 		<icHide label="Hide Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger='true' tooltip="Hide all default logos automatically added as part of this template/theme"/>
-		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="Select an image" tooltip="Upload an image to use as the header bar logo"/>
+		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="" tooltip="Upload an image to use as the header bar logo" placeholder="Select an image"/>
 		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
 		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100" tooltip="The position of the logo on the header bar"/>
 	</icon>
 	
 	<bg type="group" label="Background" optional="true" tooltip="Add a background image to the project. This can be overridden by background images added to individual pages.">
-		<background optional="true" type="media" label="Image" defaultValue="Select an image"/>
+		<background optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image"/>
 		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, while 'Crop to fit' will crop the image to fit without distorting it. Note: this will have no effect in Internet Explorer."/>
 		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="30" label="Opacity" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
 		<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
 		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale"/>
 	</bg>
 	
-	<stylesheet optional="true" type="Media" label="Stylesheet" tooltip="Upload a CSS file to customise this project"/>
+	<stylesheet optional="true" type="Media" label="Stylesheet" tooltip="Upload a CSS file to customise this project" placeholder="Select a CSS file"/>
 	<styles optional="true" type="script" height="200" label="Styles" tooltip="Add bespoke CSS to this project"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true" tooltip="Add JavaScript to this project. The code will run after the project interface has been set up but before any pages have loaded."/>
 	
 	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">
 		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
-		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage"/>
+		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage" placeholder="e.g. 55%"/>
         <trackingPageTimeout label="Required Time for Page Completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed for to count as completed" />
         <forceTrackingMode label="Force Tracking Mode Behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracked projects. This will change the behaviour of some page types, e.g. the restart button will be disabled on Quiz pages and labels will stick on drag and drop exercises, even if they are placed incorrectly" />
 		<restartOptions label="Restart Session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" optional="true" tooltip="Restart the session if restart xAPI information is available" />
@@ -197,15 +197,15 @@
 	
 	<meta type="group" label="Metadata" optional="true" tooltip="The metadata for this project used, for example, when shared using oai-pmh">
 		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
-		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this learning object is part of"/>
-		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this learning object"/>
-		<category label="Category" type="Category" optional="true" tooltip="The category of this learning object (e.g. Maths)"/>
-		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this learning object, e.g. its subject, learning goals and expected level."/>
-		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords that will be useful in enabling people to find this learning object. Use a new line for each keyword."/>
+		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this project is part of"/>
+		<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="The module/subject of this project"/>
+		<category label="Category" type="Category" optional="true" tooltip="The category of this project (e.g. Maths)"/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" tooltip="Describe this project, e.g. its subject, learning goals and expected level."/>
+		<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue="" tooltip="Enter keywords that will be useful in enabling people to find this project. Use a new line for each keyword."/>
 		<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) will be published when publishing the metadata. If not specified, the creator and co-author names are used."/>
 		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the metadata as oai-pmh (optional functionality). If disabled, the name of the institution that runs the Xerte install will be used." condition="oai_pmh_available"/>
 		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, e.g. primary education"/>
-		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
+		<metaThumbnail type="media" label="Thumbnail" defaultValue="" optional="true" tooltip="The thumbnail to publish with the metadata" placeholder="Select an image"/>
 		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" optional="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
     </meta>
 	
@@ -225,19 +225,25 @@
 		<globalVars type="CheckBox" label="Enable Global Variables" defaultValue="true" optional="true"/>
 	</globalVarsGroup>
 	
-	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, images will open in a lightbox when clicked. Use these properties to customise this functionality or turn it off completely. A lightbox optional property is also available on each page where you can turn this functionality on/off on a page by page basis.">
-		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below image,Above image" data="false,below,above" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-		<lightboxColour type="ColourPicker" label="Background Colour" defaultValue="0x000000" optional="true" tooltip="The colour of the overlay behind the lightbox."/>
-		<lightboxOpacity type="NumericStepper" label="Background Opacity" min="0" max="100" step="1" defaultValue="80" optional="true" tooltip="The opacity of the overlay behind the lightbox, where 0 is completely transparent and 100 is not transparent at all"/>
+	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="Some information within the project may open in a lightbox, which lies above the main project. These properties allow the customisation of these lightboxes.">
+    	<lightboxAppearanceGroup type="group" label="Background Appearance" optional="true">
+            <lightboxColour type="ColourPicker" label="Colour" defaultValue="0x000000" optional="true" tooltip="The colour of the overlay behind lightboxes"/>
+            <lightboxOpacity type="NumericStepper" label="Opacity" min="0" max="100" step="1" defaultValue="80" optional="true" tooltip="The opacity of the overlay behind lightboxes, where 0 is completely transparent and 100 is not transparent at all"/>
+    	</lightboxAppearanceGroup>
+		<lightboxImgGroup type="group" label="Images" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off throughout the project. A lightbox optional property is also available on each page where you can turn this functionality on/off on a page by page basis.">
+            <lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Uncheck to disable images throughout the project from opening in a lightbox"/>
+            <lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" condition="lightbox!='false'" options="None,Below image,Above image" data="false,below,above" tooltip="Add a caption to image lightboxes. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+        </lightboxImgGroup>
 	</lightboxGroup>
 	
-	<twittercard type="group" label="Twitter Card" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter">
+	<twittercard type="group" label="Twitter Card" optional="true" tooltip="Enable a Twitter card for when a public link to this project is shared via Twitter">
 		<tcoption label="Enable Twitter Card" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true"/>
 		<tcmode optional="true" condition="tcoption!='false'" label="Twitter Card Mode" width="250" type="ComboBox" options="Summary large image,Summary thumbnail image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
-		<tctitle optional="true" condition="tcoption!='false'" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Title of this content to display in the Twitter card."/>
-		<tcimage optional="true" condition="tcoption!='false'" type="media" label="Image" defaultValue="Select an image" tooltip="The image used on the Twitter card"/>
-		<tcimagealt optional="true" condition="tcoption!='false'" type="TextInput" label="Image Description" placeholder="Enter a description for accessibility" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
+		<tctitle optional="true" condition="tcoption!='false'" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Title of this content to display in the Twitter card." placeholder="Enter card title"/>
+		<tcimageGroup type="group" label="Image" optional="true" tooltip="The image used on the Twitter card">
+    		<tcimage optional="true" condition="tcoption!='false'" type="media" label="File" defaultValue="" placeholder="Select an image"/>
+	    	<tcimagealt optional="true" condition="tcoption!='false'" type="TextInput" label="Description" placeholder="Enter a description for accessibility" defaultValue=""/>
+	    </tcimageGroup>
 		<tcOptionalGroup optional="true" type="group" label="Optional Settings">
 			<tcsite optional="true" condition="tcoption!='false'" label="Twitter Site" width="250" type="TextInput" defaultValue="" tooltip="The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
 			<tccreator optional="true" condition="tcoption!='false'" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Twitter account for the creator e.g. @yourtwitterusername"/>

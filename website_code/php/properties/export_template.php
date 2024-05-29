@@ -31,11 +31,11 @@ _load_language_file("/website_code/php/properties/export_template.inc");
 
 require_once("../template_library.php");
 
-include "../template_status.php";
+require_once "../template_status.php";
 
-include "../url_library.php";
+require_once "../url_library.php";
 
-include "../user_library.php";
+require_once "../user_library.php";
 
 $database_id=database_connect("Export template database connect success","Export template database connect failed");
 

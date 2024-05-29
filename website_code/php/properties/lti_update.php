@@ -65,6 +65,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projec
 
     if ($lti_def->xapi_student_id_mode == 3) {
         $lti_def->url .= "&group=groupname";
+        $lti_def->url13 .= "&group=groupname";
     }
 
     // Get current temapltedetails record

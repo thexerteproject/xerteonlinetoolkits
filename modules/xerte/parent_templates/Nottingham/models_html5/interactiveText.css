@@ -1,6 +1,7 @@
 /* interactiveText.html */
 
-	h3 {
+	h3, #qNum {
+		font-weight: bold;
 		padding: 5px;
 	}
 
@@ -61,7 +62,7 @@
 	#pageContents #feedbackTxt{
 		padding-top: 10px;
 		padding-left: 5px;
-		font-size: 2.5vmin;
+		font-size: 1em;
 	}
 
 	#pageContents table {
@@ -151,4 +152,10 @@
 		text-decoration:none;
 		margin-left:	0.5em;
 	}
+
+@media (min-width: 768px) {
+	#x_mainHolder.x_responsive #pageContents #feedbackTxt {
+		font-size: 2.5vmin;
+	}
+}
 

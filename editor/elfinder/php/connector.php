@@ -99,9 +99,10 @@ $opts = array(
             'tmbURL'        => $rooturl . "/media/.tmb",
             'tmbCrop'       => false,
             'uploadDeny' => array('text/x-php','application/x-php'),
+            'disabled'      => array('archive', 'extract', 'forward', 'netmount', 'netunmount', 'zipdl'),
             'attributes' => array(
                 array( // hide readmes
-                    'pattern' => '/(readme\.txt)|\.(html|php|php5|php*|py|pl|sh)$/i',
+                    'pattern' => '/(readme\.txt)|\.(html|php|php5|php*|phtml|phar|py|pl|sh)$/i',
                     'read'   => false,
                     'write'  => false,
                     'locked' => true,

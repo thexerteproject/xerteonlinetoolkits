@@ -3,6 +3,10 @@
 	#textHolder {
 		padding-bottom:	20px;
 	}
+
+	#x_mainHolder.x_mobile #pageContents .mobileAlign + #textHolder {
+		padding: 1em 0 0;
+	}
 	
 	.transcriptHolder {
 		margin-top:	10px !important;

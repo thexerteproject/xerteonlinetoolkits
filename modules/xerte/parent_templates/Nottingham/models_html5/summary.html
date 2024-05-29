@@ -45,11 +45,11 @@
 			var $pageContents = $("#pageContents");
 			
 			if (x_currentPageXML.getAttribute("summary") != undefined && x_currentPageXML.getAttribute("summary") != '') {
-				$pageContents.append("<div class='summaryGroup'><h3>" + summaryHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</div>");
+				$pageContents.append("<div class='summaryGroup'>" + (summaryHeader != '' ? "<h3>" + summaryHeader + "</h3>" : "") + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</div>");
 			}
 			
 			if (x_currentPageXML.getAttribute("nextsteps") != undefined && x_currentPageXML.getAttribute("nextsteps") != '') {
-				$pageContents.append("<div class='summaryGroup'><h3>" + nextstepsHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</div>");
+				$pageContents.append("<div class='summaryGroup'>" + (nextstepsHeader != '' ? "<h3>" + nextstepsHeader + "</h3>" : "") + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</div>");
 			}
 			
 			// call this function in every model once everything's loaded

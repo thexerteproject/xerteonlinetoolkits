@@ -856,7 +856,7 @@
 				$pageContents.data("phrases", phrases);
 
 
-				$("#questionHolder").html('<h3 id="qNum" tabindex="' + (tabIndex+1) + '"></h3><div id="qText" tabindex="' + (tabIndex+2) + '"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
+				$("#questionHolder").html('<p id="qNum" tabindex="' + (tabIndex+1) + '" aria-live="polite"></p><div id="qText" tabindex="' + (tabIndex+2) + '"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
 
 				$("#feedback")
 					.html('<div id="marking"><a id="more" class="fa fa-x-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/></div>')
@@ -1545,7 +1545,7 @@
 	<div tabindex="1">
 		<div id="pageTxt"/>
 		<div id="instructions"/>
-		<div id="groupInfo"/>
+		<div id="groupInfo" aria-live="polite"/>
 		<div id="btnHolder"/>
 		<div id="questionHolder"/>
 	</div>

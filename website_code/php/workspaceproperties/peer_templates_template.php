@@ -68,7 +68,7 @@ foreach($query_peer_response as $row) {
 	
 	echo "<td><a href=\"" . $path . $row['template_id'] . "\" target=\"_blank\">";
 	
-	echo str_replace("_","",$row['template_name']);
+	echo str_replace("_"," ",$row['template_name']);
 	
 	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td>";
 	

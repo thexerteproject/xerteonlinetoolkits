@@ -47,7 +47,7 @@
 		}
 
 		this.startTracking = function(data) {
-		
+
 			let itemCount = 0;
 			let items = [];
 
@@ -59,7 +59,7 @@
 						prefix += section.sectionName + " - ";
 					}
 					for(let item of section.items){
-						if(item.itemName == null) 
+						if(item.itemName == null)
 							continue;
 						items.push(prefix + item.itemName);
 						itemCount += 1;
@@ -72,7 +72,7 @@
 				XTEnterInteraction(x_currentPage, i, 'fill-in', name, ["-"], ["-"], null /* never used*/, x_currentPageXML.getAttribute("grouping"));
 			}
 		}
-		
+
 		this.init = function() {
 			// styles used in downloaded word doc
 			var styles = '';
@@ -87,7 +87,7 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
-			
+
 			// Set up main layout structure & add in all non-subpage text
 			$("#textHolder").append(x_currentPageXML.getAttribute("text"));
 			
@@ -256,7 +256,7 @@
 			if(x_currentPageXML.getAttribute("track") == "true"){
 				this.startTracking(docData);
 			}
-			
+
 			// Add download button
 			var $finishBtn = $('<button id="downloadBtn">');
 			var $finishSection = $('<div class="item"/>');
@@ -274,7 +274,7 @@
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($finishBtn);
+				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($finishBtn);
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);
@@ -573,7 +573,7 @@
 														$("input[name='" + ('idP' + page + 'S' + section + 'I' + item) + "']:checked").map(function(_, el) {
 															checkbox.push($(el).val());
 														}).get();
-														documentation.updateData(p, s, i, (checkbox.length >0 ) ? checkbox.join(', ') : notAnsweredText);
+														documentation.updateData(p, s, i, checkbox.length > 0 ? checkbox.join('') : notAnsweredText);
 													})
 												})(page, section, item, display);
 												break;
@@ -626,7 +626,7 @@
 							case "Full":
 							        width = "full-textbox";
 							        break;
-	
+
 							default:
 								width = "width60";
 						}
@@ -804,7 +804,7 @@
     		}
 			$("#downloadBtn").hide().prev().hide();
 		}
-		
+
 		this.showPage = function (page) {
 			$('#pagenumber').html(page + " / " + $('#pages').children().length);
 		};
@@ -821,7 +821,7 @@
 						prefix += section.sectionName + " - ";
 					}
 					for(let item of section.items){
-						if(item.itemName == null) 
+						if(item.itemName == null)
 							continue;
 						let result = {
 							success: true,
@@ -837,7 +837,7 @@
 								columnCount++;
 								if(index === 0){
 									tableCSV += $(this).text();
-								} else {	
+								} else {
 									tableCSV += "," + $(this).text();
 								}
 							});
@@ -856,7 +856,7 @@
 			}
 			XTSetPageScore(x_currentPage, 100, x_currentPageXML.getAttribute("trackinglabel"));
 		}
-		
+
 		this.postData = function (data) {
 			// remove anything that's excluded from document
 			var temp = jQuery.extend(true, {}, data),

@@ -142,8 +142,8 @@
 			if (x_currentPageXML.getAttribute("size") != undefined) {
 				$textHolder.css("font-size", Number(x_currentPageXML.getAttribute("size")) + "pt");
 			}
-			
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+
+			$textHolder.html(x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
 			var maxWH = this.getMaxDimensions();
 			

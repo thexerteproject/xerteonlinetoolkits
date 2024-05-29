@@ -59,6 +59,10 @@ ul, ol {
 	overflow: hidden;
 }
 
+a {
+	word-wrap: break-word;
+}
+
 .optionTxt p {
 	padding-top: 0;
 }
@@ -787,7 +791,7 @@ input#x_pagePswd.old {
 	box-sizing: border-box;
 	grid-template-columns: repeat(3, 1fr);
 	grid-template-rows: repeat(6, 1fr);
-	grid-template-areas: 
+	grid-template-areas:
 		"input  input  input "
 		"one    two    three "
 		"four   five   six   "
@@ -1360,4 +1364,8 @@ a:focus .wcagLogo {
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
 	background-color: #212121;
 	color: white;
+}
+
+[data-cke-editorplaceholder]::before {
+	padding: 0.3em;
 }

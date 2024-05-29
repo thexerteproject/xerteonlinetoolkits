@@ -43,7 +43,7 @@
 				if (x_currentPageXML.getAttribute("thumbType") == "both" || x_currentPageXML.getAttribute("thumbType") == "imgNum" || x_currentPageXML.getAttribute("thumbType") == undefined) {
 					$("#thumbBar .thumbBox").each(function() {
 						var $this = $(this);
-						var maxImgSize = [$this.width(), $this.height() - $this.find("h3").height() - 5];
+						var maxImgSize = [$this.width(), $this.height() - $this.find(".thumbTitle").height() - 5];
 						if ($this.find(".thumbMedia img").length > 0) {
 							x_scaleImg($this.find(".thumbMedia img")[0], maxImgSize[0], maxImgSize[1], true, false, false, true);
 						} else if ($this.find(".thumbMedia video").length > 0) {
@@ -166,7 +166,7 @@
 			
 			$("#prevBtn, #nextBtn").hide();
 			
-			if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
+			if (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") != "lightbox") {
 				$gridBack
 					.prepend(x_currentPageXML.getAttribute("backGrid") == undefined ? "Back" : x_currentPageXML.getAttribute("backGrid"))
 					.click(function() {
@@ -185,16 +185,16 @@
 			}
 			
 			// create thumbs in thumbBar
-			var newThumb = '<a href="#" class="thumbBox ' + (x_currentPageXML.getAttribute("thumbBorder") == "false" ? "" : "border") + '"><h3>|</h3><div class="thumbMedia"></div></a>',
+			var newThumb = '<a href="#" class="thumbBox ' + (x_currentPageXML.getAttribute("thumbBorder") == "false" ? "" : "border") + '"><p class="thumbTitle">|</p><div class="thumbMedia"></div></a>',
 				thumbType = x_currentPageXML.getAttribute("thumbType") == undefined ? "both" : x_currentPageXML.getAttribute("thumbType"),
 				adjustIndex = 1;
 			
-			if (x_currentPageXML.getAttribute("playAll") == "true") {
+			if (x_currentPageXML.getAttribute("playAll") == "true" && (x_currentPageXML.getAttribute("thumbPos") != "grid" || x_currentPageXML.getAttribute("target") != "lightbox")) {
 				var	$thisThumb = $(newThumb);
 				$thumbHolder.append($thisThumb);
 				$thisThumb
 					.addClass("playAll")
-					.find("h3").html(x_currentPageXML.getAttribute("playTip") == undefined ? "Play All" : x_currentPageXML.getAttribute("playTip"));
+					.find(".thumbTitle").html(x_currentPageXML.getAttribute("playTip") == undefined ? "Play All" : x_currentPageXML.getAttribute("playTip"));
 				
 				$thisThumb.find(".thumbMedia").remove();
 				
@@ -219,14 +219,14 @@
 					if (thumbType == "both" || thumbType == "image" || thumbType == "imgNum") {
 						var $thisThumbMedia = $thisThumb.find(".thumbMedia");
 						
-						var maxImgSize = [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5];
+						var maxImgSize = [$thisThumb.width(), $thisThumb.height() - $thisThumb.find(".thumbTitle").height() - 5];
 						
 						if (thumbType == "both") {
-							$thisThumb.find("h3").html(this.getAttribute("name"));
+							$thisThumb.find(".thumbTitle").html(this.getAttribute("name"));
 						} else if (thumbType == "imgNum") {
-							$thisThumb.find("h3").html($thisThumb.index() + adjustIndex);
+							$thisThumb.find(".thumbTitle").html($thisThumb.index() + adjustIndex);
 						} else {
-							$thisThumb.find("h3").remove();
+							$thisThumb.find(".thumbTitle").remove();
 							maxImgSize = [$thisThumb.width(), $thisThumb.height()];
 						}
 						
@@ -268,7 +268,7 @@
 								$thisVideo
 									.data({
 										"src": this.getAttribute("src"),
-										"dimensions": [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5],
+										"dimensions": [$thisThumb.width(), $thisThumb.height() - $thisThumb.find(".thumbTitle").height() - 5],
 										"trackMedia": false,
 										"trackinglabel": (this.getAttribute('trackinglabel') ? this.getAttribute('trackinglabel') : videos + ""),
 									})
@@ -289,7 +289,7 @@
 					// only text to appear on thumbnail - removed caption/number only options in xwd as they don't look great
 					} else {
 						$thisThumb.find(".thumbMedia").remove();
-						$thisThumb.find("h3").html(thumbType == "caption" ? this.getAttribute("name") : $thisThumb.index() + adjustIndex);
+						$thisThumb.find(".thumbTitle").html(thumbType == "caption" ? this.getAttribute("name") : $thisThumb.index() + adjustIndex);
 					}
 				}
 			});
@@ -302,7 +302,7 @@
 			// set up thumbnail click events - fadeOut old mainInfo and fadeIn new contents
 			$("#thumbHolder .thumbBox:not(.playAll)")
 				.click(function(e, playAll) {
-					
+
 					e.preventDefault();
 					
 					var $this = $(this);
@@ -322,7 +322,7 @@
 							}
 						});
 					}
-					
+
 					var chgInfo = false;
 					if ($mainInfoHolder.data("index") == "undefined" || $mainInfoHolder.data("index") != $this.data("index")) {
 						chgInfo = true;
@@ -472,12 +472,19 @@
 								
 								$mainInfoHolder.addClass("centerAlign");
 							}
-							
+
 							$mainInfoHolder.css({ // change back the way the div's hidden so it can fadeIn
 								"display": "none",
 								"visibility": "visible"
 							});
-							$mainInfoHolder.fadeIn();
+
+							// info will be shown on the page, unless the thumbnails are shown in a grid and they have been set to open in a lightbox
+							if (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") == "lightbox") {
+								const $clone = $mainInfoHolder.clone().show();
+								$.featherlight($clone, {});
+							} else {
+								$mainInfoHolder.fadeIn();
+							}
 							
 							if (x_currentPageXML.getAttribute("highlight") == "true") {
 								$("#thumbHolder .current").removeClass("current");
@@ -488,11 +495,15 @@
 						}
 						
 						if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
-							$thumbBar.fadeOut(400, showNew);
+							if (x_currentPageXML.getAttribute("target") != "lightbox") {
+								$thumbBar.fadeOut(400, showNew);
+							} else {
+								showNew();
+							}
 						} else {
 							$mainInfoHolder.fadeOut(400, showNew);
 						}
-						
+
 					} else if (playAll == true) {
 						// starts play all if focus is already on 1st thumb
 						if ($this.data("index") == 0 && thisData.nodeName == "image") {
@@ -502,19 +513,19 @@
 						}
 					} else { // no change to media shown - just resize if needed
 						perspectives.setInfoHolderHeight();
-						
+
 						if (thisData.nodeName == "image") {
 							var maxW = $mainInfoHolder.width() * mediaW,
 								maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - 5;
-							
+
 							x_scaleImg($mediaPanel.find("#pageImage"), maxW, maxH, true, false);
-							
+
 						} else if (thisData.nodeName == "sound") {
 							var maxW = $mainInfoHolder.width() * mediaW,
 								maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - x_audioBarH - 5;
-							
+
 							x_scaleImg($mediaPanel.find("#audioImage"), maxW, maxH, true, false);
-							
+
 							var $audio = $mediaPanel.find("#pageAudio");
 							if ($audio.find(".mejs-audio").width() != $mediaPanel.find("#audioImage").width()) {
 								$audio.data("width", $mediaPanel.find("#audioImage").width());

@@ -161,8 +161,8 @@ function get_user_id(){
 
     $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($_SESSION['toolkits_logon_username']));
 
-    if(!empty($row)) { 
-        return $row['login_id'];	
+    if(!empty($row)) {
+        return $row['login_id'];
     }else{
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users login ID number", "Failed to get users login ID number: User: " . $_SESSION['toolkits_logon_username']);
     }
@@ -218,6 +218,11 @@ if(isset($_SESSION['toolkits_logon_id'])) {
     if (!isset($authmech))
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    }
+    $regenerate_session_id = true;
+    if ($xerte_toolkits_site->authentication_method == "Moodle")
+    {
+        $regenerate_session_id = false;
     }
     if (isset($_GET['altauth']))
     {

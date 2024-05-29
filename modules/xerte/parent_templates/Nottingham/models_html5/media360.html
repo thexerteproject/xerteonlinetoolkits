@@ -91,14 +91,13 @@
 			var filePath = x_templateLocation + 'common_html5/js/pannellum/';
 			
 			x_insertCSS(filePath + 'pannellum.css');
-			
-			$.getScript(filePath + 'pannellum.js')
-				.done(function(script, textStatus) {
+			loadjs.path(filePath);
+			loadjs(['pannellum.js'], {
+				success: function() {
 					media360.begin();
-				})
-				.fail(function( jqxhr, settings, exception ) {
-					console.log("Failed to load pannellum files: " + exception);
-				});
+				}
+			});
+			
 		}
 		
 		this.begin = function() {

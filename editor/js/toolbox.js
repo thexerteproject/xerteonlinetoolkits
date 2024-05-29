@@ -328,7 +328,6 @@ var EDITOR = (function ($, parent) {
 
     // Recursive function to traverse the xml and build
     build_lo_data = function (xmlData, parent_id) {
-
         // First lets generate a unique key
         var key = parent.tree.generate_lo_key();
         if (parent_id == null)
@@ -375,10 +374,11 @@ var EDITOR = (function ($, parent) {
                 attributes[key] = makeAbsolute(attributes[key]);
             }
         });
+
+        // cdata-section
         lo_data[key] = {};
         lo_data[key]['attributes'] = attributes;
-        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
-        {
+        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4) {
             lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
 
 			if (!alreadyUpgraded)
@@ -1484,15 +1484,15 @@ var EDITOR = (function ($, parent) {
     stripP = function (val) {
         if (val.indexOf('<p>') == 0)
         {
-            var strippedValue = val.substr(3);
+            var strippedValue = val.substring(3);
             if (strippedValue.lastIndexOf('</p>') != strippedValue.length - 4)
             {
                 // Strip extra newline
-                strippedValue = strippedValue.substr(0, strippedValue.length-5);
+                strippedValue = strippedValue.substring(0, strippedValue.length-5);
             }
             else
             {
-                strippedValue = strippedValue.substr(0, strippedValue.length-4);
+                strippedValue = strippedValue.substring(0, strippedValue.length-4);
             }
             return strippedValue.trim();
         }
@@ -1560,9 +1560,9 @@ var EDITOR = (function ($, parent) {
                     uploadAudioUrl : 'editor/uploadAudio.php?mode=record&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    extraPlugins : 'sourcedialog,image3,fontawesome,rubytext',
-                    /*extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',*/
-                    language : language.$code.substr(0,2)//,
+                    //extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
+                    extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
+                    language : language.$code.substr(0,2),
 					//editorplaceholder: options.options.placeholder
                 });
             }
@@ -3774,6 +3774,9 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
 				var s_options = options.options.split(',');
+                for (var i=0; i<s_options.length; i++) {
+                    s_options[i] = decodeURIComponent(s_options[i].replace(/%%/g, '%'));
+                }
 				var s_data = [];
 				if (options.data)
 				{
@@ -3816,30 +3819,30 @@ var EDITOR = (function ($, parent) {
 			case 'script':
 			case 'html':
             case 'textarea':
-				var id = "textarea_" + form_id_offset;
-				var textvalue = "";
+                var id = "textarea_" + form_id_offset;
+                var textvalue = "";
+                form_id_offset++;
 
-				form_id_offset++;
-
-				// Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
-                const lcvalue=value.toLowerCase();
-				if (lcvalue.indexOf('<textarea') == -1
+                // Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
+                // if value is in cdata and placeholder is used, the empty value will be undefined - change this to empty string
+                const lcvalue = value == undefined && options.placeholder != undefined ? '' : value.toLowerCase();
+                if (lcvalue.indexOf('<textarea') == -1
                     && lcvalue.indexOf('<pre>') == -1
                     && lcvalue.indexOf('<code>') == -1)
-				    textvalue = value;
+                    textvalue = value == undefined && options.placeholder != undefined ? '' : value;
 
-				var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-				if (options.height) textarea += "height:" + options.height + "px";
-				textarea += "\">" + textvalue + "</textarea>";
-				$textarea = $(textarea);
+                var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                if (options.height) textarea += "height:" + options.height + "px";
+                textarea += "\">" + textvalue + "</textarea>";
+                $textarea = $(textarea);
 
-				if (textvalue.length == 0) $textarea.data('afterckeditor', value);
+                if (textvalue.length == 0) $textarea.data('afterckeditor', value);
 
-				html = $('<div>')
-					.attr('style', 'width:100%')
-					.append($textarea);
+                html = $('<div>')
+                    .attr('style', 'width:100%')
+                    .append($textarea);
 
-				textareas_options.push({id: id, key: key, name: name, options: options});
+                textareas_options.push({id: id, key: key, name: name, options: options});
 				break;
 			case 'numericstepper':
 				var min = Number(options.min);
@@ -4604,6 +4607,7 @@ var EDITOR = (function ($, parent) {
 					.append($('<input>')
 						.attr('type', "text")
 						.attr('id', id)
+                        .attr('placeholder', options.placeholder)
 						.addClass('media')
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
@@ -4844,9 +4848,14 @@ var EDITOR = (function ($, parent) {
 					html = $('<div>')
 						.attr('id', id)
 						.addClass('inlinewysiwyg')
-						.attr('contenteditable', 'true')
-						.append('<p>' + value + '</p>');
+						.attr('contenteditable', 'true');
 
+                    // Do not always add a paragraph tag if the value already starts with a <p tag (with for example a class attribute)
+                    if (value.indexOf('<p') === 0) {
+                        html = html.append(value);
+                    } else {
+                        html = html.append('<p>' + value + '</p>');
+                    }
 					textinputs_options.push({id: id, key: key, name: name, options: options});
 				}
 				else {

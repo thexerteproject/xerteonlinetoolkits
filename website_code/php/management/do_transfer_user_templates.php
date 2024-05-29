@@ -174,7 +174,7 @@ function clear_recyclebin($templates)
 function createGetFolderId($folder_structure, $newuserid, $old_folder_id, $transfer_shared_folders)
 {
     global $prefix;
-    for ($i=0; $i, count($folder_structure); $i++)
+    for ($i=0; $i < count($folder_structure); $i++)
     {
         if ($folder_structure[$i]['folder_id'] == $old_folder_id)
         {
