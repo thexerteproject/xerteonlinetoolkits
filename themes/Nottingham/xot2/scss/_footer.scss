@@ -43,7 +43,8 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 #x_glossaryBtn:not(.customIconBtn) .ui-icon:before { content: "\f02d"; }
 #x_helpBtn:not(.customIconBtn) .ui-icon:before { content: "\f128"; }
 #x_introBtn:not(.customIconBtn) .ui-icon:before { content: "\f129"; }
-#x_menuBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
+#x_menuBtn:not(.x_home):not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
+#x_menuBtn.x_home:not(.customIconBtn) .ui-icon:before { content: "\f015"; }
 #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {content: "\f0c7"; }
 
 #x_footerBlock button { color: $blackordarkest; }
@@ -70,69 +71,84 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   color: $blackordarkest;
 }
 #x_footerChevron:hover, #x_footerChevron:focus {
-  color: $brightcolor;
+  color: $lightestcolor2;
 }
 
-/*****TOC****/
+/*****TOC & other dialogs****/
+.ui-dialog.ui-widget {
+  padding: 0;
+  border: 1px solid $darkestcolor;
+  border-radius: 10px;
+}
 .ui-dialog .ui-widget-header {
-  border: 1px solid $contrastcolor;
+  border: 1px solid $darkestcolor;
   background: $darkestcolor;
   color: $whiteorlightest;
   font-weight: bold;
+  border-radius: 0;
+}
+.ui-dialog .ui-dialog-titlebar button.ui-widget {
+  background: $darkestcolor;
+  border: 0;
+  color: $whiteorlightest;
+}
+.ui-dialog .ui-dialog-titlebar button.ui-widget:hover, .ui-dialog .ui-dialog-titlebar button.ui-widget:focus, .ui-dialog .ui-dialog-titlebar button.ui-widget:active {
+  color: $lightestcolor2;
+  border: 0;
+  padding: 0;
+}
+.ui-dialog .ui-dialog-content {
+  padding: .5em;
 }
 #menuItems .menuItem {
   background: $lightgrey;
+  border: 2px solid $lightgrey;
   color:$blackordarkest;
 }
-#menuItems .menuItem:hover {
+#menuItems .menuItem:hover, #menuItems .menuItem:focus, #menuItems .menuItem:active {
   background: $midgrey;
   color:$blackordarkest;
+  border-color: $midgrey;
 }
-
 #menuItems .menuItem.current {
   border: 2px solid $blackordarkest;
 }
+table.glossary tr td:first-child {
+  border-right-color: $lightgrey;
+}
+table.glossary tr.shaded {
+  background: $lightgrey
+}
 
 //*****SIDE BAR****/
-
 #x_sideBar {
-	background-color: $darkestcolor;
+  background-color: $lightgrey;
+  color: $blackordarkest;
 }
-
 #x_sideBarToggleBtn {
-	border-color: $bodybackgroundcolor;
-	color: $whiteorlightest;
+  background-color: $midgrey;
+  color: $blackordarkest;
 }
-
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
-	color: $darkestcolor;
-	background-color: $lightestcolor2;
+  background-color: $darkergrey;
+  color: $blackordarkest;
 }
-
 #x_sideBarBtnHolder button {
-	color: $whiteorlightest;
+  color: $blackordarkest;
 }
-
-#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
-	border-color: $bodybackgroundcolor;
-}
-
-#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
-	background-color: $contrastcolor;
-	border-color: $contrastcolor;
-}
-
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
-	background-color: $contrastcolor;
-	color: $whiteorlightest;
+  color: $blackordarkest;
+  background: $darkergrey;
 }
-
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+  background: none;
+  border: 2px solid $midgrey;
+}
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
-	background-color: $lightestcolor;
-	border-color: $lightestcolor2;
-	color: $whiteorlightest;
+  background: $darkergrey;
+  color: $blackordarkest;
+  border: 2px solid $darkergrey;
 }
-
 //******** Smartphones 600px (portrait) change progress bar display-----------/
 @media only screen
 and (max-width:600px) {

@@ -2,7 +2,7 @@
 //*define color pallette*/
 $darkestcolor: #222222; /*black*/
 $lightestcolor:#cfcfcf;/*was orange changed to the same as midgrey below*/
-$lightestcolor2:orange;/*added to still use orange where needed*/
+$lightestcolor2:#f86718;/*added to still use orange where needed*/
 $brightcolor:#C4551F;
 $contrastcolor:#4078C0; /*blue*/
 $whiteorlightest:#ffffff;
@@ -36,10 +36,14 @@ $linkvisited: green;
 $linkhover:red;
 
 /*define rounded corner and other sizes*/
-$largeroundedcorners: none;/*6vmin;*/
-$mediumroundedcorners: none;/*2vmin;*/
-$smallroundedcorners: none;/*1vmin;*/
-$imageroundedcorners: none;/*2vmin;*/
+$largeroundedcorners: 0;/*6vmin;*/
+$mediumroundedcorners: 0;/*2vmin;*/
+$smallroundedcorners: 0;/*1vmin;*/
+$imageroundedcorners: 0;/*2vmin;*/
 $contentmargin: 1%;
 $interfaceboxshadow:none; /*3px 3px 5px grey*/
 $defaultpagepadding:1%;
+
+/*define hr appearances*/
+$hrLine: 3px;
+$hrColour: $lightgrey;

@@ -1,3 +1,11 @@
+//*****hr lines & border-top/bottom lines*****
+.x_columnPage_page #textHolder,
+.x_imageSequence_page #controlBar {
+  border-bottom: $hrLine solid $hrColour;
+}
+.x_textGraphics_page #imgCaption.transcript {
+  border-bottom: $hrLine solid $defaultpagebackground;
+}
 //***********************************Text*************************************
 //*****title page******
 .titlePageTxt {
@@ -32,6 +40,22 @@
 //*****transcript reader******/
 .x_transcriptReader_page .highlight {
   background:transparentize($whiteorlightest, .1);
+}
+//*****image sequence******/
+.x_imageSequence_page #seriesBtnLeft, .x_imageSequence_page #seriesBtnRight {
+  color: $blackordarkest;
+}
+.x_imageSequence_page #seriesBtnLeft:hover, .x_imageSequence_page #seriesBtnRight:hover, .x_imageSequence_page #seriesBtnLeft:focus, .x_imageSequence_page #seriesBtnRight:focus, .x_imageSequence_page #seriesBtnLeft:active, .x_imageSequence_page #seriesBtnRight:active {
+  color: $lightestcolor2;
+}
+.x_imageSequence_page #seriesHolder .thumbs.selected {
+  background-color: $accent1;
+}
+.x_imageSequence_page #seriesHolder .thumbs.highlighted {
+  background-color: $lightestcolor2;
+}
+.x_imageSequence_page #viewHolder #viewOption button.highlighted {
+  border-color: $lightestcolor2;
 }
 //***********************************Navigators*************************************/
 //*****Accordion page*******/
@@ -82,7 +106,7 @@
   margin-left: 0;
   margin-right: .2em;
 }
-.ui-state-active{
+.ui-button.ui-state-active, .ui-button.ui-state-hover, .ui-button:focus {
   border-radius: $smallroundedcorners;
   background: $darkergrey;
   border: none;
@@ -186,7 +210,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   color: #ffffff;
 }
 .x_textHighlight_page .ui-widget-content button.ui-state-default.ui-state-active {
-  background: $brightcolor;
+  background: $lightestcolor2;
   color: $whiteorlightest;
 }
 .x_textHighlight_page .ui-tabs {
