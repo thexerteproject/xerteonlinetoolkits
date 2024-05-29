@@ -713,7 +713,7 @@
               },
               didDrawCell: function(chd) {
                 if (chd.section === 'body' && chd.column.dataKey === specificPDFcheck) {
-                    if(chd.cell.raw !== ''){
+                    if(chd.cell.raw !== '') {
                         pdf.addImage(
                             chd.cell.raw === 'correct' ? checkmark : cross, 'png',
                             chd.cell.x + (chd.cell.width - pdfIconSize) / 2, chd.cell.y + (chd.cell.contentHeight - pdfIconSize) / 2, pdfIconSize, pdfIconSize
