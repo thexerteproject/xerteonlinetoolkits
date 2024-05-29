@@ -873,8 +873,13 @@ function access_change_template(template_id){
 				access: access_value,
 				server_string: document.getElementById('url').value
 			};
-		}
-		else {
+		} else if (access_value=="PasswordPlay") {
+			var data = {
+				template_id: template_id,
+				access: access_value,
+				password: document.getElementById('pwd').value
+			};
+		} else {
 			var data = {
 				template_id: template_id,
 				access: access_value

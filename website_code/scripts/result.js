@@ -192,7 +192,6 @@
                             var learnerAnswer = y.learnerAnswer;
                             var correctAnswer = y.correctAnswer;
 														let judge = y.judge ?? true;
-														debugger;
 														if(!judge){
 																detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-tick' style='opacity:0'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td></tr>");
                                 var detailstablerow = ["",  x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
@@ -703,7 +702,6 @@ function XTResults(fullcompletion, trackingState) {
     //        grade: results.averageScore / 100
     //    }
     //});
-		debugger;
     return results;
 }
 

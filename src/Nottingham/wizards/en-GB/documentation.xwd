@@ -14,11 +14,14 @@
 	<display label="Show Introduction Text" data="separate,first,all" type="ComboBox" options="On additional page,On first page only,On all pages" width="120"/>
 	<download label="Show Download Button" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true" />
-	
-    <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
-	<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
 
-	<fontSize type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
+	<track label="Should Be Tracked" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
+	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
+	
+    <filename condition="track!='true'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
+	<fileOrientation condition="track!='true'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+
+	<fontSize condition="track!='true'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
 		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
 		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
 		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>

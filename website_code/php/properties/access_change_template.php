@@ -76,7 +76,9 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projec
     $query = "UPDATE {$prefix}templatedetails SET access_to_whom = ? WHERE template_id = ?";
     if (isset($_POST['server_string'])) {
         $access_to_whom = $_POST['access'] . '-' . $_POST['server_string'];
-    } else {
+    } else if (isset($_POST['password'])) {
+        $access_to_whom = $_POST['access'] . '-' . $_POST['password'];
+	} else {
         $access_to_whom = $_POST['access'];
     }
 

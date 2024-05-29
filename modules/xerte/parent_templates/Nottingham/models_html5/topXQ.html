@@ -137,7 +137,6 @@
 					checkAnswers = $pageContents.data('checkAnswers'),
 					inputs = $pageContents.data('inputs');
 
-				debugger;
 				
 				for (i = 0; i < inputs.length; i++) {
 					var result = {
@@ -185,7 +184,6 @@
                 }
 				let nrInteractions = x_currentPageXML.getAttribute("numberAnswers") == "*"? $(x_currentPageXML).children().length : x_currentPageXML.getAttribute("numberAnswers");
                 XTSetPageType(x_currentPage, 'numeric', nrInteractions, this.weighting);
-				debugger;
 
                 var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
                     $splitScreen = $("#pageContents .splitScreen");

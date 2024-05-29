@@ -288,17 +288,17 @@
 			  let judge = y.judge?? true;
 			  if(!judge){
 				  // leave first and last row empty
-                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-check-circle' style='opacity:0;' ><span class='ui-helper-hidden-accessible'></span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td class='correctanswer'><td></td></tr>");
+                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-check-circle' style='opacity:0;' ><span class='ui-helper-hidden-accessible'></span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer.replace(/\n/g, "<br>")) + "</td class='correctanswer'><td></td></tr>");
                 var detailstablerow = ["", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), ""];
                 detailstablerows.push(detailstablerow);
 			  }else if (learnerAnswer == correctAnswer || y.correct) {
                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-check-circle' title='" + correctTooltip + "'><span class='ui-helper-hidden-accessible'>" + correctTooltip +
-                  "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
+                  "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer.replace(/\n/g, "<br>")) + "</td></tr>");
                 var detailstablerow = ["correct", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                 detailstablerows.push(detailstablerow);
               } else {
                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-times-circle' title='" + inCorrectTooltip + "'><span class='ui-helper-hidden-accessible'>" + inCorrectTooltip +
-                  "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
+                  "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer.replace(/\n/g, "<br>")) + "</td></tr>");
                 var detailstablerow = ["incorrect", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                 detailstablerows.push(detailstablerow);
               }
