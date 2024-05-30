@@ -3163,9 +3163,9 @@ function x_passwordPage(pswds) {
 					$pswdBlock.find('#resetbtn').on('click', function(){
 							$('#x_pagePswd').val('');
 					});
-			}else if(type == "standard" || type == "centered"){
+			}else if((type == "standard" || type == null) || type == "centered"){
 					let pswdInput = $pswdBlock.find('.x_pswdInput').append('<input type="text" class="old" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button class="old" id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
-					if(type == "standard"){
+					if(type == "standard" || type == null){
 							pswdInput.add($pswdBlock.find(".x_pswdBlock")).addClass('old');
 							
 					}

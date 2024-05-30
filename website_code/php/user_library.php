@@ -374,26 +374,6 @@ function getRolesFromUser($userID){
 	return $roles;
 }
 
-// maybe use permission in is_user_permitted instead of roles
-function getUserPermissions($userID){
-	global $xerte_toolkits_site;
-	
-	$prefix = $xerte_toolkits_site->database_table_prefix;
-	$query = "SELECT p.name AS 'name' FROM {$prefix}loginDetailsRole ldr
-	JOIN {$prefix}Role r ON ldr.roleid = r.roleid
-	JOIN {$prefix}rolePermission rp ON r.roleid = rp.roleid
-	JOIN {$prefix}permission p ON rp.permissionid = p.permissionid
-	WHERE ldr.userid = ?;
-	";
-	$params = array($userID);
-	$result = db_query($query, $params);
-	$permissions = array();
-	foreach($result as $permission){
-		$permissions[] = $permission['name'];
-	}
-	return array_unique($permissions);
-}
-
 /**
  * check if the user has any roles that are allowed
  * @param mixed $neededRoles all roles(rolename) that are permitted except super because it can access everything

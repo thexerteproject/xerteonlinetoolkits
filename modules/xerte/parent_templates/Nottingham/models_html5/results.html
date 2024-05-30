@@ -435,7 +435,7 @@
                   if (specificColumns[i].col == 'Check') {
                     if (!judge)
                     {
-                      thisRow += "";
+                      thisRow += "<td class='correct td-center td-small'>" + "<i class='fas fa-check-circle' style=\"visibility: hidden\"></td>";
                       specificPDFrow.push('');
                     }
                     else if (y.learnerAnswer == y.correctAnswer || y.correct) {
