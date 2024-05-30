@@ -4,14 +4,33 @@
 .x_nav_page #pageContents.col #textHolder {
   border-bottom: $hrLine solid $hrColour;
 }
+.x_crossword_page #attempt h3 {
+  border-top: $hrLine solid $hrColour;
+}
 .x_textGraphics_page #imgCaption.transcript,
 .x_nav_page #pageContents.slide #btnHolder.top,
-.x_tabNavExtra_page .paneList {
+.x_tabNavExtra_page .paneList,
+.x_rss_page #resultsHolder .s:not(:last-of-type),
+.x_rssdownload_page #resultsHolder > div:not(:last-of-type) {
   border-bottom: $hrLine solid $defaultpagebackground;
 }
 .x_table_page #footnote,
-.x_nav_page #pageContents.slide #btnHolder:not(.top) {
+.x_nav_page #pageContents.slide #btnHolder:not(.top),
+.x_gapFill_page #labelHolder,
+.x_gapFill_page #feedbackTxt,
+.x_mcq_page #feedback h3,
+.x_quiz_page #feedbackGroup h3,
+.x_textCorrection_page h3.fbLabel {
   border-top: $hrLine solid $defaultpagebackground;
+}
+.x_dragDropLabel_page #textHolder hr,
+.x_hotspotImage_page #infoHolder hr,
+.x_hotSpotQuestion_page #infoHolder hr,
+.x_inventory_page .chart hr,
+.x_modelAnswerResults_page #textHolder hr {
+  height: $hrLine;
+  background: $hrColour;
+  border: 0;
 }
 //***********************************Text*************************************
 //*****title page******
@@ -246,7 +265,8 @@
   border: solid $lightgrey;
 }
 .x_tabNavExtra_page a.topic,
-.x_list_page #listHolder a.listItem {
+.x_list_page #listHolder a.listItem,
+.x_annotatedDiagram_page #listHolder a.listItem {
   font-weight: 500;
   text-decoration: none;
   padding: .2em 1em;
@@ -256,13 +276,15 @@
   margin-bottom: 5px;
 }
 .x_tabNavExtra_page a.topic:hover, .x_tabNavExtra_page a.topic:focus, .x_tabNavExtra_page a.topic:active,
+.x_annotatedDiagram_page #listHolder a.listItem:hover, .x_annotatedDiagram_page #listHolder a.listItem:focus, .x_annotatedDiagram_page #listHolder a.listItem:active,
 .x_list_page #listHolder a.listItem:hover, .x_list_page #listHolder a.listItem:focus, .x_list_page #listHolder a.listItem:active {
   border-radius: $smallroundedcorners;
   background: $midgrey;
   color: $blackordarkest;
 }
 .x_tabNavExtra_page a.topic.highlight,
-.x_list_page #listHolder a.listItem.highlight {
+.x_list_page #listHolder a.listItem.highlight,
+.x_annotatedDiagram_page #listHolder a.listItem.highlight {
   background: $darkergrey;
 }
 //***********************************Interactivity*************************************/
@@ -276,21 +298,6 @@
   border-radius: $smallroundedcorners;
   padding-left: 10px;
 }
-//*****highlight text******/
-.x_textHighlight_page .ui-widget-content button.ui-state-default {
-  border-radius: $smallroundedcorners;
-  background: $contrastcolor;
-  border: none;
-  color: #ffffff;
-}
-.x_textHighlight_page .ui-widget-content button.ui-state-default.ui-state-active {
-  background: $lightestcolor2;
-  color: $whiteorlightest;
-}
-/*.x_textHighlight_page .ui-tabs {
-	border-radius:$mediumroundedcorners;
-	background: $lightgrey;
-}*/
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$contrastcolor ;
@@ -304,45 +311,45 @@
 .x_annotatedDiagram_page #infoHolder{
   background:$defaultpagebackground;
 }
-//*******Drag and Drop Labelling*********/
-.target.ui-droppable.border.highlight {
-  //show transparent background when clicking target hotspots
-  background-color: transparentize($lightestcolor, .6) !important;
-}
-.x_dragDropLabel_page #infoHolder{
-  padding:20px;
-  margin-right:20px;
-}
-.x_dragDropLabel_page .label.panel{
-  background:transparentize($midgrey, .2 )!important;
-  border-color:$midgrey;
-  color:$blackordarkest;
-  border-radius: $smallroundedcorners;
-}
-.x_dragDropLabel_page #targetHolder .highlight{
-  // background-color: rgba(83, 70, 69, 0.30);
-  background:none;
-}
-//*****categories*****/
+//*****categories & drag drop label & gap fill*****/
 #categoryHolder .category {
   border-radius: $mediumroundedcorners;
 }
-#categoryHolder h3 {
-  color:$blackordarkest;
-}
-.x_categories_page #dragDropHolder {
-  background: $whiteorlightest;
-  padding:10px;
-  border-radius: $mediumroundedcorners;
-}
-.x_categories_page .label.panel{
+.x_categories_page .label.panel,
+.x_dragDropLabel_page .label.panel,
+.x_gapFill_page #labelHolder .label.panel,
+.x_timeline_page .label.panel.ui-draggable {
   background:$whiteorlightest;
-  border:solid $midgrey;
-  color:$blackordarkest ;
+  border: solid $darkergrey;
+  @include dropShadow;
+}
+.x_gapFill_page #labelHolder .label.panel.selected {
+  border-color: green;
+}
+.x_dragDropLabel_page .label.panel.ui-draggable-disabled {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+.x_dragDropLabel_page #targetHolder .target.highlight {
+  background: transparentize($whiteorlightest, .8);
 }
 #categoryHolder .highlight {
   border-radius: $smallroundedcorners;
   background: $lightgrey;
+}
+#categoryHolder .highlight.highlightDark, .x_gapFill_page #targetHolder .highlight.highlightDark {
+  background: $midgrey;
+}
+.x_dragDropLabel_page #infoHolder{
+  padding: 0;
+  margin: 1em 0 0 0;
+  background: none;
+}
+.x_gapFill_page .target.correct{
+  color:green;
+  font-weight:bold;
+  background-color:transparentize($whiteorlightest, .8);
 }
 //*******decision tree********//
 .x_decision_page .highlight{
@@ -362,22 +369,6 @@
 #targetHolder .highlight {
   background:$whiteorlightest;
 }
-#labelHolder .label.panel {
-  //background: purple;
-}
-.x_gapFill_page #targetHolder .highlight {
-  background:transparentize($whiteorlightest, .5);
-}
-.x_gapFill_page .label.panel {
-  background: $midgrey;
-  border-color:$midgrey !important;
-  color:$blackordarkest;
-}
-.x_gapFill_page .target.correct{
-  color:green;
-  font-weight:bold;
-  background-color:transparentize($whiteorlightest, .8);
-}
 //*****hotspot image*****/
 a.hotspot, a.hotspot.selected {
   background: none;
@@ -388,6 +379,10 @@ a.hotspot, a.hotspot.selected {
 .x_hotspotImage_page #infoHolder {
   background: none;
 }
+//*****inventory*****/
+.x_inventory_page #buttonHolder {
+  margin-top: 1em;
+}
 //*********matching texts*********/
 .x_textMatch_page #dragDropHolder {
   background: $lightgrey;
@@ -396,14 +391,15 @@ a.hotspot, a.hotspot.selected {
 }
 .x_textMatch_page .label.panel{
   background:$midgrey;
-  border-color:$midgrey;
-  color:$blackordarkest;
+  border: 2px solid $midgrey;
 }
-
 //*****model answer*****/
 .x_modelAnswer_page #answerTxt {
   border-radius: $mediumroundedcorners;
   width: 98%;
+}
+.x_modelAnswer_page #answer {
+  overflow: auto;
 }
 //*****opinion********/
 .x_opinion_page #pageContents input {
@@ -462,41 +458,44 @@ a.hotspot, a.hotspot.selected {
   background: $darkergrey;
   border-color: transparent;
 }
-/*****timeline matching pairs*****/
-.x_timeline_page #dragDropHolder {
-  background: $whiteorlightest;
-}
-//the target boxes
-.x_timeline_page #targetHolder .target {
-  border-radius: $mediumroundedcorners;
-  background-color:$lightgrey;
-}
-.x_timeline_page .label.panel.ui-draggable {
-  background: $whiteorlightest;
-  color: $blackordarkest;
-  border-color:$blackordarkest;
-}
 //***********************************Connectors*************************************/
 
 //***********************************Games*************************************/
-//*****games memory*****/
-#pageContents .card {
-  border-radius: $smallroundedcorners;
-  border-color: $contrastcolor;
-}
-#cardTopHolder .card{
-  border-color: $contrastcolor;
-}
-//*****games puzzle*****/
-#puzzle {
+//*****wordsearch puzzle*****/
+.x_wordsearch_page #puzzle {
   border-radius: $mediumroundedcorners;
+  border: 0;
+  background: $defaultpagebackground;
 }
 //*****memory******/
-#pageContents .card {
-  color: $darkestcolor;
+#cardTopHolder .card.focus {
+  border-width: 2px;
 }
 #cardTopHolder .card {
   background-image: url('card_back.svg') !important; //doesn't work without important
+}
+#pageContents .card {
+  border-radius: $smallroundedcorners;
+  border: 2px solid $darkergrey;
+  @include dropShadow;
+}
+#cardTopHolder .card{
+  border: 2px solid $darkergrey;
+}
+//*****crossword*****/
+.x_crossword_page #x_pageDiv #clues-container table th, .x_crossword_page #x_pageDiv #clues th {
+  border-bottom: $hrLine solid $blackordarkest;
+}
+.x_crossword_page #attempt, .x_crossword_page #attempt h3 {
+  padding-top: 1em;
+}
+.x_crossword_page #attempt p:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+//*****hangman*****/
+.x_hangman_page #clue .dash {
+  border-bottom-width: 2px;
 }
 //***********************************Misc*************************************/
 //*****youtube feed page*****/
@@ -523,48 +522,23 @@ div#shorturltodisplay a{
   color:$darkestcolor;
 }
 //*****RSS feed******/
-.x_rss_page #rssHolder .panel{
-  background-color: $midgrey;
-}
-.x_rss_page #resultsHolder div {
+.x_rss_page #resultsHolder div,
+.x_rssdownload_page #resultsHolder > div {
   width:99.2%;
 }
-.x_rss_page #resultsHolder .s {
- border-radius: $smallroundedcorners;
-  background-color: $whiteorlightest;
-  padding-left:.5em;
+.x_rss_page #resultsHolder .s,
+.x_rssdownload_page #resultsHolder > div {
+  background-color: $lightgrey;
+  padding-left: .5em;
 }
 .x_rss_page #resultsHolder div p {
   color: $blackordarkest;
 }
-.x_rss_page #resultsHolder .shadedDiv {
-  /*background-color: lighten($lightestcolor, 20%) !important; //doesn't work without important*/
-  background-color: $lightgrey !important; //doesn't work without important
-  border-radius: $smallroundedcorners;
-  margin-bottom:.5em;
-  margin-top:.5em;
-  //padding:.5em;
-}
-.x_rss_page #resultsHolder div a {
-  color: darkblue;
-}
-//*****rss xerte download feed*****/
-.x_rssdownload_page #rssHolder .panel{
-  background-color: $midgrey;
-}
-.x_rssdownload_page #resultsHolder > div {
-  border-radius: $smallroundedcorners;
-  background-color: $lightgrey !important;
-  padding-left:.5em;
-  width:99.5%;
-}
+.x_rss_page #resultsHolder .shadedDiv,
 .x_rssdownload_page #resultsHolder .shadedDiv {
-  /*background-color: lighten($lightestcolor, 20%) !important; //doesn't work without important*/
-  background-color: $whiteorlightest !important; //doesn't work without important
-  border-radius: $smallroundedcorners;
+  background-color: $lightgrey !important; //doesn't work without important
   margin-bottom:.5em;
   margin-top:.5em;
-  //padding:.5em;
 }
 //*****results page*****/
 .x_results_page td {

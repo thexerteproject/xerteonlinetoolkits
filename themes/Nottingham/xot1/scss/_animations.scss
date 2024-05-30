@@ -1,5 +1,5 @@
 #x_pageHolder{
-  .label.panel.ui-draggable{
+  /*.label.panel.ui-draggable{
 
     transform: scale(1);
     transition: transform 0.5s ease-out 0s,box-shadow 0.5s ease-out 0s;
@@ -8,11 +8,11 @@
       transform: scale(1.25);
       box-shadow: 2px 4px 1px #888888;
     }
-  }
+  }*/
 
-  #feedback {
+  /*#feedback {
     animation: fadePop 0.25s linear;
-  }
+  }*/
 
   /*#infoHolder p {
     animation: fadePop 0.25s linear;
