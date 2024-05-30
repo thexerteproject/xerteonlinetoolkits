@@ -96,6 +96,53 @@ img {
 	border-radius: $imageroundedcorners;
 }
 
+.focusBorder {
+	border-color: $lightestcolor2;
+}
+
+//*****table styles*****/
+table tr.shaded {
+	background:	$midgrey;
+}
+table.full td {
+	border-color: $darkestcolor;
+}
+table.full.shaded th,
+table.footer.shaded.full tbody tr:last-child td {
+	border-color: $lightgrey;
+}
+table.simple {
+	border-top-color: $darkestcolor;
+	border-bottom-color: $darkestcolor;
+}
+table.horizontal tr {
+	border-bottom-color: $darkestcolor;
+}
+table.vertical td {
+	border-right-color: $darkestcolor;
+}
+table.vertical.shaded th,
+table.footer.shaded.vertical tbody tr:last-child td {
+	border-right-color: lightgrey;
+}
+table.outside {
+	border-color: $darkestcolor;
+}
+table tr {
+	background: $whiteorlightest;
+	color: $blackordarkest;
+}
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+table.footer.shaded tbody tr:last-child {
+	background:	$darkestcolor;
+	color: $whiteorlightest;
+}
+table.headerCol.shaded td.header {
+	background-color: inherit;
+}
+
 //******@media changes******/
 @media (min-width: 1366px) {
 	/*tablet and above css below here*/

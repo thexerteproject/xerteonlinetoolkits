@@ -1,10 +1,17 @@
 //*****hr lines & border-top/bottom lines*****
 .x_columnPage_page #textHolder,
-.x_imageSequence_page #controlBar {
+.x_imageSequence_page #controlBar,
+.x_nav_page #pageContents.col #textHolder {
   border-bottom: $hrLine solid $hrColour;
 }
-.x_textGraphics_page #imgCaption.transcript {
+.x_textGraphics_page #imgCaption.transcript,
+.x_nav_page #pageContents.slide #btnHolder.top,
+.x_tabNavExtra_page .paneList {
   border-bottom: $hrLine solid $defaultpagebackground;
+}
+.x_table_page #footnote,
+.x_nav_page #pageContents.slide #btnHolder:not(.top) {
+  border-top: $hrLine solid $defaultpagebackground;
 }
 //***********************************Text*************************************
 //*****title page******
@@ -57,46 +64,80 @@
 .x_imageSequence_page #viewHolder #viewOption button.highlighted {
   border-color: $lightestcolor2;
 }
-//***********************************Navigators*************************************/
-//*****Accordion page*******/
-.ui-accordion .ui-accordion-content {
-  border-radius: $smallroundedcorners;
-  background: $whiteorlightest;
-  color:$blackordarkest;
+//*****PDF*****/
+.x_pdf_page #pdfPage hr {
+  height: 0;
+  margin: 0;
 }
-.ui-accordion .ui-accordion-header {
-  border-radius: $smallroundedcorners;
-  background: $contrastcolor;
-  color:$blackordarkest;
-}
-.ui-accordion .ui-accordion-header a {
-  border-radius: $smallroundedcorners;
-  color: $blackordarkest !important; //doesn't work without important
-  background: $lightgrey;
-}
-.ui-accordion .ui-accordion-header a:hover {
-  background: $midgrey;
-}
-.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+.x_pdf_page #pdfPage #pdfLink {
   text-decoration: none;
-  background: $accent1;
+  padding: .2em 1em;
   border-radius: $smallroundedcorners;
+  background: $midgrey;
   color: $blackordarkest;
 }
-
-.ui-tabs-panel a:visited, .ui-accordion-content a:visited {
-  color: $linkcolor;
+.x_pdf_page #pdfPage #pdfLink:hover, .x_pdf_page #pdfPage #pdfLink:focus, .x_pdf_page #pdfPage #pdfLink:active {
+  border-radius: $smallroundedcorners;
+  background: $darkergrey;
+  color: $blackordarkest;
 }
-.ui-tabs-panel a:link, .ui-accordion-content a:link {
-  color: $linkcolor;
+.x_pdf_page #pdfPage #link {
+  text-align: right;
+  margin-top: .8em;
 }
-
-.ui-tabs-panel a:hover, .ui-accordion-content a:hover {
-  color: $linkhover;
+//*****transcript reader*****/
+.x_transcriptReader_page .highlight {
+  border-radius: $mediumroundedcorners;
 }
-
+//***********************************Navigators*************************************/
+//*****Accordion page*******/
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder {
+  background: none;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChild,
+#x_mainHolder.x_nav_page #pageContents.tab #infoHolder .navChild {
+  padding: 1em;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle {
+  border-radius: $smallroundedcorners;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle,
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChild {
+  background: none $lightgrey;
+  border: 0;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle:not(.ui-accordion-header-active):not(:last-of-type),
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChild {
+  margin-bottom: .2em;
+}
+#x_mainHolder.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header {
+  margin-top: 0;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle a {
+  padding: 10px 15px 10px 35px;
+  background: none;
+  border-radius: 0;
+  border: 0;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle .ui-icon {
+  left: 15px;
+  color: $blackordarkest;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle.ui-accordion-header-active {
+  background: $darkergrey;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle.ui-state-hover:not(.ui-accordion-header-active),
+#x_mainHolder.x_nav_page #pageContents.acc #infoHolder .navChildTitle.ui-state-focus:not(.ui-accordion-header-active) {
+  background: $midgrey;
+}
+#x_mainHolder.x_nav_page #pageContents.acc .ui-accordion-content {
+  border-bottom-left-radius: $smallroundedcorners;
+  border-bottom-right-radius: $smallroundedcorners;
+}
 //*****button navigator*****/
-.ui-button {
+.ui-button, .ui-widget-content .ui-button {
   border-radius: $smallroundedcorners;
   background: $midgrey;
   border: none;
@@ -106,7 +147,8 @@
   margin-left: 0;
   margin-right: .2em;
 }
-.ui-button.ui-state-active, .ui-button.ui-state-hover, .ui-button:focus {
+.ui-button.ui-state-active, .ui-button.ui-state-hover, .ui-button:focus,
+.ui-widget-content .ui-button.ui-state-active, .ui-widget-content .ui-button.ui-state-hover, .ui-widget-content .ui-button:focus {
   border-radius: $smallroundedcorners;
   background: $darkergrey;
   border: none;
@@ -143,34 +185,58 @@
 #pageContents.button button.selected {
   background-color: $lightestcolor;
 }
-#pageContents.slide #btnHolder button {
-  background: $midgrey;
-  border-color: $midgrey;
-}
 //****tabbed navigator****/
-.ui-tabs .ui-tabs-nav li {
-   border-radius: $smallroundedcorners;
-   background: $midgrey;
-   border:none;
-   color:$blackordarkest;
- }
-
-.paneInfo{
-  /*color:$fontcolorfobrightcolor;*/
+.ui-tabs {
+  background: none !important;
+  border: 0;
+  border-radius: 0 !important;
+  padding: 0;
 }
-.paneList a, .paneList a:link, .paneList a:visited{
-  /*color: $linkcolor !important;*/
-}
-.ui-tabs-panel a:link, /*.ui-accordion-content a:link*/ {
-  /*color: $linkcolor;*/
-}
-.ui-tabs .ui-tabs-nav {
-  border-radius: $smallroundedcorners;
+.ui-tabs .ui-tabs-nav,
+#x_mainHolder.x_nav_page #pageContents.tab #tabHolder {
+  border: 0;
+  border-bottom: $hrLineThick solid $darkergrey;
+  margin-bottom: 0;
+  border-radius: 0;
   background: none;
-  border: none;
+  padding: 0;
 }
-.ui-tabs .ui-tabs-nav li a {
+.ui-tabs .ui-tabs-nav li.ui-state-default {
+  top: 0;
+}
+.ui-tabs .ui-tabs-panel {
+  background: $lightgrey;
+}
+.ui-tabs #paneHolder, .ui-tabs .paneHolder {
+  border-bottom-left-radius: $mediumroundedcorners;
+  border-bottom-right-radius: $mediumroundedcorners;
+}
+.ui-tabs .ui-tabs-nav > li.ui-state-default {
+  margin: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+.ui-tabs .ui-tabs-nav > li.ui-state-default a {
   color: $blackordarkest;
+  background: $lightgrey;
+  padding: 10px 15px 4px 15px;
+  border: 0;
+  border-radius: 0;
+  border-top-right-radius: $mediumroundedcorners;
+  border-top-left-radius: $mediumroundedcorners;
+  margin-right: 5px;
+}
+.ui-tabs #tabHolder.ui-tabs-nav > li.navChildTitle.ui-state-default.ui-tabs-active {
+  border-bottom: 0 !important;
+}
+.ui-tabs .ui-tabs-nav > li.ui-state-default.ui-tabs-active a {
+  background: $darkergrey;
+}
+.ui-tabs .ui-tabs-nav > li.ui-state-default.ui-state-hover:not(.ui-tabs-active) a,
+.ui-tabs .ui-tabs-nav > li.ui-state-default.ui-state-focus:not(.ui-tabs-active) a {
+  background: $midgrey;
 }
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   text-decoration: none;
@@ -179,17 +245,25 @@
   border-radius: $smallroundedcorners;
   border: solid $lightgrey;
 }
-
-a.topic.highlight {
+.x_tabNavExtra_page a.topic,
+.x_list_page #listHolder a.listItem {
+  font-weight: 500;
+  text-decoration: none;
+  padding: .2em 1em;
+  border-radius: $smallroundedcorners;
   background: $lightgrey;
-  color:$blackordarkest;
+  color: $blackordarkest;
+  margin-bottom: 5px;
 }
-a.topic.highlight:hover {
-  background: $lightgrey;
-  color:$fontcolorforlightestcolor;
+.x_tabNavExtra_page a.topic:hover, .x_tabNavExtra_page a.topic:focus, .x_tabNavExtra_page a.topic:active,
+.x_list_page #listHolder a.listItem:hover, .x_list_page #listHolder a.listItem:focus, .x_list_page #listHolder a.listItem:active {
+  border-radius: $smallroundedcorners;
+  background: $midgrey;
+  color: $blackordarkest;
 }
-div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
-  background:$lightgrey;
+.x_tabNavExtra_page a.topic.highlight,
+.x_list_page #listHolder a.listItem.highlight {
+  background: $darkergrey;
 }
 //***********************************Interactivity*************************************/
 //most text areas unless changed for specifc pages
@@ -213,10 +287,10 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background: $lightestcolor2;
   color: $whiteorlightest;
 }
-.x_textHighlight_page .ui-tabs {
+/*.x_textHighlight_page .ui-tabs {
 	border-radius:$mediumroundedcorners;
 	background: $lightgrey;
-}
+}*/
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$contrastcolor ;
@@ -314,15 +388,6 @@ a.hotspot, a.hotspot.selected {
 .x_hotspotImage_page #infoHolder {
   background: none;
 }
-//******Interactive lists*******/
-.x_interactiveText_page .highlight{
-  background: $midgrey;
-}
-//******Interactive lists*******/
-.x_list_page .highlight{
-  background: $lightgrey;
-  color:$blackordarkest;
-}
 //*********matching texts*********/
 .x_textMatch_page #dragDropHolder {
   background: $lightgrey;
@@ -412,19 +477,7 @@ a.hotspot, a.hotspot.selected {
   border-color:$blackordarkest;
 }
 //***********************************Connectors*************************************/
-//*****menu connector*****/
-#subMenuItems .subMenuItem {
-  background: $midgrey;
-  color:$blackordarkest;
-}
-//***********************************Charts*************************************/
-//***Charts Table***/
-.x_table_page table.header.simple tr:first-child {
-  border:none;
-}
-.x_table_page table.simple {
-  border: none;
-}
+
 //***********************************Games*************************************/
 //*****games memory*****/
 #pageContents .card {
@@ -562,34 +615,4 @@ div#shorturltodisplay a{
   @media (min-width: 768px) {
     width: 2.5vmin;
   }
-}
-
-
-//***********************************Tables*************************************/
-//default background of table rows
-.x_table_page table tr,
-.x_interactiveText_page table tr,
-.x_documentation_page table tr,
-.x_results_page table tr {
-	background: $whiteorlightest;
-	color: $blackordarkest;
-}
-
-//background of shaded/alternate rows
-table tr.shaded {
-	background: $midgrey;
-	color: $blackordarkest;
-}
-
-// header/footer shaded
-table.header.shaded thead tr:first-child,
-table.header.shaded tr.header,
-table.header.shaded :not(tbody) > tr:first-child,
-table.footer.shaded tbody tr:last-child {
-	background:	$blackordarkest;
-	color: $whiteorlightest;
-}
-
-table.headerCol.shaded td.header {
-	background-color: inherit;
 }
