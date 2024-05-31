@@ -1,5 +1,5 @@
 name: xot2
 display name: Modern: XOT2
-description: Black header, white background and white footer, with rounded corners similar to RGBO but with a reduced colour palette. Possible use as an alternative to the older default theme.
+description: Black header, white background and white footer, with rounded corners.
 enabled: yes
 preview: xot2.jpg
