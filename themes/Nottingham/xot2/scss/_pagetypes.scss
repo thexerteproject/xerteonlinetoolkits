@@ -1,17 +1,30 @@
 //*****hr lines & border-top/bottom lines*****
 .x_columnPage_page #textHolder,
 .x_imageSequence_page #controlBar,
-.x_nav_page #pageContents.col #textHolder {
+.x_nav_page #pageContents.col #textHolder,
+.x_SictTimeline_page #pageContents .tl-text .tl-headline-date, .x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
+.x_results_page #txtHolder {
   border-bottom: $hrLine solid $hrColour;
 }
-.x_crossword_page #attempt h3 {
+.x_crossword_page #attempt h3,
+.x_interactiveText_page #groupInfo h3,
+.x_interactiveText_page #questionHolder,
+.x_results_page #general_summary + #specific {
   border-top: $hrLine solid $hrColour;
 }
 .x_textGraphics_page #imgCaption.transcript,
 .x_nav_page #pageContents.slide #btnHolder.top,
 .x_tabNavExtra_page .paneList,
 .x_rss_page #resultsHolder .s:not(:last-of-type),
-.x_rssdownload_page #resultsHolder > div:not(:last-of-type) {
+.x_rssdownload_page #resultsHolder > div:not(:last-of-type),
+.x_decision_page #overviewHolder .overviewStep,
+.x_documentation_page #pages:not(:last-child),
+.x_interactiveText_page #pageContents.show #btnHolder,
+.x_interactiveText_page #pageContents.find #btnHolder,
+.x_interactiveText_page #pageContents.find2 #btnHolder,
+.x_interactiveVideo_page .panel h3,
+.x_mediaLesson_page .panel h3,
+.x_youtuberss_page #resultsHolder .shadedDiv {
   border-bottom: $hrLine solid $defaultpagebackground;
 }
 .x_table_page #footnote,
@@ -20,7 +33,8 @@
 .x_gapFill_page #feedbackTxt,
 .x_mcq_page #feedback h3,
 .x_quiz_page #feedbackGroup h3,
-.x_textCorrection_page h3.fbLabel {
+.x_textCorrection_page h3.fbLabel,
+.x_interactiveText_page #pageContents.show2 #btnHolder {
   border-top: $hrLine solid $defaultpagebackground;
 }
 .x_dragDropLabel_page #textHolder hr,
@@ -30,6 +44,13 @@
 .x_modelAnswerResults_page #textHolder hr {
   height: $hrLine;
   background: $hrColour;
+  border: 0;
+}
+.x_opinion_page .qSeparator hr,
+.x_documentation_page #pages .item hr,
+.x_mediaLesson_page .contentBlock hr {
+  height: $hrLine;
+  background: $defaultpagebackground;
   border: 0;
 }
 //***********************************Text*************************************
@@ -53,9 +74,50 @@
 .x_imageSequence_page #infoHolder, .x_hotSpotQuestion_page #infoHolder{
   background: $whiteorlightest;
 }
-//*****multiple perspectives******/
-#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
-  color: $darkestcolor;
+//*****multiple perspectives & thumbnail  & imageSequence & flash cards******/
+.x_imageSequence_page #seriesBtnLeft, .x_imageSequence_page #seriesBtnRight,
+.x_perspectives_page #prevBtn, .x_perspectives_page #nextBtn,
+.x_thumbnailViewer_page #prevBtn, .x_thumbnailViewer #nextBtn,
+.x_perspectives_page #mainInfoHolder #gridBack,
+.x_flashCards_page #cardCtrls .btnHolder button {
+  color: $blackordarkest;
+}
+.x_flashCards_page .circleBtn.ui-button {
+  background-color: $blackordarkest;
+}
+.x_imageSequence_page #seriesBtnLeft:hover, .x_imageSequence_page #seriesBtnRight:hover, .x_imageSequence_page #seriesBtnLeft:focus, .x_imageSequence_page #seriesBtnRight:focus, .x_imageSequence_page #seriesBtnLeft:active, .x_imageSequence_page #seriesBtnRight:active,
+.x_perspectives_page #prevBtn:hover, .x_perspectives_page #nextBtn:hover, .x_perspectives_page #prevBtn:focus, .x_perspectives_page #nextBtn:focus, .x_perspectives_page #nextBtn:active, .x_perspectives_page #nextBtn:active,
+.x_thumbnailViewer_page #prevBtn:hover, .x_thumbnailViewer_page #nextBtn:hover, .x_thumbnailViewer_page #prevBtn:focus, .x_thumbnailViewer_page #nextBtn:focus, .x_thumbnailViewer_page #nextBtn:active, .x_thumbnailViewer_page #nextBtn:active,
+.x_perspectives_page #mainInfoHolder #gridBack:hover, .x_perspectives_page #mainInfoHolder #gridBack:focus, .x_perspectives_page #mainInfoHolder #gridBack:active,
+.x_flashCards_page #cardCtrls .btnHolder button:hover, .x_flashCards_page #cardCtrls .btnHolder button:focus, .x_flashCards_page #cardCtrls .btnHolder button:active {
+  color: $lightestcolor2;
+}
+.x_flashCards_page .circleBtn.ui-button:hover, .x_flashCards_page .circleBtn.ui-button:focus, .x_flashCards_page .circleBtn.ui-button:active {
+  background-color: $lightestcolor2;
+}
+.x_imageSequence_page #seriesHolder .thumbs.selected {
+  background-color: $accent1;
+}
+.x_perspectives_page #thumbHolder .thumbBox.selected, .x_perspectives_page #thumbHolder .thumbBox.current,
+.x_thumbnailViewer_page #thumbHolder .thumbBox.selected, .x_thumbnailViewer_page #thumbHolder .thumbBox.current {
+  border-color: $accent1;
+}
+.x_imageSequence_page #seriesHolder .thumbs.highlighted,
+.x_perspectives_page #thumbBar .thumbs.highlighted,
+.x_thumbnailViewer_page #thumbHolder .thumbs.highlighted {
+  background-color: $lightestcolor2;
+}
+.x_thumbnailViewer_page #panelTxt {
+  overflow: hidden;
+}
+.x_thumbnailViewer_page #panelTxt div {
+  background: $midgrey;
+  width: 100%;
+  color: $blackordarkest;
+}
+//*****youtube feed*****/
+.x_youtuberss_page #resultsHolder div {
+  background: none;
 }
 //*****Synched Video*******/
 //add padding to right holder
@@ -68,20 +130,21 @@
   background:transparentize($whiteorlightest, .1);
 }
 //*****image sequence******/
-.x_imageSequence_page #seriesBtnLeft, .x_imageSequence_page #seriesBtnRight {
-  color: $blackordarkest;
+.x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle {
+  margin-left: -2px;
 }
-.x_imageSequence_page #seriesBtnLeft:hover, .x_imageSequence_page #seriesBtnRight:hover, .x_imageSequence_page #seriesBtnLeft:focus, .x_imageSequence_page #seriesBtnRight:focus, .x_imageSequence_page #seriesBtnLeft:active, .x_imageSequence_page #seriesBtnRight:active {
-  color: $lightestcolor2;
+.x_imageSequence_page .resetBtn .ui-button-icon-secondary {
+  margin-left: -.45em !important;
 }
-.x_imageSequence_page #seriesHolder .thumbs.selected {
-  background-color: $accent1;
-}
-.x_imageSequence_page #seriesHolder .thumbs.highlighted {
-  background-color: $lightestcolor2;
+.x_imageSequence_page .slider.round {
+  background: $darkergrey;
 }
 .x_imageSequence_page #viewHolder #viewOption button.highlighted {
   border-color: $lightestcolor2;
+}
+//*****media lesson*****/
+.x_mediaLesson_page #panelHolder .panel {
+  overflow-x: hidden;
 }
 //*****PDF*****/
 .x_pdf_page #pdfPage hr {
@@ -107,6 +170,27 @@
 //*****transcript reader*****/
 .x_transcriptReader_page .highlight {
   border-radius: $mediumroundedcorners;
+}
+//*****timeline media*****/
+#x_mainHolder.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-icon:before,
+#x_mainHolder.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-icon:before {
+  color: $blackordarkest;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  font-size: 1.5em;
+}
+
+#x_mainHolder.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-icon:before {
+  content: "\f054";
+}
+
+#x_mainHolder.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-icon:before {
+  content: "\f053";
+}
+#x_mainHolder.x_SictTimeline_page .tl-slidenav-next:hover .tl-slidenav-icon:before, #x_mainHolder.x_SictTimeline_page .tl-slidenav-previous:hover .tl-slidenav-icon:before,
+#x_mainHolder.x_SictTimeline_page .tl-slidenav-next:focus .tl-slidenav-icon:before, #x_mainHolder.x_SictTimeline_page .tl-slidenav-previous:focus .tl-slidenav-icon:before,
+#x_mainHolder.x_SictTimeline_page .tl-slidenav-next:active .tl-slidenav-icon:before, #x_mainHolder.x_SictTimeline_page .tl-slidenav-previous:active .tl-slidenav-icon:before {
+  color: $lightestcolor2;
 }
 //***********************************Navigators*************************************/
 //*****Accordion page*******/
@@ -167,7 +251,8 @@
   margin-right: .2em;
 }
 .ui-button.ui-state-active, .ui-button.ui-state-hover, .ui-button:focus,
-.ui-widget-content .ui-button.ui-state-active, .ui-widget-content .ui-button.ui-state-hover, .ui-widget-content .ui-button:focus {
+.ui-widget-content .ui-button.ui-state-active, .ui-widget-content .ui-button.ui-state-hover, .ui-widget-content .ui-button:focus,
+#x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
   border-radius: $smallroundedcorners;
   background: $darkergrey;
   border: none;
@@ -177,18 +262,8 @@
   background-color: $whiteorlightest;
 }
 //***Flash cards***/
-.front.panel{
-  background:$lightgrey;
-  border:$lightgrey;
-  color:$fontcolorforlightestcolor;
-}
-.back.panel{
-  background:$lightgrey;
-  border:$lightgrey;
-  color:$fontcolorforlightestcolor;
-}
-.back.panel a{
-  color:$linkcolor;
+.x_flashCards_page .circleBtn.ui-button {
+  border-radius: 100%;
 }
 //*****hyperlinks******/
 .x_links_page #linkHolder a{
@@ -298,6 +373,34 @@
   border-radius: $smallroundedcorners;
   padding-left: 10px;
 }
+//*****interactive text *****/
+.x_interactiveText_page #pageContents a.listItem {
+  background-color: $midgrey;
+  padding: .2em 1em;
+  border-radius: $smallroundedcorners;
+}
+.x_interactiveText_page #passageHolder a.listItem:hover:not(.highlight),
+.x_interactiveText_page #passageHolder a.listItem:focus:not(.highlight) {
+  background-color: $darkergrey;
+}
+.x_interactiveText_page #passageHolder a.listItem.highlight {
+  background-color: $whiteorlightest;
+}
+.x_interactiveText_page #pageContents.show .listItem,
+.x_interactiveText_page #pageContents.find .listItem,
+.x_interactiveText_page #pageContents.find2 .listItem {
+  margin-right: .5em;
+}
+.x_interactiveText_page #more, .x_interactiveText_page #more:visited {
+  color: $blackordarkest;
+}
+.x_interactiveText_page #more:active, .x_interactiveText_page #more:focus, .x_interactiveText_page #more:hover {
+  color: $lightestcolor2;
+}
+//*****documentation*****/
+.x_documentation_page #pages fieldset {
+  border: $hrLine solid $defaultpagebackground;
+}
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$contrastcolor ;
@@ -355,6 +458,9 @@
 .x_decision_page .highlight{
   background: $lightestcolor;
 }
+.x_decision_page #newBtn .ui-button-icon-primary {
+  margin-left: -.45em;
+}
 //*****Dictation*****/
 .x_dictation_page #answerTxt {
   width: 98%;
@@ -405,61 +511,15 @@ a.hotspot, a.hotspot.selected {
 .x_opinion_page #pageContents input {
   padding-left: 0;
 }
+.x_opinion_page .labelHolder table tr {
+  background: none;
+}
 .qPanel {
   overflow-x:hidden;
-}
-.qSeparator hr {
-  background-color: lighten($lightestcolor, 15%);
-  border-color: lighten($lightestcolor, 15%);
-  border: solid 1px lighten($lightestcolor, 15%);
 }
 .sliderHolder .labelHolder a p {
   color: $blackordarkest;
 }
-
-//*****sortable grid*****/
-.x_grid_page #gridBorders {
-  border-radius: $smallroundedcorners;
-}
-.x_grid_page #grid .listHolder.constrainC li {
-  border-radius: $smallroundedcorners;
-}
-.x_grid_page #grid ul li.header {
-  color: $whiteorlightest ;
-  background:$accent1;
-}
-.x_grid_page table.simple {
-  border: transparent;
-}
-.x_grid_page table.header.simple tr:first-child{
-  border-bottom: transparent;
-  background:$darkestcolor;
-}
-.x_grid_page table.header.shaded tr:first-child {
-  background: $whiteorlightest;
-}
-//the draggable items
-.x_grid_page #grid ul li{
-  background:$midgrey;
-  border-color: transparent;
-  color:$blackordarkest !important;
-}
-//even rows of the table
-.x_grid_page table tr.shaded {
-  background: $whiteorlightest;
-  color:$blackordarkest !important;
-}
-//odd rows of the table
-.x_grid_page table tr {
-  background: $lightgrey;
-  color:white !important;
-}
-.x_grid_page #grid ul li.static {
-  background: $darkergrey;
-  border-color: transparent;
-}
-//***********************************Connectors*************************************/
-
 //***********************************Games*************************************/
 //*****wordsearch puzzle*****/
 .x_wordsearch_page #puzzle {
@@ -468,18 +528,18 @@ a.hotspot, a.hotspot.selected {
   background: $defaultpagebackground;
 }
 //*****memory******/
-#cardTopHolder .card.focus {
+.x_memory_page #cardTopHolder .card.focus {
   border-width: 2px;
 }
-#cardTopHolder .card {
+.x_memory_page #cardTopHolder .card {
   background-image: url('card_back.svg') !important; //doesn't work without important
 }
-#pageContents .card {
+.x_memory_page #pageContents .card {
   border-radius: $smallroundedcorners;
   border: 2px solid $darkergrey;
   @include dropShadow;
 }
-#cardTopHolder .card{
+.x_memory_page #cardTopHolder .card{
   border: 2px solid $darkergrey;
 }
 //*****crossword*****/
@@ -498,25 +558,6 @@ a.hotspot, a.hotspot.selected {
   border-bottom-width: 2px;
 }
 //***********************************Misc*************************************/
-//*****youtube feed page*****/
-.x_youtuberss_page #resultsHolder div {
-  width:97%;
-  min-height: 50px;
-  padding-top: 5px;
-  border-radius: $mediumroundedcorners;
-  background-color: $whiteorlightest;
-  margin:.5em;
-}
-.x_youtuberss_page #resultsHolder div a{
-  color: #0000A0;
-}
-.x_youtuberss_page .shadedDiv {
-   background-color: lighten($darkergrey, 12%) !important; //doesn't work without important
-   border-radius: $mediumroundedcorners;
- }
-.x_youtuberss_page .shadedDiv p{
-  color:$blackordarkest !important;
-}
 //*****qr code******/
 div#shorturltodisplay a{
   color:$darkestcolor;
@@ -539,49 +580,6 @@ div#shorturltodisplay a{
   background-color: $lightgrey !important; //doesn't work without important
   margin-bottom:.5em;
   margin-top:.5em;
-}
-//*****results page*****/
-.x_results_page td {
-  background:$lightgrey;
-  color: $mainfontcolour;
-}
-.x_results_page #questionScores  th{
-  background-color: $darkestcolor;
-}
-.x_results_page tr.alt td{
-  background: $midgrey;
-  color:$blackordarkest;
-}
-.x_results_page .details th, .x_results_page .details tr:first-of-type td.correct {
-  background: $darkestcolor;
-  color: $fontcolorfordarkestcolor;
-}
-.x_results_page #general_summary th {
-  background: #ffffff;//hide otherwise black line at to of summary table
-}
-.fas.fa-check-circle{
-  color:green;
-}
-.fas.fa-times-circle{
-  color:#CD2A2A;
-}
-.fas.fa-circle.blue{
-  color:#0000ff;
-  background:black;
-  border-radius: 12px;
-}
-.far.fa-circle.blue{
-  color:#0000ff;
-  border-radius: 12px;
-}
-.x_results_page tr.alt .far.fa-circle.blue {
-  color: #0000ff !important;
-  border-radius: 12px;
-}
-
-.x_results_page tr .far.fa-circle.blue {
-  color: #0000ff !important;
-  border-radius: 12px;
 }
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/

@@ -149,6 +149,11 @@ table.glossary tr.shaded {
   color: $blackordarkest;
   border: 2px solid $darkergrey;
 }
+
+#x_pageTimer {
+  background: $midgrey;
+  padding: .5em;
+}
 //******** Smartphones 600px (portrait) change progress bar display-----------/
 @media only screen
 and (max-width:600px) {

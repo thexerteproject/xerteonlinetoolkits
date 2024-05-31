@@ -15,19 +15,19 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 }
 
 #x_headerBlock #x_pageIntroBtn {
-	color: white;
+	color: $whiteorlightest;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg {
-	color: black;
-	background-color: white;
+	color: $blackordarkest;
+	background-color: $whiteorlightest;
 }
 
 #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
-	color: #117BAD;
+	color: $lightestcolor2;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
-	color: black;
-	background-color: #117BAD;
+	color: $blackordarkest;
+	background-color: $lightestcolor2;
 }
