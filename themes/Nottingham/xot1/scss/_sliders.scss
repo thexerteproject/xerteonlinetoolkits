@@ -14,9 +14,8 @@ $thumb-shadow-size: 4px !default;
 $thumb-shadow-blur: 4px !default;
 $thumb-shadow-color: rgba(0, 0, 0, .2) !default;
 $thumb-border-width: 2px !default;
-$thumb-border-color: $lightestcolor2 !default;//#eceff1
+$thumb-border-color: $whiteorlightest !default;//#eceff1
 
-$track-width: 100% !default;
 $track-height: 8px !default;
 $track-shadow-size: 1px !default;
 $track-shadow-blur: 1px !default;
@@ -35,7 +34,6 @@ $contrast: 5% !default;
   cursor: pointer;
   height: $track-height;
   transition: all .2s ease;
-  width: $track-width;
 }
 
 @mixin thumb {
@@ -51,21 +49,24 @@ $contrast: 5% !default;
 [type='range'] {
   -webkit-appearance: none;
   margin: $thumb-height / 2 0;
-  width: $track-width;
 
   &:focus {
     outline: 0;
 
-    &::-webkit-slider-runnable-track {
-      background: lighten($track-color, $contrast);
+    &::-webkit-slider-thumb {
+      border-color: $blackordarkest;
     }
+  }
 
-    &::-ms-fill-lower {
-      background: $track-color;
+  &:active {
+    &::-webkit-slider-thumb {
+      border-color: $blackordarkest;
     }
+  }
 
-    &::-ms-fill-upper {
-      background: lighten($track-color, $contrast);
+  &:hover {
+    &::-webkit-slider-thumb {
+      border-color: $blackordarkest;
     }
   }
 
@@ -73,7 +74,6 @@ $contrast: 5% !default;
     @include track;
     @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
     background: $track-color;
-    border: $track-border-width solid $track-border-color;
     border-radius: $track-radius;
   }
 
@@ -121,4 +121,31 @@ $contrast: 5% !default;
     @include thumb;
     margin-top: 0;
   }
+}
+
+
+//*****jquery ui sliders*****/
+.ui-slider {
+  @include track;
+  @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
+  background: $track-color;
+  border: 0;
+  border-radius: $track-radius;
+}
+.ui-slider .ui-slider-handle,
+.x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle {
+  border: 0;
+  @include thumb;
+  height: 20px;
+  width: 20px;
+  margin-top: ($track-height / 2) - ($thumb-height / 2) + 4;
+}
+
+.ui-slider .ui-slider-handle:hover, .ui-slider .ui-slider-handle:focus, .ui-slider .ui-slider-handle:active {
+  border-color: $blackordarkest;
+}
+
+.sliderBar.ui-slider-vertical {
+  width: $track-height;
+  height: auto;
 }

@@ -625,6 +625,10 @@ table.headerCol.simple th:first-child {
     margin-top: -0.5em;
 }
 
+.ui-icon.fa {
+	overflow: visible;
+}
+
 .ui-icon.icon-large {
     margin-top: -0.75em;
 }

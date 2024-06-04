@@ -46,4 +46,11 @@ $defaultpagepadding:1%;
 
 /*define hr appearances*/
 $hrLine: 3px;
+$hrLineThick: 6px;
 $hrColour: $lightgrey;
+
+@mixin dropShadow {
+  -webkit-box-shadow: 0 10px 6px -6px $darkergrey;
+  -moz-box-shadow: 0 10px 6px -6px $darkergrey;
+  box-shadow: 0 10px 6px -6px $darkergrey;
+}
