@@ -30,47 +30,32 @@
 			lang2,
 			lang3,
 			tabIndex = '',
-
 			$pageContents,
 			$groupInfo,
 			$instructions,
-
 			interactionText = "",
 			tempTxt = "",
 			tempTxtPos = 0,
 			tempTag = -1,
 			openTagInfo = [],
-
-			checked = false,
 			findAllowSelectionOfAllWords;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
-			$pageContents.data("currentGroup", -1);
 			$groupInfo = $("#groupInfo");
 			$instructions = $("#instructions");
 			groupInfo = $pageContents.data("groupInfo");
 			subGroups = $pageContents.data("subGroups");
 
-			$("#passage .group")
-				.removeClass("on")
-				.removeAttr("aria-current");
+			// only quiz is reset - the other interactions will stay as they were
+			if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
+				$("#passage .group")
+					.removeClass("on")
+					.removeAttr("aria-current")
+					.removeAttr("title");
 
-			for(var group = 0; group < groupInfo.length; group++)
-				$("#passage span").removeClass("wrongOn" + group);
-			$groupInfo.html("");
-			$("#btnHolder .listItem").removeClass("highlight");
-
-			if (x_currentPageXML.getAttribute("interactivity") == "explore") {
-				$("#showBtn").hide();
-			} else if (x_currentPageXML.getAttribute("interactivity") == "show2") {
-				$("#prevBtn").button("disable");
-				$("#nextBtn").button("enable");
-			} else if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
 				this.createQuiz();
-			} else if (x_currentPageXML.getAttribute("interactivity") == "find" || x_currentPageXML.getAttribute("interactivity") == "find2") {
-				$("#feedback").hide();
 			}
 		};
 
@@ -81,7 +66,7 @@
 
 		this.leavePage = function() {
 			var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
-			if (!interactiveText.checked && (numQs > 0 || x_currentPageXML.getAttribute("interactivity") == "find2"))
+			if (!$("#passageHolder").hasClass("disabled") && (numQs > 0 || x_currentPageXML.getAttribute("interactivity") == "find2"))
 			{
 				interactiveText.finishTracking();
 			}
@@ -1041,7 +1026,7 @@
 
 		// only used in find interaction - triggered when subgroup selected (with or without mouse)
 		this.clickFind = function($this) {
-			if (interactiveText.checked)
+			if ($("#passageHolder").hasClass("disabled"))
 				return;
 
 			var currentGroup = $pageContents.data("currentGroup");
@@ -1216,7 +1201,7 @@
 			}
 			var score = endScore / total * 100;
 			XTSetPageScore(x_currentPage, score);
-			interactiveText.checked = true;
+			$("#passageHolder").addClass("disabled");
 		};
 
 		//Mark a wrong word as wrong in the find2 interaction
@@ -1316,30 +1301,22 @@
 		}
 
 		function finalFeedback(incorrect){
-
 		    var correct = true;
-
-		    for(var i =0; i < incorrect.length; i++){
-		        if(incorrect[i].length !== 0){
+		    for (var i =0; i < incorrect.length; i++) {
+		        if (incorrect[i].length !== 0) {
 		            correct =false;
 				}
 			}
 
-            if(correct){
-                $("#feedbackTxt").html((x_currentPageXML.getAttribute("passedFindTxt") != undefined ? x_currentPageXML.getAttribute("passedFindTxt") : "All selections are correct"));
-            }else{
-                $("#feedbackTxt").html((x_currentPageXML.getAttribute("failedFindTxt") != undefined ? x_currentPageXML.getAttribute("failedFindTxt") : "You still have incorrect selections"));
+            if(correct) {
+				$("#passageHolder").addClass("disabled");
+				$("#feedbackTxt").html("<span id='finalResult' class='fa fa-fw fa-x-tick'/>");
+                $("#feedbackTxt").append((x_currentPageXML.getAttribute("passedFindTxt") != undefined ? x_currentPageXML.getAttribute("passedFindTxt") : "All selections are correct"));
+            } else {
+				$("#feedbackTxt").html("<span id='finalResult' class='fa fa-fw fa-x-cross'/>");
+                $("#feedbackTxt").append((x_currentPageXML.getAttribute("failedFindTxt") != undefined ? x_currentPageXML.getAttribute("failedFindTxt") : "You still have incorrect selections"));
             }
-
-            $("#feedbackTxt").prepend("<span id=finalResult/>")
-
-            if(correct){
-                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-            }else{
-                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
-            }
-
-			}
+		}
 
         function finalFeedbackMcq(good, total){
 
@@ -1522,8 +1499,8 @@
 			// if this is a find2 interaction
 			if (x_currentPageXML.getAttribute("interactivity") == "find2")
 				{
-					interactiveText.endFindInteraction()
-					interactiveText.checked = true;
+					interactiveText.endFindInteraction();
+					$("#passageHolder").addClass("disabled");
 					return;
 				}
 
@@ -1539,8 +1516,6 @@
 			{
 				XTSetPageScore(x_currentPage, score * 100 / numQs, x_currentPageXML.getAttribute("trackinglabel"));
 			}
-
-			interactiveText.checked = true;
 		};
 
 		this.showFeedBackandTrackResults = function() {
@@ -1555,7 +1530,7 @@
 
 	<div id="passageHolder" class="panel">
 		<div id="passage"/>
-		<div id="feedbackTxt"/>
+		<div id="feedbackTxt" aria-live="polite"/>
 	</div>
 	<div>
 		<div id="pageTxt"/>
