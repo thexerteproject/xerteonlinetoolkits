@@ -260,30 +260,15 @@
 						var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
 
 						$(this).attr("title", targetTxt1 + " " + categoryTitle);
-
-						// change tab index of label so it's now after the target it's on
-						var categoryIndex = parseInt($(this).attr("tabindex"));
-						$(this).children(".label").each(function(i) {
-							$(this).attr("tabindex", categoryIndex + i + 1);
-						});
 					}
 				});
-			
-			// set tab index for targets - leaving space between them for any labels that are put on them
-			var tabIndex = 0;
+
 			for (i=0; i<$categoryHolder.find(".category").length; i++) {
-				tabIndex = (i + 1) * ($pageContents.data("labels").length + 1) + 1;
 				var $category = $categoryHolder.find(".category:eq(" + i + ")");
 				var categoryTitle = $("<div>").html($category.find(".categoryTitle").html()).text();
 
-				$category.attr({
-					"tabindex"	:tabIndex,
-					"title"		:targetTxt1 + " " + categoryTitle
-				});
+				$category.attr({"title": targetTxt1 + " " + categoryTitle});
 			}
-			tabIndex += $pageContents.data("labels").length;
-			$button.attr("tabindex", tabIndex + 1);
-			$feedback.attr("tabindex", tabIndex + 2);
 			
 			this.createLabels();
 			
@@ -304,7 +289,7 @@
 				tempLabels.splice(labelNum, 1);
 			}
 			for (i=0; i<labels.length; i++) {
-				$("#initHolder").append('<li class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '"><p>' + labels[i].name + '</p></li>');
+				$("#initHolder").append('<li class="label panel" id="label' + i + '" tabindex="0" title="' + labelTxt1 + '"><p>' + labels[i].name + '</p></li>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("category", labels[i].correct);
                 $thisLabel.data("name", labels[i].name);
@@ -324,12 +309,6 @@
 						if ($(this).is($("#initHolder"))) {
 							$("#initHolder .label:first").show();
 						}
-						
-						// change tab index of label so it's now after the target it's on
-						var categoryIndex = parseInt(ui.item.parent().attr("tabindex"));
-						ui.item.parent().children(".label").each(function(i) {
-							$(this).attr("tabindex", categoryIndex + i + 1);
-						});
 					}
 				},
 				start:	function() {
@@ -412,10 +391,10 @@
 		
 		<ul id="initHolder"></ul>
 		
-		<div id="textHolder" tabindex="1"></div>
+		<div id="textHolder"></div>
 		
 		<div id="categoryHolder">
-			<ul class="category highlight"><div class="categoryTitle"></div></ul>
+			<ul class="category highlight" tabindex="0"><div class="categoryTitle"></div></ul>
 		</div>
 		
 	</div>

@@ -286,7 +286,7 @@
 
 					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 					quiz.checked = false;
-					$('#qNo').attr('tabIndex', 0).focus();
+					$('#qNo').attr('tabIndex', "-1").focus();
 				}
 			}
 		}
