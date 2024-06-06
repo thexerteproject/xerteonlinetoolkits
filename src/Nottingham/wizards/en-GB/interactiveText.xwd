@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="" passage="" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText>
+      <interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="" passage="" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" incorrectAnswerTxt="Incorrect Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText>
     </newNodes>
   </pageWizard>
 
@@ -13,18 +13,19 @@
     <interactivity label="Interactivity" options="Explore,Show Me (By Name),Show Me (In Order),Find,Find (Mark at end),MCQ" type="ComboBox" data="explore,show,show2,find,find2,mcq" conditionTrigger="true"/>
 	<highlight label="Underline Text" type="CheckBox"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
-	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="interactivity=='find2'||interactivity=='mcq'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
-    <findOptions type="group" label="Distractors" optional="true">
+    <findOptions type="group" label="Distractors" optional="true" condition="interactivity=='find'||interactivity=='find2'">
         <findAllowSelectionOfAllWords label="Automatic distractors" condition="interactivity=='find'||interactivity=='find2'" tooltip="Allow the selection of all the individual words, not only delimited ones" type="CheckBox" defaultValue="false" optional="true" />
         <findUseDistractors label="Custom distractors" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" condition="interactivity=='find'||interactivity=='find2'" tooltip="Be able to mark distractors by setting the distractor delimiter below." />
-        <findDistractorDelimiter label="Distractor delimiter" type="TextInput" optional="true" defaultValue="The character used to mark up this group in the interactive text, e.g. *" condition="interactivity=='find'||interactivity=='find2'&amp;&amp;findUseDistractors=='true'" tooltip="The character used to mark up this group in the interactive text, e.g. *. This delimiter can only be sued if 'custom distractors' is enabled."/>
+        <findDistractorDelimiter label="Distractor delimiter" type="TextInput" optional="true" defaultValue="The character used to mark up this group in the interactive text, e.g. *" condition="(interactivity=='find'||interactivity=='find2')&amp;&amp;findUseDistractors=='true'" tooltip="The character used to mark up this group in the interactive text, e.g. *. This delimiter can only be sued if 'custom distractors' is enabled."/>
     </findOptions>
-	<mcqOptions type="group" label="MCQ Options" optional="true">
+	<mcqOptions type="group" label="MCQ Options" optional="true" condition="interactivity=='mcq'">
 		<mcqType label="Question Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" condition="interactivity=='mcq'" optional="true"/>
-		<mcqFB label="Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" condition="interactivity=='mcq'" optional="true"/>
+		<mcqFB label="Feedback" type="TextArea" height="150" placeholder="Enter feedback text here" condition="interactivity=='mcq'" optional="true"/>
 		<mcqNumQs label="Number of Questions (*=All)" type="TextInput" defaultValue="*" condition="interactivity=='mcq'" optional="true"/>
 		<mcqNumAs label="Number of Answer Options (*=All)" type="TextInput" defaultValue="*" condition="interactivity=='mcq'" optional="true"/>
+		<mcqMoreInfo label="More Information Link" tooltip="Include a 'more information' icon link alongside the feedback to display the group description" type="CheckBox" defaultValue="true" mandatory="true" condition="interactivity=='mcq'" optional="true"/>
 	</mcqOptions>
 
 	<exploreTxt label="Explore Instructions" type="TextInput" wysiwyg="true" language="true"/>
@@ -45,7 +46,7 @@
 	<mcqCorrect label="MCQ Correct" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqWrong label="MCQ Incorrect" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqFeedback label="MCQ Feedback" type="TextInput" wysiwyg="true" language="true"/>
-	<mcqMore label="MCQ More Information" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqMore label="MCQ More Information" type="TextInput" language="true"/>
 	<mcqScore label="You scored {i}/{n}" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqBtnTxt label="MCQ Check Button" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqBtnTxt2 label="MCQ Next Button" type="TextInput" wysiwyg="true" language="true"/>
@@ -54,6 +55,7 @@
 	<groupTxt label="Group" type="TextInput" wysiwyg="true" language="true"/>
 	<yourAnswerTxt label="Your Answer" type="TextInput" wysiwyg="true" language="true"/>
 	<correctAnswerTxt label="Correct Answer" type="TextInput" wysiwyg="true" language="true"/>
+	<incorrectAnswerTxt label="Incorrect Answer" type="TextInput" language="true" mandatory="true" defaultValue="Incorrect Answer"/>
 	<passedFindTxt label="All selections are correct" type="TextInput" wysiwyg="true" language="true"/>
     <failedFindTxt label="You still have incorrect selections" type="TextInput" wysiwyg="true" language="true"/>
 	<passedQuestionTxt label="You passed the question" type="TextInput" wysiwyg="true" language="true"/>
