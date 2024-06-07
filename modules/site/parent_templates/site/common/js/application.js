@@ -2631,14 +2631,33 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		
 		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
 		header.find('a.accordion-toggle').click(function() {
-			accDiv.find('.accordion-group a').not($(this))
+			var $this = $(this);
+			accDiv.find('.accordion-group a').not($this)
 				.addClass('collapsed')
 				.parents('.accordion-group').addClass('collapsed');
 
-			if ($(this).hasClass('collapsed')) {
-				$(this).parents('.accordion-group').removeClass('collapsed');
+			if ($this.hasClass('collapsed')) {
+				$this.parents('.accordion-group').removeClass('collapsed');
 			} else {
-				$(this).parents('.accordion-group').addClass('collapsed');
+				$this.parents('.accordion-group').addClass('collapsed');
+			}
+
+			// make sure the pane that's just been opened is in view (if closing pane is taller than opening pane it may not be)
+			var viewTop = $(window).scrollTop(),
+				viewBottom = viewTop + $(window).height(),
+				paneTop = $this.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
+
+			$this.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
+				if ($(this).find('.accordion-toggle').is($this)) {
+					return false;
+				} else {
+					paneTop += $(this).outerHeight();
+				}
+			});
+
+			// only scroll if necessary
+			if (paneTop < viewTop || paneTop > viewBottom) {
+				$('html, body').animate({scrollTop: paneTop}, 400);
 			}
 		});
 
