@@ -33,6 +33,8 @@
 		<linkIntro label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter link description for accessibility"/>
 		<linktarget label="Target" type="textInput" width="70" defaultValue="_blank" optional="true" />
 	</linkInfo>
+
+	<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	
 	<addmargin label="Image Margin" type="Checkbox" defaultValue="false"  optional="true"/>
 	

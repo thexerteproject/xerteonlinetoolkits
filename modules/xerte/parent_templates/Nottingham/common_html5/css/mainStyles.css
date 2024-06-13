@@ -740,6 +740,15 @@ textarea {
 .lightBoxCaption {
 	margin: 5px 0;
 }
+
+figure {
+	margin: 0;
+}
+
+figcaption {
+	margin-top: .2em;
+}
+
 /*#pageContents and #adaptiveContentMain not usually an actionable item so hide focus border*/
 #pageContents:focus,#adaptiveContentMain:focus{
 	outline:none;

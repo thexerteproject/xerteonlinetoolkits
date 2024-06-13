@@ -24,3 +24,11 @@
 	#x_pageDiv .x_floatLeft.noBorder, #x_pageDiv .x_floatRight.noBorder {
 		padding-top: 0;
 	}
+
+	#imgHolder .x_floatLeft figcaption {
+		margin-left: .1em;
+	}
+
+	#imgHolder .x_floatRight figcaption {
+		margin-right: .1em;
+	}

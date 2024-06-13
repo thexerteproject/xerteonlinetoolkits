@@ -37,6 +37,10 @@
 		opacity:	0;
 		filter:		alpha(opacity=0);
 	}
+
+	#pageContents .paneImg figcaption {
+		text-align: left;
+	}
 	
 	#pageContents .paneHolder {
 		overflow:	auto;
