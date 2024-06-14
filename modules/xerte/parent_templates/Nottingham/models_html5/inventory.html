@@ -254,11 +254,21 @@
 				url = thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
+				if (thisQ.getAttribute("caption") != undefined && thisQ.getAttribute("caption") != "") {
+					newString += '<figure class="quizImgHolder">';
+				} else {
+					newString += '<div class="quizImgHolder">'
+				}
 				newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 				if (thisQ.getAttribute("tip") != undefined && thisQ.getAttribute("tip") != "") {
 					newString += 'alt="' + thisQ.getAttribute("tip") + '"';
 				}
 				newString += ' />';
+				if (thisQ.getAttribute("caption") != undefined && thisQ.getAttribute("caption") != "") {
+					newString += '<figcaption>' + thisQ.getAttribute("caption") + '</figcaption></figure>';
+				} else {
+					newString += '</div>';
+				}
 				infoString = newString + infoString;
 			}
 			$("#qTxt").html(x_addLineBreaks(infoString));

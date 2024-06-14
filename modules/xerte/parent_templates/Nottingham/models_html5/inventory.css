@@ -39,11 +39,15 @@
 		margin-left:	10px;
 		float:			right;
 	}
-	
-	#infoHolder .quizImg {
+
+	#infoHolder .quizImgHolder {
 		padding:	5px;
 		float:		right;
 		max-width:	50%;
+	}
+	
+	#infoHolder .quizImg {
+		max-width:	100%;
 		height:		auto;
 	}
 	
