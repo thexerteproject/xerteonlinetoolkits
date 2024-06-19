@@ -111,7 +111,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the project title above the introduction"/>
@@ -488,7 +488,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -531,7 +531,6 @@
         <image type="group" label="Image" optional="true">
             <url label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
             <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
-            <caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
         </image>
 
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -577,7 +576,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -634,8 +633,6 @@
             <url label="File" type="media" placeholder="Select an image"/>
             <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
         </image>
-
-        <caption label="Caption" type="textInput" defaultValue="" placeholder="Enter the caption text" optional="true" tooltip="Add a caption below the image"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
@@ -708,7 +705,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -753,7 +750,7 @@
     <imgInfo type="group" label="Image" optional="true">
       <url label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
       <tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-      <caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+      <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
     </imgInfo>
 
     <initObject label="Init Object" type="TextInput" optional="true" flashonly="true" deprecated="This property is deprecated"/>
@@ -840,7 +837,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1045,7 +1042,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1164,7 +1161,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1261,7 +1258,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1306,7 +1303,7 @@
 	<imgInfo type="group" label="Image" optional="true">
 		<url label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 	
 	<synch label="Synch Point" type="TextInput"/>
@@ -1339,7 +1336,7 @@
 		<linktarget label="Target" type="textInput" width="70" defaultValue="_blank" optional="true"/>
 	</linkInfo>
 
-	<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+	<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	
 	<addmargin label="Image Margin" type="Checkbox" defaultValue="false" optional="true"/>
 	
@@ -1379,7 +1376,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1460,7 +1457,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1542,7 +1539,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1624,7 +1621,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1705,7 +1702,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1795,7 +1792,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1874,7 +1871,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -1960,7 +1957,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2054,7 +2051,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2139,7 +2136,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2249,7 +2246,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2322,7 +2319,7 @@
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select an image"/>
 		<imageTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
-		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
 	<hotspotPopUp label="Text" type="TextArea" conditionTrigger="true" height="200" optional="true" tooltip="Show text/HTML when hotspot clicked"/>
@@ -2395,7 +2392,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2497,7 +2494,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2616,7 +2613,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2718,7 +2715,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2868,7 +2865,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -2957,7 +2954,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3062,7 +3059,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3166,7 +3163,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3284,7 +3281,7 @@
 		<tip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</mediaGroup>
 
-	<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
+	<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </media><checkbox menuItem="Checkbox" icon="icCheckbox">
     <name label="Checkbox Title" type="TextInput" wysiwyg="true"/>
@@ -3383,7 +3380,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3464,7 +3461,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3558,7 +3555,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3652,7 +3649,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3735,7 +3732,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3863,7 +3860,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -3940,7 +3937,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4040,7 +4037,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4120,7 +4117,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4234,7 +4231,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4343,7 +4340,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4426,7 +4423,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4538,7 +4535,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4666,7 +4663,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4796,7 +4793,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4885,7 +4882,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5153,7 +5150,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5198,7 +5195,7 @@
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tip label="Image Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 
     <newNodes>
@@ -5260,7 +5257,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5362,7 +5359,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5448,7 +5445,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5541,7 +5538,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5586,7 +5583,7 @@
 	<imgInfo type="group" label="Image" optional="true">
 		<url label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tip label="Image Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-        <caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+        <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 	
   </listItem><map icon="icMap" menu="Miscellaneous" menuItem="Google Map" hint="Use the map to include an interactive map in the presentation. You can add optional layers of KML data to the map." thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
@@ -5633,7 +5630,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5717,7 +5714,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5821,7 +5818,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -5930,7 +5927,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6036,7 +6033,7 @@
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<imageTip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
@@ -6134,7 +6131,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6491,7 +6488,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6566,7 +6563,7 @@
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -6603,7 +6600,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6682,7 +6679,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6776,7 +6773,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6867,7 +6864,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -6959,7 +6956,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7007,7 +7004,7 @@
 	</mediaInfo>
 
 	<transcript label="Audio Transcript" type="textArea" height="100" defaultValue="" condition="url!=undefined" optional="true" tooltip="For use when the media added is an audio file: add a transcript button to the audio player to reveal this text"/>
-    <caption label="Image Caption" type="textInput" optional="true" defaultValue="" condition="url!=undefined" placeholder="Enter the caption text" tooltip="For use when the media added is an image file: add a caption below the image"/>
+    <caption label="Image Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" condition="url!=undefined" placeholder="Enter the caption text" tooltip="For use when the media added is an image file: add a caption below the image"/>
 
   </navPage><newWindow menu="Links / Feeds" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#newwindow" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_newwindow_page" remove="true">
 
@@ -7031,7 +7028,7 @@
 		<windowHeight label="Height" type="NumericStepper" min="100" max="720" step="10" defaultValue="400" width="100"/>
 	</window>
 
-    <caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
+    <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
     <htm label="HTML" type="textArea" height="150" optional="true" tooltip="Create your own content to open in the new window"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -7068,7 +7065,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7125,7 +7122,7 @@
 	<imgGroup type="group" label="Image" optional="true">
 		<img label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 
 	<graph label="Graph" type="group" optional="true">
@@ -7180,7 +7177,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7234,7 +7231,7 @@
 	<imgGroup type="group" label="Image" optional="true">
 		<image label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox"/>  
@@ -7316,7 +7313,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7400,7 +7397,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7503,7 +7500,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7643,7 +7640,7 @@
 	<imgInfo type="group" label="Image" optional="true">
 		<img label="Image" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 	
 	<videoInfo type="group" label="Video" optional="true">
@@ -7689,7 +7686,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7740,7 +7737,7 @@
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 	
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
@@ -7793,7 +7790,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -7937,7 +7934,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8033,7 +8030,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8124,7 +8121,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8234,7 +8231,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8448,7 +8445,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8530,7 +8527,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8608,7 +8605,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8692,7 +8689,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8775,7 +8772,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8871,7 +8868,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -8965,7 +8962,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9063,7 +9060,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9164,7 +9161,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9241,7 +9238,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9340,7 +9337,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9480,7 +9477,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9576,7 +9573,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9670,7 +9667,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9764,7 +9761,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9846,7 +9843,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -9954,7 +9951,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10053,7 +10050,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10151,7 +10148,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10237,7 +10234,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10328,7 +10325,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10373,7 +10370,7 @@
 	<imgInfo type="group" label="Image" optional="true">
 		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 	
 	<synch label="Synch Point" type="TextInput"/>
@@ -10419,7 +10416,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10512,7 +10509,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10590,7 +10587,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10672,7 +10669,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -10753,7 +10750,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>

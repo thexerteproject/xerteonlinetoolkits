@@ -13,7 +13,6 @@
         <image type="group" label="Image" optional="true">
             <url label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
             <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
-            <caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
         </image>
 
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -50,8 +49,6 @@
             <url label="File" type="media" placeholder="Select an image"/>
             <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
         </image>
-
-        <caption label="Caption" type="textInput" defaultValue="" placeholder="Enter the caption text" optional="true" tooltip="Add a caption below the image"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>

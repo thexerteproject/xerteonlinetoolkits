@@ -116,7 +116,7 @@
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<imageTip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
