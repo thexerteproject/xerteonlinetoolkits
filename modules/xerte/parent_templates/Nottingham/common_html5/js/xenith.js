@@ -1448,6 +1448,11 @@ function x_continueSetUp1() {
 										.prependTo($holder)
 										.html(x_params.name);
 								}
+								if (x_params.introCaption != undefined && x_params.introCaption != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_params.introCaption + '</figcaption>');
+								}
 
 								// include start button to close lightbox
 								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
@@ -1608,6 +1613,12 @@ function x_continueSetUp1() {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
 										.prependTo($holder)
 										.html(x_currentPageXML.getAttribute('name'));
+								}
+
+								if (x_currentPageXML.getAttribute('introCaption') != undefined && x_currentPageXML.getAttribute('introCaption') != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_currentPageXML.getAttribute('introCaption') + '</figcaption>');
 								}
 								
 								// include start button to close lightbox
