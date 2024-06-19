@@ -525,19 +525,22 @@
     </pageHeaderGroup></QRcode><SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" wiki="https://xerte.org.uk/wiki/doku.php?id=media_timeline_media_page" remove="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here"/>
-        <image type="group" label="Image" optional="true">
-          <url label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
-          <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
-        </image>
-        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-        <newNodes>
-        <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
-          <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
-          <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timelineimage>
-          <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
-          <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
 
+        <image type="group" label="Image" optional="true">
+            <url label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
+            <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
+            <caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+        </image>
+
+        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+
+        <newNodes>
+            <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
+            <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timelineimage>
+            <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
+            <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
         </newNodes>
+
     <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
@@ -608,46 +611,55 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></SictTimeline><timeLineText menuItem="Text Item" icon="icPageWhiteText" remove="true">
-      <date label="Date" type="dateField" defaultValue=""/>
-      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        <date label="Date" type="dateField" defaultValue=""/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
-      <name label="Title" type="TextInput" wysiwyg="true"/>
-      <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+
         <TimeLineEndDate type="group" label="End Date" optional="true">
-      		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                  <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
         </TimeLineEndDate>
     </timeLineText><timelineimage menuItem="Image Item" icon="icImage" remove="true">
-      <date label="Date" type="dateField" defaultValue=""/>
-      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-      <name label="Title" type="TextInput" wysiwyg="true"/>
-      <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
-      <image type="group" label="Image">
-        <url label="File" type="media" placeholder="Select an image"/>
-        <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
-      </image>
-      <TimeLineEndDate type="group" label="End Date" optional="true">
-            		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                        <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-              </TimeLineEndDate>
+        <date label="Date" type="dateField" defaultValue=""/>
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
+
+        <image type="group" label="Image">
+            <url label="File" type="media" placeholder="Select an image"/>
+            <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
+        </image>
+
+        <caption label="Caption" type="textInput" defaultValue="" placeholder="Enter the caption text" optional="true" tooltip="Add a caption below the image"/>
+
+        <TimeLineEndDate type="group" label="End Date" optional="true">
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        </TimeLineEndDate>
     </timelineimage><timelinevideo menuItem="Video Item" icon="icPageWhiteFilm" remove="true">
-      <date label="Date" type="dateField" defaultValue=""/>
-      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-      <name label="Title" type="TextInput" wysiwyg="true"/>
-      <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code"/>
-      <TimeLineEndDate type="group" label="End Date" optional="true">
-            		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                        <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-              </TimeLineEndDate>
+        <date label="Date" type="dateField" defaultValue=""/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code"/>
+
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+
+        <TimeLineEndDate type="group" label="End Date" optional="true">
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        </TimeLineEndDate>
     </timelinevideo><timeLineAudio menuItem="Audio Item" icon="icSound" remove="true">
-          <date label="Date" type="dateField" defaultValue=""/>
-          <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-          <name label="Title" type="TextInput" wysiwyg="true"/>
-          <url label="Audio" type="Media" placeholder="Select an audio file"/>
-          <TimeLineEndDate type="group" label="End Date" optional="true">
-                		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-                  </TimeLineEndDate>
+        <date label="Date" type="dateField" defaultValue=""/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <url label="Audio" type="Media" placeholder="Select an audio file"/>
+
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+
+        <TimeLineEndDate type="group" label="End Date" optional="true">
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        </TimeLineEndDate>
     </timeLineAudio><accNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new accordion navigators." deprecatedLevel="low" menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#accordionnavigator" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true" placeholder="Enter page title"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -2275,7 +2287,6 @@
 
 	</video>
 
-	<!--<iframeRatio label="Video iframe Aspect Ratio" type="TextInput" condition="hotspotMovie!=null" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />-->
     <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is deprecated. Videos now reset on completion by default."/>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
@@ -2292,6 +2303,7 @@
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select an image"/>
 		<imageTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
+		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
 	<hotspotPopUp label="Text" type="TextArea" conditionTrigger="true" height="200" optional="true" tooltip="Show text/HTML when hotspot clicked"/>
@@ -3245,6 +3257,7 @@
 		<tip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</mediaGroup>
 
+	<caption label="Caption" type="textInput" optional="true" defaultValue="" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </media><checkbox menuItem="Checkbox" icon="icCheckbox">
     <name label="Checkbox Title" type="TextInput" wysiwyg="true"/>
