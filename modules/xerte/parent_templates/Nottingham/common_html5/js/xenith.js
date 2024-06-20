@@ -3440,10 +3440,12 @@ function x_setUpLightBox() {
 						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
 						
 						if (caption != undefined && caption != '') {
+							var $img = $(this.$content[0]);
+							$img.wrap('<figure></figure>');
 							if (before == true) {
-								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							} else {
-								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').append('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							}
 						}
 					}

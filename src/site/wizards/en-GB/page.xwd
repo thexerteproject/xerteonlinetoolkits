@@ -137,9 +137,10 @@
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="Media" label="Image"/>
-		<alt type="TextInput" label="Image Description"/>
+		<alt type="TextInput" label="Description"/>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
+		<caption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" optional="true" tooltip="Add a caption below the image"/>
 
 	</image>
 

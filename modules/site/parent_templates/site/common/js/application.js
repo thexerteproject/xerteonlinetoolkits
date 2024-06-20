@@ -1982,7 +1982,11 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'image'){
-			section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+				section.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+			} else {
+				section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			}
 		}
 
 		if (this.nodeName == 'audio'){
@@ -2506,7 +2510,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'image'){
-				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+					pane.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+				} else {
+					pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				}
 			}
 
 			if (this.nodeName == 'audio'){
@@ -2689,7 +2697,11 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'image'){
-				inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+					inner.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+				} else {
+					inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				}
 			}
 
 			if (this.nodeName == 'audio'){
@@ -2803,7 +2815,11 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'image'){
-				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+					pane.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+				} else {
+					pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				}
 			}
 
 			if (this.nodeName == 'audio'){
@@ -3213,10 +3229,12 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 					this.$instance.find('.caption').remove();
 					var before = captionType == "above" ? true : false;
 
+					var $img = $(this.$content[0]);
+					$img.wrap('<figure></figure>');
 					if (before == true) {
-						$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+						$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 					} else {
-						$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+						$img.parent('figure').append('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 					}
 				}
 			}

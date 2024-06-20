@@ -747,6 +747,12 @@ figure {
 
 figcaption {
 	margin-top: .2em;
+	margin-bottom: 0;
+}
+
+figcaption:first-child {
+	margin-bottom: .2em;
+	margin-top: 0;
 }
 
 /*#pageContents and #adaptiveContentMain not usually an actionable item so hide focus border*/
