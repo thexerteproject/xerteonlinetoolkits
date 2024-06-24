@@ -2649,34 +2649,57 @@ var EDITOR = (function ($, parent) {
         });
 
         canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp)});
-        // Step 2. Create polygon in appropriate scale
-        var scaledpoints = [];
-        // Old way of specifying hotspot: x,y,w,h
-        if (forceRectangle || (hsattrs.mode == undefined && hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
-            // create polygon, start with topleft
-            scaledpoints[0] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y)};
-            scaledpoints[1] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y)};
-            scaledpoints[2] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
-            scaledpoints[3] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
-        }
-        if (scaledpoints.length == 4 || (hsattrs.points != undefined && hsattrs.mode != undefined)) {
-            if (scaledpoints.length != 4) {
-                scaledpoints = JSON.parse(hsattrs['points']);
-            }
-            if (scaledpoints.length > 0) {
-                for (var i in scaledpoints) {
-                    scaledpoints[i].x *= scale;
-                    scaledpoints[i].y *= scale;
-                }
-                var poly = new fabric.Polygon(scaledpoints, {
-                    fill: 'rgba(255,0,0,0.5)',
-                    selectable: false,
-                    objectCaching: false,
 
-                    evented:false
-                });
-                // Step 3. Draw Polygon
-                canvas.add(poly);
+        if (hsattrs.mode != undefined && hsattrs.mode == 'icon' && hsattrs.shape != undefined){
+            var icon_shape = JSON.parse(hsattrs.shape);
+            canvasWidth = $('#wizard_hscanvas_' + id).width()
+            canvasHeight = $('#wizard_hscanvas_' + id).height()
+
+            var icon_preview = new fabric.Circle({
+                radius: icon_shape.radius/100 * canvasWidth,
+                left: icon_shape.centerX/100 * canvasWidth,
+                top: icon_shape.centerY/100 * canvasHeight,
+                originX: 'center',
+                originY: 'center',
+                fill: 'rgba(255,0,0,0.5)',
+                selectable: false,
+                objectCaching: false,
+                evented: false
+            });
+            canvas.add(icon_preview)
+        } else {
+            // Step 2. Create polygon in appropriate scale
+            var scaledpoints = [];
+            // Old way of specifying hotspot: x,y,w,h
+            if (forceRectangle || (hsattrs.mode == undefined && hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
+                // create polygon, start with topleft
+                scaledpoints[0] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y)};
+                scaledpoints[1] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y)};
+                scaledpoints[2] = {
+                    x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w),
+                    y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)
+                };
+                scaledpoints[3] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
+            }
+            if (scaledpoints.length == 4 || (hsattrs.points != undefined && hsattrs.mode != undefined)) {
+                if (scaledpoints.length != 4) {
+                    scaledpoints = JSON.parse(hsattrs['points']);
+                }
+                if (scaledpoints.length > 0) {
+                    for (var i in scaledpoints) {
+                        scaledpoints[i].x *= scale;
+                        scaledpoints[i].y *= scale;
+                    }
+                    var poly = new fabric.Polygon(scaledpoints, {
+                        fill: 'rgba(255,0,0,0.5)',
+                        selectable: false,
+                        objectCaching: false,
+
+                        evented: false
+                    });
+                    // Step 3. Draw Polygon
+                    canvas.add(poly);
+                }
             }
         }
     };
@@ -2699,6 +2722,7 @@ var EDITOR = (function ($, parent) {
         edit_img.append('<div class="hsbutton_holder" id="hsbutton_holder_'+ id + '">' +
             '<button id="rectangle_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Rectangle + '"><i class="fas fa-2x fa-vector-square"></i></button>' +
             '<button id="poly_'+ id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Polygon + '"><i class="fas fa-2x fa-draw-polygon"></i></button>' +
+            '<button id="icon_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Icon + '"><i class="fas fa-2x fa-info-circle"></i></button>' +
             '<button id="reset_'+ id + '" class="hseditModeButton firstoption" title="' + language.editHotspot.Buttons.Reset + '" disabled><i class="fas fa-2x fa-undo-alt"></i></button>' +
             '<button id="' + id + '_cancel" name="cancel" class="hseditModeButton" title="' + language.Alert.cancellabel + '" style="float:right"><i class="fas fa-2x fa-window-close"></i></button>' +
             '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
@@ -2796,10 +2820,17 @@ var EDITOR = (function ($, parent) {
                     case "rectangle":
                         $("#rectangle_" + id).addClass("selected");
                         $("#poly_" + id).removeClass("selected");
+                        $("#icon_" + id).removeClass("selected");
                         break;
                     case "polygon":
                         $("#poly_" + id).addClass("selected");
                         $("#rectangle_" + id).removeClass("selected");
+                        $("#icon_" + id).removeClass("selected");
+                        break;
+                    case "icon":
+                        $("#icon_" + id).addClass("selected");
+                        $("#rectangle_" + id).removeClass("selected");
+                        $("#poly_" + id).removeClass("selected");
                         break;
                 }
             };
@@ -2885,6 +2916,47 @@ var EDITOR = (function ($, parent) {
                             enableReset();
                         }
                         break;
+                    case "icon":
+                        if (hsattrs.shape != undefined) {
+                            var icon = JSON.parse(hsattrs.shape);
+                            //calculate size in comparison to canvas
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+
+
+                            bg = new fabric.Circle({
+                                radius: icon.radius/100 * canvasWidth,
+                                left: icon.centerX/100 * canvasWidth,
+                                top: icon.centerY/100 * canvasHeight,
+                                originX: 'center',
+                                originY: 'center',
+                                fill: 'rgba(255,0,0,0.5)',
+                                selectable: true,
+                                borderColor: 'yellow',
+                                objectCaching: false,
+                                angle: icon.angle,
+
+                            });
+
+                            tempIcon = new fabric.IText('\uf0c2', {
+                                fill: 'white',
+                                left: icon.centerX/100 * canvasWidth,
+                                top: icon.centerY/100 * canvasHeight,
+                                originX: 'center',
+                                originY: 'center',
+                                fontFamily:'FontAwesome',
+                                objectCaching: false,
+                                selectable: false,
+                            })
+                            hs = new fabric.Group([bg, tempIcon])
+                            hs.setControlsVisibility({
+                                mb: false,
+                                ml: false,
+                                mr: false,
+                                mt: false,
+                            })
+                        }
+
                 }
                 if (hs != null) {
                     // Step 3. Draw Polygon
@@ -2911,6 +2983,9 @@ var EDITOR = (function ($, parent) {
                             break;
                         case "polygon":
                             instructions += "<li>" + language.editHotspot.Instructions.polygon + "</li>";
+                            break;
+                        case "icon":
+                            instructions += "<li>" + language.editHotspot.Instructions.icon + "</li>";
                             break;
                     }
                 }
@@ -2998,6 +3073,22 @@ var EDITOR = (function ($, parent) {
                             setAttributeValue(key, ["points", "mode", "shape"], ['[]', shape, '{}']);
                         }
                         break;
+                    case "icon":
+                        if (hs != null) {
+                            var icon = {}
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+                            icon.centerX = (hs.left / canvasWidth) * 100;
+                            icon.centerY = (hs.top / canvasHeight) * 100;
+                            icon.radius = (hs.getRadiusY() / canvasWidth) * 100;
+                            icon.angle = hs.angle;
+
+                            setAttributeValue(key, ["points", "mode", "shape"], [JSON.stringify(icon), shape, JSON.stringify(icon)]);
+                        }
+                        else {
+                                setAttributeValue(key, ["points", "mode", "shape"], ['[]', shape, '{}']);
+                            }
+                            break;
                 }
 
 
@@ -3066,6 +3157,28 @@ var EDITOR = (function ($, parent) {
                 disableReset();
             };
 
+            var iconbutton = $('.hotspotEditor #icon_'+id);
+            iconbutton.click(function (event) {
+                if (shape != "icon") {
+                    switchToIconMode();
+                }
+
+            });
+
+            var switchToIconMode = function()
+            {
+                shape = "icon";
+                setDrawingModeButtonState(shape);
+                canvas.set({selection: false});
+                canvas.remove(hs);
+                canvas.renderAll();
+                hs = null;
+                //todo
+                setIconHandlers();
+                disableReset();
+
+            };
+
             // Reset handler
             var resetbutton = $('.hotspotEditor  #reset_'+id);
             resetbutton.click(function (event){
@@ -3077,6 +3190,10 @@ var EDITOR = (function ($, parent) {
                         break;
                     case "polygon":
                         switchToPolygonMode();
+                        disableReset();
+                        break;
+                    case "icon":
+                        switchToIconMode();
                         disableReset();
                         break;
                 }
@@ -3294,7 +3411,6 @@ var EDITOR = (function ($, parent) {
                 }
                 canvas.renderAll();
             };
-
             var generatePolygon  = function(pointArray){
                 var points = new Array();
                 $.each(pointArray,function(index,point){
@@ -3331,6 +3447,43 @@ var EDITOR = (function ($, parent) {
                 enableReset();
             };
 
+            var setIconHandlers = function()
+            {
+                canvas.off('mouse:down');
+                canvas.off('mouse:move');
+                canvas.off('mouse:up');
+                canvas.on('mouse:up', function(opt) {
+                    IconMouseUp(opt)
+                });
+            };
+
+            var IconMouseUp = function(o)
+            {
+                var pointer = canvas.getPointer(o.e);
+
+                hs = new fabric.Circle({
+                    radius: 20,
+                    left: Math.abs(pointer.x),
+                    top: Math.abs(pointer.y),
+                    originX: 'center',
+                    originY: 'center',
+                    fill: 'rgba(255,0,0,0.5)',
+                    selectable: true,
+                    borderColor: 'yellow',
+                });
+                hs.setControlsVisibility({
+                    mb: false,
+                    ml: false,
+                    mr: false,
+                    mt: false,
+                })
+
+                canvas.off('mouse:up');
+                canvas.set({selection: (forceRectangle ? true : false)});
+                canvas.add(hs);
+                canvas.renderAll();
+                enableReset();
+            };
 
             hs = initShape();
         }
@@ -4827,7 +4980,7 @@ var EDITOR = (function ($, parent) {
 								.css('top', $('body').height() * 0.05);
 						}, 10);
 					});
-				
+				debugger
 				iconpickers.push({id: id + '_btn', iconList: options.iconList});
 				
 				break;

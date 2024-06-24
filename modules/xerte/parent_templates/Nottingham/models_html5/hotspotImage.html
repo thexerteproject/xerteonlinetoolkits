@@ -214,7 +214,6 @@
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var _this = this;
-
 					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="0" />');
 
 					var coords = [];
@@ -233,7 +232,7 @@
 						}
 
 						if (coords.length > 0) {
-							for (var j in coords) {
+						for (var j in coords) {
 								// No more need to scale the points, handled by the plugin
 								if (j>0)
 								{
@@ -247,7 +246,25 @@
 					$hotspot
 						.attr("coords", coords_string)
 						.click(function() {
-							$("#infoHolder").html((x_browserInfo.mobile == true ? "" : "<hr/>") + "<h3>" + _this.getAttribute("name") + "</h3>" + x_addLineBreaks(_this.getAttribute("text")));
+							if (x_currentPageXML.getAttribute("textNear") == "in") {
+								if (!$("#hotspot_bubble").length){
+									debugger
+									$(this).append('<div id="hotspot_bubble" class="hotspot_bubble">' + '</div>');
+									$hotspot_bubble = $("#hotspot_bubble");
+									//todo make pretty
+
+									$hotspot_bubble.html("<h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
+								}
+
+								$hotspot_bubble.css({
+									"left"	:$(this).offset().left - $hotspot_bubble.width(),
+									"top"	:$(this).offset().top - $(this).height()/2.5,
+								});
+								$hotspot_bubble.fadeIn("slow");
+							}
+							else {
+								$("#infoHolder").html((x_browserInfo.mobile == true ? "" : "<hr/>") + "<h3>" + _this.getAttribute("name") + "</h3>" + x_addLineBreaks(_this.getAttribute("text")));
+							}
 							
 							$(".selected").removeClass("selected");
 							if (x_currentPageXML.getAttribute("highlight") !== "true") {
