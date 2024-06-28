@@ -727,6 +727,12 @@ form.csvUpload input[name=merge] {
 	margin-left: 10px;
 }
 
+#mainPanel .xerte_button.grid_col_btns,
+#mainPanel .xerte_button.disabled.grid_col_btns,
+#mainPanel input[name=csvUpload] {
+	font-size: 0.8em;
+}
+
 #mainPanel select.deprecated {
 	width: 95%;
 }

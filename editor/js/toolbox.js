@@ -1908,7 +1908,7 @@ var EDITOR = (function ($, parent) {
                     var button = $('<button>')
                         .attr('id', value.id)
                         .attr('title', value.tooltip)
-                        .addClass("xerte_button")
+                        .addClass("xerte_button grid_col_btns")
                         .prop('disabled', value.disabled)
                         .addClass(value.disabled ? 'disabled' : 'enabled')
                         .click({ id: id, key: key, name: name }, function(evt){
