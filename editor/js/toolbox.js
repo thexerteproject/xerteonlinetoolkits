@@ -2622,7 +2622,6 @@ var EDITOR = (function ($, parent) {
         // Draw Hotspot on the wizard page as preview on the thumbnail image
         // Always treat hotspot as a polygon
         // Step 0. Find image, set scale and wrap with overlayWrapper
-
         var img =  html.find('img');
 
         var natWidth = img[0].naturalWidth;
@@ -2713,7 +2712,6 @@ var EDITOR = (function ($, parent) {
         var pointArray = null;
         var lineArray = null;
         var hs = null;
-
 	    var edit_img = $("<div></div>");
         //.css("background", "url(" + url + ")")
         edit_img.attr('id', 'outer_img_' + id)
@@ -3173,7 +3171,6 @@ var EDITOR = (function ($, parent) {
                 canvas.remove(hs);
                 canvas.renderAll();
                 hs = null;
-                //todo
                 setIconHandlers();
                 disableReset();
 
@@ -3210,7 +3207,6 @@ var EDITOR = (function ($, parent) {
                 resetbutton.prop("disabled", true);
                 setInstructions(false);
             };
-
             var setRectangleHandlers = function()
             {
                 canvas.off('mouse:down');
@@ -3281,7 +3277,6 @@ var EDITOR = (function ($, parent) {
                 canvas.renderAll();
                 enableReset();
             };
-
             var setPolygonHandlers = function()
             {
                 canvas.off('mouse:down');

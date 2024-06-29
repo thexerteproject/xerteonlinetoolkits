@@ -315,6 +315,11 @@
 						}
 					}
 
+					var hs_hover = 'false'
+					if (this.getAttribute('hotspotHover') != undefined && !!this.getAttribute('hotspotHover')){
+						hs_hover = this.getAttribute('hotspotHover')
+					}
+
 					if (hsShape !== 'icon') {
 						var _this = this,
 								$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" tabindex="' + (i + 2) + '" />');
@@ -339,6 +344,7 @@
 								y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))
 							};
 						}
+
 						if (coords.length == 4 || (this.getAttribute("points") != undefined && this.getAttribute("mode") != undefined)) {
 							if (coords.length != 4) {
 								coords = JSON.parse(this.getAttribute("points"));
@@ -365,10 +371,6 @@
 						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
 						var icon = this.getAttribute('shape') != undefined && this.getAttribute('shape') != '' ? JSON.parse(this.getAttribute('shape')) : {centerX:0, CenterY:0, radius:0, angle:0}
 						var size = (icon.radius*2)/100 * $('#imageHolder').width()
-						var hs_hover = 'false'
-						if (this.getAttribute('hotspotHover') != undefined){
-							hs_hover = this.getAttribute('hotspotHover')
-						}
 //todo make unique
 						var _this = this;
 
@@ -394,7 +396,7 @@
 					}
 
 						$hotspot
-								.attr("coords", coords_string)
+								.attr({coords : coords_string})
 								.click(function () {
 									connectorHotspotImage.pauseAudio();
 
@@ -425,7 +427,6 @@
 									} else if (hsType == "autoPlay") {
 										$(this).data('audioPlayer').setCurrentTime(Number(_this.getAttribute("soundStart")));
 										$(this).data('audioPlayer').play();
-//todo from here add features
 										// open dialog popup / lightbox
 									} else if (hsType == "dialog" || hsType == "lightbox" || hsType == "bubble") {
 										var dialogHtml;
@@ -566,30 +567,69 @@
 													let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 													let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 
-													$hotspot_bubble.css({
-														"max-width": vw * 0.6,
-														"max-height": vh * 0.6,
-													});
-													var max_w = vw * 0.6
-
-													if (vw - $(this).offset().left - this.offsetWidth > $(this).offset().left) {
-														//place r
-														var tmp_left = $(this).offset().left + this.offsetWidth + 10
-														max_w = vw - $(this).offset().left - this.offsetWidth
+													if (hsShape == 'icon') {
+														hs_left = $(this).offset().left
+														hs_top = $(this).offset().top
+														hs_width = $(this).outerWidth()
+														hs_height = $(this).outerHeight()
 													} else {
-														//place left
-														var tmp_left = $(this).offset().left - $hotspot_bubble.width() - 5
-														max_w = $(this).offset().left - 20
+														hs_div = $(this)
+														if (this.getAttribute('coords') !== undefined && this.getAttribute('coords') !== '') {
+															bubble_hs_coords = this.getAttribute('coords').split(',')
+															debugger
+															if (hsShape == 'rectangle' ) {
+																hs_left = $('#imageHolder').offset().left + parseInt(bubble_hs_coords[0])
+																hs_top = $('#imageHolder').offset().top + parseInt(bubble_hs_coords[1])
+																hs_width = parseInt(bubble_hs_coords[2]) - parseInt(bubble_hs_coords[0])
+																hs_height = parseInt(bubble_hs_coords[bubble_hs_coords.length - 1]) - parseInt(bubble_hs_coords[1])
+															} else {
+																poly_left = vw
+																poly_right = 0
+																//x list
+																poly_x = bubble_hs_coords.filter((v, i) => !(i % 2))
+																//find outer coordinates
+																poly_x.forEach( item =>
+																{
+																	poly_right = Math.max(poly_right, item)
+																	poly_left = Math.min(poly_left, item)
+																});
+																//y list
+																poly_top = vh
+																poly_bottom = 0
+																poly_y = bubble_hs_coords.filter((v, i) => (i % 2))
+																poly_y.forEach( item =>
+																{
+																	poly_bottom = Math.max(poly_bottom, item)
+																	poly_top = Math.min(poly_top, item)
+																});
+																hs_left = $('#imageHolder').offset().left + parseInt(poly_left)
+																hs_top = $('#imageHolder').offset().top + parseInt(poly_top)
+																hs_width = parseInt(poly_right) - parseInt(poly_left)
+																hs_height = parseInt(poly_bottom) - parseInt(poly_top)
+
+															}
+														}
+
 													}
 
-													if ($(this).offset().top < $hotspot_bubble.height() / 3) {
+													if (vw - hs_left - hs_width > hs_left) {
+														//place r
+														var tmp_left = hs_left + hs_width + 20
+														max_w = vw - hs_left - hs_width
+													} else {
+														//place left
+														var tmp_left = hs_left - $hotspot_bubble.width() - 5
+														max_w = hs_left - 20
+													}
+
+													if (hs_top < $hotspot_bubble.height() / 3) {
 														//no fits
-														var tmp_top = $(this).offset().top
-													} else if (vh - $(this).offset().top - this.offsetHeight < $hotspot_bubble.height()) {
-														var tmp_top = $(this).offset().top - $hotspot_bubble.height() + this.offsetHeight / 2
+														var tmp_top = hs_top
+													} else if (vh - hs_top - hs_height < $hotspot_bubble.height()) {
+														var tmp_top = hs_top - $hotspot_bubble.height() + hs_height / 2
 													} else {
 														//normal
-														var tmp_top = $(this).offset().top - $hotspot_bubble.height() / 3
+														var tmp_top = hs_top - $hotspot_bubble.height() / 3
 													}
 
 													$hotspot_bubble.css({
@@ -598,7 +638,6 @@
 														"max-width": Math.min(vw * 0.6,max_w),
 														"max-height": vh * 0.6,
 													});
-
 
 												}
 											}
@@ -631,6 +670,7 @@
 												} else {
 													//close hotspot bubble on click outside
 													event.stopPropagation()
+													//todo make optional
 													hideOnClickOutside($("#hotspot_bubble_holder"));
 
 													$("#hotspot_bubble_holder").show()
@@ -648,26 +688,71 @@
 														"max-width": vw * 0.6,
 														"max-height": vh * 0.6,
 													});
-													var max_w = vw * 0.6
 
-													if (vw - $(this).offset().left - this.offsetWidth > $(this).offset().left) {
-														//place r
-														var tmp_left = $(this).offset().left + this.offsetWidth + 10
-														max_w = vw - $(this).offset().left - this.offsetWidth
+													if (hsShape == 'icon') {
+														hs_left = $(this).offset().left
+														hs_top = $(this).offset().top
+														hs_width = $(this).outerWidth()
+														hs_height = $(this).outerHeight()
 													} else {
-														//place left
-														var tmp_left = $(this).offset().left - $hotspot_bubble.width() - 5
-														max_w = $(this).offset().left - 20
+														hs_div = $(this)
+														if (this.getAttribute('coords') !== undefined && this.getAttribute('coords') !== '') {
+															bubble_hs_coords = this.getAttribute('coords').split(',')
+															debugger
+															if (hsShape == 'rectangle' ) {
+																hs_left = $('#imageHolder').offset().left + parseInt(bubble_hs_coords[0])
+																hs_top = $('#imageHolder').offset().top + parseInt(bubble_hs_coords[1])
+																hs_width = parseInt(bubble_hs_coords[2]) - parseInt(bubble_hs_coords[0])
+																hs_height = parseInt(bubble_hs_coords[bubble_hs_coords.length - 1]) - parseInt(bubble_hs_coords[1])
+															} else {
+																poly_left = vw
+																poly_right = 0
+																//x list
+																poly_x = bubble_hs_coords.filter((v, i) => !(i % 2))
+																//find outer coordinates
+																poly_x.forEach( item =>
+																{
+																	poly_right = Math.max(poly_right, item)
+																	poly_left = Math.min(poly_left, item)
+																});
+																//y list
+																poly_top = vh
+																poly_bottom = 0
+																poly_y = bubble_hs_coords.filter((v, i) => (i % 2))
+																poly_y.forEach( item =>
+																{
+																	poly_bottom = Math.max(poly_bottom, item)
+																	poly_top = Math.min(poly_top, item)
+																});
+																hs_left = $('#imageHolder').offset().left + parseInt(poly_left)
+																hs_top = $('#imageHolder').offset().top + parseInt(poly_top)
+																hs_width = parseInt(poly_right) - parseInt(poly_left)
+																hs_height = parseInt(poly_bottom) - parseInt(poly_top)
+
+															}
+														}
+
 													}
 
-													if ($(this).offset().top < $hotspot_bubble.height() / 3) {
+
+													if (vw - hs_left - hs_width > hs_left) {
+														//place r
+														var tmp_left = hs_left + hs_width + 10
+														max_w = vw - hs_left - hs_width
+													} else {
+														//place left
+														var tmp_left = hs_left - $hotspot_bubble.width() - 5
+														max_w = hs_left - 20
+													}
+
+													if (hs_top < $hotspot_bubble.height() / 3) {
 														//no fits
-														var tmp_top = $(this).offset().top
-													} else if (vh - $(this).offset().top - this.offsetHeight < $hotspot_bubble.height()) {
-														var tmp_top = $(this).offset().top - $hotspot_bubble.height() + this.offsetHeight / 2
+														var tmp_top = hs_top
+													} else if (vh - hs_top - hs_height < $hotspot_bubble.height()) {
+														var tmp_top = hs_top - $hotspot_bubble.height() + hs_height / 2
 													} else {
 														//normal
-														var tmp_top = $(this).offset().top - $hotspot_bubble.height() / 3
+														var tmp_top = hs_top - $hotspot_bubble.height() / 3
 													}
 
 													$hotspot_bubble.css({
@@ -771,26 +856,70 @@
 														"max-width": vw * 0.6,
 														"max-height": vh * 0.6,
 													});
-													var max_w = vw * 0.6
 
-													if (vw - $(this).offset().left - this.offsetWidth > $(this).offset().left) {
-														//place r
-														var tmp_left = $(this).offset().left + this.offsetWidth + 10
-														max_w = vw - $(this).offset().left - this.offsetWidth
+													if (hsShape == 'icon') {
+														hs_left = $(this).offset().left
+														hs_top = $(this).offset().top
+														hs_width = $(this).outerWidth()
+														hs_height = $(this).outerHeight()
 													} else {
-														//place left
-														var tmp_left = $(this).offset().left - $hotspot_bubble.width() - 5
-														max_w = $(this).offset().left - 20
+														hs_div = $(this)
+														if (this.getAttribute('coords') !== undefined && this.getAttribute('coords') !== '') {
+															bubble_hs_coords = this.getAttribute('coords').split(',')
+															debugger
+															if (hsShape == 'rectangle' ) {
+																hs_left = $('#imageHolder').offset().left + parseInt(bubble_hs_coords[0])
+																hs_top = $('#imageHolder').offset().top + parseInt(bubble_hs_coords[1])
+																hs_width = parseInt(bubble_hs_coords[2]) - parseInt(bubble_hs_coords[0])
+																hs_height = parseInt(bubble_hs_coords[bubble_hs_coords.length - 1]) - parseInt(bubble_hs_coords[1])
+															} else {
+																poly_left = vw
+																poly_right = 0
+																//x list
+																poly_x = bubble_hs_coords.filter((v, i) => !(i % 2))
+																//find outer coordinates
+																poly_x.forEach( item =>
+																{
+																	poly_right = Math.max(poly_right, item)
+																	poly_left = Math.min(poly_left, item)
+																});
+																//y list
+																poly_top = vh
+																poly_bottom = 0
+																poly_y = bubble_hs_coords.filter((v, i) => (i % 2))
+																poly_y.forEach( item =>
+																{
+																	poly_bottom = Math.max(poly_bottom, item)
+																	poly_top = Math.min(poly_top, item)
+																});
+																hs_left = $('#imageHolder').offset().left + parseInt(poly_left)
+																hs_top = $('#imageHolder').offset().top + parseInt(poly_top)
+																hs_width = parseInt(poly_right) - parseInt(poly_left)
+																hs_height = parseInt(poly_bottom) - parseInt(poly_top)
+
+															}
+														}
+
 													}
 
-													if ($(this).offset().top < $hotspot_bubble.height() / 3) {
+													if (vw - hs_left - hs_width > hs_left) {
+														//place r
+														var tmp_left = hs_left + hs_width + 10
+														max_w = vw - hs_left - hs_width
+													} else {
+														//place left
+														var tmp_left = hs_left - $hotspot_bubble.width() - 5
+														max_w = hs_left - 20
+													}
+
+													if (hs_top < $hotspot_bubble.height() / 3) {
 														//no fits
-														var tmp_top = $(this).offset().top
-													} else if (vh - $(this).offset().top - this.offsetHeight < $hotspot_bubble.height()) {
-														var tmp_top = $(this).offset().top - $hotspot_bubble.height() + this.offsetHeight / 2
+														var tmp_top = hs_top
+													} else if (vh - hs_top - hs_height < $hotspot_bubble.height()) {
+														var tmp_top = hs_top - $hotspot_bubble.height() + hs_height / 2
 													} else {
 														//normal
-														var tmp_top = $(this).offset().top - $hotspot_bubble.height() / 3
+														var tmp_top = hs_top - $hotspot_bubble.height() / 3
 													}
 
 													$hotspot_bubble.css({
@@ -866,13 +995,11 @@
 									}
 								})
 								.focusin(function () {
-									debugger
 									$('img').mapster('set_options', tabfocusoptions);
 									$(this).addClass("highlight");
 									$(this).mapster('highlight');
 								})
 								.focusout(function () {
-									debugger
 									$('img').mapster('set_options', options);
 									$(this).removeClass("highlight");
 									$("img").mapster('highlight', false);
