@@ -1,7 +1,7 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf>
+      <pdf><![CDATA[<pdf name="Enter Page Title" url="" open="Open PDF"/>]]></pdf>
     </newNodes>
   </pageWizard>
 
@@ -9,12 +9,12 @@
   <pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#pdffile" wiki="https://xerte.org.uk/wiki/doku.php?id=media_pdf_file_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <url label="PDF File" type="media"/>
+    <url label="PDF File" type="media" placeholder="Select a PDF file"/>
     
     <pdfWidth label="PDF Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" defaultValue="full" width="100" optional="true"/>
 	
 	<textGroup type="group" label="Page Text" optional="true">
-		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+		<text label="Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
 		<position label="Position" options="Left,Right,Top" type="ComboBox" data="L,R,T" defaultValue="L" width="100" optional="true"/>
 	</textGroup>
 

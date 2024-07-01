@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var thumbnailViewer = new function() {
@@ -95,7 +95,7 @@
 			if (x_browserInfo.touchScreen == true) {
 				$thumbHolder.css("overflow-x", "auto");
 			}
-			
+
 			
 			// create thumbs in thumbBar
 			var newThumb = '<a href="#" class="thumbBox"><img class="centre x_noLightBox" /></a>';
@@ -126,7 +126,7 @@
 			$("#thumbHolder .thumbBox")
 				.click(function(e) {
 					e.preventDefault();
-					
+
 					if ($mainTxt.css("display") != "none") {
 						$mainTxt.fadeOut();
 					}
@@ -302,7 +302,7 @@
 	
 	<div id="mainInfoHolder">
 		<div id="mainPanel" class="panel inline">
-			<a id="panelLink" tabindex="0">
+			<a id="panelLink">
 				<div id="panelImg"></div>
 				<div id="panelTxt" class="overlay"></div>
 				<button id="imgCloseBtn" class="overlay"></button>

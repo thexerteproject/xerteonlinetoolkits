@@ -3,6 +3,10 @@
 	#pages {
 		overflow: auto;
 	}
+
+	#x_mainHolder.x_mobile .panel {
+		overflow: auto;
+	}
 	
 	#pages:not(:last-child) {
 		border-bottom: 1px solid #CCCCCC;
@@ -108,4 +112,8 @@
 	
 	.table table td.editable {
 		text-align: center;
+	}
+
+	input, textarea {
+		box-sizing: border-box;
 	}

@@ -59,6 +59,10 @@ ul, ol {
 	overflow: hidden;
 }
 
+a {
+	word-wrap: break-word;
+}
+
 .optionTxt p {
 	padding-top: 0;
 }
@@ -617,6 +621,10 @@ table.headerCol.simple th:first-child {
     margin-top: -0.5em;
 }
 
+.ui-icon.fa {
+	overflow: visible;
+}
+
 .ui-icon.icon-large {
     margin-top: -0.75em;
 }
@@ -732,6 +740,21 @@ textarea {
 .lightBoxCaption {
 	margin: 5px 0;
 }
+
+figure {
+	margin: 0;
+}
+
+figcaption {
+	margin-top: .2em;
+	margin-bottom: 0;
+}
+
+figcaption:first-child {
+	margin-bottom: .2em;
+	margin-top: 0;
+}
+
 /*#pageContents and #adaptiveContentMain not usually an actionable item so hide focus border*/
 #pageContents:focus,#adaptiveContentMain:focus{
 	outline:none;
@@ -1207,4 +1230,8 @@ a:focus .wcagLogo {
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
 	background-color: #212121;
 	color: white;
+}
+
+[data-cke-editorplaceholder]::before {
+	padding: 0.3em;
 }

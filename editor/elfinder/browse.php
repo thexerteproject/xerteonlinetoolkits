@@ -126,20 +126,15 @@ if (isset($_REQUEST['langCode']))
                 uiOptions : {
                     // toolbar configuration
                     toolbar : [
-                        // ['back', 'forward'],
                         ['reload'],
-                        // ['home', 'up'],
                         ['home'],
-                        //['mkdir', 'mkfile', 'upload'],
                         ['mkdir', 'upload'],
-                        //['open', 'download', 'getfile'],
                         ['download', 'getfile'],
                         ['info'],
                         ['quicklook'],
                         ['copy', 'cut', 'paste'],
                         ['rm'],
                         ['duplicate', 'rename', 'edit', 'resize'],
-                        //['extract', 'archive'],
                         ['search'],
                         ['view'],
                         ['help']
@@ -169,15 +164,8 @@ if (isset($_REQUEST['langCode']))
                     // navbarfolder menu
                     navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'mkdir', '|', 'info'],
 
-                    // current directory menu
-                    //cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'info'],
                     cwd    : ['reload', '|', 'upload', 'mkdir', 'paste', '|', 'info'],
 
-                    // current directory file menu
-                    //files  : [
-                    //    'getfile', '|','open', 'quicklook', '|', 'download', '|', 'copy', 'cut', 'paste', 'duplicate', '|',
-                    //    'rm', '|', 'edit', 'rename', 'resize', '|', 'archive', 'extract', '|', 'info'
-                    //]
                     files  : [
                         'getfile', '|','quicklook', '|', 'download', '|', 'copy', 'cut', 'paste', 'duplicate', '|',
                         'rm', '|', 'edit', 'rename', 'resize', '|', 'info'

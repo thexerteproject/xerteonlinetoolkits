@@ -131,6 +131,11 @@
 					$("#linkImgA").attr("aria-labelledby", "linkWarning");
 				}
 			}
+
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				$pageImg.wrap('<figure></figure>');
+				$pageImg.parent("figure").append('<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption>');
+			}
 			
 			if (addMargin != "true") {
 				$panel
@@ -142,8 +147,8 @@
 			if (x_currentPageXML.getAttribute("size") != undefined) {
 				$textHolder.css("font-size", Number(x_currentPageXML.getAttribute("size")) + "pt");
 			}
-			
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+
+			$textHolder.html(x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
 			var maxWH = this.getMaxDimensions();
 			
@@ -239,6 +244,9 @@
 			}
 			if (x_currentPageXML.getAttribute("link") != undefined && x_currentPageXML.getAttribute("link") != "") {
 				offset.splice(1, 1, offset[1] + $("#linkImg").outerHeight());
+			}
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				offset.splice(1, 1, offset[1] + $("#pageImg").parents("figure").find("figcaption").outerHeight());
 			}
 			return offset;
 		}

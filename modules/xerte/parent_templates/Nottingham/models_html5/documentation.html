@@ -43,6 +43,10 @@
 				
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
 				$("#pages").height($panel.height() - footerH);
+
+				$("#pages .itemImg").each(function() {
+					$(this).css("max-height", $("#pages").height() - $(this).parents("figure").find("figcaption").outerHeight(true));
+				});
 			}
 		}
 		
@@ -238,7 +242,7 @@
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($downloadBtn);
+				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($downloadBtn);
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);
@@ -436,8 +440,13 @@
 							if (exclude != 'doc') {
 								docData.pages[page].sections[section].items[item].itemText = '<img class="itemImg" src="' + xml.getAttribute('url') + '">';
 							}
-							$element = $('<img class="itemImg">')
-								.attr('src', xml.getAttribute('url'));
+
+							var altTxt = xml.getAttribute('tip') != undefined && xml.getAttribute('tip') != '' ? ' alt="' + xml.getAttribute('tip') + '"' : "";
+							if (xml.getAttribute('caption') != undefined && xml.getAttribute('caption') != '') {
+								$element = $('<figure><img class="itemImg" src="' + xml.getAttribute('url') + '"' + altTxt + '><figCaption>' + xml.getAttribute('caption') + '</figCaption></figure>');
+							} else {
+								$element = $('<img class="itemImg" src="' + xml.getAttribute('url') + '"' + altTxt + '>');
+							}
 						}
 						else {
 							$element = $('<div>')
@@ -526,7 +535,7 @@
 														$("input[name='" + ('idP' + page + 'S' + section + 'I' + item) + "']:checked").map(function(_, el) {
 															checkbox.push($(el).val());
 														}).get();
-														documentation.updateData(p, s, i, (checkbox.length >0 ) ? checkbox.join(', ') : notAnsweredText);
+														documentation.updateData(p, s, i, checkbox.length > 0 ? checkbox.join('') : notAnsweredText);
 													})
 												})(page, section, item, display);
 												break;

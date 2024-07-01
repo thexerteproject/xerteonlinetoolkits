@@ -217,7 +217,7 @@ if ($fullArchive)
 else
 	$export_type = "_deployment";
 
-$row['zipname'] .= $export_type;
+$row['zipname'] .= '_' . $_GET['template_id'] . $export_type;
 
 
 /*

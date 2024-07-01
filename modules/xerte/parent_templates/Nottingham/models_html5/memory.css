@@ -19,6 +19,9 @@
 	#cardTopHolder .card {
 		border:		1px solid transparent;
 		background-size:	100% 100%;
+	}
+
+	#cardTopHolder .card:not(.correct) {
 		cursor:		pointer;
 	}
 	
@@ -50,6 +53,11 @@
 		width:				92px;
 		height:				126px;
 		padding:			5px;
+	}
+
+	#cardHolder.bgImgCover .card {
+		background-size: cover;
+		background-position: center center;
 	}
 	
 	#button {

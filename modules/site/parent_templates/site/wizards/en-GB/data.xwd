@@ -122,15 +122,15 @@
 		</topBtnGroup>
 
 		<twittercard type="group" label="Twitter card" optional="true">
-        		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter."/>
-        		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
-        		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
-        		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
-        		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
-        		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
-        		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
-        		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
-        	</twittercard>
+            <tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter."/>
+            <tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
+            <tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
+            <tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
+            <tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
+            <tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
+            <tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
+            <tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
+        </twittercard>
 		
 		<newNodes>
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>
@@ -174,7 +174,7 @@
 	</linkGroup><sectionGroup type="group" label="Section Menu Options" optional="true" tooltip="Hide the table of contents for this page and set whether or not to expand the main contents to the width of the page" common="true">
         <sectionMenu label="Hide Menu" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="Hide the table of contents for this page"/>
         <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
-    </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding a unique PageID and then appending #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that section ID's and page ID's are case sensitive." common="true">
+    </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding a unique ID and then appending #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive." common="true">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
@@ -200,7 +200,7 @@
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 
-		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this Section" info="Create a link directly to this section by adding a unique SectionID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that section ID's and page ID's are case sensitive.">
+		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this section" info="Create a link directly to this section by adding a unique ID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive.">
             <customLinkID label="Section ID" type="TextInput" optional="true"/>
         </customSectionLinkGroup>
 
@@ -293,9 +293,10 @@
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="Media" label="Image"/>
-		<alt type="TextInput" label="Image Description"/>
+		<alt type="TextInput" label="Description"/>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
+		<caption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" optional="true" tooltip="Add a caption below the image"/>
 
 	</image><audio icon="icSound" height="250" menuItem="Audio" remove="true">
 
@@ -335,6 +336,10 @@
 
 		<name type="TextInput" label="Pane Title" wysiwyg="true"/>
 
+		<customPaneLinkGroup type="group" label="Pane ID" optional="true" tooltip="Create a customised URL to this pane" info="Create a link directly to this navigator pane by adding a unique ID and then appending #yourPaneID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive.">
+            <customLinkID label="Pane ID" type="TextInput" optional="true"/>
+        </customPaneLinkGroup>
+
 		<newNodes>
 			
 			<xot><![CDATA[<xot name="Title" showTitleFix="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>
@@ -355,7 +360,7 @@
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		
-		<pageNum label="Page" type="TextInput" defaultValue="1" optional="true"/>
+		<pageNum label="Page" type="TextInput" defaultValue="1" optional="true" tooltip="Embed a specific page of the XOT project by entering a page number or page ID"/>
 		<width label="Width" type="TextInput" defaultValue="100%" optional="true"/>
 		<height label="Height" type="TextInput" defaultValue="600" optional="true"/>
 		<showLink label="Show link" conditionTrigger="true" type="CheckBox" defaultValue="false" optional="true" tooltip="Show a link to open the Xerte object. You can use Embed and Show link at the same time, but this is not recommended."/>

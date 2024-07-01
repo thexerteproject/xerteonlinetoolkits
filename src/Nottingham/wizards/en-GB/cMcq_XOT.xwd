@@ -1,8 +1,7 @@
 <wizard menus="Connectors" restrict="template" modelFile="cMcq">
   <pageWizard remove="true" duplicate="false">
     <newNodes>  
-      <cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
-	  home="false" back="false" next="false"
+      <cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq>
@@ -14,8 +13,8 @@
   <cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information." thumb="thumbs/connectorMCQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-choiceconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_multiplechoiceconnector_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <instruction label="Instruction" type="TextArea" height="100"/>	
-    <prompt label="Question" type="TextArea" height="100"/>
+    <instruction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <prompt label="Question" type="TextArea" height="100" placeholder="Enter a question prompt"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" width="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
 
@@ -24,14 +23,14 @@
     <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
 
     <newNodes>
-      <cOption><![CDATA[<cOption name="Answer" text="Here is an option" destination="" />]]></cOption>
+      <cOption><![CDATA[<cOption name="Answer" text="" destination="" />]]></cOption>
     </newNodes>
 	
   </cMcq>
 
   <cOption menuItem="Answer" icon="icBullet" remove="true">
-    <text label="Answer" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+    <text label="Answer" type="TextArea" height="100" placeholder="Enter an answer option here"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
     <destination label="Destination Page" type="pageList" defaultValue=""/>
   </cOption>
 

@@ -297,7 +297,7 @@
 					}
 				
 					var _this = this,
-						$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" tabindex="' + (i+2) + '" />');
+						$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" />');
 
 					var coords = [];
 					var coords_string = "";
@@ -463,15 +463,30 @@
 									if (hsType == 'dialog') {
 										
 										var styleAttr = 'style="max-width:' + $x_mainHolder.width()*0.8 + 'px; max-height:' + $x_mainHolder.height()*0.8 + 'px"';
+										var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? ' alt="' + _this.getAttribute('imageTip') + '"' : '';
 										
-										dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + '/>';
+										dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + tip + '/>';
+
+										if (_this.getAttribute('imageCaption') != undefined && _this.getAttribute('imageCaption') != '') {
+											dialogHtml = '<figure>' + dialogHtml + '<figCaption>' + _this.getAttribute('imageCaption') + '</figCaption></figure>';
+										}
+
 										$pageContents.data("dialogPos").width = 'auto';
 										$pageContents.data("dialogPos").height = 'auto';
 									
 									} else {
 										var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? _this.getAttribute('imageTip') : '';
-										$.featherlight({image: _this.getAttribute('imageFile'), afterOpen: function(e) { if (tip != '') { this.$content.attr('alt', tip); } } });
-										
+										var caption = _this.getAttribute('imageCaption') != undefined && _this.getAttribute('imageCaption') != '' ? _this.getAttribute('imageCaption') : '';
+										$.featherlight({image: _this.getAttribute('imageFile'), afterOpen: function(e) {
+												if (tip != '') {
+													this.$content.attr('alt', tip);
+												}
+												if (caption != '') {
+													var $img = $(this.$content[0]);
+													$img.wrap('<figure></figure>');
+													$img.parent('figure').append('<figcaption>' + caption + '</figcaption>');
+												}
+										}});
 									}
 									
 								} else if (hsInfo == "iframe") {
@@ -640,6 +655,6 @@
 		</div>
 	</div>
 
-	<div id="mainText" tabindex="1"></div>
+	<div id="mainText"></div>
 
 </div>

@@ -43,5 +43,5 @@ if ($authmech->hasLogout())
     _debug("Single Logout");
     $authmech->logout();
 }
-
+session_regenerate_id(true);
 session_destroy();

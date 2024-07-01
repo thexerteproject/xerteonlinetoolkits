@@ -116,18 +116,16 @@
 		}
 		
 		this.createCaptions = function(captionInfo) {
-			var	captions = new Array(),
-				tabIndex = 1;
+			var	captions = new Array();
 			
 			$(captionInfo).each(function() {
 				var	$this = $(this);
 				
-				var $caption = $('<div tabindex="' + tabIndex + '" class="noFocus">' + x_addLineBreaks($this.attr("text")) + '</div>')
+				var $caption = $('<div tabindex="0" class="noFocus">' + x_addLineBreaks($this.attr("text")) + '</div>')
 					.data("synch", $this.attr("synch"));
 				
 				$infoHolder.append($caption);
 				captions.push($caption[0]);
-				tabIndex++;
 			});
 			
 			$pageContents.data("captions", captions);

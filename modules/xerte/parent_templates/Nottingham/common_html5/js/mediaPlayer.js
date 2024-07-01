@@ -55,7 +55,14 @@
 			if (opts.width == undefined) {
 				opts.width = thisMedia.width();
 			}
-			
+
+		// audio recorded in browser (e.g. on audioRecord page)
+		} else if (opts.type.split("/")[0] == "audio") {
+			opts.height = x_audioBarH;
+			if (opts.width == undefined) {
+				opts.width = thisMedia.width();
+			}
+
 		// video
 		} else {
 			// is it from youtube or vimeo?
@@ -65,7 +72,11 @@
 			} else if (opts.source.indexOf("vimeo.com") != -1) {
 				uploadedFile = false;
 				mimeType = "video/vimeo";
+			} else if (opts.source.indexOf("yuja") != -1) {
+				uploadedFile = false;
+				mimeType = "video/mp4";
 			}
+
 		}
 		
 		if (thisMedia.children().length > 0) {

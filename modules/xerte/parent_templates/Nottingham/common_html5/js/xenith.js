@@ -138,12 +138,7 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
-	// Load the loadjs dependency loader
-    if (!xot_offline) {
-        // TODO - we should move this to play/preview and let it kickstart the loading of all files
-        $.getScript(x_templateLocation + "common_html5/js/loadjs.min.js");
-    }
-
+	
     $x_mainHolder = $("#x_mainHolder");
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
@@ -1453,6 +1448,11 @@ function x_continueSetUp1() {
 										.prependTo($holder)
 										.html(x_params.name);
 								}
+								if (x_params.introCaption != undefined && x_params.introCaption != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_params.introCaption + '</figcaption>');
+								}
 
 								// include start button to close lightbox
 								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
@@ -1613,6 +1613,12 @@ function x_continueSetUp1() {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
 										.prependTo($holder)
 										.html(x_currentPageXML.getAttribute('name'));
+								}
+
+								if (x_currentPageXML.getAttribute('introCaption') != undefined && x_currentPageXML.getAttribute('introCaption') != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_currentPageXML.getAttribute('introCaption') + '</figcaption>');
 								}
 								
 								// include start button to close lightbox
@@ -2964,6 +2970,7 @@ function x_changePageStep5(x_gotoPage) {
     }
 	
     // If special_theme_css does not exist yet, create a disabled special_theme_css
+
     if (x_specialTheme != undefined && x_specialTheme != '') {
         x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
             x_changePageStep5a(x_gotoPage);
@@ -3010,7 +3017,7 @@ function x_changePageStep5a(x_gotoPage) {
 		}
 
 		$("#x_mainBg").show();
-        $(".x_pageNarration").remove(); // narration flash / html5 audio player
+        $(".x_pageNarration").remove(); // narration audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
@@ -3433,10 +3440,12 @@ function x_setUpLightBox() {
 						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
 						
 						if (caption != undefined && caption != '') {
+							var $img = $(this.$content[0]);
+							$img.wrap('<figure></figure>');
 							if (before == true) {
-								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							} else {
-								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').append('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							}
 						}
 					}
@@ -3574,9 +3583,12 @@ function x_setUpPage() {
     if (x_firstLoad == true) {
         // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
 		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
-			$x_introBtn
-				.data('autoOpen', true)
-				.click();
+			// don't auto-open if stand-alone page
+			if (x_pageInfo[x_currentPage].standalone != true) {
+				$x_introBtn
+					.data('autoOpen', true)
+					.click();
+			}
 		}
 		
         $x_mainHolder.css("visibility", "visible");
@@ -4310,6 +4322,7 @@ function x_insertCSS(href, func, disable, id, keep) {
 				}
             }
             func();
+			css.onload = null; // in FF this continues to be called every time theme is changed (via accessibility options) so force it to only trigger onload once - calling multiple times causes issues such as duplicated narration bar
         };
 		css.onload = f;
 
@@ -5137,8 +5150,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
 				// replace with the variable text
 				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));
-				
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
 			} else {
 				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
 				// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
