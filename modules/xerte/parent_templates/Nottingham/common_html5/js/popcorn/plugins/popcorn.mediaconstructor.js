@@ -53,7 +53,8 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
          || mediaData.media.indexOf('mediasite') > 0
          || mediaData.media.indexOf('deltion') > 0
          || isMediaSiteVideo(mediaData.media)
-         || isPeertubeVideo(mediaData.media)) {
+         || isPeertubeVideo(mediaData.media)
+         || mediaData.media.indexOf('yuja.com') > 0) {
             popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
             var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
             $videoHolder.attr("aspect", mediaData.aspect);
