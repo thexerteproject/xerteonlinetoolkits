@@ -24,8 +24,13 @@ require_once("../../../config.php");
 // be VERY paranoid over the path the user is requesting to download.
 // Even if the file starts with a correct pattern (old implementation) the user could travers path
 // like 542-tom-Notingham/../database.php or like 542-tom-Notingham/../../../../etc/passwd
-$unsafe_file_path = $_GET['file'];
+$unsafe_file_path = x_clean_input($_GET['file']);
 
+// Make sure $_GET['file'] starts with $xerte_toolkits_site->users_file_area_short
+if (strpos($unsafe_file_path, $xerte_toolkits_site->users_file_area_short) !== 0) {
+    echo "Not found!";
+    exit;
+}
 
 $full_unsafe_file_path = $xerte_toolkits_site->root_file_path . $unsafe_file_path;
 
@@ -37,6 +42,11 @@ if(DIRECTORY_SEPARATOR !== '/') {
 $realpath = realpath($full_unsafe_file_path);
 // Check that is start with root_path/USER-FILES
 if ($realpath !== false && $realpath === $full_unsafe_file_path) {
+    // Make sure we're actually serving an xml file
+    if (strtolower(substr($realpath, -4)) !== '.xml') {
+        echo "Not found!";
+        exit;
+    }
     echo file_get_contents($realpath);
 }
 else{
