@@ -53,6 +53,9 @@ function loadRegistrations()
             foreach ($templates as $template) {
                 // Get all the details of a template
                 $metadata = get_meta_data($template['template_id'], $template['template_name'], $template['creator_user_name'], $template['template_type_name']);
+                if ($metadata === false) {
+                    continue;
+                }
                 // Create the External Tool definition
                 $tool = array();
                 $tool['url'] = $site_url  . "lti13_launch.php?template_id=" . $template['template_id'];
