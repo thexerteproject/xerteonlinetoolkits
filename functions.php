@@ -281,3 +281,12 @@ function true_or_false($var)
 
     return false;
 }
+
+// Function to prevent XSS vulnarabilities
+function x_clean_input($input)
+{
+    $input = trim($input);
+    $input = stripslashes($input);
+    $input = htmlspecialchars($input);
+    return $input;
+}
