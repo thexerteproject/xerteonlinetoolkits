@@ -4762,7 +4762,12 @@
             var isPaused = !(videoState.playbackState == 'playing');
             if (isPaused != impl.playerPaused) {
               if (isPaused) {
-                onPause();
+                if (videoState.playbackState == 'ended') {
+                  onEnded();
+                }
+                else {
+                  onPause();
+                }
               }
               else {
                 onPlay();
