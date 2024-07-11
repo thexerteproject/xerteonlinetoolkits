@@ -100,10 +100,13 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
     $rss_domain = parse_url($url, PHP_URL_HOST);
     $rss_proxy_domain = parse_url($xerte_toolkits_site->site_url, PHP_URL_HOST);
     if ($rss_domain != $rss_proxy_domain) {
+
         // Check sessionkey
         // The session id is sent with the request, check the session id
-        if (isset($_GET['sesskey'])) {
-            if (x_clean_input($_GET['sesskey']) != session_id()) {
+
+        if (isset($_GET['sesskey']) && isset($_SESSION) && isset($_SESSION['token'])) {
+            $sesskey = x_clean_input($_GET['sesskey']);
+            if (strlen($sesskey) == 0 || $sesskey != $_SESSION['token']) {
                 echo "Invalid session key";
                 exit;
             }
@@ -111,6 +114,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
         else
         {
             echo "No session key";
+            exit;
         }
     }
 

@@ -290,3 +290,10 @@ function x_clean_input($input)
     $input = htmlspecialchars($input);
     return $input;
 }
+
+function set_token()
+{
+    if (!isset($_SESSION['token'])) {
+        $_SESSION['token'] = uid();
+    }
+}
