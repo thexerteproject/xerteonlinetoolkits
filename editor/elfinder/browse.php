@@ -31,8 +31,8 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 // if there are GET paramters, put them in session and restart
 if (isset($_GET['uploadDir']) && isset($_GET['uploadURL']))
 {
-    $_SESSION['uploadDir'] = $_REQUEST['uploadDir'];
-    $_SESSION['uploadURL'] = $_REQUEST['uploadURL'];
+    $_SESSION['uploadDir'] = x_clean_input($_GET['uploadDir']);
+    $_SESSION['uploadURL'] = x_clean_input($_GET['uploadURL']);
 
     $params = "?";
     foreach($_GET as $key => $param)
@@ -58,18 +58,18 @@ if (strpos($_SESSION['uploadDir'], 'USER-FILES') === false || strpos($_SESSION['
 $mode = 'standalone';
 if (isset($_REQUEST['mode']) && $_REQUEST['mode']=='cke') {
     $mode = 'cke';
-    $funcNum = $_REQUEST['CKEditorFuncNum'];
+    $funcNum = x_clean_input($_REQUEST['CKEditorFuncNum']);
 }
 
 $lang = "en";
 if (isset($_REQUEST['lang']))
 {
-    $lang = $_REQUEST['lang'];
+    $lang = x_clean_input($_REQUEST['lang']);
 }
 
 if (isset($_REQUEST['langCode']))
 {
-    $lang = $_REQUEST['langCode'];
+    $lang = x_clean_input($_REQUEST['langCode']);
 }
 
 

@@ -158,23 +158,24 @@ class SetupDatabase {
         $this->settings->database_type     = "mysql";
 
         if (isset($post['host'])) {
+            $host = x_clean_input($post['host']);
             // On windows connecting to a MySQL server through localhost is extremely slow, as IPv6 is tried first
             // That connection times out, and then IPv4 is used, so use 127.0.0.1 instead of localhost
-            if ($post['host'] == 'localhost') {
+            if ($host == 'localhost') {
                 $this->settings->database_host = '127.0.0.1';
             } else {
-                $this->settings->database_host = $post['host'];
+                $this->settings->database_host = $host;
             }
         }
 
         if (isset($post['database_prefix'])) {
-            $this->settings->database_prefix = $post['database_prefix'];
+            $this->settings->database_prefix = x_clean_input($post['database_prefix']);
         }
 
         if (isset($post['username']) && isset($post['password']))
         {
-            $this->settings->database_username = $post['username'];
-            $this->settings->database_password = $post['password'];
+            $this->settings->database_username = x_clean_input($post['username']);
+            $this->settings->database_password = x_clean_input($post['password']);
         }
 
         $this->updateSettings($post, $session);
@@ -182,7 +183,7 @@ class SetupDatabase {
 
     private function updateSettings($post, $session) {
         if ( isset($post['type']) ) {
-            $this->settings->database_type = $post['type'];
+            $this->settings->database_type = x_clean_input($post['type']);
         }
 
         if ( isset($session['DATABASE_HOST']) ) {
@@ -198,11 +199,11 @@ class SetupDatabase {
         }
 
         if ( isset($post['account']) ) {
-            $this->settings->database_username = $post['account'];
+            $this->settings->database_username = x_clean_input($post['account']);
         }
 
         if ( isset($post['account']) ) {
-            $this->settings->database_password = $post['accountpw'];
+            $this->settings->database_password = x_clean_input($post['accountpw']);
         }
     }
 
@@ -275,13 +276,15 @@ class SetupDatabase {
         return $error_msg;
     }
 
-    public function create($connection = '', $query = '') {
+    public function create($connection = '', $query = '', $params=[]) {
         // Sets an attribute on the database handle.
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         try {
             // Executes an SQL statement, returning a result set (if any) as a PDOStatement object
-            $statement = $connection->query($query);
+            $statement = $connection->prepare($query);
+
+            $ok = $statement->execute($params);
         }
         catch(PDOException $e) {
             $this->_debug("Failed to connect to db: {$e->getMessage()}");
@@ -289,6 +292,19 @@ class SetupDatabase {
         }
 
         return true;
+    }
+
+    public function query($query = '', $params = []) {
+        try {
+            $statement = $this->connection->prepare($query);
+            $statement->execute($params);
+        }
+        catch(PDOException $e) {
+            $this->_debug("Failed to execute {$query} with parameters " . print_r($params, true) . ": {$e->getMessage()}");
+            return false;
+        }
+
+        return $statement;
     }
 
     public function _debug( $string = '' ) {
@@ -305,26 +321,26 @@ class SetupDatabase {
         $sql = file_get_contents($file);
         // replace database_prefix with placeholder in basic.sql
         if ( $_POST['database_prefix'] != "" ) {
-          $sql = str_replace("$",$_POST['database_prefix'],$sql);
+          $sql = str_replace("$",x_clean_input($_POST['database_prefix']),$sql);
         } else {
           // strip database_prefix placeholder from basic.sql
           $sql = str_replace("$","",$sql);
         }
 
         // replace <databasename> placeholder with database_name in basic.sql
-        $sql = str_replace("<databasename>",$_POST['database_name'],$sql);
+        $sql = str_replace("<databasename>",x_clean_input($_POST['database_name']),$sql);
 
         return $sql;
     }
 
     static public function setSession($post, $xerte_toolkits_site) {
         $_SESSION['DATABASE_HOST']      = $xerte_toolkits_site->database_host;
-        $_SESSION['DATABASE_NAME']      = $post['database_name'];
-        $_SESSION['DATABASE_PREFIX']    = $post['database_prefix'];
+        $_SESSION['DATABASE_NAME']      = x_clean_input($post['database_name']);
+        $_SESSION['DATABASE_PREFIX']    = x_clean_input($post['database_prefix']);
         if (isset($post['username']) && isset($post['password']))
         {
-            $_SESSION['MYSQL_DBA']          = $post['username'];
-            $_SESSION['MYSQL_DBAPASSWORD']  = $post['password'];
+            $_SESSION['MYSQL_DBA']          = x_clean_input($post['username']);
+            $_SESSION['MYSQL_DBAPASSWORD']  = x_clean_input($post['password']);
         }
     }
 }

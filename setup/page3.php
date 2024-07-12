@@ -66,9 +66,9 @@ echo "<p>The PHP session name (you do not need to change this unless integrating
     </p>";
 echo "<p>The integration config path (for use if integrating with other systems is)<textarea name=\"integration_config_path\"></textarea></p>";
 
-echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['account'] . "</textarea></p>";
+echo "<p>The admin username is <textarea name=\"admin_username\">" . x_clean_input($_POST['account']) . "</textarea></p>";
 
-echo "<p>The admin password is <textarea name=\"admin_password\">" . $_POST['password'] . "</textarea></p>";
+echo "<p>The admin password is <textarea name=\"admin_password\">" . x_clean_input($_POST['password']) . "</textarea></p>";
 
 if (function_exists('mime_content_type')) {
     echo "<p>Whether the file MIME type check should be enabled for imported files<textarea name=\"enable_mime_check\">false</textarea></p>";
