@@ -113,14 +113,19 @@ else {
 
 
 if(!$magic_quotes){
-    $import_path = addslashes($_POST['import_path']);
+    $import_path = addslashes(x_clean_input($_POST['import_path']));
 }else{
-    $import_path = $_POST['import_path'];
+    $import_path = x_clean_input($_POST['import_path']);
 }
 
-$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=\"" . str_replace("\\\\","/",$import_path) . "\" where site_id=\"1\"";	
+// Check whether $import_path is a path
+if (!is_dir($import_path)) {
+    $fail_string .= "The import path is not a valid directory<br>";
+}
 
-$query_response = db_query($query);
+$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=? where site_id=\"1\"";
+
+$query_response = db_query($query, array(str_replace("\\\\","/",$import_path)));
 
 if($query_response === false){
     $fail_string .= "The sitedetails import_path query " . $query . " has failed.<br>";
@@ -129,33 +134,38 @@ if($query_response === false){
 }
 
 if(!$magic_quotes){
-    $root_path = addslashes($_POST['root_file_path']);
+    $root_path = x_clean_input($_POST['root_file_path']);
 }else{
-    $root_path = $_POST['root_file_path'];
+    $root_path = x_clean_input($_POST['root_file_path']);
 
 }
 
-$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set root_file_path='" . str_replace("\\\\","/",$root_path) . "' where site_id=\"1\"";	
-$query_response = db_query($query);
+// Check whether $root_path is a path
+if (!is_dir($root_path)) {
+    $fail_string .= "The root path is not a valid directory<br>";
+}
+
+$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set root_file_path=? where site_id=\"1\"";
+$query_response = db_query($query, array(str_replace("\\\\","/",$root_path)));
 
 if($query_response === false){
-    $fail_string .= "The sitedetails root_file_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+    $fail_string .= "The sitedetails root_file_path query " . $query . " has failed.<br>";
 }else{
     $success_string .= "The sitedetails root_file_path query succeeded <br>";
 
 }
 
 if(!$magic_quotes){
-    $clamav_path = addslashes($_POST['clamav_cmd']);
+    $clamav_path = addslashes(x_clean_input($_POST['clamav_cmd']));
 }else{
-    $clamav_path = $_POST['clamav_cmd'];
+    $clamav_path = x_clean_input($_POST['clamav_cmd']);
 }
 
-$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set clamav_cmd='" . str_replace("\\\\","/",$clamav_path) . "' where site_id=\"1\"";	
-$query_response = db_query($query);
+$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set clamav_cmd=? where site_id=\"1\"";
+$query_response = db_query($query, array(str_replace("\\\\","/",$clamav_path)));
 
 if($query_response === false){
-    $fail_string .= "The sitedetails clamav_cmd query " . $query . " has failed due to " . mysql_error() . "<br>";
+    $fail_string .= "The sitedetails clamav_cmd query " . $query . " has failed.<br>";
 }else{
     $success_string .= "The sitedetails clamav_cmd query succeeded <br>";
 }
