@@ -21,7 +21,7 @@ $ai_api = $_POST["api"];
 $allowed_apis = ['openai', 'anthropic'];
 //todo combine with api check from admin page
 if (!in_array($ai_api, $allowed_apis)){
-    json_encode(["status" => "error", "message" => "api is not allowed"]);
+    die(json_encode(["status" => "error", "message" => "api is not allowed"]));
 }
 
 //dynamically load needed api methods
