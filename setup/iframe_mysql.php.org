@@ -20,7 +20,7 @@
  -->
 <html>
 	<body>
-		<form action="mysql_iframe.php">
+		<form action="mysql_iframe.php.org">
 			<input type="submit" value="Run mysql test" />
 		</form>
 	</body>

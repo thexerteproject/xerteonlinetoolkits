@@ -55,7 +55,7 @@ if ( !isset($_POST['database_created']) )
     } else {
         $query = "create database if not exists ?";
 
-        if ( $xot_setup->database->create($connection, $query, [x_clean_input($_POST['database_name'])]) )
+        if ( $xot_setup->database->create($connection, $query, array(x_clean_input($_POST['database_name']))) )
         {
             // set the database name - for the next conncection test and session variables
             $xerte_toolkits_site->database_name = x_clean_input($_POST['database_name']);

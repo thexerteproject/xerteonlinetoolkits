@@ -38,7 +38,7 @@ You will need
 <li><b>A database</b> - This can be a new one which is created, or an existing one into which Toolkits can be installed .</li>
 </ol>
 </p>
-<iframe width="900" height="300" src="iframe_mysql.php"></iframe><br>
+<iframe width="900" height="300" src="iframe_mysql.php.org"></iframe><br>
 	If no errors are listed above, please start the <a href="page1.php">installation process</a>.
 </body>
 </html>
