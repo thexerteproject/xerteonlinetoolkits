@@ -16,13 +16,16 @@
 
 $prompt_params = $_POST["prompt"];
 $type = $_POST["type"];
-$ai_api = $_POST["api"];
+$ai_api = $_POST["api"] ?? 'openai';
+$file_url = $_POST["url"] ?? 'None';
+$context = $_POST["context"] ?? 'None';
 
 $allowed_apis = ['openai', 'anthropic'];
 //todo combine with api check from admin page
 if (!in_array($ai_api, $allowed_apis)){
     die(json_encode(["status" => "error", "message" => "api is not allowed"]));
 }
+//todo Alek convert api name to lowercase
 
 //dynamically load needed api methods
 require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
@@ -31,7 +34,7 @@ require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
 $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
 
-$result = $aiApi->ai_request($prompt_params,$type);
+$result = $aiApi->ai_request($prompt_params,$type, $file_url);
 
 if ($result->status){
     echo json_encode($result);

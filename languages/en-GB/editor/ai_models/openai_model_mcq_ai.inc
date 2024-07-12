@@ -1,0 +1,5 @@
+<?php
+
+    define("LEARNING_PROMPT_MCQ", "Generate 3 possible answers to the question: 'In which city is the largest train station in Germany'.");
+    define("DEFAULT_PROMPT_MCQ", "Using the exact same xml layout generate aoa, possible answers for the following question ,subject,. The difficulty of discerning the proper answer should be appropriate for people in the following age-range: ,range,. The answers The words must be different from ; ");
+    define("LEARNING_RESULT_MCQ", "<mcq><option correct='true' text='Berlin' feedback='Correct! The largest train station in Germany is located in Berlin.'/><option correct='false' text='Frankfurt' feedback='Unfortunately, Frankfurt has one of the most important train stations, but the largest train station is located in Berlin.' /><option correct='false' text='Hamburg' feedback='No, Hamburg is an important city for the train, but the largest train station is located in Berlin.' /></mcq>");

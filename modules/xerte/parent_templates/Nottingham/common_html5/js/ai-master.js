@@ -2,8 +2,8 @@
 function build_xerte_xml(xml_tree, parent_name, parser){
     //if not root we combine basic with openai
     if (xml_tree.tagName !== parent_name) {
-        var index = wizard_data[parent_name].new_nodes.indexOf(xml_tree.tagName);
-        var basic_xml = parser.parseFromString(wizard_data[parent_name].new_nodes_defaults[index], "text/xml").children[0];
+        var index = wizard_data[parent_name]?.new_nodes.indexOf(xml_tree.tagName);
+        var basic_xml = parser.parseFromString(wizard_data[parent_name]?.new_nodes_defaults[index], "text/xml").children[0];
 
         for (var i = 0; i < basic_xml.attributes.length; i++){
             var attr = basic_xml.attributes[i];
@@ -13,8 +13,10 @@ function build_xerte_xml(xml_tree, parent_name, parser){
         }
     }
     //recursively do this for all children
+    //TODO Alek: if it is top level and does not have children
     if (xml_tree.hasChildNodes()) {
-        var children = xml_tree.children;
+        //var children = xml_tree.children;
+        var children = xml_tree.childNodes;
         for (let i = 0; i < children.length; i++) {
             build_xerte_xml(children[i], xml_tree.tagName, parser);
         }
@@ -22,15 +24,15 @@ function build_xerte_xml(xml_tree, parent_name, parser){
 }
 
 //changes ai api result into data usable by xerte, also adds it to the xerte data tree
-function ai_to_xerte_content(data, key, pos, tree) {
+/*function ai_to_xerte_content(data, key, pos, tree) {
     $('body').css("cursor", "default");
     var parser = new DOMParser();
+    debugger
     var result = JSON.parse(data);
     if (result.status == 'success') {
 
         var x = parser.parseFromString(result["result"], "text/xml").children[0];
-        console.log(x);
-
+        debugger
         //merge xerte object root with ai result at root level.
             //TODO change lo_data[key].attributes get key from toolbox
             for (var prop in x.attributes) {
@@ -54,6 +56,42 @@ function ai_to_xerte_content(data, key, pos, tree) {
         //add all populated children of top level object for example "quiz"
         for (let i = 0; i < size; i++) {
             addNodeToTree(key, pos, children[i].tagName, children[i], tree, true, true);
+        }
+        alert("Make sure to check the generated results for mistakes!!");
+        console.log("done!")
+    } else {
+        console.log(result.message);
+    }
+}*/
+
+function ai_to_xerte_content(data, key, pos, tree) {
+    $('body').css("cursor", "default");
+    var parser = new DOMParser();
+    //
+    var result = JSON.parse(data);
+    if (result.status == 'success') {
+        //rename x eventually
+        var x = parser.parseFromString(result["result"], "text/xml").children[0];
+        // Merge Xerte object root with AI result at root level.
+        for (var prop in x.attributes) {
+            if (Object.prototype.hasOwnProperty.call(x.attributes, prop)) {
+                const prop_name = x.attributes[prop];
+                if (Object.prototype.hasOwnProperty.call(lo_data[key].attributes, prop_name.nodeName)) {
+                    lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                } else {
+                    lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                }
+            }
+        }
+        console.log(x.tagName);
+        build_xerte_xml(x, x.tagName, parser);
+
+        //var children = x.children;
+        var children = x.childNodes;
+        var size = children.length;
+        // Add all populated children of top level object for example "quiz"
+        for (let i = 0; i < size; i++) {
+            addAINodeToTree(key, pos, children[i].tagName, children[i], tree, true, true);
         }
         alert("Make sure to check the generated results for mistakes!!");
         console.log("done!")

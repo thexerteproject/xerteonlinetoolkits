@@ -43,6 +43,14 @@
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
+	<AIGroup type="group" label="AI" optional="true">
+    	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+          <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
+          <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+          <numberOfOptions label="Number of options" type="TextInput" wysiwyg="true" optional="true"/>
+          <aiButton type="aibutton" optional="true"/>
+    </AIGroup>
+
     <newNodes>
         <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
     </newNodes>

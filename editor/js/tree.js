@@ -1342,6 +1342,73 @@ var EDITOR = (function ($, parent) {
 		
 		return found;
 	}
+
+    addAINodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren = false) {
+        var lkey = parent.tree.generate_lo_key();
+        var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
+        var extranodes = addChildren;
+
+        $(xmlData.attributes).each(function() {
+            attributes[this.name] = this.value;
+        });
+        lo_data[lkey] = {};
+        lo_data[lkey]['attributes'] = attributes;
+
+        // Handling node data for text and CDATA sections
+        if (xmlData.firstChild) {
+            if (xmlData.firstChild.nodeType === 3 || xmlData.firstChild.nodeType === 4) { // Text or CDATA Section
+                lo_data[lkey]['data'] = xmlData.firstChild.data;
+            } else if (xmlData.firstChild.nodeType === 1) { // Element Node
+                extranodes = true;
+            }
+        }
+
+        // Build the JSON object for the treeview
+        var treeLabel = nodeName;
+        if (xmlData.attributes['name']) {
+            treeLabel = xmlData.attributes['name'].value;
+        } else {
+            if (wizard_data[treeLabel].menu_options.menuItem)
+                treeLabel = wizard_data[treeLabel]?.menu_options.menuItem;
+        }
+
+        // Add icons to the node, all should be switched off
+        var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+        var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
+        var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
+        var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+        var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
+
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+        var this_json = {
+            id: lkey,
+            text: treeLabel,
+            type: nodeName,
+            state: {
+                opened: true
+            }
+        };
+
+        // Add the node
+        if (validateInsert(key, nodeName, tree)) {
+            var newkey = tree.create_node(key, this_json, pos, function(){
+                if (select) {
+                    tree.deselect_all();
+                    tree.select_node(lkey);
+                }
+            });
+        }
+
+        // Any children to add
+        if (extranodes) {
+            $.each(xmlData.childNodes, function(nr, child) {
+                if (child.nodeType == 1) { // Element Nodes
+                    addAINodeToTree(lkey, 'last', child.nodeName, child, tree, false, addChildren);
+                }
+            });
+        }
+    },
+
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren =  false)
     {
         var lkey = parent.tree.generate_lo_key();
@@ -1485,20 +1552,19 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    ai_content_generator = function(event, p, node_type) {
+    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, sourceContext) {
         //call aiAPI.php
         var tree = $.jstree.reference("#treeview");
-
         //show wait icon
         $('body').css("cursor", "wait");
-
         console.log("start openai api request please wait");
-        //todo add api selector
+        console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", event.data.key)
         $.ajax({
             url: "editor/ai/aiAPI.php",
             type: "POST",
-            data: { type: node_type, prompt: p, api: "openai"},
+            data: { type: node_type, prompt: p, api: api_choice, url: fileUrl, context: sourceContext},
             success: function(data){
+                //TODO: Alek posisble option for enclosing
                 ai_to_xerte_content(data, event.data.key, 'last', tree)
             },
         });

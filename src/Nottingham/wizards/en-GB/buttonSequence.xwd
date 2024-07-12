@@ -12,7 +12,16 @@
     <intro label="Introduction" type="TextArea" height="100" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	
+
+	<AIGroup type="group" label="AI" optional="true">
+	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+      <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
+      <amountOfButtons label="Amount Of Buttons in Sequence" type="TextInput" wysiwyg="true" optional="true"/>
+      <sequenceLength label="Approximate length of sequence" type="TextInput" wysiwyg="true" optional="true" hint="Use number of characters or words. I.e. '200 characters' or '10 words'"/>
+      <ageRange label ="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+      <aiButton type="aibutton" optional="true"/>
+    </AIGroup>
+
     <newNodes>
       <button><![CDATA[<button name="Show More" text="Feedback"/>]]></button>
     </newNodes>

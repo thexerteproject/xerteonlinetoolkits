@@ -1,9 +1,8 @@
 <?php
 //quiz model using gpt-3.5 turbo
 require_once(dirname(__FILE__) . "/../../../../config.php");
-_load_language_file("/editor/ai_models/openai_model_quiz_ai.inc");
+_load_language_file("/editor/ai_models/openai_model_crossword_ai.inc");
 
-//generates questions
 $model = $_POST['model'] ?? "gpt-3.5-turbo";
 $assistantId = $_POST['asst_id'] ?? "asst_IyiBKzr8nvwddAzVKuh6OnlC";
 $context = $_POST['context'] ?? 'standard';  // Default to 'standard'
@@ -18,14 +17,14 @@ $additionalInstructions = "When following XML examples, make sure you follow it 
 
 // Context-specific settings
 if ($context === 'standard') {
-    $q = LEARNING_PROMPT_QUIZ;
-    $object = LEARNING_RESULT_QUIZ;
-    $defaultPrompt = DEFAULT_PROMPT_QUIZ;
+    $q = LEARNING_PROMPT_CROSSWORD;
+    $object = LEARNING_RESULT_CROSSWORD;
+    $defaultPrompt = DEFAULT_PROMPT_CROSSWORD;
 }
 elseif ($context === 'bootstrap') {
-    $q = LEARNING_PROMPT_QUIZ_BOOTSTRAP;
-    $object = LEARNING_RESULT_QUIZ_BOOTSTRAP;
-    $defaultPrompt = DEFAULT_PROMPT_QUIZ_BOOTSTRAP;
+    $q = LEARNING_PROMPT_CROSSWORD_BOOTSTRAP;
+    $object = LEARNING_RESULT_CROSSWORD_BOOTSTRAP;
+    $defaultPrompt = DEFAULT_PROMPT_CROSSWORD_BOOTSTRAP;
 }
 if ($assistantOn){
     //default payload for threads/runs endpoint
@@ -109,8 +108,8 @@ else{
 }
 
 
-$openAI_preset_models->type_list["quiz"] = ["payload" => $payload, "url" => $chat_url];
+$openAI_preset_models->type_list["crossword"] = ["payload" => $payload, "url" => $chat_url];
 
-$openAI_preset_models->prompt_list["quiz"] = explode(",", $defaultPrompt);
+$openAI_preset_models->prompt_list["crossword"] = explode(",", $defaultPrompt);
 
-$openAI_preset_models->multi_run[] = "quiz";
+$openAI_preset_models->multi_run[] = "crossword";

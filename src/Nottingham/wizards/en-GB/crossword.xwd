@@ -28,7 +28,15 @@
 	<checkLabel label="Check Button Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 	<again label="Attempt Label" type="TextInput" wysiwyg="true" language="true" tooltip="/a is where the attempts will be placed"/>
 	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
-	
+
+	<AIGroup type="group" label="AI" optional="true">
+    	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+          <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
+          <amountOfWords label="Amount Of Words" type="TextInput" wysiwyg="true" optional="true"/>
+          <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+          <aiButton type="aibutton" optional="true"/>
+    </AIGroup>
+
     <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Label" text="Enter clue here" wordAnswer="Enter word here"/>]]></wordAndHint>
     </newNodes>

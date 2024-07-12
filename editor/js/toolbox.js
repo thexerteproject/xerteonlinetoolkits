@@ -4829,19 +4829,163 @@ var EDITOR = (function ($, parent) {
 			case 'webpage':  //Not used??
 			case 'xerteurl':
             case 'aibutton':
-                //todo add api selector
-                //todo needs rework or renaming to quizaibutton not sure
-                //if rework needs selector for content type type currently hardcoded to quiz
                 var id = 'aibutton_' + form_id_offset;
                 form_id_offset++;
-
                 html = $('<button>')
                     .attr('id', id)
                     .attr('class', 'ai_button')
                     .text('Generate')
-                    .click({key:key}, function(event){
-                        ai_content_generator(event, {"subject": lo_data[key].attributes["subject"], "nrq": lo_data[key].attributes["amountOfQuestions"], "nra": lo_data[key].attributes["amountOfAnswers"]}, lo_data[key].attributes.nodeName)}
-                    );
+                    .click({key: key}, function(event) {
+                        var type = lo_data[key].attributes.nodeName; //get the node-type
+                        var fileUrl = lo_data[key].attributes["file"] || null;
+                        var infoPrompt = lo_data[key].attributes["fileAccessPrompt"];
+                        var uploadPrompt = lo_data[key].attributes["uploadPrompt"];
+                        const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
+                            (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
+                        // Build the constructor object based on the type
+                        var constructorObject;
+                        console.log(type);
+                        if (sourceContext === "standard"){
+                            switch (type) {
+                                case 'crossword':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrw": lo_data[key].attributes["amountOfWords"],
+                                        "range": lo_data[key].attributes["ageRange"]
+                                    };
+                                    break;
+                                case 'quiz':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrq": lo_data[key].attributes["amountOfQuestions"],
+                                        "nra": lo_data[key].attributes["amountOfAnswers"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    fileUrl = lo_data[key].attributes["file"];
+                                    break;
+                                case 'learningObject':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "amounts": lo_data[key].attributes["amounts"],
+                                        "structure": lo_data[key].attributes["structure"],
+                                        "instructions": lo_data[key].attributes["instructions"],
+                                    }
+
+                                    break;
+                                case 'ivOverlayPanel':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrq": lo_data[key].attributes["nrq"],
+                                        "nra": lo_data[key].attributes["nra"],
+                                        "nrt": lo_data[key].attributes["nrt"],
+                                        "range": lo_data[key].attributes["ageRange"]
+                                    }
+                                    fileUrl = lo_data[key].attributes["file"];
+                                    break;
+                                case 'flashCards':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrc": lo_data[key].attributes["amountOfCards"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "hintMode": lo_data[key].attributes["hintMode"],
+                                        "languageMode": lo_data[key].attributes["languageMode"],
+                                        "reverseMode": lo_data[key].attributes["reverseMode"],
+                                        "language": lo_data[key].attributes["languageChoice"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                    }
+                                    fileUrl = lo_data[key].attributes["file"];
+                                    break;
+                                case 'gapFill':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "length": lo_data[key].attributes["textLength"],
+                                        "target": lo_data[key].attributes["gapTarget"],
+                                    };
+                                    break;
+                                case 'topXQ':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "nro": lo_data[key].attributes["numberOfOptions"],
+                                    };
+                                    break;
+                                case 'buttonSequence':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "nrb": lo_data[key].attributes["amountOfButtons"],
+                                        "sentenceLength": lo_data[key].attributes["sequenceLength"],
+                                    };
+                                    break;
+                                case 'categories':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "wpc": lo_data[key].attributes["wordsPerCategory"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                    };
+                                    fileUrl = lo_data[key].attributes["file"];
+                                    break;
+                                case 'decision':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "depth": lo_data[key].attributes["depth"],
+                                        "nor": lo_data[key].attributes["numberOfResults"],
+                                    };
+                                    break;
+                                case 'opinion':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "categories": lo_data[key].attributes["categories"],
+                                        "numberOfQuestions": lo_data[key].attributes["numberOfQuestions"],
+                                        "targetDemographic": lo_data[key].attributes["targetDemographic"],
+                                        "scale": lo_data[key].attributes["scale"],
+                                        "ageRange": lo_data[key].attributes["ageRange"],
+                                    };
+                                    break;
+                                case 'mcq':
+                                    constructorObject = {
+                                        //"subject": lo_data[key].attributes["subject"],
+                                        "subject": lo_data[key].attributes['prompt'],
+                                        "nrq": lo_data[key].attributes["amountOfQuestions"],
+                                        "aoa": lo_data[key].attributes["amountOfAnswers"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                // Add more cases as needed for different types
+                                default:
+                                    //TODO ALEK: Add Default constructor object or error handling
+                                    constructorObject = {};
+                                    break;
+                            }
+                        }
+                        else if (sourceContext === "bootstrap"){
+                            switch (type) {
+                                case 'learningObject':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                    }
+                                    break;
+                            }
+                        }
+                        if (infoPrompt === 'true'){
+                            constructorObject["access"] = "HAVE";
+                        }else{
+                            constructorObject["access"] = "DON'T HAVE";
+                        }
+                        if (fileUrl!=null && uploadPrompt === 'true'){
+                            var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                            var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
+                            var fullUrl = baseUrl + cleanFileUrl;
+                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, sourceContext);
+                        }else{
+                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, sourceContext);
+                        }
+
+                    });
                 break;
 			case 'xertelo':
 			default:

@@ -50,6 +50,17 @@
 	  <pagesize label="Questions Per Page" type="NumericStepper" min="1" max="100" step="1" optional="true" defaultValue="10" condition="list=='true'" tooltip="Maximum number of questions per page (when list in pages layout)"/>
     </layout>
 
+    <AIGroup type="group" label="AI" optional="true">
+      	<aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+        <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
+        <categories label="List the different categories separated by ," type="TextInput" wysiwyg="true" optional="true"/>
+        <numberOfQuestions label="Amount of questions for each category" type="TextInput" wysiwyg="true" optional="true"/>
+        <targetDemographic label="To whom is this survey targeted?" type="TextInput" wysiwyg="true" optional="true"/>
+        <scale label = "Type of scale to use" type = "TextInput" wysiwyg="true" defaultValue="likert" optional="true"/>
+        <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+        <aiButton type="aibutton" optional="true"/>
+    </AIGroup>
+
       <newNodes>
         <opinionClass><![CDATA[<opinionClass title="Title used on graph" name="Class"/>]]></opinionClass>
       </newNodes>
@@ -82,7 +93,7 @@
 		<sound label="File" type="Media" optional="true"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>
-		
+
     <newNodes>
       <opinionOption><![CDATA[<opinionOption name="Answer" text="Here is an option" />]]></opinionOption>
     </newNodes>

@@ -39,6 +39,19 @@
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
+		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
+            <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+            <subject label="Subject" tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'. Multiple subjects from the video may be chosen. Selecting a subject which is not talked about or directly referenced in the video may lead to content and timestamp inaccuracies." type="TextInput" wysiwyg="true" optional="true"/>
+            <nrq label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" optional="true"/>
+            <nra label="Answers per Question" type="TextInput" tooltip="Amount of answers generated respective to each question. For example, '5' will generate five answers per question." wysiwyg="true" optional="true"/>
+            <nrt label="Text Objects" type="TextInput" tooltip = "Specify the number of text objects to generate. A text object is a general, blank canvas which can be used to highlight or supplement information from the uploaded video. It is also possible to generate specific types of text objects. For example: 'start card, 2 (supplemental), end card' will generate an intro, two text objects which supplement the information in the video, and an outro/end card with a leading question." wysiwyg="true" optional="true"/>
+            <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+            <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional ="true"/>
+            <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+            <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional ="true"/>
+            <aiButton type="aibutton" optional="true"/>
+        </AIGroup>
+
 		<newNodes>
 			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
 			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
@@ -204,6 +217,4 @@
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
 	</ivSynchXotChange>
-	
-
 </wizard>

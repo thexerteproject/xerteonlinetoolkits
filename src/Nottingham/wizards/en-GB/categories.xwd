@@ -22,8 +22,19 @@
       <category><![CDATA[<category name="Enter Category Name Here"/>]]></category>
     </newNodes>
 
+  	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
+            <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
+            <subject label="Categories" type="TextInput" tooltip = "List each category separated by a comma (,). Categories may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." wysiwyg="true" optional="true"/>
+            <wordsPerCategory label="Words per Category" tooltip = "Specify how many words should be included in (each) category. For example, '5' will generate five words per category. '2 (category 1), 3(category 2)' will generate two and three words for each category according to the order in which they were listed." type="TextInput" wysiwyg="true" optional="true"/>
+            <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+            <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+            <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional ="true"/>
+            <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+            <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional ="true"/>
+            <aiButton type="aibutton" optional="true"/>
+            <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+      </AIGroup>
   </categories>
-
 
   <category menuItem="Category" icon="icGroup" remove="true">
 
