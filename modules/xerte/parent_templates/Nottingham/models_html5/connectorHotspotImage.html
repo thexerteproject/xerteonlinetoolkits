@@ -529,7 +529,7 @@
 											}
 
 										} else if (hsInfo == "image") {
-											if (hs_hover === 'false') {
+											if (hs_hover === 'false' || x_browserInfo.mobile == true) {
 
 												if (hsType == 'dialog') {
 
@@ -658,7 +658,7 @@
 											}
 
 										} else { // text
-											if (hs_hover === 'false') {
+											if (hs_hover === 'false' || x_browserInfo.mobile == true) {
 												dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
 
 												if (hsType == 'dialog') {
@@ -804,7 +804,7 @@
 								})
 								.hover(function () {
 
-									if (hs_hover === 'true') {
+									if (hs_hover === 'true' && x_browserInfo.mobile == false) {
 										if (hsInfo == "image" || hsInfo == "text") {
 											connectorHotspotImage.pauseAudio();
 

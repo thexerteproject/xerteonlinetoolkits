@@ -2922,7 +2922,7 @@ var EDITOR = (function ($, parent) {
                             canvasHeight = $('.overlayCanvas').height()
 
 
-                            bg = new fabric.Circle({
+                            hs = new fabric.Circle({
                                 radius: icon.radius/100 * canvasWidth,
                                 left: icon.centerX/100 * canvasWidth,
                                 top: icon.centerY/100 * canvasHeight,
@@ -2936,17 +2936,17 @@ var EDITOR = (function ($, parent) {
 
                             });
 
-                            tempIcon = new fabric.IText('\uf0c2', {
-                                fill: 'white',
-                                left: icon.centerX/100 * canvasWidth,
-                                top: icon.centerY/100 * canvasHeight,
-                                originX: 'center',
-                                originY: 'center',
-                                fontFamily:'FontAwesome',
-                                objectCaching: false,
-                                selectable: false,
-                            })
-                            hs = new fabric.Group([bg, tempIcon])
+                            // tempIcon = new fabric.IText('\uf0c2', {
+                            //     fill: 'white',
+                            //     left: icon.centerX/100 * canvasWidth,
+                            //     top: icon.centerY/100 * canvasHeight,
+                            //     originX: 'center',
+                            //     originY: 'center',
+                            //     fontFamily:'FontAwesome',
+                            //     objectCaching: false,
+                            //     selectable: false,
+                            // })
+                            //hs = new fabric.Group([bg, tempIcon])
                             hs.setControlsVisibility({
                                 mb: false,
                                 ml: false,
