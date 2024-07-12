@@ -213,6 +213,10 @@ function get_meta_data($template_id, $template_name, $creator_user_name="", $tem
     global $xerte_toolkits_site;
 
     $xml = get_template_data_as_xml($template_id, $creator_user_name, $template_type_name);
+    if (gettype($xml) !== "object")
+    {
+        return false;
+    }
     $xerteMetaObj = new stdClass();
 
     $html = new \Html2Text\Html2Text((string)$xml['name']);

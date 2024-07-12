@@ -2120,7 +2120,7 @@ function x_continueSetUp1() {
 			x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 				if (mediaExists) {
 					var alpha = 30;
-					var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
+					var lo_objectfit =  (x_params.backgroundFit != undefined ? x_params.backgroundFit : "fill");
 					if (x_params.backgroundopacity != undefined) {
 						alpha = x_params.backgroundopacity;
 					}
@@ -3832,7 +3832,7 @@ function x_loadPageBg(loadModel) {
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 
 	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg" alt=""/>');
-    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover" ? "cover" : "fill");
+    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined ? x_currentPageXML.getAttribute("backgroundFit") : "fill");
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({

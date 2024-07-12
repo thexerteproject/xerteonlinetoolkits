@@ -743,31 +743,37 @@
                     statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
                     var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
                     if (!groupedData[key]['attemptkeys'].includes(attemptkey)) {
-                        groupedData[key]['attempts'].push(statement)
+                        groupedData[key]['attempts'][attemptkey] = {
+                            'key': attemptkey,
+                            'statements' : []
+                        };
                         groupedData[key]['attemptkeys'].push(attemptkey)
                     }
+                    groupedData[key]['attempts'][attemptkey]['statements'].push(statement)
                 }
             }
         });
         var statements = [];
         for (var user in groupedData) {
-            if (type == "first") {
-                statements.push(groupedData[user].attempts[0])
-            } else if (type == "last") {
-                statements.push(groupedData[user].attempts[groupedData[user].attempts.length - 1])
-            } else if (type == 'best') {
-                //todo check if correct
-                var bestAttempt = null;
-                for (var attempt in groupedData[user].attempts) {
-                    if (bestAttempt != null) {
-                        if (bestAttempt.result.score.raw < groupedData[user].attempts[attempt].result.score.raw) {
-                            bestAttempt = groupedData[user].attempts[attempt]
+            for (var attempt in groupedData[user].attempts) {
+                if (type == "first") {
+                    statements.push(groupedData[user].attempts[attempt].statements[groupedData[user].attempts[attempt].statements.length-1])
+                } else if (type == "last") {
+                    statements.push(groupedData[user].attempts[attempt].statements[0])
+                } else if (type == 'best') {
+                    //todo check if correct
+                    var bestAttempt = null;
+                    for (var i = 0; i < groupedData[user].attempts[attempt].statements.length; i++) {
+                        if (bestAttempt != null) {
+                            if (bestAttempt.result.score.raw < groupedData[user].attempts[attempt].statements[i].result.score.raw) {
+                                bestAttempt = groupedData[user].attempts[attempt].statements[i]
+                            }
+                        } else {
+                            bestAttempt = groupedData[user].attempts[attempt].statements[i]
                         }
-                    } else {
-                        bestAttempt = groupedData[user].attempts[attempt]
                     }
+                    statements.push(bestAttempt)
                 }
-                statements.push(bestAttempt)
             }
         }
         return statements
@@ -1875,7 +1881,7 @@
                     blockName = block.getAttribute("conScoreBetween")
                 }
 
-                if (score >= lowerBound && score < upperBound) {
+                if (score >= lowerBound && (score < upperBound || score>=100 && upperBound == 100)) {
                   $("#" + escapeUrl(url, type, interactionIndex) + " .message").prepend('<button type="button" class="feedback">' + blockName + '</button>\n' +
                       '<div class="collapsibleContent block' + blockIndex + '" style="display: block; margin-bottom: 25px">' + block.getAttribute("adaptiveContent") + '</div>');
                 } else if (showOtherBlockContent == 'true'){
