@@ -1773,7 +1773,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName = tocName.html();
 				}
 
-				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + sectionId + '"></a></li>').appendTo('#toc');
+				var $link = $('<li' + (sectionVisibleIndex==0?' aria-current="location" class="active" ':'') +'><a href="#' + sectionId + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 
 				$('#contentTable').removeClass("hideSectionMenu");
@@ -1823,11 +1823,28 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 	//an event for user defined code to know when loading is done
 	$(document).trigger('contentLoaded');
 
-	//the following fixes the side bar active highlight issue but requires changes to makeNav
-	//so commented out until we can discuss on next dev day
+	// fixes the side bar active highlight issue
 	$('[data-spy="scroll"]').each(function () {
-		var $spy = $(this).scrollspy('refresh')
-	})
+		var $spy = $(this).scrollspy('refresh');
+	});
+
+	// make sure the currently selected section menu item has aria-current = location as well as active class
+	const $sectionMenuItems = $("#contentTable .nav li");
+	const observer = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+			if ($(mutation.target).hasClass("active")) {
+				mutation.target.setAttribute("aria-current", "location");
+			} else {
+				mutation.target.removeAttribute("aria-current");
+			}
+		});
+	});
+	$sectionMenuItems.each(function() {
+		observer.observe(this, {
+			attributes: true,
+			attributeFilter: ['class']
+		});
+	});
 
 	//force facebook / twitter objects to initialise
 	//twttr.widgets.load(); // REMOVED??
@@ -2301,6 +2318,7 @@ window.onhashchange = function() {
 	}
 }
 
+// update the highlighting of the section menu on click (not auto highlight done when scrolling)
 function updateMenu(listID) {
 	if (!$.isNumeric(listID)) {
 		listID = 1;
@@ -2312,7 +2330,7 @@ function updateMenu(listID) {
     for (i=0; i<navLists.length; i++) {
         if (i == listID-1) {
             navLists[i].className = "active";
-        } else {
+		} else {
             navLists[i].className = "";
         }
     }
