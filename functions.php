@@ -283,11 +283,48 @@ function true_or_false($var)
 }
 
 // Function to prevent XSS vulnarabilities
-function x_clean_input($input)
+function x_clean_input($input, $expected_type = null)
 {
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = htmlspecialchars($input);
+    if (!is_array($input)) {
+        $input = trim($input);
+        $input = stripslashes($input);
+        $input = htmlspecialchars($input);
+    } else {
+        $array_type = null;
+        if ($expected_type == 'array_numeric')
+        {
+            $array_type= 'numeric';
+        }
+        else if ($expected_type == 'array_string')
+        {
+            $array_type = 'string';
+        }
+        foreach ($input as $key => $value) {
+            $input[$key] = x_clean_input($value, $array_type);
+        }
+    }
+    if ($expected_type != null) {
+        if ($expected_type == 'string') {
+            if (!is_string($input)) {
+                die("Expected string, got $input");
+            }
+        }
+        else if ($expected_type == 'numeric') {
+            if (!is_numeric($input)) {
+                die("Expected numeric value, got $input");
+            }
+        }
+        else if ($expected_type == 'array_numeric') {
+            if (!is_array($input)) {
+                die("Expected numeric array, got $input");
+            }
+        }
+        else if ($expected_type == 'array_string') {
+            if (!is_array($input)) {
+                die("Expected string array, got $input");
+            }
+        }
+    }
     return $input;
 }
 
