@@ -285,11 +285,7 @@ function true_or_false($var)
 // Function to prevent XSS vulnarabilities
 function x_clean_input($input, $expected_type = null)
 {
-    if (!is_array($input)) {
-        $input = trim($input);
-        $input = stripslashes($input);
-        $input = htmlspecialchars($input);
-    } else {
+    if (is_array($input)) {
         $array_type = null;
         if ($expected_type == 'array_numeric')
         {
@@ -303,6 +299,9 @@ function x_clean_input($input, $expected_type = null)
             $input[$key] = x_clean_input($value, $array_type);
         }
     }
+    $input = trim($input);
+    $input = stripslashes($input);
+    $input = htmlspecialchars($input);
     if ($expected_type != null) {
         if ($expected_type == 'string') {
             if (!is_string($input)) {
