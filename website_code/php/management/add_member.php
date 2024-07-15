@@ -51,26 +51,18 @@ function add_members_to_group($login_ids, $group_id){
 if(is_user_admin()){
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $login_ids= x_clean_input($_POST['login_id']);
-    $group_id = x_clean_input($_POST['group_id']);
-
-    // Check whther group_id is numeric
-    if (!is_numeric($group_id)){
-        management_fail();
-    }
+    $login_ids= x_clean_input($_POST['login_id'], 'array_numeric');
+    $group_id = x_clean_input($_POST['group_id'], 'numeric');
 
     $logins = implode(',', $login_ids);
-    // Check whether items in logins array are numeric
-    foreach ($login_ids as $login_id){
-        if (!is_numeric($login_id)){
-            management_fail();
-        }
-    }
 
     $database_id = database_connect("member list connected","member list failed");
 
-    $params = array( $group_id, $logins);
-    $query = "SELECT * FROM {$prefix}user_group_members WHERE group_id=? AND login_id in (?)";
+    $params = array( $group_id);
+    $params = array_merge($params, $login_ids);
+    $questionmarks = str_repeat("?,", count($login_ids) - 1) . "?";
+
+    $query = "SELECT * FROM {$prefix}user_group_members WHERE group_id=? AND login_id in ({$questionmarks})";
     $exists = db_query($query, $params);
 
     $existing_arr = array();
