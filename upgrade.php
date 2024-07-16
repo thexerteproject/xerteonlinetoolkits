@@ -216,6 +216,14 @@ function _do_cleanup()
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
+        'drawing.php',
+        'drawingjs.php',
+        'modules/xerte/engine/*',
+        'modules/site/engine/*',
+        'modules/decision/engine/*',
+        'LTI/*',
+        'play_html5.php',
+        'play_site.php',
     );
 
     foreach ($filelist as $file)

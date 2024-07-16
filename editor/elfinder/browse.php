@@ -50,13 +50,40 @@ if (isset($_GET['uploadDir']) && isset($_GET['uploadURL']))
     header("Location: " . $_SERVER["SCRIPT_NAME"] . $params);
 }
 
-if (strpos($_SESSION['uploadDir'], 'USER-FILES') === false || strpos($_SESSION['uploadURL'], 'USER-FILES') === false)
+if (!isset($_SESSION['uploadDir']) || !isset($_SESSION['uploadURL']))
 {
     die("Invalid upload location");
 }
 
+// Check uploadDir and check for path traversal
+$realpath = realpath($_SESSION['uploadDir']) . '/';
+if ($realpath === false || $realpath !== $_SESSION['uploadDir'])
+{
+    die("Invalid upload location");
+}
+// Check whether path is as expected
+if (strpos($_SESSION['uploadDir'], $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
+{
+    die("Invalid upload location");
+}
+
+// Check uploadURL
+// First create a path from URL by replacing site_url with root_file_path
+$uploadURL = str_replace($xerte_toolkits_site->site_url, $xerte_toolkits_site->root_file_path, $_SESSION['uploadURL']);
+$realpath = realpath($uploadURL);
+if ($realpath === false || $realpath !== $uploadURL)
+{
+    die("Invalid upload location");
+}
+// Check whther it is the expected location
+if (strpos($_SESSION['uploadURL'], $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short) !== 0)
+{
+    die("Invalid upload location");
+}
+
+
 $mode = 'standalone';
-if (isset($_REQUEST['mode']) && $_REQUEST['mode']=='cke') {
+if (isset($_REQUEST['mode']) && x_clean_input($_REQUEST['mode'])=='cke') {
     $mode = 'cke';
     $funcNum = x_clean_input($_REQUEST['CKEditorFuncNum']);
 }

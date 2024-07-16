@@ -867,9 +867,9 @@ function media_quota_info($template_id)
             "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id AND " .
             "{$prefix}templatedetails.template_id = ? AND (role = ? OR role = ?)";
 
-        $row_path = db_query_one($sql, array($_POST['template_id'], 'creator', 'co-author'));
+        $row_path = db_query_one($sql, array($template_id, 'creator', 'co-author'));
 
-        $end_of_path = $_POST['template_id'] . "-" . $row_path['username'] . "-" . $row_path['template_name'];
+        $end_of_path = $template_id . "-" . $row_path['username'] . "-" . $row_path['template_name'];
 
         /**
          * Set the paths

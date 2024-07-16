@@ -26,7 +26,7 @@ require $xerte_toolkits_site->php_library_path . "template_status.php";
 // be VERY paranoid over the path the user is requesting to download.
 // Even if the file starts with a correct pattern (old implementation) the user could travers path
 // like 542-tom-Notingham/../database.php or like 542-tom-Notingham/../../../../etc/passwd
-$unsafe_file_path = $_GET['file'];
+$unsafe_file_path = x_clean_input($_GET['file']);
 
 // Account for Windows, because realpath changes / to \
 if(DIRECTORY_SEPARATOR !== '/') {

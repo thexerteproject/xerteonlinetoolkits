@@ -59,24 +59,45 @@ if (!isset($_SESSION['toolkits_logon_id']))
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
-if (strpos($_POST['mediapath'], 'USER-FILES') === false || strpos($_POST['mediapath'], '../') !== false)
+
+if (!isset($_POST['mediapath']))
 {
-    // Invalid upload path
-    _debug("Invalid or illegal mediapath");
-    die("Invalid or illegal mediapath");
+    _debug("No mediapath specified");
+    die("No mediapath specified");
+}
+$mediapath = x_clean_input($_POST['mediapath'], 'string');
+
+// Make sure the mediapath is a valid path and does not contain any path traversal
+$realpath = realpath($mediapath) . '/';
+if ($realpath === false || $realpath !== $mediapath)
+{
+    _debug("Invalid mediapath specified");
+    die("Invalid mediapath specified");
+}
+
+// Check whether the file is within the expected folder
+if (strpos($mediapath, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0 || strpos($mediapath, "/media/") === false)
+{
+    _debug("Illegal mediapath specified");
+    die("Illegal mediapath specified");
 }
 
 _load_language_file("/website_code/php/import/fileupload.inc");
 
 if(apply_filters('editor_upload_file', $_FILES)){
 
+    $filename = x_clean_input($_FILES['filenameuploaded']['name']);
+    if (strpos($filename, '/') !== false || strpos($filename, '\\') !== false || strpos($filename, '..') !== false){
+        die("Invalid filename specified");
+    }
+
     if($_FILES['filenameuploaded']['type']=="text/html"){
 
         $php_check = file_get_contents($_FILES['filenameuploaded']['tmp_name']);
 
-        if(!stripos($php_check,"<?PHP")){
+        if(stripos($php_check,"<?PHP") !== false || stripos($php_check, "<?")){
 
-            $new_file_name = $_POST['mediapath'] . $_FILES['filenameuploaded']['name'];
+            $new_file_name = $mediapath . $filename;
 
             if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
@@ -96,7 +117,7 @@ if(apply_filters('editor_upload_file', $_FILES)){
 
     }else{
 
-        $new_file_name = $_POST['mediapath'] . $_FILES['filenameuploaded']['name'];
+        $new_file_name = $mediapath . $filename;
 
         if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
@@ -126,4 +147,4 @@ if(apply_filters('editor_upload_file', $_FILES)){
         echo FILE_UPLOAD_MIME_FAIL . " - " . $_FILES['filenameuploaded']['type'] . "****";
     }
 }
-?>
+

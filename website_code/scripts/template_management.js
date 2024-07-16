@@ -843,7 +843,7 @@ function recycle_bin_remove_all_template(template_id) {
         }
     })
     .done(function(response){
-        if (number_of_files_to_delete != 1) {
+        if (number_of_files_to_delete > 1) {
             number_of_files_to_delete -= 1;
         } else {
             refresh_workspace();
