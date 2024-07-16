@@ -325,7 +325,7 @@ if (!$export_offline) {
  */
 $theme = $xml->getTheme();
 // To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers, no special characters)
-if (!ctype_alnum($theme)) {
+if (!preg_match('/^[a-zA-Z0-9]+$/', $theme)) {
     die("Illegal theme name detected!");
 }
 

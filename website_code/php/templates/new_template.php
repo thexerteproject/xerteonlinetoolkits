@@ -58,6 +58,17 @@ else
 $templatename = x_clean_input($_POST['templatename']);
 $tutorialname = x_clean_input($_POST['tutorialname']);
 
+// Make sure template name and tutorial name just consists of letters, numbers, and underscores
+if (!preg_match('/^[a-zA-Z0-9_]+$/', $templatename))
+{
+    die("Invalid template name");
+}
+if (!preg_match('/^[a-zA-Z0-9_]+$/', $tutorialname))
+{
+    die("Invalid tutorial name");
+}
+
+
 /*
  * get the maximum id number from templates, as the id for this template
  */
@@ -96,7 +107,7 @@ if($lastid !== false) {
         _debug("Setup template rights ok");
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
         include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/new_template.php";
-        create_new_template($lastid, $_POST['templatename'], $row_template_type['parent_template']);
+        create_new_template($lastid, $templatename, $row_template_type['parent_template']);
         echo trim($lastid);
 		echo "," . $xerte_toolkits_site->learning_objects->{$row_template_type['template_framework'] . "_" . $row_template_type['template_name']}->editor_size;
     }else{

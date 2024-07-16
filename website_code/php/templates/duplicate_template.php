@@ -56,6 +56,10 @@ if (!isset($_POST['folder_id'])) {
     die("No folder id");
 }
 
+if (!isset($_POST['template_name'])) {
+    die("No template name");
+}
+
 $template_id = x_clean_input($_POST['template_id'], 'numeric');
 $folder_id = x_clean_input($_POST['folder_id']);
 $template_name = x_clean_input($_POST['template_name']);
@@ -115,7 +119,7 @@ if(is_user_creator_or_coauthor($template_id)){
 
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
-            duplicate_template($row_template_type['template_framework'], $new_template_id,$_POST['template_id'],$row_template_type['template_name']);
+            duplicate_template($row_template_type['template_framework'], $new_template_id,$template_id,$row_template_type['template_name']);
 
         }else{
 

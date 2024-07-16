@@ -68,11 +68,25 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         _debug("Warning: we had problems either creating the temp dir {$xerte_toolkits_site->import_path}$this_dir or chmod'ing it 0777.");
     }
 
-    $new_file_name = $xerte_toolkits_site->import_path . $this_dir . time() . $_FILES['filenameuploaded']['name'];
+    $filename = x_clean_input($_FILES['filenameuploaded']['name'], 'string');
+    if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $filename))
+    {
+        echo IMPORT_LANGUAGE_FAILED . IMPORT_LANGUAGE_NOVALIDZIP;
+        exit(0);
+    }
+
+    $new_file_name = $xerte_toolkits_site->import_path . $this_dir . time() . $filename;
 
     if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
         require_once dirname(__FILE__) . "/../dUnzip2.inc.php";
+
+
+        // Quick fix to check zip file is valid
+        $zip = new ZipArchive();
+        $x = $zip->open($new_file_name);
+        x_check_zip($zip);
+        $zip->close();
 
         $zip = new dUnzip2($new_file_name);
 
