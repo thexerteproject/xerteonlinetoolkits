@@ -58,6 +58,12 @@ if (!isset($_POST['folder_id'])) {
 
 $template_id = x_clean_input($_POST['template_id'], 'numeric');
 $folder_id = x_clean_input($_POST['folder_id']);
+$template_name = x_clean_input($_POST['template_name']);
+
+if (!ctype_alnum($template_name))
+{
+    die("Invalid template name");
+}
 if(is_user_creator_or_coauthor($template_id)){
 
     if($folder_id=="workspace"){
@@ -96,7 +102,7 @@ if(is_user_creator_or_coauthor($template_id)){
         date('Y-m-d H:i:s'),
         date('Y-m-d H:i:s'),
         "Private",
-        COPY_OF . htmlspecialchars($_POST['template_name']),
+        COPY_OF . htmlspecialchars($template_name),
         $row_template_type['extra_flags']);
 
     $new_template_id = db_query($query_for_new_template, $params);
