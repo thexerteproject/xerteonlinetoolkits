@@ -2362,66 +2362,7 @@ var EDITOR = (function ($, parent) {
     },
 
     editDrawing = function(id, key, name, value){
-        //console.log('Edit drawing: ' + id + ': ' + key + ', ' +  name);
-        window.XOT = {};
-        window.XOT.callBack = function(key, name, xmldata) {
-            // Actions with url parameter here
-            //console.log('Save drawing file: ' + key + ', ' + name);
-            setAttributeValue(key, [name], [xmldata]);
-            // Refresh form, otherwise the value passed by the Edit button to the drawingEditor when the button is paused again
-            parent.tree.showNodeData(key);
-        };
-        window.XOT.close = function()
-        {
-            window.XOT = null;
-        };
-        // Make a form with hidden fields we want to post
-        var drawingForm = $('<form>')
-            .attr('id', 'form_'+ key)
-            .attr('target', 'Drawing Editor')
-            .attr('method', 'POST')
-            .attr('action', 'drawingjs.php');
-
-        var input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'rlofile')
-            .attr('value', rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES")));
-
-        drawingForm.append(input);
-
-        input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'data')
-            .attr('value', value);
-        drawingForm.append(input);
-
-        input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'key')
-            .attr('value', key);
-        drawingForm.append(input);
-
-        input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'name')
-            .attr('value', name);
-
-        drawingForm.append(input);
-
-        // Add the form to body
-        $('body').append(drawingForm);
-
-        var de = window.open('', 'Drawing Editor', "height=710, width=800");
-
-        if (de)
-        {
-            drawingForm.submit();
-        }
-        else
-        {
-            alert("You must allow popups for the drawing editor to work!");
-        }
-        $('#' + 'form_'+ key).remove();
+        alert("The flash based drawing editor is discontinued!");
     },
 
     /**

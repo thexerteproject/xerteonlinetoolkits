@@ -35,11 +35,38 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."../../../config.php");
 if (!isset($_SESSION['toolkits_logon_id'])){
     header("location: ../../../index.php");
 }
-// Get session data to set paths
-$rootpath = $_REQUEST['uploadDir'];
-$rooturl = $_REQUEST['uploadURL'];
 
-if (strpos($rootpath, 'USER-FILES') === false  || strpos($rootpath, '../') !== false || strpos($rooturl, 'USER-FILES') === false)
+if (empty($_REQUEST['uploadDir']) || empty($_REQUEST['uploadURL']))
+{
+    die("Invalid upload location");
+}
+
+// Get session data to set paths
+$rootpath = x_clean_input($_REQUEST['uploadDir']);
+$rooturl = x_clean_input($_REQUEST['uploadURL']);
+
+// Check uploadDir and check for path traversal
+$realpath = realpath($rootpath) . '/';
+if ($realpath === false || $realpath !== $rootpath)
+{
+    die("Invalid upload location");
+}
+// Check whether path is as expected
+if (strpos($rootpath, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
+{
+    die("Invalid upload location");
+}
+
+// Check uploadURL
+// First create a path from URL by replacing site_url with root_file_path
+$uploadURL = str_replace($xerte_toolkits_site->site_url, $xerte_toolkits_site->root_file_path, $rooturl);
+$realpath = realpath($uploadURL);
+if ($realpath === false || $realpath !== $uploadURL)
+{
+    die("Invalid upload location");
+}
+// Check whther it is the expected location
+if (strpos($rooturl, $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short) !== 0)
 {
     die("Invalid upload location");
 }

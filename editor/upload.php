@@ -22,6 +22,15 @@ require_once(dirname(__FILE__) . "/../config.php");
 
 require (dirname(__FILE__) . "/../" . $xerte_toolkits_site->php_library_path . "user_library.php");
 
+function check_abs_media_path($absmedia)
+{
+    global $xerte_toolkits_site;
+    if (strpos($absmedia, $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short) !== 0)
+    {
+        die("Invalid media path specified");
+    }
+}
+
 /**
  *
  * Extension for SimpleXMLElement
@@ -83,31 +92,59 @@ if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin())
 //_debug("upload: " . print_r($_POST, true));
 
 // Check for Preview/Publish
-$fileupdate = $_POST["fileupdate"];
-$filename = $_POST["filename"];
+$fileupdate = x_clean_input($_POST["fileupdate"]);
+$filename = x_clean_input($_POST["filename"]);
 
 $mode = $fileupdate ? "publish" : "preview";
 if ($mode == 'publish')
 {
-    $preview = dirname(dirname(__FILE__)) . '/' . $_POST["preview"];
+    $previewxml = x_clean_input($_POST["preview"]);
+    $preview = dirname(dirname(__FILE__)) . '/' . $previewxml;
+    // Check whether the file does not have path traversal
+    $realpath = realpath($preview);
+    if ($realpath === false || $realpath !== $preview)
+    {
+        die("Invalid preview path specified");
+    }
+    // Check whether the file is within the expected folder
+    if (strpos($preview, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
+    {
+        die("Invalid preview path specified");
+    }
 }
 $filename = dirname(dirname(__FILE__)) . '/' . $filename;
+// Check whether the file does not have path traversal
+$realpath = realpath($filename);
+if ($realpath === false || $realpath !== $filename)
+{
+    die("Invalid file path specified");
+}
+// Check whether the file is within the expected folder
+if (strpos($filename, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
+{
+    die("Invalid file path specified");
+}
+
 $filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 
 // This code miserably fails if get_magic_quotes_gpc is turned on
 // decoding the json doesn't work anymore
-$lo_data = $_POST["lo_data"];
+$lo_data = x_clean_input($_POST["lo_data"]);
 if (function_exists('get_magic_quotes_gpc'))
 {
     if (get_magic_quotes_gpc())
     {
-        $lo_data=stripslashes($_POST["lo_data"]);
+        $lo_data=stripslashes($lo_data);
     }
 }
 
 //_debug("upload (lo_data): " . $lo_data);
+$absmedia = x_clean_input($_POST['absmedia']);
+check_abs_media_path($absmedia);
 
-$relreffedjsonstr = make_refs_local(urldecode($lo_data), $_POST['absmedia']);
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
+
+$relreffedjsonstr = make_refs_local(urldecode($lo_data), $absmedia);
 
 //_debug("upload (lo_data, local_refs): " . $relreffedjsonstr);
 
@@ -150,10 +187,10 @@ if ($mode == "publish")
     file_put_contents($preview, $data->asXML());
     // Update templatedetails modify date
     $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
-    $params = array(date("Y-m-d H:i:s"), $_POST['template_id']);
+    $params = array(date("Y-m-d H:i:s"), $template_id);
     db_query_one($sql, $params);
 
-    update_oai($data);
+    update_oai($data, $template_id);
     //_debug("upload: updated table");
 }
 
@@ -246,7 +283,7 @@ function is_ajax_request() {
 	return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 }
 
-function update_oai($data){
+function update_oai($data, $template_id){
     global $xerte_toolkits_site;
     $oaiPmhAgree = (string)$data->attributes()->oaiPmhAgree;
     if ((string)$data->attributes()->targetFolder != "site") {
@@ -259,12 +296,12 @@ function update_oai($data){
     $user_type = '';
     //get access status
     $sql = "select access_to_whom from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id=?";
-    $rec = db_query_one($sql, array($_POST['template_id']));
+    $rec = db_query_one($sql, array($template_id));
     $status = $rec["access_to_whom"];
 
     if ($oaiPmhAgree !== "") {
         $sql = "select status from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
-        $params = array($_POST['template_id']);
+        $params = array($template_id);
         $rec = db_query_one($sql, $params);
         $last_oaiTable_status = $rec["status"];
 
@@ -273,13 +310,13 @@ function update_oai($data){
             $user_type = "admin";
         } else {
             $sql = "select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?";
-            $params = array($_POST['template_id'], $_SESSION['toolkits_logon_id']);
+            $params = array($template_id, $_SESSION['toolkits_logon_id']);
             $rec = db_query_one($sql, $params);
             $user_type = $rec["role"];
         }
 
         $query = "insert into {$xerte_toolkits_site->database_table_prefix}oai_publish set template_id=?, login_id=?, user_type=?, status=?";
-        $params = array($_POST['template_id'], $_SESSION["toolkits_logon_id"], $user_type);
+        $params = array($template_id, $_SESSION["toolkits_logon_id"], $user_type);
 
         if ($oaiPmhAgree == 'true' and $category !== "" and $level !== "" and $status === "Public") {
             //add new row to oai_published to indicate current oai-pmh status

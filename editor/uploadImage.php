@@ -73,10 +73,22 @@ if (!isset($_FILES['upload']))
     exit(-1);
 }
 
-// Check upload path, should contain USER-FILES
-if (strpos($_REQUEST['uploadPath'], 'USER-FILES') === false || strpos($_REQUEST['uploadPath'], '../') !== false || strpos($_REQUEST['uploadURL'], 'USER-FILES') === false)
+$uploadpath = x_clean_input($_REQUEST['uploadPath']);
+$uploadurl = x_clean_input($_REQUEST['uploadURL']);
+
+// Check path and prevent traversal
+$realpath = realpath($uploadpath) . '/';
+if ($realpath === false || $realpath !== $uploadpath)
 {
-    // Invalid folder, reject!
+    $response->uploaded = 0;
+    $response->error = IMAGEUPOLOAD_NOT_UPLOADED;
+
+    echo json_encode($response);
+    exit(-1);
+}
+// Check whether the file is within the expected folder
+if (strpos($uploadpath, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
+{
     $response->uploaded = 0;
     $response->error = IMAGEUPOLOAD_NOT_UPLOADED;
 
@@ -140,14 +152,14 @@ switch($_FILES['upload']['type'])
         exit(-1);
 }
 
-$filename = sanitizeName($_FILES['upload']['name'], $response);
+$filename = sanitizeName(x_clean_input($_FILES['upload']['name']), $response);
 // Add path to the $filename
 $paste = "image";
 // Check if pasted filename already exists, if so add a count until we find a name that is available
 if ($filename == $paste . $paste_ext) {
     $final = $paste . $paste_ext;
     $count = 1;
-    while (file_exists($_REQUEST['uploadPath'] . "media/" . $final)) {
+    while (file_exists($uploadpath . "media/" . $final)) {
         $final =  $paste . "(" . $count . ")" . $paste_ext;
         $count++;
     }
@@ -155,8 +167,8 @@ if ($filename == $paste . $paste_ext) {
 }
 
 $response->uploaded = 1;
-$response->url = $_REQUEST['uploadURL'] . "/media/" . $filename;
-$response->fileName = $_REQUEST['uploadPath'] . "media/" . $filename;
+$response->url = $uploadurl . "/media/" . $filename;
+$response->fileName = $uploadpath . "media/" . $filename;
 
 // Move file to the correct location
 $res = move_uploaded_file($_FILES['upload']['tmp_name'], $response->fileName);

@@ -248,7 +248,7 @@ function get_meta_data($template_id, $template_name, $creator_user_name="", $tem
         if (strpos($xerteMetaObj->thumbnail, "FileLocation") >= 0)
         {
             // Construct file name
-            $template_dir = $xerte_toolkits_site->site_url . "USER-FILES/" . $template_id . "-" . $creator_user_name . "-" . $template_type_name . "/";
+            $template_dir = $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short . $template_id . "-" . $creator_user_name . "-" . $template_type_name . "/";
             $xerteMetaObj->thumbnail = str_replace("FileLocation + ", $template_dir, $xerteMetaObj->thumbnail);
             $xerteMetaObj->thumbnail = str_replace("'", "", $xerteMetaObj->thumbnail);
         }

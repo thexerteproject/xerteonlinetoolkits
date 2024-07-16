@@ -327,6 +327,19 @@ function x_clean_input($input, $expected_type = null)
     return $input;
 }
 
+function x_check_zip($zip)
+{
+    // Iterate over files in ZipArchive object to check for any files that are not allowed
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $filename = $zip->getNameIndex($i);
+        if (strpos($filename, '..') !== false) {
+            die("Zip archive contains path names with path traversal: $filename");
+        }
+        if (strpos($filename, '/') === 0) {
+            die("Zip archive contains files with absolute paths: $filename");
+        }
+    }
+}
 function set_token()
 {
     if (!isset($_SESSION['token'])) {

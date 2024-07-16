@@ -48,18 +48,21 @@ $root_folder_id = get_user_root_folder();
 
 if (isset($_POST["folder_id"]) && strlen($_POST["folder_id"]) > 0)
 {
-    $folder_id = $_POST["folder_id"];
+    $folder_id = x_clean_input($_POST["folder_id"], 'numeric');
 }
 else
 {
     $folder_id = $root_folder_id;
 }
 
+$templatename = x_clean_input($_POST['templatename']);
+$tutorialname = x_clean_input($_POST['tutorialname']);
+
 /*
  * get the maximum id number from templates, as the id for this template
  */
 
-$row_template_type = db_query_one("select template_type_id, template_name, parent_template, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['templatename']));
+$row_template_type = db_query_one("select template_type_id, template_name, parent_template, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($templatename));
 
 
 /*
@@ -82,7 +85,7 @@ if ($row_template_type['template_framework'] == 'xerte')
 
 $query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (creator_id, template_type_id, date_created, date_modified, number_of_uses, access_to_whom, template_name, extra_flags)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-$lastid = db_query($query_for_new_template, array($_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d H:i:s'), date('Y-m-d H:m:i'), 0, "Private", htmlspecialchars(str_replace(" ","_", $_POST['tutorialname'])), $extraflags));
+$lastid = db_query($query_for_new_template, array($_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d H:i:s'), date('Y-m-d H:m:i'), 0, "Private", htmlspecialchars(str_replace(" ","_", $tutorialname)), $extraflags));
 
 if($lastid !== false) {
     _debug("Created new template entry in db");

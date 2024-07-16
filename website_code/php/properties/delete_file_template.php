@@ -36,7 +36,32 @@ if (!isset($_SESSION['toolkits_logon_id']))
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
-if(unlink(urldecode($_POST['file']))){
+
+if (!isset($_POST['file']))
+{
+    _debug("No file specified");
+    die("No file specified");
+}
+
+$filename = x_clean_input($_POST['file']);
+$filename = urldecode($filename);
+
+// Check whether the file does not have path traversal
+$realpath = realpath($filename);
+if ($realpath === false || $realpath !== $filename)
+{
+    _debug("Invalid file specified");
+    die("Invalid file specified");
+}
+
+// Check whether the file is within the expected folder
+if (strpos($filename, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0 || strpos($filename, "/media/") === false)
+{
+    _debug("Invalid file specified");
+    die("Invalid file specified");
+}
+
+if(unlink($filename)){
     receive_message($_SESSION['toolkits_logon_username'], "FILE", "SUCCESS", "The file " . $_POST['file'] . "has been deleted", "User " . $_SESSION['toolkits_logon_username'] . " has deleted " . $_POST['file']);
 }else{
     receive_message($_SESSION['toolkits_logon_username'], "FILE", "MAJOR", "The file " . $_POST['file'] . "hasn't been deleted", "User " . $_SESSION['toolkits_logon_username'] . " was not deleted " . $_POST['file']);
