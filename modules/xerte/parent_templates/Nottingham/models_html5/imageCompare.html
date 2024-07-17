@@ -63,14 +63,14 @@
 				$("#slider").addClass("horizontal");
 
 			let prevEvent;
-			slider.on("mousedown touchstart", function(event) {
+			slider.on("mousedown", function(event) {
 				event.preventDefault();
 				$(this).data("dragging", true);
 				prevEvent = event;
 			});
 			
 			//this on the image holder because then you don't have to move slowly and stay on the slider
-			$(".image_holder").on("mousemove touchmove", (event) => {
+			$(".image_holder").on("mousemove", (event) => {
  				if(!slider.data("dragging")) return;
 				event.preventDefault();
 				let deltaPosition;
@@ -89,9 +89,20 @@
 				$(".image_holder").css("cursor", "move");
 			});
 
-			slider.on("mouseup touchend", function() {
+			slider.on("mouseup", function() {
 				$(this).data("dragging", false);
 				$(".image_holder").css("cursor", "default");
+			});
+
+			slider.on("keydown", (event) =>{
+				let delta = 0;
+				if(event.which == 39){// right arrow
+					delta = 5
+				}else if(event.which == 37){// left arrow
+					delta = -5;
+				}
+				this.position = Math.min(100, Math.max(this.position + delta, 0))
+				this.updatePosition();
 			});
 			
 			tempImg1.src = img1Url;
@@ -116,6 +127,6 @@
 	<div class="image_holder">
 		<img class="image x_noLightBox" id="img1" alt="" src="" />
 		<img class="image x_noLightBox" id="img2" alt="" src="" />
-		<div id="slider"></div>
+		<div id="slider" tabindex="1"></div>
 	</div>
 </div>
