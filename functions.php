@@ -282,35 +282,52 @@ function true_or_false($var)
     return false;
 }
 
+// Function to prevent XSS vulnarabilities in arrays
+// Do NOT use x_clean_input in the implementation, as Snyk does not understand that
+function x_clean_input_array($input, $expected_type = null)
+{
+    $array_type = null;
+    if ($expected_type == 'array_numeric') {
+        $array_type = 'numeric';
+    } else if ($expected_type == 'array_string') {
+        $array_type = 'string';
+    }
+    foreach ($input as $key => $value) {
+        $input[$key] = trim($input[$key]);
+        $input[$key] = stripslashes($input[$key]);
+        $input[$key] = htmlspecialchars($input[$key]);
+        if ($array_type != null) {
+            if ($array_type == 'string') {
+                if (!is_string($input[$key])) {
+                    die("Expected string, got {$input[$key]}");
+                }
+            } else if ($array_type == 'numeric') {
+                if (!is_numeric($input[$key])) {
+                    die("Expected numeric value, got {$input[$key]}");
+                }
+            }
+        }
+    }
+    if ($expected_type != null) {
+        if ($expected_type == 'array_numeric') {
+            if (!is_array($input)) {
+                die("Expected numeric array, got $input");
+            }
+        } else if ($expected_type == 'array_string') {
+            if (!is_array($input)) {
+                die("Expected string array, got $input");
+            }
+        }
+    }
+    return $input;
+}
+
+
 // Function to prevent XSS vulnarabilities
 function x_clean_input($input, $expected_type = null)
 {
     if (is_array($input)) {
-        $array_type = null;
-        if ($expected_type == 'array_numeric')
-        {
-            $array_type= 'numeric';
-        }
-        else if ($expected_type == 'array_string')
-        {
-            $array_type = 'string';
-        }
-        foreach ($input as $key => $value) {
-            $input[$key] = x_clean_input($value, $array_type);
-        }
-        if ($expected_type != null) {
-            if ($expected_type == 'array_numeric') {
-                if (!is_array($input)) {
-                    die("Expected numeric array, got $input");
-                }
-            }
-            else if ($expected_type == 'array_string') {
-                if (!is_array($input)) {
-                    die("Expected string array, got $input");
-                }
-            }
-        }
-        return $input;
+        return x_clean_input_array($input, $expected_type);
     }
     $input = trim($input);
     $input = stripslashes($input);
