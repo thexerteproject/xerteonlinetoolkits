@@ -326,6 +326,9 @@ function x_clean_input_array($input, $expected_type = null)
 // Function to prevent XSS vulnarabilities
 function x_clean_input($input, $expected_type = null)
 {
+    if (is_array($input)) {
+        return x_clean_input_array($input, $expected_type);
+    }
     $input = trim($input);
     $input = stripslashes($input);
     $input = htmlspecialchars($input);
