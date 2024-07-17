@@ -224,6 +224,10 @@ function _do_cleanup()
         'LTI/*',
         'play_html5.php',
         'play_site.php',
+        'setup/xampp.php',
+        'setup/xampp.txt',
+        'setup/xampp_database.txt',
+        'rloObject.js',
     );
 
     foreach ($filelist as $file)

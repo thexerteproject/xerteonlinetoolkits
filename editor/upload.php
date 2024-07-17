@@ -21,6 +21,7 @@
 require_once(dirname(__FILE__) . "/../config.php");
 
 require (dirname(__FILE__) . "/../" . $xerte_toolkits_site->php_library_path . "user_library.php");
+require (dirname(__FILE__) . "/../" . $xerte_toolkits_site->php_library_path . "template_status.php");
 
 function check_abs_media_path($absmedia)
 {
@@ -129,7 +130,7 @@ $filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 
 // This code miserably fails if get_magic_quotes_gpc is turned on
 // decoding the json doesn't work anymore
-$lo_data = x_clean_input($_POST["lo_data"]);
+$lo_data = $_POST["lo_data"];
 if (function_exists('get_magic_quotes_gpc'))
 {
     if (get_magic_quotes_gpc())
@@ -143,6 +144,19 @@ $absmedia = x_clean_input($_POST['absmedia']);
 check_abs_media_path($absmedia);
 
 $template_id = x_clean_input($_POST['template_id'], 'numeric');
+
+// Check whether the folder is correct based on template_id and user name
+$folder_path_part = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $template_id . '-';
+if (strpos($filename, $folder_path_part) !== 0)
+{
+    die("Invalid upload location");
+}
+
+// Check whether the user has rights to edit this template
+if (!is_user_an_editor($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin())
+{
+    die("No rights to edit this template");
+}
 
 $relreffedjsonstr = make_refs_local(urldecode($lo_data), $absmedia);
 

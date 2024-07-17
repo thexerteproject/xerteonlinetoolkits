@@ -204,7 +204,7 @@ if($success_string!=""){
 }
 
 ?>
-<p> Your site URL is  <a href="http://<?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?></a> </p>
+<p> Your site URL is  <a href="http://<?php echo x_clean_input($_SERVER['HTTP_HOST']) . substr(x_clean_input($_SERVER['PHP_SELF']),0,strlen(x_clean_input($_SERVER['PHP_SELF']))-15); ?>"><?php echo x_clean_input($_SERVER['HTTP_HOST']) . substr(x_clean_input($_SERVER['PHP_SELF']),0,strlen(x_clean_input($_SERVER['PHP_SELF']))-15); ?></a> </p>
 
 <h2>Security Warning</h2>
 <p><strong><u>If you have installed this on a public facing server, ensure you delete the following:<br/>
@@ -221,7 +221,7 @@ if($success_string!=""){
 
 <h2>Register!</h2>
 <p>Please register your site to receive valuable notifications regarding Xerte Online Toolkits. You can find the registration button in the management page:
-    <a href="http://<?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "management.php?register"; ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "management.php"; ?></a></p>
+    <a href="http://<?php echo x_clean_input($_SERVER['HTTP_HOST']) . substr(x_clean_input($_SERVER['PHP_SELF']),0,strlen(x_clean_input($_SERVER['PHP_SELF']))-15) . "management.php?register"; ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "management.php"; ?></a></p>
 
 <h2>Need more help?</h2>
 <p>Please see the Xerte Community site at <a href="http://www.xerte.org.uk" target="new">http://www.xerte.org.uk</a> and please consider joining the forum.</p>

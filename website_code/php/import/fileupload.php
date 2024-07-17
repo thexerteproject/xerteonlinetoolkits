@@ -87,11 +87,12 @@ _load_language_file("/website_code/php/import/fileupload.inc");
 if(apply_filters('editor_upload_file', $_FILES)){
 
     $filename = x_clean_input($_FILES['filenameuploaded']['name']);
+    $filetype = x_clean_input($_FILES['filenameuploaded']['type']);
     if (strpos($filename, '/') !== false || strpos($filename, '\\') !== false || strpos($filename, '..') !== false){
         die("Invalid filename specified");
     }
 
-    if($_FILES['filenameuploaded']['type']=="text/html"){
+    if($filetype=="text/html"){
 
         $php_check = file_get_contents($_FILES['filenameuploaded']['tmp_name']);
 
@@ -119,7 +120,7 @@ if(apply_filters('editor_upload_file', $_FILES)){
 
         $new_file_name = $mediapath . $filename;
 
-        if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
+        if(@move_uploaded_file(x_clean_input($_FILES['filenameuploaded']['tmp_name']), $new_file_name)){
 
             echo FILE_UPLOAD_SUCCESS . "****";
 
@@ -144,7 +145,7 @@ if(apply_filters('editor_upload_file', $_FILES)){
         echo "File is too large. Maximum size allowed is: " . ini_get('upload_max_filesize') . "B****";
     }
     else {
-        echo FILE_UPLOAD_MIME_FAIL . " - " . $_FILES['filenameuploaded']['type'] . "****";
+        echo FILE_UPLOAD_MIME_FAIL . " - " . x_clean_input($_FILES['filenameuploaded']['type']) . "****";
     }
 }
 

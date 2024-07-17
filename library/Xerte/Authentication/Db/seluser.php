@@ -35,7 +35,7 @@ if(is_user_admin()){
     }
     else
     {
-        $authmech->changeUserSelection($_POST['username']);
+        $authmech->changeUserSelection(x_clean_input($_POST['username']));
     }
 }
 

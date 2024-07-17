@@ -440,7 +440,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             else{
                 $embedsupport = "    var x_embed = true;\n";
                 $embedsupport .= "    var x_embed_activated = false;\n";
-                $embedsupport .= "    var x_embed_activation_url = '" . $_SERVER['REQUEST_URI'] . "&activated=true';\n";
+                $embedsupport .= "    var x_embed_activation_url = '" . x_clean_input($_SERVER['REQUEST_URI']) . "&activated=true';\n";
             }
         }
 		else

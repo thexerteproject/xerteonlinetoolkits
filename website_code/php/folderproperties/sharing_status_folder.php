@@ -45,7 +45,14 @@ if (!isset($_SESSION['toolkits_logon_username'])){
     die();
 }
 
-$parameters = explode("_", $_POST['folder_id']);
+if (!isset($_POST['folder_id'])){
+    echo "<p>" . SHARING_FAIL . "</p>";
+    echo "</div>";
+    exit(0);
+}
+
+$folder_id_str = x_clean_input($_POST['folder_id']);
+$parameters = explode("_", $folder_id_str);
 $folder_id = $parameters[0];
 
 if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || !is_numeric($folder_id) || !is_string($parameters[1])){

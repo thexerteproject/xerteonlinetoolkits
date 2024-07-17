@@ -836,7 +836,7 @@ if (substr($filename, strlen($filename) - 3, 3) === "zip") {
 
 } else {
 
-    echo $_FILES['filenameuploaded']['type'] . "<Br>";
+    echo x_clean_input($_FILES['filenameuploaded']['type']) . "<Br>";
 
     echo IMPORT_ZIP_FAIL . ".****";
 

@@ -90,7 +90,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $xml = new XerteXMLInspector();
     $xml->loadTemplateXML($preview);
-    $theme = $xml->getTheme();
+    $theme = x_clean_input($xml->getTheme());
 
     // Derived templates
     $xwd_url = "modules/" . $row_edit['template_framework'] . "/templates/" . $row_edit['template_name'] . "/";

@@ -71,6 +71,8 @@ if (strpos($_SESSION['uploadDir'], $xerte_toolkits_site->root_file_path . $xerte
 // First create a path from URL by replacing site_url with root_file_path
 $uploadURL = str_replace($xerte_toolkits_site->site_url, $xerte_toolkits_site->root_file_path, $_SESSION['uploadURL']);
 $realpath = realpath($uploadURL);
+// Remove trailing '/' from uploadURL
+$uploadURL = rtrim($uploadURL, '/');
 if ($realpath === false || $realpath !== $uploadURL)
 {
     die("Invalid upload location");

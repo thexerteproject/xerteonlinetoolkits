@@ -45,19 +45,19 @@ if (!isset($_SESSION['toolkits_logon_id']))
     die();
 }
 
-if(is_numeric($_POST['template_id'])){
 
-    if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()) {
-		
-        $tutorial_id = $_POST['template_id'];
-
-        publish_display($tutorial_id);
-		
-    } else {
-		
-		publish_display_fail();
-		
-	}
+if (!isset($_POST['template_id']))
+{
+    die('Invalid template_id');
 }
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
 
-?>
+if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()) {
+
+    publish_display($template_id);
+
+} else {
+
+    publish_display_fail();
+
+}

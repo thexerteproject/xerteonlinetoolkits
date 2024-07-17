@@ -95,6 +95,7 @@ if (is_user_admin()) {
 
             $version = explode('"', substr($template_check, $start_point, strpos($template_check, " ", $start_point) - $start_point));
 
+            $version = x_clean_input($version);
             //echo "<p>" . TEMPLATE_VERSION . " " . $version[1] . "</p>";
 
         }

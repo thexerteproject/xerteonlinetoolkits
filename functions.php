@@ -153,8 +153,8 @@ function _include_javascript_file($file_path) {
     {
         $file_path = substr($file_path, 0, $parpos);
     }
-    if (isset($_GET['language']) && is_dir($languages . $_GET['language'])) {
-        $_SESSION['toolkits_language'] = $_GET['language'];
+    if (isset($_GET['language']) && is_dir($languages . x_clean_input($_GET['language']))) {
+        $_SESSION['toolkits_language'] = x_clean_input($_GET['language']);
     }
 
     if (isset($_SESSION['toolkits_language'])) {
@@ -298,6 +298,19 @@ function x_clean_input($input, $expected_type = null)
         foreach ($input as $key => $value) {
             $input[$key] = x_clean_input($value, $array_type);
         }
+        if ($expected_type != null) {
+            if ($expected_type == 'array_numeric') {
+                if (!is_array($input)) {
+                    die("Expected numeric array, got $input");
+                }
+            }
+            else if ($expected_type == 'array_string') {
+                if (!is_array($input)) {
+                    die("Expected string array, got $input");
+                }
+            }
+        }
+        return $input;
     }
     $input = trim($input);
     $input = stripslashes($input);
@@ -313,16 +326,6 @@ function x_clean_input($input, $expected_type = null)
                 die("Expected numeric value, got $input");
             }
         }
-        else if ($expected_type == 'array_numeric') {
-            if (!is_array($input)) {
-                die("Expected numeric array, got $input");
-            }
-        }
-        else if ($expected_type == 'array_string') {
-            if (!is_array($input)) {
-                die("Expected string array, got $input");
-            }
-        }
     }
     return $input;
 }
@@ -333,10 +336,10 @@ function x_check_zip($zip)
     for ($i = 0; $i < $zip->numFiles; $i++) {
         $filename = $zip->getNameIndex($i);
         if (strpos($filename, '..') !== false) {
-            die("Zip archive contains path names with path traversal: $filename");
+            die("Zip archive contains path names with path traversal: " .  x_clean_input($filename));
         }
         if (strpos($filename, '/') === 0) {
-            die("Zip archive contains files with absolute paths: $filename");
+            die("Zip archive contains files with absolute paths: " . x_clean_input($filename));
         }
     }
 }
