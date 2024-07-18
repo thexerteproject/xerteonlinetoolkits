@@ -158,7 +158,7 @@ function _include_javascript_file($file_path) {
     }
 
     if (isset($_SESSION['toolkits_language'])) {
-        $language = $_SESSION['toolkits_language'];
+        $language = x_clean_input($_SESSION['toolkits_language']);
     } else {
         // this does some magic interrogation of $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $language = new Zend_Locale();
