@@ -292,34 +292,35 @@ function x_clean_input_array($input, $expected_type = null)
     } else if ($expected_type == 'array_string') {
         $array_type = 'string';
     }
+    $sanitized = array();
     foreach ($input as $key => $value) {
-        $input[$key] = trim($input[$key]);
-        $input[$key] = stripslashes($input[$key]);
-        $input[$key] = htmlspecialchars($input[$key]);
+        $sanitized[$key] = trim($input[$key]);
+        $sanitized[$key] = stripslashes($sanitized[$key]);
+        $sanitized[$key] = htmlspecialchars($sanitized[$key]);
         if ($array_type != null) {
             if ($array_type == 'string') {
-                if (!is_string($input[$key])) {
-                    die("Expected string, got {$input[$key]}");
+                if (!is_string($sanitized[$key])) {
+                    die("Expected string, got {$sanitized[$key]}");
                 }
             } else if ($array_type == 'numeric') {
-                if (!is_numeric($input[$key])) {
-                    die("Expected numeric value, got {$input[$key]}");
+                if (!is_numeric($sanitized[$key])) {
+                    die("Expected numeric value, got {$sanitized[$key]}");
                 }
             }
         }
     }
     if ($expected_type != null) {
         if ($expected_type == 'array_numeric') {
-            if (!is_array($input)) {
-                die("Expected numeric array, got $input");
+            if (!is_array($sanitized)) {
+                die("Expected numeric array, got $sanitized");
             }
         } else if ($expected_type == 'array_string') {
-            if (!is_array($input)) {
-                die("Expected string array, got $input");
+            if (!is_array($sanitized)) {
+                die("Expected string array, got $sanitized");
             }
         }
     }
-    return $input;
+    return $sanitized;
 }
 
 
@@ -327,24 +328,25 @@ function x_clean_input_array($input, $expected_type = null)
 function x_clean_input($input, $expected_type = null)
 {
     if (is_array($input)) {
-        return x_clean_input_array($input, $expected_type);
+        $sanitized =  x_clean_input_array($input, $expected_type);
+        return $sanitized;
     }
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = htmlspecialchars($input);
+    $sanitized = trim($input);
+    $sanitized = stripslashes($sanitized);
+    $sanitized = htmlspecialchars($sanitized);
     if ($expected_type != null) {
         if ($expected_type == 'string') {
-            if (!is_string($input)) {
-                die("Expected string, got $input");
+            if (!is_string($sanitized)) {
+                die("Expected string, got $sanitized");
             }
         }
         else if ($expected_type == 'numeric') {
-            if (!is_numeric($input)) {
-                die("Expected numeric value, got $input");
+            if (!is_numeric($sanitized)) {
+                die("Expected numeric value, got $sanitized");
             }
         }
     }
-    return $input;
+    return $sanitized;
 }
 
 function x_check_zip($zip)
