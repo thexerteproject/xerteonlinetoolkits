@@ -300,11 +300,11 @@ function x_clean_input_array($input, $expected_type = null)
         if ($array_type != null) {
             if ($array_type == 'string') {
                 if (!is_string($sanitized[$key])) {
-                    die("Expected string, got {$sanitized[$key]}");
+                    die("Expected string, got " . htmlspecialchars($sanitized[$key]));
                 }
             } else if ($array_type == 'numeric') {
                 if (!is_numeric($sanitized[$key])) {
-                    die("Expected numeric value, got {$sanitized[$key]}");
+                    die("Expected numeric value, got ". htmlspecialchars($sanitized[$key]));
                 }
             }
         }
@@ -312,7 +312,7 @@ function x_clean_input_array($input, $expected_type = null)
     if ($expected_type != null) {
         if ($expected_type == 'array_numeric') {
             if (!is_array($sanitized)) {
-                die("Expected numeric array, got " . htmlspecialchars($sanitized));
+                die("Expected numeric array, got " . htmlspecialchars($sanitized));:q
             }
         } else if ($expected_type == 'array_string') {
             if (!is_array($sanitized)) {
