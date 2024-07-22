@@ -64,6 +64,8 @@ optional: feedback page synch play enable
 			    }
 		    }
 
+				
+
 		    // Xerte Tracking setup
 		    var l_options = [];
 		    var l_answers = [];
@@ -126,8 +128,7 @@ optional: feedback page synch play enable
 			}
 			
 			// feedback if question has true/false answers
-			if (judge == true || true) {
-				debugger;
+			if (true) {
 				var fb;
 				finishTracking(options);
 				if (options.answerType == "multiple" && options.type == "radio") {
@@ -233,6 +234,7 @@ optional: feedback page synch play enable
 		return {
 			_setup: function(options) {
 				media = this;
+				let judgeOverride = options.judge?? "true";
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
@@ -248,7 +250,7 @@ optional: feedback page synch play enable
 				} else {
 					// create answer options (could be buttons, radio list or drop down menu)
 					$(options.childNodes).each(function(i) {
-						if (judge == false && this.getAttribute("correct") == "true") {
+						if (judge == false && (this.getAttribute("correct") == "true" && judgeOverride == "true")) {
 							judge = true;
 							autoEnable = false;
 						}
@@ -374,7 +376,6 @@ optional: feedback page synch play enable
 							}
 						}
 					});
-					
 					if (tempEnable == true && autoEnable == true) { // prevent automatic enabling of controls if an answer has an action that will enable anyway
 						autoEnable = false;
 					}

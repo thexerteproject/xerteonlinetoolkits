@@ -87,7 +87,7 @@
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 		
     <newNodes>
-      <option><![CDATA[<option text="" name="Answer" feedback=""/>]]></option>
+      <option><![CDATA[<option text="" name="Answer" feedback="" correct="false"/>]]></option>
     </newNodes>
 
   </question>

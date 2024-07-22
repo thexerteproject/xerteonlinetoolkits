@@ -12,7 +12,14 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			let width = Math.floor($("#pageContents").width()/1.5);
-			$(".image_holder").width(width).height(this.aspectratio * width);
+			//let height = Math.floor(($("#x_mobileScroll").height()-$("#x_headerBlock").height())/1.5);
+			let height = Math.floor($("#x_pageHolder").height()/1.5);
+			console.log(height);
+			if(height < this.aspectratio * width){
+				$(".image_holder").width(height / this.aspectratio).height(height);
+			}else {
+				$(".image_holder").width(width).height(this.aspectratio * width);
+			}
 		}
 
 		// updates the ui with the position in javascript
@@ -63,14 +70,14 @@
 				$("#slider").addClass("horizontal");
 
 			let prevEvent;
-			slider.on("mousedown", function(event) {
+			slider.on("mousedown touchstart", function(event) {
 				event.preventDefault();
 				$(this).data("dragging", true);
 				prevEvent = event;
 			});
 			
 			//this on the image holder because then you don't have to move slowly and stay on the slider
-			$(".image_holder").on("mousemove", (event) => {
+			$(".image_holder").on("mousemove touchmove", (event) => {
  				if(!slider.data("dragging")) return;
 				event.preventDefault();
 				let deltaPosition;
@@ -89,17 +96,25 @@
 				$(".image_holder").css("cursor", "move");
 			});
 
-			slider.on("mouseup", function() {
+			slider.on("mouseup touchend", function() {
 				$(this).data("dragging", false);
 				$(".image_holder").css("cursor", "default");
 			});
 
-			slider.on("keydown", (event) =>{
+			slider.on("keyup", (event) =>{
 				let delta = 0;
-				if(event.which == 39){// right arrow
-					delta = 5
-				}else if(event.which == 37){// left arrow
-					delta = -5;
+				if (this.isVertical) {
+					if (event.which == 40) {// down arrow
+						delta = 5
+					} else if (event.which == 38) {// up arrow
+						delta = -5;
+					}
+				} else {
+					if (event.which == 39) {// right arrow
+						delta = 5
+					} else if (event.which == 37) {// left arrow
+						delta = -5;
+					}
 				}
 				this.position = Math.min(100, Math.max(this.position + delta, 0))
 				this.updatePosition();
