@@ -5872,7 +5872,7 @@
 	</feedbackGroup>
 
     <newNodes>
-      <option><![CDATA[<option name="Answer" text="" feedback=""/>]]></option>
+      <option><![CDATA[<option name="Answer" text="" feedback="" correct="false"/>]]></option>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">

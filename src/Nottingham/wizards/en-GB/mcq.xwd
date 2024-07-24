@@ -38,7 +38,7 @@
 	</feedbackGroup>
 
     <newNodes>
-      <option><![CDATA[<option name="Answer" text="" feedback=""/>]]></option>
+      <option><![CDATA[<option name="Answer" text="" feedback="" correct="false"/>]]></option>
     </newNodes>
 
   </mcq>
