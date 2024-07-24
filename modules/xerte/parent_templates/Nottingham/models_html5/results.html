@@ -415,7 +415,7 @@
 						tableSetUp += '<th>' + specificColumns[i].data + '</th>';
 						specificPDFcolumn.push(specificColumns[i].col == 'Name' ? x_GetTrackingTextFromHTML(specificColumns[i].data, "") : specificColumns[i].data);
 				    }else {
-						tableSetUp += '<th style="visibility: hidden">' + specificColumns[i].data + '</th>';
+						tableSetUp += '<th>' + '' + '</th>';
 					}
                     if (specificColumns[i].col == 'Check' && specificPDFcheck == null) {
                       specificPDFcheck = specificPDFcolumns.length;
