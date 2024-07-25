@@ -4840,6 +4840,7 @@ var EDITOR = (function ($, parent) {
                         var fileUrl = lo_data[key].attributes["file"] || null;
                         var infoPrompt = lo_data[key].attributes["fileAccessPrompt"];
                         var uploadPrompt = lo_data[key].attributes["uploadPrompt"];
+                        var assisstantPrompt = lo_data[key].attributes["assistantPrompt"] || false;
                         const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
                             (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
                         // Build the constructor object based on the type
@@ -4862,16 +4863,14 @@ var EDITOR = (function ($, parent) {
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
-                                    fileUrl = lo_data[key].attributes["file"];
                                     break;
                                 case 'learningObject':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
-                                        "amounts": lo_data[key].attributes["amounts"],
-                                        "structure": lo_data[key].attributes["structure"],
-                                        "instructions": lo_data[key].attributes["instructions"],
+                                        "headers": lo_data[key].attributes["headers"],
+                                        "goals": lo_data[key].attributes["goals"],
                                     }
-
+                                    assisstantPrompt = true;
                                     break;
                                 case 'ivOverlayPanel':
                                     constructorObject = {
@@ -4909,14 +4908,17 @@ var EDITOR = (function ($, parent) {
                                         "subject": lo_data[key].attributes["subject"],
                                         "range": lo_data[key].attributes["ageRange"],
                                         "nro": lo_data[key].attributes["numberOfOptions"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
                                     };
                                     break;
                                 case 'buttonSequence':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
-                                        "range": lo_data[key].attributes["ageRange"],
                                         "nrb": lo_data[key].attributes["amountOfButtons"],
                                         "sentenceLength": lo_data[key].attributes["sequenceLength"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
                                     };
                                     break;
                                 case 'categories':
@@ -4942,16 +4944,16 @@ var EDITOR = (function ($, parent) {
                                         "categories": lo_data[key].attributes["categories"],
                                         "numberOfQuestions": lo_data[key].attributes["numberOfQuestions"],
                                         "targetDemographic": lo_data[key].attributes["targetDemographic"],
-                                        "scale": lo_data[key].attributes["scale"],
-                                        "ageRange": lo_data[key].attributes["ageRange"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
                                     };
                                     break;
                                 case 'mcq':
                                     constructorObject = {
                                         //"subject": lo_data[key].attributes["subject"],
                                         "subject": lo_data[key].attributes['prompt'],
-                                        "nrq": lo_data[key].attributes["amountOfQuestions"],
                                         "aoa": lo_data[key].attributes["amountOfAnswers"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     break;
@@ -4980,9 +4982,9 @@ var EDITOR = (function ($, parent) {
                             var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                             var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
                             var fullUrl = baseUrl + cleanFileUrl;
-                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, sourceContext);
+                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, sourceContext, assisstantPrompt);
                         }else{
-                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, sourceContext);
+                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, sourceContext, assisstantPrompt);
                         }
 
                     });

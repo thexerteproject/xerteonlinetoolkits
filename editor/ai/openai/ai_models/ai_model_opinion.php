@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . "/../../../../config.php");
 _load_language_file("/editor/ai_models/openai_model_opinion_ai.inc");
 
 //generates questions
-$model = $_POST['model'] ?? "gpt-3.5-turbo";
+$model = $_POST['model'] ?? "gpt-4o";
 $assistantId = $_POST['asst_id'] ?? "asst_IyiBKzr8nvwddAzVKuh6OnlC";
 $context = $_POST['context'] ?? 'standard';  // Default to 'standard'
 $assistantOn = !empty($_POST['url']);
