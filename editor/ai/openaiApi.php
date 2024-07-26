@@ -787,7 +787,7 @@ class openaiApi
 
                 // Check if the download was successful
                 if ($returnVar !== 0) {
-                    throw new Exception("Failed to download audio: " . implode("\n", $output));
+                    throw new Exception("Failed to download: " . implode("\n", $output));
                 }
                 $pos = strpos($outputPath, 'USER-FILES');
                 $relativePath = substr($outputPath, $pos);
@@ -896,7 +896,7 @@ class openaiApi
                             }
                             else
                             {
-                                $vectorStorageId = vectorStorageAttached($this->preset_models->type_list[$type]['payload']['assistant_id']);
+                                $vectorStorageId = $this->vectorStorageAttached($this->preset_models->type_list[$type]['payload']['assistant_id']);
                                 $deleteVectorStorage = false; //if a vector storage already exists, this signifies to only delete the uploaded file and to not tamper with the rest
                             }
                             $vectorFileId = $this->createVectorStoreFile($fileId, $vectorStorageId);
@@ -935,7 +935,7 @@ class openaiApi
                             }
                             else
                             {
-                                $vectorStorageId = vectorStorageAttached($this->preset_models->type_list[$type]['payload']['assistant_id']);
+                                $vectorStorageId = $this->vectorStorageAttached($this->preset_models->type_list[$type]['payload']['assistant_id']);
                                 $deleteVectorStorage = false; //if a vector storage already exists, this signifies to only delete the uploaded file and to not tamper with the rest
                             }
                             $vectorFileId = $this->createVectorStoreFile($fileId, $vectorStorageId);
@@ -989,13 +989,14 @@ class openaiApi
                 // If the file does not fit any of the above categories
                 echo "The file type is not supported.";
                 // Optionally add code for handling other types of files or just leave as is / do nothing
+                //TODO ALEK: add A sort of default behavior - if the file type is not yet supported, try uploading it anyway.
             }
 
         }
         elseif (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])) {
-            //A sort of default behavior - if the file type is not yet supported, try uploading it anyway.
             //If a file doesn't need to be uploaded (assuming the assistant has pre-made instructions or another reason), skip the upload step and call assisstant directly
-                $filePath = $this->prepareURL($uploadUrl);
+            //only when the assistant is specifically specified/requested - i.e. learning objects
+                /*$filePath = $this->prepareURL($uploadUrl);
                 $fileId = "";
                 $fileId = $this->fileUpload($filePath);
                 if ($fileId!=""){
@@ -1010,15 +1011,15 @@ class openaiApi
                     }
                     $vectorFileId = $this->createVectorStoreFile($fileId, $vectorStorageId);
                     $this->attachStorageToAssistant($this->preset_models->type_list[$type]['payload']['assistant_id'], $vectorStorageId);
-                }
+                }*/
                 $results[] = $this->POST_OpenAi_Assistant($prompt, $this->preset_models->type_list[$type]);
-                if ($fileId!=""){
+                /*if ($fileId!=""){
                     if ($deleteVectorStorage){
                         $detatchment = $this->detachStorageFromAssistant($this->preset_models->type_list[$type]['payload']['assistant_id'], $vectorStorageId);
                         $deletion = $this->deleteVectorStorage($vectorStorageId);
                     }
                     $delete = $this->deleteFile($fileId);
-                }
+                }*/
 
         }
         else {
