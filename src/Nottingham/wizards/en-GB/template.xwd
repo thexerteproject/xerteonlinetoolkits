@@ -366,14 +366,14 @@
 	  />]]></opinion><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals="Outline the goals for this content"
 	  audienceHeader="Target Audience" audience="Describe the target audience"
 	  prereqHeader="Pre-requisites" prereq="State any pre-requisite knowledge or experience"
-	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
+	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
-	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
-	  multiWrong="You have not selected the correct combination of answers" 
-	  onCompletion="You have completed the exercise" score="You scored {i} / {n}" 
-	  submitBtnText="Submit" 
-	  nextBtnText="Next" 
-	  restartBtnText="Restart" 
+	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers"
+	  multiWrong="You have not selected the correct combination of answers"
+	  onCompletion="You have completed the exercise" score="You scored {i} / {n}"
+	  submitBtnText="Submit"
+	  nextBtnText="Next"
+	  restartBtnText="Restart"
 	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter Full Name" userNamePrompt="Your name: " okButtonTxt="Ok" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><rssdownload><![CDATA[<rssdownload name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rssdownload><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
@@ -1481,13 +1481,18 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-	<AIGroup type="group" label="AI" optional="true">
+	<AIGroup type="group" label="AI" optional="true" tooltip="Generate content automatically with the assistance of AI.">
 	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-      <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
-      <amountOfButtons label="Amount Of Buttons in Sequence" type="TextInput" wysiwyg="true" optional="true"/>
-      <sequenceLength label="Approximate length of sequence" type="TextInput" wysiwyg="true" optional="true" hint="Use number of characters or words. I.e. '200 characters' or '10 words'"/>
-      <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+      <subject label="Subject" type="TextInput" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." wysiwyg="true" optional="true"/>
+      <amountOfButtons label="Sequence Parts" type="TextInput" tooltip="Specify the number of buttons (parts) the sequence should have." wysiwyg="true" optional="true"/>
+       <sequenceLength label="Sequence Length" type="TextInput" wysiwyg="true" optional="true" tooltip="Specify the approximate length of the entire informational segment or sequence. The model will attempt to match the length while still providing logically consistent content between each button. Lengths can be specified as number of words, sentences, or characters. It will not always be possible to appropriately match these requirements with the output. In such cases, please try to manually edit the output."/>
+      <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+      <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the descriptions offered in the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+      <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+      <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+      <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
       <aiButton type="aibutton" optional="true"/>
+      <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
     <newNodes>
@@ -1746,12 +1751,17 @@
       <category><![CDATA[<category name="Enter Category Name Here"/>]]></category>
     </newNodes>
 
-  	<AIGroup type="group" label="AI" optional="true">
-      	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-            <subject label="List the different categories separated by ," type="TextInput" wysiwyg="true" optional="true"/>
-            <wordsPerCategory label="Amount of words for each category" type="TextInput" wysiwyg="true" optional="true"/>
-            <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+  	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
+            <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
+            <subject label="Categories" type="TextInput" tooltip="List each category separated by a comma (,). Categories may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." wysiwyg="true" optional="true"/>
+            <wordsPerCategory label="Words per Category" tooltip="Specify how many words should be included in (each) category. For example, '5' will generate five words per category. '2 (category 1), 3(category 2)' will generate two and three words for each category according to the order in which they were listed." type="TextInput" wysiwyg="true" optional="true"/>
+            <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+            <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+            <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+            <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+            <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
             <aiButton type="aibutton" optional="true"/>
+            <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
       </AIGroup>
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -2278,10 +2288,15 @@
 
 	<AIGroup type="group" label="AI" optional="true">
     	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-          <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
-          <amountOfWords label="Amount Of Words" type="TextInput" wysiwyg="true" optional="true"/>
-          <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+          <subject label="Subject" type="TextInput" wysiwyg="true" optional="true" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'."/>
+          <amountOfWords label="Number of Words" type="TextInput" wysiwyg="true" optional="true" tooltip="The number of words and definitions to be generated. For example, '8' would result in the generation of 8 words and accompanying definitions."/>
+          <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+          <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the descriptions offered in the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+          <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+          <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+          <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
           <aiButton type="aibutton" optional="true"/>
+          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
     <newNodes>
@@ -2498,16 +2513,7 @@
 	<overviewString label="Overview Label" type="TextInput" wysiwyg="true" language="true"/>
 	<helpString label="Question Help Label" type="TextInput" wysiwyg="true" language="true"/>
 	<btnLabel label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
-
-    <AIGroup type="group" label="AI" optional="true">
-      	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-            <subject label="Describe the story of the decision tree" type="TextInput" wysiwyg="true" optional="true"/>
-            <depth label="Amount of steps of the story" type="TextInput" wysiwyg="true" optional="true"/>
-            <numberOfResults label="Possible results of the story" type="TextInput" wysiwyg="true" optional="true"/>
-            <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
-            <aiButton type="aibutton" optional="true"/>
-      </AIGroup>
-
+	
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
 		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text="Enter text here"/>]]></infoStep>
@@ -3343,16 +3349,21 @@
 	<backScrollTip label="Scroll Back Label" type="TextInput" wysiwyg="true" language="true"/>
     <nextScrollTip label="Scroll Forward Label" type="TextInput" wysiwyg="true" language="true"/>
 
-	<AIGroup type="group" label="AI" optional="true">
-    	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-          <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
-          <amountOfCards label="Amount Of Flashcards" type="TextInput" wysiwyg="true" optional="true"/>
-          <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
-          <hintMode label="Add hints to help guess the word?" options="YES,NO" type="comboBox" data="ON,OFF" defaultValue="OFF" width="120" optional="true"/>
-          <languageMode label="Create cards for language learning" options="YES,NO" type="comboBox" data="ON,OFF" defaultValue="OFF" width="120" optional="true"/>
-          <languageChoice label="Choose which language to learn" type="TextInput" wysiwyg="true" optional="true"/>
-          <reverseMode label="Definitions first?" options="YES,NO" type="comboBox" data="ON,OFF" defaultValue="OFF" width="120" optional="true"/>
+	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
+    	  <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+          <subject label="Subject" type="TextInput" wysiwyg="true" tooltip="This determines which area or subject the generated words and definitions will follow. More specific subjects may result in less consistent or reliable content. Examples: 'Birds', 'Terrestrial birds', 'Birds native to the Netherlands', 'Most common birds in the urban areas of the Netherlands'." optional="true"/>
+          <amountOfCards label="Amount Of Flashcards" type="TextInput" tooltip="The amount of flash cards the AI will generate." wysiwyg="true" optional="true"/>
+          <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+          <hintMode label="Include hints" options="YES,NO" type="comboBox" data="ON,OFF" defaultValue="OFF" tooltip="Add a hint on the first side of the flashcard to help with guessing the word." width="120" optional="true"/>
+          <languageMode label="Language Learning Mode" options="ON,OFF" type="comboBox" data="ON,OFF" defaultValue="OFF" tooltip="Customize the cards to aid with language learning. Ensures the word being guessed is in the target language." width="120" optional="true"/>
+          <languageChoice label="Language Choice" type="TextInput" tooltip="List the target language, with the native (speaking) language being English. Example: 'Spanish' will create hints/descriptions in English while the words to be guessed will be in Spanish." wysiwyg="true" optional="true"/>
+          <reverseMode label="Content Order" options="Definitions First, Word First" type="comboBox" data="ON,OFF" defaultValue="OFF" tooltip="When 'Definitions First' is selected, the definition will show up first, and the player will have to guess which word is on the flip-side of the card. When 'Word First' is selected, the player will see the word and will have to describe what the word means or give an appropriate definition." width="120" optional="true"/>
+          <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+          <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+          <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+          <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
           <aiButton type="aibutton" optional="true"/>
+          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
 
@@ -3635,16 +3646,7 @@
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
-
-	<AIGroup type="group" label="AI" optional="true">
-    	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-          <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
-          <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
-          <textLength label="Sentence Length (characters)" type="TextInput" wysiwyg="true" optional="true"/>
-          <gapTarget label="Words to automatically create gaps for:" options="nouns,verbs,adjectives,ai choice" type="comboBox" data="nouns,verbs,adjectives, most important" defaultValue="most important" width="120" optional="true"/>
-          <aiButton type="aibutton" optional="true"/>
-    </AIGroup>
-
+	
 	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Include an audio player below the written feedback">
 		<audioFeedback label="File" type="media" optional="true"/>
 		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
@@ -4745,6 +4747,19 @@
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
+		<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
+            <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+            <subject label="Subject" tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'. Multiple subjects from the video may be chosen. Selecting a subject which is not talked about or directly referenced in the video may lead to content and timestamp inaccuracies." type="TextInput" wysiwyg="true" optional="true"/>
+            <nrq label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" optional="true"/>
+            <nra label="Answers per Question" type="TextInput" tooltip="Amount of answers generated respective to each question. For example, '5' will generate five answers per question." wysiwyg="true" optional="true"/>
+            <nrt label="Text Objects" type="TextInput" tooltip="Specify the number of text objects to generate. A text object is a general, blank canvas which can be used to highlight or supplement information from the uploaded video. It is also possible to generate specific types of text objects. For example: 'start card, 2 (supplemental), end card' will generate an intro, two text objects which supplement the information in the video, and an outro/end card with a leading question." wysiwyg="true" optional="true"/>
+            <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+            <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+            <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+            <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
+            <aiButton type="aibutton" optional="true"/>
+        </AIGroup>
+
 		<newNodes>
 			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
 			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
@@ -5570,12 +5585,16 @@
 		<feedbackPos label="Feedback Order" options="General &gt; Answer &gt; Correct/Incorrect,General &gt; Correct/Incorrect &gt; Answer,Answer &gt; Correct/Incorrect &gt; General,Answer &gt; General &gt; Correct/Incorrect,Correct/Incorrect &gt; General &gt; Answer,Correct/Incorrect &gt; Answer &gt; General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback &gt; Answer feedback &gt; Correct/Incorrect feedback"/>
 	</feedbackGroup>
 
-	<AIGroup type="group" label="AI" optional="true">
-        <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-        <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
-        <amountOfAnswers label="Amount Of Answers" type="TextInput" wysiwyg="true" optional="true"/>
-        <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
-        <aiButton type="aibutton" optional="true"/>
+	<AIGroup type="group" label="AI" tooltip="Generate possible answers for this question with the help of AI." optional="true">
+          <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+          <amountOfAnswers label="Number of Answers" type="TextInput" tooltip="Amount of answers to be generated. For example, '5' will generate five answers." wysiwyg="true" optional="true"/>
+          <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+          <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+          <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+          <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+          <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
+          <aiButton type="aibutton" optional="true"/>
+          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
     <newNodes>
@@ -5656,7 +5675,7 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
     <feedback label="Feedback" type="TextArea" height="100" tooltip="Feedback shown when this answer is submitted"/>
     <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
-	
+
 	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player below the feedback text">
 		<audioFB label="File" defaultValue="" type="media" optional="true"/>
 		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
@@ -6927,14 +6946,19 @@
     </layout>
 
     <AIGroup type="group" label="AI" optional="true">
-      	<aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-        <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
-        <categories label="List the different categories separated by ," type="TextInput" wysiwyg="true" optional="true"/>
-        <numberOfQuestions label="Amount of questions for each category" type="TextInput" wysiwyg="true" optional="true"/>
-        <targetDemographic label="To whom is this survey targeted?" type="TextInput" wysiwyg="true" optional="true"/>
-        <scale label="Type of scale to use" type="TextInput" wysiwyg="true" defaultValue="likert" optional="true"/>
-        <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
+      	<aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
+        <subject label="Subject Description" type="TextInput" wysiwyg="true" tooltip="Define the subject here, and specify the purpose. Optionally, define which areas the questions should focus on. This can also be done in the categories page. For example: 'Office stationary survey' will yield a survey-like opinion question. 'Office stationary survey focusing on ergonomics, quality and feel of the material' will ensure the generated questions include these elements in some capacity." optional="true"/>
+        <categories label="Categories" type="TextInput" wysiwyg="true" tooltip="Define the categories divided by a comma. For example, 'monitors, keyboards, chairs, desks' will create four different groups for each of the categories, each of which will have a certain amount of questions." optional="true"/>
+        <numberOfQuestions label="Number of Questions" tooltip="Define the number of questions to be generated for each category listed. For example, '5' will generate five questions per category. 5(category 1), 2 (category 2) and 6 (category 3) will generate questions in amounts respective to the categories in the order in which they were listed. You may also reference the category directly: '5(ergonomics), 2(accessibility)' will generate five questions for the 'ergonomics' category and two questions for the 'accessibility' category." type="TextInput" wysiwyg="true" optional="true"/>
+        <targetDemographic label="Demographic" tooltip="Specify the target demographic of these opinion questions. It is advisable to be specific here. For example 'Office workers between the ages of 20-60' or 'Middle school students in the Netherlands with special needs'. The model will then attempt to curate the questions in a way which is aimed at the specified demographic." type="TextInput" wysiwyg="true" optional="true"/>
+        <scale label="Scale" type="TextInput" wysiwyg="true" defaultValue="likert" optional="true"/>
+        <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+        <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+        <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+        <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+        <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
         <aiButton type="aibutton" optional="true"/>
+        <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
       <newNodes>
@@ -7400,7 +7424,7 @@
     <feedback label="Feedback" type="textArea" height="120"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" width="120" optional="true"/>
-	
+
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
     <generalFeedbackLabel label="General Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -7411,39 +7435,43 @@
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
     <score label="You scored {i} out of {n} marks" type="TextInput" wysiwyg="true" language="true"/>
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <nextBtnText label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
-    <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
+    <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
 	<imgInfo type="group" label="Image" optional="true">
 		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
-	
+
 	<videoInfo type="group" label="Video" optional="true">
 		<video label="Video" type="media" defaultValue="Select a Video" optional="true"/>
 		<movieSize label="Size" type="textInput" defaultValue="320,240" optional="true"/>
 	</videoInfo>
 
-	<AIGroup type="group" label="AI" optional="true">
-	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-      <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
+	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
+	  <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+      <subject label="Subject" type="TextInput" wysiwyg="true" tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
       <amountOfQuestions label="Amount Of Questions" type="TextInput" wysiwyg="true" optional="true"/>
-      <amountOfAnswers label="Amount Of Answers" type="TextInput" wysiwyg="true" optional="true"/>
-      <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" optional="true"/>
-      <img label="File" type="media" defaultValue="Upload a file" optional="true"/>
+      <amountOfAnswers label="Amount Of Answers" type="TextInput" tooltip="Amount of answers generated respective to each question. For example, '5' will generate five answers per question." wysiwyg="true" optional="true"/>
+      <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+      <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+      <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+      <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+      <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
       <aiButton type="aibutton" optional="true"/>
+      <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
     <newNodes>
       <question><![CDATA[<question prompt="Enter question" name="Question" type="Single Answer" />]]></question>
 	</newNodes>
-	
+
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true"/>    
@@ -7514,7 +7542,7 @@
     <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
     <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup></quiz><question menuItem="Question">
-  
+
     <prompt label="Question" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
@@ -7524,19 +7552,19 @@
     	<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>
     	<feedbackPos label="Feedback Order" options="General &gt; Answer &gt; Correct/Incorrect,General &gt; Correct/Incorrect &gt; Answer,Answer &gt; Correct/Incorrect &gt; General,Answer &gt; General &gt; Correct/Incorrect,Correct/Incorrect &gt; General &gt; Answer,Correct/Incorrect &gt; Answer &gt; General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback &gt; Answer feedback &gt; Correct/Incorrect feedback"/>
     </feedbackGroup>
-	
+
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" defaultValue="Select an Image" optional="true"/>
 		<tip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 	</imgInfo>
-	
+
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
 		<sound label="File" type="media" optional="true"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>
-	
+
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-		
+
     <newNodes>
       <option><![CDATA[<option text="Enter option" name="Answer" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
@@ -9821,11 +9849,16 @@
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
 	<AIGroup type="group" label="AI" optional="true">
-    	  <aiSelector label="AI model" options="OpenAI,Copilot" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
-          <subject label="Subject" type="TextInput" wysiwyg="true" optional="true"/>
-          <ageRange label="Age Range" type="TextInput" wysiwyg="true" optional="true"/>
-          <numberOfOptions label="Number of options" type="TextInput" wysiwyg="true" optional="true"/>
+          <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+          <subject label="Subject" type="TextInput" wysiwyg="true" tooltip="This determines which area or subject the generated words will follow. More complex subjects may result in less consistent content. For this interactivity, it is recommended to reference countable things when defining the subjects. Examples: 'Provincial capital cities in the Netherlands', 'Rivers in Europe'." optional="true"/>
+          <numberOfOptions label="Number of Options" type="TextInput" tooltip="Amount of words to generate on the designated subject. When the total quantity of the subject is known, avoid requesting a number of words that is higher in quantity. For example, if the subject is 'Provincial capitals in the Netherlands', requesting more than 12 words (the total amount of capitals) may lead to speculative or repeated words past the 12th." wysiwyg="true" optional="true"/>
+          <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+          <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+          <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
+          <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+          <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
           <aiButton type="aibutton" optional="true"/>
+          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
     <newNodes>
