@@ -2020,7 +2020,7 @@
     <text label="Page Text" type="TextArea" height="200"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	<highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
-	
+
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
 		<textWidth label="Size" options="Small,Medium,Large,Full" type="ComboBox" data="max,wide,narrow,none" defaultValue="narrow" width="200"/>
@@ -2039,6 +2039,11 @@
         <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
 	</hsAppearance>
 
+    <hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of all hotspot.">
+    	<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
+    	<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
+    </hsIconAppearance>
+
 	<popUp type="group" label="Dialog Position" optional="true" tooltip="Control the position of the pop up window that appears when hotspot clicked">
 		<popUpVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
 		<popUpHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
@@ -2047,7 +2052,7 @@
     <imageTransition label="Image Transition" options="Blinds,Dissolve,Fade,Fly,Iris,Squeeze,Wipe,Zoom" type="ComboBox" data="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" defaultValue="wipe" width="100" optional="true" deprecated="This property is no longer required"/>
 
     <newNodes>
-      <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" windowType="dialog" destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
+      <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" tooltip="false" iconCode="fas fa-info" windowType="dialog" hotspotHover='false' destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -2124,9 +2129,17 @@
 	<name label="Title" type="TextInput" wysiwyg="false"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
+	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
 	<!--<windowType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||iframe!=null" defaultValue="dialog" mandatory="true" width="200"/>-->
-	<windowType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null||iframe!=null" defaultValue="dialog" mandatory="true" width="200"/>
-	
+	<windowType label="Display In" options="Dialog,Lightbox,Nearby bubble" type="ComboBox" data="dialog,lightbox,bubble" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
+    <hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="false" width="200"/>
+    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info"/>
+
+	<hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
+		<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
+		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
+	</hsIconAppearance>
+
 	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
 		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select a Video"/>
 		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
@@ -2136,11 +2149,11 @@
 		<startFrame label="Start Time" type="textInput" defaultValue="" optional="true"/>
 		<endFrame label="End Time" type="textInput" defaultValue="" optional="true"/>
 	</videoTiming>
-	
+
 	<movieSize label="Video Size" type="TextInput" condition="hotspotMovie!=null" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
 	<!--<iframeRatio label="Video iframe Aspect Ratio" type="TextInput" condition="hotspotMovie!=null" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />-->
     <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is deprecated. Videos now reset on completion by default."/>
-	
+
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
 		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an MP3 File"/>
 		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" conditionTrigger="true" data="player,auto" defaultValue="player" width="200" optional="true"/>
@@ -4076,7 +4089,6 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>

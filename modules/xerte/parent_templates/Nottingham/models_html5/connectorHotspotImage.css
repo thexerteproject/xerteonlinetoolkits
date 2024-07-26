@@ -49,11 +49,11 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 30;
+	z-index: 32;
 	}
 
 	span.hotspotIcon {
-	z-index: 31;
+	z-index: 33;
 	border-style: solid;
 	cursor: pointer;
 	border-radius: 50%;
@@ -65,11 +65,19 @@
 	justify-content: center;
 	}
 
+	span.hotspotIcon.selected {
+		z-index: 36;
+		height: 110%;
+		width: 110%;
+	}
+
 	div.hotspot_bubble {
-	z-index: 31;
+	z-index: 34;
 	position: absolute;
+		text-align: center;
+		overflow-y: auto;
 	background: white;
-		border-radius: 20px;
+		border-radius: 10px;
 		border-color: black;
 		border-width: 1px;
 		border-style: solid;

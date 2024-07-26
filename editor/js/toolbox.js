@@ -3457,7 +3457,7 @@ var EDITOR = (function ($, parent) {
                 var pointer = canvas.getPointer(o.e);
 
                 hs = new fabric.Circle({
-                    radius: 20,
+                    radius: 80,
                     left: Math.abs(pointer.x),
                     top: Math.abs(pointer.y),
                     originX: 'center',
