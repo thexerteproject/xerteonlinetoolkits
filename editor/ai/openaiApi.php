@@ -580,8 +580,8 @@ class openaiApi
     }
     private function prepareURL($uploadPath){
         $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
-        $normalizedBasePath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $basePath);
-        $finalPath = $normalizedBasePath . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $uploadPath);
+        $normalizedBasePath = str_replace(['\\'], '/', $basePath);
+        $finalPath = $normalizedBasePath . str_replace(['\\'], '/', $uploadPath);
         $finalPath = realpath($finalPath);
 
         if ($uploadPath === false) {
@@ -637,7 +637,7 @@ class openaiApi
 
         // Construct the path for the transcript file
         $transcriptFileName = 'transcription_result.txt';
-        $transcriptFilePath = $directoryPath . DIRECTORY_SEPARATOR . $transcriptFileName;
+        $transcriptFilePath = $directoryPath . '/' . $transcriptFileName;
 
         // Save the transcript to the constructed file path
         if (file_put_contents($transcriptFilePath, $transcript)) {
@@ -650,7 +650,7 @@ class openaiApi
     private function extractAudio($videoUrl) {
         // Generate a unique output file name
         $outputFileName = 'output_audio_' . uniqid() . '.mp3';
-        $outputAudioPath = dirname($videoUrl) . DIRECTORY_SEPARATOR . $outputFileName;
+        $outputAudioPath = dirname($videoUrl) . '/' . $outputFileName;
 
         // Command to extract audio
         $command = "ffmpeg -i \"$videoUrl\" -q:a 0 -map a \"$outputAudioPath\" 2>&1";
@@ -769,13 +769,13 @@ class openaiApi
         $url = substr($input, $pos);
 
         // Append /media to the file path
-        $mediaPath = $this->prepareURL($filePath . DIRECTORY_SEPARATOR . 'media');
+        $mediaPath = $this->prepareURL($filePath . '/media');
 
             // Handle URL case
             if ($this->isSupportedUrl($url)) {
                 // Create a unique filename for the downloaded audio
                 $uniqueFilename = uniqid('video_', true) . '.mp4';
-                $outputPath = $mediaPath . DIRECTORY_SEPARATOR . $uniqueFilename;
+                $outputPath = $mediaPath . '/' . $uniqueFilename;
 
                 // Prepare the yt-dlp command
                 $command = escapeshellcmd("yt-dlp -f best -o " . escapeshellarg($outputPath) . " " . escapeshellarg($url));
