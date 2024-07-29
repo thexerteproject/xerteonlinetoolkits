@@ -582,7 +582,7 @@ class openaiApi
         $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
         $normalizedBasePath = str_replace(['\\'], '/', $basePath);
         $finalPath = $normalizedBasePath . str_replace(['\\'], '/', $uploadPath);
-        $finalPath = realpath($finalPath);
+        //$finalPath = realpath($finalPath);
 
         if ($uploadPath === false) {
             throw new Exception("File does not exist: $finalPath");
