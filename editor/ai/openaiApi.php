@@ -755,6 +755,17 @@ class openaiApi
         return false;
     }
 
+   private function custom_escapeshellarg($arg) {
+        if (DIRECTORY_SEPARATOR == '\\') {
+            // Windows
+            return '"' . str_replace('"', '""', $arg) . '"';
+        } else {
+            // Unix-based
+            return "'" . str_replace("'", "'\\''", $arg) . "'";
+        }
+    }
+
+
     private function downloadVideo($input) {
         // Regular expression to match the URL portion
         $pattern = '/(https?:\/\/\S+)/';
@@ -775,9 +786,8 @@ class openaiApi
                 // Create a unique filename for the downloaded audio
                 $uniqueFilename = uniqid('video_', true) . '.mp4';
                 $outputPath = $mediaPath . '/' . $uniqueFilename;
-
                 // Prepare the yt-dlp command
-                $command = escapeshellcmd("yt-dlp -f best -o " . escapeshellarg($outputPath) . " " . escapeshellarg($url));
+                $command = ("yt-dlp -f best -o " . $this->custom_escapeshellarg($outputPath) . " " . $this->custom_escapeshellarg($url));
                 _debug($command);
                 // Execute the command
                 $output = [];
