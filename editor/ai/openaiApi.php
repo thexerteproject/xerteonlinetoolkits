@@ -769,7 +769,7 @@ class openaiApi
         $url = substr($input, $pos);
 
         // Append /media to the file path
-        $mediaPath = $this->prepareURL($filePath . '/media');
+        $mediaPath = $this->prepareURL($filePath . DIRECTORY_SEPARATOR . 'media');
 
             // Handle URL case
             if ($this->isSupportedUrl($url)) {
@@ -779,7 +779,7 @@ class openaiApi
 
                 // Prepare the yt-dlp command
                 $command = escapeshellcmd("yt-dlp -f best -o " . escapeshellarg($outputPath) . " " . escapeshellarg($url));
-
+                _debug($command);
                 // Execute the command
                 $output = [];
                 $returnVar = 0;
