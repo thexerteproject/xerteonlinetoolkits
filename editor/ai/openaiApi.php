@@ -580,11 +580,9 @@ class openaiApi
     }
     private function prepareURL($uploadPath){
         $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
-        $normalizedBasePath = str_replace(['\\'], '/', $basePath);
-        $finalPath = $normalizedBasePath . str_replace(['\\'], '/', $uploadPath);
-        //$finalPath = realpath($finalPath);
+        $finalPath = realpath($basePath . $uploadPath);
 
-        if ($uploadPath === false) {
+        if ($finalPath === false) {
             throw new Exception("File does not exist: $finalPath");
         }
 
@@ -761,15 +759,19 @@ class openaiApi
         // Separate the file path and URL
         // Separate the file path and URL
         $pos = strpos($input, 'http');
-        if ($pos === false) {
-            throw new Exception("Invalid input format");
-        }
+        // Regular expression to match the URL portion
+        $pattern = '/(https?:\/\/\S+)/';
 
-        $filePath = substr($input, 0, $pos - 1);
-        $url = substr($input, $pos);
+        // Check if a URL is present in the input
+        if (preg_match($pattern, $input, $matches)) {
+            $url = $matches[0]; // Extracted URL
+            $filePath = str_replace($url, '', $input); // Remove the URL from the input
+            $filePath = rtrim($filePath, '/'); // Trim any trailing slash that might be left
+        }
 
         // Append /media to the file path
         $mediaPath = $this->prepareURL($filePath . '/media');
+        //$mediaPath = $filePath . '/media';
 
             // Handle URL case
             if ($this->isSupportedUrl($url)) {
