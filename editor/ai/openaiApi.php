@@ -756,9 +756,6 @@ class openaiApi
     }
 
     private function downloadVideo($input) {
-        // Separate the file path and URL
-        // Separate the file path and URL
-        $pos = strpos($input, 'http');
         // Regular expression to match the URL portion
         $pattern = '/(https?:\/\/\S+)/';
 
@@ -789,6 +786,7 @@ class openaiApi
 
                 // Check if the download was successful
                 if ($returnVar !== 0) {
+                    echo "Download failed:".$output;
                     throw new Exception("Failed to download: " . implode("\n", $output));
                 }
                 $pos = strpos($outputPath, 'USER-FILES');
