@@ -49,7 +49,7 @@ if(!is_numeric($_POST['template_id'])){
 }
 
 
-if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
     echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
 	echo "<div id=\"mainContent\">";
     echo "<p>" . GIFT_ERROR . "</p>";
@@ -57,7 +57,7 @@ if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon
     exit(0);
 }
 
-if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_admin()){
+if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_permitted("projectadmin")){
 		
 	echo "<h2 class=\"header\">" . PROPERTIES_TAB_GIVE . "</h2>";
 

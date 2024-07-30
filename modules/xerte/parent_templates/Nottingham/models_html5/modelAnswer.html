@@ -307,14 +307,16 @@
         this.finishTracking = function()
         {
             var answerTxt = $("#answerTxt").val();
+			var correct = answerTxt.trim() != "" || !(x_currentPageXML.getAttribute("judge") != "false"); 
             result =
                 {
-                    success: (answerTxt.trim() == "" ? false : true),
-                    score: (answerTxt.trim() == "" ? 0.0 : 100.0)
+                    success: correct,
+                    score: (correct ? 100.0 : 0.0),
+					judge: x_currentPageXML.getAttribute("judge") != "false"
                 };
 
             XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
-            XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
+            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
             this.tracked = true;
         };
 

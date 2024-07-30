@@ -1,0 +1,147 @@
+<script type="text/javascript">
+	var imageCompare = new function() {
+		this.aspectratio = 1;
+		this.position = 50;
+		this.isVertical = false;
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.position = 50;
+			this.updatePosition();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			let width = Math.floor($("#pageContents").width()/1.5);
+			//let height = Math.floor(($("#x_mobileScroll").height()-$("#x_headerBlock").height())/1.5);
+			let height = Math.floor($("#x_pageHolder").height()/1.5);
+			console.log(height);
+			if(height < this.aspectratio * width){
+				$(".image_holder").width(height / this.aspectratio).height(height);
+			}else {
+				$(".image_holder").width(width).height(this.aspectratio * width);
+			}
+		}
+
+		// updates the ui with the position in javascript
+		this.updatePosition = function() {
+			let img2Elem = $("#img2");
+			let slider = $("#slider");
+			if(this.isVertical){
+				img2Elem.css("clip-path", "inset("+ this.position + "% 0% 0% 0%)");
+				slider.css("top", this.position + "%");
+			}else {
+				img2Elem.css("clip-path", "inset(0% 0% 0%"+ this.position + "%)");
+				slider.css("left", this.position + "%");
+			}
+		}
+		
+		this.init = function() {
+			let loadedimgs = 0;
+
+			let img1Url = x_currentPageXML.getAttribute("url1");
+			let img2Url = x_currentPageXML.getAttribute("url2");
+			this.isVertical = x_currentPageXML.getAttribute("vertical") == "true" ? true : false;
+
+			let img1Elem = $("#img1")[0];
+			let img2Elem = $("#img2")[0];
+
+			let slider = $("#slider");
+
+			// use of temperary images to ensure all images are load and fullsize with loaded to get original aspectratio
+			let tempImg1 = new Image();
+			let tempImg2 = new Image();
+
+			let onImageLoad = () => { 
+				loadedimgs++;
+				if(loadedimgs == 2){
+					let minHeight =  Math.min(tempImg1.height, tempImg2.height);
+					let minWidth = Math.min(tempImg1.width, tempImg2.width);
+					this.aspectratio = minHeight/minWidth;
+					this.sizeChanged();
+				}
+			};
+
+			tempImg1.onload = onImageLoad;
+			tempImg2.onload = onImageLoad;
+
+			if(this.isVertical)
+				$("#slider").addClass("vertical");
+			else
+				$("#slider").addClass("horizontal");
+
+			let prevEvent;
+			slider.on("mousedown touchstart", function(event) {
+				event.preventDefault();
+				$(this).data("dragging", true);
+				prevEvent = event;
+			});
+			
+			//this on the image holder because then you don't have to move slowly and stay on the slider
+			$(".image_holder").on("mousemove touchmove", (event) => {
+ 				if(!slider.data("dragging")) return;
+				event.preventDefault();
+				let deltaPosition;
+				if(this.isVertical){
+					let screenY = event.screenY?? event.originalEvent.touches[0].screenY;
+					let prevScreenY = prevEvent.screenY?? prevEvent.originalEvent.touches[0].screenY;
+					deltaPosition = 100 / $(".image_holder").height() * (screenY-prevScreenY);
+				}else{
+					let screenX = event.screenX?? event.originalEvent.touches[0].screenX;
+					let prevScreenX = prevEvent.screenX?? prevEvent.originalEvent.touches[0].screenX;
+					deltaPosition = 100 / $(".image_holder").width() * (screenX-prevScreenX);
+				}
+				this.position = Math.min(100, Math.max(this.position + deltaPosition, 0));
+				this.updatePosition();
+				prevEvent = event;
+				$(".image_holder").css("cursor", "move");
+			});
+
+			slider.on("mouseup touchend", function() {
+				$(this).data("dragging", false);
+				$(".image_holder").css("cursor", "default");
+			});
+
+			slider.on("keyup", (event) =>{
+				let delta = 0;
+				if (this.isVertical) {
+					if (event.which == 40) {// down arrow
+						delta = 5
+					} else if (event.which == 38) {// up arrow
+						delta = -5;
+					}
+				} else {
+					if (event.which == 39) {// right arrow
+						delta = 5
+					} else if (event.which == 37) {// left arrow
+						delta = -5;
+					}
+				}
+				this.position = Math.min(100, Math.max(this.position + delta, 0))
+				this.updatePosition();
+			});
+			
+			tempImg1.src = img1Url;
+			tempImg2.src = img2Url;
+			img1Elem.src = img1Url;
+			img2Elem.src = img2Url;
+			img1Elem.alt = x_currentPageXML.getAttribute("tip1");
+			img2Elem.alt = x_currentPageXML.getAttribute("tip2");
+
+			this.updatePosition();
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	}
+	
+	imageCompare.init();
+	
+</script>
+
+<div id="pageContents">
+	<div class="image_holder">
+		<img class="image x_noLightBox" id="img1" alt="" src="" />
+		<img class="image x_noLightBox" id="img2" alt="" src="" />
+		<div id="slider" tabindex="1"></div>
+	</div>
+</div>

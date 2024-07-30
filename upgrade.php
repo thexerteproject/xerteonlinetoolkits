@@ -1451,3 +1451,71 @@ function upgrade_43()
     $message = 'Index on folderrights table is already present';
     return $message;
 }
+
+function upgrade_44()
+{
+	if (! _db_field_exists('sitedetails', 'default_theme_xerte')) {
+        $error1 = _db_add_field('sitedetails', 'default_theme_xerte', 'char(255)', 'default', null);
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_xerte = ?";
+            $error2 = db_query($sql, array('default'));
+        }
+        else {
+            $error2 = false;
+        }
+        $error3 = _db_add_field('sitedetails', 'default_theme_site', 'char(255)', 'default', null);
+
+        if ($error3) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_site = ?";
+            $error4 = db_query($sql, array('default'));
+        }
+        else {
+            $error4 = false;
+        }
+
+        return "Creating default theme xerte and site fields - ok ? " . ($error1 && $error2 && $error3 && $error4 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default theme xerte and site fields already present - ok ? true";
+    }
+}
+
+function upgrade_45(){
+	$roleTable = table_by_key("role");
+	$loginDetailsRoleTable = table_by_key("logindetailsrole");
+	$loginDetailsTable = table_by_key("logindetails");
+
+	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
+        `roleid` int NOT NULL AUTO_INCREMENT,
+        `name` varchar(45) NOT NULL UNIQUE,
+        PRIMARY KEY (`roleid`)
+      )"
+	);
+
+	$message = "Creating role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
+        `roleid` int NOT NULL,
+        `userid` bigint(20) NOT NULL,
+        PRIMARY KEY (`roleid`, `userid`)
+      )"
+	);
+	
+	$message .= "Creating logindetailsrole table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+	$ok = db_query("insert into $roleTable(`roleid`, `name`) values
+          (1, 'super'),
+          (2, 'system'),
+          (3, 'templateadmin'),
+          (4, 'metaadmin'),
+          (5, 'useradmin'),
+          (6, 'projectadmin');"
+	);
+	$message .= "creating default roles - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+	
+	return $message;
+}

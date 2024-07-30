@@ -109,7 +109,26 @@
       }
     };
 
+    this.secondsTOHHMMSS = function (totalSeconds){
+      var hours = Math.floor(totalSeconds / 3600);
+      var minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+      var seconds = totalSeconds - (hours * 3600) - (minutes * 60);
+
+      // Padding the values to ensure they are two digits
+      if (hours < 10) { hours = "0" + hours; }
+      if (minutes < 10) { minutes = "0" + minutes; }
+      if (seconds < 10) { seconds = "0" + seconds; }
+
+      return hours + ':' + minutes + ':' + seconds;
+    };
+
     this.init = function() {
+      if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
+        $('#txtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+      } else {
+        $('#txtHolder').remove();
+      }
+
       // load files used to create pdf
       var loadFiles = true;
       if (xot_offline) {
@@ -225,7 +244,7 @@
       if (x_currentPageXML.getAttribute('generalDuration') == 'false') {
         $('#durationTxt1').parent('tr').remove();
       } else {
-        $("#totalDuration").html(xtresults.totalDuration + durationSecondTxt);
+        $("#totalDuration").html(results.secondsTOHHMMSS(xtresults.totalDuration) + durationSecondTxt);
       }
 
       // remove whole general results table if empty
@@ -380,6 +399,7 @@
             specificPDFrows.push([]);
 
             x.subinteractions.forEach(function(y) {
+              let judge = y.judge?? true;
               // set up the header row
               if (specificHeaderRow) {
                 let specificPDFcolumn = [];
@@ -391,8 +411,12 @@
                   if (x_currentPageXML.getAttribute('specific' + specificColumns[i].col) == 'false') {
                     specificColumns[i].active = false;
                   } else {
-                    tableSetUp += '<th>' + specificColumns[i].data + '</th>';
-                    specificPDFcolumn.push(specificColumns[i].col == 'Name' ? x_GetTrackingTextFromHTML(specificColumns[i].data, "") : specificColumns[i].data);
+					if(judge || specificColumns[i].col !== "Correct"){
+						tableSetUp += '<th>' + specificColumns[i].data + '</th>';
+						specificPDFcolumn.push(specificColumns[i].col == 'Name' ? x_GetTrackingTextFromHTML(specificColumns[i].data, "") : specificColumns[i].data);
+				    }else {
+						tableSetUp += '<th>' + '' + '</th>';
+					}
                     if (specificColumns[i].col == 'Check' && specificPDFcheck == null) {
                       specificPDFcheck = specificPDFcolumns.length;
                     }
@@ -407,13 +431,18 @@
 
               // add a row of info
               let thisRow = '';
-              const rowData = ['', y.question, y.learnerAnswer, y.correctAnswer];
+              const rowData = ['', y.question, y.learnerAnswer, (judge ? y.correctAnswer: "")];
               let specificPDFrow = [];
 
               for (let i=0; i<specificColumns.length; i++) {
                 if (specificColumns[i].active == true) {
                   if (specificColumns[i].col == 'Check') {
-                    if (y.learnerAnswer == y.correctAnswer || y.correct) {
+                    if (!judge)
+                    {
+                      thisRow += "<td class='correct td-center td-small'>" + "<i class='fas fa-check-circle' style=\"visibility: hidden\"></td>";
+                      specificPDFrow.push('');
+                    }
+                    else if (y.learnerAnswer == y.correctAnswer || y.correct) {
                       thisRow += "<td class='correct td-center td-small'>" + "<i class='fas fa-check-circle' title='" + correctTooltip + "'><span class='ui-helper-hidden-accessible'>" + correctTooltip + "</span></td>";
                       specificPDFrow.push('correct');
                     } else {
@@ -688,10 +717,12 @@
               },
               didDrawCell: function(chd) {
                 if (chd.section === 'body' && chd.column.dataKey === specificPDFcheck) {
-                  pdf.addImage(
-                          chd.cell.raw === 'correct' ? checkmark : cross, 'png',
-                          chd.cell.x + (chd.cell.width - pdfIconSize) / 2, chd.cell.y + (chd.cell.contentHeight - pdfIconSize) / 2, pdfIconSize, pdfIconSize
-                  );
+                    if(chd.cell.raw !== '') {
+                        pdf.addImage(
+                            chd.cell.raw === 'correct' ? checkmark : cross, 'png',
+                            chd.cell.x + (chd.cell.width - pdfIconSize) / 2, chd.cell.y + (chd.cell.contentHeight - pdfIconSize) / 2, pdfIconSize, pdfIconSize
+                        );
+                    }
                 }
               }
             });

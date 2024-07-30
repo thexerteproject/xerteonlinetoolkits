@@ -26,7 +26,7 @@ require("../xwdInspector.php");
 
 
 
-if (is_user_admin()) {
+if (is_user_permitted("templateadmin")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 

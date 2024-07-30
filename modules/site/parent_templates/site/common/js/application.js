@@ -469,7 +469,7 @@ function setup() {
 					if(a.word < b.word) return -1;
 					if(a.word > b.word) return 1;
 					return 0;
-				})
+				});
 
 				var charList = [],
 					glossaryTxt = [];
@@ -482,10 +482,41 @@ function setup() {
 						glossaryTxt.splice(glossaryTxt.length - 1, 1, glossaryTxt[glossaryTxt.length - 1] + '<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
 					}
 				}
-
+				
+				
 				var $glossaryTitle = $(data).find('learningObject').attr('glossaryTitle') != undefined ? $(data).find('learningObject').attr('glossaryTitle') : 'Glossary';
 				var $glossaryPage = $('<page name="' + $glossaryTitle + '" subtitle=""></page>');
-				for (var i=0; i<charList.length; i++) {
+
+				// setAttributeNS is used because it doesn't convert the attribute name to lowercase 
+				if($(data).find('learningObject').attr("glossaryPageID") != undefined){
+
+						$glossaryPage[0]
+								.setAttributeNS('', 'customLinkID', $(data).find('learningObject').attr("glossaryPageID"));
+				}
+
+				let learningObject = $(data).find('learningObject');
+				let headerImage = learningObject.attr('glossaryHeaderImage');
+				
+				if(headerImage != undefined){
+						let element = $glossaryPage[0];
+	// header="FileLocation + 'media/header.jpg'" headerPos="left" headerRepeat="repeat" headerSize="not-set" headerTitleAlign="center" headerColour="" headerTextColour="" headerBanner="fullscreen" headerTopMargin="20" bannerCollapse="true" bannerFixedHeight="false" bannerHeight="20" bannerFullScrolldownInfo="true" bannerFullScrolldownText=""
+						element.setAttributeNS('', 'header', headerImage !== ""? headerImage: "");
+						element.setAttributeNS('', 'headerPos', learningObject.attr('glossaryHeaderPos')?? 'left');
+						element.setAttributeNS('', 'headerRepeat', learningObject.attr('glossaryHeaderRepeat')?? 'no-repeat');
+						element.setAttributeNS('', 'headerSize', learningObject.attr('glossaryHeaderSize')?? 'cover');
+						element.setAttributeNS('', 'headerTitleAlign', learningObject.attr('glossaryHeaderTitleAlign')?? 'center');
+						element.setAttributeNS('', 'headerColour', learningObject.attr('glossaryHeaderColour')?? '');
+						element.setAttributeNS('', 'headerTextColour', learningObject.attr('glossaryHeaderTextColour')?? '');
+						element.setAttributeNS('', 'headerBanner', learningObject.attr('glossaryHeaderBanner')?? 'fixedheight');
+						element.setAttributeNS('', 'headerTopMargin', learningObject.attr('glossaryHeaderTopMargin')?? '20');
+						element.setAttributeNS('', 'bannerCollapse', learningObject.attr('glossaryBannerCollapse')?? 'true');
+						element.setAttributeNS('', 'bannerFixedHeight', learningObject.attr('glossaryBannerFixedHeight')?? 'false');
+						element.setAttributeNS('', 'bannnerHeight', learningObject.attr('glossaryBannerHeight')?? '20');
+						element.setAttributeNS('', 'bannerFullScrolldownInfo', learningObject.attr('glossaryBannerFullScrolldownInfo')?? 'true');
+						element.setAttributeNS('', 'bannerFullScrolldownText', learningObject.attr('glossaryBannerFullScrolldownText')?? '');
+				}
+
+				for (var i=0; i<charList.length; i++) { 
 					var cDataSection = data.createCDATASection(glossaryTxt[i]);
 					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
 					$section.find('text').append(cDataSection);
@@ -543,7 +574,7 @@ function setup() {
 	});
 
 	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
-	$(data).find('page').each( function(index, value){
+	$(data).find('page').each( function(index, value){	
 		var tempID = $(this).attr('customLinkID');
 		var $page = $(this);
 		if (tempID != undefined && tempID != "") {

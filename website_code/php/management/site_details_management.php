@@ -23,7 +23,7 @@ _load_language_file("/website_code/php/management/site_details_management.inc");
 
 require("../user_library.php");
 
-if(is_user_admin()) {
+if(is_user_permitted("system")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 
@@ -57,7 +57,7 @@ if(is_user_admin()) {
         site_email_account=?, headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?, import_path=?,
         apache=?, enable_mime_check=?, mimetypes=?, enable_file_ext_check=?, file_extensions=?, enable_clamav_check=?, clamav_cmd=?, clamav_opts=?, LDAP_preference=?, LDAP_filter=?, integration_config_path=?,
         admin_username=?, LRS_Endpoint=?, LRS_Key=?, LRS_Secret=?, dashboard_enabled=?, dashboard_nonanonymous=?, xapi_force_anonymous_lrs=?, xapi_dashboard_minrole=?, dashboard_period=?, dashboard_allowed_links=?, 
-        globalhidesocial=?, globalsocialauth=?";
+        globalhidesocial=?, globalsocialauth=?, default_theme_xerte=?, default_theme_site=?";
 
     $data = array($_POST['site_url'], $_POST['site_title'], $_POST['site_name'], $_POST['site_logo'], $_POST['organisational_logo'], $_POST['welcome_message'], $site_texts, base64_encode(stripcslashes($_POST['news_text'])), base64_encode(stripcslashes($_POST['pod_one'])), base64_encode(stripcslashes($_POST['pod_two'])), $copyright, $_POST['demonstration_page'], base64_encode(stripcslashes($_POST['form_string'])),
         base64_encode(stripcslashes($_POST['peer_form_string'])), $_POST['feedback_list'], $_POST['rss_title'], $_POST['module_path'], $_POST['website_code_path'], $_POST['users_file_area_short'],
@@ -67,8 +67,7 @@ if(is_user_admin()) {
         $_POST['site_session_name'], $_POST['synd_publisher'], $_POST['synd_rights'], $_POST['synd_license'], str_replace("\\", "/", $_POST['import_path']), $_POST['apache'],
         $enable_mime_check, str_replace(' ', '', $_POST['mimetypes']), $enable_file_ext_check, str_replace(' ', '', $_POST['file_extensions']), $enable_clamav_check, str_replace("\\", "/", $clamav_cmd), $clamav_opts,
         $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret'],
-        $_POST['site_xapi_dashboard_enable'], $_POST['site_xapi_dashboard_nonanonymous'], $_POST['site_xapi_force_anonymous_lrs'],$_POST['xapi_dashboard_minrole'], $_POST['site_xapi_dashboard_period'], $_POST['xapi_dashboard_urls'], $_POST['globalhidesocial'], $_POST['globalsocialauth']);
-
+        $_POST['site_xapi_dashboard_enable'], $_POST['site_xapi_dashboard_nonanonymous'], $_POST['site_xapi_force_anonymous_lrs'],$_POST['xapi_dashboard_minrole'], $_POST['site_xapi_dashboard_period'], $_POST['xapi_dashboard_urls'], $_POST['globalhidesocial'], $_POST['globalsocialauth'], $_POST['default_theme_xerte'], $_POST['default_theme_site']);
 
     $res = db_query($query, $data);
     if ($res !== false) {

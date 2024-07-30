@@ -81,6 +81,7 @@
 			$hsHolder = $("#hsHolder");
 			$infoHolder = $("#infoHolder");
 			$panel = $("#panel");
+			debugger
 			
 			if (x_browserInfo.mobile != true) {
 				if (x_currentPageXML.getAttribute("align") == "Right") {
@@ -547,6 +548,7 @@
 		}
 		
 		this.drawLine = function($hs, $listItem, shape) {
+			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			
 			// startX/Y = centre of hotspot
@@ -570,13 +572,26 @@
 		}
 
 		this.drawLineToText = function ($hs, shape){
+			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			var $panel = $("#panel");
 			var startX = $hs.offset().left - $(context.canvas).offset().left + ($hs.width() / 2);
 			var startY = $hs.offset().top - $(context.canvas).offset().top + ($hs.height() / 2);
 
-			var endX = $("#panel").offset().left - parseInt($panel.css("margin-left")) - parseInt($panel.css("padding-left"));
-			var endY = $("#infoHolder").offset().top;
+			var endX;
+			var endY;
+			if(align === "Top"){
+				var $infoHolder = $("#infoHolder")
+				endX = $infoHolder.offset().left - $(context.canvas).offset().left + ($infoHolder.width() / 2)
+				endY = $infoHolder.offset().top - $(context.canvas).offset().top;
+
+			}else{
+				endX = $("#panel").offset().left - parseInt($panel.css("margin-left")) - parseInt($panel.css("padding-left"));
+				endY = $("#infoHolder").offset().top;
+			}
+
+
+
 
 			context.beginPath();
 			context.moveTo(startX, startY);
@@ -588,6 +603,8 @@
 				context.arc(startX, startY, 2, 0, 2 * Math.PI, false);
 				context.fill();
 			}
+
+
 		}
 		
 		this.resizeCanvas = function() {

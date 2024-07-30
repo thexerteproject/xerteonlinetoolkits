@@ -26,7 +26,7 @@ require("../user_library.php");
 require("../url_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("projectadmin")){
 	
 	echo "<h2>" . MANAGEMENT_MENUBAR_TEMPLATES . "</h2>";
 	echo "<div class=\"admin_block\">";

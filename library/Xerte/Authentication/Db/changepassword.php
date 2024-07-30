@@ -21,11 +21,11 @@ if (isset($_SESSION['toolkits_logon_username'])){
     $real_user = $_SESSION['toolkits_logon_username'];
 }
 
-if (!is_user_admin() && $real_user == ""){
+if (!is_user_permitted("useradmin") && $real_user == ""){
     return;
 }
 
-if(is_user_admin() || $supposed_user == $real_user){
+if(is_user_permitted("useradmin") || $supposed_user == $real_user){
 
     global $authmech, $xerte_toolkits_site;
 
@@ -73,7 +73,7 @@ if(is_user_admin() || $supposed_user == $real_user){
     {
         $finalmesg = "<p><font color = \"green\">" . AUTH_DB_CHANGEPASSWORD_SUCCEEDED . "</font></p>";
     }
-    if (is_user_admin() && !isset($_POST['oldpass'])){
+    if (is_user_permitted("useradmin") && !isset($_POST['oldpass'])){
         $authmech->getUserList(true, $finalmesg);
     }else{
         echo $finalmesg;

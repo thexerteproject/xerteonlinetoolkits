@@ -205,6 +205,8 @@ class UoN_LTI extends BLTI {
 
   function get_lti_keys($deleted=false) {
     $dataret = array();
+    if(!$this->parm) return;
+
     if ($this->parm['dbtype'] == 'mysqli') {
       $db = $this->db;
       if ($db->error) {

@@ -272,7 +272,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         }
         if (strlen($passwd) > 0)
         {
-            $spassword = $this->_hashAndSalt($username, $passwd);
+            $password = $this->_hashAndSalt($username, $passwd);
             if (strlen($set) > 0)
                 $set .= ", ";
             $set .= "password=?";

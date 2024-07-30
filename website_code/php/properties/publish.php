@@ -47,7 +47,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
 
 if(is_numeric($_POST['template_id'])){
 
-    if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()) {
+    if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_permitted("projectadmin")) {
 		
         $tutorial_id = $_POST['template_id'];
 

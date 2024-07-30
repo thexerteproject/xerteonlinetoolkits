@@ -3143,10 +3143,44 @@ function x_passwordPage(pswds) {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			
 			var $pswdBlock = $('#x_page' + x_currentPage);
-			$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+			$pswdBlock.css('height', '100%');
+			$pswdBlock.html('<div class="x_pswdBlock" style="height: 100%"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
 			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
 			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
-			$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+			let type = x_currentPageXML.getAttribute('passwordType');
+			if(type == "vault"){
+					$pswdBlock.find('.x_pswdInput').html('<div class="vault"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
+					$pswdBlock.find('.vault-door')
+							.html('<div class="vault-door-dial"><div class="vault-door-dial-inside"></div><div class="vault-door-dial-rod"></div><div class="vault-door-dial-rod rotated"></div></div>');
+					$pswdBlock.find('.vault-door-dial')
+							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">');
+					$pswdBlock.find('.vault-door').append('<button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+
+			}else if(type == "vaultnumeric") {
+					$pswdBlock.find('.x_pswdInput').html('<div class="vault numeric"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
+					$pswdBlock.find('.vault-door')
+							.append('<input readonly type="text" id="x_pagePswd" name="x_pagePswd" style="grid-area: input;" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">')
+							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;"> </button>')
+							.append('<button id="x_pagePswdBtn" style="grid-area: button;">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+
+					$pswdBlock.find('.numberbtn').on('click', function(){
+							let number = $(this).text();
+							let $input = $('#x_pagePswd');
+							$input.val(function(){
+									return this.value + number;
+							});
+							$input[0].selectionStart = $input[0].selectionEnd = $input.val().length;
+					});
+					$pswdBlock.find('#resetbtn').on('click', function(){
+							$('#x_pagePswd').val('');
+					});
+			}else if((type == "standard" || type == null) || type == "centered"){
+					let pswdInput = $pswdBlock.find('.x_pswdInput').append('<input type="text" class="old" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button class="old" id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+					if(type == "standard" || type == null){
+							pswdInput.add($pswdBlock.find(".x_pswdBlock")).addClass('old');
+							
+					}
+			}
 			
 			$pswdBlock.find('#x_pagePswdBtn')
 				.button()
@@ -3752,7 +3786,6 @@ function x_addNarration(funct, arguments) {
 
 // function adds transcript button to the end of audio bars, e.g. page narration - but also called from page models
 function x_addAudioTranscript($audioHolder, transcriptTxt, decode) {
-	
 	if (decode == true) {
 		transcriptTxt = $("<div/>").html(transcriptTxt).text();
 	}
@@ -3947,9 +3980,9 @@ function x_updateCss(updatePage) {
 					audioBarW += $(this).outerWidth();
 				});
 				
-				if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -2 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 2) {
-					$x_window.resize();
-				}
+				// if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -7 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 7) {
+				// 	$x_window.resize();
+				// }
 			}
 			
 		}

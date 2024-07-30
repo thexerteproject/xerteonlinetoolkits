@@ -67,7 +67,12 @@
                 l_answers = [],
                 l_feedback = [],
                 l_total=0,
-                l_correct=0;
+                l_correct=0,
+				l_judge=true;
+
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				l_judge = false;
+			}
 
             $("#dragDropHolder .tick").remove();
 			
@@ -81,7 +86,7 @@
                 l_answers.push(l_answer);
 
                 l_total++;
-                if ($this.data("category").is($this.parent())) {
+                if ($this.data("category").is($this.parent()) || !l_judge) {
 					$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
                     l_feedback.push("correct");
 					l_option.result = true;
@@ -98,9 +103,11 @@
 			$("#scoreTxt").html(l_correct);
 			$("#totalTxt").html(this.totaloptions);
 			$("#feedback").show();
+
 			var result = {
 			    success: (l_correct == this.totaloptions),
-			    score: (l_correct * 100.0)/this.totaloptions
+			    score: (l_correct * 100.0)/this.totaloptions,
+				judge: l_judge
 			}
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedback);
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);

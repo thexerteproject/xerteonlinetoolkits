@@ -45,7 +45,7 @@ function add_members_to_group($login_ids, $group_id){
 
 }
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $login_ids= $_POST['login_id'];
