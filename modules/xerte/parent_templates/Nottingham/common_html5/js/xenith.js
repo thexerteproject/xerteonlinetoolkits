@@ -1448,6 +1448,11 @@ function x_continueSetUp1() {
 										.prependTo($holder)
 										.html(x_params.name);
 								}
+								if (x_params.introCaption != undefined && x_params.introCaption != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_params.introCaption + '</figcaption>');
+								}
 
 								// include start button to close lightbox
 								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
@@ -1608,6 +1613,12 @@ function x_continueSetUp1() {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
 										.prependTo($holder)
 										.html(x_currentPageXML.getAttribute('name'));
+								}
+
+								if (x_currentPageXML.getAttribute('introCaption') != undefined && x_currentPageXML.getAttribute('introCaption') != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_currentPageXML.getAttribute('introCaption') + '</figcaption>');
 								}
 								
 								// include start button to close lightbox
@@ -2109,7 +2120,7 @@ function x_continueSetUp1() {
 			x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 				if (mediaExists) {
 					var alpha = 30;
-					var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
+					var lo_objectfit =  (x_params.backgroundFit != undefined ? x_params.backgroundFit : "fill");
 					if (x_params.backgroundopacity != undefined) {
 						alpha = x_params.backgroundopacity;
 					}
@@ -3463,10 +3474,12 @@ function x_setUpLightBox() {
 						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
 						
 						if (caption != undefined && caption != '') {
+							var $img = $(this.$content[0]);
+							$img.wrap('<figure></figure>');
 							if (before == true) {
-								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							} else {
-								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').append('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							}
 						}
 					}
@@ -3852,7 +3865,7 @@ function x_loadPageBg(loadModel) {
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 
 	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg" alt=""/>');
-    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover" ? "cover" : "fill");
+    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined ? x_currentPageXML.getAttribute("backgroundFit") : "fill");
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({

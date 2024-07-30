@@ -98,6 +98,12 @@
 					.css('width', width)
 					.css('height', height);
 
+			$("#qHolder .qImg").each(function() {
+				$(this).css({
+					"max-width": $("#mainPanel").width(),
+					"max-height": $("#mainPanel").height() - ($(this).parents("figure").find("figcaption").outerHeight(true) - $(this).parents("figure").find("figcaption").height())
+				});
+			});
 		};
 
 		this.loadAudio = function(currentQuestion, soundFile, transcript)
@@ -286,18 +292,23 @@
 
 				if (url != undefined && url != "") {
 					var newString = "";
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figure>';
+					}
 					newString += '<img class="qImg" src="' + x_evalURL(url) + '" class="opinionImg"';
-
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "")
 					{
 						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
 					}
-
 					newString += ' />';
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figcaption>' + $thisQ.getAttribute("caption") + '</figcaption></figure>';
+					}
 					infoString = newString + infoString;
 				}
 
 				$("#qTxt" + currentQuestion).html(x_addLineBreaks(infoString));
+
 				$("#feedback").html("");
 
 				if ($($thisQ).children().length == 0)
@@ -849,11 +860,21 @@
 				}
 			}
 
-			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "")
-			{
-				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ?
-						'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
-				$textHolder.append('<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
+			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
+				var newString = '';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					newString += '<figure>';
+				}
+				newString += '<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '" ';
+				if (x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "")
+				{
+					newString += 'alt="' + x_currentPageXML.getAttribute("tip") + '"';
+				}
+				newString += ' />';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					newString += '<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption><figure>';
+				}
+				$textHolder.append(newString);
 			}
 
 			var backBtnText = x_currentPageXML.getAttribute("backBtnText");

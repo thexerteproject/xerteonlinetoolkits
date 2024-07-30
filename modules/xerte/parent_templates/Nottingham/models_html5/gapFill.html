@@ -198,7 +198,7 @@
 			
             for (var i=0; i<passageArray.length; i++) {
 				if (markedWord == false) {
-					gapFillStr += '<span class="staticTxt" tabindex="0">' + passageArray[i] + '</span>';
+					gapFillStr += '<span class="staticTxt">' + passageArray[i] + '</span>';
 					markedWord = true;
 				} else {
 					decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
@@ -1465,7 +1465,7 @@
 	<div class="splitScreen">
 		
 		<div id="textHolder" class="left">
-			<div id="mainText" tabindex="1"></div>
+			<div id="mainText"></div>
 		</div>
 		
 		<div id="dragDropHolder" class="right">

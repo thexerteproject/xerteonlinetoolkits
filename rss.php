@@ -170,9 +170,9 @@ foreach($rows as $row) {
             <xerte:offlinelink><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export_offline', $row['template_id']) . "]]></xerte:offlinelink>";
         }
     }
-    echo "<xerte:keywords>" . $row['keywords'] . "</xerte:keywords>
-        <xerte:syndication>" . $row['syndication'] . "</xerte:syndication>
-        <xerte:license>" . $row['license'] . "</xerte:license>
+    echo "<xerte:keywords>" . str_replace("&", "&amp;", $row['keywords']) . "</xerte:keywords>
+        <xerte:syndication>" . str_replace("&", "&amp;", $row['syndication']) . "</xerte:syndication>
+        <xerte:license>" . str_replace("&", "&amp;", $row['license']) . "</xerte:license>
         </item>\n";
 }
 

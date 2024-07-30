@@ -49,7 +49,6 @@ else if(isset($_POST["template_id"]))
     // Hack for the rest of Xerte
     $_GET['template_id'] = $id;
 }
-_debug("test123");
 if(is_numeric($id) || $id == null)
 {
 	$tsugi_enabled = true;
@@ -71,7 +70,7 @@ if(is_numeric($id) || $id == null)
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
         //DONE: get all emails of current users add to array
         // https://gitlab.tor.nl/xerte-dashboard/dashboard/-/blob/master/index.php line 80
-	_debug('LTI 1.3 names and roles result: ' . print_r($nrps, true));
+	    _debug('LTI 1.3 names and roles result: ' . print_r($nrps, true));
         $xerte_toolkits_site->lti_users = array();
         foreach ($nrps->members as $i => $member){
             if ($member->status == 'Active' && in_array('Learner', $member->roles))

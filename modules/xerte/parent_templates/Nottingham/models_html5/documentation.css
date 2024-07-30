@@ -3,7 +3,11 @@
 	#pages {
 		overflow: auto;
 	}
-	
+
+	#x_mainHolder.x_mobile .panel {
+		overflow: auto;
+	}
+
 	#pages:not(:last-child) {
 		border-bottom: 1px solid #CCCCCC;
 	}
@@ -110,10 +114,15 @@
 		text-align: center;
 	}
 
-.full-textbox{
-    width: calc(100% - 8px);
-}
+	.full-textbox{
+		width: calc(100% - 8px);
+	}
 
-.full-textarea{
-    width: calc(100% - 1.3em);
-}
+	.full-textarea{
+		width: calc(100% - 1.3em);
+	}
+
+
+	input, textarea {
+		box-sizing: border-box;
+	}

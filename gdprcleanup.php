@@ -228,7 +228,7 @@ The CSV file should not contain a header row
  --anonymise                 Anonymise user data, anonymise takes precedence over remove
  --remove                    Remove user data, including all LO's owned by the user
  --no-public                 Do not remove users that have non-private LO's 
- --doaction                  Do not perform any action, just show what would be done
+ --doaction                  Do perform the requested action, by default the routine just shows what would be done
  --csvseparator=<separator>  Use a different separator than the default comma
  --lastlogin=<date>          Only anonymise users that have not logged in since the given date, format YYYY-MM-DD
                              Can be used with or without the CSV file. If used without CSVFILE, the action is forced to anonymise
@@ -282,7 +282,7 @@ if (isset($args['csvseparator'])) {
 
 
 if (count($argv) < $restindex && !isset($args['lastlogin'])) {
-    echo "No CSV file specified and no last login dat specified\n";
+    echo "No CSV file specified and no last login date specified\n";
     echo $helptext;
     exit;
 }

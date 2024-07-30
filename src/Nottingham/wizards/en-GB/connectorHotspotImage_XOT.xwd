@@ -72,7 +72,6 @@
 
 	</video>
 
-	<!--<iframeRatio label="Video iframe Aspect Ratio" type="TextInput" condition="hotspotMovie!=null" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />-->
     <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is deprecated. Videos now reset on completion by default."/>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
@@ -89,6 +88,7 @@
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
 		<imageFile label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select an image"/>
 		<imageTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
+		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 
 	<hotspotPopUp label="Text" type="TextArea" conditionTrigger="true" height="200" optional="true" tooltip="Show text/HTML when hotspot clicked"/>

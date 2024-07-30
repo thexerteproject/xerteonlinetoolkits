@@ -832,8 +832,6 @@
 						.removeClass("shadow");
 			});
 
-			var tabIndex = 3;
-
 			// this uses draggable & droppable rather than sortable as sortable doesn't deal with fixed labels well
 			$grid
 				.find("ul:not(.preview) li:not(.static)")
@@ -923,13 +921,7 @@
 							$pageContents.data("selectedLabel", $this);
 						}
 					})
-					.disableSelection()
-					.each(function(i) {
-						$(this).attr({
-							"tabindex"	:tabIndex
-						});
-						tabIndex++;
-					});
+					.disableSelection();
 
 			$grid.find("ul:not(.preview) li:not(.static)")
 				.droppable({
@@ -1021,7 +1013,9 @@
 			}
 
 			if (!$li.hasClass("static")) {
-				$li.addClass("shadow");
+				$li
+					.addClass("shadow")
+					.attr("tabindex", "0");
 			}
 
 			$li
@@ -1161,14 +1155,6 @@
 
 				draggable.css({"top":"auto","left":"auto"});
 			}
-
-			var tabIndex = 3;
-			$("#grid ul:not(.preview) li:not(.static)").each(function(i) {
-				$(this).attr({
-					"tabindex"	:tabIndex
-				});
-				tabIndex++;
-			});
 		}
 
 		this.removeFocus = function() {
@@ -1264,7 +1250,7 @@
 
 	<div id="content">
 	<div id="otherContent">
-		<div id="textHolder" tabindex="1"/>
+		<div id="textHolder"/>
 		<div id="feedback"/>
 	</div>
 
@@ -1274,7 +1260,7 @@
 	</div>
 	</div>
 	<div id="btnHolder">
-		<button id="checkBtn" class="" tabindex="2"></button>
+		<button id="checkBtn" class=""></button>
 	</div>
 
 	

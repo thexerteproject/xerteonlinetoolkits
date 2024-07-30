@@ -34,6 +34,7 @@
 	<imgGroup type="group" label="Image" optional="true">
 		<img label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 
 	<graph label="Graph" type="group" optional="true">
@@ -76,6 +77,7 @@
 	<imgGroup type="group" label="Image" optional="true">
 		<image label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox" />  

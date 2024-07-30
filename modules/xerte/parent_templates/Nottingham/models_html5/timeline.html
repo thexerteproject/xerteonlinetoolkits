@@ -216,7 +216,7 @@
 				}
 			});
 			$("#targetHolder .target.first").css("margin-left", edgeWidth + "%");
-			
+
 			$("#targetHolder .target")
 				.droppable({
 					accept:	"#dragDropHolder .label",
@@ -234,7 +234,6 @@
 					}
 					})
 				.focusout(function() {
-					var $pageContents = $("#pageContents");
 					$(this)
 						.removeClass("focus")
 						.attr("title", targetTxt1 + " " + $(this).find("h3").html());
@@ -254,21 +253,11 @@
 					}
 				})
 				.data("currentLabel", "");
-			
-			// set tab index for targets - leaving space between them for a label to be put on it
-			var tabIndex = 1;
-			tabIndex += $pageContents.data("labels").length;
+
 			$targetHolder.find(".target").each(function(i) {
-				tabIndex++;
 				var $this = $(this);
-				$this.attr({
-					"tabindex"	:tabIndex,
-					"title"		:targetTxt1 + " " + $this.find("h3").html()
-				});
-				tabIndex++;
+				$this.attr("title", targetTxt1 + " " + $this.find("h3").html());
 			});
-			$button.attr("tabindex", tabIndex + 1);
-			$feedback.attr("tabindex", tabIndex + 2);
 			
 			this.createLabels();
 			
@@ -378,7 +367,7 @@
 				tempLabels.splice(labelNum, 1);
 			}
 			for (i=0; i<labels.length; i++) {
-				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + x_addLineBreaks(labels[i].text) + '</div>');
+				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="0" title="' + labelTxt1 + '">' + x_addLineBreaks(labels[i].text) + '</div>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("target", labels[i].correct);
 				
@@ -465,9 +454,7 @@
 			// label hasn't been dropped on target it was already on
 			if ((prevLabel == "" || prevLabel.is($thisLabel) == false) && (prevTarget == "" || prevTarget.is($thisTarget) == false)) {
 				$thisTarget.data("currentLabel", $thisLabel);
-				$thisLabel
-					.data("currentTarget", $thisTarget)
-					.attr("tabindex", $thisTarget.attr("tabindex") + 1);
+				$thisLabel.data("currentTarget", $thisTarget);
 				
 				// if there's already a label on the target, move it off
 				if (prevLabel != "") {
@@ -476,8 +463,7 @@
 							"top"	:"auto",
 							"left"	:"auto"
 							})
-						.data("currentTarget", "")
-						.attr("tabindex", Number(prevLabel.attr("id").replace("label","")) + 2);
+						.data("currentTarget", "");
 					
 					$("#dragDropHolder .label").each(function() {
 						if ($(this).data("currentTarget") == "" && $(this).is(prevLabel) == false) {
@@ -500,9 +486,8 @@
 				
 				$("#pageContents").data("selectedLabel", "");
 			}
-			
+
 			$thisTarget.attr("title", targetTxt1 + " " + $thisTarget.find("h3").html());
-			
 			$thisLabel
 				.attr("title", labelTxt1)
 				.removeClass("selected")
@@ -524,10 +509,10 @@
 		
 		<div id="labelHolder"></div>
 		
-		<div id="textHolder" tabindex="1"></div>
+		<div id="textHolder"></div>
 		
 		<div id="targetHolder">
-			<div class="target bg">
+			<div class="target bg" tabindex="0">
 				<h3></h3>
 			</div>
 		</div>

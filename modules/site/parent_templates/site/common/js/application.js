@@ -1804,7 +1804,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName = tocName.html();
 				}
 
-				var $link = $('<li' + (sectionVisibleIndex==0?' class="active" ':'') +'><a href="#' + sectionId + '"></a></li>').appendTo('#toc');
+				var $link = $('<li' + (sectionVisibleIndex==0?' aria-current="location" class="active" ':'') +'><a href="#' + sectionId + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 
 				$('#contentTable').removeClass("hideSectionMenu");
@@ -1854,11 +1854,28 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 	//an event for user defined code to know when loading is done
 	$(document).trigger('contentLoaded');
 
-	//the following fixes the side bar active highlight issue but requires changes to makeNav
-	//so commented out until we can discuss on next dev day
+	// fixes the side bar active highlight issue
 	$('[data-spy="scroll"]').each(function () {
-		var $spy = $(this).scrollspy('refresh')
-	})
+		var $spy = $(this).scrollspy('refresh');
+	});
+
+	// make sure the currently selected section menu item has aria-current = location as well as active class
+	const $sectionMenuItems = $("#contentTable .nav li");
+	const observer = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+			if ($(mutation.target).hasClass("active")) {
+				mutation.target.setAttribute("aria-current", "location");
+			} else {
+				mutation.target.removeAttribute("aria-current");
+			}
+		});
+	});
+	$sectionMenuItems.each(function() {
+		observer.observe(this, {
+			attributes: true,
+			attributeFilter: ['class']
+		});
+	});
 
 	//force facebook / twitter objects to initialise
 	//twttr.widgets.load(); // REMOVED??
@@ -2013,7 +2030,11 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'image'){
-			section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+				section.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+			} else {
+				section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			}
 		}
 
 		if (this.nodeName == 'audio'){
@@ -2328,6 +2349,7 @@ window.onhashchange = function() {
 	}
 }
 
+// update the highlighting of the section menu on click (not auto highlight done when scrolling)
 function updateMenu(listID) {
 	if (!$.isNumeric(listID)) {
 		listID = 1;
@@ -2339,7 +2361,7 @@ function updateMenu(listID) {
     for (i=0; i<navLists.length; i++) {
         if (i == listID-1) {
             navLists[i].className = "active";
-        } else {
+		} else {
             navLists[i].className = "";
         }
     }
@@ -2537,7 +2559,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'image'){
-				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+					pane.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+				} else {
+					pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				}
 			}
 
 			if (this.nodeName == 'audio'){
@@ -2662,14 +2688,33 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		
 		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
 		header.find('a.accordion-toggle').click(function() {
-			accDiv.find('.accordion-group a').not($(this))
+			var $this = $(this);
+			accDiv.find('.accordion-group a').not($this)
 				.addClass('collapsed')
 				.parents('.accordion-group').addClass('collapsed');
 
-			if ($(this).hasClass('collapsed')) {
-				$(this).parents('.accordion-group').removeClass('collapsed');
+			if ($this.hasClass('collapsed')) {
+				$this.parents('.accordion-group').removeClass('collapsed');
 			} else {
-				$(this).parents('.accordion-group').addClass('collapsed');
+				$this.parents('.accordion-group').addClass('collapsed');
+			}
+
+			// make sure the pane that's just been opened is in view (if closing pane is taller than opening pane it may not be)
+			var viewTop = $(window).scrollTop(),
+				viewBottom = viewTop + $(window).height(),
+				paneTop = $this.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
+
+			$this.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
+				if ($(this).find('.accordion-toggle').is($this)) {
+					return false;
+				} else {
+					paneTop += $(this).outerHeight();
+				}
+			});
+
+			// only scroll if necessary
+			if (paneTop < viewTop || paneTop > viewBottom) {
+				$('html, body').animate({scrollTop: paneTop}, 400);
 			}
 		});
 
@@ -2701,7 +2746,11 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'image'){
-				inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+					inner.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+				} else {
+					inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				}
 			}
 
 			if (this.nodeName == 'audio'){
@@ -2815,7 +2864,11 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'image'){
-				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+					pane.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+				} else {
+					pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				}
 			}
 
 			if (this.nodeName == 'audio'){
@@ -3225,10 +3278,12 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 					this.$instance.find('.caption').remove();
 					var before = captionType == "above" ? true : false;
 
+					var $img = $(this.$content[0]);
+					$img.wrap('<figure></figure>');
 					if (before == true) {
-						$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+						$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 					} else {
-						$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+						$img.parent('figure').append('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 					}
 				}
 			}

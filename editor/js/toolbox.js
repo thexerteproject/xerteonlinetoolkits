@@ -663,7 +663,7 @@ var EDITOR = (function ($, parent) {
                         .addClass("wizardvalue")
                         .append($('<div>')
                             .addClass("wizardvalue_inner")
-                            .append(displayDataType(value, options, name, key))));
+                            .append(displayDataType(value, options, name, key, label))));
             }
 
 
@@ -1908,7 +1908,7 @@ var EDITOR = (function ($, parent) {
                     var button = $('<button>')
                         .attr('id', value.id)
                         .attr('title', value.tooltip)
-                        .addClass("xerte_button")
+                        .addClass("xerte_button grid_col_btns")
                         .prop('disabled', value.disabled)
                         .addClass(value.disabled ? 'disabled' : 'enabled')
                         .click({ id: id, key: key, name: name }, function(evt){
@@ -3735,7 +3735,7 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key, true);
     };
 
-    displayDataType = function (value, options, name, key) {
+    displayDataType = function (value, options, name, key, label) {
 		var html;
 
 		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
@@ -4664,30 +4664,40 @@ var EDITOR = (function ($, parent) {
 						.attr('id', id + '_addcolumns')
 						.addClass('jqgridAddColumnsContainer'));
 
-                var form_id = "excel_upload_" + name;
-                excel_form = $("<form method='post' enctype='multipart/form-data' id =" + form_id + "></form>")
-                excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload_' + name +'" accept=".csv" required>');
-                excel_form.append('<input type="submit" value="' + language.UploadCSV.UploadCSVBtn.$label + '">');
-                excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
-                excel_form.append('<input type="hidden" name="type" value=' + name + '>');
-                excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
+                // add button below grid - when clicked a lightbox opens where you can upload a CSV containing data for the grid
+                $('<input type="button" name="csvUpload" value="' + language.UploadCSV.UploadCSVBtn.$label + '">')
+                    .click(function() { csvUploadLb(name, id); })
+                    .appendTo(html);
 
+                function csvUploadLb(name, id) {
+                    var $excel_form =
+                        $(`<div><h3>${label}: ${language.UploadCSV.UploadCSVBtn.$label}</h3>
+                    <form method="post" enctype="multipart/form-data" id="excel_upload_${name}" class="csvUpload">
+                    <input type="file" name="fileToUpload" id="fileToUpload_${name}" accept=".csv" required>
+                    <div class="csvMergeInfo">${language.UploadCSV.mergeOld.$label}<input type="checkbox" name="merge" value="Merge" id="csv_merge_${name}"></div>
+                    <input type="submit" value="${language.UploadCSV.UploadCSVBtn.$label}">
+                    <input type="hidden" name="colNum" value="${options.columns}">
+                    <input type="hidden" name="type" value="${name}">
+                    <input type="hidden" name="gridId" value="${id}">
+                    </form></div>`);
 
-                html.append(excel_form);
-                var checkbox_id = "csv_merge_" + name;
-                html.append(language.UploadCSV.mergeOld.$label + '<input type="checkbox" name="merge" value="Merge" id =' + checkbox_id + '>');
-                //called if user has uploaded a file to populate a grid
-                html.find('#excel_upload_' + name).submit(function (e){
-                    e.preventDefault();
-                    var grid_id = '#' + id + '_jqgrid';
-                    var current_grid_data = JSON.stringify($(grid_id).jqGrid("getRowData"))
-                    var form_data = new FormData(this);
-                    if ($('#csv_merge_glossary').is(":checked")) {
-                        form_data.append("merge", "Merge");
-                    }
-                    form_data.append('old_data', current_grid_data)
-                    upload_file(form_data);
-                })
+                    $.featherlight($excel_form, {
+                        afterOpen: function (e) {
+                            // called if user has uploaded a file to populate a grid
+                            this.$content.find('#excel_upload_' + name).submit(function (e) {
+                                e.preventDefault();
+                                var grid_id = '#' + id + '_jqgrid';
+                                var current_grid_data = JSON.stringify($(grid_id).jqGrid("getRowData"))
+                                var form_data = new FormData(this);
+                                if ($('#csv_merge_glossary').is(":checked")) {
+                                    form_data.append("merge", "Merge");
+                                }
+                                form_data.append('old_data', current_grid_data);
+                                upload_file(form_data);
+                            });
+                        }
+                    });
+                }
 
                 function upload_file(form_data){
                     var conf = false;
@@ -4709,14 +4719,15 @@ var EDITOR = (function ($, parent) {
                                 var rows = readyLocalJgGridData(key, return_data.type);
                                 $(gridId).jqGrid('setGridParam', {data: rows});
                                 $(gridId).trigger('reloadGrid');
+                                $.featherlight.current().close();
                             },
                             error: () => {
                                 // error message here.
                             }
-
                         });
                     }
                 }
+
                 //return xml
 				datagrids.push({id: id, key: key, name: name, options: options});
 				break;

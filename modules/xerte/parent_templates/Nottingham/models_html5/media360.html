@@ -307,10 +307,12 @@
 						// open image in lightbox
 						} else if (this.getAttribute('imageFile') != undefined && this.getAttribute('imageFile') != '') {
 							var tip = this.getAttribute('imageTip') != undefined && this.getAttribute('imageTip') != '' ? this.getAttribute('imageTip') : '';
+							var caption = this.getAttribute('imageCaption') != undefined && this.getAttribute('imageCaption') != '' ? this.getAttribute('imageCaption') : '';
 							thisHs.clickHandlerArgs = {
 								type: 'lightbox',
 								img: this.getAttribute('imageFile'),
-								tip: tip
+								tip: tip,
+								caption: caption
 							};
 							
 						// open audio player in lightbox (or auto-play audio)
@@ -782,7 +784,16 @@
 					if (args.type == 'lightbox') {
 						// content to open in lightbox
 						if (args.img != undefined) {
-							$.featherlight({image: args.img, afterOpen: function(e) { if (args.tip != '') { this.$content.attr('alt', args.tip); } } });
+							$.featherlight({image: args.img, afterOpen: function(e) {
+								if (args.tip != '') {
+									this.$content.attr('alt', args.tip);
+								}
+								if (args.caption != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + args.caption + '</figcaption>');
+								}
+							} });
 						} else if (args.iframe != undefined) {
 							$.featherlight({iframe: args.iframe, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
 						} else if (args.sound != undefined) {

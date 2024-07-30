@@ -282,11 +282,19 @@
 											newString += '<div class="jsHolder"></div>';
 
 										} else {
-											newString += '<div class="paneImg"><img ';
+											newString += '<div class="paneImg">';
+											if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+												newString += '<figure>';
+											}
+											newString += '<img ';
 											if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 												newString += 'alt="' + this.getAttribute("tip") + '" ';
 											}
-											newString += ' /></div>';
+											newString += ' />';
+											if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+												newString += '<figcaption>' + this.getAttribute("caption") + '</figcaption></figure>';
+											}
+											newString += '</div>';
 										}
 										if (this.getAttribute("align") == "Top") {
 											infoString += newString;
@@ -388,7 +396,7 @@
 			}
 			firstLoad = false;
 			this.sizeChanged();
-			
+
 			if ($infoHolder.find(".paneHolder .paneInfo:visible .paneImg img").length > 0) {
 				// there's an image on 1st pane - load it now everything's set up
 				$infoHolder.find(".paneHolder .paneInfo:visible .paneImg img")
