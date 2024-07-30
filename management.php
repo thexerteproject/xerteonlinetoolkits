@@ -169,48 +169,6 @@ function get_user_id(){
 
 }
 
-
-if(isset($_GET['old'])) {
-	/*
-	 * As with index.php, check for posts and similar
-	 */
-	if (empty($_POST["login"]) && empty($_POST["password"])) {
-
-		mgt_page($xerte_toolkits_site, MANAGEMENT_USERNAME_AND_PASSWORD_EMPTY);
-
-		/*
-		 * Password left empty
-		 */
-	} else if (empty($_POST["password"])) {
-
-		mgt_page($xerte_toolkits_site, MANAGEMENT_PASSWORD_EMPTY);
-
-	} else if ((($_POST["login"] == $xerte_toolkits_site->admin_username) && (hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password))) {
-		$_SESSION['toolkits_logon_id'] = "site_administrator";
-		$_SESSION['toolkits_logon_username'] = $xerte_toolkits_site->admin_username;
-		$_SESSION['toolkits_firstname'] = "Admin";
-		$_SESSION['toolkits_surname'] = "User";
-	} else {
-
-        /*
-         * Wrong username or password message
-         */
-
-        if ($_POST["login"] == $xerte_toolkits_site->admin_username) {
-            $msg = "Admin user attempted to login from " . $_SERVER['REMOTE_ADDR'];
-        }
-        else {
-            $uid = (empty($_POST["login"])) ? 'UNKNOWN' : $_POST["login"];
-            $msg = "User " . $uid . " attempted to login from " . $_SERVER['REMOTE_ADDR'];
-        }
-
-        receive_message("", "SYSTEM", "MGMT", "Failed login", $msg);
-
-        mgt_page($xerte_toolkits_site, MANAGEMENT_LOGON_FAIL . " " . MANAGEMENT_NOT_ADMIN_USERNAME);
-
-    }
-}
-
 if(isset($_SESSION['toolkits_logon_id'])) {
 
     global $authmech;
