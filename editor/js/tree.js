@@ -1389,9 +1389,9 @@ var EDITOR = (function ($, parent) {
             }
         };
 
-        // Add the node
-        if (validateInsert(key, nodeName, tree)) {
-            var newkey = tree.create_node(key, this_json, pos, function(){
+        // add nodes, skip validation for CDATA nodes
+        if (xmlData.nodeType === Node.CDATA_SECTION_NODE || (validateInsert(key, nodeName, tree))) {
+            var newkey = tree.create_node(key, this_json, pos, function () {
                 if (select) {
                     tree.deselect_all();
                     tree.select_node(lkey);
