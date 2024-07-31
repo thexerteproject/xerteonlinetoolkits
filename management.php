@@ -322,7 +322,8 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 
                 <div class="userbar">
                     <?php // echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " ";
-                    echo isset($_SESSION['toolkits_logon_username'])? $_SESSION['toolkits_logon_username']: $xerte_toolkits_site->admin_username; ?>
+                    //echo isset($_SESSION['toolkits_logon_username'])? $_SESSION['toolkits_logon_username']: $xerte_toolkits_site->admin_username;
+                    echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname'] ?>
                     <button title="<?php echo MANAGEMENT_LOGOUT; ?>"
                             type="button" class="xerte_button_c_no_width"
                             onclick="javascript:logout()" style="margin-bottom: 8px;">
