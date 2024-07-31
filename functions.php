@@ -312,7 +312,7 @@ function x_clean_input_array($input, $expected_type = null)
     if ($expected_type != null) {
         if ($expected_type == 'array_numeric') {
             if (!is_array($sanitized)) {
-                die("Expected numeric array, got " . htmlspecialchars($sanitized));:q
+                die("Expected numeric array, got " . htmlspecialchars($sanitized));
             }
         } else if ($expected_type == 'array_string') {
             if (!is_array($sanitized)) {
