@@ -46,3 +46,5 @@
     define("USERS_ROLE_USERADMIN", "User Admin");
     
     define("USERS_ROLE_PROJECTADMIN", "Project Admin");
+
+    define("USERS_ROLE_HARVESTADMIN", "Harvest Admin");
