@@ -41,8 +41,7 @@ if (!isset($_POST['tutorial_id']))
 }
 $template_id = x_clean_input($_POST['tutorial_id'], 'numeric');
 
-
-if(!is_user_creator_or_coauthor($template_id) && !is_user_admin()){
+if(!is_user_creator_or_coauthor($template_id) && !is_user_permitted("projectadmin")){
     syndication_display_fail(true);
     exit(0);
 }

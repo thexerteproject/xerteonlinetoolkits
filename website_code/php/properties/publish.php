@@ -52,7 +52,7 @@ if (!isset($_POST['template_id']))
 }
 $template_id = x_clean_input($_POST['template_id'], 'numeric');
 
-if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()) {
+if(has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id'])||is_user_permitted("projectadmin")) {
 
     publish_display($template_id);
 

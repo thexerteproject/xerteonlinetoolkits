@@ -105,7 +105,7 @@ function properties_display($xerte_toolkits_site, $template_id, $change, $msgtyp
 
 	$row_template_name = db_query_one($query_for_template_name, $params);
 
-    if(is_user_creator_or_coauthor($template_id) || is_user_admin()){
+    if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
 
         echo "<form id=\"rename_form\" action=\"javascript:rename_template('" . $template_id ."', 'rename_form')\"><label class=\"block\" for=\"newfilename\">" . PROPERTIES_LIBRARY_PROJECT_NAME . ":</label><input type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['template_name']) . "\" name=\"newfilename\" id=\"newfilename\" /><button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_RENAME . "</button>";
 
@@ -182,7 +182,7 @@ function properties_display($xerte_toolkits_site, $template_id, $change, $msgtyp
 
     }
 	
-	if(is_user_creator_or_coauthor($template_id) || is_user_admin()){
+	if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
 		
 		if(function_exists("display_property_engines")){
 			
@@ -218,7 +218,7 @@ function publish_display($template_id)
     $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
 
     // User has to have some rights to do this
-    if( has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin() ){
+    if( has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin") ){
 		
 		echo "<h2 class=\"header\">" . PUBLISH_TITLE . "</h2>";
 
@@ -616,9 +616,15 @@ function project_info($template_id){
 
         $info .= '<br/>' . PROJECT_INFO_URL . ": ";
 
+        $play_page = "play";
+
+        if(substr(template_access_settings($template_id), 0, 12)=="PasswordPlay"){
+            $play_page = "passwordplay";
+        }
+
         $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
-            url_return("play", $template_id) . "'>" .
-            $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a><br/>";
+            url_return($play_page, $template_id) . "'>" .
+            $xerte_toolkits_site->site_url . url_return($play_page, $template_id) . "</a><br/>";
 
         $template = explode("_", get_template_type($template_id));
 
@@ -663,8 +669,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  '<br/><form><label class=\"block\" for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $template_id) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
-
+        $info .=  '<br/><form><label class=\"block\" for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return($play_page, $template_id) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
     }
     return $info;
 
@@ -756,7 +761,6 @@ function statistics_prepare($template_id, $force=false)
 
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
-
             $query_for_names = "select td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
@@ -772,7 +776,7 @@ function statistics_prepare($template_id, $force=false)
             {
                 $info->published = false;
             }
-            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
+            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "")) && template_access_settings($template_id)!='Private') {
                 $info->info = $html;
                 $info->xapi_linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
                 $info->xapi_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
@@ -855,7 +859,7 @@ function media_quota_info($template_id)
     global $xerte_toolkits_site;
     $quota=0;
 
-    if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+    if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin")) {
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
         $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " .
@@ -925,7 +929,7 @@ function sharing_info($template_id)
 {
     global $xerte_toolkits_site;
 
-    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
@@ -1268,7 +1272,7 @@ function folder_sharing_info($folder_id)
 {
     global $xerte_toolkits_site;
 
-    if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
@@ -1625,7 +1629,7 @@ function rss_syndication($template_id)
 {
     global $xerte_toolkits_site;
 
-    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
@@ -1694,7 +1698,13 @@ function access_info($template_id){
                 $accessStr = "Other";
                 $nrViews = $row_access["number_of_uses"];
             }
-            else
+            else if (substr($accessStr,0,12) == "PasswordPlay")
+		    {
+				$accessTranslation = "PasswordPlay";
+                $accessStr = "PasswordPlay";
+                $nrViews = $row_access["number_of_uses"];
+			}
+		    else
             {
                 $accessTranslation = "'" . $accessStr . "'";
                 $nrViews = $row_access["number_of_uses"];
@@ -1777,6 +1787,33 @@ function access_display($xerte_toolkits_site, $template_id, $change){
     echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED . "</p>";
 
 	echo "<div><input ";
+	if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
+		echo "checked ";
+	}
+	echo "type=\"radio\" id=\"PasswordPlay\" name=\"share_status\" value=\"PasswordPlay\"><label for=\"Password\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY . "</label></div>";
+    echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY_EXPLAINED . "</p><form id=\"PWPlay_pwd\"><textarea id=\"pwd\" style=\"width:90%; height:20px;\">";
+
+	if(isset($_POST['password'])){
+
+        echo $_POST['password'];
+
+    }else{
+		if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
+
+			$pos = strpos($row_access['access_to_whom'], "-");
+
+			if($pos !== false){
+
+				echo substr($row_access['access_to_whom'], $pos+1);
+
+			}
+		}
+
+    }
+
+	echo "</textarea></form>";
+
+	echo "<div><input ";
 	if(substr(template_access_settings($template_id),0,5) == "Other"){
 		echo "checked ";
 	}
@@ -1787,14 +1824,13 @@ function access_display($xerte_toolkits_site, $template_id, $change){
         echo " - " . x_clean_input($_POST['server_string']);
 
     }else{
+		if(substr(template_access_settings($_POST['template_id']),0,5) == "Other"){
+			$pos = strpos($row_access['access_to_whom'], "-");
 
-        $pos = strpos($row_access['access_to_whom'], "-");
-
-        if($pos !== false){
-
-            echo " - " . substr($row_access['access_to_whom'], $pos+1);
-
-        }
+			if($pos !== false){
+				echo " - " . substr($row_access['access_to_whom'], $pos+1);
+			}
+		}
 
     }
 	

@@ -100,7 +100,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
 
 if(is_numeric($_POST['tutorial_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['tutorial_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['tutorial_id'])||is_user_permitted("projectadmin")){
         $tutorial_id = (int)$_POST['tutorial_id'];
 
         $user_id = (int)$_POST['user_id'];

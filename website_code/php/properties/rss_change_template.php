@@ -48,7 +48,7 @@ $rss = x_clean_input($_POST['rss']);
 $export = x_clean_input($_POST['export']);
 $desc = x_clean_input($_POST['desc']);
 
-if(is_user_creator_or_coauthor($template_id)||is_user_admin()){
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
 
     $query_for_rss_status = "select rss from {$xerte_toolkits_site->database_table_prefix}templatesyndication where template_id=?";
 

@@ -98,12 +98,12 @@
       <text label="Answer" type="TextArea" height="100" placeholder="Enter an answer option here"/>
       <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label is used to identify this answer on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
       <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter the feedback for this option" tooltip="Feedback shown when this answer is submitted"/>
-      <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100" />
+      <correct condition="parent.judge!='false'" label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100" />
 
-  	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player below the feedback text">
+  	  <audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player below the feedback text">
   		<audioFB label="File" defaultValue="" type="media" optional="true" placeholder="Select an audio file" />
   		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
-  	</audioGroup>
+  	  </audioGroup>
 
     </option>
   

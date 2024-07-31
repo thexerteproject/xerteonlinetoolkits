@@ -271,6 +271,10 @@
 						hsType = "url";
 						hsInfo = this.getAttribute("destinationURL");
 					
+					} else if (this.getAttribute("newTabURL") != undefined && this.getAttribute("newTabURL") != ""){
+						hsType = "newTab";
+						hsInfo = this.getAttribute("newTabURL");
+
 					// go to page in LO
 					} else if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
 						hsType = "pageLink";
@@ -343,10 +347,13 @@
 							$("#feedback").html("");
 							
 							if (hsType == "url") {
-								window.location.href = hsInfo;
+								window.location.href = hsInfo.url;
 							
+							} else if (hsType == "newTab") {
+								window.open(hsInfo, "_blank");
+
 							// go to page in LO
-							} else if (hsType == "pageLink") {
+							}else if (hsType == "pageLink") {
 								if (x_lookupPage("linkID", hsInfo) === false && ['[previous]', '[next]', '[first]', '[last]'].indexOf(hsInfo) < 0) { // destination not found
 									if (x_params.authorSupport == "true") {
 										$("#feedback").html(hsInfo + " " + $pageContents.data("authorSupport"));

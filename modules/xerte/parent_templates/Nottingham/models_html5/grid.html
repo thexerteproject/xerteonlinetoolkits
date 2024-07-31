@@ -268,7 +268,13 @@
                 l_option,
                 l_feedback,
                 counter = 0;
-                allCorrectLocal = true;
+                allCorrectLocal = true,
+				judge = true;
+
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				judge = false;
+			}
+				
             $("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
                 Correct = true;
                 var $this = $(this);
@@ -278,7 +284,7 @@
                 l_answer = ($this.text().trim() + " --> [" + yPos + "," + xPos + "]");
                 l_option = {source: $this.text().trim(),target: "[" + xPos + "," + yPos + "]"};
 				
-                if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
+                if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html() || !judge) {
 					$this.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="result fa fa-fw fa-x-tick"></span></span>');
                     numOfQuestions++;
                     correct++;
@@ -297,10 +303,11 @@
                 l_feedbacks.push(l_feedback);
                 counter++;
             });
-          this.allCorrect = allCorrectLocal;
+			this.allCorrect = allCorrectLocal;
             var result = {
                 success: this.allCorrect,
-                score: ((correct/numOfQuestions)*100.0)
+                score: ((correct/numOfQuestions)*100.0),
+				judge: judge
             };
 
 			this.checked = true;

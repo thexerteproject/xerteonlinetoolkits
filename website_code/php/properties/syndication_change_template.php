@@ -43,7 +43,7 @@ $template_id = x_clean_input($_POST['tutorial_id'], 'numeric');
 
 $database_connect_id = database_connect("syndication change template database connect success", "syndication change template database connect failed");
 
-if(is_user_creator_or_coauthor($template_id)||is_user_admin()){
+if(is_user_creator_or_coauthor($template_id)||s_user_permitted("projectadmin")){
 
     $query_for_syndication_status = "select syndication from {$prefix}templatesyndication where template_id=?";
     $params = array($template_id);

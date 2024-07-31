@@ -44,8 +44,7 @@ if (!isset($_POST['template_id']))
 }
 $template_id = x_clean_input($_POST['template_id'], 'numeric');
 
-
-if(is_user_creator_or_coauthor($template_id)||is_user_admin()){
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
 
     xml_template_display($xerte_toolkits_site, $template_id, false);
 

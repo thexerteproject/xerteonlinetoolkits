@@ -39,7 +39,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()||$_POST['user_deleting_self']=="true") {
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")||$_POST['user_deleting_self']=="true") {
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
         $id = $_POST['id'];

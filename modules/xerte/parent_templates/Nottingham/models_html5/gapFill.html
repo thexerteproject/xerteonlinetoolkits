@@ -628,7 +628,7 @@
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
                 $("#submitBtn").hide();
 				$("#feedbackTxt").prepend("<div id='tryAgain' aria-live='polite'></div>");
-				
+
 			} else {
 				$("#submitBtn")
 					.button({
@@ -739,7 +739,37 @@
 					$(this).data("width", $(this).width())
 				}
 			});
-			
+
+			$("#labelHolder").droppable({
+				drop: function(event, ui){
+					$thisLabel = ui.draggable;
+					if ($thisLabel.data("prevHolder")) {
+						let prevHolder = $thisLabel.data("prevHolder");
+						prevHolder.html("")
+								  .on("keypress focusin, focusout")
+								  .droppable("option", "disabled", false)
+								  .addClass("highlight")
+								  .remove("ui-dropable-disabled");
+						if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
+							if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+								score--;
+								$thisLabel.add(prevHolder).data("correct", false);
+							}
+						} else {
+							prevHolder.removeClass("correct");
+							if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+								score--;
+								$thisLabel.add(prevHolder).data("correct", false);
+							}
+						}
+						delete labelAnswers[prevHolder.data("answer")];
+					}
+					ui.helper.data("dragged", false);
+					$thisLabel.css({"opacity": 1,"left": 0, "top": 0});
+					$thisLabel.data("prevHolder", null);
+				}
+			});
+
 			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
 				$targetHolder.find("span:not(.target)").css("line-height", parseInt($targetHolder.find(".target").css("line-height")) + 10 + "px");
 			}
@@ -798,7 +828,7 @@
 					containment:	$("#dragDropHolder").hasClass("contain") ? "#dragDropHolder" : false, // don't restrict labels to dragDropHolder when target areas may be small as this can make it very hard to drop labels
 					stack:			"#dragDropHolder .label", // item being dragged is always on top (z-index)
 					revert:			"invalid", // snap back to original position if not dropped on target
-					start:			function() {
+					start:			function(event, ui) {
 						// remove any focus/selection highlights made by tabbing to labels/targets
 						if ($("#labelHolder .label.focus").length > 0) {
 							$("#labelHolder .label.focus").attr("title", labelTxt1);
@@ -814,6 +844,11 @@
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
 						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
+						ui.helper.css("opacity", 1);
+					},
+					stop: function(event, ui){
+						if(ui.helper.data("dragged"))
+							ui.helper.css("opacity", 0);
 					}
 					})
 				.disableSelection();
@@ -833,18 +868,20 @@
 			$("#targetHolder").addClass(x_currentPageXML.getAttribute("gapLook") == null ? "bg" : x_currentPageXML.getAttribute("gapLook"));
 			$("#targetHolder").addClass(x_currentPageXML.getAttribute("gapLookFilled") == null ? "gapStyle_false" : "gapStyle_" + x_currentPageXML.getAttribute("gapLookFilled"));
 		}
-		
+
 		// function called when label dropped on target - by mouse or keyboard
 		this.dropLabel = function($thisTarget, $thisLabel) {
 			$feedbackTxt.find('#txt').hide();
-			
+			$thisLabel.data("dragged", true);
+
 			$thisLabel
-				.removeAttr("title")
+				//.removeAttr("title")
 				.removeClass("selected")
-				.draggable("disable")
-				.off("keypress focusin focusout click")
+				//.draggable("disable")
+				//.off("keypress focusin focusout click")
 				.css("opacity", 0);
-			
+
+
 			if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
 				if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
 					score++;
@@ -863,7 +900,7 @@
 			$labelClone.find("script[id^='MathJax-Element']").remove();
 
 			$thisTarget
-				.removeAttr("title")
+				//.removeAttr("title")
 				.html($labelClone.html())
 				.off("keypress focusin focusout click")
 				.droppable("option", "disabled", true)
@@ -879,8 +916,36 @@
 			}
 			
 			$pageContents.data("selectedLabel", "");
-			
+
+			if($thisLabel.data("prevHolder")){
+				let prevHolder = $thisLabel.data("prevHolder");
+				prevHolder.html("").on("keypress focusin, focusout").droppable("option", "disabled", false).addClass("highlight").remove("ui-dropable-disabled");
+				if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
+					if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+						score--;
+						$thisLabel.add(prevHolder).data("correct", false);
+					}
+				} else {
+					prevHolder.removeClass("correct");
+					if ($thisLabel.data("answer") == prevHolder.data("answer")) {
+						score--;
+						$thisLabel.add(prevHolder).data("correct", false);
+					}
+				}
+				delete labelAnswers[prevHolder.data("answer")];
+			}
+
+			if(x_currentPageXML.getAttribute("markEnd") == "true") {
+				$thisLabel.data("prevHolder", $thisTarget);
+			}
+			else {
+				$thisLabel.draggable("disable").off("keypress focusin focusout").removeAttr("title").removeAttr("tabindex");
+				$thisTarget.removeAttr("title").removeAttr("tabindex");
+			}
+
 			labelAnswers[$thisTarget.data("answer")] = $thisLabel.data("answer");
+
+			console.log(labelAnswers);
 
 			// if it's marked as completed (can only drop on correct targets) then show feedback immediately when complete
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0)) {
@@ -1136,7 +1201,12 @@
 					var wrong = 0;
 					total = 0;
 					correct_answers = 0;
-					
+
+					let judge = true;
+					if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+						judge = false;
+					}
+
 					$targetHolder.find("input").each(function() {
 						var $this = $(this),
 							currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
@@ -1144,7 +1214,7 @@
 						var correct = false;
 						var answer = currvalue;
 
-						if (answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
+						if ((answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) || !judge) { // correct
 							$this.attr("readonly", "readonly");
 							$this.attr("correct", "correct");
 							$this.addClass("correct");
@@ -1164,7 +1234,8 @@
 						total++;
 						var result = {
 							success: correct,
-							score: (correct ? 100.0 : 0.0)
+							score: (correct ? 100.0 : 0.0),
+							judge: judge
 						};
 						
 						XTExitInteraction(x_currentPage, $this.data("index") , result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));

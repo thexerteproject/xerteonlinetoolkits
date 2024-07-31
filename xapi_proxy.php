@@ -450,6 +450,10 @@ if (!isset($_SESSION['XAPI_PROXY']))
             //_debug("xapi_proxy: header=" . print_r($header, true));
             //_debug("xapi_proxy: contents=" . print_r($contents, true));
 
+            if(isset($status['http_code'])){
+                http_response_code($status['http_code']);
+            }
+
             // Rebuild xapi_proxy.php path in "more", if "more" is present
             $pos = strpos($contents, "\"more\"");
             if ($pos !== false)

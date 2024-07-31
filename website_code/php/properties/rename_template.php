@@ -49,7 +49,7 @@ if (!isset($_POST['template_id']) || !isset($_POST['template_name']))
 $template_id = x_clean_input($_POST['template_id'], 'numeric');
 $template_name = x_clean_input($_POST['template_name']);
 
-if(is_user_creator_or_coauthor($template_id)||is_user_admin()) {
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")) {
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
 

@@ -67,7 +67,7 @@ if (!isset($_POST['template_id'])) {
     die("No template id");
 }
 $template_id = x_clean_input($_POST['template_id']);
-if(is_user_creator_or_coauthor($template_id)||is_user_admin()){
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
 
     access_display($xerte_toolkits_site, $template_id,false);
 

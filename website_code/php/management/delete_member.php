@@ -35,7 +35,7 @@ require_once("management_library.php");
 global $xerte_toolkits_site;
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     $login_id= x_clean_input($_POST['login_id'], 'numeric');
     $group_id = x_clean_input($_POST['group_id'], 'numeric');
@@ -72,7 +72,7 @@ if(is_user_admin()){
         $templates = array_merge($templates, $folder_templates);
     }
 
-    if (count($templates) > 1) {
+    if (count($templates) > 0) {
         $questionmarks = str_repeat("?,", count($templates) - 1) . "?";
         $query = "update {$prefix}templaterights SET folder = ? where user_id = ? and role = 'creator' and template_id in ({$questionmarks})";
         $params = array($workspaceId, $login_id);
