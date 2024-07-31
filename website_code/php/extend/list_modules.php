@@ -49,21 +49,21 @@ if(is_user_admin()){
 		
 			echo "<div>";
 			
-			echo "<h2>" . $plugin->name . "</h2>";
-			echo "<p>" . $plugin->description . "</p>";
+			echo "<h2>" . x_clean_input($plugin->name) . "</h2>";
+			echo "<p>" . htmlspecialchars($plugin->description) . "</p>";
 			
-			$created = explode("T", $plugin->created);
+			$created = explode("T", x_clean_input($plugin->created));
 			
-			echo "<p><span>" . EXTEND_AUTHOR . " : " . $plugin->owner . "</span> | <span>" . EXTEND_CREATED . " : " . $created[0] . "</span> | <span>" . EXTEND_SIZE . " : " . $plugin->size . "</span>  | <span><a href='" . $plugin->url . "'>" . EXTEND_VISIT . "</a></span></p>";
+			echo "<p><span>" . EXTEND_AUTHOR . " : " . x_clean_input($plugin->owner) . "</span> | <span>" . EXTEND_CREATED . " : " . $created[0] . "</span> | <span>" . EXTEND_SIZE . " : " . x_clean_input($plugin->size) . "</span>  | <span><a href='" . x_clean_input($plugin->url) . "'>" . EXTEND_VISIT . "</a></span></p>";
 			
-			if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . str_replace("XOT-","",$plugin->name))){
+			if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . str_replace("XOT-","",x_clean_input($plugin->name)))){
 			
 				echo "<p>" . EXTEND_ALREADY . "</p>";
-				echo "<button onclick='get_module(\"" . $plugin->url  . "\", \"" . $plugin->name . "\")'>" . EXTEND_UPGRADE . "</button>";
+				echo "<button onclick='get_module(\"" .x_clean_input($plugin->url)  . "\", \"" . x_clean_input($plugin->name) . "\")'>" . EXTEND_UPGRADE . "</button>";
 			
 			}else{
 			
-				echo "<button onclick='get_module(\"" . $plugin->url  . "\", \"" . $plugin->name . "\")'>" . EXTEND_INSTALL . "</button>";
+				echo "<button onclick='get_module(\"" . x_clean_input($plugin->url)  . "\", \"" . x_clean_input($plugin->name) . "\")'>" . EXTEND_INSTALL . "</button>";
 			
 			}
 			

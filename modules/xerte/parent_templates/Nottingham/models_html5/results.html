@@ -109,6 +109,12 @@
       }
     };
 
+    this.userNameEntered = function() {
+      username = $("#name").val();
+      $("#dialog-form").dialog("close");
+      this.pdfDownload(true);
+    };
+
     this.secondsTOHHMMSS = function (totalSeconds){
       var hours = Math.floor(totalSeconds / 3600);
       var minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
@@ -172,6 +178,16 @@
         fullcompletion = true;
       }
       xtresults = XTResults(fullcompletion);
+      var altnormalrow = false;
+      var altfullrow = false;
+      $("#averageScore").html(xtresults.averageScore + "%");
+      $("#completion").html(xtresults.completion + "%");
+
+      $("#totalDuration").html(results.secondsTOHHMMSS(xtresults.totalDuration));
+      $("#startTime").html(xtresults.start);
+      var detailstables = 0;
+      var firstnormalrow = true;
+      var detailstable = $("<table class='details header shaded'>");
 
       // add page text
       $('#txtHolder').show();

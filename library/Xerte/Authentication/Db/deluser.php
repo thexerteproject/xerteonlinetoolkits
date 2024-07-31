@@ -34,17 +34,17 @@ if(is_user_permitted("useradmin")){
     }
     if (strlen($mesg) == 0)
     {
-        $mesg = $authmech->delUser(urldecode($_POST['username']));
+        $mesg = $authmech->delUser(urldecode(x_clean_input($_POST['username'])));
 
     }
     if (strlen($mesg) > 0)
     {
         $finalmesg = "<p>" . AUTH_DB_DELUSER_FAILED . "</p>";
-        $finalmesg .= "<p><font color = \"red\"><ul>" . $mesg . "</ul></font></p>";
+        $finalmesg .= "<p><style=\"color:  red\"><ul>" . $mesg . "</ul></font></p>";
     }
     else
     {
-        $finalmesg = "<p><font color = \"green\">" . AUTH_DB_DELUSER_SUCCEEDED . "</font></p>";
+        $finalmesg = "<p><<style=\"color: green\">" . AUTH_DB_DELUSER_SUCCEEDED . "</font></p>";
     }
     $authmech->getUserList(true, $finalmesg);
 }

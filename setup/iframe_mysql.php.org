@@ -1,4 +1,4 @@
-<?php
+<!--
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -17,20 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * 
- * file exists page, used by xerte to chec if a file is there before previewing it
- *
- * @author Patrick Lockley
- * @version 1.0
- * @package
- */
-
-require_once("../../../config.php");
-
-if(!empty($_POST['file_name']) && file_exists($xerte_toolkits_site->root_file_path . $_POST['file_name'])){
-    print("&return_value=true");
-}else{
-    print("&return_value=false");
-}
+ -->
+<html>
+	<body>
+		<form action="mysql_iframe.php.org">
+			<input type="submit" value="Run mysql test" />
+		</form>
+	</body>
+</html>

@@ -33,7 +33,9 @@ _load_language_file("/properties.inc");
 include "../template_status.php";
 include "../user_library.php";
 
-if(!is_numeric($_POST['template_id'])){
+
+
+if(!isset($_POST['template_id'])){
 	echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
 	echo "<div id=\"mainContent\">";
     echo "<p>" . SHARING_FAIL . "</p>";
@@ -41,16 +43,15 @@ if(!is_numeric($_POST['template_id'])){
     exit(0);
 }
 
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
 
-if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
+if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
     echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
 	echo "<div id=\"mainContent\">";
     echo "<p>" . SHARING_FAIL . "</p>";
 	echo "</div>";
     exit(0);
 }
-$template_id = $_POST['template_id'];
-
 echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
 echo "<div id=\"mainContent\">";
 
@@ -58,7 +59,7 @@ echo "<div id=\"mainContent\">";
  * show a different view if you are the file creator
  */
 
-if(is_user_creator_or_coauthor((int) $template_id) || is_user_permitted("projectadmin")){
+if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
 	
 	echo "<p>" . SHARING_INSTRUCTION . "</p>";
 	
@@ -165,9 +166,9 @@ foreach($query_sharing_rows as $row) {
 
 echo "</ul>";
 
-if(!is_user_creator($_POST['template_id'])&&!is_user_permitted("projectadmin")){
+if(!is_user_creator($template_id)&&!is_user_permitted("projectadmin")){
 
-    echo "<p>" . SHARING_STOP_INSTRUCTIONS . " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true,false)\"><i class=\"fa fa-times\"></i> " . SHARING_STOP . "</button></p>";
+    echo "<p>" . SHARING_STOP_INSTRUCTIONS . " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $template_id . "','" . $_SESSION['toolkits_logon_id'] . "',true,false)\"><i class=\"fa fa-times\"></i> " . SHARING_STOP . "</button></p>";
 
 }
 

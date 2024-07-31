@@ -37,8 +37,8 @@ $prefix = $xerte_toolkits_site->database_table_prefix;
 
 if(is_user_permitted("useradmin")){
 
-    $login_id = $_POST['login_id'];
-    $group_id = $_POST['group_id'];
+    $login_id= x_clean_input($_POST['login_id'], 'numeric');
+    $group_id = x_clean_input($_POST['group_id'], 'numeric');
 
     // Get all folders shared with this group
     $shared_folders = get_all_folders_shared_with_group($group_id);
@@ -71,14 +71,14 @@ if(is_user_permitted("useradmin")){
 
         $templates = array_merge($templates, $folder_templates);
     }
-	if(count($templates) != 0){
-		$questionmarks = str_repeat("?,", count($templates) - 1) . "?";
+
+    if (count($templates) > 0) {
+        $questionmarks = str_repeat("?,", count($templates) - 1) . "?";
         $query = "update {$prefix}templaterights SET folder = ? where user_id = ? and role = 'creator' and template_id in ({$questionmarks})";
         $params = array($workspaceId, $login_id);
         $params = array_merge($params, $templates);
         db_query($query, $params);
-	}
-
+    }
     $query = "DELETE FROM " . $xerte_toolkits_site->database_table_prefix . "user_group_members WHERE login_id=? AND group_id=?";
     $params = array($login_id, $group_id);
     db_query($query, $params);

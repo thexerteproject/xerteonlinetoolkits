@@ -251,24 +251,31 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id, $trans
 if(is_user_permitted("projectadmin"))
 {
     if (isset($_REQUEST['olduserid']) && isset($_REQUEST['newuserid']) && isset($_REQUEST['transfer_private']) && isset($_REQUEST['transfer_shared_folders']) && isset($_REQUEST['delete_user'])) {
+
+        $olduserid = x_clean_input($_REQUEST['olduserid'], 'numeric');
+        $newuserid = x_clean_input($_REQUEST['newuserid'], 'numeric');
+        $transfer_private = x_clean_input($_REQUEST['transfer_private']);
+        $transfer_shared_folders = x_clean_input($_REQUEST['transfer_shared_folders']);
+        $delete_user = x_clean_input($_REQUEST['delete_user']);
+
         // Get username of olduserid
         $q = "select * from {$prefix}logindetails where login_id=?";
-        $params = array($_REQUEST['olduserid']);
+        $params = array(olduserid);
         $olduser_rec = db_query_one($q, $params);
 
         $olduser = $olduser_rec['username'];
 
         // Get username of newusername
         $q = "select * from {$prefix}logindetails where login_id=?";
-        $params = array($_REQUEST['newuserid']);
+        $params = array($newuserid);
         $newuser_rec = db_query_one($q, $params);
 
         $newuser = $newuser_rec['username'];
-        $newuserid = $_REQUEST['newuserid'];
+        $newuserid = $newuserid;
 
-        $transfer_private = ($_REQUEST['transfer_private'] == 'true' ? true : false);
-        $transfer_shared_folders = ($_REQUEST['transfer_shared_folders'] == 'true' ? true : false);
-        $delete_user = ($_REQUEST['delete_user'] == 'true' ? true : false);
+        $transfer_private = ($transfer_private == 'true' ? true : false);
+        $transfer_shared_folders = ($transfer_shared_folders == 'true' ? true : false);
+        $delete_user = ($delete_user == 'true' ? true : false);
 
         $q = "select td.*, tr.*, otd.template_name as orgtemplate_name, f.folder_id, f.folder_parent, f.folder_name from {$prefix}templatedetails td, {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd, {$prefix}folderdetails f, {$prefix}logindetails ld 
                 where td.template_id=tr.template_id and tr.role='creator' and tr.folder=f.folder_id and td.creator_id=ld.login_id and td.template_type_id=otd.template_type_id and ld.username=?";
@@ -278,12 +285,12 @@ if(is_user_permitted("projectadmin"))
             $foldername = $olduser_rec['firstname'] .  " "  . $olduser_rec['surname'];
             if (isset($_REQUEST['newfoldername']))
             {
-                $foldername = $_REQUEST['newfoldername'];
+                $foldername = x_clean_input($_REQUEST['newfoldername']);
             }
 
             // Build original folder tree
             $q = "select * from {$prefix}folderdetails where login_id=? order by folder_id";
-            $params = array($_REQUEST['olduserid']);
+            $params = array($olduserid);
             $folder_structure = db_query($q, $params);
 
             // At least two folders should exist...
@@ -358,7 +365,7 @@ if(is_user_permitted("projectadmin"))
 
                     // 2. templaterights
                     // 2a. Make sure new folder exists
-                    $folder_id = createGetFolderId($folder_structure, $_REQUEST['newuserid'], $template['folder_id'], $transfer_shared_folders);
+                    $folder_id = createGetFolderId($folder_structure, $newuserid, $template['folder_id'], $transfer_shared_folders);
                     // 2b. put in correct folder
                     $q = "insert {$prefix}templaterights set template_id=?, user_id=?, role='creator', folder=?";
                     $params = array($template['template_id'], $rootfolder['login_id'], $folder_id);
@@ -409,7 +416,7 @@ if(is_user_permitted("projectadmin"))
             if ($delete_user) {
                 // Remove the old user from all projects that have been shared with him/her
                 $q = "delete from {$prefix}templaterights where user_id=? and role != 'creator'";
-                $params = array($_REQUEST['olduserid']);
+                $params = array($olduserid);
                 $res = db_query($q, $params);
                 if ($res === false) {
                     die("Error deleting any older rights in templaterights for user " . $olduser);
@@ -427,7 +434,7 @@ if(is_user_permitted("projectadmin"))
 
                     // Remove user from login details
                     $q = "delete from {$prefix}logindetails where login_id=?";
-                    $params = array($_REQUEST['olduserid']);
+                    $params = array($olduserid);
                     $res = db_query($q, $params);
                     if ($res === false) {
                         die("Error deleting user " . $olduser);

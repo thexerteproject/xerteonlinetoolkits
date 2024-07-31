@@ -55,13 +55,20 @@ if (!isset($_SESSION['toolkits_logon_username']))
  * connect to the database
  */
 
-if(is_numeric($_POST['folder_id']) && (has_rights_to_this_folder($_POST['folder_id'], $_SESSION['toolkits_logon_id']) || is_user_admin())){
+if (!isset($_POST['folder_id']))
+{
+    echo "<p>" . FOLDER_CONTENT_FAIL . "</p>";
+    echo "</div>";
+    exit(0);
+}
 
-    $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
+$folder_id = x_clean_input($_POST['folder_id'], 'numeric');
+
+if(has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id'] || is_user_admin())){
 
 	echo "<ul class=\"dynamic_area_folder\">";
 	
-    list_folder_contents_event_free($_POST['folder_id']);
+    list_folder_contents_event_free($folder_id);
 	
     echo "</ul>";
     
@@ -70,5 +77,3 @@ if(is_numeric($_POST['folder_id']) && (has_rights_to_this_folder($_POST['folder_
 }
 
 echo "</div>";
-
-?>

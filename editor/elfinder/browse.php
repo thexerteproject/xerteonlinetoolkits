@@ -31,8 +31,8 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 // if there are GET paramters, put them in session and restart
 if (isset($_GET['uploadDir']) && isset($_GET['uploadURL']))
 {
-    $_SESSION['uploadDir'] = $_REQUEST['uploadDir'];
-    $_SESSION['uploadURL'] = $_REQUEST['uploadURL'];
+    $_SESSION['uploadDir'] = x_clean_input($_GET['uploadDir']);
+    $_SESSION['uploadURL'] = x_clean_input($_GET['uploadURL']);
 
     $params = "?";
     foreach($_GET as $key => $param)
@@ -50,26 +50,55 @@ if (isset($_GET['uploadDir']) && isset($_GET['uploadURL']))
     header("Location: " . $_SERVER["SCRIPT_NAME"] . $params);
 }
 
-if (strpos($_SESSION['uploadDir'], 'USER-FILES') === false || strpos($_SESSION['uploadURL'], 'USER-FILES') === false)
+if (!isset($_SESSION['uploadDir']) || !isset($_SESSION['uploadURL']))
 {
     die("Invalid upload location");
 }
 
+// Check uploadDir and check for path traversal
+$realpath = realpath($_SESSION['uploadDir']) . '/';
+if ($realpath === false || $realpath !== $_SESSION['uploadDir'])
+{
+    die("Invalid upload location");
+}
+// Check whether path is as expected
+if (strpos($_SESSION['uploadDir'], $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
+{
+    die("Invalid upload location");
+}
+
+// Check uploadURL
+// First create a path from URL by replacing site_url with root_file_path
+$uploadURL = str_replace($xerte_toolkits_site->site_url, $xerte_toolkits_site->root_file_path, $_SESSION['uploadURL']);
+$realpath = realpath($uploadURL);
+// Remove trailing '/' from uploadURL
+$uploadURL = rtrim($uploadURL, '/');
+if ($realpath === false || $realpath !== $uploadURL)
+{
+    die("Invalid upload location");
+}
+// Check whther it is the expected location
+if (strpos($_SESSION['uploadURL'], $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short) !== 0)
+{
+    die("Invalid upload location");
+}
+
+
 $mode = 'standalone';
-if (isset($_REQUEST['mode']) && $_REQUEST['mode']=='cke') {
+if (isset($_REQUEST['mode']) && x_clean_input($_REQUEST['mode'])=='cke') {
     $mode = 'cke';
-    $funcNum = $_REQUEST['CKEditorFuncNum'];
+    $funcNum = x_clean_input($_REQUEST['CKEditorFuncNum']);
 }
 
 $lang = "en";
 if (isset($_REQUEST['lang']))
 {
-    $lang = $_REQUEST['lang'];
+    $lang = x_clean_input($_REQUEST['lang']);
 }
 
 if (isset($_REQUEST['langCode']))
 {
-    $lang = $_REQUEST['langCode'];
+    $lang = x_clean_input($_REQUEST['langCode']);
 }
 
 

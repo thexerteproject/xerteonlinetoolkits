@@ -38,39 +38,44 @@ if (!isset($_SESSION['toolkits_logon_username']))
     die("Session is invalid or expired");
 }
 
-if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
+if(!isset($_POST['folder_id']) || !isset($_POST['folder_name'])) {
+    die("No folder id or folder name");
+}
 
-    $database_id = database_connect("Folder rename database connect success","Folder rename database connect failed");
+$folder_id = x_clean_input($_POST['folder_id'], 'numeric');
+$folder_name = x_clean_input($_POST['folder_name']);
 
-    $prefix = $xerte_toolkits_site->database_table_prefix;
-    
-    $query = "update {$prefix}folderdetails SET folder_name = ? WHERE folder_id = ?";
-    $params = array(htmlspecialchars($_POST['folder_name']), $_POST['folder_id']);
 
-    $ok = db_query($query, $params);
-    
-    if($ok) {
-		
-		echo "<h2 class=\"header\">" . FOLDER_PROPERTIES_PROPERTIES . "</h2>";
+$database_id = database_connect("Folder rename database connect success","Folder rename database connect failed");
 
-		echo "<div id=\"mainContent\">";
-		
-		echo "<form id=\"rename_form\" action=\"javascript:rename_folder('" .
-			$_POST['folder_id'] ."', 'rename_form')\">"
-			. "<label class=\"block\" for=\"newfoldername\">" . FOLDER_PROPERTIES_CALLED . ":</label>"
-			. "<input type=\"text\" value=\"" . htmlspecialchars(str_replace("_", " ", $_POST['folder_name'])) . "\" name=\"newfoldername\" id=\"newfoldername\" />"
-			. "<button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . FOLDER_PROPERTIES_BUTTON_SAVE . "</button>";
+$prefix = $xerte_toolkits_site->database_table_prefix;
 
-		echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . FOLDER_PROPERTIES_CHANGED . "</p>";
-		
-		echo "</form>";
-		
-        /**
-         * Extra bit of code to tell the ajax back on the web page what to rename the folder to be
-         */
+$query = "update {$prefix}folderdetails SET folder_name = ? WHERE folder_id = ?";
+$params = array($folder_name, $folder_id);
 
-        echo "~*~" . $_POST['folder_name'];
+$ok = db_query($query, $params);
 
-    }
+if($ok) {
+
+    echo "<h2 class=\"header\">" . FOLDER_PROPERTIES_PROPERTIES . "</h2>";
+
+    echo "<div id=\"mainContent\">";
+
+    echo "<form id=\"rename_form\" action=\"javascript:rename_folder('" .
+        $_POST['folder_id'] ."', 'rename_form')\">"
+        . "<label class=\"block\" for=\"newfoldername\">" . FOLDER_PROPERTIES_CALLED . ":</label>"
+        . "<input type=\"text\" value=\"" . htmlspecialchars(str_replace("_", " ", $folder_name)) . "\" name=\"newfoldername\" id=\"newfoldername\" />"
+        . "<button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . FOLDER_PROPERTIES_BUTTON_SAVE . "</button>";
+
+    echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . FOLDER_PROPERTIES_CHANGED . "</p>";
+
+    echo "</form>";
+
+    /**
+     * Extra bit of code to tell the ajax back on the web page what to rename the folder to be
+     */
+
+    echo "~*~" . $_POST['folder_name'];
 
 }
+

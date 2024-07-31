@@ -153,12 +153,12 @@ function _include_javascript_file($file_path) {
     {
         $file_path = substr($file_path, 0, $parpos);
     }
-    if (isset($_GET['language']) && is_dir($languages . $_GET['language'])) {
-        $_SESSION['toolkits_language'] = $_GET['language'];
+    if (isset($_GET['language']) && is_dir($languages . x_clean_input($_GET['language']))) {
+        $_SESSION['toolkits_language'] = x_clean_input($_GET['language']);
     }
 
     if (isset($_SESSION['toolkits_language'])) {
-        $language = $_SESSION['toolkits_language'];
+        $language = x_clean_input($_SESSION['toolkits_language']);
     } else {
         // this does some magic interrogation of $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $language = new Zend_Locale();
@@ -282,15 +282,86 @@ function true_or_false($var)
     return false;
 }
 
-// Function to prevent XSS vulnarabilities
-function x_clean_input($input)
+// Function to prevent XSS vulnarabilities in arrays
+// Do NOT use x_clean_input in the implementation, as Snyk does not understand that
+function x_clean_input_array($input, $expected_type = null)
 {
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = htmlspecialchars($input);
-    return $input;
+    $array_type = null;
+    if ($expected_type == 'array_numeric') {
+        $array_type = 'numeric';
+    } else if ($expected_type == 'array_string') {
+        $array_type = 'string';
+    }
+    $sanitized = array();
+    foreach ($input as $key => $value) {
+        $sanitized[$key] = trim($input[$key]);
+        $sanitized[$key] = stripslashes($sanitized[$key]);
+        $sanitized[$key] = htmlspecialchars($sanitized[$key]);
+        if ($array_type != null) {
+            if ($array_type == 'string') {
+                if (!is_string($sanitized[$key])) {
+                    die("Expected string, got " . htmlspecialchars($sanitized[$key]));
+                }
+            } else if ($array_type == 'numeric') {
+                if (!is_numeric($sanitized[$key])) {
+                    die("Expected numeric value, got ". htmlspecialchars($sanitized[$key]));
+                }
+            }
+        }
+    }
+    if ($expected_type != null) {
+        if ($expected_type == 'array_numeric') {
+            if (!is_array($sanitized)) {
+                die("Expected numeric array, got " . htmlspecialchars($sanitized));
+            }
+        } else if ($expected_type == 'array_string') {
+            if (!is_array($sanitized)) {
+                die("Expected string array, got " . htmlspecialchars($sanitized));
+            }
+        }
+    }
+    return $sanitized;
 }
 
+
+// Function to prevent XSS vulnarabilities
+function x_clean_input($input, $expected_type = null)
+{
+    if (is_array($input)) {
+        $sanitized =  x_clean_input_array($input, $expected_type);
+        return $sanitized;
+    }
+    $sanitized = trim($input);
+    $sanitized = stripslashes($sanitized);
+    $sanitized = htmlspecialchars($sanitized);
+    if ($expected_type != null) {
+        if ($expected_type == 'string') {
+            if (!is_string($sanitized)) {
+                die("Expected string, got " . htmlspecialchars($sanitized));
+            }
+        }
+        else if ($expected_type == 'numeric') {
+            if (!is_numeric($sanitized)) {
+                die("Expected numeric value, got " . htmlspecialchars($sanitized));
+            }
+        }
+    }
+    return $sanitized;
+}
+
+function x_check_zip($zip)
+{
+    // Iterate over files in ZipArchive object to check for any files that are not allowed
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $filename = $zip->getNameIndex($i);
+        if (strpos($filename, '..') !== false) {
+            die("Zip archive contains path names with path traversal: " .  x_clean_input($filename));
+        }
+        if (strpos($filename, '/') === 0) {
+            die("Zip archive contains files with absolute paths: " . x_clean_input($filename));
+        }
+    }
+}
 function set_token()
 {
     if (!isset($_SESSION['token'])) {

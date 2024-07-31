@@ -368,7 +368,7 @@ var EDITOR = (function ($, parent) {
                 window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
             }
         })
-        .fail(function() {
+        .fail(function(data, status, error) {
             $('#loader').hide();
 			// alert from play button click
 			var sessionError = language.Alert.sessionError;

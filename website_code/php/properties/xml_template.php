@@ -38,20 +38,19 @@ include "properties_library.php";
 
 $database_id = database_connect("peer template database connect success","peer template change database connect failed");
 
-if(is_numeric($_POST['template_id'])){
-
-    if(is_user_creator_or_coauthor($_POST['template_id'])|| is_user_permitted("projectadmin")){
-
-        xml_template_display($xerte_toolkits_site,false);
-
-    }else{
-
-        xml_template_display_fail(true);
-
-    }
-
-} else{
-	
-    xml_template_display_fail(false);
-	
+if (!isset($_POST['template_id']))
+{
+    die('Invalid template_id');
 }
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
+
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
+
+    xml_template_display($xerte_toolkits_site, $template_id, false);
+
+}else{
+
+    xml_template_display_fail(true);
+
+}
+

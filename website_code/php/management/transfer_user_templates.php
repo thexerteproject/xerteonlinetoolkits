@@ -41,7 +41,7 @@ if(is_user_permitted("projectadmin")) {
     if (!isset($_REQUEST['user_id'])) {
         exit;
     }
-    $login_id = $_REQUEST['user_id'];
+    $login_id = x_clean_input($_REQUEST['user_id']);
 
     // Get all users
     $query = "SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "logindetails order by surname,firstname,username";

@@ -39,8 +39,8 @@ require('../template_status.php');
 
 $users_array = array();
 
-$file_path = $_POST['file_path'];
-$temp_array = explode("-", $_POST['file_path']);
+$file_path = x_clean_input($_POST['file_path']);
+$temp_array = explode("-", $file_path);
 
 if (count($temp_array) !== 3)
 {
@@ -147,4 +147,4 @@ if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
 }
 
 
-?>
+
