@@ -35,14 +35,14 @@ _load_language_file("/website_code/php/properties/name_select_gift_template.inc"
 $search = $_POST['search_string'];
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
 
 if(is_numeric($_POST['template_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
         $tutorial_id = (int)$_POST['template_id'];
 
         $database_id = database_connect("Template name select share access database connect success", "Template name select share database connect failed");

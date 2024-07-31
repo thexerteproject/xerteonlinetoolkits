@@ -53,7 +53,7 @@
 			
 			$labels.each(function() {
 				var $this = $(this);
-				$this.width($target.find("h3").width() + 5); // + 5 is so drop shadow width is ignored
+				$this.width($target.find(".fixedTxt").width() + 5); // + 5 is so drop shadow width is ignored
 				if ($this.find(".audioHolder").length > 0) {
 					$this.find(".labelTxt").width($this.width() - $("#pageContents").data("audioW"));
 				} else {
@@ -91,8 +91,8 @@
 					// adjust label absolute position on target
 					var $thisTarget = $this.data("currentTarget");
 					$this.css({
-						"top"	:$thisTarget.find("h3").position().top,
-						"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $this.width() + 5
+						"top"	:$thisTarget.find(".fixedTxt").position().top,
+						"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $this.outerWidth() + 5
 					});
 				}
 			});
@@ -114,7 +114,7 @@
 			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
 			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
 			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
-			
+
 			$("#textHolder")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
 				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
@@ -181,7 +181,6 @@
 											"left"	:"auto"
 											})
 										.data("currentTarget", "")
-										.attr("tabindex", Number($this.attr("id").replace("label","")) + 2)
 										.find(".audioHolder").hide();
 									
 									$prevTarget.data("currentLabel", "");
@@ -285,7 +284,7 @@
 							"correct":this.getAttribute("p2"),
 							"id"	:i
 							})
-						.find("h3").html(x_addLineBreaks(this.getAttribute("p1")));
+						.find(".fixedTxt").html(x_addLineBreaks(this.getAttribute("p1")));
 						
 					labels.push({text:this.getAttribute("p2"), correct:$thisTarget, audio:this.getAttribute("audioFeedback"), transcript:this.getAttribute("audioTranscript")});
 				});
@@ -313,7 +312,6 @@
 					}
 					})
 				.focusout(function() {
-					var $pageContents = $("#pageContents");
 					$(this)
 						.removeClass("highlightDark")
 						.attr("title", targetTxt1 + " '" + $(this).data("name") + " " + ($(this).index() + 1) + "'");
@@ -322,35 +320,27 @@
 					if ($(e.target).hasClass("target")) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
-							var $selectedLabel = $("#pageContents").data("selectedLabel");
-							if ($selectedLabel != undefined && $selectedLabel != "") {
-								textMatch.dropLabel($(this), $selectedLabel); // target, label
-							}
+							$(this).click();
 						}
 					}
-					})
+				})
+				.click(function() {
+					var $selectedLabel = $("#pageContents").data("selectedLabel");
+					if ($selectedLabel != undefined && $selectedLabel != "") {
+						textMatch.dropLabel($(this), $selectedLabel); // target, label
+					}
+				})
 				.data("currentLabel", "");
-			
-			// set tab index for targets - leaving space between them for a label to be put on it
-			var tabIndex = 1;
-			tabIndex += $pageContents.data("labels").length;
+
 			$targetHolder.find(".target").each(function(i) {
-				tabIndex++;
 				var $this = $(this);
-				$this.attr({
-					"tabindex"	:tabIndex,
-					"title"		:targetTxt1 + " '" + $this.data("name") + " " + ($this.index() + 1) + "'"
-				});
-				tabIndex++;
+				$this.attr("title", targetTxt1 + " '" + $this.data("name") + " " + ($this.index() + 1) + "'");
 			});
-			$button.attr("tabindex", tabIndex + 1);
-			$feedback.attr("tabindex", tabIndex + 2);
 			
 			this.createLabels();
 			this.sizeChanged();
 			this.initTracking();
 			x_pageLoaded();
-			
 		}
 		
 		
@@ -376,7 +366,11 @@
 				}else{
 					l_placeholder = "";
 				}
-        		var l_draglabel	= $this.find("div").text().trim(); 
+
+				var l_draglabel	= $this.find("div.labelTxt").clone();
+				l_draglabel.find('.audioHolder').remove();
+				l_draglabel = l_draglabel.text().trim();
+
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
                 l_options.push(l_option);
@@ -451,7 +445,7 @@
 				tempLabels.splice(labelNum, 1);
 			}
 			for (i=0; i<labels.length; i++) {
-				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '"><div class="labelTxt">' + x_addLineBreaks(labels[i].text) + '</div></div>');
+				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="0" title="' + labelTxt1 + '"><div class="labelTxt">' + x_addLineBreaks(labels[i].text) + '</div></div>');
 				
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("target", labels[i].correct);
@@ -532,24 +526,27 @@
 				.keypress(function(e) {
 					var charCode = e.charCode || e.keyCode;
 					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel")
-								.removeClass("selected")
-								.attr("title", labelTxt1);
-						}
-						var $this = $(this);
-						$this
-							.removeClass("focus")
-							.addClass("selected")
-							.attr("title", labelTxt1 + ' - ' + labelTxt2);
-						$pageContents.data("selectedLabel", $this);
-						
-						$("#dragDropHolder .tick, #targetHolder .hint").remove();
-						$("#labelHolder .audioHolder, #feedback").hide();
-						$("#button").show();
+						$(this).click();
 					}
-					})
+				})
+				.click(function() {
+					var $pageContents = $("#pageContents");
+					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+						$pageContents.data("selectedLabel")
+							.removeClass("selected")
+							.attr("title", labelTxt1);
+					}
+					var $this = $(this);
+					$this
+						.removeClass("focus")
+						.addClass("selected")
+						.attr("title", labelTxt1 + ' - ' + labelTxt2);
+					$pageContents.data("selectedLabel", $this);
+
+					$("#dragDropHolder .tick, #targetHolder .hint").remove();
+					$("#labelHolder .audioHolder, #feedback").hide();
+					$("#button").show();
+				})
 				.css("position", "absolute")
 				.data("currentTarget", "")
 				.disableSelection();
@@ -563,9 +560,7 @@
 			// label hasn't been dropped on target it was already on
 			if ((prevLabel == "" || prevLabel.is($thisLabel) == false) && (prevTarget == "" || prevTarget.is($thisTarget) == false)) {
 				$thisTarget.data("currentLabel", $thisLabel);
-				$thisLabel
-					.data("currentTarget", $thisTarget)
-					.attr("tabindex", $thisTarget.attr("tabindex") + 1);
+				$thisLabel.data("currentTarget", $thisTarget);
 				
 				// if there's already a label on the target, move it off
 				if (prevLabel != "") {
@@ -574,8 +569,7 @@
 							"top"	:"auto",
 							"left"	:"auto"
 							})
-						.data("currentTarget", "")
-						.attr("tabindex", Number(prevLabel.attr("id").replace("label","")) + 2);
+						.data("currentTarget", "");
 					
 					$("#dragDropHolder .label").each(function() {
 						if ($(this).data("currentTarget") == "" && $(this).is(prevLabel) == false) {
@@ -598,15 +592,14 @@
 				
 				$("#pageContents").data("selectedLabel", "");
 			}
-			
+
 			$thisTarget.attr("title", targetTxt1 + " '" + $thisTarget.data("name") + " " + ($thisTarget.index() + 1) + "'");
-			
 			$thisLabel
 				.attr("title", labelTxt1)
 				.removeClass("selected")
 				.css({
-					"top"	:$thisTarget.find("h3").position().top + $("div#x_pageHolder").scrollTop(),
-					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.width() + 5
+					"top"	:$thisTarget.find(".fixedTxt").position().top + $("div#x_pageHolder").scrollTop(),
+					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.outerWidth() + 5
 				});
 		}
 	}
@@ -618,15 +611,15 @@
 
 <div id="pageContents">
 
-	<div id="textHolder" tabindex="1"></div>
+	<div id="textHolder"></div>
 
 	<div id="dragDropHolder">
 
 		<div id="labelHolder"></div>
 
 		<div id="targetHolder">
-			<div class="target highlight">
-				<h3></h3>
+			<div class="target highlight" tabindex="0">
+				<div class="fixedTxt"></div>
 			</div>
 		</div>
 

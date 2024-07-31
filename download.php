@@ -127,7 +127,7 @@ while ($ipos !== false) {
             $imgparts = pathinfo($imgfile);
             if (strlen($imgparts["extension"]) > 0 && strpos($imgfile, "../") === false) {
                 // Check file location
-                if (strpos($imgfile, "USER-FILES/") === 0) {
+                if (strpos($imgfile, $xerte_toolkits_site->users_file_area_short) === 0) {
                     if ($validator->isValid($imgfile)) {
                         $imgdata = file_get_contents($imgfile);
                     } else {

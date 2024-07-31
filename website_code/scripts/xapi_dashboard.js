@@ -1615,7 +1615,7 @@ xAPIDashboard.prototype.getExtraUserData = function (
 ) {
   var statementidxs = this.data.getStatementidxsList(
     userdata["statementidxs"],
-    "http://adlnet.gov/expapi/verbs/completed"
+    "http://adlnet.gov/expapi/verbs/exited"
   );
   var statement = undefined;
   if (statementidxs[0] != undefined) {
@@ -2134,43 +2134,44 @@ xAPIDashboard.prototype.insertInteractionModal = function (
   );
 };
 
-xAPIDashboard.prototype.consolidateSegments = function (stringRanges) {
-  let csegments = stringRanges.map(function (s) {
-    var segments = s.split("[,]");
-    if (segments[0] == "") {
-      return [];
-    }
-    return segments.map(function (segment) {
-      return {
-        start: parseFloat(segment.split("[.]")[0]),
-        end: parseFloat(segment.split("[.]")[1]),
-      };
+xAPIDashboard.prototype.consolidateSegments = function(stringRanges)
+{
+    let csegments = stringRanges.map(function(s) {
+        var segments = s.split("[,]");
+        if (segments[0] == "") {
+            return [];
+        }
+        return segments.map(function(segment) {
+            return {
+                start: parseFloat(segment.split("[.]")[0]),
+                end: parseFloat(segment.split("[.]")[1])
+            };
+        });
     });
-  });
-  var segments = [];
-  csegments.forEach(function (segment) {
-    segment.forEach(function (seg) {
-      segments.push(seg);
+    var segments = [];
+    csegments.forEach(function(segment) {
+        segment.forEach(function(seg) {
+            segments.push(seg);
+        });
     });
-  });
-  segments.sort(function (a, b) {
-    return a.start > b.start ? 1 : b.start > a.start ? -1 : a.end - b.end;
-  });
-  // 2. Combine the segments
-  csegments = [];
-  var i = 0;
-  while (i < segments.length) {
-    var segment = $.extend(true, {}, segments[i]);
-    i++;
-    while (i < segments.length && segment.end >= segments[i].start) {
-      if (segment.end <= segments[i].end) {
-        segment.end = segments[i].end;
-      }
-      i++;
+    segments.sort(function(a, b) {
+        return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : a.end - b.end);
+    });
+    // 2. Combine the segments
+    csegments = [];
+    var i = 0;
+    while (i < segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i < segments.length && segments[i].start >= segment.start && segments[i].start <= segment.end) {
+            if (segment.end <= segments[i].end) {
+                segment.end = segments[i].end;
+            }
+            i++;
+        }
+        csegments.push(segment);
     }
-    csegments.push(segment);
-  }
-  return csegments;
+    return csegments;
 };
 
 /**
@@ -3312,37 +3313,41 @@ xAPIDashboard.prototype.drawActivityChart = function (
         )
       );
 
-      chart.height(300);
-      chart.tooltips(false);
-      chart.interpolate("monotone");
-      chart.yAxis.axisLabel(XAPI_ACTIVITY_CHART_YAXIS);
+            chart.height(300);
+            chart.tooltips(true);
+            chart.interpolate("monotone");
+            chart.yAxis.axisLabel(XAPI_ACTIVITY_CHART_YAXIS);
 
-      chart.xAxis.tickFormat(function (label) {
-        var date = new Date(label);
-        var options = {
-          month: "short",
-          day: "numeric",
-        };
-        var intllabel;
-        try {
-          intllabel = new Intl.DateTimeFormat(language_code, options).format(
-            date
-          );
-        } catch (e) {
-          intllabel = d3.time.format("%b %d")(date);
+            chart.xAxis.tickFormat(function(label) {
+                var date = new Date(label);
+                var options = {
+                    month: 'short',
+                    day: 'numeric'
+                };
+                var intllabel;
+                try {
+                    intllabel = new Intl.DateTimeFormat(language_code, options).format(date);
+                } catch (e) {
+                    intllabel = d3.time.format('%b %d')(date);
+                }
+                return intllabel;
+            });
+            chart.xAxis.tickValues(vals);
+            chart.color(['#f86718']);
+            chart.tooltipContent(function(key, x, y, e, graph) {
+                //console.log("key=" + key + ", x=" + x + ", y=" + y + ", e=" + e + "graph=" + graph);
+                return x + ': ' + y;
+            });
+
+                //.headerFormatter(function(d) { return ""; });
+        },
+        post: function(data) {
+            data.contents.map(function(el) {
+                el.in = Date.parse(el.in);
+            });
         }
-        return intllabel;
-      });
-      chart.xAxis.tickValues(vals);
-      chart.color(["#f86718"]);
-    },
-    post: function (data) {
-      data.contents.map(function (el) {
-        el.in = Date.parse(el.in);
-      });
-    },
-  });
-  chart.draw();
+    });
+    chart.draw();
 };
 
 function close_dashboard() {

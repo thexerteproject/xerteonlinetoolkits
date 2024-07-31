@@ -34,7 +34,7 @@ function cleardir($src) {
     closedir($dir);
 }
 
-if (!is_user_admin())
+if (!is_user_permitted("templateadmin"))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
@@ -47,12 +47,12 @@ if($_FILES['fileToUpload']['error'] == 4)
 
 if($_FILES["fileToUpload"]["name"])
 {
-    $filename =  $_FILES["fileToUpload"]["name"];
-    $filename_parts = explode(".", $_FILES["fileToUpload"]["name"]);
+    $filename =  x_clean_input($_FILES["fileToUpload"]["name"]);
+    $filename_parts = explode(".", $filename);
 
     if (isset($_POST["templateName"]) && $_POST["templateName"] != "")
     {
-        $name = $_POST['templateName'];
+        $name = x_clean_input($_POST['templateName']);
     }
     else
     {
@@ -63,7 +63,7 @@ if($_FILES["fileToUpload"]["name"])
 
     if (isset($_POST["templateDisplayname"]) && $_POST["templateDisplayname"] != "")
     {
-        $displayname = $_POST["templateDisplayname"];
+        $displayname = x_clean_input($_POST["templateDisplayname"]);
     }
     else
     {
@@ -71,7 +71,7 @@ if($_FILES["fileToUpload"]["name"])
     }
     if (isset($_POST["templateDescription"]) && $_POST["templateDescription"] != "")
         {
-        $description = $_POST["templateDescription"];
+        $description = x_clean_input($_POST["templateDescription"]);
     }
     else
     {
@@ -99,6 +99,8 @@ if($_FILES["fileToUpload"]["name"])
     {
         $zip = new ZipArchive();
         $x = $zip->open($importfile);
+
+        x_check_zip($zip);
 
         $templateFound = false;
         $mediaFound = false;

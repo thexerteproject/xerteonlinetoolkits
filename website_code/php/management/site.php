@@ -28,7 +28,7 @@ _load_language_file( "/website_code/php/properties/sharing_status_template.inc")
 require_once("../user_library.php");
 require_once("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("system")){
 
     $database_id = database_connect("templates list connected","template list failed");
 
@@ -85,6 +85,10 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_PEER_FORM . "<form><textarea id=\"peer_form_string\">" . base64_decode($row['peer_form_string']) . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_FEEDBACK . "<form><textarea id=\"feedback_list\">" . $row['feedback_list'] . "</textarea></form></p>";
+
+	echo "<p>" . MANAGEMENT_SITE_DEFAULT_XERTE . "<form><textarea id=\"default_theme_xerte\">" . $row['default_theme_xerte'] . "</textarea></form></p>";
+	
+	echo "<p>" . MANAGEMENT_SITE_DEFAULT_SITE . "<form><textarea id=\"default_theme_site\">" . $row['default_theme_site'] . "</textarea></form></p>";
 
     echo "</div>";
 

@@ -87,6 +87,9 @@ a:visited{
 a:hover{
 	color:$linkhover;
 }
+#x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
+	color:$mainfontcolour;
+}
 
 #x_mainHolder{
 	background:$defaultpagebackground;

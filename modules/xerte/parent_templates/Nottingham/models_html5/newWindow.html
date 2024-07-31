@@ -47,6 +47,10 @@
 				"max-height" : imgMaxH,
 				"max-width"	:imgMaxW
 			});
+
+			if($img.parents("figure").length > 0) {
+				$img.parents("figure").find("figcaption").css("max-width", imgMaxW);
+			}
 		};
 
 		this.init = function() {
@@ -84,8 +88,12 @@
 						$(this).trigger("load");
 					}
 				});
-			
-			
+
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				$("#pageImg").wrap("<figure></figure>");
+				$("#pageImg").parent("figure").append("<figcaption>" + x_currentPageXML.getAttribute("caption") + "</figcaption>");
+			}
+
 			if (x_currentPageXML.getAttribute("target") == "lightbox") {
 				if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
 					$("#pageContents .newWindowLink").attr({

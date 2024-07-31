@@ -285,7 +285,7 @@
 			// Now loop through new cards array and rebuild
 			$(cardArray).each(function(i){
 				var thisInfo = this;
-
+				
 				$thisCard = $('<div>')
 								.addClass('card')
 								.append(
@@ -304,14 +304,52 @@
 				
 				$thisFront.add($thisBack).each(function(j) {
 					var $this = $(this),
-						index = j + 1;
+						$thisInner = $('<div class="cardInner"></div>');
+						index = j + 1,
+						$contentHolder = $('<div class="text-content">');
 					
+					$this.append($thisInner)
 					if (thisInfo.getAttribute('name') != '') {
-						$this.append('<h3>' + thisInfo.getAttribute('name') + '</h3>');
+						$thisInner.append('<h3>' + thisInfo.getAttribute('name') + '</h3>');
+					}
+					$thisInner.append($contentHolder);
+			
+					$contentToAlign = $contentHolder
+					if(x_currentPageXML.getAttribute('alignTitle') != undefined && x_currentPageXML.getAttribute('alignTitle') == 'true'){
+						$contentToAlign = $thisInner;
+					}
+					if(thisInfo.getAttribute('alignTitle') != undefined){
+						if(thisInfo.getAttribute('alignTitle') == 'true'){
+							$contentToAlign = $thisInner;
+						}else{
+							$contentToAlign = $contentHolder
+						}
+					}
+					debugger;
+
+					//global alignment
+					if(x_currentPageXML.getAttribute('textAlign') != undefined && x_currentPageXML.getAttribute('textAlign') != ''){
+						$contentToAlign.css('text-align', x_currentPageXML.getAttribute('textAlign'));
 					}
 					
+					if(x_currentPageXML.getAttribute('contentAlign') != undefined && x_currentPageXML.getAttribute('contentAlign') != ''){
+						$contentToAlign.addClass("flex");
+						$contentToAlign.css('justify-content', x_currentPageXML.getAttribute('contentAlign'));
+					}
+	
+					//card specific alignment
+					if(thisInfo.getAttribute('textAlign') != undefined && thisInfo.getAttribute('textAlign') != ''){
+						$contentToAlign.css('text-align', thisInfo.getAttribute('textAlign'));
+					}
+					
+					if(thisInfo.getAttribute('contentAlign') != undefined && thisInfo.getAttribute('contentAlign') != ''){
+						$contentToAlign.addClass("flex");
+						$contentToAlign.css('justify-content', thisInfo.getAttribute('contentAlign'));
+					}
+					
+					
 					if (thisInfo.getAttribute('side' + index) != '') {
-						$this.append(thisInfo.getAttribute('side' + index));
+						$contentHolder.append(thisInfo.getAttribute('side' + index));
 					}
 					
 					// add media to card
@@ -367,13 +405,9 @@
 							$mediaHolder.addClass('mediaHolder');
 							
 							if (thisInfo.getAttribute('align' + index) == 'Top') {
-								if (thisInfo.getAttribute('name') != '') {
-									$mediaHolder.insertAfter($this.find('h3')[0]);
-								} else {
-									$this.prepend($mediaHolder);
-								}
+								$contentHolder.prepend($mediaHolder);
 							} else {
-								$this.append($mediaHolder);
+								$contentHolder.append($mediaHolder);
 							}
 							
 							if ($mediaHolder.hasClass('cardVideo')) {
@@ -405,7 +439,6 @@
 						}
 					}
 					
-					$this.wrapInner('<div class="cardInner"></div>');
 					$this.append('<div class="flipBtnHolder"><button class="flipBtn circleBtn"></button></div><div class="emptyDiv"></div>');
 				});
 				
@@ -705,7 +738,7 @@
 		</div>
 		
 		<div id="cardNoHolder">
-			<span id="cardNoTxt"><p>&nbsp;</p></span>
+			<span id="cardNoTxt" aria-live="polite"><p>&nbsp;</p></span>
 		</div>
 		
 	</div>

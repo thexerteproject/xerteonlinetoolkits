@@ -95,6 +95,10 @@ copy_extra_files();
  * Theme support
  */
 $theme = $xml->getTheme();
+// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers, no special characters)
+if (!ctype_alnum($theme)) {
+    die("Illegal theme name detected!");
+}
 if ($theme != "" && $theme != "default")
 {
     export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['template_name'] . '/' . $theme . '/');
@@ -152,7 +156,7 @@ function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
     return; //null for not found
 }
 
-$fileLocation = 'USER-FILES/' . $row['template_id'] . '-' . $row['username'] . '-' . $row['template_name'] . '/';
+$fileLocation = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . '-' . $row['username'] . '-' . $row['template_name'] . '/';
 function fixFileLocation($LO_icon_path, $fileLocation) {
     if (strpos($LO_icon_path, "FileLocation + '") !== false) {
         $LO_icon_path = str_replace("FileLocation + '" , $fileLocation, $LO_icon_path);
@@ -217,7 +221,7 @@ if ($fullArchive)
 else
 	$export_type = "_deployment";
 
-$row['zipname'] .= $export_type;
+$row['zipname'] .= '_' . $_GET['template_id'] . $export_type;
 
 
 /*

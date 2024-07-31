@@ -29,34 +29,34 @@ if (file_exists($xerte_toolkits_site->tsugi_dir)) {
 
 use \Tsugi\Core\LTIX;
 
-$template_id = $_REQUEST["template_id"];
-if(!is_numeric($template_id))
-{
+if (!isset($_REQUEST['template_id'])) {
     tsugi_display_fail(false);
 }
-if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+
+$template_id = x_clean_input($_REQUEST["template_id"], 'numeric');
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
     if ($tsugi_installed) {
-        $tsugi_publish = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
+        $tsugi_publish = isset($_POST["tsugi_published"]) && x_clean_input($_POST["tsugi_published"]) == "true";
     }
     $lti_def = new stdClass();
     $lti_def->tsugi_installed = $tsugi_installed;
-    $lti_def->secret = (isset($_POST["tsugi_secret"]) ? htmlspecialchars($_POST["tsugi_secret"]) : "");
-    $lti_def->key = (isset($_POST["tsugi_key"]) ? htmlspecialchars($_POST["tsugi_key"]) : "");
-    $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "true";
-    $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
-    $lti_def->tsugi_useglobal = isset($_POST["tsugi_useglobal"]) && $_POST["tsugi_useglobal"] == "true";
-    $lti_def->tsugi_privateonly = isset($_POST["tsugi_useprivateonly"]) && $_POST["tsugi_useprivateonly"] == "true";
+    $lti_def->secret = (isset($_POST["tsugi_secret"]) ? x_clean_input($_POST["tsugi_secret"]) : "");
+    $lti_def->key = (isset($_POST["tsugi_key"]) ? x_clean_input($_POST["tsugi_key"]) : "");
+    $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && x_clean_input($_POST["tsugi_xapi"]) == "true";
+    $lti_def->published = isset($_POST["tsugi_published"]) && x_clean_input($_POST["tsugi_published"]) == "true";
+    $lti_def->tsugi_useglobal = isset($_POST["tsugi_useglobal"]) && x_clean_input($_POST["tsugi_useglobal"]) == "true";
+    $lti_def->tsugi_privateonly = isset($_POST["tsugi_useprivateonly"]) && x_clean_input($_POST["tsugi_useprivateonly"]) == "true";
     $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
     $lti_def->tsugi13_url = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $template_id;
     $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
     $lti_def->url13 = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $template_id;
     $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
-    $lti_def->xapi_useglobal = isset($_POST["tsugi_xapi_useglobal"]) && $_POST["tsugi_xapi_useglobal"] == "true";
-    $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
-    $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
-    $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
-    $lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? $_POST["tsugi_xapi_student_id_mode"] : "");
-    $lti_def->dashboard_urls = (isset($_POST["dashboard_urls"]) ? $_POST["dashboard_urls"] : "");
+    $lti_def->xapi_useglobal = isset($_POST["tsugi_xapi_useglobal"]) && x_clean_input($_POST["tsugi_xapi_useglobal"]) == "true";
+    $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? x_clean_input($_POST["tsugi_xapi_endpoint"]) : "");
+    $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? x_clean_input($_POST["tsugi_xapi_username"]) : "");
+    $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? x_clean_input($_POST["tsugi_xapi_password"]) : "");
+    $lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? x_clean_input($_POST["tsugi_xapi_student_id_mode"]) : "");
+    $lti_def->dashboard_urls = (isset($_POST["dashboard_urls"]) ? x_clean_input($_POST["dashboard_urls"]) : "");
 
 // Force groupmode
     if (!$tsugi_installed) {
@@ -65,15 +65,16 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
 
     if ($lti_def->xapi_student_id_mode == 3) {
         $lti_def->url .= "&group=groupname";
+        $lti_def->url13 .= "&group=groupname";
     }
 
     // Get current temapltedetails record
-    $row = db_query_one('select * from templatedetails where template_id=?', array($_POST['template_id']));
+    $row = db_query_one('select * from templatedetails where template_id=?', array($template_id));
     if ($tsugi_installed) {
         $PDOX = LTIX::getConnection();
         $p = $CFG->dbprefix;
         $xp = $xerte_toolkits_site->database_table_prefix;
-        _debug("Data init " . print_r($_POST, true));
+        _debug("Data init " . print_r(x_clean_input($_POST), true));
         $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
         _debug("Detele " . $url);
 
@@ -158,4 +159,3 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
 } else {
 	tsugi_display_fail(true);
 }
-?>

@@ -131,11 +131,11 @@
 				imgMaxH = Math.round($x_pageHolder.height() * maxH);
 			
 			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
-			imgMaxH -= ($("#panel").outerHeight(true) - $("#panel").height()) + $("#btnHolder").outerHeight(true) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height());
+			imgMaxH -= ($("#panel").outerHeight(true) - $("#panel").height()) + $("#btnHolder").outerHeight(true) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height()) + ($("#mapster_wrap_0").outerHeight(true) - $("#mapster_wrap_0").height());
 
 			$img.mapster('unbind');
 
-			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false, true);
 
 			$img.css({
 				"opacity"	:1,
@@ -215,7 +215,7 @@
 				.each(function(i) {
 					var _this = this;
 
-					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="0" />');
+					var $hotspot = $('<area class="hotspot" shape="poly" href="#" />');
 
 					var coords = [];
 					var coords_string = "";

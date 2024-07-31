@@ -23,7 +23,7 @@ _load_language_file("/website_code/php/management/course_details_management.inc"
 
 require("../user_library.php");
 
-if(is_user_admin()) {
+if(is_user_permitted("metaadmin")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 

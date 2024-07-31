@@ -242,7 +242,7 @@
 			});
 			// Finish tracking of video
 			// This will also account for last video segment, so there might be race conditions
-			// Also we do let popcorn handle the destruction (doNotCloseTrackiong parameter in loadMedia) of popcorn, so we need to do that hear at the end
+			// Also we do let popcorn handle the destruction (doNotCloseTracking parameter in loadMedia) of popcorn, so we need to do that here at the end
 			document.dispatchEvent(new Event('leavepage'));
 			// Calculate page score
 			var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
@@ -624,9 +624,7 @@
 			   for (var i = 0; i < childs.length; i++) {
 				   if (childs[i].nodeName === 'synchMCQ') {
 					   mcqBool = false;
-					   console.log(childs[i].nodeName);
 				   }
-				   console.log(childs[i].nodeName);
 				   this.isMCQ(childs[i]);
 			   }
 		    }
@@ -689,6 +687,8 @@
                 this.addEvents();
 			}
             this.initTracking();
+
+			$('.mainMedia').parents('.panel').addClass('mediaPanel');
 			x_pageLoaded();
 		};
 

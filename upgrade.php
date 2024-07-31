@@ -185,6 +185,12 @@ function _upgrade_db_query($sql, $params = array()) {
     return $result;
 }
 
+function _table_exists($table) {
+    $sql = "select 1 from $table limit 1";
+    $r = db_query($sql);
+    return $r!==false;
+}
+
 function _do_cleanup()
 {
     // Cleanup files that are really in the way of functionality, i.e. the responsivetext.css files in some of the themes prior to v3.6
@@ -210,6 +216,18 @@ function _do_cleanup()
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
+        'drawing.php',
+        'drawingjs.php',
+        'modules/xerte/engine/*',
+        'modules/site/engine/*',
+        'modules/decision/engine/*',
+        'LTI/*',
+        'play_html5.php',
+        'play_site.php',
+        'setup/xampp.php',
+        'setup/xampp.txt',
+        'setup/xampp_database.txt',
+        'rloObject.js',
     );
 
     foreach ($filelist as $file)
@@ -1319,11 +1337,17 @@ function upgrade_35(){
 
 function upgrade_36(){
     $table = table_by_key('oai_education');
-    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
-    $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    $table = table_by_key('oai_categories');
-    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
-    $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $exists = _table_exists($table);
+    if ($exists) {
+        $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+        $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    $exists = _table_exists($table);
+    if ($exists) {
+        $table = table_by_key('oai_categories');
+        $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+        $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
     $table = table_by_key('educationlevel');
     $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
     $message .= "Adding parent_id column to educationlevel - ok ? " . ($ok ? 'true' : 'false') . "<br>";
@@ -1438,4 +1462,72 @@ function upgrade_43()
     }
     $message = 'Index on folderrights table is already present';
     return $message;
+}
+
+function upgrade_44()
+{
+	if (! _db_field_exists('sitedetails', 'default_theme_xerte')) {
+        $error1 = _db_add_field('sitedetails', 'default_theme_xerte', 'char(255)', 'default', null);
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_xerte = ?";
+            $error2 = db_query($sql, array('default'));
+        }
+        else {
+            $error2 = false;
+        }
+        $error3 = _db_add_field('sitedetails', 'default_theme_site', 'char(255)', 'default', null);
+
+        if ($error3) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_site = ?";
+            $error4 = db_query($sql, array('default'));
+        }
+        else {
+            $error4 = false;
+        }
+
+        return "Creating default theme xerte and site fields - ok ? " . ($error1 && $error2 && $error3 && $error4 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default theme xerte and site fields already present - ok ? true";
+    }
+}
+
+function upgrade_45(){
+	$roleTable = table_by_key("role");
+	$loginDetailsRoleTable = table_by_key("logindetailsrole");
+	$loginDetailsTable = table_by_key("logindetails");
+
+	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
+        `roleid` int NOT NULL AUTO_INCREMENT,
+        `name` varchar(45) NOT NULL UNIQUE,
+        PRIMARY KEY (`roleid`)
+      )"
+	);
+
+	$message = "Creating role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
+        `roleid` int NOT NULL,
+        `userid` bigint(20) NOT NULL,
+        PRIMARY KEY (`roleid`, `userid`)
+      )"
+	);
+	
+	$message .= "Creating logindetailsrole table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+	$ok = db_query("insert into $roleTable(`roleid`, `name`) values
+          (1, 'super'),
+          (2, 'system'),
+          (3, 'templateadmin'),
+          (4, 'metaadmin'),
+          (5, 'useradmin'),
+          (6, 'projectadmin');"
+	);
+	$message .= "creating default roles - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+	
+	return $message;
 }

@@ -36,7 +36,7 @@
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
 				var $panel = $("#infoHolder .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
 			}
 		}
 		
@@ -45,7 +45,7 @@
 			
 			// set fixed text fields and page layout
 			$("#mainTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
-			$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+			$("#feedbackTxt .chart").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -94,7 +94,7 @@
 				$("#optionHolder input").attr("disabled", "disabled");
 				
 				// add question weighted score to class score
-				var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+				var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 				
 				$("#optionHolder input:checked").each(function() {
 					// calculate and store new score for this option's class based on it's previous score and this option's weight
@@ -114,7 +114,7 @@
 				.attr("disabled", "disabled")
 				.click(function() {
 					// get feedback for selected options
-					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]],
+					var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]],
 						feedbackTxt = "";
 					
 					$("#optionHolder input:checked").each(function() {
@@ -142,7 +142,7 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+					var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 					if (currentQuestion.getAttribute("questionFeedback") != "yes") {
 						scoreQ($(this));
 					} else {
@@ -166,7 +166,7 @@
 					inventory.startQs();
 				});
 			
-			if ($(x_currentPageXML).children().length == 0) {
+			if ($(x_currentPageXML).children('invQuestion').length == 0) {
 				$("#infoHolder .panel").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
 			} else {
 				// store data needed later - class info and string to base qNoTxt on
@@ -200,14 +200,15 @@
 		this.startQs = function() {
 			$("#pageContents .quiz").show();
 			$("#pageContents .chart").hide();
+			$("#pageContents .fbBlock").remove();
 			$("#nextBtn, #checkBtn").attr("disabled", "disabled");
 			
 			var questions = [],
 				scores = [],
 				totals = [],
-				numQs = $(x_currentPageXML).children().length,
+				numQs = $(x_currentPageXML).children('invQuestion').length,
 				i;
-			
+
 			// get list of the order questions will be shown
 			if (x_currentPageXML.getAttribute("order") == "random") {
 				var qNums = [];
@@ -244,7 +245,7 @@
 		
 		
 		this.loadQ = function() {
-			var thisQ = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+			var thisQ = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 			
 			// set up question text, image, feedback text
 			$("#qNo").html($pageContents.data("qNoTxt").replace("{i}", $pageContents.data("currentQ") + 1).replace("{n}", $pageContents.data("questions").length));
@@ -253,11 +254,21 @@
 				url = thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
+				if (thisQ.getAttribute("caption") != undefined && thisQ.getAttribute("caption") != "") {
+					newString += '<figure class="quizImgHolder">';
+				} else {
+					newString += '<div class="quizImgHolder">'
+				}
 				newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 				if (thisQ.getAttribute("tip") != undefined && thisQ.getAttribute("tip") != "") {
 					newString += 'alt="' + thisQ.getAttribute("tip") + '"';
 				}
 				newString += ' />';
+				if (thisQ.getAttribute("caption") != undefined && thisQ.getAttribute("caption") != "") {
+					newString += '<figcaption>' + thisQ.getAttribute("caption") + '</figcaption></figure>';
+				} else {
+					newString += '</div>';
+				}
 				infoString = newString + infoString;
 			}
 			$("#qTxt").html(x_addLineBreaks(infoString));
@@ -380,7 +391,17 @@
 				for (i=0; i<scores.length; i++) {
 					maxScore = Math.max(maxScore, scores[i]);
 				}
-				
+			}
+
+			// add relevant tailored class feedback
+			$('#feedbackTxt .fbBlock').remove();
+			for (let i=0; i<$(x_currentPageXML).children('invClassFeedback').length; i++) {
+				const thisFb = $(x_currentPageXML).children('invClassFeedback')[i];
+				const classScore = scores[thisFb.getAttribute('class')];
+
+				if ((($.isNumeric(thisFb.getAttribute('minScore')) && classScore >= Number(thisFb.getAttribute('minScore'))) || !$.isNumeric(thisFb.getAttribute('minScore'))) && (($.isNumeric(thisFb.getAttribute('maxScore')) && classScore <= Number(thisFb.getAttribute('maxScore'))) || !$.isNumeric(thisFb.getAttribute('maxScore')))) {
+					$('#feedbackTxt').append('<div class="fbBlock">' + (thisFb.getAttribute('name') != '' ? '<h3>' + thisFb.getAttribute('name') + '</h3>' : '') + x_addLineBreaks(thisFb.getAttribute('feedbackTxt')) + '</div>');
+				}
 			}
 			
 			// draw everything on canvas - predominately John Smith's code from chart page model
@@ -388,7 +409,7 @@
             if (chartHolder.getContext) {
 				var	$panel = $("#pageContents .panel"),
 					availW = Math.min(550, Math.max(300, $panel.width())),
-					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15 - $("#restartBtn").height() - $("#chartTitle").height()));
+					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 15 - $("#restartBtn").height() - $("#chartTitle").outerHeight(true)));
 				
 				chartHolder.width = availW;
 				chartHolder.height = availH;
@@ -611,32 +632,42 @@
 
 	<div class="splitScreen">
 
-		<div id="textHolder" class="left" tabindex="1">
+		<div id="textHolder" class="left">
 			<div id="mainTxt" class="quiz"></div>
-			<div id="feedbackTxt" class="chart"></div>
+			<div id="feedbackTxt">
+				<div class="chart"></div>
+			</div>
 		</div>
 
 		<div id="infoHolder" class="right">
 			<div class="panel">
-				
-				<div class="quiz">
-					<h3 id="qNo"></h3>
-					<div id="qTxt"></div>
-					<div id="optionHolder"></div>
-					<div id="buttonHolder">
-						<button id="checkBtn"></button>
-						<button id="nextBtn"></button>
+
+				<fieldset class="quiz noStyle">
+
+					<p id="qNo" aria-live="polite"></p>
+
+					<div class="qContent">
+						<span><legend id="qTxt"></legend></span>
+						<div id="optionHolder"></div>
+						<div id="buttonHolder">
+							<button id="checkBtn"></button>
+							<button id="nextBtn"></button>
+						</div>
+						<div id="qFeedback" aria-live="polite">
+							<h3 id="qFeedbackTitle"></h3>
+							<p id="qFeedbackTxt"></p>
+						</div>
 					</div>
-					<div id="qFeedback">
-						<h3 id="qFeedbackTitle"></h3>
-						<p id="qFeedbackTxt"></p>
-					</div>
-				</div>
+
+
+				</fieldset>
 				
 				<div class="chart">
 					<h3 id="chartTitle"></h3>
-					<canvas id="chartHolder"></canvas>
-					<button id="restartBtn"></button>
+					<div class="qContent">
+						<canvas id="chartHolder"></canvas>
+						<button id="restartBtn"></button>
+					</div>
 				</div>
 			</div>
 		</div>

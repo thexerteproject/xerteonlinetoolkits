@@ -25,7 +25,7 @@ _load_language_file("/management.inc");
 require("../user_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("system")){
 	
 	echo "<h2>" . MANAGEMENT_MENUBAR_LOGS . "</h2>";
 	echo "<div class=\"admin_block\">";

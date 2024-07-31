@@ -88,7 +88,7 @@ var videoSynch = new function() {
 					// see if there are any captions in xml to use instead
 					$(x_currentPageXML).children().each(function() {
 						var	$this = $(this);
-						captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), align:$this.attr("align"), text:$this.attr("text"), synch:$this.attr("synch")});
+						captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), caption:$this.attr("caption"), align:$this.attr("align"), text:$this.attr("text"), synch:$this.attr("synch")});
 					});
 
 					videoSynch.createCaptions(captionInfo);
@@ -100,7 +100,7 @@ var videoSynch = new function() {
 			$(x_currentPageXML).children().each(function() {
 				var	$this = $(this);
 				synchPoint = $this.attr("synch")[0] == "+" ? ($.isNumeric($this.attr("synch").slice(1)) ? Number($this.attr("synch").slice(1)) + synchPoint : 0) : Number($this.attr("synch")),
-				captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), align:$this.attr("align"), text:$this.attr("text"), synch:synchPoint});
+				captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), caption:$this.attr("caption"), align:$this.attr("align"), text:$this.attr("text"), synch:synchPoint});
 			});
 
 			videoSynch.createCaptions(captionInfo);
@@ -116,11 +116,19 @@ var videoSynch = new function() {
 				divString = "";
 
 			if ($this.attr("url") != undefined && $this.attr("url") != "") {
-				imgStr += '<div class="myImg"><img src="' + x_evalURL($this.attr("url")) + '" ';
+				imgStr += '<div class="myImg">';
+				if ($this.attr("caption") != undefined && $this.attr("caption") != "") {
+					imgStr += '<figure>';
+				}
+				imgStr += '<img src="' + x_evalURL($this.attr("url")) + '" ';
 				if ($this.attr("tip") != undefined && $this.attr("tip") != "") {
 					imgStr += 'alt="' + $this.attr("tip") + '" ';
 				}
-				imgStr += ' /></div>';
+				imgStr += ' />';
+				if ($this.attr("caption") != undefined && $this.attr("caption") != "") {
+					imgStr += '<figcaption>' + $this.attr("caption") + '</figcaption></figure>';
+				}
+				imgStr += '</div>';
 			}
 
 			if ($this.attr("align") == "Bottom") {

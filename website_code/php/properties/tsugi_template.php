@@ -42,7 +42,7 @@
 
 
 	if(is_numeric($id)){
-		if(is_user_creator_or_coauthor($id)||is_user_admin()){
+		if(is_user_creator_or_coauthor($id)||is_user_permitted("projectadmin")){
 
             $database_id = database_connect("template database connect success","template change database connect failed");
             $template_id = $id;

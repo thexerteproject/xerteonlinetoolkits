@@ -291,7 +291,7 @@ function get_user_root_folder(){
 
 }
 
-function get_user_root_folder_by_username($username){
+function get_user_root_folder_id_by_username($username){
 
     global $xerte_toolkits_site;
 
@@ -309,7 +309,7 @@ function get_user_root_folder_by_username($username){
 
 }
 
-function get_user_root_folder_by_id($id){
+function get_user_root_folder_id_by_id($id){
     global $xerte_toolkits_site;
 
     $prefix =  $xerte_toolkits_site->database_table_prefix;
@@ -326,6 +326,23 @@ function get_user_root_folder_by_id($id){
 
 }
 
+function get_user_root_folder_record_by_id($id){
+    global $xerte_toolkits_site;
+
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    $query = "select * from {$prefix}folderdetails fd, {$prefix}logindetails ld where fd.login_id= ? AND fd.login_id = ld.login_id AND folder_name = ld.username";
+    $params = array($id);
+
+    $query_response = db_query($query, $params);
+    if($query_response!=FALSE){
+        $row = $query_response[0];
+        return $row;
+    }else{
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users root folder record by id", "Failed to get users root folder record: User id : " . $id);
+    }
+
+}
+
 /**
  * Function is user admin
  * Is this user set as an administrator
@@ -335,8 +352,48 @@ function get_user_root_folder_by_id($id){
  * @package
  */
 function is_user_admin(){
-    if(isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id']=="site_administrator"){
-        return true;
-    }
-    return false;
+    // to allow everthing that isn't converted to is_user_permitted
+	return is_user_permitted();
+}
+
+function getRolesFromUser($userID){
+	global $xerte_toolkits_site;
+	
+	$prefix = $xerte_toolkits_site->database_table_prefix;
+	$query = "select name from role join {$prefix}logindetailsrole on {$prefix}role.roleid={$prefix}logindetailsrole.roleid where {$prefix}logindetailsrole.userid=?;";
+	$params = array($userID);
+	$result = db_query($query, $params);
+
+	//put the roles in a indexed array for easy access
+	$roles = array();
+	foreach($result as $role){
+		$roles[] = $role['name'];
+	}
+	return $roles;
+}
+
+/**
+ * check if the user has any roles that are allowed
+ * @param mixed $neededRoles all roles(rolename) that are permitted except super because it can access everything
+ */
+function is_user_permitted(... $neededRoles){
+	if(!isset($_SESSION['toolkits_logon_id'])) 
+		return false;
+
+	// allow old admin account to do everything
+	if($_SESSION['toolkits_logon_id'] == "site_administrator")
+		return true;
+
+	$toolkits_logon_id = $_SESSION['toolkits_logon_id'];
+	$roles = getRolesFromUser($toolkits_logon_id);
+
+	// allows a user with the super role to do everything
+	if(in_array("super", $roles, true))
+		return true;
+
+	foreach($neededRoles as $neededRole)
+		if(in_array($neededRole, $roles, true))
+			return true;
+
+	return false;
 }

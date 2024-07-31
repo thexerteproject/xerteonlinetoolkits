@@ -50,74 +50,73 @@ DashboardState.prototype.getStatementsxAPI = function (q, one, callback) {
   //ADL.XAPIWrapper.log.debug = true;
   ADL.XAPIWrapper.changeConfig(this.conf);
 
-  var search = ADL.XAPIWrapper.searchParams();
-  var activities = q.activities;
-  var query = q;
-  $.each(q, function (i, value) {
-    if (i != "activities" && i != "actor") search[i] = value;
-  });
-  if (one) {
-    search["limit"] = 1;
-  } else {
-    search["limit"] = 1000;
-  }
-  if (q["actor"] != undefined) {
-    search["agent"] = '{ "mbox" : "mailto:' + q["actor"] + '" }';
-  }
-  var beginDate = moment(q["since"]);
-  var endDate = moment(q["until"]);
-  var days = moment.duration(endDate.diff(beginDate)).as("days");
-  var nractivities = 1;
-  if (q["activities"] != undefined) {
-    nractivities = q["activities"].length;
-  }
-  var limit = search["limit"];
-  this.clear();
-  $this = this;
-  ADL.XAPIWrapper.getStatements(
-    search,
-    null,
-    function getmorestatements(err, res, body) {
-      for (x = 0; x < body.statements.length; x++) {
-        var statement = body.statements[x];
-        if ($this.info.role == "Teacher") {
-          if (statement.actor.mbox != undefined) {
-            if (
-              $this.info.users.findIndex(
-                (u) => "mailto:" + u.email === statement.actor.mbox) === -1) {
-              // Skip this user
-              continue;
-            }
-          } else if (statement.actor.mbox_sha1sum != undefined) {
-            if (
-              $this.info.users.findIndex(
-                (u) => u.sha1 === statement.actor.mbox.mbox_sha1sum) === -1) {
-              // Skip this user
-              continue;
-            }
-          }
-        }
-        if ($this.info.dashboard.anonymous) {
-          if (statement.actor.mbox != undefined) {
-            // Key is email
-            // cutoff mailto: and calc sha1:
-            var sha1 = toSHA1(statement.actor.mbox);
-            statement.actor.mbox_sha1sum = sha1;
-            delete statement.actor.mbox;
-            if (statement.actor.name) {
-              delete statement.actor.name;
-            }
-          } else if (statement.actor.mbox_sha1sum != undefined) {
-            // Nothing to do
-          } else {
-            // Key is session_id, transform to pseudo mbox_sha1sum
-            var key =
-              statement.context.extensions["http://xerte.org.uk/sessionId"];
-            if (key == undefined) {
-              key = statement.context.extensions[site_url + "sessionId"];
-            }
-            if (key != undefined) {
-              delete statement.actor;
+    var search = ADL.XAPIWrapper.searchParams();
+    var activities = q.activities;
+    var query = q;
+    $.each(q, function(i, value) {
+        if(i != "activities" && i != "actor")
+            search[i] = value;
+    });
+    if (one) {
+        search['limit'] = 1;
+    } else {
+        search['limit'] = 1000;
+    }
+    if (q['actor'] != undefined)
+    {
+        search['agent'] = '{ "mbox" : "mailto:' + q['actor'] + '" }';
+    }
+    var beginDate = moment(q['since']);
+    var endDate = moment(q['until']);
+    var days = moment.duration(endDate.diff(beginDate)).as('days');
+    var nractivities =  1;
+    if (q['activities'] != undefined)
+    {
+        nractivities = q['activities'].length;
+    }
+    var limit = search['limit'];
+    this.clear();
+    $this = this;
+    ADL.XAPIWrapper.getStatements(search, null,
+        function getmorestatements(err, res, body) {
+            for (x = 0; x < body.statements.length; x++) {
+                var statement = body.statements[x];
+                if ($this.info.role == "Teacher") {
+                    if (statement.actor.mbox != undefined) {
+                        if ($this.info.users.findIndex(u => 'mailto:' + u.email === statement.actor.mbox) === -1) {
+                            // Skip this user
+                            continue;
+                        }
+                    }
+                    else if (statement.actor.mbox_sha1sum != undefined) {
+                        if ($this.info.users.findIndex(u => u.sha1 === statement.actor.mbox_sha1sum) === -1) {
+                            // Skip this user
+                            continue;
+                        }
+                    }
+                }
+                if ($this.info.dashboard.anonymous) {
+                    if (statement.actor.mbox != undefined) {
+                        // Key is email
+                        // cutoff mailto: and calc sha1:
+                        var sha1 = toSHA1(statement.actor.mbox);
+                        statement.actor.mbox_sha1sum = sha1;
+                        delete statement.actor.mbox;
+                        if (statement.actor.name) {
+                            delete statement.actor.name;
+                        }
+
+                    } else if (statement.actor.mbox_sha1sum != undefined) {
+                        // Nothing to do
+
+                    } else {
+                        // Key is session_id, transform to pseudo mbox_sha1sum
+                        var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                        if (key == undefined) {
+                            key = statement.context.extensions[site_url + "sessionId"];
+                        }
+                        if (key != undefined) {
+                            delete statement.actor;
 
               var sha1 = toSHA1("mailto:" + key + "@example.com");
               statement.actor = {
@@ -1548,56 +1547,48 @@ DashboardState.prototype.getAllDurations = function (
 };
 
 DashboardState.prototype.consolidateSegments = function (pausedSegments) {
-  // 1. Sort played segments on start time (first make a copy)
-  if (pausedSegments.length == 0) {
-    return 0;
-  }
-  var $this = this;
-  csegments = pausedSegments.map(function (s) {
-    var segments =
-      $this.rawData[s].result.extensions[
-        "https://w3id.org/xapi/video/extensions/played-segments"
-      ].split("[,]");
-    if (segments[0] == "") {
-      return [];
+    // 1. Sort played segments on start time (first make a copy)
+    if (pausedSegments.length == 0) {
+        return 0;
     }
-    return segments.map(function (segment) {
-      return {
-        start: Math.round(segment.split("[.]")[0]),
-        end: Math.round(segment.split("[.]")[1]),
-      };
+    var $this = this;
+    csegments = pausedSegments.map(function(s) {
+        var segments = $this.rawData[s].result.extensions["https://w3id.org/xapi/video/extensions/played-segments"].split("[,]");
+        if (segments[0] == "") {
+            return [];
+        }
+        return segments.map(function(segment) {
+            return {
+                start: Math.round(segment.split("[.]")[0]),
+                end: Math.round(segment.split("[.]")[1])
+            };
+        });
     });
-  });
-  var segments = [];
-  csegments.forEach(function (segment) {
-    segment.forEach(function (seg) {
-      segments.push(seg);
+    var segments = [];
+    csegments.forEach(function(segment) {
+        segment.forEach(function(seg) {
+            segments.push(seg);
+        });
     });
-  });
-  segments.sort(function (a, b) {
-    return parseFloat(a.start) > parseFloat(b.start)
-      ? 1
-      : parseFloat(b.start) > parseFloat(a.start)
-      ? -1
-      : parseFloat(a.end) - parseFloat(b.end);
-  });
-  // 2. Combine the segments
-  var csegments = [];
-  var i = 0;
-  while (i < segments.length) {
-    var segment = $.extend(true, {}, segments[i]);
-    i++;
-    while (
-      i < segments.length &&
-      parseFloat(segment.end) >= parseFloat(segments[i].start)
-    ) {
-      segment.end = segments[i].end;
-      i++;
+    segments.sort(function(a, b) {
+        return (parseFloat(a.start) > parseFloat(b.start)) ? 1 : ((parseFloat(b.start) > parseFloat(a.start)) ? -1 : parseFloat(a.end) - parseFloat(b.end));
+    });
+    // 2. Combine the segments
+    var csegments = [];
+    var i = 0;
+    while (i < segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i < segments.length && segments[i].start >= segment.start && segments[i].start <= segment.end) {
+            if (segment.end <= segments[i].end) {
+                segment.end = segments[i].end;
+            }
+            i++;
+        }
+        csegments.push(segment);
     }
-    csegments.push(segment);
-  }
-  return csegments;
-};
+    return csegments;
+}
 
 DashboardState.prototype.getDurationBlocks = function (
   statementidxs,

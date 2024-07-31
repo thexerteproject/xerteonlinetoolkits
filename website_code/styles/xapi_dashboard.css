@@ -13,11 +13,11 @@ table {
 }
 
 .popover {
-  /* set to 276px in bootstrap.css so override here */
-  max-width: none;
-  max-height: 600px;
-  /* overflow-y:auto; */
-  overfow: none;
+    /* set to 276px in bootstrap.css so override here */
+    max-width: none;
+    max-height: 80vh;
+    /* overflow-y:auto; */
+    overfow: none;
 }
 
 .journeyOverview, .journeyOverviewModal{

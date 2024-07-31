@@ -95,6 +95,8 @@
 	<captionsButton label="Captions/Subtitles" description="Show/Hide Captions Button"/>
 	<transcriptButton label="Transcript"/>
   </mediaElementControls>
+
+  <microphoneError label="&lt;p&gt;Unable to access your microphone. Common reasons for this problem include:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;No microphone detected&lt;/li&gt;&lt;li&gt;This web page has been blocked from accessing the microphone&lt;/li&gt;&lt;li&gt;The microphone is already in use by another program or browser tab&lt;/li&gt;&lt;/ul&gt;"/>
   
   <interactions>
 	  <button name="Button"/>

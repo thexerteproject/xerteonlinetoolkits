@@ -38,7 +38,7 @@
 
 		this.loadfeed = function () {
 			var rssproxyurl = (typeof x_rssproxyURL != 'undefined') ? x_rssproxyURL : 'rss_proxy.php';
-			var rssproxyurl = rssproxyurl + "?rss=" + encodeURIComponent(rssURL) + "&format=" + "json";
+			var rssproxyurl = rssproxyurl + "?rss=" + encodeURIComponent(rssURL) + "&format=json&sesskey=" + session;
 			$.get(rssproxyurl, function(data, status, xhr) {
 				$("#loadingSpinner").hide();
 				if (status == 'success')
@@ -148,7 +148,7 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div id="rssHolder" class="right">
 			<div class="panel">
