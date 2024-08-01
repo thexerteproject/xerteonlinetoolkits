@@ -313,6 +313,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
         if ($pos !== false) {
             $proxy_url = substr($request_uri, 0, $pos);
             $api_call = substr($request_uri, $pos);
+            $api_call = htmlspecialchars_decode($api_call);
             $pos = strpos($api_call, '?');
             if ($pos !== false) {
                 $api_call_path = substr($api_call, 0, $pos+1);
@@ -369,13 +370,13 @@ if (!isset($_SESSION['XAPI_PROXY']))
             if (strtolower(x_clean_input($_SERVER['REQUEST_METHOD'])) == 'post') {
 
                 if (count($_POST) > 0) {
-                    $post = x_clean_input($_POST);
+                    $post = $_POST;
                     curl_setopt($ch, CURLOPT_POST, true);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
                 }
                 else{
                     $data = file_get_contents('php://input');
-                    $data = x_clean_input($data);
+                    //$data = x_clean_input($data);
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
