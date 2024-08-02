@@ -92,22 +92,28 @@ function _load_language_file($file_path) {
                 $language = $lang[0];
             }
         }
-        // xerte seems to use en-GB instead of the more standard en_GB. Assume this convention will persist....
-        $language_name = str_replace('_', '-', $language);
-        // Check that Xerte supports the required language.
-        if (!is_dir($languages . $language_name)) {
+        if (isset($language)) {
+            // xerte seems to use en-GB instead of the more standard en_GB. Assume this convention will persist....
+            $language_name = str_replace('_', '-', $language);
+            // Check that Xerte supports the required language.
+            if (!is_dir($languages . $language_name)) {
 
-            // try and catch e.g. getting back 'en' as our locale - so choose any english language pack
-            $found = false;
-            foreach (glob($languages . substr($language, 0, 2) . '*') as $dir) {
-                $found = true;
-                $language_name = basename($dir);
-                break;
+                // try and catch e.g. getting back 'en' as our locale - so choose any english language pack
+                $found = false;
+                foreach (glob($languages . substr($language, 0, 2) . '*') as $dir) {
+                    $found = true;
+                    $language_name = basename($dir);
+                    break;
+                }
+                if (!$found)
+                    $language_name = "en-GB";
             }
-            if (!$found)
-                $language_name = "en-GB";
+            $language = $language_name;
         }
-        $language = $language_name;
+        else
+        {
+            $language = "en-GB";
+        }
         $_SESSION['toolkits_language'] = $language;
     }
 
@@ -369,6 +375,10 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+    }
+    else
+    {
+        $rpath = $path;
     }
     // Trim dangling DIRECTORY_SEPARATOR
     $rpath = rtrim($rpath, '/\\');

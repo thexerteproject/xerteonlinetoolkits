@@ -52,7 +52,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
             <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
-			<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+			<!--link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
 
             <!--
 
@@ -207,8 +207,9 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+
         <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css">
         <?php
         if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -257,6 +258,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         _include_javascript_file("website_code/scripts/template_management.js");
         _include_javascript_file("website_code/scripts/logout.js");
         echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js\"></script>";
+        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/functions.js\"></script>";
 
         if ($authmech->canManageUser($jsscript))
         {
@@ -323,12 +325,30 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                 <div class="userbar">
                     <?php // echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " ";
                     //echo isset($_SESSION['toolkits_logon_username'])? $_SESSION['toolkits_logon_username']: $xerte_toolkits_site->admin_username;
-                    echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname'] ?>
-                    <button title="<?php echo MANAGEMENT_LOGOUT; ?>"
-                            type="button" class="xerte_button_c_no_width"
-                            onclick="javascript:logout()" style="margin-bottom: 8px;">
-                        <i class="fas fa-sign-out-alt"></i><?php echo MANAGEMENT_LOGOUT; ?>
-                    </button>
+                    echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname'];
+                    if ($_SESSION['toolkits_logon_id'] === 'site_administrator') {
+                        // place logout button
+
+                        ?>
+                        <button title="<?php echo MANAGEMENT_LOGOUT; ?>"
+                                type="button" class="xerte_button_c_no_width"
+                                onclick="javascript:logout()" style="margin-bottom: 8px;">
+                            <i class="fas fa-sign-out-alt"></i>&nbsp;<?php echo MANAGEMENT_LOGOUT; ?>
+                        </button>
+                    <?php
+                    }
+                    else
+                    {
+                        // Place button with link to index.php
+                    ?>
+                        <button title="<?php echo MANAGEMENT_TOWORKSPACE; ?>"
+                                type="button" class="xerte_button_c_no_width"
+                                onclick="javascript:redirect('index.php')" style="margin-bottom: 8px;">
+                            <i class="fas fa-home"></i>&nbsp;<?php echo MANAGEMENT_TOWORKSPACE; ?>
+                        </button>
+                    <?php
+                    }
+                    ?>
                 </div>
                 <div style="clear:both;"></div>
                 <div class="separator"></div>

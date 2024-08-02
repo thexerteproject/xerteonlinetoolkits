@@ -1339,7 +1339,9 @@ function lti_update(id) {
 			tsugi_xapi_username: $("[name=tsugi_xapi_username]").val(),
 			tsugi_xapi_password: $("[name=tsugi_xapi_password]").val(),
 			dashboard_urls: $("[name=dashboard_urls]").val(),
-			tsugi_xapi_student_id_mode: $("[name=tsugi_xapi_student_id_mode]").val()
+			tsugi_xapi_student_id_mode: $("[name=tsugi_xapi_student_id_mode]").val(),
+			tsugi_publish_in_store: $("[name=tsugi_publish_in_store]").prop('checked'),
+			tsugi_publish_dashboard_in_store: $("[name=tsugi_publish_dashboard_in_store]").prop('checked')
 		}
 	})
 	.done(function (response) {
@@ -1351,24 +1353,27 @@ function lti_update(id) {
 function xapi_toggle_useglobal(lti_def_str)
 {
 	var useglobal = $("#tsugi_xapi_useglobal").prop('checked');
-	var lti_def = JSON.parse(lti_def_str);
-	$("#tsugi_xapi_useglobal").prop('checked', useglobal);
 	if (useglobal) {
-        $("#tsugi_xapi_endpoint").val("").prop('disabled', true);
-        $("#tsugi_xapi_username").val("").prop('disabled', true);
-        $("#tsugi_xapi_password").val("").prop('disabled', true);
-    }
-    else {
-        $("#tsugi_xapi_endpoint").val(lti_def['xapi_endpoint']).prop('disabled', false);
-        $("#tsugi_xapi_username").val(lti_def['xapi_username']).prop('disabled', false);
-        $("#tsugi_xapi_password").val(lti_def['xapi_password']).prop('disabled', false);
-
+		$("#tsugi_xapi_endpoint").val("").prop('disabled', true);
+		$("#endpoint").addClass('disabled');
+		$("#tsugi_xapi_username").val("").prop('disabled', true);
+		$("#username").addClass('disabled');
+		$("#tsugi_xapi_password").val("").prop('disabled', true);
+		$("#password").addClass('disabled');
+	} else {
+		$("#tsugi_xapi_endpoint").val("").prop('disabled', false);
+		$("#endpoint").removeClass('disabled');
+		$("#tsugi_xapi_username").val("").prop('disabled', false);
+		$("#username").removeClass('disabled');
+		$("#tsugi_xapi_password").val("").prop('disabled', false);
+		$("#password").removeClass('disabled');
 	}
 }
 
 function tsugi_toggle_tsugi_publish(lti_def_str)
 {
 	var published = $("#pubChk").prop('checked');
+	var xapi = $("#xChk").prop('checked');
 	var useglobal = $("#tsugi_useglobal").prop('checked');
 	var lti_def = JSON.parse(lti_def_str);
 	if (published) {
@@ -1379,24 +1384,49 @@ function tsugi_toggle_tsugi_publish(lti_def_str)
 			$("label[for=tsugi_useprivateonly]").addClass("disabled");
 			$("#tsugi_title").val("").prop('disabled', true);
 			$("#tsugi_key").val("").prop('disabled', true);
+			$("label[for=tsugi_key]").addClass("disabled");
 			$("#tsugi_secret").val("").prop('disabled', true);
+			$("label[for=tsugi_secret]").addClass("disabled");
+		}
+		else
+		{
+			$("#tsugi_useprivateonly").prop('disabled', false);
+			$("label[for=tsugi_useprivateonly]").removeClass("disabled");
+			$("#tsugi_title").val(lti_def['title']).prop('disabled', false);
+			$("#tsugi_key").val(lti_def['key']).prop('disabled', false);
+			$("label[for=tsugi_key]").removeClass("disabled");
+			$("#tsugi_secret").val(lti_def['secret']).prop('disabled', false);
+			$("label[for=tsugi_secret]").removeClass("disabled");
 		}
 	}
 	else {
 		$("#publish").addClass("disabled");
 		$("#publish input").prop("disabled", true);
 	}
+	// Set state of publish in dashboard
+	if (published && xapi) {
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', false);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', false);
+		$("#xApi_dashboard").removeClass("disabled");
+	}
+	else
+	{
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', true);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', true);
+		$("#xApi_dashboard").addClass("disabled");
+	}
 }
 
 function tsugi_toggle_usexapi(lti_def_str)
 {
 	var xapi = $("#xChk").prop('checked');
+	var published = $("#pubChk").prop('checked');
 	var useglobal = $("#tsugi_xapi_useglobal").prop('checked');
 	var lti_def = JSON.parse(lti_def_str);
 
 	if (xapi) {
-		$("#xApi").removeClass("disabled");
-		$("#xApi input, #xApi select").prop("disabled", false);
+		$("#xApi, #xAPI_enabled, #studentid").removeClass("disabled");
+		$("#xAPI_enabled input, #xAPI_enabled select").prop("disabled", false);
 		if (useglobal) {
 			$("#tsugi_xapi_endpoint").val("").prop('disabled', true);
 			$("#endpoint").addClass('disabled');
@@ -1414,9 +1444,21 @@ function tsugi_toggle_usexapi(lti_def_str)
 		}
 	}
 	else {
-		$("#xApi").addClass("disabled");
-		$("#xApi input, #xApi select").prop("disabled", true);
+		$("#xApi, #xAPI_enabled, #studentid").addClass("disabled");
+		$("#xAPI_enabled input, #xAPI_enabled select").prop("disabled", true);
 		// ** should some of the 
+	}
+	// Set state of publish in dashboard
+	if (published && xapi) {
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', false);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', false);
+		$("#xApi_dashboard").removeClass("disabled");
+	}
+	else
+	{
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', true);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', true);
+		$("#xApi_dashboard").addClass("disabled");
 	}
 }
 
@@ -1424,21 +1466,24 @@ function tsugi_toggle_useglobal(lti_def_str)
 {
 	var useglobal = $("#tsugi_useglobal").prop('checked');
 	var lti_def = JSON.parse(lti_def_str);
-	$("#tsugi_useglobal").prop('checked', useglobal);
 	if (useglobal) {
 		$("#tsugi_useprivateonly").prop('disabled', true);
 		$("label[for=tsugi_useprivateonly]").addClass("disabled");
 		$("#tsugi_title").val("").prop('disabled', true);
 		$("#tsugi_key").val("").prop('disabled', true);
+		$("label[for=tsugi_key]").addClass("disabled");
 		$("#tsugi_secret").val("").prop('disabled', true);
+		$("label[for=tsugi_secret]").addClass("disabled");
 	}
-	else {
+	else
+	{
 		$("#tsugi_useprivateonly").prop('disabled', false);
 		$("label[for=tsugi_useprivateonly]").removeClass("disabled");
 		$("#tsugi_title").val(lti_def['title']).prop('disabled', false);
 		$("#tsugi_key").val(lti_def['key']).prop('disabled', false);
+		$("label[for=tsugi_key]").removeClass("disabled");
 		$("#tsugi_secret").val(lti_def['secret']).prop('disabled', false);
-
+		$("label[for=tsugi_secret]").removeClass("disabled");
 	}
 }
 

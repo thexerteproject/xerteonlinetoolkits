@@ -56,6 +56,8 @@ if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin"))
     $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? x_clean_input($_POST["tsugi_xapi_username"]) : "");
     $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? x_clean_input($_POST["tsugi_xapi_password"]) : "");
     $lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? x_clean_input($_POST["tsugi_xapi_student_id_mode"]) : "");
+    $lti_def->tsugi_publish_in_store = isset($_POST["tsugi_publish_in_store"]) && x_clean_input($_POST["tsugi_publish_in_store"] == "true");
+    $lti_def->tsugi_publish_dashboard_in_store = isset($_POST["tsugi_publish_dashboard_in_store"]) && x_clean_input($_POST["tsugi_publish_dashboard_in_store"] == "true");
     $lti_def->dashboard_urls = (isset($_POST["dashboard_urls"]) ? x_clean_input($_POST["dashboard_urls"]) : "");
 
 // Force groupmode
@@ -68,7 +70,7 @@ if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin"))
         $lti_def->url13 .= "&group=groupname";
     }
 
-    // Get current temapltedetails record
+    // Get current templatedetails record
     $row = db_query_one('select * from templatedetails where template_id=?', array($template_id));
     if ($tsugi_installed) {
         $PDOX = LTIX::getConnection();
@@ -135,7 +137,7 @@ if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin"))
             $lti_def->tsugi_key_id = -1;
         }
     }
-    $sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_usetsugikey = ?, tsugi_manage_key_id = ?, tsugi_privatekeyonly = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
+    $sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_usetsugikey = ?, tsugi_manage_key_id = ?, tsugi_privatekeyonly = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, tsugi_publish_in_store = ?, tsugi_publish_dashboard_in_store = ?, dashboard_allowed_links = ? WHERE template_id = ?";
     db_query($sql,
         array(
             $lti_def->published ? "1" : "0",
@@ -148,6 +150,8 @@ if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin"))
             $lti_def->xapi_enabled ? $lti_def->xapi_username : "",
             $lti_def->xapi_enabled ? $lti_def->xapi_password : "",
             $lti_def->xapi_enabled ? $lti_def->xapi_student_id_mode : "0",
+            $lti_def->published ? $lti_def->tsugi_publish_in_store: "1",
+            $lti_def->published && $lti_def->xapi_enabled ? $lti_def->tsugi_publish_dashboard_in_store : "0",
             $lti_def->xapi_enabled ? $lti_def->dashboard_urls : "",
             $template_id
         )

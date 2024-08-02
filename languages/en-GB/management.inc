@@ -39,7 +39,9 @@
 	define("MANAGEMENT_LOGON_FAIL","Sorry that password combination was not correct");
 	
 	define("MANAGEMENT_LOGOUT","Log out");
-	
+
+	define("MANAGEMENT_TOWORKSPACE","Workspace");
+
 	define("MANAGEMENT_TITLE","Site Administration");
 	
 	define("MANAGEMENT_MENUBAR_SITE","Site");

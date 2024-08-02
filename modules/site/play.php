@@ -24,6 +24,7 @@ require(dirname(__FILE__) . "/module_functions.php");
 // (pl)
 // Set up the preview window for a xerte piece
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
+require(dirname(__FILE__) .  '/../../website_code/php/user_library.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
@@ -309,6 +310,12 @@ function show_template($row, $xapi_enabled=false){
     }else{
         $page_content = str_replace("%TWITTERCARD%", "", $page_content);
     }
+    $user_roles = getRolesFromUser($_SESSION['toolkits_logon_id']);
+    if ($_SESSION['toolkits_logon_id'] === "site_administrator")
+    {
+        $user_roles = array("super");
+    }
+    $page_content = str_replace("%ROLES%", json_encode($user_roles), $page_content);
 
     echo $page_content;
 

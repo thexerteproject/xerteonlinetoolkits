@@ -462,7 +462,8 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             $popcorn_config .= "<script type=\"text/javascript\" src=\"$peertube_config_js?version=" . $version . "\"></script>\n";
         }
         $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
-        $page_content = str_replace("%SESSION%", $_SESSION['token'], $page_content);
+        $page_content = str_replace("%TOKEN%", $_SESSION['token'], $page_content);
+
     }
 
     return $page_content;
