@@ -42,7 +42,7 @@ if (!preg_match('/^([0-9]+)-([a-z0-9]+)-([a-zA-Z0-9_]+)/', $unsafe_file_path, $m
 $template_id = $matches[1];
 $username = $matches[2];
 
-$has_perms = is_user_admin() || is_user_an_editor($template_id, $_SESSION['toolkits_logon_id']);
+$has_perms = is_user_permitted("projectadmin") || is_user_an_editor($template_id, $_SESSION['toolkits_logon_id']);
 
 if ($has_perms) {
     // they're logged in, and hopefully have access to the media contents.
