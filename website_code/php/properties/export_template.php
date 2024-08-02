@@ -31,11 +31,11 @@ _load_language_file("/website_code/php/properties/export_template.inc");
 
 require_once("../template_library.php");
 
-include "../template_status.php";
+require_once "../template_status.php";
 
-include "../url_library.php";
+require_once "../url_library.php";
 
-include "../user_library.php";
+require_once "../user_library.php";
 
 $database_id=database_connect("Export template database connect success","Export template database connect failed");
 
@@ -45,7 +45,7 @@ $database_id=database_connect("Export template database connect success","Export
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_permitted("projectadmin")){
 		
 		echo "<h2 class=\"header\">" . EXPORT_TITLE . "</h2>";
 	

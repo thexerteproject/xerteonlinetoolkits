@@ -168,11 +168,21 @@
 				var url = $thisQ.getAttribute("image");
 				if (url != undefined && url != "") {
 					var newString = "";
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figure class="qImgHolder">';
+					} else {
+						newString += '<div class="qImgHolder">';
+					}
 					newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "") {
 						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
 					}
 					newString += ' />';
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figcaption>' + $thisQ.getAttribute("caption") + '</figcaption></figure>';
+					} else {
+						newString += '</div>';
+					}
 					infoString = newString + infoString;
 				}
 				$("#qTxt").html(x_addLineBreaks(infoString));
@@ -286,7 +296,7 @@
 
 					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 					quiz.checked = false;
-					$('#qNo').attr('tabIndex', 0).focus();
+					$('#qNo').attr('tabIndex', "-1").focus();
 				}
 			}
 		}
@@ -620,8 +630,19 @@
 			}
 			
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
-				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ? 'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
-				$textHolder.append('<img class="quizImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
+				var imgString = '';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					imgString += '<figure>';
+				}
+				imgString += '<img class="quizImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"';
+				if (x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "") {
+					imgString += ' alt="' + x_currentPageXML.getAttribute("tip") + '"';
+				}
+				imgString += '>';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					imgString += '<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption></figure>';
+				}
+				$textHolder.append(imgString);
 			}
 
 			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically, submitBtnTip/nextBtnTip/restartBtnTip attributes also not used
@@ -747,10 +768,10 @@
 		<div id="infoHolder" class="right">
 		
 			<div id="mainPanel" class="panel ">
-			
-				<h3 id="qNo" aria-live="polite"></h3>
 				
 				<fieldset class="noStyle">
+
+					<p id="qNo" aria-live="polite"></p>
 				
 					<span><legend id="qTxt"></legend></span>
 					

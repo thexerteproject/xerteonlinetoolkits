@@ -198,16 +198,19 @@ function check_security_type($security_setting)
     }
 }
 
-if (!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
+
+
+if (!isset($_GET['template_id'])) {
 
     /*
      * Was not numeric, so display error message
      */
-    echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
+    echo "<html><body>" . PLAY_RESOURCE_FAIL . " </body></html>";
     exit(0);
 }
 
-$safe_template_id = (int) $_GET['template_id'];
+
+$safe_template_id = x_clean_input($_GET['template_id'], 'numeric');
 
 /*
  * Take the query from site variable and alter it to suit this request
@@ -229,7 +232,7 @@ $row_recycle = db_query_one("SELECT folder_name FROM {$xerte_toolkits_site->data
 
 if ($row_recycle['folder_name'] == "recyclebin") {
 
-    echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
+    echo "<html><body>" . PLAY_RESOURCE_FAIL . "</body></html>";
     exit(0);
 }
 
@@ -333,8 +336,8 @@ if ($tsugi_enabled || $pedit_enabled) {
                             $success = true;
                         }
                         else {
-                            _debug("Password protected file using SSO, setting up redirection to " . $_SERVER['REQUEST_URI']);
-                            $_SESSION['pwprotected_url'] = $_SERVER['REQUEST_URI'];
+                            _debug("Password protected file using SSO, setting up redirection to " . x_clean_input($_SERVER['REQUEST_URI']));
+                            $_SESSION['pwprotected_url'] = x_clean_input($_SERVER['REQUEST_URI']);
                             login_processing(false);
                         }
                     }
@@ -401,15 +404,15 @@ if ($tsugi_enabled || $pedit_enabled) {
 
                     $test_string = substr($row_play['access_to_whom'], 6, strlen($row_play['access_to_whom']));
 
-                    _debug("'Other' security is active for '" . $test_string . "', the current referrer is: '" . $_SERVER['HTTP_REFERER'] . "'");
+                    _debug("'Other' security is active for '" . $test_string . "', the current referrer is: '" . x_clean_input($_SERVER['HTTP_REFERER']) . "'");
 
                     if (strlen($_SERVER['HTTP_REFERER']) > 0) {
-                        $ok = check_host($_SERVER['HTTP_REFERER'], $test_string);
+                        $ok = check_host(x_clean_input($_SERVER['HTTP_REFERER']), $test_string);
                         if ($ok) {
                             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d H:i:s'), $safe_template_id));
                             show_template($row_play, $xapi_enabled);
                         } else {
-                            dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
+                            dont_show_template('Doesnt Match Referer:' . x_clean_input($_SERVER['HTTP_REFERER']));
                         }
                     }
                     else {

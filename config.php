@@ -141,6 +141,8 @@ $xerte_toolkits_site->news_text = base64_decode($row['news_text']);
 $xerte_toolkits_site->pod_one = base64_decode($row['pod_one']);
 $xerte_toolkits_site->pod_two = base64_decode($row['pod_two']);
 //$xerte_toolkits_site->copyright = utf8_decode($row['copyright']);
+$xerte_toolkits_site->default_theme_xerte = $row['default_theme_xerte'];
+$xerte_toolkits_site->default_theme_site = $row['default_theme_site'];
 
 $site_texts = explode("~~~", $row['site_text']);
 if (count($site_texts) > 1) {
@@ -164,7 +166,17 @@ $xerte_toolkits_site->peer_form_string = base64_decode($row['peer_form_string'])
 
 
 $xerte_toolkits_site->basic_template_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path;
-$xerte_toolkits_site->users_file_area_full = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
+
+// If $xerte_toolkits_site->users_file_area_path is set and is an absolute path, use it as is.
+// Otherwise, use $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short as the full path.
+if ($xerte_toolkits_site->users_file_area_path !== null &&
+    $xerte_toolkits_site->users_file_area_path !== '' &&
+    (substr($xerte_toolkits_site->users_file_area_path, 0, 1) == '/' ||
+    substr($xerte_toolkits_site->users_file_area_path, 1, 1) == ':')){
+    $xerte_toolkits_site->users_file_area_full = $xerte_toolkits_site->users_file_area_path;
+} else {
+    $xerte_toolkits_site->users_file_area_full = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
+}
 
 /**
  * SQL query string used by play,edit and preview pages
@@ -185,7 +197,42 @@ global $last_file_check_error;
 $dir = opendir(dirname(__FILE__) . "/modules/");
 
 // I'm not sure why we allow this path to be set via the DB. It'd make more sense to fix it to dirname(__FILE__), which will cope with the site moving.
-$xerte_toolkits_site->root_file_path = dirname(__FILE__) . '/';
+$root_file_path = str_replace(DIRECTORY_SEPARATOR, '/', realpath(__DIR__)) . '/';
+if (file_exists($root_file_path . 'config.php')) {
+    $xerte_toolkits_site->root_file_path = $root_file_path;
+}
+if (file_exists($root_file_path . 'import')) {
+    $xerte_toolkits_site->import_path = $root_file_path . 'import/';
+}
+
+// Try to get site_url in the same way
+$host = $_SERVER['SERVER_NAME'];
+$port = $_SERVER['SERVER_PORT'];
+$scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
+
+if ($scheme == 'https://') {
+    if ($port == 443) {
+        $port = '';
+    } else {
+        $port = ':' . $port;
+    }
+} else {
+    if ($port == 80) {
+        $port = '';
+    } else {
+        $port = ':' . $port;
+    }
+}
+// get subdir from $xerte_toolkits_site->site_url path stored in Db
+$subdir = '/';
+$subdir_pos = strpos($xerte_toolkits_site->site_url, '/', 8);
+if ($subdir_pos !== false)
+{
+    $subdir = substr($xerte_toolkits_site->site_url, $subdir_pos);
+}
+$site_url = $scheme . $host . $port . $subdir;
+
+$xerte_toolkits_site->site_url = $site_url;
 
 $learning_objects = new StdClass();
 

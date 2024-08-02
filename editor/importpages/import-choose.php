@@ -19,7 +19,13 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 }
 
 $version = getVersion();
-$template = $_GET["template"];
+if (!isset($_GET["id"]) || !isset($_GET["template"]))
+{
+    die("Invalid paramaters");
+}
+
+$template = x_clean_input($_GET["template"]);
+$id = x_clean_input($_GET["id"], 'numeric');
 
 $workspace = json_decode(get_users_projects("date_down", true));
 
@@ -48,7 +54,7 @@ $_SESSION['pageIcons'] = json_encode($pageIcons);
 for($i=count($workspace->items) - 1; $i>=0; $i--)
 {
     $item = $workspace->items[$i];
-    if ($item->xot_id == $_GET["id"] && $item->xot_type == 'file')
+    if ($item->xot_id == $id && $item->xot_type == 'file')
     {
         unset($workspace->nodes->{$item->id});
         array_splice($workspace->items, $i, 1);

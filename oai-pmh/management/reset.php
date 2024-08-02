@@ -30,8 +30,7 @@ if (!file_exists("../oai_config.php"))
 }
 
 require_once('../oai_config.php');
-require_once(__DIR__ . '/../xerteobjects.php');
-
+require_once($xerte_toolkits_site->php_library_path  . "template_library.php");
 
 function getAllTemplates()
 {

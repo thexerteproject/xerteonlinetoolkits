@@ -94,20 +94,40 @@
 				synchPoint = 0;
 			
 			$(x_currentPageXML).children().each(function(i){
-				var infoString = x_addLineBreaks('<p class="slideTxt">' + this.getAttribute("text") + '</p>'),
+				var infoString = this.getAttribute("text") == "" ? "" : x_addLineBreaks('<p class="slideTxt">' + this.getAttribute("text") + '</p>'),
 					synch = this.getAttribute("synch")[0] == "+" ? ($.isNumeric(this.getAttribute("synch").slice(1)) ? Number(this.getAttribute("synch").slice(1)) + synchPoint : 0) : Number(this.getAttribute("synch")),
 					url = this.getAttribute("url");
 				
 				if (url != undefined && url != "") {
-					var newString = '<div class="pageImg"><img ';
+					var newString = '<div class="pageImg">';
+					if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+						newString += '<figure ';
+						if (this.getAttribute("align") != "Bottom") {
+							newString += 'class="padBottom"';
+						} else {
+							newString += 'class="padTop"';
+						}
+						newString += '><img ';
+					} else {
+						newString += '<img ';
+						if (this.getAttribute("align") != "Bottom") {
+							newString += 'class="padBottom" ';
+						} else {
+							newString += 'class="padTop" ';
+						}
+					}
 					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 						newString += 'alt="' + this.getAttribute("tip") + '" ';
 					}
+					newString += ' />';
+					if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+						newString += '<figcaption>' + this.getAttribute("caption") + '</figcaption></figure>';
+					}
+					newString += '</div>';
+
 					if (this.getAttribute("align") != "Bottom") {
-						newString += 'class="padBottom" /></div>';
 						infoString += newString;
 					} else {
-						newString += 'class="padTop" /></div>';
 						infoString = newString + infoString;
 					}
 				}
@@ -168,8 +188,9 @@
 					firstScale = true;
 				}
 				$img.data("count", $pageContents.data("count"));
-				
-				x_scaleImg($img, $infoHolder.width() - 20, $infoHolder.height() - 20, true, firstScale);
+
+				var captionH = $infoHolder.find(".pageImg img:visible").parents(".pageImg").find("figcaption").length > 0 ? $infoHolder.find(".pageImg img:visible").parents(".pageImg").find("figcaption").outerHeight(true) : 0;
+				x_scaleImg($img, $infoHolder.width() - 20, $infoHolder.height() - captionH - 20, true, firstScale);
 				
 				$img.css({
 					"opacity"	:1,

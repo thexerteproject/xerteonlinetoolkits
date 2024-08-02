@@ -290,6 +290,10 @@
 						hsType = "url";
 						hsInfo = this.getAttribute("destinationURL");
 					
+					} else if (this.getAttribute("newTabURL") != undefined && this.getAttribute("newTabURL") != ""){
+						hsType = "newTab";
+						hsInfo = this.getAttribute("newTabURL");
+
 					// go to page in LO
 					} else if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
 						hsType = "pageLink";
@@ -322,7 +326,7 @@
 
 					if (hsShape !== 'icon') {
 						var _this = this,
-								$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" tabindex="' + (i + 2) + '" />');
+								$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" />');
 
 
 						var coords = [];
@@ -412,9 +416,10 @@
 
 									if (hsType == "url") {
 										window.location.href = hsInfo;
-
-										// go to page in LO
+									else if (hsType == "newTab") {
+										window.open(hsInfo, "_blank");
 									} else if (hsType == "pageLink") {
+   										// go to page in LO
 										if (x_lookupPage("linkID", hsInfo) === false && ['[previous]', '[next]', '[first]', '[last]'].indexOf(hsInfo) < 0) { // destination not found
 											if (x_params.authorSupport == "true") {
 												$("#feedback").html(hsInfo + " " + $pageContents.data("authorSupport"));
@@ -512,13 +517,13 @@
 												$.featherlight($pageAudio);
 
 												$('#pageAudio')
-														.attr('title', videoTip)
-														.mediaPlayer({
-															type: 'audio',
-															source: _this.getAttribute('hotspotSound'),
-															width: '100%',
-															startEndFrame: [Number(_this.getAttribute('soundStart')), Number(_this.getAttribute('soundEnd'))]
-														});
+													.attr('title', videoTip)
+													.mediaPlayer({
+														type: 'audio',
+														source: _this.getAttribute('hotspotSound'),
+														width: '100%',
+														startEndFrame: [Number(_this.getAttribute('soundStart')), Number(_this.getAttribute('soundEnd'))]
+													});
 
 												// manually add a transcript button to the end of the audio bar
 												if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
@@ -534,18 +539,30 @@
 												if (hsType == 'dialog') {
 
 													var styleAttr = 'style="max-width:' + $x_mainHolder.width() * 0.8 + 'px; max-height:' + $x_mainHolder.height() * 0.8 + 'px"';
+													var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? ' alt="' + _this.getAttribute('imageTip') + '"' : '';
 
-													dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + '/>';
+													dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + tip + '/>';
+
+													if (_this.getAttribute('imageCaption') != undefined && _this.getAttribute('imageCaption') != '') {
+														dialogHtml = '<figure>' + dialogHtml + '<figCaption>' + _this.getAttribute('imageCaption') + '</figCaption></figure>';
+													}
+
 													$pageContents.data("dialogPos").width = 'auto';
 													$pageContents.data("dialogPos").height = 'auto';
 
 												} else if (hsType == 'lightbox') {
 													var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? _this.getAttribute('imageTip') : '';
+													var caption = _this.getAttribute('imageCaption') != undefined && _this.getAttribute('imageCaption') != '' ? _this.getAttribute('imageCaption') : '';
 													$.featherlight({
 														image: _this.getAttribute('imageFile'),
 														afterOpen: function (e) {
 															if (tip != '') {
 																this.$content.attr('alt', tip);
+															}
+															if (caption != '') {
+																var $img = $(this.$content[0]);
+																$img.wrap('<figure></figure>');
+																$img.parent('figure').append('<figcaption>' + caption + '</figcaption>');
 															}
 														}
 													});
@@ -946,6 +963,6 @@
 		</div>
 	</div>
 
-	<div id="mainText" tabindex="1"></div>
+	<div id="mainText"></div>
 
 </div>

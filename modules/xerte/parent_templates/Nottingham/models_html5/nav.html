@@ -114,6 +114,19 @@
 					}
 				}
 			});
+
+			// ensure images aren't too tall
+			$(".paneImg").each(function() {
+				var $this = $(this);
+				var parentH = x_currentPageXML.getAttribute("type") == "Acc" || x_currentPageXML.getAttribute("type") == "Tab" ? $this.parents(".navChild").height() :
+						x_currentPageXML.getAttribute("type") == "Button" || x_currentPageXML.getAttribute("type") == "Slide" ? $this.parents("#infoHolder").height() :
+						$x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()); // columns
+
+				$this.css({
+					"max-width": $this.parents(".navChild").width() - ($this.outerWidth(true) - $this.width()),
+					"max-height": parentH - ($this.outerHeight(true) - $this.height()) - ($this.parents("figure").length > 0 ? $this.parents("figure").find("figcaption").outerHeight(true) : 0)
+				});
+			});
 		}
 
 		// Loads popcorn, then calls setup.
@@ -310,7 +323,11 @@
 						
 					// image
 					} else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif") {
-						$media = $('<div class="navMedia"><img src="' + this.getAttribute("url") + '" ' + (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? 'alt="' + this.getAttribute("tip") + '"' : '') + '/></div>');
+						if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+							$media = $('<figure class="navMedia"><img class="paneImg" src="' + this.getAttribute("url") + '" ' + (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? 'alt="' + this.getAttribute("tip") + '"' : '') + '/><figcaption>' + this.getAttribute("caption") + '</figcaption></figure>');
+						} else {
+							$media = $('<div class="navMedia"><img class="paneImg" src="' + this.getAttribute("url") + '" ' + (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? 'alt="' + this.getAttribute("tip") + '"' : '') + '/></div>');
+						}
 						
 					// iframe
 					} else if (this.getAttribute("url").substr(0,7) == "<iframe") {
@@ -512,7 +529,6 @@
 
 		this.loadMedia = function($holder, type, data) {
 			this.popcornInstance = loadMedia($holder, type, data);
-			//return this.popcornInstance;
 		}
 		
 		this.slideshowChange = function(newPage) {
@@ -557,7 +573,7 @@
 
 		this.leavePage = function () {
 			document.dispatchEvent(new Event('leavepage'));
-	};
+		}
 	}
 	
 	nav.init();

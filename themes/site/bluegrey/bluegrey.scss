@@ -26,7 +26,7 @@ body {
   background-color: $lightestcolor;
 }
 /*--Heading and other text changes---------------------------------------*/
-h1 {
+h1, h2.sectionTitle {
   color:$brightcolor;
 }
 h2, h3, h4, h5, h6 {
@@ -206,6 +206,10 @@ a:hover{
   background-image: linear-gradient(3deg, $contrastcolor 0%, $contrastcolor 100%);
 }
 .footer p {
+  color: $whiteorlightest;
+}
+
+.footer a {
   color: $whiteorlightest;
 }
 

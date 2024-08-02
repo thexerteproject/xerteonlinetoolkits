@@ -59,6 +59,10 @@ ul, ol {
 	overflow: hidden;
 }
 
+a {
+	word-wrap: break-word;
+}
+
 .optionTxt p {
 	padding-top: 0;
 }
@@ -83,6 +87,10 @@ ul, ol {
 
 #x_headerBlock div, #x_pageDiv {
 	padding:	10px;
+}
+
+#x_pageDiv {
+	height: calc(100% - 20px);
 }
 
 #x_headerBlock img {
@@ -617,6 +625,10 @@ table.headerCol.simple th:first-child {
     margin-top: -0.5em;
 }
 
+.ui-icon.fa {
+	overflow: visible;
+}
+
 .ui-icon.icon-large {
     margin-top: -0.75em;
 }
@@ -693,18 +705,19 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
-
-.x_pswdInput {
-	margin-top: 1em;
-	padding: 0.3em;
+.x_pswdInput:not(.old) {
+	width: 90vmin;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-input#x_pagePswd {
-	margin-bottom: 0;
-}
-
-#x_pagePswdBtn {
-	margin-left: 1em;
+.x_pswdBlock:not(.old) {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 }
 
 #x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
@@ -716,6 +729,154 @@ input#x_pagePswd {
 	margin-top: 1em;
 	font-size: 0.9em;
 	color: #c0392b;
+}
+
+:not(.old) .x_pswdError {
+	text-align: centers;
+}
+
+.x_pswdInput.old {
+	margin-top: 1em;
+	padding: 0.3em;
+}
+
+input#x_pagePswd.old {
+	margin-bottom: 0;
+}
+
+/* #x_pagePswdBtn.old { */
+/* 	margin-top: 1em; */
+/* } */
+
+.vault {
+	width: 50%;
+	aspect-ratio: 1/1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #707070;
+	border-radius: 5%;
+}
+
+.numeric {
+	aspect-ratio:1/1.25;
+	border-radius: 20px;
+}
+
+.vault-door-frame {
+	width: 94%;
+	height: 94%;
+	background-color: #808080;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+}
+
+.vault-door {
+	width: 94%;
+	height: 94%;
+	background-color: #909090;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border-radius: 50%;
+	position: relative;
+}
+
+.numeric .vault-door, .numeric .vault-door-frame{
+	border-radius: 20px;
+}
+
+.numeric .vault-door{
+	display: grid;
+	padding: 5%;
+	box-sizing: border-box;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(6, 1fr);
+	grid-template-areas:
+		"input  input  input "
+		"one    two    three "
+		"four   five   six   "
+		"seven  eight  nine  "
+		"unused zero   reset "
+		"button button button";1
+}
+
+.vault-door-dial{
+	width: 30%;
+	height: 30%;
+	background-color: #A0A0A0;
+	border-radius: 50%;
+	position: relative;
+}
+
+.vault-door-dial-inside{
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	width: 80%;
+	height: 80%;
+	border-radius: 50%;
+	background-color: #909090;
+}
+
+.vault-door-dial-rod{
+	background-color: #A0A0A0;
+	position: absolute;
+	top: 5%;
+	left: 45%;
+	width: 10%;
+	height: 90%;
+	rotate: z 45deg;
+}
+.vault-door-dial-rod.rotated{
+	rotate: z -45deg;
+}
+
+.vault:not(.numeric) input{
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	width: 300%;
+}
+.vault input{
+	background-color: #00000000;
+	border: 2px solid #ffffff40;
+	z-index: 2;
+	font-size: 3.5vmin;
+}
+
+.vault input:focus, .vault input:hover{
+	border: 2px solid #ffffff;
+	outline: none;
+}
+
+.vault:not(.numeric) button#x_pagePswdBtn {
+	position: absolute;
+	top: 70%;
+	width: 70%;
+}
+
+.vault button {
+	font-size: 3vmin;
+	background-color: #A0A0A0;
+	border: 2px solid #505050;
+	border-radius: 20px;
+}
+
+.vault button:not(#x_pagePswdBtn){
+	border-radius: 0px;
+	height: calc(100% - 1px);
+	margin: 1px;
+}
+
+.vault button:hover {
+	background-color: #808080;
+	border-color: #4A4A4A;
 }
 
 /* Specifically for grayscale handling on IE browsers */
@@ -732,6 +893,21 @@ textarea {
 .lightBoxCaption {
 	margin: 5px 0;
 }
+
+figure {
+	margin: 0;
+}
+
+figcaption {
+	margin-top: .2em;
+	margin-bottom: 0;
+}
+
+figcaption:first-child {
+	margin-bottom: .2em;
+	margin-top: 0;
+}
+
 /*#pageContents and #adaptiveContentMain not usually an actionable item so hide focus border*/
 #pageContents:focus,#adaptiveContentMain:focus{
 	outline:none;
@@ -1207,4 +1383,8 @@ a:focus .wcagLogo {
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
 	background-color: #212121;
 	color: white;
+}
+
+[data-cke-editorplaceholder]::before {
+	padding: 0.3em;
 }

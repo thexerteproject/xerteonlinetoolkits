@@ -33,7 +33,9 @@ _load_language_file("/properties.inc");
 include "../template_status.php";
 include "../user_library.php";
 
-if(!is_numeric($_POST['template_id'])){
+
+
+if(!isset($_POST['template_id'])){
 	echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
 	echo "<div id=\"mainContent\">";
     echo "<p>" . SHARING_FAIL . "</p>";
@@ -41,16 +43,15 @@ if(!is_numeric($_POST['template_id'])){
     exit(0);
 }
 
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
 
-if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
     echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
 	echo "<div id=\"mainContent\">";
     echo "<p>" . SHARING_FAIL . "</p>";
 	echo "</div>";
     exit(0);
 }
-$template_id = $_POST['template_id'];
-
 echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
 echo "<div id=\"mainContent\">";
 
@@ -58,7 +59,7 @@ echo "<div id=\"mainContent\">";
  * show a different view if you are the file creator
  */
 
-if(is_user_creator_or_coauthor((int) $template_id) || is_user_admin()){
+if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
 	
 	echo "<p>" . SHARING_INSTRUCTION . "</p>";
 	
@@ -107,13 +108,13 @@ if(sizeof($query_sharing_rows)==0 && sizeof($query_sharing_rows_group)==0){
 
 echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
 
-echo "<ul class='share_users " . (is_user_creator_or_coauthor($template_id)|| is_user_admin() ? "" : "show_list") . "'>";
+echo "<ul class='share_users " . (is_user_creator_or_coauthor($template_id)|| is_user_permitted("projectadmin") ? "" : "show_list") . "'>";
 
 foreach($query_sharing_rows_group as $row) {
 	
 	echo "<li>" . $row['group_name'];
 	
-	if(is_user_creator_or_coauthor($template_id)|| is_user_admin()){
+	if(is_user_creator_or_coauthor($template_id)|| is_user_permitted("projectadmin")){
 		
 		echo ' <label class="sr-only" for="groupRole_' . $row['group_id'] . '">' . SHARING_ROLE_LABEL . ' (' . $row['group_name'] . ')</label>' .
 			'<select name="groupRole_' . $row['group_id'] . '" id="groupRole_' . $row['group_id'] . '" onchange="set_sharing_rights_template(\'' . $template_id . '\', \'' . $row['group_id']. '\', true)">' .
@@ -138,7 +139,7 @@ foreach($query_sharing_rows as $row) {
 
     if($row['role']!="creator") {
 
-        if (is_user_creator_or_coauthor($template_id)|| is_user_admin()) {
+        if (is_user_creator_or_coauthor($template_id)|| is_user_permitted("projectadmin")) {
 			
             echo ' <label class="sr-only" for="role_' . $row['user_id'] . '">' . SHARING_ROLE_LABEL . ' (' . $row['firstname'] . " " . $row['surname'] . " - " . $row['username'] . ')</label>' .
 				'<select name="role_' . $row['user_id'] . '" id="role_' . $row['user_id'] . '" onchange="set_sharing_rights_template(\'' . $template_id . '\', \'' . $row['user_id']. '\', false)">' .
@@ -165,9 +166,9 @@ foreach($query_sharing_rows as $row) {
 
 echo "</ul>";
 
-if(!is_user_creator($_POST['template_id'])&&!is_user_admin()){
+if(!is_user_creator($template_id)&&!is_user_permitted("projectadmin")){
 
-    echo "<p>" . SHARING_STOP_INSTRUCTIONS . " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true,false)\"><i class=\"fa fa-times\"></i> " . SHARING_STOP . "</button></p>";
+    echo "<p>" . SHARING_STOP_INSTRUCTIONS . " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $template_id . "','" . $_SESSION['toolkits_logon_id'] . "',true,false)\"><i class=\"fa fa-times\"></i> " . SHARING_STOP . "</button></p>";
 
 }
 

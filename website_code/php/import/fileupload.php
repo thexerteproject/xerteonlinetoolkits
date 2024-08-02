@@ -59,24 +59,34 @@ if (!isset($_SESSION['toolkits_logon_id']))
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
-if (strpos($_POST['mediapath'], 'USER-FILES') === false || strpos($_POST['mediapath'], '../') !== false)
+
+if (!isset($_POST['mediapath']))
 {
-    // Invalid upload path
-    _debug("Invalid or illegal mediapath");
-    die("Invalid or illegal mediapath");
+    _debug("No mediapath specified");
+    die("No mediapath specified");
 }
+$mediapath = x_clean_input($_POST['mediapath'], 'string');
+
+// Make sure the mediapath is a valid path and does not contain any path traversal
+x_check_path_traversal($mediapath, $xerte_toolkits_site->users_file_area_full, "Invalid mediapath specified");
 
 _load_language_file("/website_code/php/import/fileupload.inc");
 
 if(apply_filters('editor_upload_file', $_FILES)){
 
-    if($_FILES['filenameuploaded']['type']=="text/html"){
+    $filename = x_clean_input($_FILES['filenameuploaded']['name']);
+    $filetype = x_clean_input($_FILES['filenameuploaded']['type']);
+    if (strpos($filename, '/') !== false || strpos($filename, '\\') !== false || strpos($filename, '..') !== false){
+        die("Invalid filename specified");
+    }
+
+    if($filetype=="text/html"){
 
         $php_check = file_get_contents($_FILES['filenameuploaded']['tmp_name']);
 
-        if(!stripos($php_check,"<?PHP")){
+        if(stripos($php_check,"<?PHP") !== false || stripos($php_check, "<?")){
 
-            $new_file_name = $_POST['mediapath'] . $_FILES['filenameuploaded']['name'];
+            $new_file_name = $mediapath . $filename;
 
             if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
@@ -96,9 +106,9 @@ if(apply_filters('editor_upload_file', $_FILES)){
 
     }else{
 
-        $new_file_name = $_POST['mediapath'] . $_FILES['filenameuploaded']['name'];
+        $new_file_name = $mediapath . $filename;
 
-        if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
+        if(@move_uploaded_file(x_clean_input($_FILES['filenameuploaded']['tmp_name']), $new_file_name)){
 
             echo FILE_UPLOAD_SUCCESS . "****";
 
@@ -123,7 +133,7 @@ if(apply_filters('editor_upload_file', $_FILES)){
         echo "File is too large. Maximum size allowed is: " . ini_get('upload_max_filesize') . "B****";
     }
     else {
-        echo FILE_UPLOAD_MIME_FAIL . " - " . $_FILES['filenameuploaded']['type'] . "****";
+        echo FILE_UPLOAD_MIME_FAIL . " - " . x_clean_input($_FILES['filenameuploaded']['type']) . "****";
     }
 }
-?>
+

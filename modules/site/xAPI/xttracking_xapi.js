@@ -2560,8 +2560,9 @@ function XThelperConsolidateSegments(videostate) {
     while (i < segments.length) {
         var segment = $.extend(true, {}, segments[i]);
         i++;
-        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
-            segment.end = segments[i].end;
+        while (i < segments.length && parseFloat(segments[i].start) >= parseFloat(segment.start) && parseFloat(segments[i].start) <= parseFloat(segment.end)) {
+            if (parseFloat(segments[i].end) > parseFloat(segment.end))
+                segment.end = segments[i].end;
             i++;
         }
         csegments.push(segment);

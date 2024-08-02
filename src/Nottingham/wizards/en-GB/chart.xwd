@@ -1,7 +1,7 @@
 <wizard menus="Charts">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
+      <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart>
     </newNodes>
   </pageWizard>
 
@@ -10,15 +10,15 @@
   <chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. Choose from line, bar, stacked bar or pie charts, and add several series of data to the chart." icon="icChart" thumb="thumbs/charts.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#basicchart" wiki="https://xerte.org.uk/wiki/doku.php?id=charts_basicchart_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="300"/>
+    <text label="Page Text" type="TextArea" height="300" placeholder="Enter text for the page here"/>
     <chartTitle label="Chart Title" type="TextInput" wysiwyg="true"/>
     <chartType label="Chart Type" options="Line,Bar,Stacked bar,Pie" type="ComboBox" data="line,bar,stacked bar,pie" defaultValue="line" width="120"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
 	
-	<alt label="Summary" type="TextInput" wysiwyg="true" defaultValue="Enter a Summary of the Chart's Contents for Accessibility" optional="true" tooltip="A description of the chart that will be read by screenreaders. Add this to improve the accessibility of the page"/>
+	<alt label="Summary" type="TextInput" wysiwyg="false" defaultValue="" placeholder="Enter a summary for accessibility" optional="true" tooltip="A description of the chart that will be read by screen readers. Add this to improve the accessibility of the page"/>
 	
     <newNodes>
-      <series><![CDATA[<series name="Series Name" data="label|data" colour="0xFF0000"/>]]></series>
+      <series><![CDATA[<series name="Enter Series Name" data="label|data" colour="0xFF0000"/>]]></series>
     </newNodes>	
 	
   </chart>

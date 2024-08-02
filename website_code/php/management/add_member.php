@@ -37,25 +37,32 @@ function add_members_to_group($login_ids, $group_id){
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
     $entries = array();
+    $params = array();
     foreach($login_ids as $login_id){
-        $entries[] = "(" . $login_id . ", ". $group_id . ")";
+        $entries[] = "(?, ?)";
+        $params[] = $login_id;
+        $params[] = $group_id;
     }
 
-    return "INSERT INTO {$prefix}user_group_members (login_id, group_id) VALUES " . implode(', ', $entries);
-
+    $query = "INSERT INTO {$prefix}user_group_members (login_id, group_id) VALUES " . implode(', ', $entries);
+    return db_query($query, $params);
 }
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $login_ids= $_POST['login_id'];
-    $group_id = $_POST['group_id'];
+    $login_ids= x_clean_input($_POST['login_id'], 'array_numeric');
+    $group_id = x_clean_input($_POST['group_id'], 'numeric');
 
     $logins = implode(',', $login_ids);
+
     $database_id = database_connect("member list connected","member list failed");
 
     $params = array( $group_id);
-    $query = "SELECT * FROM {$prefix}user_group_members WHERE group_id=? AND login_id in (" . $logins . ")";
+    $params = array_merge($params, $login_ids);
+    $questionmarks = str_repeat("?,", count($login_ids) - 1) . "?";
+
+    $query = "SELECT * FROM {$prefix}user_group_members WHERE group_id=? AND login_id in ({$questionmarks})";
     $exists = db_query($query, $params);
 
     $existing_arr = array();
@@ -65,9 +72,7 @@ if(is_user_admin()){
 
     $logins_arr = array_diff($login_ids, $existing_arr);  //select only users who aren't in this group yet
 
-    $query = add_members_to_group($logins_arr, $group_id);
-    //$query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_group_members (login_id, group_id) VALUES (?,?)";
-    db_query($query);
+    $ok = add_members_to_group($logins_arr, $group_id);
 
 }else{
 

@@ -62,7 +62,8 @@
     }
 
     #targetHolder .target {
-        position:	absolute;
+        position: absolute;
+        cursor: pointer;
     }
 
     #targetHolder .target.border {

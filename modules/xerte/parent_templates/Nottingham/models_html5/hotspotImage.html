@@ -135,7 +135,7 @@
 
 			$img.mapster('unbind');
 
-			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false, true);
 
 			$img.css({
 				"opacity"	:1,
@@ -214,7 +214,7 @@
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var _this = this;
-					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="0" />');
+					var $hotspot = $('<area class="hotspot" shape="poly" href="#" />');
 
 					var coords = [];
 					var coords_string = "";
@@ -265,7 +265,7 @@
 							else {
 								$("#infoHolder").html((x_browserInfo.mobile == true ? "" : "<hr/>") + "<h3>" + _this.getAttribute("name") + "</h3>" + x_addLineBreaks(_this.getAttribute("text")));
 							}
-							
+
 							$(".selected").removeClass("selected");
 							if (x_currentPageXML.getAttribute("highlight") !== "true") {
 								$("area").mapster('deselect');

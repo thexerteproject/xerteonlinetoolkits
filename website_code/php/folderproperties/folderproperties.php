@@ -50,11 +50,18 @@ if (!isset($_SESSION['toolkits_logon_username']))
     die();
 }
 
-//connect to the database
-$folder_id = $_POST['folder_id'];
-if(is_numeric($folder_id) && (has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || is_user_admin())){
 
-    $database_connect_id = database_connect("Folder name database connect success", "Folder name database connect failed");
+if(!isset($_POST['folder_id'])){
+
+    echo "<p>" . FOLDER_PROPERTIES_FAIL . "</p>";
+
+    echo "</div>";
+
+    exit(0);
+}
+
+$folder_id =x_clean_input($_POST['folder_id'], 'numeric');
+if(has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || is_user_admin()){
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
     

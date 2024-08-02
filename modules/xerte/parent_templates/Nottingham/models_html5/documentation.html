@@ -43,9 +43,40 @@
 				
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
 				$("#pages").height($panel.height() - footerH);
+
+				$("#pages .itemImg").each(function() {
+					$(this).css("max-height", $("#pages").height() - $(this).parents("figure").find("figcaption").outerHeight(true));
+				});
 			}
 		}
-		
+
+		this.startTracking = function(data) {
+
+			let itemCount = 0;
+			let items = [];
+
+			for(let page of data.pages) {
+				let pageName = page.pageName;
+				for(let section of page.sections){
+					let prefix = pageName + " - "
+					if(section.sectionName != null){
+						prefix += section.sectionName + " - ";
+					}
+					for(let item of section.items){
+						if(item.itemName == null)
+							continue;
+						items.push(prefix + item.itemName);
+						itemCount += 1;
+					}
+				}
+			}
+            XTSetPageType(x_currentPage, 'numeric', itemCount, this.weighting);
+			for(i = 0; i < items.length; i++){
+				let name = items[i];
+				XTEnterInteraction(x_currentPage, i, 'fill-in', name, ["-"], ["-"], null /* never used*/, x_currentPageXML.getAttribute("grouping"));
+			}
+		}
+
 		this.init = function() {
 			// styles used in downloaded word doc
 			var styles = '';
@@ -54,7 +85,13 @@
 			$('#pageContents').data('downloadStyles', styles);
 		
 			var pageIndex = 0;
-			
+
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+
 			// Set up main layout structure & add in all non-subpage text
 			$("#textHolder").append(x_currentPageXML.getAttribute("text"));
 			
@@ -220,38 +257,49 @@
 					$('#pages').append($page);
 				}
 			}
-			
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				this.startTracking(docData);
+			}
+
 			// Add download button
-			var $downloadBtn = $('<button id="downloadBtn">');
-			var $downloadSection = $('<div class="item"/>');
-			$downloadBtn.appendTo($downloadSection);
+			var $finishBtn = $('<button id="downloadBtn">');
+			var $finishSection = $('<div class="item"/>');
+			$finishBtn.appendTo($finishSection);
 			if (x_currentPageXML.getAttribute('download') && x_currentPageXML.getAttribute('download') == 'extra') {
 				$page = $('<div>')
 					.attr('id', 'page' + pageIndex)
 					.attr('class', 'page hidepage');
 				
-				$downloadSection.appendTo($page);
+				$finishSection.appendTo($page);
 				$('#pages').append($page);
 			}
 			else {
-				$downloadSection.insertAfter($('#pages').children().last().children().last());
+				$finishSection.insertAfter($('#pages').children().last().children().last());
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($downloadBtn);
+				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($finishBtn);
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);
-			
-			$downloadBtn.button({
-				icons: {
-					primary: "fa fa-x-download"
-				},
-				label:	x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Download"
-			})
-			.click(function() {
-				documentation.download();
-			})
+
+
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				$finishBtn.button({
+					label: x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Submit"
+				}).click(function () {
+					documentation.track();
+				});
+			} else {
+				$finishBtn.button({
+					icons: {
+						primary: "fa fa-x-download"
+					},
+					label: x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Download"
+				}).click(function () {
+					documentation.download();
+				});
+			}
 			
 
 			// Wire up navigation buttons or hide them
@@ -363,6 +411,9 @@
 						if (xml.getAttribute('rows')) rows = parseInt(xml.getAttribute('rows'));
 						
 						switch(xml.getAttribute("width")) {
+							case "Full":
+							        width = "full-textarea";
+							        break;
 							case "Small":
 								width = "width40";
 								break;
@@ -436,8 +487,13 @@
 							if (exclude != 'doc') {
 								docData.pages[page].sections[section].items[item].itemText = '<img class="itemImg" src="' + xml.getAttribute('url') + '">';
 							}
-							$element = $('<img class="itemImg">')
-								.attr('src', xml.getAttribute('url'));
+
+							var altTxt = xml.getAttribute('tip') != undefined && xml.getAttribute('tip') != '' ? ' alt="' + xml.getAttribute('tip') + '"' : "";
+							if (xml.getAttribute('caption') != undefined && xml.getAttribute('caption') != '') {
+								$element = $('<figure><img class="itemImg" src="' + xml.getAttribute('url') + '"' + altTxt + '><figCaption>' + xml.getAttribute('caption') + '</figCaption></figure>');
+							} else {
+								$element = $('<img class="itemImg" src="' + xml.getAttribute('url') + '"' + altTxt + '>');
+							}
 						}
 						else {
 							$element = $('<div>')
@@ -526,7 +582,7 @@
 														$("input[name='" + ('idP' + page + 'S' + section + 'I' + item) + "']:checked").map(function(_, el) {
 															checkbox.push($(el).val());
 														}).get();
-														documentation.updateData(p, s, i, (checkbox.length >0 ) ? checkbox.join(', ') : notAnsweredText);
+														documentation.updateData(p, s, i, checkbox.length > 0 ? checkbox.join('') : notAnsweredText);
 													})
 												})(page, section, item, display);
 												break;
@@ -575,7 +631,11 @@
 							case "Large":
 								width = "width80";
 								break;
-								
+
+							case "Full":
+							        width = "full-textbox";
+							        break;
+
 							default:
 								width = "width60";
 						}
@@ -747,10 +807,65 @@
     		}
 		};
 		
+		this.track = function() {
+			if (documentation.checkRequired(currentPage)) {
+				documentation.sendToXAPI($("#pageContents").data("docData"));
+    		}
+			$("#downloadBtn").hide().prev().hide();
+		}
+
 		this.showPage = function (page) {
 			$('#pagenumber').html(page + " / " + $('#pages').children().length);
 		};
-		
+
+		this.sendToXAPI = function(data){
+			let itemCount = 0;
+			let items = [];
+
+			for(let page of data.pages) {
+				let pageName = page.pageName;
+				for(let section of page.sections){
+					let prefix = pageName + " - "
+					if(section.sectionName != null){
+						prefix += section.sectionName + " - ";
+					}
+					for(let item of section.items){
+						if(item.itemName == null)
+							continue;
+						let result = {
+							success: true,
+							score: 100,
+							judge: false
+						}
+						if (item.itemValue.indexOf("<table") == -1) {
+							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, item.itemValue, null/*not used*/);
+						} else {
+							let tableCSV = "";
+							let columnCount = 0;
+							$(item.itemValue).find("table thead tr th").each(function(index){
+								columnCount++;
+								if(index === 0){
+									tableCSV += $(this).text();
+								} else {
+									tableCSV += "," + $(this).text();
+								}
+							});
+							$(item.itemValue).find("table tbody tr td").each(function(index){
+								if(index%columnCount == 0){
+									tableCSV += "\n" + $(this).text();
+								} else {
+									tableCSV += "," + $(this).text();
+								}
+							});
+							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, tableCSV, null/*not used*/);
+						}
+						itemCount += 1;
+					}
+				}
+			}
+			XTSetPageScore(x_currentPage, 100, x_currentPageXML.getAttribute("trackinglabel"));
+		}
+
 		this.postData = function (data) {
 			// remove anything that's excluded from document
 			var temp = jQuery.extend(true, {}, data),

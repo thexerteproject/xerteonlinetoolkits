@@ -43,16 +43,10 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
-			var $infoHolder = $("#infoHolder"),
-				maxH = $x_mainHolder.height() - $x_footerBlock.height();
+			var $infoHolder = $("#infoHolder");
 			if (x_browserInfo.mobile == false) {
 				$infoHolder.height($x_pageHolder.height() - $("#pageContents .splitScreen").position().top - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($infoHolder.css("padding-top")) * 2);
-				maxH = $infoHolder.height();
 			}
-			
-			$("#pageContents").data({
-				"maxWH"	:[$infoHolder.width(), maxH]
-			});
 			
 			if (firstLoad != true) {
 				this.scaleImages();
@@ -109,6 +103,7 @@
 							"obj"	:this.getAttribute("initObject"),
 							"tip"	:this.getAttribute("tip"),
 							"movieSize"	:this.getAttribute("movieSize"),
+							"caption"	:this.getAttribute("caption"),
 							"built"	:false
 							})
 						.on("click", function(e) {
@@ -140,11 +135,19 @@
 										infoString += '<div class="jsHolder"></div>';
 										
 									} else {
-										infoString += '<div class="paneImg"><img ';
+										infoString += '<div class="paneImg">';
+										if ($this.data("caption") != undefined && $this.data("caption") != "") {
+											infoString += '<figure>';
+										}
+										infoString += '<img ';
 										if ($this.data("tip") != undefined && $this.data("tip") != "") {
 											infoString += 'alt="' + $this.data("tip") + '" ';
 										}
-										infoString += ' /></div>';
+										infoString += ' />';
+										if ($this.data("caption") != undefined && $this.data("caption") != "") {
+											infoString += '<figcaption>' + $this.data("caption") + '</figcaption></figure>';
+										}
+										infoString += '</div>';
 									}
 								}
 								
@@ -267,8 +270,7 @@
 		
 		// function scales image
 		this.scaleImages = function() {
-			var $pageContents = $("#pageContents"),
-				$img = $("#infoHolder .paneImg img:visible");
+			var $img = $("#infoHolder .paneImg img:visible");
 			
 			// is there an image?  Has it loaded?  Has it already been scaled to fit this?
 			if ($img.length > 0) {
@@ -277,12 +279,13 @@
 					firstScale = true;
 				}
 				
-				var maxW = Math.min($("#infoHolder .paneImg").width(), $pageContents.data("maxWH")[0]);
-				x_scaleImg($img, maxW, $pageContents.data("maxWH")[1], true, firstScale);
+				var maxW = Math.min($("#infoHolder .paneImg").width(), $("#infoHolder").width());
+				var maxH = x_browserInfo.mobile == false ? $("#infoHolder").height() - ($img.parents("figure").length > 0 ? $img.parents("figure").find("figcaption").outerHeight(true) : 0) : $x_mainHolder.height() - $x_footerBlock.height();
+				x_scaleImg($img, maxW, maxH, true, firstScale);
 				
 				$img.css({
-					"opacity"	:1,
-					"filter"	:'alpha(opacity=100)'
+					"opacity": 1,
+					"filter": 'alpha(opacity=100)'
 				});
 			}
 		}
@@ -305,7 +308,7 @@
 		</div>
 		
 		<div class="right">
-			<div id="infoHolder" class="panel" aria-live="polite" tabindex="0">
+			<div id="infoHolder" class="panel" aria-live="polite">
 			</div>
 		</div>
 		

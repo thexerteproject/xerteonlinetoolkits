@@ -33,7 +33,7 @@ require("../user_library.php");
 require("../url_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     $database_id = database_connect("user groups list connected","user groups list failed");
 

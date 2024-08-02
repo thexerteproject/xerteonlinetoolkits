@@ -8,6 +8,12 @@
 		margin-bottom:	10px;
 	}
 
+	#count {
+		font-weight: bold;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
 	#audioHolder {
 		width:	100%;
 		margin-bottom:	10px;

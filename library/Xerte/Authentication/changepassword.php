@@ -32,7 +32,7 @@ _load_language_file("/library/Xerte/Authentication/Db/changepassword.inc");
 
 require(dirname(__FILE__) . "/../../../../website_code/php/user_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     global $authmech, $xerte_toolkits_site;
 

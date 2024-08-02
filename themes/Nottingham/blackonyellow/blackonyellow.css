@@ -9,8 +9,7 @@
 /*1vmin;*/
 /*2vmin;*/
 /*3px 3px 5px grey*/
-/*start here and set the default values for all the variables*/
-/******Header******/
+/*start here and set the default values for all the variables*/ /******Header******/
 #x_headerBlock {
   color: #FFFF99;
   background-repeat: no-repeat;
@@ -612,6 +611,22 @@ div#shorturltodisplay a {
   background: #FFFF99;
 }
 
+.x_audioRecord_page .deleteClipBtn {
+  color: #000000;
+}
+
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus, .x_audioRecord_page .deleteClipBtn:active {
+  color: #1a1a1a;
+}
+
+.x_audioRecord_page .clip.highlight {
+  background-color: yellow;
+}
+
+.x_audioRecord_page #recBtn.recording .ui-icon, #recBtn.recording .ui-button-text {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   .tick, img.result {
     width: 2.5vmin;
@@ -722,43 +737,43 @@ table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
 }
 
 #x_nextBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f128";
 }
 
 #x_introBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f129";
 }
 
 #x_menuBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c7";
 }
 
 #x_footerBlock button {
@@ -870,7 +885,6 @@ table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
   #x_footerProgress {
     display: block;
   }
-
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -882,18 +896,15 @@ table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
     z-index: 100;
     font-size: 12px;
   }
-
   #x_footerBlock button {
     font-size: 1em;
     width: 1em;
     margin-left: 5px;
   }
-
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
-
   .pbTxt {
     display: block;
     font-size: 6px;
@@ -1466,8 +1477,7 @@ a:visited {
   background: #FFFF99;
   border-top-right-radius: 3px;
   border-bottom-left-radius: 3px;
-  border: none !important;
-  /*remove this to restore the default border*/
+  border: none !important; /*remove this to restore the default border*/
 }
 
 #x_pageDiv {
