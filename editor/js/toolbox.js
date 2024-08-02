@@ -525,6 +525,46 @@ var EDITOR = (function ($, parent) {
                     return null;
                 }
                 break;
+            case "CallExpression":
+                if (ctree.callee.name != '') {
+                    let func = ctree.callee.name + '(';
+                    for(let i = 0; i < ctree.arguments.length; i++) {
+                        if (i > 0) {
+                            func += ', ';
+                        }
+                        switch (ctree.arguments[i].type)
+                        {
+                            case "Literal":
+                                func += ctree.arguments[i].raw;
+                                break;
+                            case "Identifier":
+                                var attrs = lo_data[key]['attributes'];
+                                if (typeof attrs[ctree.name] != "undefined") {
+                                    func += attrs[ctree.name];
+                                } else {
+                                    try {
+                                        var value = eval(ctree.name);
+                                        func += value;
+                                    }
+                                    catch (e){
+                                        return false;
+                                    }
+                                }
+                                break;
+                            default:
+                                func += evaluateConditionExpression(ctree.arguments[i], key);
+                                break;
+                        }
+                    }
+                    func += ')';
+                    try {
+                        return eval(func);
+                    }
+                    catch (e) {
+                        return false;
+                    }
+                }
+                break;
             case "Identifier":
                 var attrs = lo_data[key]['attributes'];
                 if (typeof attrs[ctree.name] != "undefined") {
@@ -537,10 +577,36 @@ var EDITOR = (function ($, parent) {
                     catch (e){};
                     return null;
                 }
+            case "UnaryExpression":
+                if (ctree.operator == '!') {
+                    return !evaluateConditionExpression(ctree.argument, key);
+                } else {
+                    return null;
+                }
             default:
                 // Unexpected node parsed
                 return null;
         }
+    },
+
+    // This function behaves the same as the php function is_user_permitted (of user_library.php)
+    // Assumes that the javascript variable roles is an array that contains all the assigned roles of the current user
+    // This function is used in conditions of xwd files, so DO NOT REMOVE
+    hasrole = function(role)
+    {
+        if (typeof roles == 'undefined')
+        {
+            return false;
+        }
+        if (roles.includes(role))
+        {
+            return true;
+        }
+        if (roles.includes('super'))
+        {
+            return true;
+        }
+        return false;
     },
 
     evaluateCondition = function(condition, key)
