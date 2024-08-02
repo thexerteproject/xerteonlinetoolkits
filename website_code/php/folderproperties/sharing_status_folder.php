@@ -67,7 +67,7 @@ if (is_folder_shared_subfolder($folder_id)){
     exit(0);
 }
 
-if(is_user_creator_or_coauthor_folder($folder_id) || is_user_admin()){
+if(is_user_creator_or_coauthor_folder($folder_id) || is_user_permitted("projectadmin")){
     echo "<p>" . SHARING_INSTRUCTION . "</p>";
 	
 	echo "<form id=\"share_form\">";
@@ -113,13 +113,13 @@ if(sizeof($query_sharing_rows)==0 && sizeof($query_sharing_rows_group)==0){
 
 echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
 
-echo "<ul class='share_users " . (is_user_creator_or_coauthor_folder($folder_id)|| is_user_admin() ? "" : "show_list") . "'>";
+echo "<ul class='share_users " . (is_user_creator_or_coauthor_folder($folder_id)|| is_user_permitted("projectadmin") ? "" : "show_list") . "'>";
 
 foreach($query_sharing_rows_group as $row) {
 	
 	echo "<li>" . $row['group_name'];
 	
-	if(is_user_creator_or_coauthor_folder($folder_id)|| is_user_admin()){
+	if(is_user_creator_or_coauthor_folder($folder_id)|| is_user_permitted("projectadmin")){
 		
 		echo ' <label class="sr-only" for="groupRole_' . $row['group_id'] . '">' . SHARING_ROLE_LABEL . ' (' . $row['group_name'] . ')</label>' .
 			'<select name="groupRole_' . $row['group_id'] . '" id="groupRole_' . $row['group_id'] . '" onchange="set_sharing_rights_folder(\'' . $folder_id . '\', \'' . $row['group_id']. '\', true)">' .
@@ -144,7 +144,7 @@ foreach($query_sharing_rows as $row) {
 
     if($row['role']!="creator"){
 
-        if(is_user_creator_or_coauthor_folder($folder_id)|| is_user_admin()){
+        if(is_user_creator_or_coauthor_folder($folder_id)|| is_user_permitted("projectadmin")){
 			
 			echo ' <label class="sr-only" for="role_' . $row['login_id'] . '">' . SHARING_ROLE_LABEL . ' (' . $row['firstname'] . " " . $row['surname'] . " - " . $row['username'] . ')</label>' .
 				'<select name="role_' . $row['login_id'] . '" id="role_' . $row['login_id'] . '" onchange="set_sharing_rights_folder(\'' . $folder_id . '\', \'' . $row['login_id']. '\', false)">' .
@@ -171,7 +171,7 @@ foreach($query_sharing_rows as $row) {
 
 echo "</ul>";
 
-if(!is_user_creator_folder($folder_id)&&!is_user_admin()){
+if(!is_user_creator_folder($folder_id)&&!is_user_permitted("projectadmin")){
 
 	echo "<p>" . SHARING_STOP_INSTRUCTIONS . " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_folder('" . $folder_id . "','" . $_SESSION['toolkits_logon_id'] . "',true,false)\"><i class=\"fa fa-times\"></i> " . SHARING_STOP . "</button></p>";
 }
