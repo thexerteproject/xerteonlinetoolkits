@@ -4864,11 +4864,23 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     break;
+                                case 'text':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
                                 case 'learningObject':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
                                         "headers": lo_data[key].attributes["headers"],
                                         "goals": lo_data[key].attributes["goals"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"]
                                     }
                                     assisstantPrompt = true;
                                     break;

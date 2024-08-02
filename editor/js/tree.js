@@ -1344,6 +1344,11 @@ var EDITOR = (function ($, parent) {
 	}
 
     addAINodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren = false) {
+        //Immediately return when root node is CDATA
+        if(xmlData.nodeType === Node.CDATA_SECTION_NODE){
+             return;
+         }
+
         var lkey = parent.tree.generate_lo_key();
         var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
         var extranodes = addChildren;
@@ -1390,7 +1395,7 @@ var EDITOR = (function ($, parent) {
         };
 
         // add nodes, skip validation for CDATA nodes
-        if (xmlData.nodeType === Node.CDATA_SECTION_NODE || (validateInsert(key, nodeName, tree))) {
+        if (validateInsert(key, nodeName, tree)) {
             var newkey = tree.create_node(key, this_json, pos, function () {
                 if (select) {
                     tree.deselect_all();
@@ -1565,7 +1570,7 @@ var EDITOR = (function ($, parent) {
             data: { type: node_type, prompt: p, api: api_choice, url: fileUrl, context: sourceContext, assistantPrompt: assistantPrompt},
             success: function(data){
                 //TODO: Alek posisble option for enclosing
-                ai_to_xerte_content(data, event.data.key, 'last', tree)
+                ai_to_xerte_content(data, event.data.key, 'last', tree, parent)
             },
         });
     },

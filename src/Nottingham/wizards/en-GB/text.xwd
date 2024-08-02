@@ -13,5 +13,19 @@
     <textWidth label="Text Width" options="Small,Medium,Large,Full" type="comboBox" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
     <subSuper label="Superscript Support" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated. Sub/Superscripts now work by default."/>
 
+    <AIGroup type="group" label="AI" optional="true">
+              <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+              <subject label="Subject" type="TextInput" wysiwyg="true" tooltip = "This determines which area or subject the generated words will follow." optional="true"/>
+              <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" optional="true"/>
+              <exampleContent label = "Example Content" type = "text" tooltip = "Optionally, provide an example of the kind of content you expect as an output. The model will then attempt to generate a similar output, or follow the additional instructions on how to handle or extrapolate on this output." wysiwyg="true" optional="true"/>
+              <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+              <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+              <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional ="true"/>
+              <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+              <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional ="true"/>
+              <aiButton type="aibutton" optional="true"/>
+              <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+    </AIGroup>
+
   </text>  
 </wizard>

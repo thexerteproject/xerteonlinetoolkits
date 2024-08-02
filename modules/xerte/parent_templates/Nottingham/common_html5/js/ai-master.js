@@ -64,7 +64,7 @@ function build_xerte_xml(xml_tree, parent_name, parser){
     }
 }*/
 
-function ai_to_xerte_content(data, key, pos, tree) {
+function ai_to_xerte_content(data, key, pos, tree, realParent) {
     $('body').css("cursor", "default");
     var parser = new DOMParser();
     //
@@ -83,6 +83,9 @@ function ai_to_xerte_content(data, key, pos, tree) {
                 }
             }
         }
+          if (lo_data[key].data !== null && x.textContent !== null && x.firstChild.nodeType === 4) {
+              lo_data[key].data = x.textContent;
+          }
         console.log(x.tagName);
         build_xerte_xml(x, x.tagName, parser);
 
@@ -94,6 +97,12 @@ function ai_to_xerte_content(data, key, pos, tree) {
             addAINodeToTree(key, pos, children[i].tagName, children[i], tree, true, true);
         }
         alert("Make sure to check the generated results for mistakes!!");
+         var node = tree.get_node(key, false);
+         if (node) {
+             // Refresh the node to reflect the updated attributes
+             //tree.refresh_node(node);
+             realParent.tree.showNodeData(node.id, true);
+         }
         console.log("done!")
     } else {
         console.log(result.message);
