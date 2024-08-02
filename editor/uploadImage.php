@@ -53,7 +53,7 @@ function sanitizeName($file, &$response)
     return $val;
 }*/
 
-if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin())
+if (!isset($_SESSION['toolkits_logon_username']) && !is_user_permitted("projectadmin"))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
