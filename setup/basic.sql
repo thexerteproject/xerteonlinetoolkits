@@ -137,6 +137,7 @@ CREATE TABLE `$sitedetails` (
   `module_path` char(255) DEFAULT NULL,
   `website_code_path` char(255) DEFAULT NULL,
   `users_file_area_short` char(255) DEFAULT NULL,
+  `users_file_area_path` text,
   `php_library_path` char(255) DEFAULT NULL,
   `import_path` char(255) DEFAULT NULL,
   `root_file_path` char(255) DEFAULT NULL,
@@ -240,6 +241,8 @@ CREATE TABLE `$templatedetails` (
   `tsugi_xapi_key` text,
   `tsugi_xapi_secret` text,
   `tsugi_xapi_student_id_mode` int DEFAULT 0,
+  `tsugi_publish_in_store` int DEFAULT 1,
+  `tsugi_publish_dashboard_in_store` int DEFAULT 0,
   `dashboard_allowed_links` text,
   `dashboard_display_options` text,
   PRIMARY KEY (`template_id`)

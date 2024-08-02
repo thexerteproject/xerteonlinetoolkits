@@ -76,25 +76,9 @@ if (!isset($_FILES['upload']))
 $uploadpath = x_clean_input($_REQUEST['uploadPath']);
 $uploadurl = x_clean_input($_REQUEST['uploadURL']);
 
-// Check path and prevent traversal
-$realpath = realpath($uploadpath) . '/';
-if ($realpath === false || $realpath !== $uploadpath)
-{
-    $response->uploaded = 0;
-    $response->error = IMAGEUPOLOAD_NOT_UPLOADED;
-
-    echo json_encode($response);
-    exit(-1);
-}
-// Check whether the file is within the expected folder
-if (strpos($uploadpath, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
-{
-    $response->uploaded = 0;
-    $response->error = IMAGEUPOLOAD_NOT_UPLOADED;
-
-    echo json_encode($response);
-    exit(-1);
-}
+x_check_path_traversal($uploadpath, $xerte_toolkits_site->users_file_area_full, IMAGEUPOLOAD_NOT_UPLOADED);
+$url_path = x_convert_user_area_url_to_path($uploadurl);
+x_check_path_traversal($url_path, $xerte_toolkits_site->users_file_area_full, IMAGEUPOLOAD_NOT_UPLOADED);
 
 if (isset($_FILES['upload']['error']) && $_FILES['upload']['error'] != 0)
 {

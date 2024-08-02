@@ -362,6 +362,66 @@ function x_check_zip($zip)
         }
     }
 }
+
+function x_check_path_traversal($path, $expected_path=null, $message=null)
+{
+    $mesg = $message ?? "Path traversal detected!";
+    // Account for Windows, because realpath changes / to \
+    if(DIRECTORY_SEPARATOR !== '/') {
+        $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+    }
+    // Trim dangling DIRECTORY_SEPARATOR
+    $rpath = rtrim($rpath, '/\\');
+    // Check path and check for path traversal
+    $realpath = realpath($rpath);
+    if ($realpath === false || $realpath !== $rpath)
+    {
+        _debug($mesg);
+        die($mesg);
+    }
+    if ($expected_path != null) {
+        // Check whether path is as expected
+        if (strpos($path, $expected_path) !== 0) {
+            _debug($mesg);
+            die($mesg);
+        }
+    }
+}
+
+function x_convert_user_area_url_to_path($url)
+{
+    global $xerte_toolkits_site;
+    $path = $url;
+    // Check whether this is an absolute path, strip the root path and convert to a relative path
+    if (stripos($path, 'http') === 0)
+    {
+        // Check whether the path is actually an url starting with site_url
+        if (stripos($path, $xerte_toolkits_site->site_url) === 0)
+        {
+            $path = substr($path, strlen($xerte_toolkits_site->site_url));
+        }
+        else
+        {
+            _debug("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+            die("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+        }
+    }
+    // Check whether the path is a relative path that starts with users_file_area_short, if so strip the users_file_area_short
+    if (stripos($path, $xerte_toolkits_site->users_file_area_short) === 0)
+    {
+        $path = substr($path, strlen($xerte_toolkits_site->users_file_area_short));
+    }
+    else
+    {
+        _debug("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+        die("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+    }
+    // Prepend with users_file_area_full
+    $path = $xerte_toolkits_site->users_file_area_full . $path;
+
+    return $path;
+}
+
 function set_token()
 {
     if (!isset($_SESSION['token'])) {

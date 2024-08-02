@@ -100,31 +100,13 @@ $mode = $fileupdate ? "publish" : "preview";
 if ($mode == 'publish')
 {
     $previewxml = x_clean_input($_POST["preview"]);
-    $preview = dirname(dirname(__FILE__)) . '/' . $previewxml;
+    $preview = x_convert_user_area_url_to_path($previewxml);
     // Check whether the file does not have path traversal
-    $realpath = realpath($preview);
-    if ($realpath === false || $realpath !== $preview)
-    {
-        die("Invalid preview path specified");
-    }
-    // Check whether the file is within the expected folder
-    if (strpos($preview, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
-    {
-        die("Invalid preview path specified");
-    }
+    x_check_path_traversal($preview, $xerte_toolkits_site->users_file_area_full, 'Invalid preview path specified');
 }
-$filename = dirname(dirname(__FILE__)) . '/' . $filename;
+$filename = x_convert_user_area_url_to_path($filename);
 // Check whether the file does not have path traversal
-$realpath = realpath($filename);
-if ($realpath === false || $realpath !== $filename)
-{
-    die("Invalid file path specified");
-}
-// Check whether the file is within the expected folder
-if (strpos($filename, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
-{
-    die("Invalid file path specified");
-}
+x_check_path_traversal($filename, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
 $filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 

@@ -36,17 +36,13 @@ if ($mode != 'record')
 
 $path = ""; if (isset($_GET["uploadPath"])) $path = x_clean_input($_GET["uploadPath"]);
 $url = ""; if (isset($_GET["uploadURL"])) $url = x_clean_input($_GET["uploadURL"]);
-if ($path == "" || $url == "")
-	die('{"status": "error", "message": "Paths not set properly"}');
+if ($path == "" || $url == "") {
+    die('{"status": "error", "message": "Paths not set properly"}');
+}
+x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid path specified"}');
 
-// Check if the path is a valid path and does not contain path traversal
-$realpath = realpath($path) . '/';
-if ($realpath === false || $realpath !== $path)
-    die('{"status": "error", "message": "Invalid path specified"}');
-
-// Check whether path is as expected
-if (strpos($path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
-    die('{"status": "error", "message": "Invalid path specified"}');
+$check_url = x_convert_user_area_url_to_path($url);
+x_check_path_traversal($check_url, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid URL specified"}');
 
 $media_path = $path . "/media/";
 $media_url = $url . "/media/";

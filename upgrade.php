@@ -1531,3 +1531,32 @@ function upgrade_45(){
 	
 	return $message;
 }
+
+function upgrade_46()
+{
+    // Add users_file_area_path to sitedetails
+    if (! _db_field_exists('sitedetails', 'users_file_area_path')) {
+        $error1 = _db_add_field('sitedetails', 'users_file_area_path', 'text', null, 'users_file_area_short');
+
+        return "Creating users_file_area_path field - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Users file area path field already present - ok ? true";
+    }
+}
+
+function upgrade_47()
+{
+    // Add fields to determin whther to publish projects in TSUGI's store
+    if (! _db_field_exists('templatedetails', 'tsugi_publish_in_store')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_publish_in_store', 'int', '1', 'tsugi_xapi_student_id_mode');
+        $error2 = _db_add_field('templatedetails', 'tsugi_publish_dashboard_in_store', 'int', '0', 'tsugi_publish_in_store');
+        return "Creating publish in store fields - ok ? " . ($error1 && $error2  ? 'true' : 'false');
+    }
+    else
+    {
+        return "Publish in store fields already present - ok ? true";
+    }
+}
+
