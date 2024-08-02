@@ -58,7 +58,7 @@ if(count($parameters)!=1){
 
     if(is_numeric($parameters[0])&&is_string($parameters[1])){
 		
-        if (is_user_creator_or_coauthor_folder($parameters[0])||is_user_admin()){
+        if (is_user_creator_or_coauthor_folder($parameters[0])||is_user_permitted("projectadmin")){
 
             $database_connect_id = database_connect("Folder_rss_template.php database connect success", "Folder_rss_template.php database connect failed");
 

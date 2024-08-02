@@ -11,7 +11,7 @@
 require_once(dirname(__FILE__) . "/../config.php");
 
 // Check for a valid logged in user
-if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin()) {
+if (!isset($_SESSION['toolkits_logon_username']) && !is_user_permitted("projectadmin")) {
     _debug("Session is invalid or expired");
     die('{"status": "error", "message": "Session is invalid or expired"}');
 }
