@@ -745,6 +745,10 @@
 					$thisLabel = ui.draggable;
 					if ($thisLabel.data("prevHolder")) {
 						let prevHolder = $thisLabel.data("prevHolder");
+						if(compress == true) {
+							prevHolder.width(prevHolder.data("width"));
+							console.log(prevHolder.data("width"));
+						}
 						prevHolder.html("")
 								  .on("keypress focusin, focusout")
 								  .droppable("option", "disabled", false)
@@ -919,6 +923,10 @@
 
 			if($thisLabel.data("prevHolder")){
 				let prevHolder = $thisLabel.data("prevHolder");
+				if (!$targetHolder.hasClass("noCompress")) {
+					prevHolder.width(prevHolder.data("width"));
+					console.log(prevHolder.data("width"));
+				}
 				prevHolder.html("").on("keypress focusin, focusout").droppable("option", "disabled", false).addClass("highlight").remove("ui-dropable-disabled");
 				if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
 					if ($thisLabel.data("answer") == prevHolder.data("answer")) {
@@ -944,8 +952,6 @@
 			}
 
 			labelAnswers[$thisTarget.data("answer")] = $thisLabel.data("answer");
-
-			console.log(labelAnswers);
 
 			// if it's marked as completed (can only drop on correct targets) then show feedback immediately when complete
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0)) {
