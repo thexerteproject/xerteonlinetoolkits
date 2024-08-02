@@ -27,7 +27,7 @@ div.cke_editable_inline * {
 }
 
 div.cke_editable_inline i.fa {
-	font-family: FontAwesome;
+	font-family: 'Font Awesome 6 Free';
 }
 
 #insert_subnodes {border-top: 1px solid #ccc!important; margin-top: 20px; padding-top: 20px;}

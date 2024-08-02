@@ -42,9 +42,11 @@ _load_language_file("/workspaceproperties.inc");
 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 <link rel="stylesheet" href="editor/css/jquery-ui.css">
 <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
+<!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css" -->
+<!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
     {
