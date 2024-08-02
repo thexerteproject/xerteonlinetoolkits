@@ -68,19 +68,7 @@ if (!isset($_POST['mediapath']))
 $mediapath = x_clean_input($_POST['mediapath'], 'string');
 
 // Make sure the mediapath is a valid path and does not contain any path traversal
-$realpath = realpath($mediapath) . '/';
-if ($realpath === false || $realpath !== $mediapath)
-{
-    _debug("Invalid mediapath specified");
-    die("Invalid mediapath specified");
-}
-
-// Check whether the file is within the expected folder
-if (strpos($mediapath, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0 || strpos($mediapath, "/media/") === false)
-{
-    _debug("Illegal mediapath specified");
-    die("Illegal mediapath specified");
-}
+x_check_path_traversal($mediapath, $xerte_toolkits_site->users_file_area_full, "Invalid mediapath specified");
 
 _load_language_file("/website_code/php/import/fileupload.inc");
 

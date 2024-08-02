@@ -46,32 +46,12 @@ $rootpath = x_clean_input($_REQUEST['uploadDir']);
 $rooturl = x_clean_input($_REQUEST['uploadURL']);
 
 // Check uploadDir and check for path traversal
-$realpath = realpath($rootpath) . '/';
-if ($realpath === false || $realpath !== $rootpath)
-{
-    die("Invalid upload location");
-}
-// Check whether path is as expected
-if (strpos($rootpath, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short) !== 0)
-{
-    die("Invalid upload location");
-}
+x_check_path_traversal($rootpath, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
 
 // Check uploadURL
-// First create a path from URL by replacing site_url with root_file_path
-$uploadURL = str_replace($xerte_toolkits_site->site_url, $xerte_toolkits_site->root_file_path, $rooturl);
-$realpath = realpath($uploadURL);
-// Remove trailing '/' from uploadURL
-$uploadURL = rtrim($uploadURL, '/');
-if ($realpath === false || $realpath !== $uploadURL)
-{
-    die("Invalid upload location");
-}
-// Check whther it is the expected location
-if (strpos($rooturl, $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short) !== 0)
-{
-    die("Invalid upload location");
-}
+// First create a path from URL
+$uploadURL = x_convert_user_area_url_to_path($rooturl);
+x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
 
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinder.class.php';

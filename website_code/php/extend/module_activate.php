@@ -30,8 +30,16 @@ if(is_user_admin()){
         $module = x_clean_input($_POST['name'], 'string');
     }
     $dirpath = $xerte_toolkits_site->root_file_path . "modules/" . $module . "/templates/";
-    $realpath = realpath($dirpath);
-    if ($realpath === false || $realpath !== $dirpath)
+    // Account for Windows, because realpath changes / to \
+    if(DIRECTORY_SEPARATOR !== '/')
+    {
+        $rdirpath = str_replace('/', DIRECTORY_SEPARATOR, $dirpath);
+    }
+    else{
+        $rdirpath = $dirpath;
+    }
+    $realpath = realpath($rdirpath);
+    if ($realpath === false || $realpath !== $rdirpath)
     {
         die("Invalid module name");
     }
