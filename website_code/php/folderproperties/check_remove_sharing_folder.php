@@ -47,7 +47,7 @@ $group = $_POST['group'];
 
 if(is_numeric($_POST['folder_id'])) {
 
-    if (is_user_creator_or_coauthor_folder($_POST['folder_id']) || is_user_admin() || $_POST['user_deleting_self'] == "true") {
+    if (is_user_creator_or_coauthor_folder($_POST['folder_id']) || is_user_permitted("projectadmin") || $_POST['user_deleting_self'] == "true") {
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
         // Get shared groups

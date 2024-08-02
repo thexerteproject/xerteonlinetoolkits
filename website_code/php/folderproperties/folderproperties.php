@@ -61,7 +61,7 @@ if(!isset($_POST['folder_id'])){
 }
 
 $folder_id =x_clean_input($_POST['folder_id'], 'numeric');
-if(has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || is_user_admin()){
+if(has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin")){
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
     
