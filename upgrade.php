@@ -1496,39 +1496,52 @@ function upgrade_44()
     }
 }
 
-function upgrade_45(){
-	$roleTable = table_by_key("role");
-	$loginDetailsRoleTable = table_by_key("logindetailsrole");
-	$loginDetailsTable = table_by_key("logindetails");
+function upgrade_45()
+{
+    $roleTable = table_by_key("role");
+    $loginDetailsRoleTable = table_by_key("logindetailsrole");
 
-	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
+    $message = '';
+    if (!_table_exists($roleTable))
+    {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
         `roleid` int NOT NULL AUTO_INCREMENT,
         `name` varchar(45) NOT NULL UNIQUE,
         PRIMARY KEY (`roleid`)
       )"
-	);
+        );
 
-	$message = "Creating role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+        $message .= "Creating role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
 
-	$ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
-        `roleid` int NOT NULL,
-        `userid` bigint(20) NOT NULL,
-        PRIMARY KEY (`roleid`, `userid`)
-      )"
-	);
-	
-	$message .= "Creating logindetailsrole table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-
-	$ok = db_query("insert into $roleTable(`roleid`, `name`) values
+        $ok = db_query("insert into $roleTable(`roleid`, `name`) values
           (1, 'super'),
           (2, 'system'),
           (3, 'templateadmin'),
           (4, 'metaadmin'),
           (5, 'useradmin'),
-          (6, 'projectadmin');"
-	);
-	$message .= "creating default roles - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-	
+          (6, 'projectadmin'),
+          (7, 'harvestadmin');"
+        );
+        $message .= "Creating default roles - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table roles already exists - ok ? true". "<br>";
+    }
+
+    if (!_table_exists($loginDetailsRoleTable)) {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
+        `roleid` int NOT NULL,
+        `userid` bigint(20) NOT NULL,
+        PRIMARY KEY (`roleid`, `userid`)
+      )"
+        );
+
+        $message .= "Creating logindetailsrole table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table logindetailsrole already exists - ok ? true". "<br>";
+    }
+
 	return $message;
 }
 
