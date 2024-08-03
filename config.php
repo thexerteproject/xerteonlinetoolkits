@@ -211,7 +211,7 @@ $port = $_SERVER['SERVER_PORT'];
 $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
 
 if ($port == 80 || $port == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-    $port = ':' . $port;
+    $port = '';
 }
 
 // get subdir from $xerte_toolkits_site->site_url path stored in Db
