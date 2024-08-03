@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 require_once(dirname(__FILE__) . "/config.php");
+require_once dirname(__FILE__) . "/website_code/php/user_library.php";
 
 _load_language_file("/management.inc");
 
@@ -155,20 +156,6 @@ function mgt_page($xerte_toolkits_site, $extra)
 <?PHP
 exit();
 }
-function get_user_id(){
-
-    global $xerte_toolkits_site;
-
-    $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($_SESSION['toolkits_logon_username']));
-
-    if(!empty($row)) {
-        return $row['login_id'];
-    }else{
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users login ID number", "Failed to get users login ID number: User: " . $_SESSION['toolkits_logon_username']);
-    }
-
-}
-
 if(isset($_SESSION['toolkits_logon_id'])) {
 
     global $authmech;
@@ -375,19 +362,59 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                         -->
 
                         <div class="admin_mgt_area_middle_button_left">
+                            <?php if (is_user_permitted("system")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
+                            <?php
+                            }
+                            if (is_user_permitted("templateadmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("useradmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users-cog"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("useradmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:user_groups_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USER_GROUPS; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("projectadmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><i class="far fa-file-alt"></i> <?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("system")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle"></i> <?PHP echo MANAGEMENT_MENUBAR_LOGS; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("system")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("metaadmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("metaadmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:educationlevel_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_EDUCATION; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("metaadmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:grouping_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_GROUPINGS; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("metaadmin")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:course_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_COURSES; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("system")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
+                                <?php
+                            }
+                            if (is_user_permitted("system")) { ?>
                             <button type="button" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button> <!--style="margin-right:10px;"-->
+                            <?php
+                            }
+                            ?>
                         </div>
                         <div class="admin_mgt_area_middle_button_right">
                             <button type="button" class="xerte_button" onclick="javascript:save_changes()"><i class="fa fa-floppy-o"></i> <?PHP echo MANAGEMENT_MENUBAR_SAVE; ?></button>
