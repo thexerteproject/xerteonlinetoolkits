@@ -259,7 +259,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         </style>
     </head>
 
-    <body onload="javascript:site_list()">
+    <body onload="javascript:show_first_tab()">
 
         <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none;"></iframe>
 
@@ -362,55 +362,57 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                         -->
 
                         <div class="admin_mgt_area_middle_button_left">
-                            <?php if (is_user_permitted("system")) { ?>
+                            <?php
+                            $firsttab = null;
+                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'site_list()'; ?>
                             <button type="button" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
                             <?php
                             }
-                            if (is_user_permitted("templateadmin")) { ?>
+                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab ?? 'template_list()'?>
                             <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("useradmin")) { ?>
+                            if (is_user_permitted("useradmin")) {  $firsttab = $firsttab ?? 'users_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users-cog"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("useradmin")) { ?>
+                            if (is_user_permitted("useradmin")) { $firsttab = $firsttab ?? 'user_groups_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:user_groups_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USER_GROUPS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("projectadmin")) { ?>
+                            if (is_user_permitted("projectadmin")) { $firsttab = $firsttab ?? 'user_templates_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><i class="far fa-file-alt"></i> <?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'errors_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle"></i> <?PHP echo MANAGEMENT_MENUBAR_LOGS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'play_security_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'categories_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'educationlevel_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:educationlevel_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_EDUCATION; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'grouping_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:grouping_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_GROUPINGS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'course_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:course_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_COURSES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'licenses_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'feeds_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button> <!--style="margin-right:10px;"-->
                             <?php
                             }
@@ -434,5 +436,8 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 			exit();
 		}
 		?>
+        <script type="application/javascript">
+            const firsttab = "<?php echo $firsttab; ?>";
+        </script>
     </body>
 </html>
