@@ -4533,7 +4533,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageCompare menu="Interactivity" menuItem="image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" remove="true">
+    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
