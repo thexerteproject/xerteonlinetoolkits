@@ -128,7 +128,7 @@ check_abs_media_path($absmedia);
 $template_id = x_clean_input($_POST['template_id'], 'numeric');
 
 // Check whether the folder is correct based on template_id and user name
-$folder_path_part = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $template_id . '-';
+$folder_path_part = $xerte_toolkits_site->users_file_area_full . $template_id . '-';
 if (strpos($filename, $folder_path_part) !== 0)
 {
     die("Invalid upload location");

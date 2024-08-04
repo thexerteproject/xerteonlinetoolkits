@@ -210,19 +210,10 @@ $host = $_SERVER['SERVER_NAME'];
 $port = $_SERVER['SERVER_PORT'];
 $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
 
-if ($scheme == 'https://') {
-    if ($port == 443) {
-        $port = '';
-    } else {
-        $port = ':' . $port;
-    }
-} else {
-    if ($port == 80) {
-        $port = '';
-    } else {
-        $port = ':' . $port;
-    }
+if ($port == 80 || $port == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+    $port = '';
 }
+
 // get subdir from $xerte_toolkits_site->site_url path stored in Db
 $subdir = '/';
 $subdir_pos = strpos($xerte_toolkits_site->site_url, '/', 8);

@@ -4062,7 +4062,31 @@ var EDITOR = (function ($, parent) {
 									this.value = min;
 								}
 							}
-						});
+						})
+                        .blur({id:id, key:key, name:name, trigger:conditionTrigger}, function(event) {
+                            if ((isNaN(max) || this.value <= max) && (isNaN(min) || this.value >= min)) {
+                                if (this.value == '') {
+                                    if (isNaN(max) || isNaN(min)) {
+                                        this.value = 0;
+                                    } else {
+                                        this.value = (min + max) / 2; // choose midpoint for NaN
+                                    }
+                                }
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                if (event.data.trigger)
+                                {
+                                    triggerRedrawPage(event.data.key);
+                                }
+                            }
+                            else { // set to max or min if out of range
+                                if (this.value > max) {
+                                    this.value = max;
+                                } else {
+                                    this.value = min;
+                                }
+                            }
+                        });
+
 				}
 				break;
 			case 'pagelist':
