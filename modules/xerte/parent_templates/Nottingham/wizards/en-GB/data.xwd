@@ -3555,8 +3555,8 @@
 	<displayStyle label="Card Layout" type="ComboBox" options="One at a time,In a row,In a column" data="one,horizontal,vertical" optional="true" defaultValue="one" tooltip="Display cards one at a time or in a row/column"/>
 
 	<alignment type="group" label="Content alignment" optional="true" tooltip="sets the alignment of all card without alignment set">
-	  <textAlign label="Align text" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true" tooltip="aligns horizontaly"/>
-	  <contentAlign label="Align content" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true" tooltip="aligns vertically"/>
+	  <textAlign label="Horizontal Alignment" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true" tooltip="Aligns content horizontaly"/>
+	  <contentAlign label="Vertical Alignment" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true" tooltip="Aligns content vertically"/>
 	</alignment>
 
 	<alignTitle label="Align Title" type="CheckBox" defaultValue="false" optional="true" tooltip="if enabled the title is aligned as well"/>
