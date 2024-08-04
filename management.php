@@ -196,6 +196,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 
         <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css">
         <?php
