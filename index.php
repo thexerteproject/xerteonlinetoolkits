@@ -50,7 +50,7 @@ if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
 login_processing();
 login_processing2();
 
-if($_SESSION["toManagement"] || $_SESSION['toolkits_logon_id'] === 'site_administrator'){
+if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator'){
 	unset($_SESSION["toManagement"]);
 	header("location: management.php");
 	exit();
