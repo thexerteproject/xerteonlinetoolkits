@@ -43,6 +43,7 @@ global $development;
 $development = false;
 
 ini_set('error_reporting', 0);
+ini_set('display_errors', 0);
 if ($development) {
     ini_set('error_reporting', E_ALL);
     // Change this to where you want the XOT log file to go; 
@@ -213,6 +214,9 @@ $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SER
 if ($port == 80 || $port == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
     $port = '';
 }
+else{
+    $port = ':' . $port;
+}
 
 // get subdir from $xerte_toolkits_site->site_url path stored in Db
 $subdir = '/';
@@ -222,6 +226,10 @@ if ($subdir_pos !== false)
     $subdir = substr($xerte_toolkits_site->site_url, $subdir_pos);
 }
 $site_url = $scheme . $host . $port . $subdir;
+$check_url = @file_get_contents($site_url . 'version.txt');
+if ($check_url === false) {
+    $site_url = $xerte_toolkits_site->site_url;
+}
 
 $xerte_toolkits_site->site_url = $site_url;
 

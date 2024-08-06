@@ -371,7 +371,7 @@ function x_check_zip($zip)
 
 function x_check_path_traversal($path, $expected_path=null, $message=null)
 {
-    $mesg = $message ?? "Path traversal detected!";
+    $mesg = ($message != null ? $message : "Path traversal detected!");
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
