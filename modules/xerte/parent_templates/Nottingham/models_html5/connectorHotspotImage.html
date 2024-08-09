@@ -850,7 +850,7 @@
 	}
 
 	function setBubble(hsInfo, hsShape, _this, thisTmp) {
-		debugger
+
 		$hotspot_bubble = $("#hotspot_bubble");
 
 		(_this.getAttribute("showTitle") == 'true' && _this.getAttribute("name") !== "") ? bubble_content = "<h3>" + _this.getAttribute("name") + "</h3><br/>" : bubble_content = ""
@@ -863,8 +863,8 @@
 		}
 		$hotspot_bubble.html(bubble_content);
 
-		let vw = $('#x_pageHolder').width()
-		let vh = $('#x_pageHolder').height()
+		let vw = $('#x_mainHolder').width()
+		let vh = $('#x_mainHolder').height()
 
 		$hotspot_bubble.css({
 			"max-width": vw * 0.6,
@@ -874,7 +874,7 @@
 		let current_icon = $("#pageContents .selected")
 		if (hsShape == 'icon') {
 			hs_left = current_icon.offset().left
-			hs_top = current_icon.offset().top - $('#x_headerBlock').height()
+			hs_top = current_icon.offset().top
 			hs_width = current_icon.outerWidth()
 			hs_height = current_icon.outerHeight()
 		} else {
@@ -921,11 +921,11 @@
 		// hotspot selection and final bubble render.
 		if (vw - hs_left - hs_width > hs_left) {
 			//place r
-			var tmp_left = hs_left + hs_width
+			var tmp_left = hs_left + hs_width + 5
 			max_w = vw - hs_left - hs_width - 30
 		} else {
 			//place left
-			var tmp_left = hs_left - $hotspot_bubble.outerWidth(true)
+			var tmp_left = hs_left - $hotspot_bubble.outerWidth(true) - 5
 			max_w = hs_left
 		}
 
@@ -938,6 +938,7 @@
 		} else {
 			//normal
 			var tmp_top = hs_top + hs_height/2 - $hotspot_bubble.outerHeight(true)/2
+			debugger
 		}
 
 		$hotspot_bubble.css({
