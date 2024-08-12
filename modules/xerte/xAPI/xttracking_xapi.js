@@ -1359,7 +1359,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 success: result.success,
                                 completion: true,
                                 extensions: {
-                                    "http://xerte.org.uk/result/match": scorm_lanswer
+                                    "http://xerte.org.uk/result/match": scorm_lanswer,
+																		"http://xerte.org.uk/result/judge": judge
                                 }
                             };
 														if(!judge){
@@ -1432,7 +1433,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 																success: result.success,
 																completion: true,
 																extensions: {
-																		"http://xerte.org.uk/result/multiplichoice": scorm_lanswer
+																		"http://xerte.org.uk/result/multiplichoice": scorm_lanswer,
+																		"http://xerte.org.uk/result/judge": judge
 																}
 														};
 														if(!judge){
@@ -1469,7 +1471,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     },
                                     response: this.score + "",
                                     success: (this.score >= state.lo_passed),
-                                    completion: true
+                                    completion: true,
+																		extensions: {
+																				"http://xerte.org.uk/result/judge": judge
+																		}
                                 };
                             } else { // Interaction mode
                                 statement.result = {
@@ -1483,7 +1488,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     },
                                     response: this.learnerAnswers + "",
                                     success: result.success,
-                                    completion: true
+                                    completion: true,
+																		extensions: {
+																				"http://xerte.org.uk/result/judge": judge
+																		}
                                 };
                             }
                             break;
@@ -1526,7 +1534,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     success: result.success,
                                     completion: true,
                                     extensions: {
-                                        "http://xerte.org.uk/result/text": this.learnerAnswers
+                                        "http://xerte.org.uk/result/text": this.learnerAnswers,
+																				"http://xerte.org.uk/result/judge": judge
                                     }
                                 };
                                 statement.object.definition = {
@@ -1554,7 +1563,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     completion: true,
                                     extensions: {
                                         "http://xerte.org.uk/result/fill-in": this
-                                            .learnerAnswers
+                                            .learnerAnswers,
+																				"http://xerte.org.uk/result/judge": judge
                                     }
                                 };
                             }

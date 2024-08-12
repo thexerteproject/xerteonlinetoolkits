@@ -563,6 +563,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function (div) {
         var greyDiv = '<div class="status-indicator status-gray">&nbsp;</div>';
         */
     var redDiv = '<i class="status-indicator status-red fa fa-square"></i>';
+    var blueDiv = '<i class="status-indicator status-blue fa fa-square"></i>';
     var greenDiv = '<i class="status-indicator status-green fa fa-square"></i>';
     var orangeDiv =
       '<i class="status-indicator status-orange fa fa-square"></i>';
@@ -684,7 +685,20 @@ xAPIDashboard.prototype.createJourneyTableSession = function (div) {
           var interaction = interactions[interactionIndex];
           var learningObject = learningObjects[learningObjectIndex];
           var tr = div.find("#" + rowid);
-          if (
+					if (
+						this.data.hasCompletedNotJudgedInteraction(
+							summaryStatementidxs,
+							interaction.url
+						)
+					) {
+						this.insertInteractionData(
+							tr,
+							blueDiv,
+							summaryUserData,
+							learningObjectIndex,
+							interactionIndex
+						);
+          } else if (
             this.data.hasPassedInteraction(
               summaryStatementidxs,
               interaction.url
@@ -869,6 +883,19 @@ xAPIDashboard.prototype.createJourneyTableSession = function (div) {
               var learningObject = learningObjects[learningObjectIndex];
               var tr = div.find("#" + attemptrowid);
               if (
+								this.data.hasCompletedNotJudgedInteraction(
+									summaryStatementidxs,
+									interaction.url
+								)
+							) {
+								this.insertInteractionData(
+									tr,
+									blueDiv,
+									summaryUserData,
+									learningObjectIndex,
+									interactionIndex
+								);
+							} else if (
                 this.data.hasPassedInteraction(
                   attemptStatementidxs,
                   interaction.url
@@ -2723,12 +2750,14 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function (
   pairs = pairs.map(function (x) {
     return x.split("[.]").join(' <i class="fa fa-long-arrow-right"></i> ');
   });
-  options += XAPI_DASHBOARD_CORRECTANSWERS;
-  options += "<ul>";
-  pairs.forEach(function (p) {
-    options += "<li>" + p + "</li>";
-  });
-  options += "</ul>";
+	if(question.judge){
+		options += XAPI_DASHBOARD_CORRECTANSWERS;
+		options += "<ul>";
+		pairs.forEach(function (p) {
+			options += "<li>" + p + "</li>";
+		});
+		options += "</ul>";
+	}
 
   const dash = new ADL.XAPIDashboard();
   const statements = this.data.getQuestionResponses(interactionObjectUrl);
@@ -2742,7 +2771,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function (
         statement = JSON.parse(JSON.stringify(s));
         arr = t.split("[.]");
         const pair = `${arr[0]} > ${arr[1]}`;
-        statement.result.pairs = this.data.stripHtml(pair);
+        statement.result.pairs = $this.data.stripHtml(pair);
         pairStatements.push(statement);
       });
     }
@@ -2806,11 +2835,13 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function (
   );
   question.choices.forEach((option) => {
     let correct = "";
-    if (correctResponsesSplitted.indexOf(option.id) != -1) {
-      correct = '<i class="fa fa-x-tick"></i>';
-    } else {
-      correct = '<i class="fa fa-x-cross"></i>';
-    }
+		if(question.judge) {
+			if (correctResponsesSplitted.indexOf(option.id) != -1) {
+				correct = '<i class="fa fa-x-tick"></i>';
+			} else {
+				correct = '<i class="fa fa-x-cross"></i>';
+			}
+		}
 
     let percentage =
       Math.round(
