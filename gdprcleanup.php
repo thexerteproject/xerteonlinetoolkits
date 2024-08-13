@@ -109,7 +109,7 @@ function count_non_private_los_from_user($login_id)
 {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
-    $q = "select count(template_id) as count_los from {$prefix}templatedetails where creator_id= ? where access_to_whom != 'Private' && tsugi_published = '1'";
+    $q = "select count(template_id) as count_los from {$prefix}templatedetails where creator_id= ? and (access_to_whom != 'Private' || tsugi_published = '1')";
     $params = array($login_id);
     $count_los = db_query_one($q, $params);
 
@@ -351,7 +351,7 @@ foreach($users as $user)
         case 'remove':
             $count_non_private = count_non_private_los_from_user($user['login_id']);
             if ($no_public && $count_non_private > 0) {
-                echo "Not removing user {$user['firstname']} {$user['surname']} ({$user['login_id']}, {$user['username']}) because it has {$count_non_private} non-private LO's\n";
+                echo "Not removing user {$user['firstname']} {$user['surname']} ({$user['login_id']}, {$user['username']}) because this user has {$count_non_private} non-private LO's\n";
             } else {
                 if ($doaction) {
                     echo "Removing user {$user['firstname']} {$user['surname']} ({$user['login_id']}, {$user['username']})\n";

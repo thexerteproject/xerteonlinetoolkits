@@ -57,6 +57,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     require_once("config.php");
     require_once("website_code/php/language_library.php");
+    require_once("website_code/php/user_library.php");
 
     _load_language_file("/modules/xerte/edit.inc");
 
@@ -273,17 +274,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $version = getVersion();
 
-    //$edit_site_logo = $xerte_toolkits_site->site_logo;
-    //$pos = strrpos($edit_site_logo, '/') + 1;
-    //$edit_site_logo = substr($edit_site_logo,0,$pos) . "edit_" . substr($edit_site_logo,$pos);
-
-    //$edit_organisational_logo = $xerte_toolkits_site->organisational_logo;
-    //$pos = strrpos($edit_organisational_logo, '/') + 1;
-    //$edit_organisational_logo = substr($edit_organisational_logo,0,$pos) . "edit_" . substr($edit_organisational_logo,$pos);
-
     /* Set flag of whether oai-pmh harvesting is configured and available */
     $oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
-
+    $user_roles = getRolesFromUser($_SESSION['toolkits_logon_id']);
+    if ($_SESSION['toolkits_logon_id'] === "site_administrator")
+    {
+        $user_roles = array("super");
+    }
     _debug("Starting editor page");
 ?>
 <!DOCTYPE html>
@@ -438,8 +435,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.search.min.js?version=<?php echo $version;?>"></script>
 
 <!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/v4-shims.min.css" />
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 
 <script>
     <?php
@@ -464,7 +462,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
-    echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "category_list=" . json_encode($parsed_categories) . ";\n";
     echo "educationlevel_list=" . json_encode($parsed_educationlevels) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
@@ -480,7 +477,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
+    echo "roles=" . json_encode($user_roles) . ";\n";
     echo "theme=\"" . $theme . "\";\n";
+    echo "theme_list=" . json_encode($ThemeList) . ";\n";
     ?>
 
     function bunload(){

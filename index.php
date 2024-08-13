@@ -50,7 +50,7 @@ if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
 login_processing();
 login_processing2();
 
-if($_SESSION["toManagement"] || $_SESSION['toolkits_logon_id'] === 'site_administrator'){
+if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator'){
 	unset($_SESSION["toManagement"]);
 	header("location: management.php");
 	exit();
@@ -108,8 +108,11 @@ $version = getVersion();
     <script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>" -->
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
+
     <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
@@ -165,6 +168,7 @@ $version = getVersion();
     <script type="text/javascript" src="website_code/scripts/jquery-ui-i18n.min.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/result.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/user_settings.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="website_code/scripts/functions.js?version=<?php echo $version;?>"></script>
 
     <?php
     _include_javascript_file("website_code/scripts/xapi_dashboard_data.js?version=" . $version);
@@ -325,7 +329,11 @@ Folder popup is the div that appears when creating a new folder
                     </div>
                 ';
                 }
+                if (getRolesFromUser($_SESSION['toolkits_logon_id'])) {
+                    echo '<button onclick="javascript:redirect(\'management.php\')" title=" ' . INDEX_TO_MANAGEMENT . ' " class="fas fa-tools xerte_workspace_button "></button>';
+                }
                ?>
+
                <div style="display: inline-block"><?php display_language_selectionform("general", false); ?></div>
                <?PHP if($xerte_toolkits_site->authentication_method != "Guest") {
                ?><button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_workspace_button"

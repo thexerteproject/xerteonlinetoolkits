@@ -405,7 +405,7 @@ input[name=retouremail], input[name=templatename] {
 }
 
 
-.publish.disabled label, .publish > div.disabled label {
+.publish.disabled label, .publish div.disabled label, .publish label.disabled {
 	color: gray;
 }
 
@@ -560,4 +560,8 @@ ul.share_form_results, ul.share_users:not(.show_list) {
 	overflow:hidden;
 	background-color: white;
 	color: black;
+}
+
+.publish {
+	padding-left: 20px;
 }

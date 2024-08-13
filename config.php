@@ -43,6 +43,7 @@ global $development;
 $development = false;
 
 ini_set('error_reporting', 0);
+ini_set('display_errors', 0);
 if ($development) {
     ini_set('error_reporting', E_ALL);
     // Change this to where you want the XOT log file to go; 
@@ -206,23 +207,17 @@ if (file_exists($root_file_path . 'import')) {
 }
 
 // Try to get site_url in the same way
-$host = $_SERVER['SERVER_NAME'];
-$port = $_SERVER['SERVER_PORT'];
+$host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
+$port = (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80);
 $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
 
-if ($scheme == 'https://') {
-    if ($port == 443) {
-        $port = '';
-    } else {
-        $port = ':' . $port;
-    }
-} else {
-    if ($port == 80) {
-        $port = '';
-    } else {
-        $port = ':' . $port;
-    }
+if ($port == 80 || $port == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+    $port = '';
 }
+else{
+    $port = ':' . $port;
+}
+
 // get subdir from $xerte_toolkits_site->site_url path stored in Db
 $subdir = '/';
 $subdir_pos = strpos($xerte_toolkits_site->site_url, '/', 8);
@@ -230,9 +225,14 @@ if ($subdir_pos !== false)
 {
     $subdir = substr($xerte_toolkits_site->site_url, $subdir_pos);
 }
-$site_url = $scheme . $host . $port . $subdir;
-
-$xerte_toolkits_site->site_url = $site_url;
+if ($host != '')
+{
+    $site_url = $scheme . $host . $port . $subdir;
+    $check_url = @file_get_contents($site_url . 'version.txt');
+    if ($check_url !== false) {
+        $xerte_toolkits_site->site_url = $site_url;
+    }
+}
 
 $learning_objects = new StdClass();
 

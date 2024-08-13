@@ -2007,12 +2007,14 @@ function tsugi_display($id, $lti_def, $mesg = "")
 		echo PROPERTIES_LIBRARY_TSUGI_DESCRIPTION; ?>
 		
 		<form action="javascript:lti_update(<?php echo $id;?>)">
-		<fieldset class="plainFS"><legend>LTI1</legend>
+		<fieldset class="plainFS"><legend>LTI</legend>
 		<div>
 			<input id="pubChk" type="checkbox" onchange="javascript:tsugi_toggle_tsugi_publish('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_published" <?php echo ($lti_def->published ? "checked" : ""); ?>>
 			<label for="pubChk"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label>
 		</div>
 		<div id="publish" class="publish <?php echo($lti_def->published ? "" : "disabled"); ?>">
+            <input type="checkbox" <?php echo($lti_def->tsugi_published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
+            <label for="tsugi_publish_in_store"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH_IN_STORE; ?></label><br>
 			<input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>>
 			<label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><br>
 			<input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useprivateonly" id="tsugi_useprivateonly" <?php echo ($lti_def->tsugi_privateonly ? "checked" : "");?>>
@@ -2041,10 +2043,14 @@ function tsugi_display($id, $lti_def, $mesg = "")
 			<label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label>
 		</div>
 		
-		<div class="publish <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
-			
-			<div id="xApi" class="<?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
-				<input type="checkbox" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>>
+		<div id="xAPI_enabled" class="publish <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
+
+            <div id="xApi_dashboard" class="<?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
+                <input type="checkbox" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> name="tsugi_publish_dashboard_in_store" id="tsugi_publish_dashboard_in_store" <?php echo ($lti_def->tsugi_publish_dashboard_in_store ? "checked" : "");?>>
+                <label for="tsugi_publish_dashboard_in_store"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH_DASHBOARD_IN_STORE; ?></label><br>
+            </div>
+			<div id="xApi" class="<?php echo($lti_def->published && $lti_def->xapi_enabled ? "" : "disabled"); ?>">
+				<input type="checkbox" <?php echo($lti_def->published && $lti_def->xapi_enabled ? "" : "disabled"); ?> onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>>
 				<label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label>
 			</div>
 			

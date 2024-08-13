@@ -208,7 +208,8 @@
 		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the metadata as oai-pmh (optional functionality). If disabled, the name of the institution that runs the Xerte install will be used." condition="oai_pmh_available"/>
 		<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the education, e.g. primary education"/>
 		<metaThumbnail type="media" label="Thumbnail" defaultValue="" optional="true" tooltip="The thumbnail to publish with the metadata" placeholder="Select an image"/>
-		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" optional="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available"/>
+		<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" optional="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available &amp;&amp; hasrole('harvestadmin')"/>
+		<oaiNoPermission label="Note: you do not have permission to give assent to share this project using oai-pmh. Either ask permission or ask someone with the appropriate permissions to set the assent flag." type="info" condition="oai_pmh_available &amp;&amp; !hasrole('harvestadmin')" optional="true"/>
     </meta>
 	
 	<glossaryGroup type="group" label="Glossary" optional="true" tooltip="A glossary of words/terms and their definitions. Hovering over a word/term in the project text will reveal the associated definition in a tooltip. A glossary button will also be added to the footer tools, which opens the full glossary when clicked.">
@@ -1185,7 +1186,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page. This will override any background image added at project level." common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, while 'Crop to fit' will crop the image to fit without distorting it. Note: this will have no effect in Internet Explorer."/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit (cover),Show whole image (contain)" data="fill,cover,contain" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, 'Crop to fit' will crop the image to fit without distorting it and 'Show whole image' will display the complete scaled image without distorting it. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="0" max="100" step="10" defaultValue="30" optional="true" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale"/>
@@ -2196,7 +2197,7 @@
     <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	<highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
-	
+
 	<image type="group" label="Image">
 		<url label="File" type="media" placeholder="Select an image"/>
 		<textWidth label="Size" options="Small,Medium,Large,Full" type="ComboBox" data="max,wide,narrow,none" defaultValue="narrow" width="200"/>
@@ -2219,6 +2220,11 @@
         <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover. When checked, the label text is used as the hotspot tooltip"/>
 	</hsAppearance>
 
+    <hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of all hotspot.">
+    	<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
+    	<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
+    </hsIconAppearance>
+
 	<popUp type="group" label="Dialog Position" optional="true" tooltip="Control the position of the pop up window that appears when hotspot clicked">
 		<popUpVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
 		<popUpHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
@@ -2227,7 +2233,7 @@
     <imageTransition label="Image Transition" options="Blinds,Dissolve,Fade,Fly,Iris,Squeeze,Wipe,Zoom" type="ComboBox" data="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" defaultValue="wipe" width="100" optional="true" deprecated="This property is no longer required"/>
 
     <newNodes>
-      <cHotspot><![CDATA[<cHotspot name="Enter Hotspot Title" showTitle="true" windowType="dialog" destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
+      <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" tooltip="false" iconCode="fas fa-info" windowType="dialog" hotspotHover='false' destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -2306,8 +2312,16 @@
 	<name label="Title" type="TextInput" wysiwyg="false"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
-	<windowType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null||iframe!=null" defaultValue="dialog" mandatory="true" width="200"/>
-	
+	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
+	<windowType label="Display In" options="Dialog,Lightbox,Nearby bubble" type="ComboBox" data="dialog,lightbox,bubble" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
+	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="false" width="200"/>
+    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info"/>
+
+	<hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
+		<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
+		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
+	</hsIconAppearance>
+
 	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
 		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select a video file or enter a URL/embed code"/>
 		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
@@ -2323,7 +2337,7 @@
 	</video>
 
     <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is deprecated. Videos now reset on completion by default."/>
-	
+
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
 		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select an audio file"/>
 		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" conditionTrigger="true" data="player,auto" defaultValue="player" width="200" optional="true"/>
@@ -3541,8 +3555,8 @@
 	<displayStyle label="Card Layout" type="ComboBox" options="One at a time,In a row,In a column" data="one,horizontal,vertical" optional="true" defaultValue="one" tooltip="Display cards one at a time or in a row/column"/>
 
 	<alignment type="group" label="Content alignment" optional="true" tooltip="sets the alignment of all card without alignment set">
-	  <textAlign label="Align text" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true" tooltip="aligns horizontaly"/>
-	  <contentAlign label="Align content" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true" tooltip="aligns vertically"/>
+	  <textAlign label="Horizontal Alignment" type="ComboBox" options="Left,Center,Right" data="left,center,right" defaultValue="Left" optional="true" tooltip="Aligns content horizontaly"/>
+	  <contentAlign label="Vertical Alignment" type="ComboBox" options="Top,Center,Bottom" data="flex-start,center,flex-end" defaultValue="Top" optional="true" tooltip="Aligns content vertically"/>
 	</alignment>
 
 	<alignTitle label="Align Title" type="CheckBox" defaultValue="false" optional="true" tooltip="if enabled the title is aligned as well"/>
@@ -4336,7 +4350,6 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	
 	<image type="group" label="Image">
 		<url label="File" type="media" placeholder="Select an image"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
@@ -4520,7 +4533,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageCompare menu="Interactivity" menuItem="image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" remove="true">
+    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
@@ -4571,6 +4584,7 @@
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
 		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
 		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
@@ -4588,7 +4602,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page. This will override any background image added at project level." common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, while 'Crop to fit' will crop the image to fit without distorting it. Note: this will have no effect in Internet Explorer."/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit (cover),Show whole image (contain)" data="fill,cover,contain" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, 'Crop to fit' will crop the image to fit without distorting it and 'Show whole image' will display the complete scaled image without distorting it. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="0" max="100" step="10" defaultValue="30" optional="true" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale"/>

@@ -51,47 +51,53 @@ function loadRegistrations()
         $tools = array();
         if ($templates !== false) {
             foreach ($templates as $template) {
-                // Get all the details of a template
-                $metadata = get_meta_data($template['template_id'], $template['template_name'], $template['creator_user_name'], $template['template_type_name']);
-                if ($metadata === false) {
-                    continue;
-                }
-                // Create the External Tool definition
-                $tool = array();
-                $tool['url'] = $site_url  . "lti13_launch.php?template_id=" . $template['template_id'];
-                $tool['name'] = $metadata->name;
-                $tool['short_name'] = $metadata->name;
-                $tool['description'] = $template['template_id'] . ":\n";
+                if ($template['tsugi_publish_in_store'] == 1 || ($template['tsugi_xapi_enabled'] && $template['tsugi_publish_dashboard_in_store'] == 1)) {
+                    // Get all the details of a template
+                    $metadata = get_meta_data($template['template_id'], $template['template_name'], $template['creator_user_name'], $template['template_type_name']);
+                    if ($metadata === false) {
+                        continue;
+                    }
+                    // Create the External Tool definition
+                    $tool = array();
+                    $tool['url'] = $site_url . "lti13_launch.php?template_id=" . $template['template_id'];
+                    $tool['name'] = $metadata->name;
+                    $tool['short_name'] = $metadata->name;
+                    $tool['description'] = $template['template_id'] . ":\n";
 
-                if (isset($metadata->description) && $metadata->description != "") {
-                    $tool['description'] .= $metadata->description;
-                } else {
-                    $tool['description'] .= $tool['name'];
-                }
-                if (isset($metadata->course) && $metadata->course != "") {
-                    $tool['description'] .= ",\n " . LTI_DEEPLINK_COURSE . $metadata->course;
-                }
-                if (isset($metadata->author)) {
-                    $tool['description'] .= ",\n " . LTI_DEEPLINK_AUTHORS . $metadata->author;
-                }
-                $tool['FontAwesome'] = "fa-graduation-cap";
-                if (isset($metadata->thumbnail)) {
-                    $tool['screenshots'] = array($metadata->thumbnail);
-                }
-                $tools["id_" . $template["template_id"]] = $tool;
+                    if (isset($metadata->description) && $metadata->description != "") {
+                        $tool['description'] .= $metadata->description;
+                    } else {
+                        $tool['description'] .= $tool['name'];
+                    }
+                    if (isset($metadata->course) && $metadata->course != "") {
+                        $tool['description'] .= ",\n " . LTI_DEEPLINK_COURSE . $metadata->course;
+                    }
+                    if (isset($metadata->author)) {
+                        $tool['description'] .= ",\n " . LTI_DEEPLINK_AUTHORS . $metadata->author;
+                    }
+                    $tool['FontAwesome'] = "fa-graduation-cap";
+                    if (isset($metadata->thumbnail)) {
+                        $tool['screenshots'] = array($metadata->thumbnail);
+                    }
 
-                // Create the dashboard entry
-                if ($template['tsugi_xapi_enabled']) {
-                    $dtool = array();
-                    $dtool['url'] = $site_url . "tools/dashboard/index.php?template_id=" . $template['template_id'];
-                    $name = str_replace("{0}", $metadata->name, LTI_DEEPLINK_DASHBOARD_PREFIX);
-                    $dtool['name'] = $name;
-                    $short_name = str_replace("{0}", $tool['short_name'], LTI_DEEPLINK_DASHBOARD_PREFIX);
-                    $dtool['short_name'] = $short_name;
-                    $description = str_replace("{0}", $tool['description'], LTI_DEEPLINK_DASHBOARD_PREFIX);
-                    $dtool['description'] = $description;
-                    $dtool['FontAwesome'] = "fa-chart-bar";
-                    $tools["id_" . $template["template_id"] . "_db"] = $dtool;
+                    if ($template['tsugi_publish_in_store'] == 1) {
+                        // Create entry for the tool
+                        $tools["id_" . $template["template_id"]] = $tool;
+                    }
+
+                    // Create the dashboard entry
+                    if ($template['tsugi_xapi_enabled'] && $template['tsugi_publish_dashboard_in_store'] == 1) {
+                        $dtool = array();
+                        $dtool['url'] = $site_url . "tools/dashboard/index.php?template_id=" . $template['template_id'];
+                        $name = str_replace("{0}", $metadata->name, LTI_DEEPLINK_DASHBOARD_PREFIX);
+                        $dtool['name'] = $name;
+                        $short_name = str_replace("{0}", $tool['short_name'], LTI_DEEPLINK_DASHBOARD_PREFIX);
+                        $dtool['short_name'] = $short_name;
+                        $description = str_replace("{0}", $tool['description'], LTI_DEEPLINK_DASHBOARD_PREFIX);
+                        $dtool['description'] = $description;
+                        $dtool['FontAwesome'] = "fa-chart-bar";
+                        $tools["id_" . $template["template_id"] . "_db"] = $dtool;
+                    }
                 }
             }
             $others = findAllRegistrationsInternal();

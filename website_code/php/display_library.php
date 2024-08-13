@@ -486,9 +486,9 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         $item->xot_id = $row['folder_id'];
         $item->parent = $tree_id;
         $item->text = $row['folder_name'];
-        $item->role = $row['role'];
+        $item->role = (isset($row['role']) ? $row['role'] : '');
         $shared = "";
-        if ($row['role'] != 'creator' || $type == 'group_top'){
+        if ($item->role != 'creator' || $type == 'group_top'){
             $shared = 'shared';
         }
         $item->type = ($shared == "") ?  "folder" : "folder_" . $shared;
@@ -704,7 +704,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                     }
 
                     if(!$found){
-                        if($folder['nrshared'] > 1 && $files[$index]->type == "folder"){
+                        if(isset($folder['nrshared']) && $folder['nrshared'] > 1 && $files[$index]->type == "folder"){
                              $files[$index]->type = "sub_folder_shared";
                              $files[$index]->role = $folder['role'];
                         }
@@ -1025,7 +1025,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
 
     $sharedFolders = array();
     foreach ($query_response as $index => $folder){
-        if(intval($folder['nrshared']) > 1){
+        if(isset($folder['nrshared']) && intval($folder['nrshared']) > 1){
             array_push($sharedFolders, $folder["folder_id"]);
             $query_response[$index]['type'] = 'folder_shared';
         }
@@ -1446,7 +1446,7 @@ function list_blank_templates() {
           ?>
           <button id="<?php echo $template['template_name'] ?>_button" type="button" class="xerte_button_c_no_width"
                   onclick="javascript:template_toggle('<?php echo $template['template_name'] ?>')">
-              <i class="fa icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
+              <i class="fa fa-circle-plus xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
           </button>
           </div>
           <div id="<?php echo $template['template_name']; ?>" class="rename">
@@ -1481,7 +1481,7 @@ function list_blank_templates() {
                          name="filename"/>
                   <p>
                       <button type="submit" class="xerte_button_c">
-						<i class="fa icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
+						<i class="fa fa-circle-plus xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
 					  </button>
                   </p>
               </form>

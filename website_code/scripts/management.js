@@ -362,6 +362,12 @@ function template_sync(){
 	});
 }
 
+// Show first tab that user has permission to see
+function show_first_tab()
+{
+	eval(firsttab);
+}
+
 // Function site list
 //
 // remove a share, and check who did it

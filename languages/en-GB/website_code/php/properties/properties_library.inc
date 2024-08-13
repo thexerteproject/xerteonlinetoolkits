@@ -269,21 +269,25 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI", "LTI/xAPI");
 
-	define("PROPERTIES_LIBRARY_TSUGI_DESCRIPTION", "<p>Here you can publish your project as an LTI1.1 or LTI1.3 tool. To add this project via LTI to a learning environment the auto generated key, secret and URL specific to this project will need to be added to the learning environment. You can change the auto populated values but remember the key must be unique for this project in this Xerte installation. If you are enabling others to add this project via LTI to their learning environment they will need each of these details too.</p><p>You can also choose to track activities through xAPI. To do this you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events. You can use xAPI without Tsugi/LTI installed but in this case the only option you have as a learner identifier is setting a group value. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to be used).</p>");
+	define("PROPERTIES_LIBRARY_TSUGI_DESCRIPTION", "<p>Here you can publish your project as an LTI1.1 or LTI1.3 tool. To add the project as an LTI1.3 tool, an LTI1.3 issuer needs to be configured in the TSUGI admin panel. To add this project via LTI1.1 to a learning environment the auto generated key, secret and URL specific to this project will need to be added to the learning environment. You can change the auto populated values but remember the key must be unique for this project in this Xerte installation.</p><p>You can also choose to track activities through xAPI. To do this you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events. You can use xAPI without Tsugi/LTI installed but in this case the only option you have as a learner identifier is setting a group value. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to be used).</p>");
 
 	define("PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION", "<p>You can publish your project as an LTI1.1 or LTI1.3 tool if you install and configure TSUGI as part of your installation. <strong>TSUGI is not currently installed.</strong> See <a href='https://xot.xerte.org.uk/play.php?template_id=88' target='_blank'>how to install TSUGI guide (opens in new window)</a> for further details.</p><p>You can also choose to track activities through xAPI. To do this you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events. You can use xAPI without Tsugi/LTI installed but in this case the only option you have as a learner identifier is setting a group value. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to be used).</p>");
 
-	define("PROPERTIES_LIBRARY_TSUGI_PUBLISH", "Publish project through Tsugi as an LTI1 tool");
+	define("PROPERTIES_LIBRARY_TSUGI_PUBLISH", "Publish project through Tsugi as an LTI tool");
 
     define("PROPERTIES_LIBRARY_TSUGI_USEGLOBAL", "Use globally configured keys and secrets (including LTI 1.3) ");
+
+    define("PROPERTIES_LIBRARY_TSUGI_PUBLISH_IN_STORE", "Show in the TSUGI (LTI) deeplink store ");
+
+    define("PROPERTIES_LIBRARY_TSUGI_PUBLISH_DASHBOARD_IN_STORE", "Show dashboard in the TSUGI (LTI) deeplink store ");
 
     define("PROPERTIES_LIBRARY_TSUGI_USEPRIVATEONLY", "Allow only private key/secret configured below ");
 
 	define("PROPERTIES_LIBRARY_TSUGI_NAME", "Name:");
 
-    define("PROPERTIES_LIBRARY_TSUGI_KEY", "Key:");
+    define("PROPERTIES_LIBRARY_TSUGI_KEY", "LTI 1.1 Key:");
 
-	define("PROPERTIES_LIBRARY_TSUGI_SECRET", "Secret:");
+	define("PROPERTIES_LIBRARY_TSUGI_SECRET", "LTI 1.1 Secret:");
 
 	define("PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI", "Enable xAPI");
 

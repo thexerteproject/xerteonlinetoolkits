@@ -1273,7 +1273,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         var pweighting = 1.0;
                         var nrinteractions = 1.0;
                     }
-										let judge = result.judge?? true;
+                    let judge = result.judge ?? true;
                     switch (this.ia_type) {
                         case 'match':
                             // We have an options as an array of objects with source and target
@@ -3951,8 +3951,8 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-												matchSub.judge = state.interactions[i].result.judge ?? true;
-												judge &= matchSub.judge;
+                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
+                        judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;
@@ -3991,8 +3991,8 @@ function XTResults(fullcompletion) {
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
-								subinteraction.judge = state.interactions[i].result.judge ?? true;
-								judge &= subinteraction.judge;
+                subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
+                judge &= subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(
                     subinteraction);
             }

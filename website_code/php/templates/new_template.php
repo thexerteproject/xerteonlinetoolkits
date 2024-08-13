@@ -63,9 +63,9 @@ if (!preg_match('/^[a-zA-Z0-9_]+$/', $templatename))
 {
     die("Invalid template name");
 }
-if (!preg_match('/^[a-zA-Z0-9_]+$/', $tutorialname))
+if (!preg_match('/^[a-zA-Z0-9_ ]+$/', $tutorialname))
 {
-    die("Invalid tutorial name");
+    die("Invalid project name");
 }
 
 

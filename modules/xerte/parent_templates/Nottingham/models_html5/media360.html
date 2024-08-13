@@ -256,11 +256,11 @@
 								unlockCase: this.getAttribute('unlockCase') != undefined ? this.getAttribute('unlockCase') : 'true'
 							};
 						}
-						
+
 						var thisHs = {
-							'pitch': this.getAttribute('p'),
-							'yaw': this.getAttribute('y'),
-							
+                                                        'pitch': this.getAttribute('p'),
+                                                        'yaw': this.getAttribute('y'),
+
 							'cssClass': 'hotspot360Icon',
 							'clickHandlerFunc': media360.hsClicked,
 							'createTooltipFunc': media360.hsCreated,
@@ -281,7 +281,7 @@
 								colour2: colour2
 							}
 						};
-						
+						debugger
 						// load another scene
 						if (this.getAttribute('scene') != undefined && this.getAttribute('scene') != '') {
 							thisHs.clickHandlerArgs = {
