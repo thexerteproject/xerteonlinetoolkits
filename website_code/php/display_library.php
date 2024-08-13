@@ -486,9 +486,9 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         $item->xot_id = $row['folder_id'];
         $item->parent = $tree_id;
         $item->text = $row['folder_name'];
-        $item->role = $row['role'];
+        $item->role = (isset($row['role']) ? $row['role'] : '');
         $shared = "";
-        if ($row['role'] != 'creator' || $type == 'group_top'){
+        if ($item->role != 'creator' || $type == 'group_top'){
             $shared = 'shared';
         }
         $item->type = ($shared == "") ?  "folder" : "folder_" . $shared;
@@ -704,7 +704,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                     }
 
                     if(!$found){
-                        if($folder['nrshared'] > 1 && $files[$index]->type == "folder"){
+                        if(isset($folder['nrshared']) && $folder['nrshared'] > 1 && $files[$index]->type == "folder"){
                              $files[$index]->type = "sub_folder_shared";
                              $files[$index]->role = $folder['role'];
                         }
@@ -1025,7 +1025,7 @@ select fr.folder_id, count(fr.folder_id) as nrshared  from {$prefix}folderdetail
 
     $sharedFolders = array();
     foreach ($query_response as $index => $folder){
-        if(intval($folder['nrshared']) > 1){
+        if(isset($folder['nrshared']) && intval($folder['nrshared']) > 1){
             array_push($sharedFolders, $folder["folder_id"]);
             $query_response[$index]['type'] = 'folder_shared';
         }
