@@ -96,6 +96,8 @@ function make_new_template($type, $zip_path)
 
     }
 
+    $template_name = x_check_path_traversal($template_name, $xerte_toolkits_site->users_file_area_full, "Invalid template name specified");
+
     $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
         . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) "
         . "VALUES (?,?,?,?,?,?,?)";
