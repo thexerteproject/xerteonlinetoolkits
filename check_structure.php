@@ -100,22 +100,32 @@ function getFolderDetails($folder)
     return $details;
 }
 
+$fix = false;
+if (isset($_GET['fix'])) {
+    $fix = true;
+}
+
 // Get the user id
 if (isset($_GET['username'])) {
-    $username = $_GET['username'];
+    $username = x_clean_input($_GET['username']);
 
     // Get the user id
     $rowid = $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($username));
     $user_id = $row['login_id'];
+
+    // Get root folder of user $user_id
+    $root_folder = get_user_root_folder_id_by_id($user_id);
 
     // Get all the folders the user has access to
     $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights WHERE login_id = ?";
     $params = array($user_id);
     $folders = db_query($sql, $params);
 
+    $found = false;
     foreach ($folders as $folder) {
         $folder_is_orphan = checkOrphan($folder, $folders);
         if ($folder_is_orphan) {
+            $found = true;
             echo "Orphaned folder: " . $folder['folder_id'] . "<br>";
             $details = getFolderDetails($folder);
             echo "Details: <br><ul>";
@@ -124,6 +134,18 @@ if (isset($_GET['username'])) {
             echo "<li>Folder shared by    : " . $details['folder_owner'] . "</li>";
             echo "<li>Folder parent       : " . $details['folder_parent'] . "</li>";
             echo "<li>Folder parent owner : " . $details['folder_parent_owner'] . "</li></ul>";
+
+            if ($fix)
+            {
+                echo "Fixing orphaned folder: {$details['folder_name']} (id={$folder['folder_id']}) and placing it at the root folder of user {$username} (id={$root_folder}) <br>";
+                $sql = "update {$xerte_toolkits_site->database_table_prefix}folderrights set folder_parent=? WHERE folder_id = ? and login_id = ?";
+                $params = array($root_folder,  $folder['folder_id'], $user_id);
+                db_query($sql, $params);
+                echo "Orphaned folder fixed: " . $folder['folder_id'] . "<br>";
+            }
         }
+    }
+    if (!$found) {
+        echo "No orphaned folders found for user {$username}";
     }
 }
