@@ -1101,7 +1101,7 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot"/>
   	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
-  </flexhotspot><audioRecord menu="Interactivity" menuItem="Audio Recorder" hint="An interaction allowing a user to record short audio clips and compare them to example audio files." icon="icMicrophone" thumb="thumbs/audioRecord.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioRecord" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_audioRecord" remove="true">
+  </flexhotspot><audioRecord menu="Interactivity" menuItem="Audio Recorder" hint="An interaction allowing a user to record short audio clips and compare them to example audio files." icon="icMicrophone" thumb="thumbs/audioRecord.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioRecord" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_audio_recorder_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
@@ -4533,7 +4533,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" remove="true">
+    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_comparison_page" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
