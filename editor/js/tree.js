@@ -154,7 +154,7 @@ var EDITOR = (function ($, parent) {
                         {
                             name: language.btnMerge.$label,
                             tooltip: language.btnMerge.$tooltip,
-                            imgicon: 'editor/img/mergeIcon.svg',
+                            icon: 'fa-file-import',
                             id: 'merge_button',
                             click: refresh_workspaceMerge
                         },
