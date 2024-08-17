@@ -284,15 +284,15 @@
 					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("windowURL") != "") {
 						hsType = "newWindow";
 						hsInfo = "url";
-					
-					// go to external page
+
+						// go to external page
+					} else if (this.getAttribute("destinationURL") != undefined && this.getAttribute("destinationURL") != "" && this.getAttribute('destinationType') != undefined && this.getAttribute('destinationType') == 'tab'){
+						hsType = "newTab";
+						hsInfo = this.getAttribute("destinationURL");
+
 					} else if (this.getAttribute("destinationURL") != undefined && this.getAttribute("destinationURL") != "") {
 						hsType = "url";
 						hsInfo = this.getAttribute("destinationURL");
-					
-					} else if (this.getAttribute("newTabURL") != undefined && this.getAttribute("newTabURL") != ""){
-						hsType = "newTab";
-						hsInfo = this.getAttribute("newTabURL");
 
 					// go to page in LO
 					} else if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
@@ -387,7 +387,7 @@
 						});
 
 
-						var $hotspot = $('<span class="hotspotIcon"></span>');
+						var $hotspot = $('<span class="hotspotIcon" tabindex="0"></span>');
 						var $iconhtml = '<i class="' + iconCode +'" style="color:' + colour2 + ';font-size:' + size/2 + 'px;transform:rotate(' + icon.angle +'deg)"></i>'
 						$hotspot.html($iconhtml)
 
@@ -413,7 +413,6 @@
 									if (hsType != "pageLink" && hsType != "url") $(this).addClass("selected");
 
 									$("#feedback").html("");
-
 									if (hsType == "url") {
 										window.location.href = hsInfo;
 									}
@@ -656,7 +655,7 @@
 									}
 
 								})
-								.hover(function () {
+								.on("mouseenter", function () {
 
 									if (hs_hover === 'true' && x_browserInfo.mobile == false) {
 										if (hsInfo == "image" || hsInfo == "text") {
@@ -727,9 +726,16 @@
 									}
 								})
 								.focusin(function () {
-									$('img').mapster('set_options', tabfocusoptions);
-									$(this).addClass("highlight");
-									$(this).mapster('highlight');
+									if ($(this).context.shape != "icon") {
+										$('img').mapster('set_options', tabfocusoptions);
+										$(this).addClass("highlight");
+										$(this).mapster('highlight');
+									} else {
+										$("#pageContents .selected").removeClass("selected");
+										$("#pageContents .highlighted").removeClass("highlighted");
+
+										$(this).addClass("selected");
+									}
 								})
 								.focusout(function () {
 									$('img').mapster('set_options', options);
@@ -739,7 +745,17 @@
 								.keypress(function (e) {
 									var charCode = e.charCode || e.keyCode;
 									if (charCode == 32) {
-										$(this).trigger("click");
+										if (hs_hover != "true") {
+											$(this).trigger("click");
+										} else {
+											$(this).trigger("mouseenter")
+										}
+									}
+								})
+								.keyup(function (e) {
+									var charCode = e.charCode || e.keyCode;
+									if (charCode == 27) {
+										$(this).trigger("mouseleave")
 									}
 								});
 
