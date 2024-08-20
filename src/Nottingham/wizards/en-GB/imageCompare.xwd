@@ -25,7 +25,7 @@
 		<tip2 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image2>
 
-	<vertical label="Drag Vertically" type="CheckBox" defaultValue="true" optional="true" />
+	<sliderPosition label="Slider Position" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" optional="true" />
 
   </imageCompare>
 

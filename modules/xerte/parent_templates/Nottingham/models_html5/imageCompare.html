@@ -70,7 +70,7 @@
 
 			let img1Url = x_currentPageXML.getAttribute("url1");
 			let img2Url = x_currentPageXML.getAttribute("url2");
-			this.isVertical = x_currentPageXML.getAttribute("vertical") == "true" ? true : false;
+			this.isVertical = x_currentPageXML.getAttribute("sliderPosition") == "vertical" ? true : false;
 			this.sizePercentage = parseInt(x_currentPageXML.getAttribute("imageSize"))/100;
 			let text = x_currentPageXML.getAttribute("text");
 			this.textPosition = x_currentPageXML.getAttribute("textPosition");
@@ -132,10 +132,11 @@
 			tempImg1.onload = onImageLoad;
 			tempImg2.onload = onImageLoad;
 
-			if(this.isVertical)
-				$("#slider").addClass("vertical");
-			else
-				$("#slider").addClass("horizontal");
+			if(this.isVertical){
+				$("#slider, #slider_handle").addClass("vertical");
+			} else {
+				$("#slider, #slider_handle").addClass("horizontal");
+			}
 
 			let prevEvent;
 			slider.on("mousedown touchstart", function(event) {
@@ -164,8 +165,8 @@
 				prevEvent = event;
 			});
 
-			slider.on("mouseup touchend", function() {
-				$(this).data("dragging", false);
+			$("#pageContents").on("mouseup touchend", function() {
+				slider.data("dragging", false);
 				$(".image_holder").css("cursor", "default");
 			});
 
@@ -213,7 +214,9 @@
 		<div class="image_holder">
 			<img class="image x_noLightBox" id="img1" alt="" src="" />
 			<img class="image x_noLightBox" id="img2" alt="" src="" />
-			<div id="slider" tabindex="1"></div>
+			<div id="slider" tabindex="1">
+				<div id="slider_handle"></div>
+			</div>
 		</div>
 	</div>
 </div>
