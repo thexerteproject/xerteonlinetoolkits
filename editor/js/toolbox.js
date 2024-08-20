@@ -4826,8 +4826,69 @@ var EDITOR = (function ($, parent) {
 				break;
             case 'info':
                 break;
-			case 'webpage':  //Not used??
-			case 'xerteurl':
+            case 'imgsearchandhelpbutton':
+                var ish_id = 'ishButton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', ish_id)
+                    .attr('class', 'imgsh_button')
+                    .text('Query')
+                    .click({key: key}, function(event) {
+                        var api = lo_data[key].attributes['imgApi'] || "pexels";
+                        var query = lo_data[key].attributes["imgQuery"] || "an image of a duck, white";
+                        var interpretPrompt = lo_data[key].attributes["useAiInterpret"];
+                        var aiSettingsOverride = lo_data[key].attributes["overrideAiSettings"];
+                        if (aiSettingsOverride === "true") {
+                            switch (api){
+                                case 'pexels':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                        "color": lo_data[key].attributes["pexelsColor"],
+                                        "size": lo_data[key].attributes["pexelsSize"],
+                                        "orientation": lo_data[key].attributes["pexelsOrientation"],
+                                    }
+                                    break;
+                                case 'pixabay':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                        "color": lo_data[key].attributes["pixabayColors"],
+                                        "type": lo_data[key].attributes["pixabayType"],
+                                        "orientation": lo_data[key].attributes["pixabayOrientation"],
+                                    }
+                                    break;
+                                case 'dalle2':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                    }
+                                    break;
+                                default:
+                                    constructorObject = {};
+                            }
+                        } else {
+                            switch (api){
+                                case 'pexels':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                    }
+                                    break;
+                                case 'pixabay':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                    }
+                                    break;
+                                case 'dalle2':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                    }
+                                    break;
+                                default:
+                                    constructorObject = {};
+                            }
+                        }
+
+                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
+                    });
+                break;
             case 'aibutton':
                 var id = 'aibutton_' + form_id_offset;
                 form_id_offset++;
@@ -5001,6 +5062,8 @@ var EDITOR = (function ($, parent) {
 
                     });
                 break;
+            case 'webpage':  //Not used??
+            case 'xerteurl':
 			case 'xertelo':
 			default:
 				var id = 'textinput_' + form_id_offset;

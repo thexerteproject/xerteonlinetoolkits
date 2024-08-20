@@ -277,3 +277,8 @@ if (file_exists(dirname(__FILE__) . '/ai_config.php'))
     require_once(dirname(__FILE__) . '/ai_config.php');
 }
 
+if (file_exists(dirname(__FILE__) . '/imgsh_config.php'))
+{
+    require_once(dirname(__FILE__) . '/imgsh_config.php');
+}
+

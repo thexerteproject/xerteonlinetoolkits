@@ -1575,6 +1575,29 @@ var EDITOR = (function ($, parent) {
         });
     },
 
+    img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings){
+        $('body').css("cursor", "wait");
+        console.log("start pexels api request please wait");
+        alert("Fetching images. Please wait.");
+        $.ajax({
+            url: "editor/imagesearchandhelp/imgSHAPI.php",
+            type: "POST",
+            data: {query: query, api: api, target: url, interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings},
+            success: function(data) {
+                console.log("The image results have successfully been retrieved:", data);
+                alert("Images have successfully been downloaded. Please check the media folder to preview and use them.");
+            },
+            error: function(xhr, status, error) {
+                console.error("Error retrieving image results:", error);
+            },
+            complete: function() {
+                // This function runs after the AJAX request completes (whether success or error)
+                $('body').css("cursor", "default");
+                console.log("Pexels API request completed.");
+            }
+        });
+        },
+
     validateInsert = function(key, newNode, tree)
     {
         if (wizard_data[newNode]['menu_options'].max)
