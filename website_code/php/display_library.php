@@ -1446,7 +1446,7 @@ function list_blank_templates() {
           ?>
           <button id="<?php echo $template['template_name'] ?>_button" type="button" class="xerte_button_c_no_width"
                   onclick="javascript:template_toggle('<?php echo $template['template_name'] ?>')">
-              <i class="fa fa-circle-plus xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
+              <i class="fa fa-plus xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
           </button>
           </div>
           <div id="<?php echo $template['template_name']; ?>" class="rename">
