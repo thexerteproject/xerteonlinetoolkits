@@ -5,6 +5,77 @@
 	transform: translate(-50%,-50%);
 }
 
+.holder{
+	position: absolute;
+	/*height: calc(100% - 20px);*/
+	/*width: calc(100% - 20px);*/
+	top: 10px;
+	right: 10px;
+}
+
+.text.left{
+	height: calc(100% - 20px);
+}
+
+.text.left.size8{
+	width: calc(20% - 10px);
+}
+
+.text.left.size6{
+	width: calc(40% - 10px);
+}
+
+.text.left.size4{
+	width: calc(60% - 10px);
+}
+
+.text.top.size8{
+	height: calc(20% - 10px);
+}
+
+.text.top.size6{
+	height: calc(40% - 10px);
+}
+
+.text.top.size4{
+	height: calc(60% - 10px);
+}
+
+.holder.sized{
+	border: gray solid 2px;
+	border-radius: 10px;
+}
+
+.holder.left.size8{
+	width: 80%;
+	margin-left: calc(20% - 10px);
+}
+
+.holder.left.size6{
+	width: 60%;
+	margin-left: calc(40% - 10px);
+}
+
+.holder.left.size4{
+	width: 40%;
+	margin-left: calc(60% - 10px);
+}
+
+.holder.top.size8{
+	height: 80%;
+	margin-top: calc(20% - 10px);
+}
+
+.holder.top.size6{
+	height: 60%;
+	margin-top: calc(40% - 10px);
+}
+
+.holder.top.size4{
+	height: 40%;
+	margin-top: calc(60% - 10px);
+}
+
 .image{
 	position: absolute;
 }

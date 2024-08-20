@@ -67,6 +67,9 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				this.weighting= 0.0;
+			}
 			
             XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -207,10 +210,11 @@
 								$thisInput
 									.val($.trim($thisInput.val()))
 									.prop("readonly", true);
-								
-								$thisInput.parent().find(".result")
-									.removeClass("hidden")
-									.parent().find(".tickTxt").html(tick);
+								if(judge) {
+									$thisInput.parent().find(".result")
+										.removeClass("hidden")
+										.parent().find(".tickTxt").html(tick);
+								}
 								
 								$feedback.html("");
 								$this.focus();
