@@ -57,10 +57,10 @@
 			let img2Elem = $("#img2");
 			let slider = $("#slider");
 			if(this.isVertical){
-				img2Elem.css("clip-path", "inset("+ this.position + "% 0% 0% 0%)");
+				img2Elem.css("clip-path", "inset("+ this.position + "% -50% -50% -50%)");
 				slider.css("top", this.position + "%");
 			}else {
-				img2Elem.css("clip-path", "inset(0% 0% 0%"+ this.position + "%)");
+				img2Elem.css("clip-path", "inset(-50% -50% -50%"+ this.position + "%)");
 				slider.css("left", this.position + "%");
 			}
 		}
