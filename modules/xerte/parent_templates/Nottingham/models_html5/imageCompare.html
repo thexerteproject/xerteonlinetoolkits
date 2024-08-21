@@ -3,6 +3,7 @@
 		this.aspectratio = 1;
 		this.position = 50;
 		this.isVertical = false;
+		this.sizePercentage = 1.0;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.position = 50;
@@ -11,10 +12,39 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			let width = Math.floor($("#pageContents").width()/1.5);
-			//let height = Math.floor(($("#x_mobileScroll").height()-$("#x_headerBlock").height())/1.5);
-			let height = Math.floor($("#x_pageHolder").height()/1.5);
-			console.log(height);
+			let mobileHeightComp = 0;
+			if(x_browserInfo.mobile){
+				mobileHeightComp = $("#x_headerBlock").height();
+			}
+			console.log(x_browserInfo, mobileHeightComp);
+			$("#x_pageHolder").css("top", mobileHeightComp);
+			let pageHeight = $("#x_pageHolder").height() - mobileHeightComp - 20;
+			let pageWidth = $("#x_pageHolder").width() - 20;
+			let holder = $(".holder");
+			if(this.sizePercentage !== 1){
+				holder.addClass("sized");
+				let textElem = $(".text");
+				let textSize = 1.0-this.sizePercentage;
+				if(this.textPosition == "top"){
+					holder.width(pageWidth);
+					holder.height(pageHeight*this.sizePercentage)
+					holder.css("margin-top", pageHeight*textSize)
+					textElem.width(pageWidth);
+					textElem.height(pageHeight*textSize)
+				}else{
+					holder.width(pageWidth*this.sizePercentage);
+					holder.height(pageHeight)
+					holder.css("margin-left", pageWidth*textSize)
+					textElem.width(pageWidth*textSize);
+					textElem.height(pageHeight)
+				}
+			}else {
+				holder.width(pageWidth);
+				holder.height(pageHeight)
+			}
+			let width = Math.floor(holder.width()/1.5) * this.sizePercentage;
+			//let height = Math.floor(($("#x_mobileScroll").height()-$("#x_headerBlock").height())/1.5) * this.sizePercentage;
+			let height = Math.floor(holder.height()/1.5) * this.sizePercentage;
 			if(height < this.aspectratio * width){
 				$(".image_holder").width(height / this.aspectratio).height(height);
 			}else {
@@ -40,7 +70,45 @@
 
 			let img1Url = x_currentPageXML.getAttribute("url1");
 			let img2Url = x_currentPageXML.getAttribute("url2");
-			this.isVertical = x_currentPageXML.getAttribute("vertical") == "true" ? true : false;
+			this.isVertical = x_currentPageXML.getAttribute("sliderPosition") == "vertical" ? true : false;
+			this.sizePercentage = parseInt(x_currentPageXML.getAttribute("imageSize"))/100;
+			let text = x_currentPageXML.getAttribute("text");
+			this.textPosition = x_currentPageXML.getAttribute("textPosition");
+		
+			/* let pageHeight = $("#x_pageHolder").height() - 20;
+			let pageWidth = $("#x_pageHolder").width() - 20;
+			let holder = $(".holder");
+			if(imageSize !== 1){
+				holder.addClass("sized");
+				let textElem = $(".text");
+				let textSize = 1.0-imageSize;
+				console.log(textSize);
+				if(textPosition == "top"){
+					holder.width(pageWidth);
+					holder.height(pageHeight*imageSize)
+					holder.css("margin-top", pageHeight*textSize)
+					textElem.width(pageWidth);
+					textElem.height(pageHeight*textSize)
+				}else{
+					holder.width(pageWidth*imageSiz);
+					holder.height(pageHeight)
+					holder.css("margin-left", pageWidth*textSize)
+					textElem.width(pageWidth*textSize);
+					textElem.height(pageHeight)
+				}
+				textElem.html(textElem);
+			}else {
+				holder.width(pageWidth);
+				holder.height(pageHeight)
+				$(".text").remove();
+			} */
+			let textElem = $(".text");
+			if(this.sizePercentage !== 1){
+				$(".holder").addClass("sized");
+				textElem.html(text);
+			}else {
+				textElem.remove();
+			}
 
 			let img1Elem = $("#img1")[0];
 			let img2Elem = $("#img2")[0];
@@ -58,22 +126,24 @@
 					let minWidth = Math.min(tempImg1.width, tempImg2.width);
 					this.aspectratio = minHeight/minWidth;
 					this.sizeChanged();
-				}
+ 				}
 			};
 
 			tempImg1.onload = onImageLoad;
 			tempImg2.onload = onImageLoad;
 
-			if(this.isVertical)
-				$("#slider").addClass("vertical");
-			else
-				$("#slider").addClass("horizontal");
+			if(this.isVertical){
+				$("#slider, #slider_handle").addClass("vertical");
+			} else {
+				$("#slider, #slider_handle").addClass("horizontal");
+			}
 
 			let prevEvent;
 			slider.on("mousedown touchstart", function(event) {
 				event.preventDefault();
 				$(this).data("dragging", true);
 				prevEvent = event;
+				$(".image_holder").css("cursor", "move");
 			});
 			
 			//this on the image holder because then you don't have to move slowly and stay on the slider
@@ -82,22 +152,21 @@
 				event.preventDefault();
 				let deltaPosition;
 				if(this.isVertical){
-					let screenY = event.screenY?? event.originalEvent.touches[0].screenY;
-					let prevScreenY = prevEvent.screenY?? prevEvent.originalEvent.touches[0].screenY;
+					let screenY = event.screenY != null? event.screenY : event.originalEvent.touches[0].screenY;
+					let prevScreenY = prevEvent.screenY != null? prevEvent.screenY : prevEvent.originalEvent.touches[0].screenY;
 					deltaPosition = 100 / $(".image_holder").height() * (screenY-prevScreenY);
 				}else{
-					let screenX = event.screenX?? event.originalEvent.touches[0].screenX;
-					let prevScreenX = prevEvent.screenX?? prevEvent.originalEvent.touches[0].screenX;
+					let screenX = event.screenX != null? event.screenX : event.originalEvent.touches[0].screenX;
+					let prevScreenX = prevEvent.screenX != null? prevEvent.screenX : prevEvent.originalEvent.touches[0].screenX;
 					deltaPosition = 100 / $(".image_holder").width() * (screenX-prevScreenX);
 				}
 				this.position = Math.min(100, Math.max(this.position + deltaPosition, 0));
 				this.updatePosition();
 				prevEvent = event;
-				$(".image_holder").css("cursor", "move");
 			});
 
-			slider.on("mouseup touchend", function() {
-				$(this).data("dragging", false);
+			$("#pageContents").on("mouseup touchend", function() {
+				slider.data("dragging", false);
 				$(".image_holder").css("cursor", "default");
 			});
 
@@ -139,9 +208,15 @@
 </script>
 
 <div id="pageContents">
-	<div class="image_holder">
-		<img class="image x_noLightBox" id="img1" alt="" src="" />
-		<img class="image x_noLightBox" id="img2" alt="" src="" />
-		<div id="slider" tabindex="1"></div>
+	<div class="text">
+	</div>
+	<div class="holder">
+		<div class="image_holder">
+			<img class="image x_noLightBox" id="img1" alt="" src="" />
+			<img class="image x_noLightBox" id="img2" alt="" src="" />
+			<div id="slider" tabindex="1">
+				<div id="slider_handle"></div>
+			</div>
+		</div>
 	</div>
 </div>

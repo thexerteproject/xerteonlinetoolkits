@@ -157,6 +157,11 @@ td a{
   font-size: x-large;
 }
 
+.status-blue{
+  color: #007bff;
+  font-size: x-large;
+}
+
 .status-red{
   /* background-color: #D93223 !important; */
   color: #D93223;

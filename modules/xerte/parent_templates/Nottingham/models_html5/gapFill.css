@@ -170,7 +170,7 @@
 }
 
 /* add ticks to correct answers */
-#targetHolder input[readonly].correct+span:before, #targetHolder input[correct]+span:before, #targetHolder .target.correct+span:before, #targetHolder select[disabled].correct+span:before {
+#targetHolder input[readonly].judged.correct+span:before, #targetHolder input[correct].judged+span:before, #targetHolder .target.correct+span:before, #targetHolder select[disabled].correct+span:before {
 	font-family: FontAwesome;
 	content: "\f00c";
 	color: green;
@@ -178,7 +178,7 @@
 }
 
 /*gap fill: show red crosses when incorrect and in tracking mode*/
-#targetHolder select[disabled]+span:before, #targetHolder .target.incorrect+span:before, #pageContents input[readonly]+span:before{
+#targetHolder select[disabled]+span:before, #targetHolder .target.incorrect+span:before, #pageContents input[readonly].judeged+span:before{
 	font-family: FontAwesome;
 	content: "\f00d";
 	color: red;

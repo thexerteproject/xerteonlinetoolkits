@@ -76,19 +76,22 @@ if(apply_filters('editor_upload_file', $_FILES)){
 
     $filename = x_clean_input($_FILES['filenameuploaded']['name']);
     $filetype = x_clean_input($_FILES['filenameuploaded']['type']);
+    $tmp_name = x_clean_input($_FILES['filenameuploaded']['tmp_name']);
+
+    x_check_path_traversal($_FILES['filenameuploaded']['tmp_name']);
     if (strpos($filename, '/') !== false || strpos($filename, '\\') !== false || strpos($filename, '..') !== false){
         die("Invalid filename specified");
     }
 
     if($filetype=="text/html"){
 
-        $php_check = file_get_contents($_FILES['filenameuploaded']['tmp_name']);
+        $php_check = file_get_contents($tmp_name);
 
         if(stripos($php_check,"<?PHP") !== false || stripos($php_check, "<?")){
 
             $new_file_name = $mediapath . $filename;
 
-            if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
+            if(@move_uploaded_file($tmp_name, $new_file_name)){
 
                 echo FILE_UPLOAD_SUCCESS . "****";
 
@@ -108,7 +111,7 @@ if(apply_filters('editor_upload_file', $_FILES)){
 
         $new_file_name = $mediapath . $filename;
 
-        if(@move_uploaded_file(x_clean_input($_FILES['filenameuploaded']['tmp_name']), $new_file_name)){
+        if(@move_uploaded_file($tmp_name, $new_file_name)){
 
             echo FILE_UPLOAD_SUCCESS . "****";
 

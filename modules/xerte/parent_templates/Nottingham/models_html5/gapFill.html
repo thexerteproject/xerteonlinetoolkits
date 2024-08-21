@@ -468,7 +468,11 @@
 				
 			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !this.isTracked) {
 				$("#submitBtn, #showBtn").remove();
-
+				let judge = true;
+				if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+					judge = false;
+				}
+				
 				$targetHolder.find("input")
 					.addClass("incorrect")
 					.on("keypress", function() {
@@ -477,11 +481,13 @@
 
 							setTimeout(function() {
 								var currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
-								if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
+								if (answerData[$this.data("index")].indexOf(currvalue) != -1 || !judge) { // correct
 									$this
-										.attr("readonly", "readonly")
 										.addClass("correct")
 										.removeClass("incorrect");
+									if(judge){
+										$this.attr("readonly", "readonly");
+									}
 									
 									$pageContents.find("#hint").remove();
 
@@ -1220,10 +1226,15 @@
 						var correct = false;
 						var answer = currvalue;
 
+						if(judge){
+							$this.addClass("judged");
+						}
 						if ((answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) || !judge) { // correct
 							$this.attr("readonly", "readonly");
 							$this.attr("correct", "correct");
-							$this.addClass("correct");
+							if(judge) {
+								$this.addClass("correct");
+							}
 							feedback = "Correct";
 							correct = true;
 							correct_answers++;
@@ -1357,7 +1368,6 @@
 								$(this).width($(this).data("width"));
 							}
 						});
-
 						$incorrectTargets
 							.html("")
 							.focusin(targetFocusIn)
@@ -1379,6 +1389,8 @@
 							.focusout(labelFocusOut)
 							.keypress(labelKeyPress)
 							.click(labelClick)
+							.data("prevHolder", null)
+							.data("dragged", false)
 							.css({
 								"opacity": 1,
 								"left": "auto",
@@ -1438,6 +1450,9 @@
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
             {
 				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+			}
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				this.weighting= 0.0;
 			}
 			if (x_currentPageXML.getAttribute("interactivity") !== "Drag Drop")  // text fill in blank or drop down
 			{
