@@ -4425,7 +4425,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgH = $img.data("origSize")[1];
         }
 
-		if (enlarge === false) {
+		if (enlarge === false || enlarge === undefined) {
 			maxW = Math.min(maxW, imgW);
 			maxH = Math.min(maxH, imgH);
 		}
