@@ -16,7 +16,6 @@
 			if(x_browserInfo.mobile){
 				mobileHeightComp = $("#x_headerBlock").height();
 			}
-			console.log(x_browserInfo, mobileHeightComp);
 			$("#x_pageHolder").css("top", mobileHeightComp);
 			let pageHeight = $("#x_pageHolder").height() - mobileHeightComp - 20;
 			let pageWidth = $("#x_pageHolder").width() - 20;
@@ -60,7 +59,7 @@
 				img2Elem.css("clip-path", "inset("+ this.position + "% -50% -50% -50%)");
 				slider.css("top", this.position + "%");
 			}else {
-				img2Elem.css("clip-path", "inset(-50% -50% -50%"+ this.position + "%)");
+				img2Elem.css("clip-path", "inset(-50% -50% -50% "+ this.position + "%)");
 				slider.css("left", this.position + "%");
 			}
 		}
@@ -75,33 +74,6 @@
 			let text = x_currentPageXML.getAttribute("text");
 			this.textPosition = x_currentPageXML.getAttribute("textPosition");
 		
-			/* let pageHeight = $("#x_pageHolder").height() - 20;
-			let pageWidth = $("#x_pageHolder").width() - 20;
-			let holder = $(".holder");
-			if(imageSize !== 1){
-				holder.addClass("sized");
-				let textElem = $(".text");
-				let textSize = 1.0-imageSize;
-				console.log(textSize);
-				if(textPosition == "top"){
-					holder.width(pageWidth);
-					holder.height(pageHeight*imageSize)
-					holder.css("margin-top", pageHeight*textSize)
-					textElem.width(pageWidth);
-					textElem.height(pageHeight*textSize)
-				}else{
-					holder.width(pageWidth*imageSiz);
-					holder.height(pageHeight)
-					holder.css("margin-left", pageWidth*textSize)
-					textElem.width(pageWidth*textSize);
-					textElem.height(pageHeight)
-				}
-				textElem.html(textElem);
-			}else {
-				holder.width(pageWidth);
-				holder.height(pageHeight)
-				$(".text").remove();
-			} */
 			let textElem = $(".text");
 			if(this.sizePercentage !== 1){
 				$(".holder").addClass("sized");
