@@ -705,6 +705,10 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
+.x_pswdInfo {
+	margin-bottom: 2vmin;
+}
+
 .x_pswdInput:not(.old) {
 	width: 90vmin;
 	display: flex;
@@ -848,6 +852,11 @@ input#x_pagePswd.old {
 	border: 2px solid #ffffff40;
 	z-index: 2;
 	font-size: 3.5vmin;
+}
+
+.vault .numberbtn, .vault #resetbtn, .vault input {
+	color: white;
+	font-weight: bold;
 }
 
 .vault input:focus, .vault input:hover{

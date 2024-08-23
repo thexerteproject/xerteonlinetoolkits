@@ -203,6 +203,8 @@ optional: feedback page synch play enable
 			// no feedback needed so do change page / play / change media current time immediately
 			} else if (action >= 0) {
 				doAction(action);
+			} else {
+				$continueBtn.show();
 			}
 		}
 		
