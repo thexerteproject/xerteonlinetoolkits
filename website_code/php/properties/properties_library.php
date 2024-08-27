@@ -133,15 +133,9 @@ function properties_display($xerte_toolkits_site, $template_id, $change, $msgtyp
 
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK;
 
-        $play_page = "play";
-
-        if(substr(template_access_settings($template_id), 0, 12)=="PasswordPlay"){
-            $play_page = "passwordplay";
-        }
-
         echo "<br/><a target=\"new\" href='" . $xerte_toolkits_site->site_url .
-                url_return($play_page, $template_id) . "'>" .
-                $xerte_toolkits_site->site_url . url_return($play_page, $template_id) . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a></p>";
+                url_return("play", $template_id) . "'>" .
+                $xerte_toolkits_site->site_url . url_return("play", $template_id) . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a></p>";
 
 		$template = explode("_", get_template_type($template_id));
 
@@ -624,13 +618,9 @@ function project_info($template_id){
 
         $play_page = "play";
 
-        if(substr(template_access_settings($template_id), 0, 12)=="PasswordPlay"){
-            $play_page = "passwordplay";
-        }
-
         $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
-            url_return($play_page, $template_id) . "'>" .
-            $xerte_toolkits_site->site_url . url_return($play_page, $template_id) . "</a><br/>";
+            url_return("play", $template_id) . "'>" .
+            $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a><br/>";
 
         $template = explode("_", get_template_type($template_id));
 
