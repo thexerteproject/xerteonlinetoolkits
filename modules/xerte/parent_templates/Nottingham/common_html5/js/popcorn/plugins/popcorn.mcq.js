@@ -128,7 +128,7 @@ optional: feedback page synch play enable
 			}
 			
 			// feedback if question has true/false answers
-			if (true) {
+			if (judge) {
 				var fb;
 				finishTracking(options);
 				if (options.answerType == "multiple" && options.type == "radio") {
@@ -165,6 +165,8 @@ optional: feedback page synch play enable
 				
 			
 				feedbackTxt += options[fb] != "" ? '<div class="feedback"><p>' + options[fb] + '</p></div>' : "";
+			}else {
+				finishTracking(options);
 			}
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
@@ -201,6 +203,8 @@ optional: feedback page synch play enable
 			// no feedback needed so do change page / play / change media current time immediately
 			} else if (action >= 0) {
 				doAction(action);
+			} else {
+				$continueBtn.show();
 			}
 		}
 		
@@ -233,6 +237,7 @@ optional: feedback page synch play enable
 		
 		return {
 			_setup: function(options) {
+				console.log(options);
 				media = this;
 				let judgeOverride = options.judge?? "true";
 				judge = false;

@@ -253,7 +253,7 @@
             // Also we do let popcorn handle the destruction (doNotCloseTrackiong parameter in loadMedia) of popcorn, so we need to do that hear at the end
             vidFullWatched.segment.end = vidFullWatched.lastTime || -1;
             // Calculate page score
-            var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+            var questions = x_currentPageXML.getElementsByTagName("ivSynchMCQ");
             var numOfQuestions = questions.length;
             var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
                 x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
@@ -1193,7 +1193,9 @@
             if (enable == true) {
                 // enable
                 if (media.player) {
-                    media.player.controls = true;
+					if(typeof media.player.controls != "object"){
+						media.player.controls = true;
+					}
                     media.player.controlsEnabled = true;
                     media.player.options.clickToPlayPause = true;
                     if (includeMejs == true) {

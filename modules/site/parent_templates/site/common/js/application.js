@@ -1546,7 +1546,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		$(data).find('page').each(function(index, value) {
 			var $page = $(this);
 			var $pageIndex = index;
-			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
+			if (pageID === $page.attr('linkID') || pageID === $page.attr('customLinkID')) {
 				// an ID match has been found for a page
 				pageIndex = index;
 				found = true;
@@ -1557,7 +1557,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 			$page.find('section').each(function (index, value) {
 				var $section = $(this);
-				if (pageID == $section.attr('linkID') || pageID == $section.attr('customLinkID')) {
+				if (pageID === $section.attr('linkID') || pageID === $section.attr('customLinkID')) {
 					//an ID match has been found for a section
 					pageIndex = $pageIndex;
 					found = true;

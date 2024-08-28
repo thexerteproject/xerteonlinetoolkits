@@ -71,17 +71,17 @@ if (isset($_POST['code'])) {
     // Check for path traversal
     x_check_path_traversal($langdir, $xerte_toolkits_site->root_file_path, DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE);
 
-    if (file_exists($xerte_toolkits_site->root_file_path . "languages/" . $code)) {
+    if (file_exists($langdir)) {
 
-        if (!_is_writable($xerte_toolkits_site->root_file_path . "languages/" . $code)) {
+        if (!_is_writable($langdir)) {
             _debug("{$xerte_toolkits_site->root_file_path}languages/{$code} needs to be writeable. Cannot perform deletion");
             echo DELETE_LANGUAGE_FAILED . $xerte_toolkits_site->root_file_path . "languages/" . $code . DELETE_LANGUAGE_WRITABLE;
             exit(0);
         }
 
         $abort = false;
-        if (file_exists($xerte_toolkits_site->root_file_path . "languages/" . $code)) {
-            $p = folder_delete($xerte_toolkits_site->root_file_path . "languages/" . $code . "/");
+        if (file_exists($langdir)) {
+            $p = folder_delete($langdir . "/");
             if ($p != "") {
                 echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
                 $abort = true;

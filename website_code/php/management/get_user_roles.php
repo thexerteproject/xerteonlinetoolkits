@@ -56,7 +56,7 @@ function changeuserselection_roles($userid){
 		if(!$isSuper && in_array($role["roleid"], array(1, 2)))
 			$disabled = "disabled";
 		$input = "<input name=\"" . $role["name"] . "\" type=\"checkbox\" " . (in_array($role["roleid"], $user_roles)? "checked" : "") . " " . $disabled . "/>";
-		echo "<p>" . constant("USERS_ROLE_".strtoupper($role["name"])) . "</p> " . $input;
+		echo "<p title=\"" . constant("USERS_ROLE_". strtoupper($role["name"]) . "_INFO") . "\">" . constant("USERS_ROLE_".strtoupper($role["name"])) . "</p> <i class=\"fa fa-info-circle\" title=\"" . constant("USERS_ROLE_". strtoupper($role["name"]) . "_INFO") . "\"></i> " . $input;
 	}
 	
 	

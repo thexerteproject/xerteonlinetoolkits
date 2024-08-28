@@ -86,7 +86,7 @@
 		
 			var pageIndex = 0;
 
-			this.weighting = 1.0;
+			this.weighting = 0.0;
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
@@ -262,9 +262,15 @@
 			}
 
 			// Add download button
-			var $finishBtn = $('<button id="downloadBtn">');
+			var $downloadBtn = $('<button id="downloadBtn">');
+			var $submitBtn = $('<button id="submitBtn">');
 			var $finishSection = $('<div class="item"/>');
-			$finishBtn.appendTo($finishSection);
+			if(x_currentPageXML.getAttribute("showDownload") != "false"){
+				$downloadBtn.appendTo($finishSection);
+			}
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				$submitBtn.appendTo($finishSection);
+			}
 			if (x_currentPageXML.getAttribute('download') && x_currentPageXML.getAttribute('download') == 'extra') {
 				$page = $('<div>')
 					.attr('id', 'page' + pageIndex)
@@ -278,20 +284,21 @@
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($finishBtn);
+				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($downloadBtn);
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);
 
 
 			if(x_currentPageXML.getAttribute("track") == "true"){
-				$finishBtn.button({
-					label: x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Submit"
+				$submitBtn.button({
+					label: x_currentPageXML.getAttribute('submitTxt') != undefined ? x_currentPageXML.getAttribute('submitTxt') : "Submit"
 				}).click(function () {
 					documentation.track();
 				});
-			} else {
-				$finishBtn.button({
+			}
+			if(x_currentPageXML.getAttribute("showDownload") != "false"){
+				$downloadBtn.button({
 					icons: {
 						primary: "fa fa-x-download"
 					},
@@ -811,7 +818,7 @@
 			if (documentation.checkRequired(currentPage)) {
 				documentation.sendToXAPI($("#pageContents").data("docData"));
     		}
-			$("#downloadBtn").hide().prev().hide();
+			$("#submitBtn").hide();
 		}
 
 		this.showPage = function (page) {

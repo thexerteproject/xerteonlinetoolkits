@@ -331,7 +331,7 @@
 	  />]]></hotSpotQuestion><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="" url="" tip="" interactivity="Show Me" highlight="false" align="Left"
   	  nextTxt="Next"
 	  priorTxt="Previous"
-	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageCompare><![CDATA[<imageCompare name="Enter Page Title" text="Enter here the instructions for the page" url1="Select Image" tip1="" url2="Select Image" tip2="" interactivity="Show Me" highlight="false" align="Left" nextTxt="Next" priorTxt="Previous" />]]></imageCompare><imageSequence><![CDATA[<imageSequence name="Enter Page Title" text="" align="left" imgSize="auto"
+	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageCompare><![CDATA[<imageCompare name="Enter Page Title" text="Enter here the instructions for the page" url1="" tip1="" url2="" tip2="" textPosition="top" imageSize="100"/>]]></imageCompare><imageSequence><![CDATA[<imageSequence name="Enter Page Title" text="" align="left" imgSize="auto"
 	  load="Loading image..." 
 	  load2="Loading images... {n}% completed" 
 	  resetLabel="Reset" 
@@ -1932,8 +1932,8 @@
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
 	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true"/>
 
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
     <newNodes>
       <category><![CDATA[<category name="Enter Category Name"/>]]></category>
@@ -2946,8 +2946,8 @@
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Large" width="100" mandatory="true"/>
-	<judge label="Judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" condition="judge!='false'" defaultValue="1.0"/> 
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
@@ -3148,16 +3148,17 @@
     <text label="Page Text" type="TextArea" height="120" placeholder="Enter text for the page here"/>
 	<intro label="Introduction Text" type="TextArea" height="120" placeholder="Enter introductory text here"/>
 	<display label="Show Introduction Text" data="separate,first,all" type="ComboBox" options="On additional page,On first page only,On all pages" width="120"/>
-	<download label="Show Download Button" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
+	<download label="Show Download/Submit Buttons" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 
-	<track label="Should Be Tracked" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
-	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
+	<track label="Submit Answer" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="added a button that submit the answer to the results page"/>
+	<showDownload label="Show Download button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
+	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0"/> 
 	
-    <filename condition="track!='true'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
-	<fileOrientation condition="track!='true'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+    <filename condition="showDownload=='false'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
+	<fileOrientation condition="showDownload=='false'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
 
-	<fontSize condition="track!='true'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
+	<fontSize condition="showDownload=='false'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
 		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
 		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
 		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
@@ -3167,7 +3168,8 @@
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
-	<downloadTxt label="Download Button Label" type="TextInput" language="true"/>
+	<downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" language="true"/>
+	<submitTxt label="Submit Button Label" type="TextInput" condition="track=='true'" language="true"/>
 	<nextTxt label="Next Button Label" type="TextInput" language="true"/>
 	<prevTxt label="Previous Button Label" type="TextInput" language="true"/>
 	
@@ -3872,8 +3874,8 @@
 
 	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" condition="interactivity=='Drop Down Menu'" width="100" optional="true"/>
 
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="judge" optional="true" condition="interactivity=='Fill in Blank'" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+	<judge label="Mark Answer" optional="true" condition="interactivity=='Fill in Blank'" conditionTrigger="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="" placeholder="Enter a list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
 
@@ -4068,8 +4070,8 @@
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 
 	<url label="CSV File" type="Media" optional="true"/>
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
@@ -4535,17 +4537,22 @@
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
+	<text label="Text" type="TextArea" wysiwyg="true" condition="imageSize!='100'"/>
+	<textPosition label="Text Position" type="ComboBox" condition="imageSize!='100'" options="Top,Left" data="top,left"/>
+
+	<imageSize label="Image Size" type="ComboBox" options="Small,Medium,Large,FullScreen" data="40,60,80,100" defaultValue="100" conditionTrigger="true"/>
+	
 	<image1 type="group" label="Image 1">
-		<url1 label="File" type="media"/>
+		<url1 label="File" type="media" placeholder="Select Image"/>
 		<tip1 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image1>
 	
 	<image2 type="group" label="Image 2">
-		<url2 label="File" type="media"/>
+		<url2 label="File" type="media" placeholder="Select Image"/>
 		<tip2 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image2>
 
-	<vertical label="Drag Vertically" type="CheckBox" defaultValue="true" optional="true"/>
+	<sliderPosition label="Slider Position" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
@@ -5167,7 +5174,7 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
-		<judge label="Judge" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true"/>
+		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true"/>
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
 		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
@@ -5944,7 +5951,6 @@
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 	
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-	<judge conditionTrigger="true" label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
 	<feedbackGroup type="group" label="Feedback" optional="true">
 		<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
@@ -6267,7 +6273,7 @@
 
 		<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 		<trackVideo label="Track Video Progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
-		<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+		<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 		<newNodes>
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
@@ -6479,7 +6485,7 @@
 	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Question" type="TextArea" height="100"/>
-		<judge label="Judge" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true"/>
+		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true"/>
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false" deprecated="This property is deprecated. The interactive video page offers an alternative way of having content overlaying a video."/>
@@ -6718,8 +6724,8 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-	<judge label="Judge" type="CheckBox" defaultValue="true" optional="true"/>
-	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+	<judge label="Mark Answer" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <feedbackBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <feedbackBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
@@ -10311,9 +10317,9 @@
 	<feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="" placeholder="Enter feedback here"/>
 	<showAnswers label="Show Answers" defaultValue="true" type="ComboBox" options="Show all answers,Show other possible answers,Show no answers" data="true,others,false" optional="true" tooltip="Control whether a list of answers (either all possible answers or only those not already found) is shown when activity is complete"/>
     <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
-    <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" tooltip="Attempts allowed before feedback is given"/>
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+    <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" condition="judge!='false'" tooltip="Attempts allowed before feedback is given"/>
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
 
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true"/>
