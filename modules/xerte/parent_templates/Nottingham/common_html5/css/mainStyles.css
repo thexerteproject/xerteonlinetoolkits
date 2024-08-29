@@ -855,7 +855,8 @@ input#x_pagePswd.old {
 }
 
 .vault .numberbtn, .vault #resetbtn, .vault input {
-	color: white;
+	color: black;
+	text-align: center;
 	font-weight: bold;
 }
 
@@ -872,9 +873,8 @@ input#x_pagePswd.old {
 
 .vault button {
 	font-size: 3vmin;
-	background-color: #A0A0A0;
-	border: 2px solid #505050;
-	border-radius: 20px;
+	background-color: #808080;
+	border: 2px solid #505050 !important;
 }
 
 .vault button:not(#x_pagePswdBtn){
@@ -883,8 +883,8 @@ input#x_pagePswd.old {
 	margin: 1px;
 }
 
-.vault button:hover {
-	background-color: #808080;
+.vault button:hover, .vault button:focus {
+	background-color: #bdbdbd;
 	border-color: #4A4A4A;
 }
 
