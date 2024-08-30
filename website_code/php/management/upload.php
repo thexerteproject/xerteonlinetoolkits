@@ -7,11 +7,13 @@
  */
 include ('../xmlInspector.php');
 
-require_once("../../../config.php");
-require_once("../user_library.php");
+#require_once("../../../config.php");
+#require_once("../user_library.php");
 
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+require_once("../folder_library.php");
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 _load_language_file("/website_code/php/management/upload.inc");
 
@@ -274,24 +276,6 @@ function returnParentObject($targetFolder)
 
 }
 
-function rrmdir($src) {
-    if ($src != "") {
-        $dir = opendir($src);
-        while (false !== ($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
-                $full = $src . '/' . $file;
-                if (is_dir($full)) {
-                    rrmdir($full);
-                } else {
-                    unlink($full);
-                }
-            }
-        }
-        closedir($dir);
-        rmdir($src);
-    }
-}
-
 function returnInfoFile($parentTemplateFramework, $parentTemplateName)
 {
     global $xerte_toolkits_site;
@@ -335,19 +319,6 @@ function createInfoFile($dir, $templateName, $content)
     $file = fopen($dir . $templateName . DIRECTORY_SEPARATOR . $templateName . ".info" , 'w');
     fwrite($file, $content);
     fclose($file);
-}
-
-function deleteZip($dir, $templateName)
-{
-    $files = glob($dir . '*');
-
-    foreach($files as $file)
-    {
-        if(strpos($file, $templateName . ".zip") !== false)
-        {
-            unlink($file);
-        }
-    }
 }
 
 function checkParent($templateName)

@@ -43,7 +43,42 @@ if (is_user_permitted("templateadmin")) {
     }
     $xwdData->loadTemplateXML($xwd_path);
 
-	echo "<h2>" . MANAGEMENT_MENUBAR_CENTRAL . "</h2>";
+    echo "<h2>" . MANAGEMENT_MENUBAR_CENTRAL . "</h2>";
+
+    echo "<h3>" . MANAGEMENT_MENUBAR_THEMES . "</h3>";
+
+    $current_themes = [];
+    $current_themes[0] = array_diff(scandir($xerte_toolkits_site->root_file_path . '/themes/site/', SCANDIR_SORT_NONE), array('.','..'));
+    $current_themes[1] = array_diff(scandir($xerte_toolkits_site->root_file_path . '/themes/Nottingham/', SCANDIR_SORT_NONE), array('.','..'));
+    $current_themes[2] = array_diff(scandir($xerte_toolkits_site->root_file_path . '/themes/decision/', SCANDIR_SORT_NONE), array('.','..'));
+
+
+    echo "<div class=\"admin_block\"><p>" . TEMPLATE_UPLOAD_THEME . "
+    </p><form action='javascript:theme_submit()' method='post' enctype='multipart/form-data' id='form-theme-upload'>" .
+        "<input type='file' value='Search File' name='fileToUpload' id='file-select' accept='.zip,.rar,.7zip'>" .
+        "<p><select name='themeType' ><option value='Nottingham' label='Nottingham' selected/><option value='site' label='site'/><option value='decision' label='decision Tree'/></select></p><button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
+    "</form></div>";
+
+    echo "<div class=\"admin_block\" id=\"themedetails\"><p>" . TEMPLATE_SHOW_THEMES . " <button type=\"button\" class=\"xerte_button\" id=\"themedetails_btn\" onclick=\"javascript:theme_display('themedetails')\">" . TEMPLATE_THEME_VIEW . "</button></p><div id=\"themedetails_child\" style='display:none'><p style='padding-left:5px'>" . TEMPLATE_THEME_DELETE . "</p>";
+
+    $theme_types = ["site","Nottingham","decision"];
+    for ($i = 0; $i < 3 ; $i++ ) {
+        echo "<div id=\"" . $theme_types[$i] ."\" class=\"template_list\"><h4 style='margin-left:5px;padding-right:5px;display:inline-block'>" . $theme_types[$i] . "</h4><button type=\"button\" class=\"xerte_button\" id=\"" . $theme_types[$i] . "_btn\" onclick=\"javascript:theme_display('". $theme_types[$i] . "')\">" . TEMPLATE_THEME_VIEW . "</button><div id=\"" . $theme_types[$i] . "_child\" style='display:none'>";
+
+        foreach ($current_themes[$i] as $theme) {
+            $theme_files = array_diff(scandir($xerte_toolkits_site->root_file_path . '/themes/' . $theme_types[$i] . "/" . $theme , SCANDIR_SORT_NONE), array('.','..'));
+            if (in_array('hidden.info', $theme_files)) {
+                echo "<div class='theme' onclick=\"javascript:theme_delete('" . $theme . "','" . $i ."')\"><s>" . $theme . "</s></div>";
+            } else {
+                echo "<div class='theme' onclick=\"javascript:theme_delete('" . $theme . "','" . $i ."')\">" . $theme . "</div>";
+            }
+
+        }
+
+        echo "</div></div>";
+    }
+
+    echo "</div></div>";
 
     echo "<div class=\"admin_block\">" . TEMPLATE_UPDATE_EXPLANATION . "
     <p><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p></div>";

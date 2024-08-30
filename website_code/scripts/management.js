@@ -1123,6 +1123,19 @@ function save_changes(){
 
 }
 
+function theme_display(tag){
+
+	var child_tag = tag + "_child";
+	var button_tag = tag + "_btn";
+	if(document.getElementById(child_tag).style.display=="table"){
+		document.getElementById(child_tag).style.display="none";
+		document.getElementById(button_tag).innerHTML = MANAGEMENT_SHOW;
+	}else{
+		document.getElementById(child_tag).style.display="table";
+		document.getElementById(button_tag).innerHTML = MANAGEMENT_HIDE;
+	}
+}
+
 function list_templates_for_user(tag){
 
     var user = document.getElementById(tag).value;

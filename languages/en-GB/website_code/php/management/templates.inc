@@ -74,3 +74,12 @@
 
     define("TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION", "Enter the template description");
 
+    define("TEMPLATE_UPLOAD_THEME", "Upload the theme zip file here");
+
+    define("TEMPLATE_UPLOAD_THEMETYPE", "Select the theme type");
+
+    define("TEMPLATE_SHOW_THEMES", "Current themes");
+
+    define("TEMPLATE_THEME_VIEW", "Show");
+
+    define("TEMPLATE_THEME_DELETE", "Clicking on a theme will enable/disable it from the xot installation");
