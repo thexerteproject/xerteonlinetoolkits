@@ -46,11 +46,25 @@ if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
     $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
 }
-
+$adminlogin = false;
+if (isset($_GET['login']))
+{
+    if (x_clean_input($_GET['login']) == "admin")
+    {
+        if ($_SESSION['toolkits_logon_id'] !== 'site_administrator')
+        {
+            $adminlogin = true;
+            $xerte_toolkits_site->authentication_method = "Db";
+            $authmech = Xerte_Authentication_Factory::create('Db');
+            unset($_SESSION['toolkits_logon_id']);
+            unset($_SESSION['toolkits_logon_username']);
+        }
+    }
+}
 login_processing();
 login_processing2();
 
-if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator'){
+if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator' || $adminlogin){
 	unset($_SESSION["toManagement"]);
 	header("location: management.php");
 	exit();

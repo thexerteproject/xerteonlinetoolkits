@@ -72,5 +72,6 @@
 	
 	define("MANAGEMENT_MENUBAR_SAVE","Save");
 
-	
+	define("MANAGEMENT_NEW_ROLES_ADDED_LOGIN_AS_ADMIN", "<h1>Admin roles</h1><p>New admin roles have been implemented and you don't have any admin role assigned to you. To assign roles to existing users you need to login as admin.</p><p>To login using the original admin credentials, please click the following link: <a href='index.php?login=admin'>Login as admin</a></p>");
+
 ?>
