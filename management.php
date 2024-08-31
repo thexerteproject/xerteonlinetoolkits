@@ -423,6 +423,10 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                             <button type="button" class="xerte_button" onclick="javascript:save_changes()"><i class="fa fa-floppy-o"></i> <?PHP echo MANAGEMENT_MENUBAR_SAVE; ?></button>
                         </div>
                         <div id="admin_area">
+                            <?php if (isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id'] !== 'site_administrator' && count(getRolesFromUser($_SESSION['toolkits_logon_id'])) == 0) {
+                                echo MANAGEMENT_NEW_ROLES_ADDED_LOGIN_AS_ADMIN;
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>

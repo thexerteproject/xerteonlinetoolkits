@@ -331,7 +331,7 @@
 	  />]]></hotSpotQuestion><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="" url="" tip="" interactivity="Show Me" highlight="false" align="Left"
   	  nextTxt="Next"
 	  priorTxt="Previous"
-	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageCompare><![CDATA[<imageCompare name="Enter Page Title" text="Enter here the instructions for the page" url1="" tip1="" url2="" tip2="" textPosition="top" imageSize="100"/>]]></imageCompare><imageSequence><![CDATA[<imageSequence name="Enter Page Title" text="" align="left" imgSize="auto"
+	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageCompare><![CDATA[<imageCompare name="Enter Page Title" text="" url1="" tip1="" url2="" tip2="" textPosition="top" imageSize="60"/>]]></imageCompare><imageSequence><![CDATA[<imageSequence name="Enter Page Title" text="" align="left" imgSize="auto"
 	  load="Loading image..." 
 	  load2="Loading images... {n}% completed" 
 	  resetLabel="Reset" 
@@ -4533,22 +4533,22 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Compare" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_comparison_page" remove="true">
+    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Comparison" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_comparison_page" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
-	<text label="Text" type="TextArea" wysiwyg="true" condition="imageSize!='100'"/>
-	<textPosition label="Text Position" type="ComboBox" condition="imageSize!='100'" options="Top,Left" data="top,left"/>
+	<text label="Text" type="TextArea" wysiwyg="true" placeholder="Enter text for the page here" condition="imageSize!='100'"/>
+	<textPosition label="Align Text" type="ComboBox" condition="imageSize!='100'" options="Top,Left" data="top,left"/>
 
-	<imageSize label="Image Size" type="ComboBox" options="Small,Medium,Large,FullScreen" data="40,60,80,100" defaultValue="100" conditionTrigger="true"/>
+	<imageSize label="Image Size" type="ComboBox" options="Small,Medium,Large,Full Screen" data="40,60,80,100" defaultValue="60" conditionTrigger="true"/>
 	
 	<image1 type="group" label="Image 1">
-		<url1 label="File" type="media" placeholder="Select Image"/>
+		<url1 label="File" type="media" placeholder="Select an image"/>
 		<tip1 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image1>
 	
 	<image2 type="group" label="Image 2">
-		<url2 label="File" type="media" placeholder="Select Image"/>
+		<url2 label="File" type="media" placeholder="Select an image"/>
 		<tip2 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image2>
 
