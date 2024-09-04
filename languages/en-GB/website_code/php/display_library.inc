@@ -35,7 +35,7 @@
 
     define("DISPLAY_LOCKFILE_TIME", "The editing session began on ");
 	
-	define("DISPLAY_LOCKFILE_MESSAGE", "If you are sure that the project is no longer being edited (and the editor window is closed), then you can edit the project by clicking the button below. If you continue, and another editor is open for this project, there is a risk that you will lose work or that the project will become corrupted. Alternatively, please wait and you will be automatically emailed when the current editor stops editing.");
+	define("DISPLAY_LOCKFILE_MESSAGE", "If you are sure that the project is no longer being edited (and the editor window is closed), then you can edit the project by clicking the button below. If you continue, and another editor is open for this project, there is a risk that you will lose work or that the project will become corrupted. Alternatively, please wait and you will be automatically emailed when the project is available for editing.");
 
 	define("DISPLAY_LOCKFILE_YOU", "you");
 
