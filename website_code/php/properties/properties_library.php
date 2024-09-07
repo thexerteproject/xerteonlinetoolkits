@@ -1786,7 +1786,7 @@ function access_display($xerte_toolkits_site, $template_id, $change){
 	if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
 		echo "checked ";
 	}
-	echo "type=\"radio\" id=\"PasswordPlay\" name=\"share_status\" value=\"PasswordPlay\"><label for=\"Password\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY . "</label></div>";
+	echo "type=\"radio\" id=\"PasswordPlay\" name=\"share_status\" value=\"PasswordPlay\"><label for=\"PasswordPlay\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY . "</label></div>";
     echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY_EXPLAINED . "</p><form id=\"PWPlay_pwd\"><textarea id=\"pwd\" style=\"width:90%; height:20px;\">";
 
 	if(isset($_POST['password'])){

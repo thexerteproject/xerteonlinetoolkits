@@ -11,44 +11,52 @@
 		}
 		
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
+		this.sizeChanged = function(firstLoad = false) {
 			let mobileHeightComp = 0;
 			if(x_browserInfo.mobile){
 				mobileHeightComp = $("#x_headerBlock").height();
 			}
 			$("#x_pageHolder").css("top", mobileHeightComp);
-			let pageHeight = $("#x_pageHolder").height() - mobileHeightComp - 20;
-			let pageWidth = $("#x_pageHolder").width() - 20;
+			let pageHeight = $("#x_pageHolder").height() - mobileHeightComp - 40;/* 2 times 10px padding on all sized*/
+			let pageWidth = $("#x_pageHolder").width() - 40;/* 2 times 10px padding on all sized*/
+			let maxImageWidth = pageWidth - 20;
+			let maxImageheight = pageHeight - 20;
 			let holder = $(".holder");
 			if(this.sizePercentage !== 1){
-				holder.addClass("sized");
+				holder.addClass("sized panel");
 				let textElem = $(".text");
 				let textSize = 1.0-this.sizePercentage;
 				if(this.textPosition == "top"){
 					holder.width(pageWidth);
-					holder.height(pageHeight*this.sizePercentage)
+					holder.height(pageHeight*this.sizePercentage);
+					maxImageheight = (pageHeight*this.sizePercentage) - 20;
 					holder.css("margin-top", pageHeight*textSize)
 					textElem.width(pageWidth);
 					textElem.height(pageHeight*textSize)
 				}else{
 					holder.width(pageWidth*this.sizePercentage);
-					holder.height(pageHeight)
+					holder.height(pageHeight);
+					maxImageWidth = (pageWidth*this.sizePercentage) - 20;
 					holder.css("margin-left", pageWidth*textSize)
 					textElem.width(pageWidth*textSize);
 					textElem.height(pageHeight)
 				}
 			}else {
 				holder.width(pageWidth);
-				holder.height(pageHeight)
+				holder.height(pageHeight);
+				maxImageWidth += 20;
+				maxImageheight += 20;
 			}
-			let width = Math.floor(holder.width()/1.5) * this.sizePercentage;
+
+			x_scaleImg($(".image_holder"), maxImageWidth, maxImageheight, null, firstLoad, true);
+			/* let width = Math.floor(holder.width()/1.5) * this.sizePercentage;
 			//let height = Math.floor(($("#x_mobileScroll").height()-$("#x_headerBlock").height())/1.5) * this.sizePercentage;
 			let height = Math.floor(holder.height()/1.5) * this.sizePercentage;
 			if(height < this.aspectratio * width){
 				$(".image_holder").width(height / this.aspectratio).height(height);
 			}else {
 				$(".image_holder").width(width).height(this.aspectratio * width);
-			}
+			} */
 		}
 
 		// updates the ui with the position in javascript
@@ -97,7 +105,9 @@
 					let minHeight =  Math.min(tempImg1.height, tempImg2.height);
 					let minWidth = Math.min(tempImg1.width, tempImg2.width);
 					this.aspectratio = minHeight/minWidth;
-					this.sizeChanged();
+					$(".image_holder").width(minWidth);
+					$(".image_holder").height(minHeight);
+					this.sizeChanged(true);
  				}
 			};
 
@@ -137,7 +147,7 @@
 				prevEvent = event;
 			});
 
-			$("#pageContents").on("mouseup touchend", function() {
+			$("body").on("mouseup touchend", function() {
 				slider.data("dragging", false);
 				$(".image_holder").css("cursor", "default");
 			});
