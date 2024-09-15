@@ -17,8 +17,11 @@
 				mobileHeightComp = $("#x_headerBlock").height();
 			}
 			$("#x_pageHolder").css("top", mobileHeightComp);
-			let pageHeight = $("#x_pageHolder").height() - mobileHeightComp - 40;/* 2 times 10px padding on all sized*/
-			let pageWidth = $("#x_pageHolder").width() - 40;/* 2 times 10px padding on all sized*/
+			let pageDiv = $("x_pageDiv") ;
+			let paddingInline = pageDiv.innerWidth() - pageDiv.width(); // padding left and right
+			let paddingBlock = pageDiv.innerHeight() - pageDiv.height(); // padding top and bottom
+			let pageHeight = $("#x_pageHolder").height() - mobileHeightComp - (paddingBlock*2);
+			let pageWidth = $("#x_pageHolder").width() - (paddingInline*2);
 			let maxImageWidth = pageWidth - 20;
 			let maxImageheight = pageHeight - 20;
 			let holder = $(".holder");
