@@ -1,7 +1,7 @@
 <?php
 //quiz model using gpt-3.5 turbo
 require_once(dirname(__FILE__) . "/../../../../config.php");
-_load_language_file("/editor/ai_models/openai_model_interactiveText_ai.inc");
+_load_language_file("/editor/ai_models/openai_model_interactivetext_ai.inc");
 
 $model = $_POST['model'] ?? "gpt-4o";
 $assistantId = $_POST['asst_id'] ?? "asst_IyiBKzr8nvwddAzVKuh6OnlC";
