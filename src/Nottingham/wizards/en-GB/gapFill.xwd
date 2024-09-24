@@ -37,7 +37,21 @@
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
-	
+
+    <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
+	  <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+	  <taskType label="Task Type" options="Generate a sentence,Mark words as blanks" type="comboBox" data="task1,task2" defaultValue="task1" tooltip="Choose which action the AI should undertake. Generating a sentence will instruct the model to create a brand new sentence based on a subject. Marking words as blanks will take the existing sentence and mark all words of a specific group as blanks automatically." wysiwyg="true" conditionTrigger="true" optional="true"/>
+      <subject label="Subject" type="TextInput" wysiwyg="true" tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" condition="taskType=='task1'" optional="true"/>
+      <sentenceLength label="Sentence Length" type="TextInput" wysiwyg="true" condition="taskType=='task1'" optional="true"/>
+      <targetWords label="Word Group" type="TextInput" tooltip="Which group of words to leave blank. For example: verbs, nouns, animals, buildings, engineering terms, etc." wysiwyg="true" condition="taskType=='task2'" optional="true"/>
+      <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" condition="taskType=='task1'" optional="true"/>
+      <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." condition="taskType=='task1'" optional="true"/>
+      <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." condition="taskType=='task1'" optional ="true"/>
+      <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." condition="taskType=='task1'" optional="true"/>
+      <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" condition="taskType=='task1'" optional ="true"/>
+      <aiButton type="aibutton" optional="true"/>
+      <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+    </AIGroup>
 	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Include an audio player below the written feedback">
 		<audioFeedback label="File" type="media" optional="true"/>
 		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>

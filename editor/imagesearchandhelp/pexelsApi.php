@@ -17,9 +17,6 @@ class pexelsApi
         // Sanitize and URL-encode the query
         $query = urlencode(strip_tags($query));
 
-        if (isset($aiParams->nri) && $aiParams->nri !== 'unmentioned') {
-            $perPage = $aiParams->nri;
-        }
 
         // Construct the URL with the query, perPage, and page parameters
         $url = "https://api.pexels.com/v1/search?query={$query}&per_page={$perPage}&page={$page}";
@@ -263,7 +260,7 @@ class pexelsApi
         }
 
         // Make the GET request to Pexels API
-        $apiResponse = $this->GET_Pexels($aiQuery, $aiParams);
+        $apiResponse = $this->GET_Pexels($aiQuery, $aiParams, $settings['nri']);
 
         // If there's an error, return it with an empty array for the paths
         if (isset($apiResponse->status) && $apiResponse->status === "error") {
@@ -296,6 +293,14 @@ class pexelsApi
             // If the download was successful, add the image path to the results array
             if ($downloadResult->status === "success") {
                 $downloadedPaths[] = $downloadResult->path;
+
+                // Create a text file with the same name as the image to store credit information
+                $authorName = $photo->photographer;
+                $authorProfileUrl = $photo->photographer_url; // Construct the profile URL
+                $originalPhotoUrl = $photo->url; // The original photo URL on Pexels
+                $creditText = "Photo by $authorName, $authorProfileUrl\nOriginal Photo URL: $originalPhotoUrl\n";
+                $infoFilePath = pathinfo($downloadResult->path, PATHINFO_FILENAME) . '.txt';
+                file_put_contents($path . '/' . $infoFilePath, $creditText);
             } else {
                 // If a download fails, include the error message but continue the process
                 return (object)[

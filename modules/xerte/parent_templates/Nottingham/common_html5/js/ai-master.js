@@ -83,8 +83,11 @@ function ai_to_xerte_content(data, key, pos, tree, realParent) {
                 }
             }
         }
-          if (lo_data[key].data !== null && x.textContent !== null && x.firstChild.nodeType === 4) {
-              lo_data[key].data = x.textContent;
+          if (lo_data[key].data !== null && x.textContent !== null) {
+              if (x.firstChild && x.firstChild.nodeType === 4){
+                  lo_data[key].data = x.textContent;
+              }
+
           }
         console.log(x.tagName);
         build_xerte_xml(x, x.tagName, parser);

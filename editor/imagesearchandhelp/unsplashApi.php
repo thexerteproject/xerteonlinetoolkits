@@ -2,35 +2,31 @@
 //openai api master class
 //file name must be $api . Api.php for example openaiApi.php when adding new api
 //class name AiApi mandatory when adding new api
-class pixabayApi
+class unsplashApi
 {
-
     function __construct() {
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
         $this->xerte_toolkits_site = $xerte_toolkits_site;
     }
 
-
-    // Function to make a GET request to the Pixabay API
-    private function GET_Pixabay($query, $aiParams, $perPage = 5, $page = 1)
+    // Function to make a GET request to the Unsplash API
+    private function GET_Unsplash($query, $aiParams, $perPage = 3, $page = 1)
     {
-        $apiKey = $this->xerte_toolkits_site->pixabay_key;
+        // Retrieve the Unsplash API key from the config
+        $unsplashKey = $this->xerte_toolkits_site->unsplash_key;
+
         // Sanitize and URL-encode the query
         $query = urlencode(strip_tags($query));
 
+        // Construct the Unsplash API URL with the query, perPage, and page parameters
+        $url = "https://api.unsplash.com/search/photos?query={$query}&per_page={$perPage}&page={$page}";
 
-        // Construct the URL with the query, perPage, and page parameters
-        $url = "https://pixabay.com/api/?key={$apiKey}&q={$query}&per_page={$perPage}&page={$page}";
-
-        // Append optional parameters if they are not "unmentioned"
+        // Unsplash specific: append optional parameters for orientation and color, if provided
         if (isset($aiParams->orientation) && $aiParams->orientation !== 'unmentioned') {
             $url .= "&orientation=" . urlencode($aiParams->orientation);
         }
         if (isset($aiParams->color) && $aiParams->color !== 'unmentioned') {
-            $url .= "&colors=" . urlencode($aiParams->color);
-        }
-        if (isset($aiParams->size) && $aiParams->image_type !== 'unmentioned') {
-            $url .= "&image_type=" . urlencode($aiParams->image_type);
+            $url .= "&color=" . urlencode($aiParams->color);
         }
 
         // Initialize cURL
@@ -39,11 +35,15 @@ class pixabayApi
         // Set cURL options
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [
+            "Authorization: Client-ID {$unsplashKey}",
+            "Content-Type: application/json"
+        ]);
 
         // Execute cURL request and capture response
         $result = curl_exec($curl);
 
-        // Check for cURL errors
+        // Check if there was an error with the cURL request
         if (curl_errno($curl)) {
             $error_msg = curl_error($curl);
             curl_close($curl);
@@ -57,90 +57,11 @@ class pixabayApi
         $resultDecoded = json_decode($result);
 
         // Check for API errors
-        if (isset($resultDecoded->error)) {
-            return (object)["status" => "error", "message" => "Error on API call: " . $resultDecoded->error];
+        if (isset($resultDecoded->errors)) {
+            return (object)["status" => "error", "message" => "Error on API call: " . implode(', ', $resultDecoded->errors)];
         }
 
         return $resultDecoded;
-    }
-
-    private function rewritePrompt($query, $conversation = [])
-    {
-        // Your OpenAI API key
-        $openAiKey = $this->xerte_toolkits_site->openAI_key;
-
-        // If it's the first time, initialize the conversation with the instructions and the first example
-        if (empty($conversation)) {
-            $conversation[] = [
-                "role" => "user",
-                "content" => "Given a sentence or paragraph, identify the primary nouns, verbs, and adjectives as core keywords, and treat other descriptive words as optional. Formulate a search query optimized for Pixabay's API using the following rules:\n\n1. **Core Keywords**: Extract and list the most important nouns, verbs, and adjectives.\n2. **Optional Keywords**: Identify secondary or descriptive words and combine them using the | operator.\n3. **Grouping**: Group core keywords together and add optional keywords within parentheses.\n4. **Exclusions**: Identify words that should be excluded from the search (if any) using the - operator.\n5. **Wildcard or Fuzzy Matching**: Apply wildcards (*) or fuzzy matching (~) to words that may have variations in spelling or form.\n\nFor example, try this sentence: \"An artist paints a beautiful, serene landscape with tall mountains, a flowing river, and vibrant wildflowers.\""
-            ];
-
-            $conversation[] = [
-                "role" => "system",
-                "content" => "artist paint landscape (beautiful | serene | vibrant) (mountain | river | wildflower)"
-            ];
-        }
-
-        // Add the next user query to the conversation
-        $conversation[] = ["role" => "user", "content" => "Great, now do the same for the following sentence: {$query}"];
-
-        // Prepare the data for the API call
-        $apiInput = [
-            "model" => "gpt-4o",
-            "messages" => $conversation,
-            "max_tokens" => 160, // Adjust the token count as needed
-            "temperature" => 0.9
-        ];
-
-        // Convert the input to JSON
-        $data = json_encode($apiInput);
-
-        // Initialize cURL
-        $curl = curl_init();
-
-        // Set cURL options
-        curl_setopt($curl, CURLOPT_URL, "https://api.openai.com/v1/chat/completions");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            "Authorization: Bearer {$openAiKey}",
-            "Content-Type: application/json"
-        ]);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-
-        // Execute cURL request and capture response
-        $result = curl_exec($curl);
-
-        // Check for cURL errors
-        if (curl_errno($curl)) {
-            $error_msg = curl_error($curl);
-            curl_close($curl);
-            return (object)["status" => "error", "message" => "cURL error: " . $error_msg];
-        }
-
-        // Close the cURL session
-        curl_close($curl);
-
-        // Decode the JSON response
-        $resultDecoded = json_decode($result);
-
-        // Check if there's an error in the API response
-        if (isset($resultDecoded->error)) {
-            return (object)["status" => "error", "message" => "Error on API call: " . $resultDecoded->error->message];
-        }
-
-        // Extract the rewritten prompt from the API response
-        $rewrittenPrompt = $resultDecoded->choices[0]->message->content;
-
-        // Add the model's response to the conversation history
-        $conversation[] = ["role" => "system", "content" => $rewrittenPrompt];
-
-        // Return the rewritten prompt and the updated conversation
-        return [
-            "prompt" => trim($rewrittenPrompt),
-            "conversation" => $conversation
-        ];
     }
 
     private function extractParameters($input){
@@ -152,9 +73,8 @@ class pixabayApi
             $conversation[] = [
                 "role" => "user",
                 "content" => "Given input from a user, parse it for relevant information about the following and return a json detailing these pieces of information:
-                orientation: horizontal, vertical (pick one)
-                color:  accepts grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown (pick one, or multiple based on description separated by commas)
-                image_type: accepts photo, illustration, vector (pick one, only when explicitly specified)
+                orientation: landscape, portrait, squarish (pick one)
+                color: accepts black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, and blue.(pick one, which should best represent the average or most prominent color based on the input)
                 
                 If something was not mentioned, then simply return 'unmentioned' for that field.
                 
@@ -166,8 +86,7 @@ class pixabayApi
                 "role" => "system",
                 "content" => "{
                   \"orientation\": \"unmentioned\",
-                  \"color\": \"orange, red, yellow\",
-                  \"image_type\": \"photo\",
+                  \"color\": \"orange\",
                 }"
             ];
         }
@@ -233,24 +152,147 @@ class pixabayApi
         ];
     }
 
-    private function downloadImageFromPixabay($imageUrl, $saveTo)
+    private function rewritePrompt($query)
     {
-        // Get the image content from the URL
-        $imageContent = file_get_contents($imageUrl);
+        // Your OpenAI API key
+        $openAiKey = $this->xerte_toolkits_site->openAI_key;
 
-        if ($imageContent === false) {
-            return (object)["status" => "error", "message" => "Failed to download image."];
+        // The system message to instruct the AI how to rewrite the prompt
+        $systemMessage = "You are an AI assistant. Rewrite the following user query to be more effective for image search when using an API like Unsplash.";
+
+        // The full prompt to be sent to the API
+        $apiInput = [
+            "model" => "gpt-4o-mini",
+            "messages" => [
+                ["role" => "system", "content" => $systemMessage],
+                ["role" => "user", "content" => $query]
+            ],
+            "max_tokens" => 160, // Adjust the token count as needed
+            "temperature" => 0.9
+        ];
+
+        // Convert the input to JSON
+        $data = json_encode($apiInput);
+
+        // Initialize cURL
+        $curl = curl_init();
+
+        // Set cURL options
+        curl_setopt($curl, CURLOPT_URL, "https://api.openai.com/v1/chat/completions");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer {$openAiKey}",
+            "Content-Type: application/json"
+        ]);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+        // Execute cURL request and capture response
+        $result = curl_exec($curl);
+
+        // Check for cURL errors
+        if (curl_errno($curl)) {
+            $error_msg = curl_error($curl);
+            curl_close($curl);
+            return (object)["status" => "error", "message" => "cURL error: " . $error_msg];
+        }
+
+        // Close the cURL session
+        curl_close($curl);
+
+        // Decode the JSON response
+        $resultDecoded = json_decode($result);
+
+        // Check if there's an error in the API response
+        if (isset($resultDecoded->error)) {
+            return (object)["status" => "error", "message" => "Error on API call: " . $resultDecoded->error->message];
+        }
+
+        // Extract the rewritten prompt from the API response
+        $rewrittenPrompt = $resultDecoded->choices[0]->message->content;
+
+        return trim($rewrittenPrompt);
+    }
+
+    private function downloadImage($imageUrl, $saveTo)
+    {
+        // Initialize cURL
+        $curl = curl_init($imageUrl);
+
+        // Set cURL options
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); // Follow redirects, if any
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Skip SSL verification (if needed)
+        curl_setopt($curl, CURLOPT_TIMEOUT, 120); // Set a timeout for the request
+
+        // Execute the cURL request and get the image data
+        $imageData = curl_exec($curl);
+
+        // Check for cURL errors
+        if (curl_errno($curl)) {
+            $error_msg = curl_error($curl);
+            curl_close($curl);
+            return (object)["status" => "error", "message" => "cURL error: " . $error_msg];
+        }
+
+        // Get the HTTP status code
+        $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        // Check if the request was successful
+        if ($http_status != 200) {
+            return (object)["status" => "error", "message" => "Failed to download image. HTTP status code: " . $http_status];
         }
 
         // Save the image to the specified path
-        $savePath = $saveTo . '/' . basename($imageUrl);
+        $savePath = $saveTo . '/' . basename(parse_url($imageUrl, PHP_URL_PATH));
 
-        // Write the image content to a file
-        if (file_put_contents($savePath, $imageContent) === false) {
+        // Write the image data to a file
+        if (file_put_contents($savePath, $imageData) === false) {
             return (object)["status" => "error", "message" => "Failed to save image."];
         }
 
         return (object)["status" => "success", "message" => "Image downloaded successfully.", "path" => $savePath];
+    }
+
+    //function to meet requirements for Unsplash which dictate that downloads must be reported with this specific endpoint
+    //also applies to embeds, using images in blogs, and other actions which semi-permanently or permanently fix an image to a page
+    private function trackUnsplashDownload($downloadLocationUrl)
+    {
+        // Initialize cURL
+        $curl = curl_init();
+
+        // Set cURL options
+        curl_setopt($curl, CURLOPT_URL, $downloadLocationUrl);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [
+            "Authorization: Client-ID {$this->xerte_toolkits_site->unsplash_key}",
+            "Content-Type: application/json"
+        ]);
+
+        // Execute cURL request
+        $result = curl_exec($curl);
+
+        // Check for cURL errors
+        if (curl_errno($curl)) {
+            $error_msg = curl_error($curl);
+            curl_close($curl);
+            return (object)["status" => "error", "message" => "cURL error: " . $error_msg];
+        }
+
+        // Close the cURL session
+        curl_close($curl);
+
+        // Decode the JSON response
+        $resultDecoded = json_decode($result);
+
+        // Check for API errors
+        if (isset($resultDecoded->errors)) {
+            return (object)["status" => "error", "message" => "Error on API call: " . implode(', ', $resultDecoded->errors)];
+        }
+
+        // Return success message
+        return (object)["status" => "success", "message" => "Download tracked successfully."];
     }
 
     // Public function to handle the request and return image URLs
@@ -261,7 +303,7 @@ class pixabayApi
 
         // Rewrite the query for better image search results
         if (($interpretPrompt === "true")||($interpretPrompt === true)){
-            $aiQuery = $this->rewritePrompt($query)['prompt'];
+            $aiQuery = $this->rewritePrompt($query);
         } else {
             $aiQuery = $query;
         }
@@ -273,8 +315,8 @@ class pixabayApi
             $aiParams= json_decode($this->extractParameters($query)['prompt']);
         }
 
-        // Make the GET request to Pixabay API
-        $apiResponse = $this->GET_Pixabay($aiQuery, $aiParams, $settings['nri']);
+        // Make the GET request to Pexels API
+        $apiResponse = $this->GET_Unsplash($aiQuery, $aiParams, $settings['nri']);
 
         // If there's an error, return it with an empty array for the paths
         if (isset($apiResponse->status) && $apiResponse->status === "error") {
@@ -289,33 +331,32 @@ class pixabayApi
         $dateTime = date('d-m-Y_Hi');
 
         // Specify the directory to save images, including date and time
-        $path = $target . "/media/pixabay/" . $dateTime;
+        $path = $target . "/media/unsplash/" . $dateTime;
 
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {
             mkdir($path, 0777, true); // Create the directory if it doesn't exist
         }
-
         // Loop through each photo in the API response
-        foreach ($apiResponse->hits as $photo) { // 'hits' is the array of images returned by Pixabay
+        foreach ($apiResponse->results as $photo) {
             // URL of the original image
-            $url = $photo->largeImageURL; // Use the 'largeImageURL' for the best quality image
+            $url = $photo->urls->regular;
 
             // Download the image and save it to the specified directory
-            $downloadResult = $this->downloadImageFromPixabay($url, $path);
+            $downloadResult = $this->downloadImage($url, $path);
 
-            // If the download was successful, add the image path to the results array
+            // If the download was successful, add the image path to the results array and report the download to unsplash
             if ($downloadResult->status === "success") {
                 $downloadedPaths[] = $downloadResult->path;
+                //report download to unsplash to comply with ToS
+                $downloadLocationUrl = $photo->links->download_location;  // The download_location URL from Unsplash API response
+                $downloadEventResult = $this->trackUnsplashDownload($downloadLocationUrl);
 
                 // Create a text file with the same name as the image to store credit information
-                $authorName = $photo->user;
-                $authorProfileUrl = "https://pixabay.com/users/" . $authorName . "-" . $photo->user_id; // Construct the profile URL
-                $originalPhotoUrl = $photo->pageURL; // The original photo URL on Pixabay
-                // HTML snippet for embedding
-                $htmlEmbed = "<p>Photo by <a href=\"$authorProfileUrl\" target=\"_blank\">$authorName</a>. <a href=\"$originalPhotoUrl\" target=\"_blank\">View Photo</a>.</p>";
-                $htmlEmbedPlainText = htmlspecialchars($htmlEmbed);
-                $creditText = "Photo by $authorName, $authorProfileUrl\nOriginal Photo URL: $originalPhotoUrl\n" . "\n" . $htmlEmbed;;
+                $authorName = $photo->user->name;
+                $authorProfileUrl = $photo->user->links->html;
+                $originalPhotoUrl = $photo->links->html;  // The original photo URL
+                $creditText = "Photo by $authorName, $authorProfileUrl\nOriginal Photo URL: $originalPhotoUrl\n";
                 $infoFilePath = pathinfo($downloadResult->path, PATHINFO_FILENAME) . '.txt';
                 file_put_contents($path . '/' . $infoFilePath, $creditText);
             } else {

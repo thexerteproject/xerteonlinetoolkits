@@ -4856,6 +4856,20 @@ var EDITOR = (function ($, parent) {
                                         "orientation": lo_data[key].attributes["pixabayOrientation"],
                                     }
                                     break;
+                                case 'wikimedia':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                        "width": lo_data[key].attributes["wikimediaWidth"],
+                                        "height": lo_data[key].attributes["wikimediaHeight"],
+                                    }
+                                    break;
+                                case 'unsplash':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                        "color": lo_data[key].attributes["unsplashColors"],
+                                        "orientation": lo_data[key].attributes["unsplashOrientation"],
+                                    }
+                                    break;
                                 case 'dalle2':
                                     constructorObject = {
                                         "nri": lo_data[key].attributes["nrImagesDalle2"],
@@ -4879,6 +4893,16 @@ var EDITOR = (function ($, parent) {
                                 case 'dalle2':
                                     constructorObject = {
                                         "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                    }
+                                    break;
+                                case 'unsplash':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                    }
+                                    break;
+                                case 'wikimedia':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
                                     }
                                     break;
                                 default:
@@ -4925,6 +4949,53 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     break;
+                                case 'gapFill':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "length": lo_data[key].attributes["sentenceLength"],
+                                        "target": lo_data[key].attributes["targetWords"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "tasknr": lo_data[key].attributes["taskType"],
+                                        "sentence": lo_data[key].attributes['passage'],
+                                    }
+                                    break;
+                                case 'textMatch':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "length": lo_data[key].attributes["sentenceLength"],
+                                        "nrs": lo_data[key].attributes["numberOfSentences"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'dialog':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrs": lo_data[key].attributes["numberOfSentences"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "delim": lo_data[key].attributes["answerDelimeter"],
+                                    }
+                                    break;
+                                case 'wordsearch':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrw": lo_data[key].attributes["numberOfWords"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'interactiveText':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "length": lo_data[key].attributes["sentenceLength"],
+                                        "target": lo_data[key].attributes["targetWords"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "tasknr": lo_data[key].attributes["taskType"],
+                                        "sentence": lo_data[key].attributes['passage'],
+                                    }
+                                    break;
                                 case 'text':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
@@ -4967,14 +5038,6 @@ var EDITOR = (function ($, parent) {
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                     }
                                     fileUrl = lo_data[key].attributes["file"];
-                                    break;
-                                case 'gapFill':
-                                    constructorObject = {
-                                        "subject": lo_data[key].attributes["subject"],
-                                        "range": lo_data[key].attributes["ageRange"],
-                                        "length": lo_data[key].attributes["textLength"],
-                                        "target": lo_data[key].attributes["gapTarget"],
-                                    };
                                     break;
                                 case 'topXQ':
                                     constructorObject = {
