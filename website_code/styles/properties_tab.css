@@ -467,7 +467,7 @@ div#dynamic_area p.share_explain_paragraph, div#dynamic_area p.share_status_para
 	margin-bottom: 10px;
 }
 
-#security_list #other_site_address {
+#security_list #other_site_address, #security_list #PWPlay_pwd {
 	margin-left: 1.5em;
 	padding-left: 0;
 	margin-bottom: 1em;
