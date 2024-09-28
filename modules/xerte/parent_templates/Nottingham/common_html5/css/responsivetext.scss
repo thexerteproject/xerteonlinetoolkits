@@ -126,7 +126,7 @@ input#x_pagePswd {
     font-size:$pagecontentsmedium;
 }
 
-.featherlight input, .featherlight label {
+.featherlight input, .featherlight label, .featherlight select {
 	font-size: $pagecontentslarge;
 }
 
@@ -236,6 +236,10 @@ table {
 #x_glossaryHover, .splitScreen .tip {
 	font-size: $pagecontentsmedium;
 }
+.fa.fa-x-tick, .fa.fa-x-cross {
+  font-size: $pagecontentslarge;
+}
+
 //--end of text size changes-----------------------------------------
 }
 //--end of TABLETS and above-----------------------------------------
