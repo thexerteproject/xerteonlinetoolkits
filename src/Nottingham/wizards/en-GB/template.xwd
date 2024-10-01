@@ -3155,10 +3155,10 @@
 	<showDownload label="Show Download button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
 	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0"/> 
 	
-    <filename condition="showDownload=='true'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
-	<fileOrientation condition="showDownload=='true'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+    <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
+	<fileOrientation condition="showDownload!='false'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
 
-	<fontSize condition="showDownload=='true'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
+	<fontSize condition="showDownload!='false'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
 		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
 		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
 		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
