@@ -493,17 +493,18 @@
 
     function matchActor(statement, xertelo)
     {
-        if (statement.actor != undefined) {
-            if (statement.actor.mbox != undefined
+
+        if (statement.actor != undefined  ) {
+            if (statement.actor.mbox != undefined && typeof username != 'undefined'
                 && statement.actor.mbox == 'mailto:' + username) {
                 return true;
             }
-            if (statement.actor.mbox_sha1sum != undefined
+            if (statement.actor.mbox_sha1sum != undefined && typeof mboxsha1 != 'undefined'
                 && statement.actor.mbox_sha1sum == mboxsha1) {
                 return true;
             }
             if (statement.actor.account != undefined
-                && statement.actor.account.name != undefined
+                && statement.actor.account.name != undefined && typeof groupname != 'undefined'
                 && statement.actor.account.name == groupname) {
                 return true;
             }
@@ -885,7 +886,7 @@
         if (sessionStatementUsed == undefined) {
             sessionStatementUsed = "all";
         }
-        debugger;
+        debugger
         // You can only do this if you have a very targeted query
         // If type is grouping, groupings  or opinionclasses, we should NOT filter the data on sessions
         if (type != "grouping" && type != "groupings" && type != "opinionclasses") {
@@ -2742,7 +2743,7 @@
               }
             }
           } else {
-            if (statements[0].result.extensions !== undefined) {
+            if (statements.length > 0 && statements[0].result.extensions !== undefined) {
               let correctQuestionScores =
                 statements[0].result.extensions[
                   "http://xerte.org.uk/result/grouping/scores"
@@ -3392,6 +3393,9 @@
           );
         }
         if (interaction.getAttribute("graphType") == "bar_answers") {
+
+            var xertelo = interaction.getAttribute("xertelo");
+            var ownstatements = filterOwnStatements(data, xertelo);
           // Check if data has responses with multiple answers
           var multipleAnswers = false;
           data.forEach(function(s){
@@ -3447,6 +3451,7 @@
 
             //get used labels and #
             let labels = {};
+            let barBorderColor = barColors.slice();
             if (!multipleAnswers) {
                 for (let i = 0; i < statements.length; i++) {
                     if (!labels.hasOwnProperty(statements[i].result.response)) {
@@ -3461,6 +3466,9 @@
                         labels[dataset[i].result.response] = 1;
                     } else {
                         labels[dataset[i].result.response] += 1;
+                    }
+                    if (dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
                     }
                 }
             }
@@ -3496,6 +3504,7 @@
                         data: barData,
                         borderWidth: 5,
                         backgroundColor: barColors,
+                        borderColor: barBorderColor,
                         yID: "id1",
                     },
                 ],
