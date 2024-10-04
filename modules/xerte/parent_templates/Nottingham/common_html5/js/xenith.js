@@ -3159,7 +3159,7 @@ function x_passwordPage(pswds) {
 			}else if(type == "vaultnumeric") {
 					$pswdBlock.find('.x_pswdInput').html('<div class="vault numeric"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
 					$pswdBlock.find('.vault-door')
-							.append('<input readonly type="text" id="x_pagePswd" name="x_pagePswd" style="grid-area: input;" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">')
+							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" style="grid-area: input;" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">')
 							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;"> </button>')
 							.append('<button id="x_pagePswdBtn" style="grid-area: button;">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
 
@@ -4425,12 +4425,12 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgH = $img.data("origSize")[1];
         }
 
-		if (enlarge != true) {
-			maxW = Math.min(maxW, imgW);
-			maxH = Math.min(maxH, imgH);
-		}
+        if (enlarge === false) {
+            maxW = Math.min(maxW, imgW);
+            maxH = Math.min(maxH, imgH);
+        }
 
-        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
+        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge !== false) {
             var scaleW = maxW / imgW,
                 scaleH = maxH / imgH,
                 scaleFactor = Math.min(scaleW, scaleH);

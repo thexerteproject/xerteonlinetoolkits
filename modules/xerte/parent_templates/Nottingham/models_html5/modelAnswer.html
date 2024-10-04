@@ -104,6 +104,9 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				this.weighting= 0.0;
+			}
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
 			XTEnterInteraction(x_currentPage, 0, 'text', label, [], '-', [], x_currentPageXML.getAttribute("grouping"));

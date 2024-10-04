@@ -158,7 +158,7 @@ foreach($workspace->items as $item)
 
                 </div>
                 <div id="merge_button_container">
-                    <button id="merge" class="xerte_button_dark"><img id="merge_button_icon" class=xerte_icon" src="editor/img/mergeIcon.svg"><?php echo MERGE;?></button>
+                    <button id="merge" class="xerte_button_dark"><i class="fa fa-file-import xerte-icon"></i><?php echo MERGE;?></button>
                 </div>
         </div>
     </div>

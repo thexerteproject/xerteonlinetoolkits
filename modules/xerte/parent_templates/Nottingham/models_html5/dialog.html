@@ -67,6 +67,9 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				this.weighting= 0.0;
+			}
 			
             XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -207,10 +210,11 @@
 								$thisInput
 									.val($.trim($thisInput.val()))
 									.prop("readonly", true);
-								
-								$thisInput.parent().find(".result")
-									.removeClass("hidden")
-									.parent().find(".tickTxt").html(tick);
+								if(judge) {
+									$thisInput.parent().find(".result")
+										.removeClass("hidden")
+										.parent().find(".tickTxt").html(tick);
+								}
 								
 								$feedback.html("");
 								$this.focus();
@@ -230,6 +234,24 @@
 								correctAnswers += 1;
 								if($pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length){
 									XTSetPageScore(x_currentPage, 100 * (correctAnswers / $(x_currentPageXML).children().length), x_currentPageXML.getAttribute("trackinglabel"));
+								}
+								if(!judge){
+									$feedback.html("");
+							$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
+									$this
+										.data({
+											"attempt": 0,
+											"state": 0
+										})
+										.button({ label: $("#pageContents").data("submitTxt") });
+
+									var qNo = $pageContents.data("currentQ");
+
+									$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
+									let question = $(x_currentPageXML).children()[qNo + 1];
+									let answers = question.getAttribute("answer").split(answerDelimeter);
+									XTEnterInteraction(x_currentPage, qNo + 1, 'fill-in', question.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
+									$pageContents.data("currentQ", qNo + 1);
 								}
 							} else { // incorrect
 								$this.data("attempt", $this.data("attempt") + 1);

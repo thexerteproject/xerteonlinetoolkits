@@ -116,7 +116,7 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
-		<judge label="Judge" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true" />
+		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true" />
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
 		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
