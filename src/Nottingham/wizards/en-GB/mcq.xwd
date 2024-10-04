@@ -29,7 +29,6 @@
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 	
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-	<judge conditionTrigger="true" label="judge" optional="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise" />
 
 	<feedbackGroup type="group" label="Feedback" optional="true">
 		<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
@@ -47,7 +46,7 @@
     <text label="Answer" type="TextArea" height="100" placeholder="Enter an answer option here"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label is used to identify this answer on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
     <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter the feedback for this option" tooltip="Feedback shown when this answer is submitted"/>
-    <correct condition="parent.judge!='false'" label="Correct" options="True,False" type="ComboBox" data="true,false" width="100" />
+    <correct condition="parent.markFeedback!='false'" label="Correct" options="True,False" type="ComboBox" data="true,false" width="100" />
 
 	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player below the feedback text">
 		<audioFB label="File" defaultValue="" type="media" optional="true" placeholder="Select an audio file"/>

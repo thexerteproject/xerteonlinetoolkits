@@ -132,7 +132,6 @@ if(!empty($query_for_peer_response) || isset($password)) {
          */
         $extra = explode("," , $query_for_peer_response['extra'],2);
 
-        $passwd = $extra[0];
         if (count($extra) > 1)
         {
             $retouremail = $extra[1];
@@ -147,7 +146,7 @@ if(!empty($query_for_peer_response) || isset($password)) {
 
         }
 
-        if($_POST['password'] == $passwd || $_POST['password'] == $password) {
+        if($_POST['password'] == $password) {
 
             /**
              *  Output the code

@@ -2729,8 +2729,8 @@ var EDITOR = (function ($, parent) {
             '<button id="poly_'+ id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Polygon + '"><i class="fas fa-2x fa-draw-polygon"></i></button>' +
             '<button id="icon_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Icon + '"><i class="fas fa-2x fa-info-circle"></i></button>' +
             '<button id="reset_'+ id + '" class="hseditModeButton firstoption" title="' + language.editHotspot.Buttons.Reset + '" disabled><i class="fas fa-2x fa-undo-alt"></i></button>' +
-            '<button id="' + id + '_cancel" name="cancel" class="hseditModeButton" title="' + language.Alert.cancellabel + '" style="float:right"><i class="fas fa-2x fa-window-close"></i></button>' +
-            '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
+            '<button id="' + id + '_cancel" name="cancel" class="hseditModeButton" title="' + language.Alert.cancellabel + '" style="float:right"><i class="fas fa-2x fa-xmark"></i></button>' +
+            '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check"></i></button>' +
             '</div>');
 
         edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');

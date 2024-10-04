@@ -205,13 +205,13 @@
 
 	define("PROPERTIES_LIBRARY_ACCESS_PUBLIC_EXPLAINED", "The project will be visible to anyone on the internet");
 
-	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD", "Password protected");
+	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD", "Require login");
 
 	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED", "The project will be visible to people with an account on this system");
 
-	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY", "Password protected(play)");
+	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY", "Password protected");
 
-	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY_EXPLAINED", "The project will be visible to people with the password");
+	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY_EXPLAINED", "The project will be visible to people using the following password:");
 
 	define("PROPERTIES_LIBRARY_ACCESS_OTHER", "Other");
 

@@ -1,7 +1,7 @@
 <wizard menus="Games">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hangman><![CDATA[<hangman name="Enter Page Title" text="" words=""
+      <hangman><![CDATA[<hangman name="Enter Page Title" text="" words="" restrict="letter"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman>
@@ -13,6 +13,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <words label="Words" type="script" height="100" placeholder="Enter words here, placing each on a new line"/>
+    <restrict label="Restrict Guesses" type="Combobox" options="Letters,Letters &amp; numbers,Allow all characters" data="letter,letterNumber,all" defaultValue="all" mandatory="true" tooltip="Use this option to restrict the characters that can be used as guesses"/>
     
 	<nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />		

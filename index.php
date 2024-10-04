@@ -46,11 +46,25 @@ if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
     $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
 }
-
+$adminlogin = false;
+if (isset($_GET['login']))
+{
+    if (x_clean_input($_GET['login']) == "admin")
+    {
+        if ($_SESSION['toolkits_logon_id'] !== 'site_administrator')
+        {
+            $adminlogin = true;
+            $xerte_toolkits_site->authentication_method = "Db";
+            $authmech = Xerte_Authentication_Factory::create('Db');
+            unset($_SESSION['toolkits_logon_id']);
+            unset($_SESSION['toolkits_logon_username']);
+        }
+    }
+}
 login_processing();
 login_processing2();
 
-if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator'){
+if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator' || $adminlogin){
 	unset($_SESSION["toManagement"]);
 	header("location: management.php");
 	exit();
@@ -365,7 +379,7 @@ Folder popup is the div that appears when creating a new folder
 					<button title="<?php echo INDEX_BUTTON_EDIT; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="edit"><i class="fa fa-pencil-square-o xerte-icon"></i></button>
 					<button title="<?php echo INDEX_BUTTON_PROPERTIES; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
-							id="properties"><i class="fa fa-info-circle xerte-icon"></i></button>
+							id="properties"><i class="fa fa-info xerte-icon"></i></button>
 					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="preview"><i class="fa fa-play xerte-icon"></i></button>
 				</div>
