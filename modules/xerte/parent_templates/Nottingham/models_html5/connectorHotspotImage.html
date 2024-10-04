@@ -224,10 +224,8 @@
 			
 			if ($('#audioHolder')) $('#audioHolder').empty();
 
-			//todo add orientation
-			this.colour1 = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
-			this.colour2 = x_currentPageXML.getAttribute('colour2') != undefined && x_currentPageXML.getAttribute('colour2') != '' && x_currentPageXML.getAttribute('colour2') != '0x' ? x_currentPageXML.getAttribute('colour2') : '0xFFFFFF';
-			this.size = x_currentPageXML.getAttribute('Size') != undefined && x_currentPageXML.getAttribute('Size') != '' ? x_currentPageXML.getAttribute('Size') : '14';
+			let hs_generic_colour_background = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
+			let hs_generic_colour_icon  = x_currentPageXML.getAttribute('colour2') != undefined && x_currentPageXML.getAttribute('colour2') != '' && x_currentPageXML.getAttribute('colour2') != '0x' ? x_currentPageXML.getAttribute('colour2') : '0xFFFFFF';
 
 			$('#hsIconHolder').empty()
 			$(x_currentPageXML).children()
@@ -368,8 +366,8 @@
 						}
 					} else {
 						// correct the format of the colour codes (start with # rather than 0x)
-						var colour1 = this.getAttribute('colour1') != undefined && this.getAttribute('colour1') != '' && this.getAttribute('colour1') != '0x' ? this.getAttribute('colour1') :'0x000000';
-						var colour2 = this.getAttribute('colour2') != undefined && this.getAttribute('colour2') != '' && this.getAttribute('colour2') != '0x' ? this.getAttribute('colour2') :'0xFFFFFF';
+						var colour1 = this.getAttribute('colour1') != undefined && this.getAttribute('colour1') != '' && this.getAttribute('colour1') != '0x' ? this.getAttribute('colour1') : hs_generic_colour_background;
+						var colour2 = this.getAttribute('colour2') != undefined && this.getAttribute('colour2') != '' && this.getAttribute('colour2') != '0x' ? this.getAttribute('colour2') : hs_generic_colour_icon;
 						var iconCode = this.getAttribute('iconCode') != undefined && this.getAttribute('iconCode') != '' ? this.getAttribute('iconCode') : 'fas fa-exclamation-circle';
 						colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
 						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
