@@ -3140,6 +3140,9 @@ function x_passwordPage(pswds) {
 			x_updateCss(false);
 			
 			$("#x_pageDiv").show();
+			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and botto
+			let pageHeight = $("#x_pageHolder").innerHeight() - paddingBlock;
+			$x_pageDiv.css("height", "calc(100% - " + pageHeight + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			
 			var $pswdBlock = $('#x_page' + x_currentPage);
@@ -3190,6 +3193,7 @@ function x_passwordPage(pswds) {
 					if ($.inArray(pswdEntered, pswds) >= 0) {
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						x_pageInfo[x_currentPage].passwordPass = true;
+						x_pageDiv.css("height", "");
 						$pswdBlock.remove();
 						x_addCountdownTimer();
 						x_addNarration('x_changePageStep6', '');
