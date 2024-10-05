@@ -516,7 +516,7 @@ function setup() {
 						element.setAttributeNS('', 'bannerFullScrolldownText', learningObject.attr('glossaryBannerFullScrolldownText')?? '');
 				}
 
-				for (var i=0; i<charList.length; i++) { 
+				for (var i=0; i<charList.length; i++) {
 					var cDataSection = data.createCDATASection(glossaryTxt[i]);
 					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
 					$section.find('text').append(cDataSection);
@@ -1815,10 +1815,10 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			//add the section header
 			var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
 				links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
-				subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h2 class="sectionTitle">' + $(this).attr('name') + '</h2>' : '';
+				subHeadings = $(this).attr('name') != "" && ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h2 id="' + sectionId + '_title" class="sectionTitle">' + $(this).attr('name') + '</h2>' : '';
 
 			var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
-			var section = $('<section id="' + sectionId + '">' + pageHeader + '</section>');
+			var section = $('<section id="' + sectionId + '" ' + (subHeadings != "" ? 'aria-labelledby="' + sectionId + '_title"' : '' ) + '>' + pageHeader + '</section>');
 			
 			var pswds = [];
 			if ($.trim($(this).attr('password')).length > 0) {
@@ -2196,7 +2196,7 @@ function passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAl
 			loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds);
 			
 		} else {
-			
+
 			var $section = $('<section><div class="pswdBlock"><div class="pswdInfo"></div><div class="pswdInput"></div><div class="pswdError"></div></div></section>');
 			$section.find('.pswdInfo').append(page.attr('passwordInfo'));
 			$section.find('.pswdError').append(page.attr('passwordError')).hide();
