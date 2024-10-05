@@ -36,6 +36,9 @@
         var classtitles = [];
         var numUserSubmits = 0;
         var xertelo = interaction.getAttribute('xertelo');
+        if (xertelo == "") {
+            xertelo = x_TemplateId
+        }
         var radarData = interaction.getAttribute('opinionRadarData');
         var textSize = Math.round(interaction.getAttribute("labelFontSize"));
         var groupedData = [];
@@ -664,7 +667,11 @@
     }
 
     function getUrl(xerteurl, xertelo, xertelabel, opinionClass) {
-        var url = xerteurl + xertelo;
+        if (xerteurl == '') {
+            var url = x_siteUrl + xertelo
+        } else {
+            var url = xerteurl + xertelo;
+        }
         if (xertelabel != undefined && xertelabel != "") {
             url += "/" + xertelabel.replace(/ /g, "_");
         }
@@ -1271,6 +1278,9 @@
     ) {
       xerteurl = interaction.getAttribute("xerteurl");
       xertelo = interaction.getAttribute("xertelo");
+      if (xertelo == "") {
+          xertelo = x_TemplateId
+      }
       xertelabel = interaction.getAttribute("label");
       xertegrouping = interaction.getAttribute("grouping");
       name = interaction.getAttribute("name");
@@ -1649,6 +1659,9 @@
         IncorrectText = "Incorrect";
       }
       var xertelo = interaction.getAttribute("xertelo");
+        if (xertelo == "") {
+            xertelo = x_TemplateId
+        }
       var ownstatements = filterOwnStatements(data, xertelo);
 
 
@@ -1672,6 +1685,10 @@
       var graphShowAvg = interaction.getAttribute("graphShowAvg");
       if (graphShowAvg == undefined) {
           graphShowAvg = false;
+      }
+      var graphShowScore = interaction.getAttribute("graphShowScore");
+      if (graphShowScore == undefined) {
+          graphShowScore = false;
       }
       var graphShowAvgLine = interaction.getAttribute("graphShowAvgBar");
       if (graphShowAvgLine == undefined) {
@@ -2221,10 +2238,12 @@
             }
 
             //add block avg to labels
-            if (graphShowAvg == "true") {
+            if (graphShowAvg == "true" || graphShowScore == "true") {
                 for (let i = 0; i < labels.length; i++) {
-                    labels[i].push(groupScore + ": " + (groupAvg[i]/ Math.max(barSizeData[i], 1)).toFixed(2))
-                    if (i == ownUserScore[0]) {
+                    if (graphShowAvg == "true") {
+                        labels[i].push(groupScore + ": " + (groupAvg[i] / Math.max(barSizeData[i], 1)).toFixed(2))
+                        }
+                    if (graphShowScore == "true" && i == ownUserScore[0]) {
                         labels[i].push(userScore + ": " + ownUserScore[1])
                     }
                 }
@@ -3307,6 +3326,9 @@
         nrbars = 10;
       }
       var xertelo = interaction.getAttribute("xertelo");
+        if (xertelo == "") {
+            xertelo = x_TemplateId
+        }
       var statements = filterOwnStatements(data, xertelo);
 
         var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
@@ -3395,6 +3417,9 @@
         if (interaction.getAttribute("graphType") == "bar_answers") {
 
             var xertelo = interaction.getAttribute("xertelo");
+            if (xertelo == "") {
+                xertelo = x_TemplateId
+            }
             var ownstatements = filterOwnStatements(data, xertelo);
           // Check if data has responses with multiple answers
           var multipleAnswers = false;
@@ -3458,6 +3483,9 @@
                         labels[statements[i].result.response] = 1;
                     } else {
                         labels[statements[i].result.response] += 1;
+                    }
+                    if (statements[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
                     }
                 }
             } else {
@@ -4392,6 +4420,9 @@
         }
         xerteurl = interaction.getAttribute("xerteurl");
         xertelo = interaction.getAttribute("xertelo");
+          if (xertelo == "") {
+              xertelo = x_TemplateId
+          }
         xertelabel = interaction.getAttribute("label");
         name = interaction.getAttribute("name");
         interactionType = interaction.getAttribute("interactionType");
@@ -4869,6 +4900,9 @@
         }
         xerteurl = interaction.getAttribute("xerteurl");
         xertelo = interaction.getAttribute("xertelo");
+          if (xertelo == "") {
+              xertelo = x_TemplateId
+          }
         xertelabel = interaction.getAttribute("label");
         name = interaction.getAttribute("name");
         interactionType = interaction.getAttribute("interactionType");
@@ -4896,10 +4930,7 @@
         }
         filter_context_id = (interaction.getAttribute("contextFilter") == 'true'? true : false);
 
-        url = xerteurl + xertelo + "/" + xertelabel;
-        if (opinionClass != "") {
-          url += "/" + opinionClass;
-        }
+        url = getUrl(xerteurl, xertelo, xertelabel, opinionClass)
         this.drawBlock("#adaptiveContent", interaction, interactionIndex, true);
       }
 
