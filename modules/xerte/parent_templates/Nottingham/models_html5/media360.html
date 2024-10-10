@@ -281,7 +281,7 @@
 								colour2: colour2
 							}
 						};
-						debugger
+
 						// load another scene
 						if (this.getAttribute('scene') != undefined && this.getAttribute('scene') != '') {
 							thisHs.clickHandlerArgs = {
@@ -433,14 +433,14 @@
 						
 						// set up menu of links to scenes
 						if (x_currentPageXML.getAttribute('sceneMenu') == 'true') {
-							
+
 							// create a scene menu containing links to open each unhidden scene
 							var $sceneMenu = $('<div id="sceneLinkHolder"></div>');
 							
 							for(var key in scenes) {
 								if (scenes[key].menuTitle != undefined) {
 									var $thisSceneLink = $('<button class="sceneLink">' + scenes[key].menuTitle + '</button>');
-									
+
 									$thisSceneLink
 										.attr('id', key + 'Link')
 										.data('sceneId', key)
@@ -448,6 +448,8 @@
 										.click(function() {
 											$sceneMenu.hide();
 											thisPannellum.loadScene($(this).data('sceneId'));
+											$sceneMenu.find(".sr-only").remove();
+											$(this).append('<span class="sr-only">: ' + x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected") + '</span>');
 										})
 										.keydown(function(e){
 											// trigger click when focused & enter key pressed
@@ -461,7 +463,7 @@
 										});
 								}
 							}
-							
+
 							$sceneMenu.hide();
 							
 							// clone the full screen menu & use as menu btn
@@ -470,6 +472,7 @@
 							$menuBtn
 								.removeClass('fullScreen')
 								.addClass('sceneMenu')
+								.attr('aria-label', x_currentPageXML.getAttribute('sceneMenuTxt') != undefined ? x_currentPageXML.getAttribute('sceneMenuTxt') : "Scene menu")
 								.insertAfter('.pnlm-panorama-info')
 								.append($sceneMenu)
 								.hover(
@@ -499,6 +502,8 @@
 								});
 							
 							$('.pnlm-panorama-info').addClass('indent');
+
+							$("#" + thisPannellum.getScene() + "Link").append('<span class="sr-only">: ' + x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected") + '</span>');
 						}
 					}
 					
@@ -878,6 +883,8 @@
 						}
 						
 						thisPannellum.loadScene(args.scene, initPitch, initYaw);
+						$(".sceneLink .sr-only").remove();
+						$("#" + args.scene + "Link").append('<span class="sr-only">: ' + x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected") + '</span>');
 					}
 				}
 				

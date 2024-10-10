@@ -359,7 +359,7 @@
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  checkBtnTxt="Check" />]]></mcq><media360><![CDATA[<media360 name="Enter Page Title" text="" size="large" position="right"
-	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle" 
+	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle"  sceneMenuTxt="Scene menu"
 	  pageError="Destination page not found"
 	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
 	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" prompt="" feedback="" panelWidth="Medium" align="left"
@@ -6066,6 +6066,7 @@
 	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
 	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
 	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true"/>
+	<sceneMenuTxt label="Scene Menu" type="TextInput" wysiwyg="true" language="true" defaultValue="Scene menu" mandatory="true"/>
 	<lockLabel label="Password Label" type="TextInput" wysiwyg="true" language="true"/>
 	<lockSubmit label="Password Submit" type="TextInput" wysiwyg="true" language="true"/>
 	<lockPswdWrong label="Wrong Password" type="TextInput" wysiwyg="true" language="true"/>
