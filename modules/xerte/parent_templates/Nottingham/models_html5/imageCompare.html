@@ -22,29 +22,34 @@
 			let paddingBlock = pageDiv.innerHeight() - pageDiv.height(); // padding top and bottom
 			let pageHeight = $("#x_pageHolder").innerHeight() - mobileHeightComp - (paddingBlock*2);
 			let pageWidth = $("#x_pageHolder").innerWidth() - (paddingInline*2);
+			debugger;
 			let maxImageWidth = pageWidth - 20;
 			let maxImageheight = pageHeight - 20;
 			let holder = $(".holder");
 			if(this.sizePercentage !== 1){
+				holder.css("left", paddingInline/2);
+				pageHeight -= 10;
 				holder.addClass("sized panel");
 				let textElem = $(".text");
 				let textSize = 1.0-this.sizePercentage;
+				let holderPaddingTop = (holder.innerHeight() - holder.height())/2 
 				if(this.textPosition == "top"){
 					holder.width(pageWidth);
 					holder.height(pageHeight*this.sizePercentage);
 					maxImageheight = (pageHeight*this.sizePercentage) - 20;
-					holder.css("margin-top", pageHeight*textSize)
+					holder.css("margin-top", pageHeight*textSize + holderPaddingTop)
 					textElem.width(pageWidth);
 					textElem.height(pageHeight*textSize)
 				}else{
 					holder.width(pageWidth*this.sizePercentage);
 					holder.height(pageHeight);
 					maxImageWidth = (pageWidth*this.sizePercentage) - 20;
-					holder.css("margin-left", pageWidth*textSize)
+					holder.css("margin-left", pageWidth*textSize + holderPaddingTop)
 					textElem.width(pageWidth*textSize);
 					textElem.height(pageHeight)
 				}
 			}else {
+				holder.css("right", "auto");
 				holder.width(pageWidth);
 				holder.height(pageHeight);
 				maxImageWidth += 20;

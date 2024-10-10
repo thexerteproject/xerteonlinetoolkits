@@ -3140,9 +3140,10 @@ function x_passwordPage(pswds) {
 			x_updateCss(false);
 			
 			$("#x_pageDiv").show();
-			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and botto
+			$x_pageDiv.css("height", "100%");
+			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
 			let pageHeight = $("#x_pageHolder").innerHeight() - paddingBlock;
-			$x_pageDiv.css("height", "calc(100% - " + pageHeight + "px)");
+			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			
 			var $pswdBlock = $('#x_page' + x_currentPage);
