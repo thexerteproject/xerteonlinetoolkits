@@ -824,9 +824,9 @@ class openaiApi
     }
 
     private function extractTextAndAttributes($node, $parentTag = '') {
-        //empty for now to avoid interactions where context is ignored in case of missed entries
+        //empty for now, TODO: look over the filter list and edit it so it matches better with what's required
         $allowedAttributes = [
-           // 'name', 'text', 'correct', 'feedback', 'summaryheader', 'nextstepsheader',
+            'name', 'text', 'correct', 'feedback', 'summaryheader', 'nextstepsheader',
         ];
 
         $text = "";
