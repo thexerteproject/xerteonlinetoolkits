@@ -811,7 +811,8 @@ class openaiApi
         // Load the XML from the file into DOMDocument
         $dom = new DOMDocument();
         if (!file_exists($filePath)) {
-            return "File not found!";
+            return (object)["status" => "error", "message" => "error when locating data.xml file, checked file path:" . $filePath];
+            //return "File not found!";
         }
 
         $dom->load($filePath, LIBXML_NOCDATA);
@@ -904,7 +905,8 @@ class openaiApi
 
         //if useContext is on, prepare the messages to be spliced into the array, including the filtered xml
         if ($useContext) {
-            $xmlLoc = $this->prepareURL($baseUrl . "data.xml");
+            $baseUrl = rtrim($baseUrl, '/'); // Trim any trailing slash that might be left
+            $xmlLoc = $this->prepareURL($baseUrl . "/data.xml");
 
             $data = $this->stripXMLTagsFromFile($xmlLoc);
 
