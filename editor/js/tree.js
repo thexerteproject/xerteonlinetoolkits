@@ -1557,7 +1557,7 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, sourceContext, assistantPrompt) {
+    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, sourceContext, assistantPrompt, baseUrl, useContext) {
         //call aiAPI.php
         var tree = $.jstree.reference("#treeview");
         //show wait icon
@@ -1567,7 +1567,7 @@ var EDITOR = (function ($, parent) {
         $.ajax({
             url: "editor/ai/aiAPI.php",
             type: "POST",
-            data: { type: node_type, prompt: p, api: api_choice, url: fileUrl, context: sourceContext, assistantPrompt: assistantPrompt},
+            data: { type: node_type, prompt: p, api: api_choice, url: fileUrl, context: sourceContext, assistantPrompt: assistantPrompt, baseUrl: baseUrl, useContext: useContext},
             success: function(data){
                 //TODO: Alek posisble option for enclosing
                 ai_to_xerte_content(data, event.data.key, 'last', tree, parent)

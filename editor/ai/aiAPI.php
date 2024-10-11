@@ -19,6 +19,8 @@ $type = $_POST["type"];
 $ai_api = $_POST["api"] ?? 'openai';
 $file_url = $_POST["url"] ?? 'None';
 $context = $_POST["context"] ?? 'None';
+$useContext = $_POST["useContext"];
+$baseUrl = $_POST["baseUrl"];
 
 $allowed_apis = ['openai', 'anthropic'];
 //todo combine with api check from admin page
@@ -34,7 +36,7 @@ require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
 $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
 
-$result = $aiApi->ai_request($prompt_params,$type, $file_url);
+$result = $aiApi->ai_request($prompt_params,$type, $file_url, $baseUrl, $useContext);
 
 if ($result->status){
     echo json_encode($result);

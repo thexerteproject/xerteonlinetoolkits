@@ -807,6 +807,75 @@ class openaiApi
             }
     }
 
+    private function stripXMLTagsFromFile($filePath) {
+        // Load the XML from the file into DOMDocument
+        $dom = new DOMDocument();
+        if (!file_exists($filePath)) {
+            return "File not found!";
+        }
+
+        $dom->load($filePath, LIBXML_NOCDATA);
+
+        // Traverse through the elements and extract text
+        $textContent = $this->extractTextAndAttributes($dom->documentElement);
+
+        return trim($textContent);
+    }
+
+    private function extractTextAndAttributes($node, $parentTag = '') {
+        //empty for now to avoid interactions where context is ignored in case of missed entries
+        $allowedAttributes = [
+           // 'name', 'text', 'correct', 'feedback', 'summaryheader', 'nextstepsheader',
+        ];
+
+        $text = "";
+
+        // If the node is an element node, add the tag name and attributes
+        if ($node->nodeType == XML_ELEMENT_NODE) {
+            $text .= ucfirst($node->nodeName) . ": ";
+
+            // If the node has attributes, add them to the text
+            if ($node->hasAttributes()) {
+                foreach ($node->attributes as $attr) {
+                    if(in_array(strtolower($attr->name), $allowedAttributes)){
+                        $text .= ucfirst($attr->name) . " = '" . $attr->value . "' ";
+                    }
+                }
+            }
+            $text .= "\n"; // New line after attributes
+        }
+
+        // If the node has text content, add it to the text
+        if ($node->nodeType == XML_TEXT_NODE || $node->nodeType == XML_CDATA_SECTION_NODE) {
+            // Trim to avoid extra newlines for empty text nodes
+            $text .= trim($node->nodeValue) . "\n";
+        }
+
+        // If the node has child elements, recursively extract their text and attributes
+        if ($node->hasChildNodes()) {
+            foreach ($node->childNodes as $child) {
+                $text .= $this->extractTextAndAttributes($child, $node->nodeName); // Recursive call
+            }
+        }
+
+        return $text;
+    }
+
+    function cleanXmlCode($xmlString) {
+        // Check if the string starts with ```xml and remove it
+        if (strpos($xmlString, "```xml") === 0) {
+            $xmlString = substr($xmlString, strlen("```xml"));
+            $xmlString = ltrim($xmlString); // Trim any leading whitespace after ```xml
+        }
+
+        // Check if the string ends with ``` and remove it
+        if (substr($xmlString, -3) === "```") {
+            $xmlString = substr($xmlString, 0, -3);
+            $xmlString = rtrim($xmlString); // Trim any trailing whitespace before ```
+        }
+
+        return $xmlString;
+    }
 
     //meant to remove citations which openAI assistant will automatically add between chinese brackets
     //These will break the xml if not cleaned out.
@@ -821,7 +890,7 @@ class openaiApi
 
     //public function must be ai_request($p, $type) when adding new api
     //todo Timo maybe change this to top level object and extend with api functions?
-    public function ai_request($p, $type, $uploadUrl)
+    public function ai_request($p, $type, $uploadUrl, $baseUrl, $useContext)
     {
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
@@ -832,6 +901,40 @@ class openaiApi
         }
 
         $prompt = $this->generatePrompt($p, $type);
+
+        //if useContext is on, prepare the messages to be spliced into the array, including the filtered xml
+        if ($useContext) {
+            $xmlLoc = $this->prepareURL($baseUrl . "data.xml");
+
+            $data = $this->stripXMLTagsFromFile($xmlLoc);
+
+            $new_messages = array(
+                array(
+                    'role' => 'user',
+                    'content' => 'Great job! That\'s a great example of what I need. Now, I am going to send you the context of the learning object you are generating these XMLs for.',
+                ),
+                array(
+                    'role' => 'assistant',
+                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message.',
+                ),
+                array(
+                    'role' => 'user',
+                    'content' => 'Ok. This is the context:' . $data,
+                ),
+                array(
+                    'role' => 'assistant',
+                    'content' => 'Great! Now that we know the context of the whole learning object better, I can proceed with generating a new XML with the exact same XML structure as the first one I made. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
+                ),
+            );
+
+            if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])){
+                // Insert the new messages into the original $settings array
+                array_splice($this->preset_models->type_list[$type]['payload']['thread']['messages'], 2, 0, $new_messages);
+            }else{
+                array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+            }
+        }
+
 
         $results = array();
 
@@ -865,6 +968,7 @@ class openaiApi
                     $errorUpload = $e->getMessage();
                 }
             }
+
 
             $videoMimeTypes = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime', 'application/octet-stream'];
             $audioMimeTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
@@ -1055,6 +1159,7 @@ class openaiApi
         //todo change if lop level is changed
         //return "<". $type ." >" . $answer. "</". $type .">";
         $answer = $this->removeBracketsAndContent($answer);
+        $answer = $this->cleanXmlCode($answer);
         return $answer;
     }
 

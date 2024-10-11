@@ -13,7 +13,20 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
-    
+
+	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
+    	  <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+          <subject label="Subject" type="TextInput" wysiwyg="true" tooltip = "This determines which area or subject the generated words will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
+          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional ="true"/>
+          <numberOfWords label="Nr. Words" type="TextInput" tooltip="Specify the number of words to generate." wysiwyg="true"  optional="true"/>
+          <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+          <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional ="true"/>
+          <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." condition="uploadPrompt=='true'" optional="true"/>
+          <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" condition="uploadPrompt=='true'" optional ="true"/>
+          <aiButton type="aibutton" optional="true"/>
+          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+    </AIGroup>
+
 	<nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />		
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically" />

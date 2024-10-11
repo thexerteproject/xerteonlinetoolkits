@@ -4922,7 +4922,13 @@ var EDITOR = (function ($, parent) {
                     .text('Generate')
                     .click({key: key}, function(event) {
                         var type = lo_data[key].attributes.nodeName; //get the node-type
-                        var fileUrl = lo_data[key].attributes["file"] || null;
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var fileUrl = lo_data[key].attributes["file"];
+                        var useContext = lo_data[key].attributes["useContext"];
+                        // Check if fileUrl is "Upload a file", empty, or just whitespace
+                        if (fileUrl === "Upload a file" || !fileUrl || fileUrl.trim() === "") {
+                            fileUrl = null;
+                        }
                         var infoPrompt = lo_data[key].attributes["fileAccessPrompt"];
                         var uploadPrompt = lo_data[key].attributes["uploadPrompt"];
                         var assisstantPrompt = lo_data[key].attributes["assistantPrompt"] || false;
@@ -4949,6 +4955,16 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     break;
+                                case 'inventory':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrq": lo_data[key].attributes["amountOfQuestions"],
+                                        "nra": lo_data[key].attributes["amountOfAnswers"],
+                                        "classlist":lo_data[key].attributes["classlist"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
                                 case 'gapFill':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
@@ -4969,16 +4985,86 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     break;
+                                case 'textHighlight':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "length": lo_data[key].attributes["paragraphLength"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'summary':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    if (uploadPrompt === 'true'){
+                                        constructorObject["summaryObject"] = "the uploaded file";
+                                    }else{
+                                        constructorObject["summaryObject"] = "the following text: " + lo_data[key].attributes["sourceText"];
+                                    }
+                                    break;
+                                case 'textCorrection':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "mistakeType": lo_data[key].attributes["mistakeType"],
+                                        "length": lo_data[key].attributes["paragraphLength"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'grid': //TODO finish tabledoc and textbox for documentation implementation
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "columns": lo_data[key].attributes["columns"],
+                                        "rows": lo_data[key].attributes["rows"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'tabledoc':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "columns": lo_data[key].attributes["columns"],
+                                        "rows": lo_data[key].attributes["rows"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'buttonQuestion':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'timeline':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrs": lo_data[key].attributes["timelineSteps"],
+                                        "length": lo_data[key].attributes["paragraphLength"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
                                 case 'dialog':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
                                         "nrs": lo_data[key].attributes["numberOfSentences"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
-                                        "delim": lo_data[key].attributes["answerDelimeter"],
+                                        "delim": lo_data[key].attributes["answerDelimeter"] || ',',
                                     }
                                     break;
                                 case 'wordsearch':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrw": lo_data[key].attributes["numberOfWords"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'hangman':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
                                         "nrw": lo_data[key].attributes["numberOfWords"],
@@ -5115,12 +5201,13 @@ var EDITOR = (function ($, parent) {
                             constructorObject["access"] = "DON'T HAVE";
                         }
                         if (fileUrl!=null && uploadPrompt === 'true'){
-                            var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                             var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
                             var fullUrl = baseUrl + cleanFileUrl;
-                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, sourceContext, assisstantPrompt);
+                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, sourceContext, assisstantPrompt, baseUrl, useContext);
+                        }else if(fileUrl===null && uploadPrompt === 'true'){
+                            alert("You've selected the 'file upload' option but have not selected a file to upload or provided a valid link. Please either do so, or uncheck the 'Upload file' option.");
                         }else{
-                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, sourceContext, assisstantPrompt);
+                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, sourceContext, assisstantPrompt, baseUrl, useContext);
                         }
 
                     });
