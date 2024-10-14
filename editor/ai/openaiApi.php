@@ -824,9 +824,8 @@ class openaiApi
     }
 
     private function extractTextAndAttributes($node, $parentTag = '') {
-        //empty for now, TODO: look over the filter list and edit it so it matches better with what's required
         $allowedAttributes = [
-            'name', 'text', 'correct', 'feedback', 'summaryheader', 'nextstepsheader',
+            'name', 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageIntro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialText', 'initialTitle', 'suggestedText', 'suggestedTitle', 'generalFeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongText', 'wordAnswer', 'words', 'url'
         ];
 
         $text = "";
@@ -913,19 +912,19 @@ class openaiApi
             $new_messages = array(
                 array(
                     'role' => 'user',
-                    'content' => 'Great job! That\'s a great example of what I need. Now, I am going to send you the context of the learning object you are generating these XMLs for.',
+                    'content' => 'Great job! That\'s a great example of what I need. Now, I am going to send you the context of the learning object you are generating these XMLs for. In the future, please generate the learning object based on what is already in the provided context',
                 ),
                 array(
                     'role' => 'assistant',
-                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message.',
+                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
                 ),
                 array(
                     'role' => 'user',
-                    'content' => 'Ok. This is the context:' . $data,
+                    'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve gathered the data from the other xml elements in the document for you. Here it is:' . $data,
                 ),
                 array(
                     'role' => 'assistant',
-                    'content' => 'Great! Now that we know the context of the whole learning object better, I can proceed with generating a new XML with the exact same XML structure as the first one I made. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
+                    'content' => 'Great! Now that we know the context of the whole learning object better, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
                 ),
             );
 
