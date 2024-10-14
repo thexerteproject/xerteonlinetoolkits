@@ -903,7 +903,7 @@ class openaiApi
         $prompt = $this->generatePrompt($p, $type);
 
         //if useContext is on, prepare the messages to be spliced into the array, including the filtered xml
-        if ($useContext) {
+        if ($useContext=='true') {
             $baseUrl = rtrim($baseUrl, '/'); // Trim any trailing slash that might be left
             $xmlLoc = $this->prepareURL($baseUrl . "/data.xml");
 

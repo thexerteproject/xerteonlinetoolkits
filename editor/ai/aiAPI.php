@@ -19,7 +19,7 @@ $type = $_POST["type"];
 $ai_api = $_POST["api"] ?? 'openai';
 $file_url = $_POST["url"] ?? 'None';
 $context = $_POST["context"] ?? 'None';
-$useContext = $_POST["useContext"];
+$useContext = $_POST["useContext"] ?? 'false';
 $baseUrl = $_POST["baseUrl"];
 
 $allowed_apis = ['openai', 'anthropic'];

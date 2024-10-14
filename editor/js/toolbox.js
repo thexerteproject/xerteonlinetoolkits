@@ -5014,7 +5014,7 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     break;
-                                case 'grid': //TODO finish tabledoc and textbox for documentation implementation
+                                case 'grid':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
                                         "columns": lo_data[key].attributes["columns"],
@@ -5023,7 +5023,7 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     break;
-                                case 'tabledoc':
+                                case 'tableDoc':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
                                         "columns": lo_data[key].attributes["columns"],
@@ -5083,6 +5083,45 @@ var EDITOR = (function ($, parent) {
                                     }
                                     break;
                                 case 'text':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'selectlist':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nro": lo_data[key].attributes["numberOptions"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+
+                                    }
+                                    break;
+                                case 'textbox':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'textarea':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'description':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
