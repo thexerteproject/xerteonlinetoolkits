@@ -2532,7 +2532,13 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var tabDiv = $( '<div class="navigator tabbable"/>' );
+	var tabDiv = $( '<div class="navigator tabbable" role="tablist"/>' );
+
+	// manually add/remove aria-selected - not done automatically
+	tabDiv.on("show", function(e) {
+		$(e.relatedTarget).attr("aria-selected", false);
+		$(e.target).attr("aria-selected", true);
+	});
 
 	if (type == 'tabs'){
 
@@ -2554,11 +2560,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	node.children().each( function(index, value){
 
 		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'tab' + sectionIndex + '_' + itemIndex + '_' + index;
-		let tab = $('<li><a href="#' + paneId + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
-		let pane = $('<div id="' + paneId + '" class="tab-pane"/>');
+		let tab = $('<li><a id="' + paneId + 'Heading" class="tabHeader" href="#' + paneId + '" data-toggle="tab" role="tab" aria-selected="false" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
+		let pane = $('<div id="' + paneId + '" class="tab-pane" role="tabpanel" aria-labelledby="' + paneId + 'Heading"/>');
 
 		if (index == 0) {
-			tab.addClass("active");
+			tab.addClass("active").find(".tabHeader").attr("aria-selected", true);
 			pane.addClass("active");
 		}
 
@@ -2775,7 +2781,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 		}
 
-		var inner = $('<div class="accordion-inner">');
+		var inner = $('<div class="accordion-inner" tabindex="0">');
 
 		$(this).children().each( function(i, value){
 			
