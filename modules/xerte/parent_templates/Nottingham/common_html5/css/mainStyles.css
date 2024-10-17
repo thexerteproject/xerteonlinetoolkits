@@ -1135,7 +1135,9 @@ button.customIconBtn:after {
 .fa-x-unmute:before { content: "\f6a9"; }
 
 /*class for hidden screenreader only content*/
-.sr-only {
+/*same styles also added to jquery hidden class as otherwise they still have a width that can cause unexpected scroll bars*/
+.sr-only,
+.ui-helper-hidden-accessible {
 	position:absolute;
 	left:-10000px;
 	top:auto;

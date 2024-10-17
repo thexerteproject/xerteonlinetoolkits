@@ -74,6 +74,18 @@ function initMedia($media){
 					'max-height': e.detail.target.videoHeight
 				});
 			});
+
+			// it's audio with a transcript - add a transcript button to the end of the player
+			if ($mediaElement.find("audio").data("transcript") != undefined) {
+				$mediaElement.parents(".mejs-container").parent().addClass("audioTranscript");
+
+				const transcriptLabel = languageData.find("mediaElementControls").find("transcriptButton")[0].getAttribute("label");
+				$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
+					.appendTo($mediaElement.parents(".mejs-container").find(".mejs-controls"))
+					.click(function() {
+						$.featherlight($mediaElement.find("audio").data("transcript"));
+					});
+			}
 		},
 		error: function(mediaElement) {
 			console.log('mediaelement problem is detected: ', mediaElement);
@@ -2038,7 +2050,15 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'audio'){
-			section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+			const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+			section.append($audio);
+			$audio.wrap('<p></p>');
+
+			// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+			if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+				$audio.data("transcript", $(this).attr('transcript'));
+			}
 		}
 
 		if (this.nodeName == 'video'){
@@ -2512,7 +2532,13 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var tabDiv = $( '<div class="navigator tabbable"/>' );
+	var tabDiv = $( '<div class="navigator tabbable" role="tablist"/>' );
+
+	// manually add/remove aria-selected - not done automatically
+	tabDiv.on("show", function(e) {
+		$(e.relatedTarget).attr({"aria-selected": false, "tabindex": "-1"});
+		$(e.target).attr({"aria-selected": true, "tabindex": "0"});
+	});
 
 	if (type == 'tabs'){
 
@@ -2534,11 +2560,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	node.children().each( function(index, value){
 
 		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'tab' + sectionIndex + '_' + itemIndex + '_' + index;
-		let tab = $('<li><a href="#' + paneId + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
-		let pane = $('<div id="' + paneId + '" class="tab-pane" tabindex="0"/>');
+		let tab = $('<li><a id="' + paneId + 'Heading" class="tabHeader" href="#' + paneId + '" data-toggle="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
+		let pane = $('<div id="' + paneId + '" class="tab-pane" role="tabpanel" aria-labelledby="' + paneId + 'Heading"/>');
 
 		if (index == 0) {
-			tab.addClass("active");
+			tab.addClass("active").find(".tabHeader").attr({"aria-selected": true, tabindex: "0"});
 			pane.addClass("active");
 		}
 
@@ -2567,7 +2593,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				pane.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
+
 			}
 
 			if (this.nodeName == 'video'){
@@ -2621,6 +2656,14 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	tabDiv.append(content);
 
 	section.append(tabDiv);
+
+	tabDiv.find(".tabHeader").on("keydown", function(e) {
+		if (e.key == "ArrowRight") {
+			$(this).parents("li").next().find(".tabHeader").focus();
+		} else if (e.key == "ArrowLeft") {
+			$(this).parents("li").prev().find(".tabHeader").focus();
+		}
+	});
 
 	setTimeout( function() {
 		// 1st tab may not be the 1st shown so check this before changing which is shown
@@ -2678,37 +2721,28 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 	var accDiv = $( '<div class="navigator accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 
-	node.children().each( function(index, value){
+	// ensure that the hidden panes can't be accessed by screen reader & keyboard tabbing when collapsed
+	// & manually add/remove collapsed class to headings (used to style open pane's heading differently)
+	accDiv
+		.on("show.bs.collapse", function(e) {
+			// show pane that's about to be shown
+			$(e.target).show();
 
-		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'collapse' + sectionIndex + '_' + itemIndex + '_' + index;
-		let group = $('<div class="accordion-group collapsed"/>');
-		let header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#' + paneId +  '">' + $(this).attr('name') + '</a></div>');
-
-		group.append(header);
-		
-		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
-		header.find('a.accordion-toggle').click(function() {
-			var $this = $(this);
-			accDiv.find('.accordion-group a').not($this)
-				.addClass('collapsed')
-				.parents('.accordion-group').addClass('collapsed');
-
-			if ($this.hasClass('collapsed')) {
-				$this.parents('.accordion-group').removeClass('collapsed');
-			} else {
-				$this.parents('.accordion-group').addClass('collapsed');
-			}
+			// remove collapsed class from pane that's about to be shown
+			const $thisHeading = $("#" + $(e.target).attr("aria-labelledby"));
+			$thisHeading.attr('aria-expanded', 'true');
+			$thisHeading.parents(".accordion-group").removeClass("collapsed");
 
 			// make sure the pane that's just been opened is in view (if closing pane is taller than opening pane it may not be)
 			var viewTop = $(window).scrollTop(),
 				viewBottom = viewTop + $(window).height(),
-				paneTop = $this.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
+				paneTop = $thisHeading.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
 
-			$this.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
-				if ($(this).find('.accordion-toggle').is($this)) {
+			$thisHeading.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
+				if ($(this).find('.accordion-toggle').is($thisHeading)) {
 					return false;
 				} else {
-					paneTop += $(this).outerHeight();
+					paneTop += $thisHeading.outerHeight();
 				}
 			});
 
@@ -2716,14 +2750,38 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			if (paneTop < viewTop || paneTop > viewBottom) {
 				$('html, body').animate({scrollTop: paneTop}, 400);
 			}
+
+		})
+		.on("hide.bs.collapse", function(e) {
+			// remove collapsed class from pane that's about to be hidden
+			const $thisHeading = $("#" + $(e.target).attr("aria-labelledby"));
+			$thisHeading.attr('aria-expanded', 'false');
+			$thisHeading.parents(".accordion-group").addClass("collapsed");
+		})
+		.on("hidden.bs.collapse", function(e) {
+			// hide pane that's just been collapsed
+			$(e.target).hide();
+
 		});
 
-		var outer = $('<div id="' + paneId + '" class="accordion-body collapse"/>');
+	node.children().each( function(index, value){
+
+		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'collapse' + sectionIndex + '_' + itemIndex + '_' + index;
+		let group = $('<div class="accordion-group collapsed"/>');
+		let header = $('<div class="accordion-heading"><a id="' + paneId + 'Heading" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#' + paneId +  '" aria-expanded="false" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></div>');
+
+		group.append(header);
+
+		var outer = $('<div id="' + paneId + '" class="accordion-body collapse" role="region" aria-labelledby="' + paneId + 'Heading"/>');
+		outer.hide();
 
 		if (index == 0){
 
 			if (node[0].getAttribute('collapse') != 'true') {
-				header.find('a.accordion-toggle').removeClass('collapsed');
+				header.find('a.accordion-toggle')
+					.removeClass('collapsed')
+					.attr("aria-expanded", "true");
+				outer.show();
 				group.removeClass('collapsed');
 			}
 
@@ -2754,7 +2812,15 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				inner.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
 			}
 
 			if (this.nodeName == 'video'){
@@ -2816,7 +2882,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false" aria-roledescription="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('label') != null ? languageData.find("carousel")[0].getAttribute('label') : 'Carousel') + '"/>');
 	
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
@@ -2832,13 +2898,16 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var indicators = $('<ol class="carousel-indicators"/>');
 
-	var items = $('<div class="carousel-inner"/>');
+	var items = $('<div id="car' + sectionIndex + '_' + itemIndex + 'Items" class="carousel-inner"/>');
 
 
 	node.children().each( function(index, value){
 
 		let indicator = $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '"></li>');
-		let pane = $('<div class="item">');
+		let xOfY = (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute("current") != null ? languageData.find("carousel")[0].getAttribute("current") : "{x} of {y}");
+		xOfY = xOfY.replace("{x}", index+1).replace("{y}", node.children().length);
+
+		let pane = $('<div tabindex="0" role="group" aria-roledescription="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute("slide") != null ? languageData.find("carousel")[0].getAttribute("slide") : "Slide") + '" aria-label="' + xOfY + '" class="item">');
 
 		if (index == 0) {
 			indicator.addClass('active');
@@ -2872,7 +2941,15 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				pane.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
 			}
 
 			if (this.nodeName == 'video'){
@@ -2920,8 +2997,8 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	carDiv.append(indicators);
 	carDiv.append(items);
-	carDiv.append( $('<a class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev">&lsaquo;</a>') );
-	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
+	carDiv.append( $('<button class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('prev') != null ? languageData.find("carousel")[0].getAttribute('prev') : 'Previous slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-left"></span></button>') );
+	carDiv.append( $('<button class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('next') != null ? languageData.find("carousel")[0].getAttribute('next') : 'Next slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-right"></span></button>') );
 
 	section.append(carDiv);
 
