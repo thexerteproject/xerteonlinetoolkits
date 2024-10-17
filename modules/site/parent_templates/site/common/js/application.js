@@ -74,6 +74,18 @@ function initMedia($media){
 					'max-height': e.detail.target.videoHeight
 				});
 			});
+
+			// it's audio with a transcript - add a transcript button to the end of the player
+			if ($mediaElement.find("audio").data("transcript") != undefined) {
+				$mediaElement.parents(".mejs-container").parent().addClass("audioTranscript");
+
+				const transcriptLabel = languageData.find("mediaElementControls").find("transcriptButton")[0].getAttribute("label");
+				$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
+					.appendTo($mediaElement.parents(".mejs-container").find(".mejs-controls"))
+					.click(function() {
+						$.featherlight($mediaElement.find("audio").data("transcript"));
+					});
+			}
 		},
 		error: function(mediaElement) {
 			console.log('mediaelement problem is detected: ', mediaElement);
@@ -2038,7 +2050,15 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'audio'){
-			section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+			const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+			section.append($audio);
+			$audio.wrap('<p></p>');
+
+			// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+			if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+				$audio.data("transcript", $(this).attr('transcript'));
+			}
 		}
 
 		if (this.nodeName == 'video'){
@@ -2535,7 +2555,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'tab' + sectionIndex + '_' + itemIndex + '_' + index;
 		let tab = $('<li><a href="#' + paneId + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
-		let pane = $('<div id="' + paneId + '" class="tab-pane" tabindex="0"/>');
+		let pane = $('<div id="' + paneId + '" class="tab-pane"/>');
 
 		if (index == 0) {
 			tab.addClass("active");
@@ -2567,7 +2587,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				pane.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
+
 			}
 
 			if (this.nodeName == 'video'){
@@ -2754,7 +2783,15 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				inner.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
 			}
 
 			if (this.nodeName == 'video'){
@@ -2872,7 +2909,15 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				pane.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
 			}
 
 			if (this.nodeName == 'video'){

@@ -627,6 +627,24 @@ h3.contentTitle {
         color: #c0392b;
     }
 
+    .audioTranscript .mejs-container .mejs-controls {
+        box-sizing: border-box;
+        padding-right: 31px;
+    }
+
+    .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn {
+        height: 100%;
+        position: absolute;
+        right: 5px;
+    }
+
+    .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button, #x_footerBlock .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
+        font-family: "Font Awesome 5 Free";
+        background-image: none;
+        font-size: 15px !important;
+        color: #eee;
+    }
+
     table {
         text-align: left;
         border-collapse: collapse;
