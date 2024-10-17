@@ -2536,8 +2536,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 	// manually add/remove aria-selected - not done automatically
 	tabDiv.on("show", function(e) {
-		$(e.relatedTarget).attr("aria-selected", false);
-		$(e.target).attr("aria-selected", true);
+		$(e.relatedTarget).attr({"aria-selected": false, "tabindex": "-1"});
+		$(e.target).attr({"aria-selected": true, "tabindex": "0"});
 	});
 
 	if (type == 'tabs'){
@@ -2560,11 +2560,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	node.children().each( function(index, value){
 
 		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'tab' + sectionIndex + '_' + itemIndex + '_' + index;
-		let tab = $('<li><a id="' + paneId + 'Heading" class="tabHeader" href="#' + paneId + '" data-toggle="tab" role="tab" aria-selected="false" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
+		let tab = $('<li><a id="' + paneId + 'Heading" class="tabHeader" href="#' + paneId + '" data-toggle="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
 		let pane = $('<div id="' + paneId + '" class="tab-pane" role="tabpanel" aria-labelledby="' + paneId + 'Heading"/>');
 
 		if (index == 0) {
-			tab.addClass("active").find(".tabHeader").attr("aria-selected", true);
+			tab.addClass("active").find(".tabHeader").attr({"aria-selected": true, tabindex: "0"});
 			pane.addClass("active");
 		}
 
@@ -2656,6 +2656,14 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	tabDiv.append(content);
 
 	section.append(tabDiv);
+	
+	tabDiv.find(".tabHeader").on("keydown", function(e) {
+		if (e.key == "ArrowRight") {
+			$(this).parents("li").next().find(".tabHeader").focus();
+		} else if (e.key == "ArrowLeft") {
+			$(this).parents("li").prev().find(".tabHeader").focus();
+		}
+	});
 
 	setTimeout( function() {
 		// 1st tab may not be the 1st shown so check this before changing which is shown
