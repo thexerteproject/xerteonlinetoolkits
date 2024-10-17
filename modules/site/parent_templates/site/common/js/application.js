@@ -2656,7 +2656,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	tabDiv.append(content);
 
 	section.append(tabDiv);
-	
+
 	tabDiv.find(".tabHeader").on("keydown", function(e) {
 		if (e.key == "ArrowRight") {
 			$(this).parents("li").next().find(".tabHeader").focus();
@@ -2882,7 +2882,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false" aria-roledescription="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('label') != null ? languageData.find("carousel")[0].getAttribute('label') : 'Carousel') + '"/>');
 	
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
@@ -2898,13 +2898,16 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var indicators = $('<ol class="carousel-indicators"/>');
 
-	var items = $('<div class="carousel-inner"/>');
+	var items = $('<div id="car' + sectionIndex + '_' + itemIndex + 'Items" class="carousel-inner"/>');
 
 
 	node.children().each( function(index, value){
 
 		let indicator = $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '"></li>');
-		let pane = $('<div class="item">');
+		let xOfY = (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute("current") != null ? languageData.find("carousel")[0].getAttribute("current") : "{x} of {y}");
+		xOfY = xOfY.replace("{x}", index+1).replace("{y}", node.children().length);
+
+		let pane = $('<div tabindex="0" role="group" aria-roledescription="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute("slide") != null ? languageData.find("carousel")[0].getAttribute("slide") : "Slide") + '" aria-label="' + xOfY + '" class="item">');
 
 		if (index == 0) {
 			indicator.addClass('active');
@@ -2994,8 +2997,8 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	carDiv.append(indicators);
 	carDiv.append(items);
-	carDiv.append( $('<a class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev">&lsaquo;</a>') );
-	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
+	carDiv.append( $('<button class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('prev') != null ? languageData.find("carousel")[0].getAttribute('prev') : 'Previous slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-left"></span></button>') );
+	carDiv.append( $('<button class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('next') != null ? languageData.find("carousel")[0].getAttribute('next') : 'Next slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-right"></span></button>') );
 
 	section.append(carDiv);
 

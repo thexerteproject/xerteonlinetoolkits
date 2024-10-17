@@ -463,6 +463,10 @@ h3.contentTitle {
         margin-right: auto;
     }
 
+    .navigator.carousel .carousel-control {
+        font-size: 2em;
+    }
+
     /* --SEARCH-------------------------------------------------------------- */
 
     #searchHolder .searchBtn {
