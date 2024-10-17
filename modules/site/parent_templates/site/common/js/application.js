@@ -2707,37 +2707,28 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 	var accDiv = $( '<div class="navigator accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 
-	node.children().each( function(index, value){
+	// ensure that the hidden panes can't be accessed by screen reader & keyboard tabbing when collapsed
+	// & manually add/remove collapsed class to headings (used to style open pane's heading differently)
+	accDiv
+		.on("show.bs.collapse", function(e) {
+			// show pane that's about to be shown
+			$(e.target).show();
 
-		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'collapse' + sectionIndex + '_' + itemIndex + '_' + index;
-		let group = $('<div class="accordion-group collapsed"/>');
-		let header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#' + paneId +  '">' + $(this).attr('name') + '</a></div>');
-
-		group.append(header);
-		
-		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
-		header.find('a.accordion-toggle').click(function() {
-			var $this = $(this);
-			accDiv.find('.accordion-group a').not($this)
-				.addClass('collapsed')
-				.parents('.accordion-group').addClass('collapsed');
-
-			if ($this.hasClass('collapsed')) {
-				$this.parents('.accordion-group').removeClass('collapsed');
-			} else {
-				$this.parents('.accordion-group').addClass('collapsed');
-			}
+			// remove collapsed class from pane that's about to be shown
+			const $thisHeading = $("#" + $(e.target).attr("aria-labelledby"));
+			$thisHeading.attr('aria-expanded', 'true');
+			$thisHeading.parents(".accordion-group").removeClass("collapsed");
 
 			// make sure the pane that's just been opened is in view (if closing pane is taller than opening pane it may not be)
 			var viewTop = $(window).scrollTop(),
 				viewBottom = viewTop + $(window).height(),
-				paneTop = $this.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
+				paneTop = $thisHeading.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
 
-			$this.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
-				if ($(this).find('.accordion-toggle').is($this)) {
+			$thisHeading.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
+				if ($(this).find('.accordion-toggle').is($thisHeading)) {
 					return false;
 				} else {
-					paneTop += $(this).outerHeight();
+					paneTop += $thisHeading.outerHeight();
 				}
 			});
 
@@ -2745,14 +2736,38 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			if (paneTop < viewTop || paneTop > viewBottom) {
 				$('html, body').animate({scrollTop: paneTop}, 400);
 			}
+
+		})
+		.on("hide.bs.collapse", function(e) {
+			// remove collapsed class from pane that's about to be hidden
+			const $thisHeading = $("#" + $(e.target).attr("aria-labelledby"));
+			$thisHeading.attr('aria-expanded', 'false');
+			$thisHeading.parents(".accordion-group").addClass("collapsed");
+		})
+		.on("hidden.bs.collapse", function(e) {
+			// hide pane that's just been collapsed
+			$(e.target).hide();
+
 		});
 
-		var outer = $('<div id="' + paneId + '" class="accordion-body collapse"/>');
+	node.children().each( function(index, value){
+
+		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'collapse' + sectionIndex + '_' + itemIndex + '_' + index;
+		let group = $('<div class="accordion-group collapsed"/>');
+		let header = $('<div class="accordion-heading"><a id="' + paneId + 'Heading" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#' + paneId +  '" aria-expanded="false" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></div>');
+
+		group.append(header);
+
+		var outer = $('<div id="' + paneId + '" class="accordion-body collapse" role="region" aria-labelledby="' + paneId + 'Heading"/>');
+		outer.hide();
 
 		if (index == 0){
 
 			if (node[0].getAttribute('collapse') != 'true') {
-				header.find('a.accordion-toggle').removeClass('collapsed');
+				header.find('a.accordion-toggle')
+					.removeClass('collapsed')
+					.attr("aria-expanded", "true");
+				outer.show();
 				group.removeClass('collapsed');
 			}
 
@@ -2760,7 +2775,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 		}
 
-		var inner = $('<div class="accordion-inner" tabindex="0">');
+		var inner = $('<div class="accordion-inner">');
 
 		$(this).children().each( function(i, value){
 			
