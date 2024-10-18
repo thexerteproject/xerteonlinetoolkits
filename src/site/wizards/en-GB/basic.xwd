@@ -112,6 +112,7 @@
 			<wcagAlt label="Logo Description" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true" placeholder="Enter a description for accessibility"/>
 			<wcagLinkTitle label="Link Tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true"/>
 			<wcagLink type="Media" label="Accessibility Statement" placeholder="Select a file or enter a URL" tooltip="Enter a URL or select a file to link to your own accessibility statement. Leave empty to link to the community's accessibility statement on xerte.org.uk." condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true" />
+			<wcagTarget type="ComboBox" label="Open in" data="_blank,_self,lightbox" options="New tab/window,This tab,Lightbox" optional="true" defaultValue="_blank"/>
 		</wcagGroup>
 
 		<meta type="group" label="Metadata" optional="true">

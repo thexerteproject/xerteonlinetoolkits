@@ -113,6 +113,7 @@
 			<wcagAlt label="Logo Description" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true" placeholder="Enter a description for accessibility"/>
 			<wcagLinkTitle label="Link Tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true"/>
 			<wcagLink type="Media" label="Accessibility Statement" placeholder="Select a file or enter a URL" tooltip="Enter a URL or select a file to link to your own accessibility statement. Leave empty to link to the community's accessibility statement on xerte.org.uk." condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+			<wcagTarget type="ComboBox" label="Open in" data="_blank,_self,lightbox" options="New tab/window,This tab,Lightbox" optional="true" defaultValue="_blank"/>
 		</wcagGroup>
 
 		<meta type="group" label="Metadata" optional="true">
@@ -296,7 +297,7 @@
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="TextInput" label="URL" placeholder="e.g. https://www.xerte.org.uk"/>
-		<target type="ComboBox" label="Open in" data="_blank,_self" options="New tab/window,This tab" mandatory="true" defaultValue="_blank"/>
+		<target type="ComboBox" label="Open in" data="_blank,_self,lightbox" options="New tab/window,This tab,Lightbox" mandatory="true" defaultValue="_blank"/>
 
 		<windowName type="TextInput" label="Window Name" optional="true" deprecated="This property is deprecated"/>
 		<width label="Width" type="textInput" optional="true" placeholder="800" deprecated="This property is deprecated"/>
@@ -431,7 +432,7 @@
 		<xotLinkGroup type="group" label="Include Link" optional="true" tooltip="Include a link to open the Xerte project in a lightbox or new tab/window">
 			<showLink label="Show Link" type="CheckBox" conditionTrigger="true" defaultValue="true" optional="true"/>
 			<linkText label="Link Text" type="TextInput" wysiwyg="true" defaultValue="" condition="showLink=='true'" optional="true"/>
-			<displayOptions label="Open in" type="ComboBox" data="newwindow,thiswindow,lightbox" options="New tab/window,This window,Lightbox" defaultValue="newwindow" condition="showLink=='true'" optional="true"/>
+			<displayOptions label="Open in" type="ComboBox" data="newwindow,thiswindow,lightbox" options="New tab/window,This tab,Lightbox" defaultValue="newwindow" condition="showLink=='true'" optional="true"/>
 			<showEmbed label="Embed" type="CheckBox" defaultValue="true" condition="showLink=='true'" optional="true" tooltip="When a link is shown, this option can be used to remove the embedded Xerte project from the page. Both the embedded project and link can both be shown if necessary."/>
 		</xotLinkGroup>
 

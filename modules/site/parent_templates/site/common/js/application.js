@@ -1196,19 +1196,29 @@ function setup() {
 			}
 		}
 
-		//populate wcag logo and link and/or hide it
+		// populate wcag logo and link and/or hide it
 		$(".wcagLink").removeClass("hidden");
-		if ($(data).find('learningObject').attr('wcagAlt') != undefined){
-			$(".wcagLogo").attr("alt",$(data).find('learningObject').attr('wcagAlt'));
-		}
-		if ($(data).find('learningObject').attr('wcagLinkTitle') != undefined){
-			$(".wcagLink a").attr("title",$(data).find('learningObject').attr('wcagLinkTitle'));
-		}
-		if ($(data).find('learningObject').attr('wcagLink') != undefined && $(data).find('learningObject').attr('wcagLink') != ""){
-			$(".wcagLink a").prop("href",$(data).find('learningObject').attr('wcagLink'));
-		}
-		if ($(data).find('learningObject').attr('wcagHide') != undefined && $(data).find('learningObject').attr('wcagHide') == 'true'){
+
+		// ** update logo image to wcag 2.2 after new accessibility statement is live
+		if ($(data).find('learningObject').attr('wcagHide') == 'true'){
 			$('.wcagLink').remove();
+		} else {
+			// set target for wcag link & warning if opens in new window
+			let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+			if ($(data).find('learningObject').attr('wcagTarget') == 'lightbox') {
+				$(".wcagLink a").attr("data-featherlight", "iframe");
+				linkWarning = "";
+			} else if ($(data).find('learningObject').attr('wcagTarget') == '_self') {
+				$(".wcagLink a").attr("target", "_self");
+				linkWarning = "";
+			} else {
+				$(".wcagLink a").attr("target", "_blank");
+			}
+
+			// set the alt, title & href text - use ones set in editor or fallback to language files if not provided
+			$(".wcagLogo").attr("alt", $(data).find('learningObject').attr('wcagAlt') != undefined && $(data).find('learningObject').attr('wcagAlt') != "" ? $(data).find('learningObject').attr('wcagAlt') : getLangInfo(languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo"));
+			$(".wcagLink a").attr("title", ($(data).find('learningObject').attr('wcagLinkTitle') != undefined && $(data).find('learningObject').attr('wcagLinkTitle') != "" ? $(data).find('learningObject').attr('wcagLinkTitle') : getLangInfo(languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + linkWarning));
+			$(".wcagLink a").prop("href", $(data).find('learningObject').attr('wcagLink') != undefined && $(data).find('learningObject').attr('wcagLink') != "" ? $(data).find('learningObject').attr('wcagLink') : getLangInfo(languageData.find("colourChanger").find("wcagURL")[0], "label", "https://xot.xerte.org.uk/play.php?template_id=214#home"));
 		}
 
 		// Change footer background colour
@@ -1237,8 +1247,8 @@ function setup() {
 
 		}
 
-
 		// Hide or show the social media buttons
+		/* disabled as the service has been removed
 		$(".addthis_sharing_toolbox").hide();
 		setTimeout(function () {
 			var count_hidden = count_undef = 0,
@@ -1273,7 +1283,7 @@ function setup() {
 			) {
 				$(".addthis_sharing_toolbox").show();
 			}
-		}, 2000);
+		}, 2000);*/
 
 	}
 
@@ -2020,20 +2030,20 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 		if (this.nodeName == 'link'){
 
-			var url = $(this).attr('url');
-			var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-			var options = '';
-			options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-			options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-			options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-			options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-			options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-			options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-			options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-			options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+			const $this = $(this);
+			const url = $this.attr('url');
 
-			section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
-
+			let target="target='_blank'";
+			let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+			if ($this.attr('target') == 'lightbox') {
+				target="data-featherlight='iframe'";
+				linkWarning = "";
+			} else if ($this.attr('target') == '_self') {
+				target="target='_self'";
+				linkWarning = "";
+			}
+			const linkText = $this.attr('name') != undefined && $this.attr('name') != "" ? $this.attr('name') : url;
+			section.append("<p><a href='" + url + "' " + target + ">" + linkText + linkWarning + "</a></p>");
 		}
 
 		if (this.nodeName == 'canvas'){
@@ -3043,9 +3053,9 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-	var xotLink = $this.attr('link').trim(),
-		params = [],
-		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
+	let xotLink = $this.attr('link').trim();
+	let params = [];
+	let separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 
 	xotLink = xotLink.indexOf('#resume=') != -1 ? xotLink.slice(0,xotLink.indexOf('#resume=')) : xotLink;
 
@@ -3057,12 +3067,12 @@ function loadXotContent($this) {
 		xotLink = params[0];
 		params.splice(0,1);
 
-		for (var i=0; i<params.length; i++) {
+		for (let i=0; i<params.length; i++) {
 			params[i] = params[i].split('=');
 		}
 	}
 
-	var hide = '';
+	let hide = '';
 	if ($this.attr('header') == 'true') { hide = 'top'; }
 	if ($this.attr('footer') == 'true') { hide = hide == 'top' ? 'both' : 'bottom'; }
 	xotLink += separator + 'hide=' + (hide != '' ? hide : 'none');
@@ -3102,7 +3112,7 @@ function loadXotContent($this) {
 	xotLink += separator + "embedded_fromSessionId=" + encodeURIComponent(x_xAPI_SessionId);
 
 	// add back any url params that haven't been overridden
-	for (var i=0; i<params.length; i++) {
+	for (let i=0; i<params.length; i++) {
 		if (xotLink.indexOf(separator + params[i][0] + '=') == -1) {
 			xotLink += separator + params[i][0] + '=' + params[i][1];
 		}
@@ -3113,29 +3123,29 @@ function loadXotContent($this) {
 		xotLink = "https:" + xotLink.substring(xotLink.indexOf("http:") + 5);
 	}
 
-	var warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '',
-		xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%',
-		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
+	const warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '';
+	const xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%';
+	const xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
 
-	var html = "";
-	// If $this.attr('showEmbed') is undefined, it still is != 'false', so only need to check on != false
-	if ($this.attr('showEmbed') != 'false')
-	{
+	let html = "";
+
+	// xot project can be embedded, link to or both
+	if ($this.attr('showEmbed') != 'false' || $this.attr('showLink') != 'true')	{
 		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'x_embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
 	}
-	if ($this.attr('showLink') != undefined && $this.attr('showLink') == 'true')
-	{
-		var target="target='_blank'";
-		if ($this.attr('displayOptions') != undefined && $this.attr('displayOptions') == 'lightbox')
-		{
-			target="data-featherlight='iframe'";
-		}
-		var linktext = $this.attr('link');
-		if ($this.attr('linkText') != undefined) {
-			linktext = $this.attr('linkText');
-		}
-		html += "<a href='" + xotLink + "' " + target + ">" + linktext + "</a>";
 
+	if ($this.attr('showLink') == 'true') {
+		let target="target='_blank'";
+		let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+		if ($this.attr('displayOptions') == 'lightbox') {
+			target="data-featherlight='iframe'";
+			linkWarning = "";
+		} else if ($this.attr('displayOptions') == 'thiswindow') {
+			target="target='_self'";
+			linkWarning = "";
+		}
+		const linkText = $this.attr('linkText') != undefined && $this.attr('linkText') != "" ? $this.attr('linkText') : $this.attr('link');
+		html += "<a href='" + xotLink + "' " + target + ">" + linkText + linkWarning + "</a>";
 	}
 	return html;
 
@@ -3425,7 +3435,9 @@ function getLangInfo(node, attribute, fallBack) {
         if (attribute == false) {
             string = node.childNodes[0].nodeValue;
         } else {
-            string = node.getAttribute(attribute);
+			if (node.getAttribute(attribute) != undefined && node.getAttribute(attribute) != null) {
+				string = node.getAttribute(attribute);
+			}
         }
     }
     return string;
