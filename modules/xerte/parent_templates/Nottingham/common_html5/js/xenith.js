@@ -1061,6 +1061,8 @@ function x_GetTrackingLabelOfPage() {
 
 // setup functions load interface buttons and events
 function x_setUp() {
+
+	$(".skip-link").html(x_getLangInfo(x_languageData.find("skip")[0], "label", "Skip to main content"));
 	
 	// prevent flashes of css body tag colours before the main interface has loaded
 	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');

@@ -1792,9 +1792,11 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		}
 	});
 	
-	//dynamically change the skip link for each page
+	// dynamically change the skip link for each page
 	var skipLinkTarget='#page'+(currentPage+1)+'section1';
-	$(".srskip").prop("href", skipLinkTarget)
+	$("#skipLink")
+		.prop("href", skipLinkTarget)
+		.html(languageData.find("skip")[0] != undefined && languageData.find("skip")[0].getAttribute('label') != null ? languageData.find("skip")[0].getAttribute('label') : 'Skip to main content');
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
