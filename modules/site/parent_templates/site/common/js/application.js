@@ -3369,15 +3369,16 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 		});
 
 		$.featherlight.prototype.afterContent = function(e) {
-			var caption = this.$currentTarget == undefined ? undefined : this.$currentTarget.find('img').attr('alt'),
-				sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
+			const altText = this.$currentTarget == undefined ? undefined : this.$currentTarget.find('img').attr('alt');
+			if (altText != undefined && altText != '') {
+				this.$instance.find('.featherlight-content img').attr('alt', altText);
+			}
 
+			const caption = this.$currentTarget == undefined ? undefined : $(this.$currentTarget).next().is("figCaption") ? $(this.$currentTarget).next().html() : undefined;
+			const sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
 			if (caption != undefined && caption != '') {
-				this.$instance.find('.featherlight-content img').attr('alt', caption);
-
-				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
 				// captions can be turned on at LO, page or section level
-				var captionType = "false";
+				let captionType = "false";
 				if (sectionCaption != undefined) {
 					captionType = sectionCaption;
 				} else if (thisPageInfo.attr("lightboxCaption") != undefined) {
@@ -3388,9 +3389,9 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 
 				if (captionType != "false") {
 					this.$instance.find('.caption').remove();
-					var before = captionType == "above" ? true : false;
+					const before = captionType == "above" ? true : false;
+					const $img = $(this.$content[0]);
 
-					var $img = $(this.$content[0]);
 					$img.wrap('<figure></figure>');
 					if (before == true) {
 						$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
