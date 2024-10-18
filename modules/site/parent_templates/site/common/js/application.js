@@ -195,6 +195,14 @@ function loadContent(){
 	});
 
 	$(window).on("resizeEnd", function() {
+		// if resize has changed the way the page menu is displayed - make sure any page links in collapsed menu are properly hidden (from keyboard access & screen readers)
+		if (!$('#pageNavBtn').is(':visible')) {
+			$("#nav").show();
+		} else if ($("#pageNavBtn").attr("aria-expanded") == "false") {
+			$("#pageNavBtn").attr("aria-expanded", false);
+			$("#nav").hide();
+		}
+
 		$('.vidHolder iframe').each(function() {
 			iframeResize($(this))
 		});
@@ -203,9 +211,16 @@ function loadContent(){
 	});
 
 	setTimeout(function() {
-		$('div.nav-collapse li a').click(function () {
-			if ($('.navbar .btn-navbar').is(':visible')) {
-				$('.navbar-toggler').click();
+		// force the page navigation buttons to hide when menu is collapsed on project load - otherwise keyboard tabs & screen readers can still access them
+		if ($('#pageNavBtn').is(':visible')) {
+			$("#pageNavBtn").attr("aria-expanded", false);
+			$("#nav").hide();
+		}
+
+		// collapses page menu if it is collapsible and it is open on page change
+		$('#nav li a').click(function () {
+			if ($('#pageNavBtn').is(':visible')) {
+				$('#pageNavBtn').click();
 			}
 		});
 	}, 500);
@@ -579,7 +594,7 @@ function setup() {
 				name = $(this).attr('pageLink');
 			}
 
-			var $link = $('<li class=""><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
+			var $link = $('<li class="" role="none"><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
 			$link.find('a').append(name);
 
 		}
@@ -617,7 +632,7 @@ function setup() {
 	}
 
 	// add a back button that will be hidden unless used by standalone pages
-	var $backBtn = $('<li class="backBtn"><a><i class="fa fa-arrow-left text-white ml-3" aria-hidden="true"></i>' + (languageData.find("backButton")[0] != undefined && languageData.find("backButton")[0].getAttribute('label') != null ? languageData.find("backButton")[0].getAttribute('label') : "Back") + '</a></li>');
+	var $backBtn = $('<li class="backBtn" role="none"><a href="#"><i class="fa fa-arrow-left text-white ml-3" aria-hidden="true"></i>' + (languageData.find("backButton")[0] != undefined && languageData.find("backButton")[0].getAttribute('label') != null ? languageData.find("backButton")[0].getAttribute('label') : "Back") + '</a></li>');
 
 	$backBtn
 		.prependTo('#nav')
@@ -639,7 +654,7 @@ function setup() {
 
 		var altTxt = languageData.find("print")[0] != undefined && languageData.find("print")[0].getAttribute('printBtn') != null ? languageData.find("print")[0].getAttribute('printBtn') : "Print page";
 
-		$('<li id="printIcon"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
+		$('<li id="printIcon" role="none"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
 			.appendTo('#nav')
 			.click(function() {
 				window.print();
@@ -792,7 +807,7 @@ function setup() {
 				.append('<div id="searchResults" class=""></div></li></ul>')
 				.find('#searchInner').append('<button id="searchBtn" type="button" class="searchBtn btn btn-primary">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('goBtn') != null ? languageData.find("search")[0].getAttribute('goBtn') : "Go") + '</button>');
 
-			$('<li id="searchIcon"><a href="#"><i class="fa fa-search text-white ml-3" aria-hidden="true"></i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('searchBtn') != null ? languageData.find("search")[0].getAttribute('searchBtn') : "Search") + '</a></li>')
+			$('<li id="searchIcon" role="none"><a href="#"><i class="fa fa-search text-white ml-3" aria-hidden="true"></i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('searchBtn') != null ? languageData.find("search")[0].getAttribute('searchBtn') : "Search") + '</a></li>')
 				.appendTo('#nav')
 				.click(function() {
 					$searchHolder
@@ -1076,8 +1091,20 @@ function setup() {
 
     // --------------- Optional Navigation Bar properties --------------------
 
-	//temporary non-language option fix for collapse button aria label
-	$(".btn.btn-navbar").attr("aria-label", "collapse");
+	// page menu collapse/expand button
+	// force the page navigation buttons to hide when menu is collapsed - otherwise keyboard tabs & screen readers can still access them
+	$("#topnav")
+		.on("show.bs.collapse", function() {
+			$("#pageNavBtn").attr("aria-expanded", true);
+			$("#nav").show();
+		})
+		.on("hidden.bs.collapse", function() {
+			$("#pageNavBtn").attr("aria-expanded", false);
+			$("#nav").hide();
+		});
+
+	// add a label to the collapse/expand page nav button
+	$("#pageNavBtn").attr("aria-label", languageData.find("pageMenu")[0] != undefined && languageData.find("pageMenu")[0].getAttribute('label') != null ? languageData.find("pageMenu")[0].getAttribute('label') : "Page menu");
 
 	// page menu bar is hidden if optional property says it should be
     if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
@@ -1087,20 +1114,20 @@ function setup() {
 	} else {
 		// if just 1 page, don't remove page menu bar (in case the theme requires it) but hide the links on it
 		if ($('#nav li:not(.backBtn)').length <= 1) {
-			$(".navbar-toggler, .navbar-inner #nav li:not(.backBtn) a").hide();
+			$("#pageNavBtn, #nav li:not(.backBtn) a").hide();
 		}
 		
 		// nav bar can be moved below header bar
 		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 
 			$('#overview').after('<div id="pageLinks"></div>');
-			$('.navbar').appendTo('#pageLinks');
+			$('#topnav').appendTo('#pageLinks');
 
 		}
 
 		// apply all the nav bar css optional properties
 		if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != '' && $(data).find('learningObject').attr('navbarColour') != '0x') {
-			var $navBar = $('.navbar-inverse .navbar-inner');
+			var $navBar = $('#topnav .navbar-inner');
 
 			if ($(data).find('learningObject').attr('navbarColour').indexOf('rgb(') >= 0) {
 				$navBar.css('background-color', formatColour($(data).find('learningObject').attr('navbarColour')));
@@ -1698,7 +1725,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					$("#nav .backBtn").show();
 					$("#topnav").show();
 					if ($('#nav li:not(.backBtn)').length <= 1) {
-						$(".navbar .btn-navbar").show();
+						$("#pageNavBtn").show();
 					}
 				} else {
 					$("#nav li:not(.backBtn)").show();
@@ -1708,7 +1735,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 						$("#topnav").hide();
 					} else {
 						if ($('#nav li:not(.backBtn)').length <= 1) {
-							$(".navbar-toggler, .navbar-inner #nav li:not(.backBtn) a").hide();
+							$("#pageNavBtn, #nav li:not(.backBtn) a").hide();
 						}
 					}
 				}
@@ -1750,7 +1777,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
 	
-	//assign active class for current navbar
+	// assign active class for current navbar
 	var pageOffset = pageIndex - validPages.indexOf(pageIndex);
 	
 	$("#nav li").not(':first-child').each(function(i, el){
@@ -1763,7 +1790,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				.addClass("activePage")
 				.attr("aria-current", "page");
 		}
-	})
+	});
 	
 	//dynamically change the skip link for each page
 	var skipLinkTarget='#page'+(currentPage+1)+'section1';
@@ -2116,7 +2143,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		if (topBtnRound == 'true') {
 			//add FA icon and make button round via .top-round class
 			//create round button
-			var $button = $('<a class="btn btn-mini pull-right top-round" href="#"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
+			var $button = $('<a class="btn btn-mini pull-right top-round" href="#skipLink"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
 			//attach the button
 			section.append(
 				$('<p>')
@@ -2124,7 +2151,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 					.append($button));
 		} else {
 			//original default button
-			section.append($('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
+			section.append($('<p><br><a class="btn btn-mini pull-right" href="#skipLink">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
 		}
 	} else if ($(data).find('learningObject').attr('topBtnHide') == 'true') {
 		section.append($('<p>').append($('<br>')));

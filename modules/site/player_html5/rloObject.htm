@@ -124,14 +124,14 @@
 
             <div class="container">
 
-                <button type="button" class="btn btn-navbar navbar-toggler" data-toggle="collapse" data-target=".nav-collapse">
+                <button id="pageNavBtn" class="btn btn-navbar navbar-toggler collapsed" data-toggle="collapse" data-target=".nav-collapse" aria-haspopup="true" aria-controls="nav">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
 
                 <div class="nav-collapse collapse">
-                    <ul class="nav" id="nav">
+                    <ul class="nav" id="nav" aria-labelledby="pageNavBtn">
                         <!--<li class=""><a href="./index.html">Home</a></li>-->
                     </ul>
                 </div>
@@ -140,7 +140,7 @@
     </div>
 
     <!--Learning Object Title-->
-    <header class="jumbotron hide" id="overview"><a class="skip-link srskip sr-only sr-only-focusable" href="#mainContent">Skip to main content</a>
+    <header class="jumbotron hide" id="overview"><a id="skipLink" class="skip-link srskip sr-only sr-only-focusable" href="#mainContent">Skip to main content</a>
         <div class="container">
 
             <div class="logoL">
