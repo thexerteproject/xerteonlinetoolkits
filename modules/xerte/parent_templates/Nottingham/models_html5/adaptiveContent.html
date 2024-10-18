@@ -893,7 +893,6 @@
         if (sessionStatementUsed == undefined) {
             sessionStatementUsed = "all";
         }
-        debugger
         // You can only do this if you have a very targeted query
         // If type is grouping, groupings  or opinionclasses, we should NOT filter the data on sessions
         if (type != "grouping" && type != "groupings" && type != "opinionclasses") {
@@ -1821,14 +1820,16 @@
         ) {
           let visitedGroups = {};
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           const sortObject = (obj) =>
             Object.keys(obj)
@@ -3083,14 +3084,16 @@
           }
           let visitedGroups = [];
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           if (namedBackgroundColors && Object.keys(visitedGroups).length == Object.keys(backgroundColors).length){
               // Order the keys in visitedGroups to match the order of backgroundColors
@@ -3214,14 +3217,16 @@
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
           let visitedGroups = {};
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           let labelCounter = 0;
           let data = [];
