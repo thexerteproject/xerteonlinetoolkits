@@ -1175,28 +1175,24 @@ function setup() {
 
 		// add & position custom footer
 		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+
 			var customFooterContent=$(data).find('learningObject').attr('customFooter');
 
-			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
+			if ($(data).find('learningObject').attr('footerPos') == 'below') {
+				$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+				$("#customFooter").css({"margin-top": "40px"});
 
-			$('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
-			$("#customFooter").css({"margin-bottom": "10px"});
-			}
-
-			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
-
-			$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
-			$("#customFooter").css({"margin-top": "40px"});
-			}
-
-			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+			} else if ($(data).find('learningObject').attr('footerPos') == 'replace') {
 				var wcagDefault=$(".wcagLink").html();
-			$('.footer .container').remove();
-			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
+				$('.footer .container').remove();
+				$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-left": "10px"});
 				$('#customFooter').append('<div class="wcagLink">'+wcagDefault+'</div>');
 				$(".wcagLink").css({"margin-right": "10px", "margin-top":"10px"});
 
+			} else {
+				$('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
+				$("#customFooter").css({"margin-bottom": "10px"});
 			}
 		}
 
