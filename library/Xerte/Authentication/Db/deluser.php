@@ -40,11 +40,11 @@ if(is_user_permitted("useradmin")){
     if (strlen($mesg) > 0)
     {
         $finalmesg = "<p>" . AUTH_DB_DELUSER_FAILED . "</p>";
-        $finalmesg .= "<p><style=\"color:  red\"><ul>" . $mesg . "</ul></font></p>";
+        $finalmesg .= "<p style=\"color:  red\"><ul>" . $mesg . "</ul></p>";
     }
     else
     {
-        $finalmesg = "<p><<style=\"color: green\">" . AUTH_DB_DELUSER_SUCCEEDED . "</font></p>";
+        $finalmesg = "<p style=\"color: green\">" . AUTH_DB_DELUSER_SUCCEEDED . "</p>";
     }
     $authmech->getUserList(true, $finalmesg);
 }

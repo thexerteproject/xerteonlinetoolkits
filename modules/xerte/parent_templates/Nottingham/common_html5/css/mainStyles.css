@@ -89,10 +89,6 @@ a {
 	padding:	10px;
 }
 
-#x_pageDiv {
-	height: calc(100% - 20px);
-}
-
 #x_headerBlock img {
 	max-height: 200px;
 }
