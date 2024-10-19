@@ -264,7 +264,7 @@
 			// Add download button
 			var $downloadBtn = $('<button id="downloadBtn">');
 			var $submitBtn = $('<button id="submitBtn">');
-			var $finishSection = $('<div class="item"/>');
+			var $finishSection = $('<div class="item"></div>');
 			if(x_currentPageXML.getAttribute("showDownload") != "false"){
 				$downloadBtn.appendTo($finishSection);
 			}
@@ -285,6 +285,12 @@
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
 				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($downloadBtn);
+			}
+
+			if (x_currentPageXML.getAttribute('submittedTxt') && x_currentPageXML.getAttribute('submittedTxt') != "") {
+				$('<p class="submitted">'+ x_currentPageXML.getAttribute('submittedTxt') + '</p>').insertAfter($submitBtn).hide();
+			}else { // TODO: should remove
+				$('<p class="submitted">This document has been submitted</p>').insertAfter($submitBtn).hide();
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);
@@ -817,8 +823,8 @@
 		this.track = function() {
 			if (documentation.checkRequired(currentPage)) {
 				documentation.sendToXAPI($("#pageContents").data("docData"));
+				$(".submitted").show();
     		}
-			$("#submitBtn").hide();
 		}
 
 		this.showPage = function (page) {

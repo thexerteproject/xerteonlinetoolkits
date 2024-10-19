@@ -1420,7 +1420,7 @@ function XTResults(fullcompletion) {
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
                 subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
-                judge &= subinteraction.judge;
+                judge = judge && subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
             }
 						results.interactions[nrofquestions - 1].judge = judge;

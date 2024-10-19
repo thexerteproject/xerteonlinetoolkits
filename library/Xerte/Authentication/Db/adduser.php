@@ -55,11 +55,11 @@ if(is_user_permitted("useradmin")){
     if (strlen($mesg) > 0)
     {
         $finalmesg = "<p>" . AUTH_DB_ADDUSER_FAILED . "</p>";
-        $finalmesg .= "<p><style=\"color: red;\"><ul>" . $mesg . "</ul></stylefont></p>";
+        $finalmesg .= "<p style=\"color: red;\"><ul>" . $mesg . "</ul></p>";
     }
     else
     {
-        $finalmesg = "<p><<style=\"color: green;\">" . AUTH_DB_ADDUSER_SUCCEEDED . "</font></p>";
+        $finalmesg = "<p style=\"color: green;\">" . AUTH_DB_ADDUSER_SUCCEEDED . "</p>";
     }
     $authmech->getUserList(true, $finalmesg);
 }

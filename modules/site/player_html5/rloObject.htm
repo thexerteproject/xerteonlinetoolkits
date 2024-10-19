@@ -117,21 +117,21 @@
 <script src="%TEMPLATEPATH%common/js/initFB.js%VERSION_PARAM%" defer></script>
 
 <div id="aboveFooter">
-    <div id="alwaysTop"></div>
+    <div id="alwaysTop"><a id="skipLink" class="skip-link srskip" href="#mainContent"></a></div>
 
     <div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation" aria-label="pages">
-        <div class="navbar-inner"><a class="srskip sr-only" href="#mainContent">Skip to main content</a>
+        <div class="navbar-inner">
 
             <div class="container">
 
-                <button type="button" class="btn btn-navbar navbar-toggler" data-toggle="collapse" data-target=".nav-collapse">
+                <button id="pageNavBtn" class="btn btn-navbar navbar-toggler collapsed" data-toggle="collapse" data-target=".nav-collapse" aria-haspopup="true" aria-controls="nav">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
 
                 <div class="nav-collapse collapse">
-                    <ul class="nav" id="nav">
+                    <ul class="nav" id="nav" aria-labelledby="pageNavBtn">
                         <!--<li class=""><a href="./index.html">Home</a></li>-->
                     </ul>
                 </div>
@@ -140,7 +140,7 @@
     </div>
 
     <!--Learning Object Title-->
-    <header class="jumbotron hide" id="overview"><a class="skip-link srskip sr-only sr-only-focusable" href="#mainContent">Skip to main content</a>
+    <header class="jumbotron hide" id="overview">
         <div class="container">
 
             <div class="logoL">
@@ -180,14 +180,13 @@
 <footer class="footer">
     <div class="container">
         <div class="row-fluid">
-            <div class="span12">
-
+            <!--<div class="span12">
 				<div class="addthis_sharing_toolbox"></div>
-                <!--<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>-->%ADDTHISSCRIPT%
-            </div>
+                %ADDTHISSCRIPT%
+            </div>-->
             <div class="wcagLink hidden">
-                    <a href="https://xot.xerte.org.uk/play.php?template_id=214#home" title="View the Xerte accessibility statement" target="_blank"><img class="wcagLogo" alt="WCAG WAI-AA logo and link to Xerte accessibility statement" height="32" src="%TEMPLATEPATH%common/img/wcag2.1AA-blue-v.png" width="88"> </a>
-                </div>
+                <a><img class="wcagLogo" height="32" src="%TEMPLATEPATH%common/img/wcag2.1AA-blue-v.png" width="88" alt=""> </a>
+            </div>
         </div>
     </div>
 </footer>

@@ -74,6 +74,18 @@ function initMedia($media){
 					'max-height': e.detail.target.videoHeight
 				});
 			});
+
+			// it's audio with a transcript - add a transcript button to the end of the player
+			if ($mediaElement.find("audio").data("transcript") != undefined) {
+				$mediaElement.parents(".mejs-container").parent().addClass("audioTranscript");
+
+				const transcriptLabel = languageData.find("mediaElementControls").find("transcriptButton")[0].getAttribute("label");
+				$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
+					.appendTo($mediaElement.parents(".mejs-container").find(".mejs-controls"))
+					.click(function() {
+						$.featherlight($mediaElement.find("audio").data("transcript"));
+					});
+			}
 		},
 		error: function(mediaElement) {
 			console.log('mediaelement problem is detected: ', mediaElement);
@@ -183,6 +195,14 @@ function loadContent(){
 	});
 
 	$(window).on("resizeEnd", function() {
+		// if resize has changed the way the page menu is displayed - make sure any page links in collapsed menu are properly hidden (from keyboard access & screen readers)
+		if (!$('#pageNavBtn').is(':visible')) {
+			$("#nav").show();
+		} else if ($("#pageNavBtn").attr("aria-expanded") == "false") {
+			$("#pageNavBtn").attr("aria-expanded", false);
+			$("#nav").hide();
+		}
+
 		$('.vidHolder iframe').each(function() {
 			iframeResize($(this))
 		});
@@ -191,9 +211,16 @@ function loadContent(){
 	});
 
 	setTimeout(function() {
-		$('div.nav-collapse li a').click(function () {
-			if ($('.navbar .btn-navbar').is(':visible')) {
-				$('.navbar-toggler').click();
+		// force the page navigation buttons to hide when menu is collapsed on project load - otherwise keyboard tabs & screen readers can still access them
+		if ($('#pageNavBtn').is(':visible')) {
+			$("#pageNavBtn").attr("aria-expanded", false);
+			$("#nav").hide();
+		}
+
+		// collapses page menu if it is collapsible and it is open on page change
+		$('#nav li a').click(function () {
+			if ($('#pageNavBtn').is(':visible')) {
+				$('#pageNavBtn').click();
 			}
 		});
 	}, 500);
@@ -567,7 +594,7 @@ function setup() {
 				name = $(this).attr('pageLink');
 			}
 
-			var $link = $('<li class=""><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
+			var $link = $('<li class="" role="none"><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
 			$link.find('a').append(name);
 
 		}
@@ -605,7 +632,7 @@ function setup() {
 	}
 
 	// add a back button that will be hidden unless used by standalone pages
-	var $backBtn = $('<li class="backBtn"><a><i class="fa fa-arrow-left text-white ml-3" aria-hidden="true"></i>' + (languageData.find("backButton")[0] != undefined && languageData.find("backButton")[0].getAttribute('label') != null ? languageData.find("backButton")[0].getAttribute('label') : "Back") + '</a></li>');
+	var $backBtn = $('<li class="backBtn" role="none"><a href="#"><i class="fa fa-arrow-left text-white ml-3" aria-hidden="true"></i>' + (languageData.find("backButton")[0] != undefined && languageData.find("backButton")[0].getAttribute('label') != null ? languageData.find("backButton")[0].getAttribute('label') : "Back") + '</a></li>');
 
 	$backBtn
 		.prependTo('#nav')
@@ -627,7 +654,7 @@ function setup() {
 
 		var altTxt = languageData.find("print")[0] != undefined && languageData.find("print")[0].getAttribute('printBtn') != null ? languageData.find("print")[0].getAttribute('printBtn') : "Print page";
 
-		$('<li id="printIcon"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
+		$('<li id="printIcon" role="none"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
 			.appendTo('#nav')
 			.click(function() {
 				window.print();
@@ -780,7 +807,7 @@ function setup() {
 				.append('<div id="searchResults" class=""></div></li></ul>')
 				.find('#searchInner').append('<button id="searchBtn" type="button" class="searchBtn btn btn-primary">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('goBtn') != null ? languageData.find("search")[0].getAttribute('goBtn') : "Go") + '</button>');
 
-			$('<li id="searchIcon"><a href="#"><i class="fa fa-search text-white ml-3" aria-hidden="true"></i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('searchBtn') != null ? languageData.find("search")[0].getAttribute('searchBtn') : "Search") + '</a></li>')
+			$('<li id="searchIcon" role="none"><a href="#"><i class="fa fa-search text-white ml-3" aria-hidden="true"></i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('searchBtn') != null ? languageData.find("search")[0].getAttribute('searchBtn') : "Search") + '</a></li>')
 				.appendTo('#nav')
 				.click(function() {
 					$searchHolder
@@ -1064,8 +1091,20 @@ function setup() {
 
     // --------------- Optional Navigation Bar properties --------------------
 
-	//temporary non-language option fix for collapse button aria label
-	$(".btn.btn-navbar").attr("aria-label", "collapse");
+	// page menu collapse/expand button
+	// force the page navigation buttons to hide when menu is collapsed - otherwise keyboard tabs & screen readers can still access them
+	$("#topnav")
+		.on("show.bs.collapse", function() {
+			$("#pageNavBtn").attr("aria-expanded", true);
+			$("#nav").show();
+		})
+		.on("hidden.bs.collapse", function() {
+			$("#pageNavBtn").attr("aria-expanded", false);
+			$("#nav").hide();
+		});
+
+	// add a label to the collapse/expand page nav button
+	$("#pageNavBtn").attr("aria-label", languageData.find("pageMenu")[0] != undefined && languageData.find("pageMenu")[0].getAttribute('label') != null ? languageData.find("pageMenu")[0].getAttribute('label') : "Page menu");
 
 	// page menu bar is hidden if optional property says it should be
     if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
@@ -1075,20 +1114,20 @@ function setup() {
 	} else {
 		// if just 1 page, don't remove page menu bar (in case the theme requires it) but hide the links on it
 		if ($('#nav li:not(.backBtn)').length <= 1) {
-			$(".navbar-toggler, .navbar-inner #nav li:not(.backBtn) a").hide();
+			$("#pageNavBtn, #nav li:not(.backBtn) a").hide();
 		}
 		
 		// nav bar can be moved below header bar
 		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 
 			$('#overview').after('<div id="pageLinks"></div>');
-			$('.navbar').appendTo('#pageLinks');
+			$('#topnav').appendTo('#pageLinks');
 
 		}
 
 		// apply all the nav bar css optional properties
 		if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != '' && $(data).find('learningObject').attr('navbarColour') != '0x') {
-			var $navBar = $('.navbar-inverse .navbar-inner');
+			var $navBar = $('#topnav .navbar-inner');
 
 			if ($(data).find('learningObject').attr('navbarColour').indexOf('rgb(') >= 0) {
 				$navBar.css('background-color', formatColour($(data).find('learningObject').attr('navbarColour')));
@@ -1136,44 +1175,50 @@ function setup() {
 
 		// add & position custom footer
 		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+
 			var customFooterContent=$(data).find('learningObject').attr('customFooter');
 
-			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
+			if ($(data).find('learningObject').attr('footerPos') == 'below') {
+				$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+				$("#customFooter").css({"margin-top": "40px"});
 
-			$('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
-			$("#customFooter").css({"margin-bottom": "10px"});
-			}
-
-			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
-
-			$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
-			$("#customFooter").css({"margin-top": "40px"});
-			}
-
-			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+			} else if ($(data).find('learningObject').attr('footerPos') == 'replace') {
 				var wcagDefault=$(".wcagLink").html();
-			$('.footer .container').remove();
-			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
+				$('.footer .container').remove();
+				$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-left": "10px"});
 				$('#customFooter').append('<div class="wcagLink">'+wcagDefault+'</div>');
 				$(".wcagLink").css({"margin-right": "10px", "margin-top":"10px"});
 
+			} else {
+				$('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
+				$("#customFooter").css({"margin-bottom": "10px"});
 			}
 		}
 
-		//populate wcag logo and link and/or hide it
+		// populate wcag logo and link and/or hide it
 		$(".wcagLink").removeClass("hidden");
-		if ($(data).find('learningObject').attr('wcagAlt') != undefined){
-			$(".wcagLogo").attr("alt",$(data).find('learningObject').attr('wcagAlt'));
-		}
-		if ($(data).find('learningObject').attr('wcagLinkTitle') != undefined){
-			$(".wcagLink a").attr("title",$(data).find('learningObject').attr('wcagLinkTitle'));
-		}
-		if ($(data).find('learningObject').attr('wcagLink') != undefined && $(data).find('learningObject').attr('wcagLink') != ""){
-			$(".wcagLink a").prop("href",$(data).find('learningObject').attr('wcagLink'));
-		}
-		if ($(data).find('learningObject').attr('wcagHide') != undefined && $(data).find('learningObject').attr('wcagHide') == 'true'){
+
+		// ** update logo image to wcag 2.2 after new accessibility statement is live
+		if ($(data).find('learningObject').attr('wcagHide') == 'true'){
 			$('.wcagLink').remove();
+		} else {
+			// set target for wcag link & warning if opens in new window
+			let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+			if ($(data).find('learningObject').attr('wcagTarget') == 'lightbox') {
+				$(".wcagLink a").attr("data-featherlight", "iframe");
+				linkWarning = "";
+			} else if ($(data).find('learningObject').attr('wcagTarget') == '_self') {
+				$(".wcagLink a").attr("target", "_self");
+				linkWarning = "";
+			} else {
+				$(".wcagLink a").attr("target", "_blank");
+			}
+
+			// set the alt, title & href text - use ones set in editor or fallback to language files if not provided
+			$(".wcagLogo").attr("alt", $(data).find('learningObject').attr('wcagAlt') != undefined && $(data).find('learningObject').attr('wcagAlt') != "" ? $(data).find('learningObject').attr('wcagAlt') : getLangInfo(languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo"));
+			$(".wcagLink a").attr("title", ($(data).find('learningObject').attr('wcagLinkTitle') != undefined && $(data).find('learningObject').attr('wcagLinkTitle') != "" ? $(data).find('learningObject').attr('wcagLinkTitle') : getLangInfo(languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + linkWarning));
+			$(".wcagLink a").prop("href", $(data).find('learningObject').attr('wcagLink') != undefined && $(data).find('learningObject').attr('wcagLink') != "" ? $(data).find('learningObject').attr('wcagLink') : getLangInfo(languageData.find("colourChanger").find("wcagURL")[0], "label", "https://xot.xerte.org.uk/play.php?template_id=214#home"));
 		}
 
 		// Change footer background colour
@@ -1202,8 +1247,8 @@ function setup() {
 
 		}
 
-
 		// Hide or show the social media buttons
+		/* disabled as the service has been removed
 		$(".addthis_sharing_toolbox").hide();
 		setTimeout(function () {
 			var count_hidden = count_undef = 0,
@@ -1238,7 +1283,7 @@ function setup() {
 			) {
 				$(".addthis_sharing_toolbox").show();
 			}
-		}, 2000);
+		}, 2000);*/
 
 	}
 
@@ -1686,7 +1731,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					$("#nav .backBtn").show();
 					$("#topnav").show();
 					if ($('#nav li:not(.backBtn)').length <= 1) {
-						$(".navbar .btn-navbar").show();
+						$("#pageNavBtn").show();
 					}
 				} else {
 					$("#nav li:not(.backBtn)").show();
@@ -1696,7 +1741,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 						$("#topnav").hide();
 					} else {
 						if ($('#nav li:not(.backBtn)').length <= 1) {
-							$(".navbar-toggler, .navbar-inner #nav li:not(.backBtn) a").hide();
+							$("#pageNavBtn, #nav li:not(.backBtn) a").hide();
 						}
 					}
 				}
@@ -1738,7 +1783,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 	}
 	
-	//assign active class for current navbar
+	// assign active class for current navbar
 	var pageOffset = pageIndex - validPages.indexOf(pageIndex);
 	
 	$("#nav li").not(':first-child').each(function(i, el){
@@ -1751,11 +1796,13 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				.addClass("activePage")
 				.attr("aria-current", "page");
 		}
-	})
+	});
 	
-	//dynamically change the skip link for each page
+	// dynamically change the skip link for each page
 	var skipLinkTarget='#page'+(currentPage+1)+'section1';
-	$(".srskip").prop("href", skipLinkTarget)
+	$("#skipLink")
+		.prop("href", skipLinkTarget)
+		.html(languageData.find("skip")[0] != undefined && languageData.find("skip")[0].getAttribute('label') != null ? languageData.find("skip")[0].getAttribute('label') : 'Skip to main content');
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
@@ -1983,20 +2030,20 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 		if (this.nodeName == 'link'){
 
-			var url = $(this).attr('url');
-			var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-			var options = '';
-			options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-			options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-			options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-			options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-			options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-			options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-			options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-			options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+			const $this = $(this);
+			const url = $this.attr('url');
 
-			section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
-
+			let target="target='_blank'";
+			let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+			if ($this.attr('target') == 'lightbox') {
+				target="data-featherlight='iframe'";
+				linkWarning = "";
+			} else if ($this.attr('target') == '_self') {
+				target="target='_self'";
+				linkWarning = "";
+			}
+			const linkText = $this.attr('name') != undefined && $this.attr('name') != "" ? $this.attr('name') : url;
+			section.append("<p><a href='" + url + "' " + target + ">" + linkText + linkWarning + "</a></p>");
 		}
 
 		if (this.nodeName == 'canvas'){
@@ -2038,7 +2085,15 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'audio'){
-			section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+			const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+			section.append($audio);
+			$audio.wrap('<p></p>');
+
+			// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+			if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+				$audio.data("transcript", $(this).attr('transcript'));
+			}
 		}
 
 		if (this.nodeName == 'video'){
@@ -2096,7 +2151,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		if (topBtnRound == 'true') {
 			//add FA icon and make button round via .top-round class
 			//create round button
-			var $button = $('<a class="btn btn-mini pull-right top-round" href="#"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
+			var $button = $('<a class="btn btn-mini pull-right top-round" href="#skipLink"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
 			//attach the button
 			section.append(
 				$('<p>')
@@ -2104,7 +2159,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 					.append($button));
 		} else {
 			//original default button
-			section.append($('<p><br><a class="btn btn-mini pull-right" href="#">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
+			section.append($('<p><br><a class="btn btn-mini pull-right" href="#skipLink">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
 		}
 	} else if ($(data).find('learningObject').attr('topBtnHide') == 'true') {
 		section.append($('<p>').append($('<br>')));
@@ -2512,7 +2567,13 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var tabDiv = $( '<div class="navigator tabbable"/>' );
+	var tabDiv = $( '<div class="navigator tabbable" role="tablist"/>' );
+
+	// manually add/remove aria-selected - not done automatically
+	tabDiv.on("show", function(e) {
+		$(e.relatedTarget).attr({"aria-selected": false, "tabindex": "-1"});
+		$(e.target).attr({"aria-selected": true, "tabindex": "0"});
+	});
 
 	if (type == 'tabs'){
 
@@ -2534,11 +2595,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	node.children().each( function(index, value){
 
 		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'tab' + sectionIndex + '_' + itemIndex + '_' + index;
-		let tab = $('<li><a href="#' + paneId + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
-		let pane = $('<div id="' + paneId + '" class="tab-pane" tabindex="0"/>');
+		let tab = $('<li><a id="' + paneId + 'Heading" class="tabHeader" href="#' + paneId + '" data-toggle="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></li>').appendTo(tabs);
+		let pane = $('<div id="' + paneId + '" class="tab-pane" role="tabpanel" aria-labelledby="' + paneId + 'Heading"/>');
 
 		if (index == 0) {
-			tab.addClass("active");
+			tab.addClass("active").find(".tabHeader").attr({"aria-selected": true, tabindex: "0"});
 			pane.addClass("active");
 		}
 
@@ -2567,7 +2628,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				pane.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
+
 			}
 
 			if (this.nodeName == 'video'){
@@ -2621,6 +2691,14 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	tabDiv.append(content);
 
 	section.append(tabDiv);
+
+	tabDiv.find(".tabHeader").on("keydown", function(e) {
+		if (e.key == "ArrowRight") {
+			$(this).parents("li").next().find(".tabHeader").focus();
+		} else if (e.key == "ArrowLeft") {
+			$(this).parents("li").prev().find(".tabHeader").focus();
+		}
+	});
 
 	setTimeout( function() {
 		// 1st tab may not be the 1st shown so check this before changing which is shown
@@ -2678,37 +2756,28 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 	var accDiv = $( '<div class="navigator accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 
-	node.children().each( function(index, value){
+	// ensure that the hidden panes can't be accessed by screen reader & keyboard tabbing when collapsed
+	// & manually add/remove collapsed class to headings (used to style open pane's heading differently)
+	accDiv
+		.on("show.bs.collapse", function(e) {
+			// show pane that's about to be shown
+			$(e.target).show();
 
-		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'collapse' + sectionIndex + '_' + itemIndex + '_' + index;
-		let group = $('<div class="accordion-group collapsed"/>');
-		let header = $('<div class="accordion-heading"><a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#' + paneId +  '">' + $(this).attr('name') + '</a></div>');
-
-		group.append(header);
-		
-		// manually add collapsed class when another link is clicked as this only automatically when you click the currently open link to close it
-		header.find('a.accordion-toggle').click(function() {
-			var $this = $(this);
-			accDiv.find('.accordion-group a').not($this)
-				.addClass('collapsed')
-				.parents('.accordion-group').addClass('collapsed');
-
-			if ($this.hasClass('collapsed')) {
-				$this.parents('.accordion-group').removeClass('collapsed');
-			} else {
-				$this.parents('.accordion-group').addClass('collapsed');
-			}
+			// remove collapsed class from pane that's about to be shown
+			const $thisHeading = $("#" + $(e.target).attr("aria-labelledby"));
+			$thisHeading.attr('aria-expanded', 'true');
+			$thisHeading.parents(".accordion-group").removeClass("collapsed");
 
 			// make sure the pane that's just been opened is in view (if closing pane is taller than opening pane it may not be)
 			var viewTop = $(window).scrollTop(),
 				viewBottom = viewTop + $(window).height(),
-				paneTop = $this.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
+				paneTop = $thisHeading.parents('.navigator.accordion').find('.accordion-group').first().offset().top;
 
-			$this.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
-				if ($(this).find('.accordion-toggle').is($this)) {
+			$thisHeading.parents('.navigator.accordion').find('.accordion-group .accordion-heading').each(function() {
+				if ($(this).find('.accordion-toggle').is($thisHeading)) {
 					return false;
 				} else {
-					paneTop += $(this).outerHeight();
+					paneTop += $thisHeading.outerHeight();
 				}
 			});
 
@@ -2716,14 +2785,38 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			if (paneTop < viewTop || paneTop > viewBottom) {
 				$('html, body').animate({scrollTop: paneTop}, 400);
 			}
+
+		})
+		.on("hide.bs.collapse", function(e) {
+			// remove collapsed class from pane that's about to be hidden
+			const $thisHeading = $("#" + $(e.target).attr("aria-labelledby"));
+			$thisHeading.attr('aria-expanded', 'false');
+			$thisHeading.parents(".accordion-group").addClass("collapsed");
+		})
+		.on("hidden.bs.collapse", function(e) {
+			// hide pane that's just been collapsed
+			$(e.target).hide();
+
 		});
 
-		var outer = $('<div id="' + paneId + '" class="accordion-body collapse"/>');
+	node.children().each( function(index, value){
+
+		const paneId = $(this).attr('customLinkID') != undefined && $(this).attr('customLinkID') != '' ? $(this).attr('customLinkID') : 'collapse' + sectionIndex + '_' + itemIndex + '_' + index;
+		let group = $('<div class="accordion-group collapsed"/>');
+		let header = $('<div class="accordion-heading"><a id="' + paneId + 'Heading" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#' + paneId +  '" aria-expanded="false" aria-controls="' + paneId + '">' + $(this).attr('name') + '</a></div>');
+
+		group.append(header);
+
+		var outer = $('<div id="' + paneId + '" class="accordion-body collapse" role="region" aria-labelledby="' + paneId + 'Heading"/>');
+		outer.hide();
 
 		if (index == 0){
 
 			if (node[0].getAttribute('collapse') != 'true') {
-				header.find('a.accordion-toggle').removeClass('collapsed');
+				header.find('a.accordion-toggle')
+					.removeClass('collapsed')
+					.attr("aria-expanded", "true");
+				outer.show();
 				group.removeClass('collapsed');
 			}
 
@@ -2754,7 +2847,15 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				inner.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
 			}
 
 			if (this.nodeName == 'video'){
@@ -2816,7 +2917,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var itemIndex = itemIndex;
 
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false"/>');
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide" data-interval="false" aria-roledescription="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('label') != null ? languageData.find("carousel")[0].getAttribute('label') : 'Carousel') + '"/>');
 	
 	if (node.attr('autoPlay') == 'true') {
 		carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
@@ -2832,13 +2933,16 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	var indicators = $('<ol class="carousel-indicators"/>');
 
-	var items = $('<div class="carousel-inner"/>');
+	var items = $('<div id="car' + sectionIndex + '_' + itemIndex + 'Items" class="carousel-inner"/>');
 
 
 	node.children().each( function(index, value){
 
 		let indicator = $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '"></li>');
-		let pane = $('<div class="item">');
+		let xOfY = (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute("current") != null ? languageData.find("carousel")[0].getAttribute("current") : "{x} of {y}");
+		xOfY = xOfY.replace("{x}", index+1).replace("{y}", node.children().length);
+
+		let pane = $('<div tabindex="0" role="group" aria-roledescription="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute("slide") != null ? languageData.find("carousel")[0].getAttribute("slide") : "Slide") + '" aria-label="' + xOfY + '" class="item">');
 
 		if (index == 0) {
 			indicator.addClass('active');
@@ -2872,7 +2976,15 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				pane.append($audio);
+				$audio.wrap('<p></p>');
+
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
 			}
 
 			if (this.nodeName == 'video'){
@@ -2920,8 +3032,8 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	carDiv.append(indicators);
 	carDiv.append(items);
-	carDiv.append( $('<a class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev">&lsaquo;</a>') );
-	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
+	carDiv.append( $('<button class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('prev') != null ? languageData.find("carousel")[0].getAttribute('prev') : 'Previous slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-left"></span></button>') );
+	carDiv.append( $('<button class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('next') != null ? languageData.find("carousel")[0].getAttribute('next') : 'Next slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-right"></span></button>') );
 
 	section.append(carDiv);
 
@@ -2941,9 +3053,9 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 function loadXotContent($this) {
 	// get link & store url parameters to add back in later if not overridden
-	var xotLink = $this.attr('link').trim(),
-		params = [],
-		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
+	let xotLink = $this.attr('link').trim();
+	let params = [];
+	let separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 
 	xotLink = xotLink.indexOf('#resume=') != -1 ? xotLink.slice(0,xotLink.indexOf('#resume=')) : xotLink;
 
@@ -2955,12 +3067,12 @@ function loadXotContent($this) {
 		xotLink = params[0];
 		params.splice(0,1);
 
-		for (var i=0; i<params.length; i++) {
+		for (let i=0; i<params.length; i++) {
 			params[i] = params[i].split('=');
 		}
 	}
 
-	var hide = '';
+	let hide = '';
 	if ($this.attr('header') == 'true') { hide = 'top'; }
 	if ($this.attr('footer') == 'true') { hide = hide == 'top' ? 'both' : 'bottom'; }
 	xotLink += separator + 'hide=' + (hide != '' ? hide : 'none');
@@ -3000,7 +3112,7 @@ function loadXotContent($this) {
 	xotLink += separator + "embedded_fromSessionId=" + encodeURIComponent(x_xAPI_SessionId);
 
 	// add back any url params that haven't been overridden
-	for (var i=0; i<params.length; i++) {
+	for (let i=0; i<params.length; i++) {
 		if (xotLink.indexOf(separator + params[i][0] + '=') == -1) {
 			xotLink += separator + params[i][0] + '=' + params[i][1];
 		}
@@ -3011,29 +3123,29 @@ function loadXotContent($this) {
 		xotLink = "https:" + xotLink.substring(xotLink.indexOf("http:") + 5);
 	}
 
-	var warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '',
-		xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%',
-		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
+	const warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '';
+	const xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%';
+	const xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
 
-	var html = "";
-	// If $this.attr('showEmbed') is undefined, it still is != 'false', so only need to check on != false
-	if ($this.attr('showEmbed') != 'false')
-	{
+	let html = "";
+
+	// xot project can be embedded, link to or both
+	if ($this.attr('showEmbed') != 'false' || $this.attr('showLink') != 'true')	{
 		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'x_embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
 	}
-	if ($this.attr('showLink') != undefined && $this.attr('showLink') == 'true')
-	{
-		var target="target='_blank'";
-		if ($this.attr('displayOptions') != undefined && $this.attr('displayOptions') == 'lightbox')
-		{
-			target="data-featherlight='iframe'";
-		}
-		var linktext = $this.attr('link');
-		if ($this.attr('linkText') != undefined) {
-			linktext = $this.attr('linkText');
-		}
-		html += "<a href='" + xotLink + "' " + target + ">" + linktext + "</a>";
 
+	if ($this.attr('showLink') == 'true') {
+		let target="target='_blank'";
+		let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+		if ($this.attr('displayOptions') == 'lightbox') {
+			target="data-featherlight='iframe'";
+			linkWarning = "";
+		} else if ($this.attr('displayOptions') == 'thiswindow') {
+			target="target='_self'";
+			linkWarning = "";
+		}
+		const linkText = $this.attr('linkText') != undefined && $this.attr('linkText') != "" ? $this.attr('linkText') : $this.attr('link');
+		html += "<a href='" + xotLink + "' " + target + ">" + linkText + linkWarning + "</a>";
 	}
 	return html;
 
@@ -3257,15 +3369,16 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 		});
 
 		$.featherlight.prototype.afterContent = function(e) {
-			var caption = this.$currentTarget == undefined ? undefined : this.$currentTarget.find('img').attr('alt'),
-				sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
+			const altText = this.$currentTarget == undefined ? undefined : this.$currentTarget.find('img').attr('alt');
+			if (altText != undefined && altText != '') {
+				this.$instance.find('.featherlight-content img').attr('alt', altText);
+			}
 
+			const caption = this.$currentTarget == undefined ? undefined : $(this.$currentTarget).next().is("figCaption") ? $(this.$currentTarget).next().html() : undefined;
+			const sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
 			if (caption != undefined && caption != '') {
-				this.$instance.find('.featherlight-content img').attr('alt', caption);
-
-				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
 				// captions can be turned on at LO, page or section level
-				var captionType = "false";
+				let captionType = "false";
 				if (sectionCaption != undefined) {
 					captionType = sectionCaption;
 				} else if (thisPageInfo.attr("lightboxCaption") != undefined) {
@@ -3276,9 +3389,9 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 
 				if (captionType != "false") {
 					this.$instance.find('.caption').remove();
-					var before = captionType == "above" ? true : false;
+					const before = captionType == "above" ? true : false;
+					const $img = $(this.$content[0]);
 
-					var $img = $(this.$content[0]);
 					$img.wrap('<figure></figure>');
 					if (before == true) {
 						$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
@@ -3323,7 +3436,9 @@ function getLangInfo(node, attribute, fallBack) {
         if (attribute == false) {
             string = node.childNodes[0].nodeValue;
         } else {
-            string = node.getAttribute(attribute);
+			if (node.getAttribute(attribute) != undefined && node.getAttribute(attribute) != null) {
+				string = node.getAttribute(attribute);
+			}
         }
     }
     return string;

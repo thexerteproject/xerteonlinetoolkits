@@ -76,6 +76,26 @@ footer {
   font-weight: normal;
 }
 
+#skipLink {
+    z-index: 1000;
+    background: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    left: 50%;
+    padding: 4px;
+    position: absolute;
+    transform: translateY(-100%);
+    transition: transform 0.3s;
+}
+#skipLink a, #skipLink a:visited{
+    color:#ffffff !important;
+}
+
+#skipLink:focus {
+    transform: translateY(0%);
+    color:#ffffff !important;
+}
+
 /* --NAVBAR-------------------------------------------------------------- */
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
 color: #ffffff;
@@ -104,6 +124,7 @@ color: #6FD9D9;
 .navbar .nav .backBtn a {
 	cursor: pointer;
 }
+
 
 /* --HEADINGS-------------------------------------------------------------- */
 h2.sectionTitle {
@@ -463,6 +484,10 @@ h3.contentTitle {
         margin-right: auto;
     }
 
+    .navigator.carousel .carousel-control {
+        font-size: 2em;
+    }
+
     /* --SEARCH-------------------------------------------------------------- */
 
     #searchHolder .searchBtn {
@@ -627,6 +652,24 @@ h3.contentTitle {
         color: #c0392b;
     }
 
+    .audioTranscript .mejs-container .mejs-controls {
+        box-sizing: border-box;
+        padding-right: 31px;
+    }
+
+    .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn {
+        height: 100%;
+        position: absolute;
+        right: 5px;
+    }
+
+    .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button, #x_footerBlock .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
+        font-family: "Font Awesome 5 Free";
+        background-image: none;
+        font-size: 15px !important;
+        color: #eee;
+    }
+
     table {
         text-align: left;
         border-collapse: collapse;
@@ -725,7 +768,7 @@ h3.contentTitle {
     .wcagLink {
         float: right;
         position: relative;
-        bottom: 40px;
+        /*bottom: 40px;*/
     }
     /*round back to top button defaults*/
     .top-round {

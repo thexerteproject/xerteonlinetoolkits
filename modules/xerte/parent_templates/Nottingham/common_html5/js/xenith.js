@@ -1061,6 +1061,8 @@ function x_GetTrackingLabelOfPage() {
 
 // setup functions load interface buttons and events
 function x_setUp() {
+
+	$(".skip-link").html(x_getLangInfo(x_languageData.find("skip")[0], "label", "Skip to main content"));
 	
 	// prevent flashes of css body tag colours before the main interface has loaded
 	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');
@@ -3140,6 +3142,10 @@ function x_passwordPage(pswds) {
 			x_updateCss(false);
 			
 			$("#x_pageDiv").show();
+			$x_pageDiv.css("height", "100%");
+			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
+			let pageHeight = $("#x_pageHolder").innerHeight() - paddingBlock;
+			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			
 			var $pswdBlock = $('#x_page' + x_currentPage);
@@ -3190,6 +3196,7 @@ function x_passwordPage(pswds) {
 					if ($.inArray(pswdEntered, pswds) >= 0) {
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						x_pageInfo[x_currentPage].passwordPass = true;
+						x_pageDiv.css("height", "");
 						$pswdBlock.remove();
 						x_addCountdownTimer();
 						x_addNarration('x_changePageStep6', '');
