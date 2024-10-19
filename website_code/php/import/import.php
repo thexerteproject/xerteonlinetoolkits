@@ -423,6 +423,8 @@ if (substr($filename, strlen($filename) - 3, 3) === "zip") {
 
     $new_file_name = $xerte_toolkits_site->import_path . $this_dir . time() . $filename;
 
+    x_check_path_traversal_newpath($_FILES['filenameuploaded']['tmp_name']);
+    x_check_path_traversal_newpath($new_file_name);
     if (@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)) {
 
         require_once dirname(__FILE__) . "/../dUnzip2.inc.php";

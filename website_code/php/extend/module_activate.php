@@ -25,24 +25,13 @@ if(is_user_admin()){
 
 	_load_language_file("/extend.inc");
 
-    if (isset($_POST['name']))
+    if (!isset($_POST['name']))
     {
-        $module = x_clean_input($_POST['name'], 'string');
+        die("No module name");
     }
+    $module = x_clean_input($_POST['name'], 'string');
     $dirpath = $xerte_toolkits_site->root_file_path . "modules/" . $module . "/templates/";
-    // Account for Windows, because realpath changes / to \
-    if(DIRECTORY_SEPARATOR !== '/')
-    {
-        $rdirpath = str_replace('/', DIRECTORY_SEPARATOR, $dirpath);
-    }
-    else{
-        $rdirpath = $dirpath;
-    }
-    $realpath = realpath($rdirpath);
-    if ($realpath === false || $realpath !== $rdirpath)
-    {
-        die("Invalid module name");
-    }
+    x_check_path_traversal($dirpath, $xerte_toolkits_site->root_file_path . 'modules', "Invalid module name");
 	if(file_exists($dirpath)){
 	
 		$dir = opendir($dirpath);
