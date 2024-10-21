@@ -398,6 +398,35 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     }
 }
 
+function x_check_path_traversal_newpath($path, $expected_path=null, $message=null)
+{
+    $mesg = ($message != null ? $message : "Path traversal detected!");
+    // Account for Windows, because realpath changes / to \
+    if(DIRECTORY_SEPARATOR !== '/') {
+        $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+    }
+    else
+    {
+        $rpath = $path;
+    }
+    // Trim dangling DIRECTORY_SEPARATOR
+    $rpath = rtrim($rpath, '/\\');
+    // path is new, so realpath does not work, check for ../ and encoded variations
+    if (strpos($rpath, '..') !== false || stripos($rpath, '%2e%2e') !== false)
+    {
+        _debug($mesg);
+        die($mesg);
+    }
+    if ($expected_path != null) {
+        // Check whether path is as expected
+        if (strpos($path, $expected_path) !== 0) {
+            _debug($mesg);
+            die($mesg);
+        }
+    }
+}
+
+
 function x_convert_user_area_url_to_path($url)
 {
     global $xerte_toolkits_site;

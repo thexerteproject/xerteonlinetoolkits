@@ -70,11 +70,14 @@ if(is_user_permitted("useradmin")){
 
 	if(count($roles_to_unassign) > 0){
 		$questionMarks = "?";
+        $params = array($userid, $roles_to_unassign[0]);
 		for($i = 1; $i < count($roles_to_unassign);$i++){
+            $params[] = $roles_to_unassign[$i];
 			$questionMarks .= ", ?";
+
 		}
 		$query = "delete from logindetailsrole where userid=? and roleid in ({$questionMarks})";
-		$result = db_query($query, array($userid, ...$roles_to_unassign));
+		$result = db_query($query, $params);
 		if($result ===  false){
 			$return .= USERS_FAILED_REMOVE_ROLES . PHP_EOL;
 		}

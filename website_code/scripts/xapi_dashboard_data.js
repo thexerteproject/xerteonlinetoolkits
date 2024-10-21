@@ -1405,6 +1405,50 @@ DashboardState.prototype.hasCompletedInteraction = function (
   return res;
 };
 
+DashboardState.prototype.hasCompletedNotJudgedInteraction = function (
+  statementidxs,
+  interactionUrl
+) {
+  var statementidxList = this.getStatementidxsList(
+    statementidxs,
+    "http://adlnet.gov/expapi/verbs/scored"
+  )
+    .concat(
+      this.getStatementidxsList(
+        statementidxs,
+        "http://adlnet.gov/expapi/verbs/answered"
+      )
+    )
+    .concat(
+      this.getStatementidxsList(
+        statementidxs,
+        "https://w3id.org/xapi/video/verbs/paused"
+      )
+    );
+  var $this = this;
+  var res =
+    statementidxList.filter(function (statementidx) {
+      var statement = $this.rawData[statementidx];
+			let judge = true;
+			if(statement.result != undefined && statement.result.extensions != undefined){
+					judge = statement.result.extensions["http://xerte.org.uk/result/judge"] ?? true;
+			}
+      if (
+        statement.object.id + "/video" == interactionUrl &&
+        statement.verb.id == "https://w3id.org/xapi/video/verbs/paused"
+      ) {
+        return true && !judge;
+      }
+      return (
+        statement.result != undefined &&
+        statement.result.completion &&
+        statement.object.id == interactionUrl &&
+				!judge 
+      );
+    }).length > 0;
+  return res;
+};
+
 DashboardState.prototype.hasPassedInteraction = function (
   statementidxs,
   interactionUrl
@@ -1741,6 +1785,11 @@ DashboardState.prototype.getQuestion = function (interactionObjectUrl) {
     var statement = this.rawData[statementidxs[i]];
     if (question == undefined || question.interactionType == undefined) {
       question = statement.object.definition;
+			if(question != undefined && statement.result != undefined && statement.result.extensions != undefined && statement.result.extensions["http://xerte.org.uk/result/judge"] != undefined){
+					question.judge = statement.result.extensions["http://xerte.org.uk/result/judge"];
+			}else {
+					question.judge = true;
+			}
       // Special case for openanswer
       if (
         question != undefined &&

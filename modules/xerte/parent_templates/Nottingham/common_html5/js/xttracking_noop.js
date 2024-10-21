@@ -1382,7 +1382,7 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result != null.judge != null ? state.interactions[i].result != null.judge : true);
+                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
                         judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
@@ -1420,7 +1420,7 @@ function XTResults(fullcompletion) {
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
                 subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
-                judge &= subinteraction.judge;
+                judge = judge && subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
             }
 						results.interactions[nrofquestions - 1].judge = judge;

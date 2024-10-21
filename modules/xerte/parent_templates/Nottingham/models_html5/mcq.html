@@ -57,16 +57,10 @@
             var correctOptions = [],
                correctAnswer = [],
                correctFeedback = [],
-               judge = true; // is there a correct answer for the question?
+               judge = false; // is there a correct answer for the question?
 
             this.checked = false;
             // Track the quiz page
-            this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
             for (var i = 0; i < this.optionElements.length; i++) {
 				var answerTxt;
 				if (this.optionElements[i].label != undefined)
@@ -91,12 +85,22 @@
                 }
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
             }
-			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+			if(x_currentPageXML.getAttribute("markFeedback") != undefined && x_currentPageXML.getAttribute("markFeedback") == 'false'){
 				judge = false;
 			}
 			$("#pageContents").data("judge", judge);
 			
             // Create fallback label
+            this.weighting = 1.0;
+			if (x_currentPageXML.getAttribute("markFeedback")){
+				this.weighting = 0.0;
+			}
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+
             var label = (x_currentPageXML.getAttribute('name') != undefined ? x_currentPageXML.getAttribute('name') : "Multiple choice question");
             label += ' ' + (x_currentPage+1);
 			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")

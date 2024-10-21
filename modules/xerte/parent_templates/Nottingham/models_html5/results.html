@@ -296,7 +296,7 @@
 
       xtresults.interactions.forEach(function(x) {
         // don't show pages where weighting is zero, unless show pages with 0 tracking weight is on
-        if (x.type == 'result' || (!showzeroweight && x.completed == "true" && x.weighting == 0)) {
+        if (x.type == 'result' || ((!showzeroweight && x.judge) && x.completed == "true" && x.weighting == 0)) {
           return;
         }
 
