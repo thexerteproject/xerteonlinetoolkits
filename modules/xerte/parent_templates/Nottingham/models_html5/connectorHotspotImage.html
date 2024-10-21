@@ -224,10 +224,8 @@
 			
 			if ($('#audioHolder')) $('#audioHolder').empty();
 
-			//todo add orientation
-			this.colour1 = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
-			this.colour2 = x_currentPageXML.getAttribute('colour2') != undefined && x_currentPageXML.getAttribute('colour2') != '' && x_currentPageXML.getAttribute('colour2') != '0x' ? x_currentPageXML.getAttribute('colour2') : '0xFFFFFF';
-			this.size = x_currentPageXML.getAttribute('Size') != undefined && x_currentPageXML.getAttribute('Size') != '' ? x_currentPageXML.getAttribute('Size') : '14';
+			let hs_generic_colour_background = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
+			let hs_generic_colour_icon  = x_currentPageXML.getAttribute('colour2') != undefined && x_currentPageXML.getAttribute('colour2') != '' && x_currentPageXML.getAttribute('colour2') != '0x' ? x_currentPageXML.getAttribute('colour2') : '0xFFFFFF';
 
 			$('#hsIconHolder').empty()
 			$(x_currentPageXML).children()
@@ -284,15 +282,15 @@
 					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("windowURL") != "") {
 						hsType = "newWindow";
 						hsInfo = "url";
-					
-					// go to external page
+
+						// go to external page
+					} else if (this.getAttribute("destinationURL") != undefined && this.getAttribute("destinationURL") != "" && this.getAttribute('destinationType') != undefined && this.getAttribute('destinationType') == 'tab'){
+						hsType = "newTab";
+						hsInfo = this.getAttribute("destinationURL");
+
 					} else if (this.getAttribute("destinationURL") != undefined && this.getAttribute("destinationURL") != "") {
 						hsType = "url";
 						hsInfo = this.getAttribute("destinationURL");
-					
-					} else if (this.getAttribute("newTabURL") != undefined && this.getAttribute("newTabURL") != ""){
-						hsType = "newTab";
-						hsInfo = this.getAttribute("newTabURL");
 
 					// go to page in LO
 					} else if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
@@ -368,8 +366,8 @@
 						}
 					} else {
 						// correct the format of the colour codes (start with # rather than 0x)
-						var colour1 = this.getAttribute('colour1') != undefined && this.getAttribute('colour1') != '' && this.getAttribute('colour1') != '0x' ? this.getAttribute('colour1') :'0x000000';
-						var colour2 = this.getAttribute('colour2') != undefined && this.getAttribute('colour2') != '' && this.getAttribute('colour2') != '0x' ? this.getAttribute('colour2') :'0xFFFFFF';
+						var colour1 = this.getAttribute('colour1') != undefined && this.getAttribute('colour1') != '' && this.getAttribute('colour1') != '0x' ? this.getAttribute('colour1') : hs_generic_colour_background;
+						var colour2 = this.getAttribute('colour2') != undefined && this.getAttribute('colour2') != '' && this.getAttribute('colour2') != '0x' ? this.getAttribute('colour2') : hs_generic_colour_icon;
 						var iconCode = this.getAttribute('iconCode') != undefined && this.getAttribute('iconCode') != '' ? this.getAttribute('iconCode') : 'fas fa-exclamation-circle';
 						colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
 						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
@@ -387,7 +385,7 @@
 						});
 
 
-						var $hotspot = $('<span class="hotspotIcon"></span>');
+						var $hotspot = $('<span class="hotspotIcon" tabindex="0"></span>');
 						var $iconhtml = '<i class="' + iconCode +'" style="color:' + colour2 + ';font-size:' + size/2 + 'px;transform:rotate(' + icon.angle +'deg)"></i>'
 						$hotspot.html($iconhtml)
 
@@ -413,7 +411,6 @@
 									if (hsType != "pageLink" && hsType != "url") $(this).addClass("selected");
 
 									$("#feedback").html("");
-
 									if (hsType == "url") {
 										window.location.href = hsInfo;
 									}
@@ -656,7 +653,7 @@
 									}
 
 								})
-								.hover(function () {
+								.on("mouseenter", function () {
 
 									if (hs_hover === 'true' && x_browserInfo.mobile == false) {
 										if (hsInfo == "image" || hsInfo == "text") {
@@ -727,9 +724,16 @@
 									}
 								})
 								.focusin(function () {
-									$('img').mapster('set_options', tabfocusoptions);
-									$(this).addClass("highlight");
-									$(this).mapster('highlight');
+									if ($(this).context.shape != "icon") {
+										$('img').mapster('set_options', tabfocusoptions);
+										$(this).addClass("highlight");
+										$(this).mapster('highlight');
+									} else {
+										$("#pageContents .selected").removeClass("selected");
+										$("#pageContents .highlighted").removeClass("highlighted");
+
+										$(this).addClass("selected");
+									}
 								})
 								.focusout(function () {
 									$('img').mapster('set_options', options);
@@ -739,7 +743,17 @@
 								.keypress(function (e) {
 									var charCode = e.charCode || e.keyCode;
 									if (charCode == 32) {
-										$(this).trigger("click");
+										if (hs_hover != "true") {
+											$(this).trigger("click");
+										} else {
+											$(this).trigger("mouseenter")
+										}
+									}
+								})
+								.keyup(function (e) {
+									var charCode = e.charCode || e.keyCode;
+									if (charCode == 27) {
+										$(this).trigger("mouseleave")
 									}
 								});
 
@@ -850,7 +864,7 @@
 	}
 
 	function setBubble(hsInfo, hsShape, _this, thisTmp) {
-		debugger
+
 		$hotspot_bubble = $("#hotspot_bubble");
 
 		(_this.getAttribute("showTitle") == 'true' && _this.getAttribute("name") !== "") ? bubble_content = "<h3>" + _this.getAttribute("name") + "</h3><br/>" : bubble_content = ""
@@ -863,8 +877,8 @@
 		}
 		$hotspot_bubble.html(bubble_content);
 
-		let vw = $('#x_pageHolder').width()
-		let vh = $('#x_pageHolder').height()
+		let vw = $('#x_mainHolder').width()
+		let vh = $('#x_mainHolder').height()
 
 		$hotspot_bubble.css({
 			"max-width": vw * 0.6,
@@ -874,7 +888,7 @@
 		let current_icon = $("#pageContents .selected")
 		if (hsShape == 'icon') {
 			hs_left = current_icon.offset().left
-			hs_top = current_icon.offset().top - $('#x_headerBlock').height()
+			hs_top = current_icon.offset().top
 			hs_width = current_icon.outerWidth()
 			hs_height = current_icon.outerHeight()
 		} else {
@@ -921,11 +935,11 @@
 		// hotspot selection and final bubble render.
 		if (vw - hs_left - hs_width > hs_left) {
 			//place r
-			var tmp_left = hs_left + hs_width
+			var tmp_left = hs_left + hs_width + 5
 			max_w = vw - hs_left - hs_width - 30
 		} else {
 			//place left
-			var tmp_left = hs_left - $hotspot_bubble.outerWidth(true)
+			var tmp_left = hs_left - $hotspot_bubble.outerWidth(true) - 5
 			max_w = hs_left
 		}
 
@@ -938,6 +952,7 @@
 		} else {
 			//normal
 			var tmp_top = hs_top + hs_height/2 - $hotspot_bubble.outerHeight(true)/2
+			debugger
 		}
 
 		$hotspot_bubble.css({

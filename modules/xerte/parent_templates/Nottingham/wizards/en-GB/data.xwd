@@ -2313,9 +2313,9 @@
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
 	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
-	<windowType label="Display In" options="Dialog,Lightbox,Nearby bubble" type="ComboBox" data="dialog,lightbox,bubble" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
+	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
 	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="false" width="200"/>
-    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info"/>
+    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="mode=='icon'"/>
 
 	<hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
 		<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
@@ -2364,9 +2364,12 @@
 		<windowWidth label="Width" type="NumericStepper" min="100" max="1030" step="10" defaultValue="550" width="100" optional="true"/>
 		<windowHeight label="Height" type="NumericStepper" min="100" max="1030" step="10" defaultValue="400" width="100" optional="true"/>
 	</window>
-	
-	<destinationURL label="External URL" type="TextInput" optional="true" tooltip="Open an external website when hotspot clicked. The browser will navigate away from this project"/>
-	<newTabURL label="New Tab" type="TextInput" optional="true" tooltip="Open a website in a new tab when hotspot clicked"/>
+
+	<externalURLGroup type="group" label="External URL" optional="true" tooltip="Open an external website when the hotspot is clicked.">
+        <destinationURL label="External URL" type="TextInput" optional="true" tooltip="The destination url"/>
+        <destinationType label="Type" options="New tab, Current page" type="ComboBox" data="tab,current" defaultValue="tab" width="200" optional="true" tooltip="If current page is selected the browser will navigate away from this project"/>
+	</externalURLGroup>
+
 	<destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to another page in this project when hotspot clicked"/>
 	<relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)" deprecated="This property is deprecated. You can now select a relative destination in the Destination Page optional property."/>
 	
