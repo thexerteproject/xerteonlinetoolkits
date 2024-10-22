@@ -279,7 +279,7 @@ CREATE TABLE `$user_sessions` (
 CREATE TABLE `$user` (
   `iduser` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) DEFAULT NULL,
-  `password` varchar(45) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
   `firstname` varchar(45) DEFAULT NULL,
   `surname` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,

@@ -463,6 +463,10 @@ h3.contentTitle {
         margin-right: auto;
     }
 
+    .navigator.carousel .carousel-control {
+        font-size: 2em;
+    }
+
     /* --SEARCH-------------------------------------------------------------- */
 
     #searchHolder .searchBtn {
@@ -625,6 +629,24 @@ h3.contentTitle {
         margin-top: 1em;
         font-size: 0.9em;
         color: #c0392b;
+    }
+
+    .audioTranscript .mejs-container .mejs-controls {
+        box-sizing: border-box;
+        padding-right: 31px;
+    }
+
+    .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn {
+        height: 100%;
+        position: absolute;
+        right: 5px;
+    }
+
+    .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button, #x_footerBlock .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
+        font-family: "Font Awesome 5 Free";
+        background-image: none;
+        font-size: 15px !important;
+        color: #eee;
     }
 
     table {

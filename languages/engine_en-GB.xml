@@ -206,4 +206,6 @@
 
   <scormTrackingAlert warning="Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt."/>
 
+  <carousel label="Carousel" slide="slide" next="Next slide" prev="Previous slide" current="{x} of {y}"/>
+
 </language>
