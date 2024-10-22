@@ -4960,6 +4960,7 @@
       if ( !yujaIFrame.contentWindow ) {
         return;
       }
+      console.log("Posting " + JSON.stringify(data) + " to " + childOrigin);
       yujaIFrame.contentWindow.postMessage( data, childOrigin);
     }
 
@@ -4967,12 +4968,11 @@
         return childOrigin;
     }
 
-    var methods = ( "Play Pause SeekTo AdjustVolume SeekBack10 SeekAhead10 ToggleCaptions" ).split(" ");
+    var methods = ( "Play Pause SeekTo AdjustVolume SeekBack10 SeekAhead10 ToggleCaptions getDuration getCurrentPlayTime" ).split(" ");
 
     methods.forEach( function( method ) {
       // All current methods take 0 or 1 args, always send arg0
       self[ method ] = function( arg0 ) {
-        debugger
         sendMessage( method, arg0 );
       };
     });
@@ -5008,7 +5008,8 @@
         playerPaused = true,
         playerReadyCallbacks = [],
         timeUpdateInterval,
-        currentTimeInterval;
+        currentTimeInterval,
+        firstPlay = true;
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLYujaVideoElement::" );
@@ -5053,19 +5054,20 @@
     }
 
     function onStateChange( event ) {
-
       if( event.origin !== impl.origin ) {
         return;
       }
 
       // Events
       var data = event.data;
+
       if ( typeof data.name !== 'undefined') {
+        //console.log("Received event: " + data.name);
         switch (data.name) {
           case "ready":
             onReady();
             break;
-          case "playbackPlayed":
+          case "playbackPlaying":
             onPlay();
             break;
           case "playbackPaused":
@@ -5075,21 +5077,40 @@
             onEnded();
             break;
           case "playbackSeeked":
-            onCurrentTime(parseFloat(data.data.seconds));
+            onTimeUpdate(data.value);
             onSeeked();
+            break;
+          case "currentPlayTimeInterval":
+          case "currentPlayTime":
+            onTimeUpdate(data.value);
+            if (data.name === "currentPlayTime") {
+                onGetTimeUpdates();
+            }
+            break;
+          case "videoDuration":
+            let prevduration = impl.duration;
+            impl.duration = parseFloat(data.value);
+            if (impl.duration > 0 && prevduration != impl.duration) {
+              self.dispatchEvent("durationchange");
+              self.dispatchEvent("loadedmetadata");
+            }
             break;
         }
       }
       else
       {
-        console.log("Unknown event: " + event.data);
+        //console.log("Unknown event: ");
+        //console.log(event);
       }
     }
 
     //Called when the player script has loaded
     function onReady()
     {
+      debugger;
       player = new YujaPlayer(elem);
+
+      player.getDuration();
 
       impl.readyState = self.HAVE_FUTURE_DATA;
       self.dispatchEvent( "canplay" );
@@ -5100,6 +5121,20 @@
       setVolume(1);
 
       playerReady = true;
+
+    }
+
+    function onTimeUpdate(time) {
+      impl.currentTime = time;
+      self.dispatchEvent("timeupdate");
+    }
+
+    function onGetTimeUpdates(){
+      if (playerReady && !impl.playerPaused) {
+        setTimeout(function(){
+            player.getCurrentPlayTime();
+        }, 250);
+      }
     }
 
 
@@ -5142,12 +5177,17 @@
     }
 
     function changeCurrentTime( aTime ) {
+       if (firstPlay)
+       {
+         // Ignore if not already played at least once
+         return;
+       }
       if (aTime === impl.currentTime) {
         return;
       }
       impl.currentTime = aTime;
       onSeeking();
-      player.Seek(aTime);
+      player.SeekTo(aTime);
     }
 
     function onPlay() {
@@ -5155,17 +5195,18 @@
         changeCurrentTime( 0 );
         impl.ended = false;
       }
+      player.getDuration();
       self.dispatchEvent( "durationchange" );
       impl.paused = false;
       if( playerPaused ) {
         playerPaused = false;
         self.dispatchEvent( "play" );
         self.dispatchEvent( "playing" );
+        player.getCurrentPlayTime();
       }
     }
 
     self.play = function() {
-      debugger;
       impl.paused = false;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.play(); } );
@@ -5253,6 +5294,7 @@
 
     function onEnded() {
       impl.ended = true;
+      player.Pause();
       onPause();
       self.dispatchEvent("timeupdate");
       self.dispatchEvent("ended");
