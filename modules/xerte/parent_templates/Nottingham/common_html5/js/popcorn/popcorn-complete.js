@@ -3230,7 +3230,7 @@
         // We leave HTMLVideoElement and HTMLAudioElement wrappers out
         // of the mix, since we'll default to HTML5 video if nothing
         // else works.  Waiting on #1254 before we add YouTube to this.
-        wrappers = "HTMLYouTubeVideoElement HTMLVimeoVideoElement HTMLMediasiteVideoElement HTMLPeerTubeVideoElement HTMLSoundCloudAudioElement HTMLNullVideoElement".split(" ");
+        wrappers = "HTMLYouTubeVideoElement HTMLVimeoVideoElement HTMLMediasiteVideoElement HTMLPeerTubeVideoElement HTMLYujaVideoElement HTMLSoundCloudAudioElement HTMLNullVideoElement".split(" ");
 
     if ( !node ) {
       Popcorn.error( "Specified target `" + target + "` was not found." );
@@ -4647,6 +4647,7 @@
 
     function HTMLPeerTubeVideoElement(id) 
     {
+
         var self = new Popcorn._MediaElementProto(),
             parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
             elem = document.createElement( "iframe" ),
@@ -4924,6 +4925,520 @@
       ? "probably" 
       : "";  
     };
+}( Popcorn, window, document ));
+
+(function( Popcorn, window, document )
+{
+  var CURRENT_TIME_MONITOR_MS = 16;
+
+  function YujaOriginFromSrc(src)
+  {
+    var url = new URL(src);
+    return url.origin;
+  }
+
+  function YujaOrigin( yujaIFrame ) {
+    var url = yujaIFrame.src;
+    return YujaOriginFromSrc(url);
+  }
+
+  function YujaPlayer( yujaIFrame ) {
+    var self = this,
+        childOrigin = YujaOrigin( yujaIFrame ),
+        muted = 0;
+
+    function sendMessage( method, params ) {
+      var data = {
+        name: method,
+      };
+      if ( typeof params !== "undefined" ) {
+        switch (method)
+        {
+          case "AdjustVolume":
+            data.value = params*100.0;
+            break;
+          case "SeekTo":
+            data.value = params;
+        }
+      }
+
+      // The iframe has been destroyed, it just doesn't know it
+      if ( !yujaIFrame.contentWindow ) {
+        return;
+      }
+      console.log("Posting " + JSON.stringify(data) + " to " + childOrigin);
+      yujaIFrame.contentWindow.postMessage( data, childOrigin);
+    }
+
+    function getChildOrigin () {
+        return childOrigin;
+    }
+
+    var methods = ( "Play Pause SeekTo AdjustVolume SeekBack10 SeekAhead10 ToggleCaptions getDuration getCurrentPlayTime" ).split(" ");
+
+    methods.forEach( function( method ) {
+      // All current methods take 0 or 1 args, always send arg0
+      self[ method ] = function( arg0 ) {
+        sendMessage( method, arg0 );
+      };
+    });
+  }
+
+  function HTMLYujaVideoElement(id)
+  {
+
+    var self = new Popcorn._MediaElementProto(),
+        parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
+        elem = document.createElement( "iframe" ),
+        impl = {
+          src: "",
+          origin: "",
+          networkState: self.NETWORK_EMPTY,
+          readyState: self.HAVE_NOTHING,
+          seeking: false,
+          autoplay: "",
+          preload: "",
+          controls: false,
+          loop: false,
+          poster: "",
+          volume: 1,
+          muted: 0,
+          currentTime: 0,
+          duration: NaN,
+          ended: false,
+          paused: true,
+          error: null
+        },
+        playerReady = false,
+        player,
+        playerPaused = true,
+        playerReadyCallbacks = [],
+        timeUpdateInterval,
+        currentTimeInterval,
+        firstPlay = true;
+
+    // Namespace all events we'll produce
+    self._eventNamespace = Popcorn.guid( "HTMLYujaVideoElement::" );
+
+    self.parentNode = parent;
+
+    // Mark type as Mediasite
+    self._util.type = "Yuja";
+
+    elem.id = "yujaIframe";
+    elem.addClass = " .iframe ";
+    elem.allow= 'fullscreen';
+
+    function addPlayerReadyCallback( callback ) {
+      playerReadyCallbacks.push( callback );
+    }
+
+    function changeSrc( aSrc )
+    {
+      if (!self._canPlaySrc(aSrc)) {
+        impl.error = {
+          name: "MediaError",
+          message: "Media Source Not Supported",
+          code: MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED
+        };
+        self.dispatchEvent("error");
+        return;
+      }
+      impl.src = aSrc;
+      impl.origin = YujaOriginFromSrc( aSrc );
+      parent.appendChild(elem);
+      self.dispatchEvent("loadstart");
+      self.dispatchEvent("progress");
+      elem.width="100%";
+      elem.height="100%";
+      elem.src=aSrc + "?api=1";
+      elem.frameborder="0";
+      elem.webkitAllowFullScreen = true;
+      elem.mozAllowFullScreen = true;
+      elem.allowFullScreen = true;
+      window.addEventListener( "message", onStateChange, false );
+    }
+
+    function onStateChange( event ) {
+      if( event.origin !== impl.origin ) {
+        return;
+      }
+
+      // Events
+      var data = event.data;
+
+      if ( typeof data.name !== 'undefined') {
+        //console.log("Received event: " + data.name);
+        switch (data.name) {
+          case "ready":
+            onReady();
+            break;
+          case "playbackPlaying":
+            onPlay();
+            break;
+          case "playbackPaused":
+            onPause();
+            break;
+          case "playbackEnded":
+            onEnded();
+            break;
+          case "playbackSeeked":
+            onTimeUpdate(data.value);
+            onSeeked();
+            break;
+          case "currentPlayTimeInterval":
+          case "currentPlayTime":
+            onTimeUpdate(data.value);
+            if (data.name === "currentPlayTime") {
+                onGetTimeUpdates();
+            }
+            break;
+          case "videoDuration":
+            let prevduration = impl.duration;
+            impl.duration = parseFloat(data.value);
+            if (impl.duration > 0 && prevduration != impl.duration) {
+              self.dispatchEvent("durationchange");
+              self.dispatchEvent("loadedmetadata");
+            }
+            break;
+        }
+      }
+      else
+      {
+        //console.log("Unknown event: ");
+        //console.log(event);
+      }
+    }
+
+    //Called when the player script has loaded
+    function onReady()
+    {
+      debugger;
+      player = new YujaPlayer(elem);
+
+      player.getDuration();
+
+      impl.readyState = self.HAVE_FUTURE_DATA;
+      self.dispatchEvent( "canplay" );
+
+      impl.readyState = self.HAVE_ENOUGH_DATA;
+      self.dispatchEvent( "canplaythrough" );
+
+      setVolume(1);
+
+      playerReady = true;
+
+    }
+
+    function onTimeUpdate(time) {
+      impl.currentTime = time;
+      self.dispatchEvent("timeupdate");
+    }
+
+    function onGetTimeUpdates(){
+      if (playerReady && !impl.playerPaused) {
+        setTimeout(function(){
+            player.getCurrentPlayTime();
+        }, 250);
+      }
+    }
+
+
+    function monitorCurrentTime(videoState) {
+      var playerTime = videoState.position;
+      if (impl.duration != videoState.duration) {
+        impl.duration = videoState.duration;
+        self.dispatchEvent( "durationchange" );
+        if (impl.duration > 0) {
+          self.dispatchEvent( "loadedmetadata" );
+          self.dispatchEvent( "loadeddata" );
+        }
+      }
+
+      if (impl.currentTime != videoState.position) {
+        self.dispatchEvent("timeupdate");
+      }
+
+      // Playbackstates are: playing, notstarted, paused and ended. Only playing is relevant for us.
+      var isPaused = !(videoState.playbackState == 'playing');
+      if (isPaused != impl.playerPaused) {
+        if (isPaused) {
+          onPause();
+        }
+        else {
+          onPlay();
+        }
+        impl.playerPaused = isPaused;
+      }
+
+      if ( !impl.seeking ) {
+        if ( Math.abs( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
+          onSeeking();
+          onSeeked();
+        }
+        impl.currentTime = playerTime;
+      } else if ( Math.abs( playerTime - impl.currentTime ) < 1 ) {
+        onSeeked();
+      }
+    }
+
+    function changeCurrentTime( aTime ) {
+       if (firstPlay)
+       {
+         // Ignore if not already played at least once
+         return;
+       }
+      if (aTime === impl.currentTime) {
+        return;
+      }
+      impl.currentTime = aTime;
+      onSeeking();
+      player.SeekTo(aTime);
+    }
+
+    function onPlay() {
+      if( impl.ended ) {
+        changeCurrentTime( 0 );
+        impl.ended = false;
+      }
+      player.getDuration();
+      self.dispatchEvent( "durationchange" );
+      impl.paused = false;
+      if( playerPaused ) {
+        playerPaused = false;
+        self.dispatchEvent( "play" );
+        self.dispatchEvent( "playing" );
+        player.getCurrentPlayTime();
+      }
+    }
+
+    self.play = function() {
+      impl.paused = false;
+      if( !playerReady ) {
+        addPlayerReadyCallback( function() { self.play(); } );
+        return;
+      }
+
+      player.Play();
+    };
+
+    function onPause () {
+      impl.paused = true;
+      if ( !playerPaused ) {
+        playerPaused = true;
+        clearInterval( timeUpdateInterval );
+        self.dispatchEvent( "pause" );
+      }
+    }
+
+    self.pause = function() {
+      impl.paused = true;
+      if( !playerReady ) {
+        addPlayerReadyCallback( function() { self.pause(); } );
+      }
+      player.Pause();
+    };
+
+    function onSeeking() {
+      impl.seeking = true;
+      self.dispatchEvent( "seeking" );
+    }
+
+    function onSeeked() {
+      impl.ended = false;
+      impl.seeking = false;
+
+      self.dispatchEvent( "timeupdate" );
+      self.dispatchEvent( "seeked" );
+      self.dispatchEvent( "canplay" );
+      self.dispatchEvent( "canplaythrough" );
+    }
+
+    function setMuted( aMute ) {
+      if( !playerReady ) {
+        impl.muted = aMute ? 1 : 0;
+        addPlayerReadyCallback( function() {
+          setMuted( aMute );
+        });
+        return;
+      }
+
+      // Move the existing volume onto muted to cache
+      // until we unmute, and set the volume to 0.
+      if( aMute ) {
+        impl.muted = impl.volume;
+        setVolume( 0 );
+      } else {
+        setVolume( impl.muted );
+        impl.muted = 0;
+      }
+    }
+
+    function getMuted() {
+      return impl.muted > 0;
+    }
+
+    function onVolume( aValue ) {
+      if( impl.volume !== aValue ) {
+        impl.volume = aValue;
+        self.dispatchEvent( "volumechange" );
+      }
+    }
+
+    function setVolume( aValue ) {
+      impl.volume = aValue;
+
+      if( !playerReady ) {
+        addPlayerReadyCallback( function() {
+          setVolume( aValue );
+        });
+        return;
+      }
+      player.AdjustVolume( aValue );
+      self.dispatchEvent( "volumechange" );
+    }
+
+    function onEnded() {
+      impl.ended = true;
+      player.Pause();
+      onPause();
+      self.dispatchEvent("timeupdate");
+      self.dispatchEvent("ended");
+    }
+
+    Object.defineProperties( self, {
+
+      src: {
+        get: function () {
+          return impl.src;
+        },
+        set: function (aSrc) {
+          if (aSrc && aSrc !== impl.src) {
+            changeSrc(aSrc);
+          }
+        }
+      },
+
+      autoplay: {
+        get: function() {
+          return impl.autoplay;
+        },
+        set: function( aValue ) {
+          impl.autoplay = self._util.isAttributeSet( aValue );
+        }
+      },
+
+      seeking: {
+        get: function() {
+          return impl.seeking;
+        }
+      },
+
+      width: {
+        get: function() {
+          return self.parentNode.offsetWidth;
+        }
+      },
+
+      height: {
+        get: function() {
+          return self.parentNode.offsetHeight;
+        }
+      },
+
+      loop: {
+        get: function() {
+          return impl.loop;
+        },
+        set: function( aValue ) {
+          impl.loop = self._util.isAttributeSet( aValue );
+        }
+      },
+
+      ended: {
+        get: function() {
+          return impl.ended;
+        }
+      },
+
+      paused: {
+        get: function() {
+          return impl.paused;
+        }
+      },
+
+      duration: {
+        get: function() {
+          return impl.duration;
+        }
+      },
+
+      readyState: {
+        get: function() {
+          return impl.readyState;
+        }
+      },
+
+      networkState: {
+        get: function() {
+          return impl.networkState;
+        }
+      },
+
+      volume: {
+        get: function() {
+          return impl.volume;
+        },
+        set: function( aValue ) {
+          if( aValue < 0 || aValue > 1 ) {
+            throw "Volume value must be between 0.0 and 1.0";
+          }
+          impl.volume = aValue;
+          setVolume( aValue );
+        }
+      },
+
+      muted: {
+        get: function() {
+          return getMuted();
+        },
+        set: function( aValue ) {
+          setMuted( self._util.isAttributeSet( aValue ) );
+        }
+      },
+
+      error: {
+        get: function() {
+          return impl.error;
+        }
+      },
+
+      currentTime: {
+        get: function() {
+          return impl.currentTime;
+        },
+        set: function( aValue ) {
+          changeCurrentTime( aValue );
+        }
+      }
+    });
+
+    self._canPlaySrc = Popcorn.HTMLYujaVideoElement._canPlaySrc;
+
+    return self;
+  }
+
+
+  Popcorn.HTMLYujaVideoElement = function( id ) {
+    return new HTMLYujaVideoElement( id );
+  };
+
+  // Helper for identifying URLs we know how to play.
+  Popcorn.HTMLYujaVideoElement._canPlaySrc = function( url ) {
+    return (/.+yuja\.com.+/).test( url )
+        ? "probably"
+        : "";
+  };
 }( Popcorn, window, document ));
 
 
@@ -6136,7 +6651,7 @@
     }
 
     var methods = ( "play pause paused seekTo unload getCurrentTime getDuration " +
-                    "etVideoEmbedCode getVideoHeight getVideoWidth getVideoUrl " +
+                    "getVideoEmbedCode getVideoHeight getVideoWidth getVideoUrl " +
                     "getColor setColor setLoop getVolume setVolume addEventListener enableTextTrack" ).split(" ");
     methods.forEach( function( method ) {
       // All current methods take 0 or 1 args, always send arg0

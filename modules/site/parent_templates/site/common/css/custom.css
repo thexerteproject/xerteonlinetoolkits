@@ -768,7 +768,7 @@ h3.contentTitle {
     .wcagLink {
         float: right;
         position: relative;
-        /*bottom: 40px;*/
+        bottom: 40px;
     }
     /*round back to top button defaults*/
     .top-round {
@@ -936,4 +936,8 @@ h3.contentTitle {
         -webkit-animation: x_bounce 2s infinite;
         animation: x_bounce 2s infinite;
     }
+
+
+.x_videoContainer {
+    width: 100%;
 }

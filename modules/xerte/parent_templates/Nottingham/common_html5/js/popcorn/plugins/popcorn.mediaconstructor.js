@@ -46,6 +46,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             mediaData.media += urlsep + "controls=2&playsinline=1"
         }
         // is it from youtube or vimeo or mediasite?
+        debugger;
         if (mediaData.media.indexOf('youtu') > 0 
          || mediaData.media.indexOf('vimeo') > 0 
          || mediaData.media.indexOf('videos/embed') > 0 // Peertube
@@ -53,7 +54,8 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
          || mediaData.media.indexOf('mediasite') > 0
          || mediaData.media.indexOf('deltion') > 0
          || isMediaSiteVideo(mediaData.media)
-         || isPeertubeVideo(mediaData.media)) {
+         || isPeertubeVideo(mediaData.media)
+         || mediaData.media.indexOf('yuja.com') > 0) {
             popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
             var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
             $videoHolder.attr("aspect", mediaData.aspect);
@@ -135,7 +137,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     
     // add transcript to media panel if required
     if (mediaData.transcript) {
-        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">' 
+        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">'
             + x_addLineBreaks(mediaData.transcript) + '</div></div>');
         $mediaHolder.find(".transcript").hide();
         $mediaHolder.find(".transcriptBtn")

@@ -9,191 +9,239 @@
   font-family: "Schoolbell", cursive;
   border-radius: 3px;
   background-color: #C4551F;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .panel1 a {
-  color: white; }
+  color: white;
+}
 
 .panel2 {
   font-family: "Schoolbell", cursive;
   border-radius: 3px;
   background-color: #418545;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .panel2 a {
-  color: white; }
+  color: white;
+}
 
 .panel3 {
   font-family: "Schoolbell", cursive;
   border-radius: 3px;
   background-color: #4078C0;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .panel3 a {
-  color: white; }
+  color: white;
+}
 
 .panel4 {
   font-family: "Schoolbell", cursive;
   border-radius: 3px;
   background-color: #278384;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .panel4 a {
-  color: white; }
+  color: white;
+}
 
 .panel5 {
   font-family: "Schoolbell", cursive;
   border-radius: 3px;
   background-color: #603784;
   color: #ffffff;
-  display: table; }
+  display: table;
+}
 
 .panel5 a {
-  color: white; }
+  color: white;
+}
 
 .panel6 {
   font-family: "Schoolbell", cursive;
   border-radius: 3px;
   background-color: #D13759;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .panel6 a {
-  color: white; }
+  color: white;
+}
 
 .highlight1 {
   font-family: "Schoolbell", cursive;
   background: #fff;
-  border-color: #C4551F; }
+  border-color: #C4551F;
+}
 
 .highlight2 {
   font-family: "Schoolbell", cursive;
   background: #fff;
-  border-color: #418545; }
+  border-color: #418545;
+}
 
 .highlight3 {
   font-family: "Schoolbell", cursive;
   background: #fff;
-  border-color: #4078C0; }
+  border-color: #4078C0;
+}
 
 .highlight4 {
   font-family: "Schoolbell", cursive;
   background: #fff;
-  border-color: #278384; }
+  border-color: #278384;
+}
 
 .highlight5 {
   font-family: "Schoolbell", cursive;
   background: #fff;
-  border-color: #603784; }
+  border-color: #603784;
+}
 
 .highlight6 {
   font-family: "Schoolbell", cursive;
   background: #fff;
-  border-color: #D13759; }
+  border-color: #D13759;
+}
 
 blockquote {
   font-family: "Schoolbell", cursive;
   font: 400 14px/24px "Schoolbell", cursive;
   background: #f9f9f9;
-  border-color: #ccc; }
+  border-color: #ccc;
+}
 
 .bq1 {
-  border-color: #C4551F; }
+  border-color: #C4551F;
+}
 
 .bq1:after {
-  color: #C4551F; }
+  color: #C4551F;
+}
 
 .bq1:before {
-  color: #C4551F; }
+  color: #C4551F;
+}
 
 .bq2 {
-  border-color: #418545; }
+  border-color: #418545;
+}
 
 .bq2:after {
-  color: #418545; }
+  color: #418545;
+}
 
 .bq2:before {
-  color: #418545; }
+  color: #418545;
+}
 
 .bq3 {
-  border-color: #4078C0; }
+  border-color: #4078C0;
+}
 
 .bq3:after {
-  color: #4078C0; }
+  color: #4078C0;
+}
 
 .bq3:before {
-  color: #4078C0; }
+  color: #4078C0;
+}
 
 .bq4 {
-  border-color: #278384; }
+  border-color: #278384;
+}
 
 .bq4:after {
-  color: #278384; }
+  color: #278384;
+}
 
 .bq4:before {
-  color: #278384; }
+  color: #278384;
+}
 
 .bq5 {
-  border-color: #603784; }
+  border-color: #603784;
+}
 
 .bq5:after {
-  color: #603784; }
+  color: #603784;
+}
 
 .bq5:before {
-  color: #603784; }
+  color: #603784;
+}
 
 .bq6 {
-  border-color: #D13759; }
+  border-color: #D13759;
+}
 
 .bq6:after {
-  color: #D13759; }
+  color: #D13759;
+}
 
 .bq6:before {
-  color: #D13759; }
+  color: #D13759;
+}
 
 .speech-bubble1 {
   background: #C4551F;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble1:after {
-  border-right-color: #C4551F; }
+  border-right-color: #C4551F;
+}
 
 .speech-bubble2 {
   background: #418545;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble2:after {
-  border-left-color: #418545; }
+  border-left-color: #418545;
+}
 
 .speech-bubble3 {
   background: #4078C0;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble3:after {
-  border-right-color: #4078C0; }
+  border-right-color: #4078C0;
+}
 
 .speech-bubble4 {
   background: #278384;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble4:after {
-  border-left-color: #278384; }
+  border-left-color: #278384;
+}
 
 .speech-bubble5 {
   background: #603784;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble5:after {
-  border-top-color: #603784; }
+  border-top-color: #603784;
+}
 
 .speech-bubble6 {
   background: #D13759;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble6:after {
   font-family: "Schoolbell", cursive;
-  border-top-color: #D13759; }
+  border-top-color: #D13759;
+}
 
 q, tt, kbd, samp, code, cite {
-  font-family: "Schoolbell", cursive; }
-
-/*# sourceMappingURL=editorstyles.css.map */
+  font-family: "Schoolbell", cursive;
+}/*# sourceMappingURL=editorstyles.css.map */
