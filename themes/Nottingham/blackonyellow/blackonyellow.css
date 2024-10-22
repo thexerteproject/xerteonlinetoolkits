@@ -9,8 +9,7 @@
 /*1vmin;*/
 /*2vmin;*/
 /*3px 3px 5px grey*/
-/*start here and set the default values for all the variables*/
-/******Header******/
+/*start here and set the default values for all the variables*/ /******Header******/
 #x_headerBlock {
   color: #FFFF99;
   background-repeat: no-repeat;
@@ -610,6 +609,22 @@ div#shorturltodisplay a {
 
 .x_results_page #general_summary th {
   background: #FFFF99;
+}
+
+.x_audioRecord_page .deleteClipBtn {
+  color: #000000;
+}
+
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus, .x_audioRecord_page .deleteClipBtn:active {
+  color: #1a1a1a;
+}
+
+.x_audioRecord_page .clip.highlight {
+  background-color: yellow;
+}
+
+.x_audioRecord_page #recBtn.recording .ui-icon, #recBtn.recording .ui-button-text {
+  color: #ffffff;
 }
 
 @media (min-width: 768px) {

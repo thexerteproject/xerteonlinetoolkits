@@ -22,7 +22,7 @@ require_once("../../../config.php");
 require("../user_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("system")){
 
     $mysql_id = database_connect("New_securty.php database connect success","New_security.php database connect failed");
 

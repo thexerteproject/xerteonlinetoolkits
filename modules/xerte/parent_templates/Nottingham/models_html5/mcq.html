@@ -61,12 +61,6 @@
 
             this.checked = false;
             // Track the quiz page
-            this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
             for (var i = 0; i < this.optionElements.length; i++) {
 				var answerTxt;
 				if (this.optionElements[i].label != undefined)
@@ -91,10 +85,22 @@
                 }
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
             }
-			
+			if(x_currentPageXML.getAttribute("markFeedback") != undefined && x_currentPageXML.getAttribute("markFeedback") == 'false'){
+				judge = false;
+			}
 			$("#pageContents").data("judge", judge);
 			
             // Create fallback label
+            this.weighting = 1.0;
+			if (x_currentPageXML.getAttribute("markFeedback")){
+				this.weighting = 0.0;
+			}
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+
             var label = (x_currentPageXML.getAttribute('name') != undefined ? x_currentPageXML.getAttribute('name') : "Multiple choice question");
             label += ' ' + (x_currentPage+1);
 			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
@@ -267,13 +273,20 @@
 				});
 
             $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+			
+			let judge = $("#pageContents").data("judge");
+
+			//if(!$judge){
+			//	correct = true;
+			//}
 
             var result = {
-                success: correct,
-                score: correct ? 100.0 : 0.0
-            };
+                success: correct || !judge,
+                score: correct ? 100.0 : 0.0,
+				judge: judge
+			};
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
             if (XTGetMode() == "normal")
             {
                 // Disable all options
@@ -457,9 +470,7 @@
 		<div id="infoHolder" class="right">
 			<div id="mainPanel" class="panel">
 				<fieldset class="noStyle">
-					<h3>
-						<legend id="question"></legend>
-					</h3>
+					<legend id="question"></legend>
 					<div id="optionHolder">
 						<div class="optionGroup">
 							<input type="radio" name="option" />

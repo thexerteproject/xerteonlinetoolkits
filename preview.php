@@ -63,7 +63,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 
             // is there a matching template?
             // if they're an admin or have rights to see the template, then show it.
-            if(is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
+            if(is_user_permitted("projectadmin") || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
                 show_preview_code($row);
                 exit(0);
             }

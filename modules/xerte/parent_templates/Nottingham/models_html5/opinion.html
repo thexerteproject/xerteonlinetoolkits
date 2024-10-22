@@ -30,7 +30,7 @@
 
 			if (x_browserInfo.mobile == false)
 			{
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
 			}
 			
 			$.each($(".questionAudio"), function(key, qA) {
@@ -98,6 +98,12 @@
 					.css('width', width)
 					.css('height', height);
 
+			$("#qHolder .qImg").each(function() {
+				$(this).css({
+					"max-width": $("#mainPanel").width(),
+					"max-height": $("#mainPanel").height() - ($(this).parents("figure").find("figcaption").outerHeight(true) - $(this).parents("figure").find("figcaption").height())
+				});
+			});
 		};
 
 		this.loadAudio = function(currentQuestion, soundFile, transcript)
@@ -146,7 +152,7 @@
 			$pageContents.data('currentQuestion', 0);
 			var questions = []; // array of questions to use (index)
 			
-			var numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
+			var numberOfQuestions = $(x_currentPageXML).children().children('opinionQuestion').length; // Can't be 0
 
             for(var i = 0; i < $(x_currentPageXML).children().length; i++)
             {
@@ -270,7 +276,7 @@
 			}
 			else
 			{
-				var $thisQ = $(x_currentPageXML).children().children()[questions[currentQuestion]];
+				var $thisQ = $(x_currentPageXML).children().children('opinionQuestion')[questions[currentQuestion]];
 				let classQ = $($thisQ).parent();
 				var infoString = $thisQ.getAttribute("prompt");
 
@@ -286,18 +292,23 @@
 
 				if (url != undefined && url != "") {
 					var newString = "";
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figure>';
+					}
 					newString += '<img class="qImg" src="' + x_evalURL(url) + '" class="opinionImg"';
-
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "")
 					{
 						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
 					}
-
 					newString += ' />';
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figcaption>' + $thisQ.getAttribute("caption") + '</figcaption></figure>';
+					}
 					infoString = newString + infoString;
 				}
 
 				$("#qTxt" + currentQuestion).html(x_addLineBreaks(infoString));
+
 				$("#feedback").html("");
 
 				if ($($thisQ).children().length == 0)
@@ -406,6 +417,11 @@
 						{
 							selected = max * answers[currentQuestion]/100;
 						}
+						else if ($thisQ.getAttribute("defaultSliderValue") != undefined)
+						{
+							const defaultVal = $thisQ.getAttribute("defaultSliderValue");
+							selected = max * defaultVal/100;
+						}
 
 						$rangeHolder.html('<form id="form' + currentQuestion + '"> <input id="slider' + currentQuestion + '" aria-label="slider' + currentQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
 
@@ -507,7 +523,7 @@
 		this.trackQuestion = function(currentQuestion, goingBack)
 		{
 			var questions = $pageContents.data('questions'),
-				currentQ = $(x_currentPageXML).children().children()[questions[currentQuestion]],
+				currentQ = $(x_currentPageXML).children().children('opinionQuestion')[questions[currentQuestion]],
 				selected = 0,
             	options = $(currentQ).children();
 				l_options = [],
@@ -603,13 +619,36 @@
             }
             myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
 
-			var feedbackText = x_currentPageXML.getAttribute("feedback") != '' ? "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>" : '';
-            if ($pageContents.data('showfeedback') && feedbackText != '') {
-                $("#feedback").html(feedbackText);
-            } else {
-				$("#feedback").remove();
+			$("#questionAudio, #feedback").empty();
+
+			// add main feedback
+            if ($pageContents.data('showfeedback') && x_currentPageXML.getAttribute("feedback") != '') {
+                $("#feedback").append("<div id='mainFb' class='fbBlock'>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</div>');
+            }
+
+			// add relevant tailored class feedback
+			if ($(x_currentPageXML).children().children('classFeedback').length > 0) {
+
+				$(x_currentPageXML).children().each(function() {
+					const thisClass = this;
+					$(thisClass).children('classFeedback').each(function() {
+						var thisScore;
+						for (let i=0; i<JSONGraph.classnames.length; i++) {
+							if (thisClass.getAttribute('name') == JSONGraph.classnames[i]) {
+								thisScore = JSONGraph.classvalues[i];
+							}
+						}
+
+						if ((($.isNumeric(this.getAttribute('minScore')) && thisScore >= Number(this.getAttribute('minScore'))) || !$.isNumeric(this.getAttribute('minScore'))) && (($.isNumeric(this.getAttribute('maxScore')) && thisScore <= Number(this.getAttribute('maxScore'))) || !$.isNumeric(this.getAttribute('maxScore')))) {
+							$('#feedback').append('<div class="fbBlock">' + (this.getAttribute('name') != '' ? '<h3>' + this.getAttribute('name') + '</h3>' : '') + x_addLineBreaks(this.getAttribute('feedbackTxt')) + '</div>');
+						}
+					});
+				})
 			}
-            $("#questionAudio").empty();
+
+			if ($('#feedback .fbBlock').length == 0) {
+				$('#feedback').hide();
+			}
 
             $("#qHolder").hide();
             $("#checkBtn").hide();
@@ -760,7 +799,7 @@
                 $pageContents.data('pageSize', parseInt(x_currentPageXML.getAttribute("pagesize")));
 				if ($pageContents.data('listMode') === 'all') {
 					// Set page size to number of items
-					const numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
+					const numberOfQuestions = $(x_currentPageXML).children().children('opinionQuestion').length; // Can't be 0
 					$pageContents.data('pageSize', numberOfQuestions);
 				}
             }
@@ -821,11 +860,21 @@
 				}
 			}
 
-			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "")
-			{
-				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ?
-						'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
-				$textHolder.append('<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
+			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
+				var newString = '';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					newString += '<figure>';
+				}
+				newString += '<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '" ';
+				if (x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "")
+				{
+					newString += 'alt="' + x_currentPageXML.getAttribute("tip") + '"';
+				}
+				newString += ' />';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					newString += '<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption><figure>';
+				}
+				$textHolder.append(newString);
 			}
 
 			var backBtnText = x_currentPageXML.getAttribute("backBtnText");
@@ -894,7 +943,7 @@
 					label: submitBtnText
 				})
 				.click(function() {
-          $("#mainPanel").animate({ scrollTop: 0 }, "fast");
+          			$("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
 			
@@ -1034,14 +1083,14 @@
 
 			<div id="mainPanel" class="panel qPanel">
 
-				<h3 id="qNo" aria-live="polite"></h3>
+				<p id="qNo" aria-live="polite"></p>
 
 				<fieldset class="noStyle">
 
 					<div id="feedback" aria-live="polite"></div>
-          <div id="canvas-container">
-            <canvas id="diagram" aria-live="polite"></canvas>
-          </div>
+				  <div id="canvas-container">
+					<canvas id="diagram" aria-live="polite"></canvas>
+				  </div>
 
 					<div id="wrapper">
 						<div id="qHolder"></div>

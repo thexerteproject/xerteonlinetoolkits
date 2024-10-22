@@ -278,7 +278,16 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-color: lighten($blackordarkest, 10%);
   color:$whiteorlightest;
 }
-
+.x_gapFill_page #targetHolder .target.answerShown {
+  color: $whiteorlightest;
+}
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed $whiteorlightest;
+}
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid $whiteorlightest;
+  border-top: 1px solid transparent;
+}
 
 
 //*****hotspot image*****/
@@ -465,6 +474,10 @@ div#shorturltodisplay a{
 }
 .x_results_page #general_summary th {
   background: lighten($blackordarkest, 20%);//hide otherwise black line at to of summary table
+}
+//*****audio record page*****/
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: $whiteorlightest;
 }
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/

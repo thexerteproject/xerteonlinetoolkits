@@ -220,7 +220,7 @@
      margin-right: 5%;
  }
  
- #attempt h3{
+ #attempt p:first-child{
      border-top: 1px solid #ccc;
      padding-top: 1.5em;
  }

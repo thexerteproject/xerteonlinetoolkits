@@ -23,7 +23,7 @@ _load_language_file("/website_code/php/management/play_security_management.inc")
 
 require("../user_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("system")){
 
     $database_id = database_connect("play_security_management.php connected","play_security_management.php list failed");
 

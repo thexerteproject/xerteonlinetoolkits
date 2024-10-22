@@ -26,7 +26,7 @@ body {
   background-color: $darkestcolor;
 }
 /*--Heading and other text changes---------------------------------------*/
-h1 {
+h1, h2.sectionTitle {
   color:$brightcolor;
 }
 h2, h3, h4, h5, h6 {
@@ -265,4 +265,21 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 }
 .oddSection {
   background: #3e3c3c;
+}
+
+/*lightboxes with dark background*/
+.featherlight .featherlight-content {
+  background: $darkestcolor;
+}
+
+#categorySearch .inputGroup:hover {
+  background-color: $panelcolor;
+}
+
+#searchHolder legend {
+  color: $lightestcolor;
+}
+
+#searchResults #noSearchResults {
+  color: $alertcolor;
 }

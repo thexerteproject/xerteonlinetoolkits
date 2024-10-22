@@ -63,21 +63,17 @@ $database_connect_id = database_connect("Access template database connect succes
 /*
  * only creator can set access
  */
+if (!isset($_POST['template_id'])) {
+    die("No template id");
+}
+$template_id = x_clean_input($_POST['template_id']);
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
 
-if(is_numeric($_POST['template_id'])){
-
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
-
-        access_display($xerte_toolkits_site, false);
-
-    }else{
-
-        access_display_fail();
-
-    }		
+    access_display($xerte_toolkits_site, $template_id,false);
 
 }else{
 
-    echo "<p>" . PROPERTIES_LIBRARY_ACCESS_FAIL . "</p>";
+    access_display_fail(true);
 
 }
+

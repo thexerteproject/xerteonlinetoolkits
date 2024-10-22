@@ -344,6 +344,19 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed #ffffff;
+}
+
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid #ffffff;
+  border-top: 1px solid transparent;
+}
+
+.x_gapFill_page .target.highlight {
+  color: #000000;
+}
+
 a.hotspot, a.hotspot.selected {
   background: none;
 }
@@ -1437,6 +1450,10 @@ a:visited {
 }
 
 a:hover {
+  color: #ffffff;
+}
+
+#x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
   color: #ffffff;
 }
 

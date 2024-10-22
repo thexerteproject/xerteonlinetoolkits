@@ -17,15 +17,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once("../../../config.php");
+require("../../../config.php");
 
 _load_language_file("/website_code/php/management/users.inc");
 _load_language_file("/management.inc");
 
 require("../user_library.php");
 require("management_library.php");
+require("get_user_roles.php");
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
     global $authmech;
     if (!isset($authmech))
     {
@@ -46,6 +47,9 @@ if(is_user_admin()){
         echo "<div id=\"manage_auth_users\">";
         $authmech->getUserList(false, "");
         echo "</div>";
+		echo "<div id=\"manage_user_roles\">";
+		get_user_roles();
+		echo "</div>";
         echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
     }
 
@@ -53,10 +57,9 @@ if(is_user_admin()){
 
     $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails";
 
-    $query_response = db_query($query);
+	$query_response = db_query($query);
 
     foreach($query_response as $row) { 
-
         echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
         echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";

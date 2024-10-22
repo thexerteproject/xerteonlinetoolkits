@@ -100,11 +100,12 @@
 
     .qTxt {
         width: 100%;
+        padding: 0;
     }
 
     #qNo {
-        padding-top: 5px;
-        padding-bottom: 10px;
+        padding-top: 0;
+        font-weight: bold;
     }
     #buttonHolder
     {
@@ -156,3 +157,9 @@
     transform: translate(-50%, -50%);
     z-index: 2;
 }
+
+#x_mainHolder.x_opinion_page .fbBlock:not(:first-child) h3 {
+    padding-top: .5em;
+}
+
+

@@ -15,8 +15,17 @@ CKEDITOR.plugins.add('xotmarkword', {
     init: function (editor) {
         editor.addCommand( 'xotMarkWord', {
             exec: function( editor ) {
-                var selection = editor.getSelection().getNative(),
+                var selection = editor.getSelection(),
 					mainDelimiter = $("#opt_mainDelimiter").length != 0 ? $("#opt_mainDelimiter").find(".wizardvalue input")[0].value : "|";
+                const selText = selection.getSelectedText();
+                if (selText[selText.length-1] == ' ')
+                {
+                    // Change selection to exclude the last space
+                    var ranges = selection.getRanges();
+                    ranges[0].endOffset -= 1;
+                    selection.selectRanges(ranges);
+                }
+                selection = selection.getNative();
                 editor.insertText(mainDelimiter + selection + mainDelimiter);
                 //alert("Word Marked");
             }

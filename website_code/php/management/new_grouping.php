@@ -22,7 +22,7 @@ require_once("../../../config.php");
 require("../user_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("metaadmin")){
 
     $query = "INSERT INTO `{$xerte_toolkits_site->database_table_prefix}grouping` (grouping_name) values (?)";
     $res = db_query($query, array($_POST['newgrouping']));

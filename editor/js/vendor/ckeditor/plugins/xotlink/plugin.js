@@ -17,17 +17,17 @@ CKEDITOR.plugins.add('xotlink', {
 	icons: 'xotlink',
 
 	// The plugin initialization logic goes inside this method.
-	init: function(editor) {
+	init: function (editor) {
 
 		// Define an editor command that opens our dialog window.
-		editor.addCommand('xotlink', new CKEDITOR.dialogCommand( 'xotlinkDialog', {
+		editor.addCommand('xotlink', new CKEDITOR.dialogCommand('xotlinkDialog', {
 
 			// Allow the 'a' tag with an href attribute.
 			allowedContent: 'a[href]',
 
 			// Require the 'a' tag to be allowed for the feature to work
 			requiredContent: 'a'
-		} ) );
+		}));
 
 		editor.on('selectionChange', function (evt) {
 			if (editor.readOnly) return;
@@ -72,7 +72,7 @@ CKEDITOR.plugins.add('xotlink', {
 		});
 
 		if (editor.contextMenu) {
-			
+
 			//editor.addMenuGroup( 'xotGroup' );
 			editor.addMenuItem('xotlinkItem', {
 				label: 'Xerte Page Link',
@@ -82,8 +82,8 @@ CKEDITOR.plugins.add('xotlink', {
 				order: -10
 			});
 
-            editor.contextMenu.addListener(function(element, selection, path) {
-            	if (!element || element.isReadOnly())
+			editor.contextMenu.addListener(function (element, selection, path) {
+				if (!element || element.isReadOnly())
 					return null;
 
 				var element = selection.getStartElement();
@@ -96,7 +96,7 @@ CKEDITOR.plugins.add('xotlink', {
 					if (attr && attr.indexOf("(")) {
 						if (attr.split('(')[0] == 'x_navigateToPage') {
 							this.label = 'Edit Xerte Page Link';
-							return {xotlinkItem: CKEDITOR.TRISTATE_OFF};
+							return { xotlinkItem: CKEDITOR.TRISTATE_OFF };
 						}
 						else {
 							this.label = 'Insert Xerte Page Link';
@@ -107,9 +107,9 @@ CKEDITOR.plugins.add('xotlink', {
 					}
 				}
 				else {
-					return {xotlinkItem: CKEDITOR.TRISTATE_OFF};
+					return { xotlinkItem: CKEDITOR.TRISTATE_OFF };
 				}
-            });
+			});
 		}
 
 		// Register our dialog file -- this.path is the plugin folder path.

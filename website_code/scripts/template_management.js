@@ -843,7 +843,7 @@ function recycle_bin_remove_all_template(template_id) {
         }
     })
     .done(function(response){
-        if (number_of_files_to_delete != 1) {
+        if (number_of_files_to_delete > 1) {
             number_of_files_to_delete -= 1;
         } else {
             refresh_workspace();
@@ -1314,7 +1314,6 @@ function tutorial_created(response) {
             data = response.split(",");
 
             open_created_node(data[0], new_template_folder);
-            //update_your_projects();
 
             if (data[1] == "*") {
 
@@ -1394,6 +1393,10 @@ function create_tutorial(tutorial) {
                 }
             })
             .done(function(response){
+                template_toggle(active_div);
+                active_div = "";
+
+                refresh_workspace();
                 tutorial_created(response);
             });
         } else {

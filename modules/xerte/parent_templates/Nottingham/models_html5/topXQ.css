@@ -40,6 +40,11 @@
 
 .titleQuestion{
     padding-bottom: 1em;
+    font-weight: bold;
+}
+
+.titleQuestion #question p:first-child {
+    padding-top: 0;
 }
 
 #mainFeedback{

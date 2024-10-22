@@ -49,7 +49,7 @@ else if(isset($_POST["template_id"]))
 if(is_numeric($id) || $id == null) {
     $tsugi_enabled = true;
     $lti_enabled = true;
-    $LAUNCH = LTIX::requireData();
+    $LAUNCH = LTIX::requireData(LTIX::USER);
 
     $role = 'Student';
     if ($LAUNCH->user->instructor)
@@ -229,8 +229,11 @@ if(is_numeric($id) || $id == null) {
     <script type="text/javascript" src="../../modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="../../favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon"/>
-    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
-    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>"-->
+    <!-- link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css"-->
+    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
     <link href="../../website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="../../website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="../../website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>

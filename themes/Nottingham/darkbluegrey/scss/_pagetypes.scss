@@ -273,6 +273,16 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   font-weight:bold;
   background-color:transparentize($whiteorlightest, .8);
 }
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed $whiteorlightest;
+}
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid $whiteorlightest;
+  border-top: 1px solid transparent;
+}
+.x_gapFill_page .target.highlight {
+  color: $blackordarkest;
+}
 //*****hotspot image*****/
 a.hotspot, a.hotspot.selected {
   background: none;

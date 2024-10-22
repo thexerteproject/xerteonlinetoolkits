@@ -1,7 +1,7 @@
 <wizard menus="Tracking / xAPI">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter Full Name" userNamePrompt="Your name: " okButtonTxt="Ok" />]]></results>
+            <results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results>
         </newNodes>
     </pageWizard>
 
@@ -10,19 +10,59 @@
              hint="A page displaying a summary of the results of the interactions." icon="icResults"
              thumb="thumbs/results.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#resultspage" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_results_page" remove="true">
 
-        <generalResultsTxt label="General results text label" type="TextInput"  wysiwyg="true" language="true"/>
-        <averageTxt label="Average text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <name label="Page Title" type="TextInput" wysiwyg="true"/>
+        <resultmode label="Results Mode" type="ComboBox" options="Minimal,Normal,Full" data="minimal-results,normal-results,full-results" conditionTrigger="true"/>
+
+        <customiseResults type="group" label="Customise results" tooltip="Customise the information shown on the results page" optional="true" info="Customise the information shown in each block on the results page. The blocks shown are determined by the results mode property.">
+            <generalGroup type="group" label="Results summary" tooltip="The information shown in the results summary section." optional="true">
+                <generalAverage label="Score %" type="Checkbox" defaultValue="true" optional="true"/>
+                <generalCompletion label="Completion %" type="Checkbox" defaultValue="true" optional="true"/>
+                <generalStartTime label="Start time" type="Checkbox" defaultValue="true" optional="true"/>
+                <generalDuration label="Duration" type="Checkbox" defaultValue="true" optional="true"/>
+            </generalGroup>
+
+            <globalResults type="group" label="Page overview" tooltip="The information shown in the page overview section. The page overview section is shown when results mode is set to full or normal." condition="resultmode!='minimal-results'" optional="true">
+                <globalName label="Page name" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalScore label="Score %" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalDuration label="Duration" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalWeighting label="Weighting" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalCompleted label="Completed" type="Checkbox" defaultValue="true" condition="resultmode!='minimal-results'" optional="true"/>
+                <globalDetails label="Details" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+            </globalResults>
+
+            <specificResults type="group" label="Interactivity results" tooltip="The information shown in the interactivity results section. The interactivity results section is shown when results mode is set to full."  condition="resultmode=='full-results'" optional="true">
+                <specificName label="Page name" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+                <specificAnswer label="Your answer" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+                <specificCorrect label="Correct answer" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+                <specificCheck label="Tick/Cross" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
+            </specificResults>
+        </customiseResults>
+
+        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" />
+
+        <text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
+
+        <pdfOptions type="group" label="PDF Options" optional="true">
+            <disableexportpdf label="Disable PDF Export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>
+            <givename label="Name Prompt" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask learner for their name so that it can be included in the PDF" condition="disableexportpdf!='true'"/>
+            <!--<textPDF label="Include Page Text" type="Checkbox" optional="true" defaultValue="false" condition="text!=null&amp;&amp;text!=''"/>-->
+        </pdfOptions>
+
+        <showweightingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="true" />
+
+        <generalResultsTxt label="Results summary text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <averageTxt label="Score text label" type="TextInput"  wysiwyg="true" language="true"/>
         <completionTxt label="Completion text label" type="TextInput"  wysiwyg="true" language="true"/>
         <startTimeTxt label="Start Time text label" type="TextInput"  wysiwyg="true" language="true"/>
         <durationTxt label="Duration text label" type="TextInput"  wysiwyg="true" language="true"/>
-        <interactivityResultsTxt label="Interactivity Results text label" type="TextInput"  wysiwyg="true" language="true"/>
-        <globalResultsTxt label="Global Results text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <interactivityResultsTxt label="Detailed results text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <globalResultsTxt label="Page overview text label" type="TextInput"  wysiwyg="true" language="true"/>
         <nameTxt label="Name text label" type="TextInput"  wysiwyg="true" language="true"/>
         <scoreTxt label="Score text label" type="TextInput"  wysiwyg="true" language="true"/>
         <weightingTxt label="Weighting text label" type="TextInput"  wysiwyg="true" language="true"/>
         <completedTxt label="Completed text label" type="TextInput"  wysiwyg="true" language="true"/>
         <detailsTxt label="Details text label" type="TextInput" wysiwyg="true" language="true" />
-        <specificResultsTxt label="Specific Results text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <specificResultsTxt label="Interactivity results text label" type="TextInput"  wysiwyg="true" language="true"/>
         <yourAnswerTxt label="Your answer text label" type="TextInput"  wysiwyg="true" language="true"/>
         <correctAnswerTxt label="Correct answer text label" type="TextInput"  wysiwyg="true" language="true"/>
         <downloadPdfTxt label="Download pdf text label" type="TextInput"  wysiwyg="true" language="true"/>
@@ -36,16 +76,30 @@
         <userNameDialogTitle label="User name dialog title" type="TextInput" wysiwyg="false" language="true" />
         <userNamePrompt label="User name prompt" type="TextInput" wysiwyg="false" language="true" />
         <okButtonTxt label="Ok button text" type="TextInput" wysiwyg="false" language="true" />
+        <durationSecondsTxt label="Duration seconds text" defaultValue="s" type="TextInput" wysiwyg="false" language="true" mandatory="true" />
 
-        <name label="Page Title" type="TextInput" wysiwyg="true"/>
-        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full learning object." />
-        <givename label="Ask user name" type="Checkbox" defaultValue="true" optional="true" tooltip="Ask your learner for his name to be placed on the results page"/>
-		<text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
-
-        <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Normal Results,Full Results"
-                    data="minimal-results,normal-results,full-results"/>
-        <disableexportpdf label="Disable export to PDF" type="Checkbox" optional="true" defaultValue="true" />
-        <showweightingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="true" />
+        <newNodes>
+          <feedback><![CDATA[<feedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></feedback>
+        </newNodes>
 
     </results>
+
+    <feedback menuItem="Tailored feedback" icon="icBullet" remove="true">
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <feedbackTxt label="Text" type="TextArea" height="200" placeholder="Enter tailored feedback here" tooltip="The feedback text and title will be shown when the parameters below are met"/>
+        <score type="group" label="Score" optional="true" tooltip="The maximum and minimum (rounded down) score % values used to determine whether the feedback will be shown">
+            <minScore label="Minimum value" defaultValue="0" type="TextInput" optional="true"/>
+            <maxScore label="Maximum value" defaultValue="50" type="TextInput" optional="true"/>
+        </score>
+        <completion type="group" label="Completion" optional="true" tooltip="The maximum and minimum (rounded down) completion values used to determine whether the feedback will be shown">
+            <minCompletion label="Minimum value" defaultValue="0" type="TextInput" optional="true"/>
+            <maxCompletion label="Maximum value" defaultValue="50" type="TextInput" optional="true"/>
+        </completion>
+        <duration type="group" label="Duration" optional="true">
+            <minDuration label="Minimum value" defaultValue="0" type="TextInput" tooltip="The minimum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
+            <maxDuration label="Maximum value" defaultValue="60" type="TextInput" tooltip="The maximum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
+        </duration>
+        <fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false" />
+    </feedback>
+
 </wizard>

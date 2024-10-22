@@ -44,24 +44,32 @@ if (($_FILES['filenameuploaded']['type'] != "application/x-zip-compressed") &&
     die("Invalid upload (2)");
 }
 
+$userProvidedFileName = x_clean_input($_FILES['filenameuploaded']['name']);
+
 // Make sure the file name doesn't contain any funky characters - e.g. / or perhaps unicode which will confuse things.
 // This regexp probably rules out brackets e.g Copy of Foo (1).zip which is quite common.
-if (preg_match('![^-a-z0-9_\.]!i', $_FILES['filenameuploaded']['name'])) {
+if (preg_match('![^-a-z0-9_\.]!i', $userProvidedFileName)) {
     die("Supplied file name contains invalid characters, remove any non-alphanumerics and retry.");
 }
 
 _load_language_file("/website_code/php/import_template.inc");
 
-// Clean uploaded file name. Remove non-(alphanumerics or - or . characters).
-// as we use the user's provided file name later on in file paths etc.
-$userProvidedFileName = $_FILES['filenameuploaded']['name'];
 
 // Create a unique, random, temporary directory.
 $temp_dir = tempdir();
 $zip_file = $temp_dir . DIRECTORY_SEPARATOR . $userProvidedFileName;
+x_check_path_traversal_newpath($zip_file, $temp_dir, "Invalid file path");
 
 // Copy the uploaded file into the tempdir, unzip it and then remove it.
+x_check_path_traversal($_FILES['filenameuploaded']['tmp_name'], null, "Invalid file path");
 if (@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $zip_file)) {
+
+    // Quick fix to check zip file is valid
+    $zip = new ZipArchive();
+    $x = $zip->open($zip_file);
+    x_check_zip($zip);
+    $zip->close();
+
     $zip = new dUnzip2($zip_file);
     $zip->debug = false;
     $zip->getList();
@@ -78,7 +86,7 @@ if (!empty($_POST['folder'])) {
     /*
      * We are replacing, so delete files
      */
-    $unsafe_folder = $_POST['folder'];
+    $unsafe_folder = x_clean_input($_POST['folder']);
     // Security - make sure it's not $folder = "/../../../etc" or similar.
     $folder = preg_replace('/[^a-z0-9\-\_]/i', '', $unsafe_folder);
     _debug("replacing file(s) in {$folder} - initial clearup...");

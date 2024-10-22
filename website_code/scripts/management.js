@@ -362,6 +362,12 @@ function template_sync(){
 	});
 }
 
+// Show first tab that user has permission to see
+function show_first_tab()
+{
+	eval(firsttab);
+}
+
 // Function site list
 //
 // remove a share, and check who did it
@@ -564,7 +570,9 @@ function update_site() {
 			xapi_dashboard_urls: document.getElementById("xapi_dashboard_urls").value,
 			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
 			globalhidesocial: document.getElementById("site_socialicon_globaldisable").value,
-			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value
+			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value,
+			default_theme_xerte: document.getElementById("default_theme_xerte").value,
+			default_theme_site: document.getElementById("default_theme_site").value
 		},
 	})
 	.done(function (response) {
@@ -1483,3 +1491,48 @@ function delete_group( group_tag ){
 	}
 }
 
+function changeUserSelection_user_roles(){
+		let role_user_select = document.getElementById("user_roles");
+		if(role_user_select){
+				$.ajax({
+						type: "POST",
+						url: "website_code/php/management/get_user_roles.php",
+						data : {
+								userid: role_user_select.value,
+						},
+				}).done(function (response){
+						document.getElementById("manage_user_roles").innerHTML = response;
+				}).fail(function (){
+						alert("something went wrong");
+				});
+		}
+}
+
+function update_roles(userid){
+		// usage of fromdata because you don't have to hard code the roles
+		let formdata = new FormData(document.getElementById("roles"));
+		let data = {};
+		formdata.forEach((value, key) =>{
+				data[key] = value == "on"? true : value;
+		});
+		if(userid != null){
+				if(confirm("are you sure want to modify the roles of the user")){
+						data["id"]=userid;
+						$.ajax({
+								type: "POST",
+								url: "website_code/php/management/modify_roles.php",
+								data: data
+						}).done(function (response) {
+								alert(response);
+								users_list();
+						}).fail(function () {
+								alert("failed to load modify_roles.php");
+								users_list();
+						});
+						
+				}
+		}
+}
+
+
+ 

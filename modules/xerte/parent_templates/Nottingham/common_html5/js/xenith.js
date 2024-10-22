@@ -138,12 +138,7 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
-	// Load the loadjs dependency loader
-    if (!xot_offline) {
-        // TODO - we should move this to play/preview and let it kickstart the loading of all files
-        $.getScript(x_templateLocation + "common_html5/js/loadjs.min.js");
-    }
-
+	
     $x_mainHolder = $("#x_mainHolder");
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
@@ -257,6 +252,19 @@ x_projectDataLoaded = function(xmlData) {
 	if (x_params.authorSupport == "true") {
 		if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
 			x_params.authorSupport = "false";
+		}
+	}
+
+	// sort any parameters in url - these will override those in xml
+	var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
+		hash;
+
+	for (var i=0; i<tempUrlParams.length; i++) {
+		var split = tempUrlParams[i].split("=");
+		if (split.length == 2) {
+			x_urlParams[split[0]] = split[1];
+		} else {
+			hash = tempUrlParams[i];
 		}
 	}
 
@@ -508,19 +516,6 @@ x_projectDataLoaded = function(xmlData) {
         }
     }
 	
-    // sort any parameters in url - these will override those in xml
-    var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
-		hash;
-	
-	for (var i=0; i<tempUrlParams.length; i++) {
-		var split = tempUrlParams[i].split("=");
-		if (split.length == 2) {
-			x_urlParams[split[0]] = split[1];
-		} else {
-			hash = tempUrlParams[i];
-		}
-    }
-	
 	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
 	var customStartPage = false;
 	
@@ -758,8 +753,19 @@ function x_getThemeInfo(thisTheme, themeChg) {
 	// these themes should have imgbtns: true in the theme info file
 	if (thisTheme == undefined || thisTheme == "default") {
 		x_params.theme = "default";
-		x_setUpThemeBtns({ imgbtns: 'true' }, themeChg);
-		
+		x_setUpThemeBtns({imgbtns: 'true'}, themeChg);
+	} else if (xot_offline) {
+		const temp = themeinfo.split('\n'),
+			themeInfo = {};
+
+		for (let i=0; i<temp.length; i++) {
+			if (temp[i].split(':').length > 1) {
+				themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
+			}
+		}
+
+		x_setUpThemeBtns(themeInfo, themeChg);
+
 	} else {
 		$.ajax({
 			type: "GET",
@@ -1055,6 +1061,8 @@ function x_GetTrackingLabelOfPage() {
 
 // setup functions load interface buttons and events
 function x_setUp() {
+
+	$(".skip-link").html(x_getLangInfo(x_languageData.find("skip")[0], "label", "Skip to main content"));
 	
 	// prevent flashes of css body tag colours before the main interface has loaded
 	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');
@@ -1422,13 +1430,8 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button({ label: $.trim(x_params.introBtnTxt) })
 						.click(function() {
-							try {
-								parent.window.$.featherlight.current().close();
-							}
-							catch(e)
-							{
-								// Do nothing
-							}
+							$.featherlight.current().close();
+
 						});
 					
 					// there are different types of content that might appear in project intro lightbox
@@ -1446,6 +1449,11 @@ function x_continueSetUp1() {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
 										.prependTo($holder)
 										.html(x_params.name);
+								}
+								if (x_params.introCaption != undefined && x_params.introCaption != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_params.introCaption + '</figcaption>');
 								}
 
 								// include start button to close lightbox
@@ -1590,13 +1598,7 @@ function x_continueSetUp1() {
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button()
 						.click(function() {
-							try {
-								parent.window.$.featherlight.current().close();
-							}
-							catch(e)
-							{
-								// Do nothing
-							}
+							$.featherlight.current().close();
 						});
 					
 					// there are different types of content that might appear in page intro lightbox
@@ -1613,6 +1615,12 @@ function x_continueSetUp1() {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
 										.prependTo($holder)
 										.html(x_currentPageXML.getAttribute('name'));
+								}
+
+								if (x_currentPageXML.getAttribute('introCaption') != undefined && x_currentPageXML.getAttribute('introCaption') != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_currentPageXML.getAttribute('introCaption') + '</figcaption>');
 								}
 								
 								// include start button to close lightbox
@@ -2114,7 +2122,7 @@ function x_continueSetUp1() {
 			x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 				if (mediaExists) {
 					var alpha = 30;
-					var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
+					var lo_objectfit =  (x_params.backgroundFit != undefined ? x_params.backgroundFit : "fill");
 					if (x_params.backgroundopacity != undefined) {
 						alpha = x_params.backgroundopacity;
 					}
@@ -2964,6 +2972,7 @@ function x_changePageStep5(x_gotoPage) {
     }
 	
     // If special_theme_css does not exist yet, create a disabled special_theme_css
+
     if (x_specialTheme != undefined && x_specialTheme != '') {
         x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
             x_changePageStep5a(x_gotoPage);
@@ -3010,7 +3019,7 @@ function x_changePageStep5a(x_gotoPage) {
 		}
 
 		$("#x_mainBg").show();
-        $(".x_pageNarration").remove(); // narration flash / html5 audio player
+        $(".x_pageNarration").remove(); // narration audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
@@ -3133,13 +3142,51 @@ function x_passwordPage(pswds) {
 			x_updateCss(false);
 			
 			$("#x_pageDiv").show();
+			$x_pageDiv.css("height", "100%");
+			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
+			let pageHeight = $("#x_pageHolder").innerHeight() - paddingBlock;
+			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			
 			var $pswdBlock = $('#x_page' + x_currentPage);
-			$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+			$pswdBlock.css('height', '100%');
+			$pswdBlock.html('<div class="x_pswdBlock" style="height: 100%"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
 			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
 			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
-			$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+			let type = x_currentPageXML.getAttribute('passwordType');
+			if(type == "vault"){
+					$pswdBlock.find('.x_pswdInput').html('<div class="vault"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
+					$pswdBlock.find('.vault-door')
+							.html('<div class="vault-door-dial"><div class="vault-door-dial-inside"></div><div class="vault-door-dial-rod"></div><div class="vault-door-dial-rod rotated"></div></div>');
+					$pswdBlock.find('.vault-door-dial')
+							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">');
+					$pswdBlock.find('.vault-door').append('<button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+
+			}else if(type == "vaultnumeric") {
+					$pswdBlock.find('.x_pswdInput').html('<div class="vault numeric"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
+					$pswdBlock.find('.vault-door')
+							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" style="grid-area: input;" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">')
+							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;"> </button>')
+							.append('<button id="x_pagePswdBtn" style="grid-area: button;">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+
+					$pswdBlock.find('.numberbtn').on('click', function(){
+							let number = $(this).text();
+							let $input = $('#x_pagePswd');
+							$input.val(function(){
+									return this.value + number;
+							});
+							$input[0].selectionStart = $input[0].selectionEnd = $input.val().length;
+					});
+					$pswdBlock.find('#resetbtn').on('click', function(){
+							$('#x_pagePswd').val('');
+					});
+			}else if((type == "standard" || type == null) || type == "centered"){
+					let pswdInput = $pswdBlock.find('.x_pswdInput').append('<input type="text" class="old" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button class="old" id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+					if(type == "standard" || type == null){
+							pswdInput.add($pswdBlock.find(".x_pswdBlock")).addClass('old');
+							
+					}
+			}
 			
 			$pswdBlock.find('#x_pagePswdBtn')
 				.button()
@@ -3149,6 +3196,7 @@ function x_passwordPage(pswds) {
 					if ($.inArray(pswdEntered, pswds) >= 0) {
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						x_pageInfo[x_currentPage].passwordPass = true;
+						x_pageDiv.css("height", "");
 						$pswdBlock.remove();
 						x_addCountdownTimer();
 						x_addNarration('x_changePageStep6', '');
@@ -3433,10 +3481,12 @@ function x_setUpLightBox() {
 						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
 						
 						if (caption != undefined && caption != '') {
+							var $img = $(this.$content[0]);
+							$img.wrap('<figure></figure>');
 							if (before == true) {
-								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							} else {
-								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').append('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							}
 						}
 					}
@@ -3574,9 +3624,12 @@ function x_setUpPage() {
     if (x_firstLoad == true) {
         // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
 		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
-			$x_introBtn
-				.data('autoOpen', true)
-				.click();
+			// don't auto-open if stand-alone page
+			if (x_pageInfo[x_currentPage].standalone != true) {
+				$x_introBtn
+					.data('autoOpen', true)
+					.click();
+			}
 		}
 		
         $x_mainHolder.css("visibility", "visible");
@@ -3740,7 +3793,6 @@ function x_addNarration(funct, arguments) {
 
 // function adds transcript button to the end of audio bars, e.g. page narration - but also called from page models
 function x_addAudioTranscript($audioHolder, transcriptTxt, decode) {
-	
 	if (decode == true) {
 		transcriptTxt = $("<div/>").html(transcriptTxt).text();
 	}
@@ -3820,7 +3872,7 @@ function x_loadPageBg(loadModel) {
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 
 	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg" alt=""/>');
-    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover" ? "cover" : "fill");
+    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined ? x_currentPageXML.getAttribute("backgroundFit") : "fill");
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({
@@ -3935,9 +3987,9 @@ function x_updateCss(updatePage) {
 					audioBarW += $(this).outerWidth();
 				});
 				
-				if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -2 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 2) {
-					$x_window.resize();
-				}
+				// if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -7 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 7) {
+				// 	$x_window.resize();
+				// }
 			}
 			
 		}
@@ -4310,6 +4362,7 @@ function x_insertCSS(href, func, disable, id, keep) {
 				}
             }
             func();
+			css.onload = null; // in FF this continues to be called every time theme is changed (via accessibility options) so force it to only trigger onload once - calling multiple times causes issues such as duplicated narration bar
         };
 		css.onload = f;
 
@@ -4379,12 +4432,12 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgH = $img.data("origSize")[1];
         }
 
-		if (enlarge != true) {
-			maxW = Math.min(maxW, imgW);
-			maxH = Math.min(maxH, imgH);
-		}
+        if (enlarge === false) {
+            maxW = Math.min(maxW, imgW);
+            maxH = Math.min(maxH, imgH);
+        }
 
-        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
+        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge !== false) {
             var scaleW = maxW / imgW,
                 scaleH = maxH / imgH,
                 scaleFactor = Math.min(scaleW, scaleH);
@@ -5137,8 +5190,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
 				// replace with the variable text
 				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-				tempText = tempText.replace(regExp, x_checkDecimalSeparator('[' + variables[k].name + '::'+ variables[k].value + ']'));
-				
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
 			} else {
 				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
 				// these are simply replaced with no surrounding tag so vars can be used as image sources etc.

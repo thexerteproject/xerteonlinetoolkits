@@ -31,11 +31,11 @@ _load_language_file("/website_code/php/properties/export_template.inc");
 
 require_once("../template_library.php");
 
-include "../template_status.php";
+require_once "../template_status.php";
 
-include "../url_library.php";
+require_once "../url_library.php";
 
-include "../user_library.php";
+require_once "../user_library.php";
 
 $database_id=database_connect("Export template database connect success","Export template database connect failed");
 
@@ -45,9 +45,11 @@ $database_id=database_connect("Export template database connect success","Export
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()){
-
-        echo "<p class=\"header\"><span>" . EXPORT_TITLE . "</span></p>";
+    if(is_user_creator_or_coauthor($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_permitted("projectadmin")){
+		
+		echo "<h2 class=\"header\">" . EXPORT_TITLE . "</h2>";
+	
+		echo "<div id=\"mainContent\">";
 
 		$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
@@ -55,12 +57,14 @@ if(is_numeric($_POST['template_id'])){
 
 		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_play_content_strip);
 
-                $row_play = db_query_one($query_for_play_content);
+		$row_play = db_query_one($query_for_play_content);
+		
 		$export_exists = false;
                 
-                if(!empty($row_play)) {
-                    $export_exists = file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php");
-                }
+		if(!empty($row_play)) {
+			$export_exists = file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php");
+		}
+		
 		if($export_exists) {
 
 			require_once($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php");
@@ -70,11 +74,29 @@ if(is_numeric($_POST['template_id'])){
 			echo "<p>" . EXPORT_NOT_AVAILABLE . "</p>";
 		
 		}
+		
+		echo "</div>";
 
     }else{
-
-        echo "<p>". EXPORT_FAIL. "</p>";
-
+		
+		echo "<h2 class=\"header\">" . EXPORT_TITLE . "</h2>";
+		
+		echo "<div id=\"mainContent\">";
+			
+		echo "<p>" . EXPORT_FAIL . "</p>";
+		
+		echo "</div>";
+		
     }
+
+}else{
+
+	echo "<h2 class=\"header\">" . EXPORT_TITLE . "</h2>";
+	
+	echo "<div id=\"mainContent\">";
+	
+	echo "<p>" . EXPORT_ERROR . "</p>";
+	
+	echo "</div>";
 
 }

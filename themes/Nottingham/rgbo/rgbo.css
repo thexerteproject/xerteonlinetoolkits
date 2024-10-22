@@ -599,6 +599,18 @@ div#shorturltodisplay a {
   border-radius: 12px;
 }
 
+.x_audioRecord_page .deleteClipBtn {
+  color: #000000;
+}
+
+.x_audioRecord_page .clip.highlight {
+  background-color: green;
+}
+
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   .tick, img.result {
     width: 2.5vmin;

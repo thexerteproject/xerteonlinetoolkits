@@ -59,7 +59,9 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
 			var $panel = $("#pageContents .panel");
-			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			if (x_browserInfo.mobile == false) {
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
+			}
 
 			var	audioBarW = 0,
 					$pageAudio = $("#pageAudio");
@@ -307,7 +309,7 @@
 			$("#answerTxt").val("");
 
 			//Correct answer
-			var answer = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer);
+			var answer = $("<div/>").html('<p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p>');
 
 			// Answer to be shown
 			$("#answer").hide()
@@ -316,11 +318,11 @@
 			// Show incorrect if requested
 			$("#incorrect")
 					.hide()
-					.html('<span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span></span>' + x_addLineBreaks(" " + incorrectText));
+					.html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>');
 			//Show correct if requested
 			$("#correct")
 					.hide()
-					.html('<span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span></span>' + x_addLineBreaks(" " + correctText));
+					.html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span></span>' + x_addLineBreaks(" " + correctText) + '</p>');
 
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 			var name = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].name).text().replace(/(\r\n|\n|\r)/gm,"");
@@ -400,20 +402,22 @@
 		
 		<div class="right">
 			<div class="panel">
-				<h3 id="count" aria-live="polite"></h3>
-				<div id="prompt"></div>
-				<div id="audioHolder">
-					<div id="pageAudio"></div>
+				<p id="count" aria-live="polite"></p>
+				<div id="panelContent">
+					<div id="prompt"></div>
+					<div id="audioHolder">
+						<div id="pageAudio"></div>
+					</div>
+					<textarea id="answerTxt" rows="6"></textarea>
+					<div id="btnHolder">
+						<button id="showBtn"></button>
+						<button id="nextBtn"></button>
+						<button id="restartBtn"></button>
+					</div>
+					<div id="answer" aria-live="polite"/>
+					<div id="correct"aria-live="polite"></div>
+					<div id="incorrect"aria-live="polite"></div>
 				</div>
-				<textarea id="answerTxt" rows="6"></textarea>
-				<div id="btnHolder">
-					<button id="showBtn"></button>
-					<button id="nextBtn"></button>
-					<button id="restartBtn"></button>
-				</div>
-				<div id="answer" aria-live="polite"/>
-				<div id="correct"aria-live="polite"></div>
-				<div id="incorrect"aria-live="polite"></div>
 			</div>
 		</div>
 

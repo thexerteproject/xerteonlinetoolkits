@@ -4745,10 +4745,11 @@
 
         function monitorCurrentTime(videoState) {
             var playerTime = videoState.position;
+            const prev_duration = impl.duration;
             if (impl.duration != videoState.duration) {
               impl.duration = videoState.duration;
               self.dispatchEvent( "durationchange" );
-              if (impl.duration > 0) {
+              if (prev_duration == 0 && impl.duration > 0) {
                 self.dispatchEvent( "loadedmetadata" );
                 self.dispatchEvent( "loadeddata" );
               }
@@ -4762,7 +4763,12 @@
             var isPaused = !(videoState.playbackState == 'playing');
             if (isPaused != impl.playerPaused) {
               if (isPaused) {
-                onPause();
+                if (videoState.playbackState == 'ended') {
+                  onEnded();
+                }
+                else {
+                  onPause();
+                }
               }
               else {
                 onPlay();

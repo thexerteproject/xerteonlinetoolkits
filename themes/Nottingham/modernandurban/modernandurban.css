@@ -488,6 +488,19 @@ tr.alt td {
   background: #ffffff;
 }
 
+.x_audioRecord_page .deleteClipBtn {
+  color: #2F3131;
+}
+
+.x_audioRecord_page .clip.highlight {
+  background-color: #426E86;
+  color: #ffffff;
+}
+
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   .tick, img.result {
     width: 2.5vmin;

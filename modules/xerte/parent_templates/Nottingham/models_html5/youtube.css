@@ -3,3 +3,7 @@
 	#textHolder {
 		padding-bottom:	20px;
 	}
+
+	#x_mainHolder.x_mobile #pageContents div + #textHolder {
+		padding: 1em 0 0;
+	}

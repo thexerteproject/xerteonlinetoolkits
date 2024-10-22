@@ -40,23 +40,31 @@ include "workspace_library.php";
  * connect to the database
  */
 
-workspace_templates_menu();
-
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
 $query_for_shared_templates = "select * from {$prefix}templatedetails, {$prefix}templaterights where "
-. "user_id= ? and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id";
+. "user_id= ? and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and {$prefix}templatedetails.number_of_uses > 0";
 
 $params = array($_SESSION['toolkits_logon_id']);
 $query_shared_response = db_query($query_for_shared_templates, $params);
 
-workspace_menu_create(80);
+usort($query_shared_response, function($first, $second){
+    return $first['number_of_uses'] < $second['number_of_uses'];
+});
 
-echo "<div style=\"float:left; width:20%; height:20px;\">" . USAGE_TEMPLATE_STATS . "</div>";
+echo "<table class=\"workspaceProjectsTable\">";
 
-foreach($query_shared_response as $row_template_name) {
+echo "<caption>" . USAGE_TEMPLATE_INTRO . "</caption>";
+
+echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th><th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th>";
+
+echo "<th>" . USAGE_TEMPLATE_STATS . "</th></tr>";
+
+$path = $xerte_toolkits_site->site_url . "preview.php?template_id=";
+
+foreach($query_shared_response as $row_template_name) {	
 
 	if(trim($row_template_name['number_of_uses'])!=""){
 	
@@ -68,9 +76,16 @@ foreach($query_shared_response as $row_template_name) {
 	
 	}
 
-    echo "<div style=\"float:left; width:78%; margin-right: 2%; overflow: hidden;\">" . str_replace("_","",$row_template_name['template_name']). "</div>";
-    echo "<div style=\"float:left; width:20%;\">" . $plays . "</div>";
+    echo "<tr><td>" . $row_template_name['template_id'] . "</td>";
+	
+	echo "<td><a href=\"" . $path . $row_template_name['template_id'] . "\" target=\"_blank\">";
+	
+	echo str_replace("_"," ",$row_template_name['template_name']);
+	
+	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td>";
+
+	echo "<td>" . $plays . "</td></tr>";
 
 }
 
-echo "</div></div>";
+echo "</table>";

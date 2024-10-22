@@ -268,7 +268,13 @@
                 l_option,
                 l_feedback,
                 counter = 0;
-                allCorrectLocal = true;
+                allCorrectLocal = true,
+				judge = true;
+
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				judge = false;
+			}
+				
             $("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
                 Correct = true;
                 var $this = $(this);
@@ -278,8 +284,10 @@
                 l_answer = ($this.text().trim() + " --> [" + yPos + "," + xPos + "]");
                 l_option = {source: $this.text().trim(),target: "[" + xPos + "," + yPos + "]"};
 				
-                if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
-					$this.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="result fa fa-fw fa-x-tick"></span></span>');
+                if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html() || !judge) {
+					if(judge) {
+						$this.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="result fa fa-fw fa-x-tick"></span></span>');
+					}
                     numOfQuestions++;
                     correct++;
                     l_option.result = true;
@@ -297,10 +305,11 @@
                 l_feedbacks.push(l_feedback);
                 counter++;
             });
-          this.allCorrect = allCorrectLocal;
+			this.allCorrect = allCorrectLocal;
             var result = {
                 success: this.allCorrect,
-                score: ((correct/numOfQuestions)*100.0)
+                score: ((correct/numOfQuestions)*100.0),
+				judge: judge
             };
 
 			this.checked = true;
@@ -395,7 +404,7 @@
                             $("#feedback").show();
                             $("#grid .listHolder ul li.ui-draggable")
                                 .draggable( "option", "disabled", true )
-                                .off("focusin focusout keypress");
+                                .off("focusin focusout keypress click");
                         }
                     } else {
                         $(this)
@@ -406,7 +415,7 @@
                         $("#grid .tick").remove();
                         $("#grid .listHolder ul li.ui-draggable")
                             .draggable( "option", "disabled", false )
-                            .on("focusin focusout keypress"); //
+                            .on("focusin focusout keypress click");
                         grid.randomiseLabels();
                     }
                 })
@@ -825,8 +834,6 @@
 						.removeClass("shadow");
 			});
 
-			var tabIndex = 3;
-
 			// this uses draggable & droppable rather than sortable as sortable doesn't deal with fixed labels well
 			$grid
 				.find("ul:not(.preview) li:not(.static)")
@@ -882,45 +889,41 @@
 					.on("keypress", function(e) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
-							var $this = $(this);
-							if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") { // a label has been selected...
-								if ($this.is($pageContents.data("selectedLabel")) == false) { // ...it's not the label in focus...
-									if ($this.parent().is($pageContents.data("selectedLabel").parent())) { // ... and the label in focus can have the selected label dropped on it
-										$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
+							$(this).click();
+						}
+					})
+					.on("click", function() {
+						var $this = $(this);
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") { // a label has been selected...
+							if ($this.is($pageContents.data("selectedLabel")) == false) { // ...it's not the label in focus...
+								if ($this.parent().is($pageContents.data("selectedLabel").parent())) { // ... and the label in focus can have the selected label dropped on it
+									$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
 
-										$pageContents.data("selectedLabel")
-											.removeClass("selected")
-											.addClass("focus");
-
-										$this.removeClass("focus");
-
-										grid.dropEvent($this, $pageContents.data("selectedLabel"));
-									}
-
-								} else {
-									$this
+									$pageContents.data("selectedLabel")
 										.removeClass("selected")
 										.addClass("focus");
-								}
 
-								$pageContents.data("selectedLabel", "");
+									$this.removeClass("focus");
+									grid.dropEvent($this, $pageContents.data("selectedLabel"));
+								}
 
 							} else {
 								$this
-									.removeClass("focus")
-									.addClass("selected");
-
-								$pageContents.data("selectedLabel", $this);
+									.removeClass("selected")
+									.addClass("focus");
 							}
+
+							$pageContents.data("selectedLabel", "");
+
+						} else {
+							$this
+								.removeClass("focus")
+								.addClass("selected");
+
+							$pageContents.data("selectedLabel", $this);
 						}
 					})
-					.disableSelection()
-					.each(function(i) {
-						$(this).attr({
-							"tabindex"	:tabIndex
-						});
-						tabIndex++;
-					});
+					.disableSelection();
 
 			$grid.find("ul:not(.preview) li:not(.static)")
 				.droppable({
@@ -1012,7 +1015,9 @@
 			}
 
 			if (!$li.hasClass("static")) {
-				$li.addClass("shadow");
+				$li
+					.addClass("shadow")
+					.attr("tabindex", "0");
 			}
 
 			$li
@@ -1074,8 +1079,12 @@
 				newTxt.splice(lowest == indexDrag ? 0 : newTxt.length-1, 1);
 
 				for (i=0; i<toPreview.length; i++) {
+					// this ensures that MathJax isn't duplicated next time x_pageContentsUpdated()
+					var $labelClone = $thisParent.find("li:eq(" + newTxt[i] + ")").clone();
+					$labelClone.find("script[id^='MathJax-Element']").remove();
+
 					$thisParent.prev(".preview").find("li:eq(" + toPreview[i] + ")")
-						.html($thisParent.find("li:eq(" + newTxt[i] + ")").html())
+						.html($labelClone.html())
 						.css("visibility", "visible");
 
 					var $label = $thisParent.find("li:eq(" + toPreview[i] + ")");
@@ -1086,9 +1095,14 @@
 
 			} else {
 				// show preview for two labels that will be swapped
+
+				// this ensures that MathJax isn't duplicated next time x_pageContentsUpdated()
+				var $labelClone = $this.clone();
+				$labelClone.find("script[id^='MathJax-Element']").remove();
+
 				$thisParent.prev(".preview").find("li:eq(" + draggable.index() + ")")
 					.css("visibility","visible")
-					.html($this.html());
+					.html($labelClone.html());
 
 				if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 					$pageContents.data("selectedLabel").css("visibility", "hidden");
@@ -1143,14 +1157,6 @@
 
 				draggable.css({"top":"auto","left":"auto"});
 			}
-
-			var tabIndex = 3;
-			$("#grid ul:not(.preview) li:not(.static)").each(function(i) {
-				$(this).attr({
-					"tabindex"	:tabIndex
-				});
-				tabIndex++;
-			});
 		}
 
 		this.removeFocus = function() {
@@ -1169,6 +1175,9 @@
 		if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
 		{
 			this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+		}
+		if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+			this.weighting= 0.0;
 		}
 
 		correctOptions = [];
@@ -1246,7 +1255,7 @@
 
 	<div id="content">
 	<div id="otherContent">
-		<div id="textHolder" tabindex="1"/>
+		<div id="textHolder"/>
 		<div id="feedback"/>
 	</div>
 
@@ -1256,7 +1265,7 @@
 	</div>
 	</div>
 	<div id="btnHolder">
-		<button id="checkBtn" class="" tabindex="2"></button>
+		<button id="checkBtn" class=""></button>
 	</div>
 
 	

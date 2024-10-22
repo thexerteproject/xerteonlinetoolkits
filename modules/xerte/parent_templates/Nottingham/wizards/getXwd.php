@@ -26,6 +26,56 @@ function getParentPath($path)
 
 }
 
+function evaluateConditionExpression($ctree)
+{
+    switch ($ctree['type']) {
+        case "Literal":
+            return $ctree['value'];
+        case "LogicalExpression":
+            if ($ctree['operator'] == "&&") {
+                return evaluateConditionExpression($ctree['left']) && evaluateConditionExpression($ctree['right']);
+            } else {
+                return evaluateConditionExpression($ctree['left']) || evaluateConditionExpression($ctree['right']);
+            }
+        case "BinaryExpression":
+            switch ($ctree['operator']) {
+                case "==":
+                    return evaluateConditionExpression($ctree['left']) == evaluateConditionExpression($ctree['right']);
+                case "!=":
+                    return evaluateConditionExpression($ctree['left']) != evaluateConditionExpression($ctree['right']);
+                case "<":
+                    return evaluateConditionExpression($ctree['left']) < evaluateConditionExpression($ctree['right']);
+                case "<=":
+                    return evaluateConditionExpression($ctree['left']) <= evaluateConditionExpression($ctree['right']);
+                case ">":
+                    return evaluateConditionExpression($ctree['left']) > evaluateConditionExpression($ctree['right']);
+                case ">=":
+                    return evaluateConditionExpression($ctree['left']) >= evaluateConditionExpression($ctree['right']);
+                default:
+                    return null;
+            }
+        case "MemberExpression":
+            break;
+        case "Identifier":
+            if (isset($_REQUEST[$ctree['name']])) {
+                return $_REQUEST[$ctree['name']];
+            } else if (isset($_SESSION[$ctree['name']])) {
+                return $_SESSION[$ctree['name']];
+            } else {
+                try {
+                    $value = eval($ctree['name']);
+                    return $value;
+                }
+                catch (Exception $e){};
+                return null;
+            }
+            break;
+        default:
+            // Unexpected node parsed
+            return null;
+    }
+}
+
 $xwd_path = dirname(__DIR__) .'/';
 
 if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
@@ -54,7 +104,7 @@ else if (file_exists($xwd_path . "wizards/plugins/en-GB"))
 
 if ($plugin_path != "")
 {
-    require_once ("../../../../../website_code/php/mergexml.php");
+    require_once (__DIR__ . "/../../../../../website_code/php/mergexml.php");
     $merged = new MergeXML();
     $merged->addFile($xwd_file_path);
     $plugin_files = scandir($plugin_path);
@@ -62,6 +112,22 @@ if ($plugin_path != "")
     {
         if (substr($plugin_file, -4) == ".xwd")
         {
+            // Check condition for this file, currently only theme
+            $xml = simplexml_load_file($plugin_path . "/" . $plugin_file);
+            $condition = (string)$xml['cond'];
+            _debug("Condition: " . $condition);
+            if ($condition != null && $condition != "")
+            {
+                require_once (__DIR__ . "/../../../../../website_code/php/phpep/PHPEP.php");
+                $phpep = new PHPEP($condition);
+                $ctree = $phpep->exec();
+                $result = evaluateConditionExpression($ctree);
+                _debug("Result of evalutaion of condition: " . ($result === true ? 'true' : ($result === false ? 'false' : $result)));
+                if ($result !== true)
+                {
+                    continue;
+                }
+            }
             // Merge the custom file into the main file.
             $merged->addFile($plugin_path . "/" . $plugin_file);
         }

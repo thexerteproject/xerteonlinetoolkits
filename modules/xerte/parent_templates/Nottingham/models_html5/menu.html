@@ -72,7 +72,7 @@
 					x_changePage(x_normalPages[$this.index() + numOffset]);
 					
 					if ($('#menuHolder').parents('.featherlight').length > 0) {
-						parent.window.$.featherlight.current().close();
+						$.featherlight.current().close();
 					}
 				});
 			
@@ -93,6 +93,7 @@
 									})
 									.attr({
 										"id":"pageImg",
+										"alt":x_params.menuImageAlt != undefined ? x_params.menuImageAlt : "",
 										"src":x_evalURL(x_params.menuImage)
 									})
 									.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger

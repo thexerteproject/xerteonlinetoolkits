@@ -242,7 +242,7 @@
 			});
 			// Finish tracking of video
 			// This will also account for last video segment, so there might be race conditions
-			// Also we do let popcorn handle the destruction (doNotCloseTrackiong parameter in loadMedia) of popcorn, so we need to do that hear at the end
+			// Also we do let popcorn handle the destruction (doNotCloseTracking parameter in loadMedia) of popcorn, so we need to do that here at the end
 			document.dispatchEvent(new Event('leavepage'));
 			// Calculate page score
 			var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
@@ -316,6 +316,11 @@
                     /* files are already loaded statically */
                     loadFiles = false;
                 }
+				// comment out next loop and always load popcorn files
+				// This is because popcorn breaks if you have a mediaLesson
+				// and then a nav page which also loads popcorn with a different set of plugins
+				// Any mediaLesson after that will not work anymore
+				/*
 				for (var i=0; i<x_pageInfo.length; i++) {
 					if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
 						// a page of this type has already been loaded - don't reload popcorn files
@@ -323,7 +328,7 @@
 						break;
 					}
 				}
-				
+				*/
 				if (loadFiles == true ) {
 					this.loadPopcorn();
 				} else {
@@ -619,9 +624,7 @@
 			   for (var i = 0; i < childs.length; i++) {
 				   if (childs[i].nodeName === 'synchMCQ') {
 					   mcqBool = false;
-					   console.log(childs[i].nodeName);
 				   }
-				   console.log(childs[i].nodeName);
 				   this.isMCQ(childs[i]);
 			   }
 		    }
@@ -684,6 +687,8 @@
                 this.addEvents();
 			}
             this.initTracking();
+
+			$('.mainMedia').parents('.panel').addClass('mediaPanel');
 			x_pageLoaded();
 		};
 

@@ -30,27 +30,26 @@ include "../user_library.php";
 
 include "properties_library.php";
 
-//connect to the database
+if (!isset($_POST['tutorial_id'])){
+	die("Invalid paramaters");
+}
+$template_id = x_clean_input($_POST['tutorial_id'], 'numeric');
 
-$database_connect_id = database_connect("notes template database connect success", "notes template database connect failed");
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
 
-if(is_user_creator_or_coauthor($_POST['tutorial_id'])||is_user_admin()){
+	if(template_access_settings($template_id)=="Public"){
 
-    if(template_access_settings($_POST['tutorial_id'])=="Public"){
+		rss_display($xerte_toolkits_site,$template_id,false);
 
-        rss_display($xerte_toolkits_site,$_POST['tutorial_id'],false);
+	}else{
 
-    }else{
+		rss_display_public();
 
-        rss_display_public();
-
-    }
-
+	}
 
 }else{
 
-    rss_display_fail();
+	rss_display_fail(true);
 
 }
 
-?>
