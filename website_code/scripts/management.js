@@ -409,13 +409,20 @@ function update_template(){
 	debugger
 	// Get selected pages of the active_section
 	// 1. First get non-selected boxes
+	var disable_advanced_cb = $("#sub_page_select_disable_advanced_" + active_section + ":checked");
+	var disable_advanced = (disable_advanced_cb.length > 0);
 	var simple_lo_page_cb = $("#sub_page_select_titleonly_" + active_section + ":checked");
 	var simple_lo_page = (simple_lo_page_cb.length > 0);
 	var checkboxes_all = $(".sub_page_selection_model_" + active_section);
 	var checkboxes_selected = $(".sub_page_selection_model_" + active_section + ":checked");
 	var sub_pages = "";
+	if(disable_advanced_cb.length > 0){
+		sub_pages += "disable_advanced"
+	}
 	if(simple_lo_page_cb.length > 0){
-		sub_pages = "simple_lo_page"
+		if (sub_pages.length > 0)
+			sub_pages += ",";
+		sub_pages += "simple_lo_page"
 	}
 	if (checkboxes_all.length != checkboxes_selected.length)
 	{
