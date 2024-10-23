@@ -158,24 +158,7 @@ function initMedia($media) {
 
 			}, 200);
 		});
-
-			// it's audio with a transcript - add a transcript button to the end of the player
-			if ($mediaElement.find("audio").data("transcript") != undefined) {
-				$mediaElement.parents(".mejs-container").parent().addClass("audioTranscript");
-
-				const transcriptLabel = languageData.find("mediaElementControls").find("transcriptButton")[0].getAttribute("label");
-				$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
-					.appendTo($mediaElement.parents(".mejs-container").find(".mejs-controls"))
-					.click(function() {
-						$.featherlight($mediaElement.find("audio").data("transcript"));
-					});
-			}
-		},
-		error: function(mediaElement) {
-			console.log('mediaelement problem is detected: ', mediaElement);
 	}
-
-
 }
 
 // function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
