@@ -52,17 +52,19 @@ optional: feedback page synch play enable
 		    for (var i = 0; i < options.childNodes.length; i++) {
 			    var curValid = false;
 			    for (var j = 0; j < selected.length; j++) {
-				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") {
-					    allValid = false;
-				    }
-				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") {
+				    if (i == selected[j] && (options.childNodes[i].getAttribute("correct") == "true" || !judge)) {
 					    curValid = true;
+				    }
+				    if (i == selected[j] && (options.childNodes[i].getAttribute("correct") == "false" && judge)) {
+					    allValid = false;
 				    }
 			    }
 			    if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
 				    allValid = false;
 			    }
 		    }
+
+				
 
 		    // Xerte Tracking setup
 		    var l_options = [];
@@ -92,14 +94,15 @@ optional: feedback page synch play enable
 			var result =
 			{
 				success: allValid,
-				score: (allValid ? 100.0 : 0.0)
+				score: (allValid ? 100.0 : 0.0),
+				judge: judge
 			};
 
 			//Push results
 			XTSetPageScore(x_currentPage, scormScore);
 			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback);
             $learningObjectParent.enableControls(media.media, true);
-        }
+    };
 
 		// Feedback Manager
 		var answerSelected = function() {
@@ -125,19 +128,19 @@ optional: feedback page synch play enable
 			}
 			
 			// feedback if question has true/false answers
-			if (judge == true) {
+			if (judge) {
 				var fb;
 				finishTracking(options);
 				if (options.answerType == "multiple" && options.type == "radio") {
 					fb = "multiRight";
 					for (var i=0; i<options.childNodes.length; i++) {
 						if ($.inArray(i, selected) >= 0) {
-							if (options.childNodes[i].getAttribute("correct") == "false") {
+							if (options.childNodes[i].getAttribute("correct") == "false" && judge) {
 								fb = "multiWrong";
 								break;
 							}
 						} else {
-							if (options.childNodes[i].getAttribute("correct") == "true") {
+							if (options.childNodes[i].getAttribute("correct") == "true" && judge) {
 								fb = "multiWrong";
 								break;
 							}
@@ -150,7 +153,7 @@ optional: feedback page synch play enable
 				} else {
 					fb = "singleRight";
 					for (var i=0; i<selected.length; i++) {
-						if (options.childNodes[selected[i]].getAttribute("correct") == "false") {
+						if (options.childNodes[selected[i]].getAttribute("correct") == "false" && judge) {
 							fb = "singleWrong";
 							break;
 						}
@@ -162,6 +165,8 @@ optional: feedback page synch play enable
 				
 			
 				feedbackTxt += options[fb] != "" ? '<div class="feedback"><p>' + options[fb] + '</p></div>' : "";
+			}else {
+				finishTracking(options);
 			}
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
@@ -182,6 +187,7 @@ optional: feedback page synch play enable
 					.html(feedbackLabel + feedbackTxt)
 					.show();
 				$continueBtn.show();
+				x_pageContentsUpdated();
 
 				//#Warning: unused by Xerte at the current time.
 				if (action >= 0) {
@@ -197,6 +203,8 @@ optional: feedback page synch play enable
 			// no feedback needed so do change page / play / change media current time immediately
 			} else if (action >= 0) {
 				doAction(action);
+			} else {
+				$continueBtn.show();
 			}
 		}
 		
@@ -229,7 +237,9 @@ optional: feedback page synch play enable
 		
 		return {
 			_setup: function(options) {
+				console.log(options);
 				media = this;
+				let judgeOverride = options.judge?? "true";
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
@@ -245,7 +255,7 @@ optional: feedback page synch play enable
 				} else {
 					// create answer options (could be buttons, radio list or drop down menu)
 					$(options.childNodes).each(function(i) {
-						if (judge == false && this.getAttribute("correct") == "true") {
+						if (judge == false && (this.getAttribute("correct") == "true" && judgeOverride == "true")) {
 							judge = true;
 							autoEnable = false;
 						}
@@ -371,7 +381,6 @@ optional: feedback page synch play enable
 							}
 						}
 					});
-					
 					if (tempEnable == true && autoEnable == true) { // prevent automatic enabling of controls if an answer has an action that will enable anyway
 						autoEnable = false;
 					}
@@ -633,6 +642,7 @@ optional: feedback page synch play enable
 					}).show();
 				}
 				$target.show();
+				x_pageContentsUpdated();
 			},
 			
 			end: function(event, options) {
