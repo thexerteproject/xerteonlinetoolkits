@@ -199,7 +199,7 @@ var EDITOR = (function ($, parent) {
                         }
                     ]
             }
-            if (simple_mode) {
+            if (simple_mode && !disable_advanced) {
                 if (advanced_mode) {
                     button_def.push({
                         name: language.btnAdvanced.$label_off,
@@ -538,7 +538,7 @@ var EDITOR = (function ($, parent) {
         var passwordIcon = toolbox.getExtraTreeIcon(key, "password", lo_data[key].attributes.password != undefined && lo_data[key].attributes.password != '');
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
-		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && !disable_advanced && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
         // Be careful. You cannot just find $("#" + current_node.id + "_text").html(), because if the node is collapsed this will return undefined!
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
@@ -1390,7 +1390,7 @@ var EDITOR = (function ($, parent) {
         var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
         var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
         var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
-		var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
+		var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && !disable_advanced && template_sub_pages.indexOf(nodeName) == -1);
 
         var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {

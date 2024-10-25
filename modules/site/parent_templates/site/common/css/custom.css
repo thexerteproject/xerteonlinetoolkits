@@ -936,4 +936,8 @@ h3.contentTitle {
         -webkit-animation: x_bounce 2s infinite;
         animation: x_bounce 2s infinite;
     }
+
+
+.x_videoContainer {
+    width: 100%;
 }

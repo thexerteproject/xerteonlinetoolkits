@@ -122,6 +122,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
     $template_sub_pages = array("page");
     $simple_lo_page = get_template_simple_lo_page($row_edit['template_id']);
+    $disable_advanced = get_template_disable_advanced($row_edit['template_id']);
     $simple_mode = $simple_lo_page;
 	/**
      * build an array of available themes for this template
@@ -429,6 +430,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
+    echo "disable_advanced=" . ($disable_advanced ? "true" : "false") . ";\n";
+
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
     echo "roles=" . json_encode($user_roles) . ";\n";
 
