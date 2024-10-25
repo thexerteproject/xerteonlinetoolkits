@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" submittedtxt="This document has been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
+      <documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -30,7 +30,7 @@
     </fontSize>
 
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true" />
-	<submittedTxt label="Submitted Text" type="TextArea" height="120" language="true" />
+	<submittedTxt label="Submitted Text" type="TextInput" language="true" defaultValue="Your answers have been submitted" mandatory="true" />
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
 	<downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" language="true" />
