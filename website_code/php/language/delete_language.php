@@ -88,8 +88,10 @@ if (isset($_POST['code'])) {
 
             }
         }
-        if (file_exists($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $code)) {
-            $p = folder_delete($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $code . "/");
+        $xot_wizard_path = $xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $code;
+        x_check_path_traversal_newpath($xot_wizard_path, $xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/", DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE);
+        if (file_exists($xot_wizard_path)) {
+            $p = folder_delete($xot_wizard_path . "/");
             if ($p != "") {
                 echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
                 $abort = true;
@@ -100,7 +102,20 @@ if (isset($_POST['code'])) {
             echo "****";
             language_details(true);
         }
-
+        $site_wizard_path = $xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/" . $code;
+        x_check_path_traversal_newpath($site_wizard_path, $xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/", DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE);
+        if (file_exists($site_wizard_path)) {
+            $p = folder_delete($site_wizard_path . "/");
+            if ($p != "") {
+                echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
+                $abort = true;
+            }
+        }
+        if (!$abort) {
+            echo DELETE_LANGUAGE_SUCCEEDED . $code;
+            echo "****";
+            language_details(true);
+        }
     }
     else
     {

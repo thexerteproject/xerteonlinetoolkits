@@ -58,8 +58,10 @@ _load_language_file("/website_code/php/import_template.inc");
 // Create a unique, random, temporary directory.
 $temp_dir = tempdir();
 $zip_file = $temp_dir . DIRECTORY_SEPARATOR . $userProvidedFileName;
+x_check_path_traversal_newpath($zip_file, $temp_dir, "Invalid file path");
 
 // Copy the uploaded file into the tempdir, unzip it and then remove it.
+x_check_path_traversal($_FILES['filenameuploaded']['tmp_name'], null, "Invalid file path");
 if (@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $zip_file)) {
 
     // Quick fix to check zip file is valid
