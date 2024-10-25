@@ -69,7 +69,9 @@
 
 	define ("PROJECT_INFO_PUBLIC", "Public");
 
-	define ("PROJECT_INFO_PASSWORD", "Password");
+	define ("PROJECT_INFO_PASSWORD", "Require login");
+
+    define ("PROJECT_INFO_PASSWORD_PLAY", "Password protected");
 
 	define ("PROJECT_INFO_OTHER", "Other");
 
