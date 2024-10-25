@@ -242,12 +242,12 @@ function NoopTrackingState()
         return Math.round(this.getdRawScore()*100)/100 + "";
     }
 
-    function getRawScore() {
-        return Math.round(this.getdRawScore() * 100) / 100 + "";
-    }
-
     function getdRawCompletionWeightedScore(){
         return getdRawScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getRawCompletionWeightedScore(){
+        return Math.round(getdRawCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdMinScore()
