@@ -739,12 +739,14 @@
 									$('img').mapster('set_options', options);
 									$(this).removeClass("highlight");
 									$("img").mapster('highlight', false);
+									$("#pageContents .selected").removeClass("selected");
+									$('#hotspot_bubble_holder').empty()
 								})
 								.keypress(function (e) {
 									var charCode = e.charCode || e.keyCode;
 									if (charCode == 32) {
-										if (hs_hover != "true") {
-											$(this).trigger("click");
+										if (hs_hover != "true" || x_browserInfo.mobile == true) {
+											$(this).triggerHandler("click");
 										} else {
 											$(this).trigger("mouseenter")
 										}
@@ -753,7 +755,11 @@
 								.keyup(function (e) {
 									var charCode = e.charCode || e.keyCode;
 									if (charCode == 27) {
-										$(this).trigger("mouseleave")
+
+										//$(this).trigger("mouseleave")
+										$("#pageContents .selected").removeClass("selected");
+										$("#pageContents .highlighted").removeClass("highlighted");
+										$('#hotspot_bubble_holder').empty()
 									}
 								});
 
@@ -848,10 +854,10 @@
 	function hideOnClickOutside(selector) {
 		const outsideClickListener = (event) => {
 			const $target = $(event.target);
-			if (!$target.closest(selector).length && $(selector).is(':visible')) {
-				$(selector).hide();
+			if (!$target.closest(selector).length && !$(selector).is(':empty')) {
 				$("#pageContents .selected").removeClass("selected");
 				$("#pageContents .highlighted").removeClass("highlighted");
+				$('#hotspot_bubble_holder').empty()
 				removeClickListener();
 			}
 		}
@@ -895,7 +901,6 @@
 			hs_div = $(thisTmp).parent()
 			if (current_icon[0].getAttribute('coords') !== undefined && current_icon[0].getAttribute('coords') !== '') {
 				bubble_hs_coords = current_icon[0].getAttribute('coords').split(',')
-				debugger
 				if (hsShape == 'rectangle' ) {
 					hs_left = $('#imageHolder').offset().left + parseInt(bubble_hs_coords[0])
 					hs_top = $('#imageHolder').offset().top + parseInt(bubble_hs_coords[1])
@@ -952,7 +957,6 @@
 		} else {
 			//normal
 			var tmp_top = hs_top + hs_height/2 - $hotspot_bubble.outerHeight(true)/2
-			debugger
 		}
 
 		$hotspot_bubble.css({
