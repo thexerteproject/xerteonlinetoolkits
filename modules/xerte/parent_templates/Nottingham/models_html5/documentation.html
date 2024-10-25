@@ -290,7 +290,7 @@
 			if (x_currentPageXML.getAttribute('submittedTxt') && x_currentPageXML.getAttribute('submittedTxt') != "") {
 				$('<p class="submitted">'+ x_currentPageXML.getAttribute('submittedTxt') + '</p>').insertAfter($submitBtn).hide();
 			}else { // TODO: should remove
-				$('<p class="submitted">This document has been submitted</p>').insertAfter($submitBtn).hide();
+				$('<p class="submitted">Your answers have been submitted</p>').insertAfter($submitBtn).hide();
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);

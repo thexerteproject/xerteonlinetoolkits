@@ -2763,11 +2763,11 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function (
   const statements = this.data.getQuestionResponses(interactionObjectUrl);
 
   let pairStatements = [];
-  statements.forEach(function (si) {
+  statements.forEach((si) => {
     const s = $this.data.rawData[si];
     if (s.result.response !== "") {
       const tup = s.result.response.split("[,]");
-      tup.forEach(function (t) {
+      tup.forEach((t) => {
         statement = JSON.parse(JSON.stringify(s));
         arr = t.split("[.]");
         const pair = `${arr[0]} > ${arr[1]}`;

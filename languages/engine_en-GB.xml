@@ -64,6 +64,8 @@
   <tick label="Tick"/>
   
   <cross label="Cross"/>
+
+  <viewed label="Viewed"/>
  
   <sizes>
 	<item>Default</item>
@@ -108,7 +110,9 @@
 	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
 	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
 	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
-	  <moreInfoItem toSelect="Press space to select" selected="Selected" moreInfo="Press space to learn more" />
+	  <moreInfoItem name="Learn more" reveal="Reveal information" toSelect="Press space to select" selected="Selected" moreInfo="Press space to learn more" />
+	  <question name="Question"/>
+	  <answer name="Answer"/>
   </interactions>
   
   <fetchResults label="Fetching results..."/>
@@ -130,14 +134,15 @@
 	  <selectTxt label="Please select from the options below"/>
 	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
 	  <wcagTxt label="View the Xerte accessibility statement"/>
-	  <wcagLogo label="WCAG WAI-AA logo and link to Xerte accessibility statement"/>
+	  <wcagLogo label="WCAG WAI-AA logo"/>
+	  <wcagURL label="https://xot.xerte.org.uk/play.php?template_id=214#home"/>
 	  <off label="Default theme for this resource"/>
 	  <noBg label="Remove Background Images (default theme)"/>
 	  <invert label="Invert, High contrast theme, no background images"/>
 	  <blackYellow label="Black on Yellow theme, no background images"/>
   </colourChanger>
 
-  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
+  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" shortNewWindow="opens in new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
 	  <!--<tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
 	  <accNav description="This page contains an accordion panel where the selection of a tab changes the information presented. To select a tab click Enter or Space."  click="Click to reveal information"/>-->
 	  <buttonNav description="This page contains a series of buttons where each one reveals some related information." click="Click to reveal information"/>
@@ -196,11 +201,15 @@
   <submitBtnLabel label="Submit"/>
   <submitConfirmMsg label="Your answers have been submitted"/>
   <closeBtnLabel label="Close"/>
-  
+
+  <pageMenu label="Page menu"/>
   <top label="Top"/>
+  <skip label="Skip to main content"/>
   <password label="Access code" pageSupport="In live projects, an access code must be entered to view this page" sectionSupport="In live projects, an access code must be entered to view this section"/>
   <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
   <print printBtn="Print page"/>
+
+  <tableInfo table="Table" row="Row" column="Column"/>
 
   <fullScreenBannerInfo label="Scroll down for more information..."/>
 

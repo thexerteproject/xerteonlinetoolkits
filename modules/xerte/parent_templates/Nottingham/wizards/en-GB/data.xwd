@@ -315,7 +315,7 @@
 	  pinAlt="Draggable pin icon"
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="" panelWidth="Medium" firstStep="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" submittedtxt="This document has been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" imgWidth="Medium" url="" interactivity="Describe" submitText="Submit" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src=""/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
       />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback="" panelWidth="Medium" gapLook="bg" gapLookFilled="true" gapSize="max" gapBespokeSize="20" gapSizeFilled="true" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer" tryAgain="Try again"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="" feedback="" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="" words="" restrict="letter"
 	  nextBtnTxt="Next"
@@ -1933,7 +1933,7 @@
 	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true"/>
 
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 
     <newNodes>
       <category><![CDATA[<category name="Enter Category Name"/>]]></category>
@@ -2313,9 +2313,9 @@
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
 	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
-	<windowType label="Display In" options="Dialog,Lightbox,Nearby bubble" type="ComboBox" data="dialog,lightbox,bubble" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
+	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
 	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="false" width="200"/>
-    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info"/>
+    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="mode=='icon'"/>
 
 	<hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
 		<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
@@ -2364,9 +2364,12 @@
 		<windowWidth label="Width" type="NumericStepper" min="100" max="1030" step="10" defaultValue="550" width="100" optional="true"/>
 		<windowHeight label="Height" type="NumericStepper" min="100" max="1030" step="10" defaultValue="400" width="100" optional="true"/>
 	</window>
-	
-	<destinationURL label="External URL" type="TextInput" optional="true" tooltip="Open an external website when hotspot clicked. The browser will navigate away from this project"/>
-	<newTabURL label="New Tab" type="TextInput" optional="true" tooltip="Open a website in a new tab when hotspot clicked"/>
+
+	<externalURLGroup type="group" label="External URL" optional="true" tooltip="Open an external website when the hotspot is clicked.">
+        <destinationURL label="External URL" type="TextInput" optional="true" tooltip="The destination url"/>
+        <destinationType label="Type" options="New tab, Current page" type="ComboBox" data="tab,current" defaultValue="tab" width="200" optional="true" tooltip="If current page is selected the browser will navigate away from this project"/>
+	</externalURLGroup>
+
 	<destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to another page in this project when hotspot clicked"/>
 	<relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)" deprecated="This property is deprecated. You can now select a relative destination in the Destination Page optional property."/>
 	
@@ -2946,7 +2949,7 @@
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Large" width="100" mandatory="true"/>
-	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" condition="judge!='false'" defaultValue="1.0"/> 
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -3151,8 +3154,8 @@
 	<download label="Show Download/Submit Buttons" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 
-	<track label="Submit Answer" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="added a button that submit the answer to the results page"/>
-	<showDownload label="Show Download button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
+	<track label="Submit Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="Include a button that submits answers to the results page"/>
+	<showDownload label="Download Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="A download button will be shown by default. Uncheck this option to remove the download button."/>
 	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0"/> 
 	
     <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
@@ -3166,7 +3169,7 @@
     </fontSize>
 
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
-	<submittedTxt label="Submitted Text" type="TextArea" height="120" language="true"/>
+	<submittedTxt label="Submitted Text" type="TextInput" language="true" defaultValue="Your answers have been submitted" mandatory="true"/>
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
 	<downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" language="true"/>
@@ -3876,7 +3879,7 @@
 	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" condition="interactivity=='Drop Down Menu'" width="100" optional="true"/>
 
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="Mark Answer" optional="true" condition="interactivity=='Fill in Blank'" conditionTrigger="true" type="CheckBox" defaultValue="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<judge label="Mark Answer" optional="true" condition="interactivity=='Fill in Blank'" conditionTrigger="true" type="CheckBox" defaultValue="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="" placeholder="Enter a list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
 
@@ -4072,7 +4075,7 @@
 
 	<url label="CSV File" type="Media" optional="true"/>
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
@@ -5957,7 +5960,7 @@
 
 	<feedbackGroup type="group" label="Feedback" optional="true">
 		<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
-		<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>
+		<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown). Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 		<feedbackPos label="Feedback Order" options="General &gt; Answer &gt; Correct/Incorrect,General &gt; Correct/Incorrect &gt; Answer,Answer &gt; Correct/Incorrect &gt; General,Answer &gt; General &gt; Correct/Incorrect,Correct/Incorrect &gt; General &gt; Answer,Correct/Incorrect &gt; Answer &gt; General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback &gt; Answer feedback &gt; Correct/Incorrect feedback"/>
 	</feedbackGroup>
 
@@ -6489,7 +6492,7 @@
 	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Question" type="TextArea" height="100"/>
-		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true"/>
+		<judge label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false" deprecated="This property is deprecated. The interactive video page offers an alternative way of having content overlaying a video."/>
@@ -10323,7 +10326,7 @@
     <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
     <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" condition="judge!='false'" tooltip="Attempts allowed before feedback is given"/>
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="if disabled the score will always show 100% for this exercise"/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true"/>

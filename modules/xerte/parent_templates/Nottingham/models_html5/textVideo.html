@@ -119,7 +119,13 @@
 			$("#pageVideo").html("");
 			$('.transcriptHolder').remove();
 			// text align
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			if (x_currentPageXML.childNodes.length > 0) {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			}
+			else {
+				$("#textHolder").html("");
+			}
+
 			var $panel = $("#pageContents .panel");
 
 			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom

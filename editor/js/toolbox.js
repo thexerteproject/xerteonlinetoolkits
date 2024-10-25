@@ -406,7 +406,7 @@ var EDITOR = (function ($, parent) {
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
-		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && !disable_advanced && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 
         treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
@@ -2654,7 +2654,7 @@ var EDITOR = (function ($, parent) {
                 });
         });
 
-        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp)});
+        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp, hspattrs.nodeName)});
 
         if (hsattrs.mode != undefined && hsattrs.mode == 'icon' && hsattrs.shape != undefined){
             var icon_shape = JSON.parse(hsattrs.shape);
@@ -2710,7 +2710,7 @@ var EDITOR = (function ($, parent) {
         }
     };
 
-    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle, lp){
+    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle, lp, iconEnabled){
 	    var shape = "rectangle";
 	    var scale;
 	    var isDown = false;
@@ -2724,14 +2724,18 @@ var EDITOR = (function ($, parent) {
         edit_img.attr('id', 'outer_img_' + id)
             .addClass("hotspotEditor");
         edit_img.data("id", id);
-        edit_img.append('<div class="hsbutton_holder" id="hsbutton_holder_'+ id + '">' +
+        var tmpbuttonholder = '<div class="hsbutton_holder" id="hsbutton_holder_'+ id + '">' +
             '<button id="rectangle_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Rectangle + '"><i class="fas fa-2x fa-vector-square"></i></button>' +
-            '<button id="poly_'+ id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Polygon + '"><i class="fas fa-2x fa-draw-polygon"></i></button>' +
-            '<button id="icon_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Icon + '"><i class="fas fa-2x fa-info-circle"></i></button>' +
-            '<button id="reset_'+ id + '" class="hseditModeButton firstoption" title="' + language.editHotspot.Buttons.Reset + '" disabled><i class="fas fa-2x fa-undo-alt"></i></button>' +
+            '<button id="poly_'+ id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Polygon + '"><i class="fas fa-2x fa-draw-polygon"></i></button>';
+
+        if (iconEnabled != '' & iconEnabled == 'connectorHotspotImage'){
+            tmpbuttonholder += '<button id="icon_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Icon + '"><i class="fas fa-2x fa-info-circle"></i></button>';
+        }
+        tmpbuttonholder += '<button id="reset_'+ id + '" class="hseditModeButton firstoption" title="' + language.editHotspot.Buttons.Reset + '" disabled><i class="fas fa-2x fa-undo-alt"></i></button>' +
             '<button id="' + id + '_cancel" name="cancel" class="hseditModeButton" title="' + language.Alert.cancellabel + '" style="float:right"><i class="fas fa-2x fa-xmark"></i></button>' +
             '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check"></i></button>' +
-            '</div>');
+            '</div>';
+        edit_img.append(tmpbuttonholder);
 
         edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
@@ -2928,7 +2932,6 @@ var EDITOR = (function ($, parent) {
                             canvasWidth = $('.overlayCanvas').width()
                             canvasHeight = $('.overlayCanvas').height()
 
-
                             hs = new fabric.Circle({
                                 radius: icon.radius/100 * canvasWidth,
                                 left: icon.centerX/100 * canvasWidth,
@@ -2961,6 +2964,14 @@ var EDITOR = (function ($, parent) {
                                 mt: false,
                             })
                         }
+                        setDrawingModeButtonState(icon);
+                        if (hs == null) {
+                            disableReset();
+                        }
+                        else {
+                            enableReset();
+                        }
+                        break;
 
                 }
                 if (hs != null) {
@@ -4666,7 +4677,7 @@ var EDITOR = (function ($, parent) {
                             $(this).css({width: '100%'});
                             drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle, lp);
                         }).click(function(){
-                            editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp);
+                            editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp, hspattrs.nodeName);
                         });
                 }
                 else
@@ -5021,7 +5032,7 @@ var EDITOR = (function ($, parent) {
 								.css('top', $('body').height() * 0.05);
 						}, 10);
 					});
-				debugger
+
 				iconpickers.push({id: id + '_btn', iconList: options.iconList});
 				
 				break;
