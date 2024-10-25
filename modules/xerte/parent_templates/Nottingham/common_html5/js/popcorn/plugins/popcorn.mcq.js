@@ -52,10 +52,10 @@ optional: feedback page synch play enable
 		    for (var i = 0; i < options.childNodes.length; i++) {
 			    var curValid = false;
 			    for (var j = 0; j < selected.length; j++) {
-				    if (i == selected[j] && (options.childNodes[i].getAttribute("correct") == "true" || !judge)) {
+				    if ((i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") || !judge) {
 					    curValid = true;
 				    }
-				    if (i == selected[j] && (options.childNodes[i].getAttribute("correct") == "false" && judge)) {
+				    if ((i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") && judge) {
 					    allValid = false;
 				    }
 			    }
