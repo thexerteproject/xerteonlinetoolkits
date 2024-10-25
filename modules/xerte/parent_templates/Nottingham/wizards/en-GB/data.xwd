@@ -4538,7 +4538,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Comparison" hint="An interaction allowing you to compare two image" icon="icHotspot" thumb="thumbs/imageCompare.jpg" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_comparison_page" remove="true">
+    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Comparison" hint="An interaction allowing you to compare two image" icon="icImageCompare" thumb="thumbs/imageCompare.jpg" example=" https://xot.xerte.org.uk/play_116#imagecompare" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_comparison_page" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
