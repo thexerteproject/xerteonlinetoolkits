@@ -618,13 +618,9 @@ function project_info($template_id){
 
         $play_page = "play";
 
-        if(substr(template_access_settings($template_id), 0, 12)=="PasswordPlay"){
-            $play_page = "passwordplay";
-        }
-
         $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
-            url_return($play_page, $template_id) . "'>" .
-            $xerte_toolkits_site->site_url . url_return($play_page, $template_id) . "</a><br/>";
+            url_return("play", $template_id) . "'>" .
+            $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a><br/>";
 
         $template = explode("_", get_template_type($template_id));
 
@@ -1700,7 +1696,7 @@ function access_info($template_id){
             }
             else if (substr($accessStr,0,12) == "PasswordPlay")
 		    {
-				$accessTranslation = "PasswordPlay";
+				$accessTranslation = PROJECT_INFO_PASSWORD_PLAY;
                 $accessStr = "PasswordPlay";
                 $nrViews = $row_access["number_of_uses"];
 			}
@@ -1790,7 +1786,7 @@ function access_display($xerte_toolkits_site, $template_id, $change){
 	if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
 		echo "checked ";
 	}
-	echo "type=\"radio\" id=\"PasswordPlay\" name=\"share_status\" value=\"PasswordPlay\"><label for=\"Password\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY . "</label></div>";
+	echo "type=\"radio\" id=\"PasswordPlay\" name=\"share_status\" value=\"PasswordPlay\"><label for=\"PasswordPlay\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY . "</label></div>";
     echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY_EXPLAINED . "</p><form id=\"PWPlay_pwd\"><textarea id=\"pwd\" style=\"width:90%; height:20px;\">";
 
 	if(isset($_POST['password'])){

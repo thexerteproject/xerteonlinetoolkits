@@ -30,6 +30,7 @@
 require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/play.inc");
+_load_language_file("/pwplay.inc");
 
 require_once $xerte_toolkits_site->php_library_path . "display_library.php";
 require_once $xerte_toolkits_site->php_library_path . "template_library.php";
@@ -75,6 +76,21 @@ if ((!isset($x_embed)))
 
 //error_reporting(E_ALL);
 //ini_set('display_errors',"ON");
+
+function show_pwplay_login_form($mesg="")
+{
+	echo "<html>\n";
+	echo "<body style=\"#ffffff;\">\n";
+	echo "   <div style=\"width:900px; margin:0 auto; font-family:verdana,tahoma,arial; font-size:11pt\">\n";
+    echo "   <b>" . XERTE_PWPLAY_DESCRIPTION . "</b><br>" . XERTE_PWPLAY_GUIDANCE . "\n";
+    echo "<p><form method=\"post\" action=\"\">\n";
+    echo "<p>" . XERTE_PWPLAY_PASSWORD . " <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /> <button type=\"submit\">" . XERTE_PWPLAY_LOGIN_BUTTON . "</button></p>\n";
+    if (strlen($mesg)>0)
+    {
+        echo "<p>" . $mesg . "</p>";
+    }
+    echo "</div></body></html>";
+}
 
 /**
  *
@@ -420,39 +436,75 @@ if ($tsugi_enabled || $pedit_enabled) {
                     }
 
                 } else {
-                    $q = "select * from {$xerte_toolkits_site->database_table_prefix}play_security_details";
-                    $params = array();
-                    $query_for_security_content_response = db_query($q, $params);
-                    if ($query_for_security_content_response !== false && count($query_for_security_content_response) > 0) {
+					
+					if(substr($row_play['access_to_whom'], 0, 12) == "PasswordPlay"){
+						$password = substr($row_play['access_to_whom'], 13);
+						if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-                        /*
+							/**
+							 *  Check the password againsr the value in the database
+							 */
+							if ($_POST['password'] == $password) {
+
+								/**
+								 *  Output the code
+								 */
+								$_SESSION['template_id'] = $template_id;
+								db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d H:i:s'), $safe_template_id));
+								setcookie("password", $_POST['password'], 0);
+								show_template($row_play, $xapi_enabled);
+							} else {
+								setcookie("password", "", 0);
+								show_pwplay_login_form(PWPLAY_LOGON_FAIL);
+							}
+						} else {
+							if (isset($_COOKIE["password"]) && $_COOKIE["password"] == $password) {
+								$_SESSION['template_id'] = $template_id;
+								db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d H:i:s'), $safe_template_id));
+								show_template($row_play, $xapi_enabled);
+							} else {
+								/**
+								 *  Nothing posted so output the password string
+								 */
+								show_pwplay_login_form();
+								// echo $xerte_toolkits_site->peer_form_string;
+							}
+						}
+					} else {
+						$q = "select * from {$xerte_toolkits_site->database_table_prefix}play_security_details";
+						$params = array();
+						$query_for_security_content_response = db_query($q, $params);
+						if ($query_for_security_content_response !== false && count($query_for_security_content_response) > 0) {
+
+							/*
                          * A setting from play_security_details might be in use, as such, check to see if it is, and then loop through checking if one is valid.
                          */
 
-                        $flag = false;
+							$flag = false;
 
-                        foreach ($query_for_security_content_response as $row_security) {
+							foreach ($query_for_security_content_response as $row_security) {
 
-                            /*
+								/*
                              * Check each setting to see if true
                              */
-                            if ($row_play['access_to_whom'] == $row_security['security_setting']) {
-                                if (check_security_type($row_security['security_data'])) {
-                                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d H:i:s'), $safe_template_id));
-                                    show_template($row_play, $xapi_enabled);
-                                    $flag = true;
+								if ($row_play['access_to_whom'] == $row_security['security_setting']) {
+									if (check_security_type($row_security['security_data'])) {
+										db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d H:i:s'), $safe_template_id));
+										show_template($row_play, $xapi_enabled);
+										$flag = true;
 
-                                    break;
-                                }
-                            }
-                        }
+										break;
+									}
+								}
+							}
 
-                        if ($flag == false) {
-                            dont_show_template();
-                        }
-                    } else {
-                        dont_show_template();
-                    }
+							if ($flag == false) {
+								dont_show_template();
+							}
+						} else {
+							dont_show_template();
+						}
+					}
                 }
             }
         }

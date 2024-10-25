@@ -35,6 +35,7 @@
 
     define("USERS_MANAGE_ROLES", "Manage user roles");
 
+//  admin roles human names -------------------------------------------
     define("USERS_ROLE_SUPER", "Super Admin");
 
     define("USERS_ROLE_SYSTEM", "System Admin");
@@ -48,3 +49,18 @@
     define("USERS_ROLE_PROJECTADMIN", "Project Admin");
 
     define("USERS_ROLE_HARVESTADMIN", "Harvest Admin");
+//  admin roles info -------------------------------------------
+    define("USERS_ROLE_SUPER_INFO", "Super Admin Uitleg");
+
+    define("USERS_ROLE_SYSTEM_INFO", "System Admin Uitleg");
+    
+    define("USERS_ROLE_TEMPLATEADMIN_INFO", "Template Admin Uitleg");
+    
+    define("USERS_ROLE_METAADMIN_INFO", "Meta Admin Uitleg");
+    
+    define("USERS_ROLE_USERADMIN_INFO", "User Admin Uitleg");
+    
+    define("USERS_ROLE_PROJECTADMIN_INFO", "Project Admin Uitleg");
+
+    define("USERS_ROLE_HARVESTADMIN_INFO", "Harvest Admin Uitleg");
+

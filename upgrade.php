@@ -1573,3 +1573,10 @@ function upgrade_47()
     }
 }
 
+function upgrade_48()
+{
+    // Correct the length of the user table password field
+    $table = table_by_key('user');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `password` `password` varchar(100);");
+    return "Changing password column of user to varchar(100) - ok ? " . ($ok !== false ? 'true' : 'false') . "<br>";
+}

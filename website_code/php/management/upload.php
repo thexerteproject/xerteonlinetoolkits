@@ -81,6 +81,7 @@ if($_FILES["fileToUpload"]["name"])
     }
 
     $source = $_FILES["fileToUpload"]["tmp_name"];
+    x_check_path_traversal_newpath($source, null, "Invalid file specified");
     $temp_loc = dirname($source);
     $type = $_FILES["fileToUpload"]["type"];
     $importpath = $xerte_toolkits_site->import_path . $name . "/";
@@ -316,6 +317,7 @@ function editInfoFile($infoContents, $displayName, $description)
 
 function createInfoFile($dir, $templateName, $content)
 {
+    x_check_path_traversal_newpath($dir . $templateName . DIRECTORY_SEPARATOR . $templateName . ".info");
     $file = fopen($dir . $templateName . DIRECTORY_SEPARATOR . $templateName . ".info" , 'w');
     fwrite($file, $content);
     fclose($file);

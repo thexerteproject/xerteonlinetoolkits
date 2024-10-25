@@ -4,20 +4,16 @@
   font-family: "Schoolbell";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/schoolbell-v18-latin-regular.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/schoolbell-v18-latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/schoolbell-v18-latin-regular.woff2") format("woff2"), url("fonts/schoolbell-v18-latin-regular.woff") format("woff"), url("fonts/schoolbell-v18-latin-regular.ttf") format("truetype"), url("fonts/schoolbell-v18-latin-regular.svg#Schoolbell") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/schoolbell-v18-latin-regular.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/schoolbell-v18-latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/schoolbell-v18-latin-regular.woff2") format("woff2"), url("fonts/schoolbell-v18-latin-regular.woff") format("woff"), url("fonts/schoolbell-v18-latin-regular.ttf") format("truetype"), url("fonts/schoolbell-v18-latin-regular.svg#Schoolbell") format("svg"); /* Legacy iOS */
 }
 /* permanent-marker-regular - latin */
 @font-face {
   font-family: "Permanent Marker";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/permanent-marker-v16-latin-regular.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/permanent-marker-v16-latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/permanent-marker-v16-latin-regular.woff2") format("woff2"), url("fonts/permanent-marker-v16-latin-regular.woff") format("woff"), url("fonts/permanent-marker-v16-latin-regular.ttf") format("truetype"), url("fonts/permanent-marker-v16-latin-regular.svg#PermanentMarker") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/permanent-marker-v16-latin-regular.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/permanent-marker-v16-latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/permanent-marker-v16-latin-regular.woff2") format("woff2"), url("fonts/permanent-marker-v16-latin-regular.woff") format("woff"), url("fonts/permanent-marker-v16-latin-regular.ttf") format("truetype"), url("fonts/permanent-marker-v16-latin-regular.svg#PermanentMarker") format("svg"); /* Legacy iOS */
 }
 body {
   /*font-family:	Arial, sans-serif;*/
@@ -35,8 +31,6 @@ body {
   margin: 2px;
   background-color: none;
   border-radius: 14px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -377,6 +371,4 @@ h3 {
 
 #x_introStartBtn {
   background-color: white;
-}
-
-/*# sourceMappingURL=sketch.css.map */
+}/*# sourceMappingURL=sketch.css.map */

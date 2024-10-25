@@ -86,11 +86,15 @@ function XApiTrackingState() {
     this.getSuccessStatus = getSuccessStatus;
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
+    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawScore = getdRawScore;
+    this.getdRawCompletionWeightedScore = getdRawCompletionWeightedScore;
     this.getdMinScore = getdMinScore;
     this.getdMaxScore = getdMaxScore;
     this.getScaledScore = getScaledScore;
+    this.getScaledCompletionWeightedScore = getScaledCompletionWeightedScore
     this.getRawScore = getRawScore;
+    this.getRawCompletionWeightedScore = getRawCompletionWeightedScore;
     this.getMinScore = getMinScore;
     this.getMaxScore = getMaxScore;
     this.setPageType = setPageType;
@@ -318,6 +322,14 @@ function XApiTrackingState() {
         return Math.round(this.getdScaledScore() * 100) / 100 + "";
     }
 
+    function getdScaledCompletionWeightedScore(){
+        return getdScaledScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getScaledCompletionWeightedScore(){
+        return Math.round(getdScaledCompletionWeightedScore() * 100) / 100 + "";
+    }
+
     function getdRawScore() {
         if (this.lo_type == "pages only") {
             if (this.getCompletionStatus() == 'completed')
@@ -354,6 +366,14 @@ function XApiTrackingState() {
 
     function getRawScore() {
         return Math.round(this.getdRawScore() * 100) / 100 + "";
+    }
+
+    function getdRawCompletionWeightedScore(){
+        return getdRawScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getRawCompletionWeightedScore(){
+        return Math.round(getdRawCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdMinScore() {
@@ -1359,7 +1379,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 success: result.success,
                                 completion: true,
                                 extensions: {
-                                    "http://xerte.org.uk/result/match": scorm_lanswer
+                                    "http://xerte.org.uk/result/match": scorm_lanswer,
+																		"http://xerte.org.uk/result/judge": judge
                                 }
                             };
 														if(!judge){
@@ -1432,7 +1453,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 																success: result.success,
 																completion: true,
 																extensions: {
-																		"http://xerte.org.uk/result/multiplichoice": scorm_lanswer
+																		"http://xerte.org.uk/result/multiplichoice": scorm_lanswer,
+																		"http://xerte.org.uk/result/judge": judge
 																}
 														};
 														if(!judge){
@@ -1469,7 +1491,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     },
                                     response: this.score + "",
                                     success: (this.score >= state.lo_passed),
-                                    completion: true
+                                    completion: true,
+																		extensions: {
+																				"http://xerte.org.uk/result/judge": judge
+																		}
                                 };
                             } else { // Interaction mode
                                 statement.result = {
@@ -1483,7 +1508,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     },
                                     response: this.learnerAnswers + "",
                                     success: result.success,
-                                    completion: true
+                                    completion: true,
+																		extensions: {
+																				"http://xerte.org.uk/result/judge": judge
+																		}
                                 };
                             }
                             break;
@@ -1526,7 +1554,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     success: result.success,
                                     completion: true,
                                     extensions: {
-                                        "http://xerte.org.uk/result/text": this.learnerAnswers
+                                        "http://xerte.org.uk/result/text": this.learnerAnswers,
+																				"http://xerte.org.uk/result/judge": judge
                                     }
                                 };
                                 statement.object.definition = {
@@ -1554,7 +1583,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     completion: true,
                                     extensions: {
                                         "http://xerte.org.uk/result/fill-in": this
-                                            .learnerAnswers
+                                            .learnerAnswers,
+																				"http://xerte.org.uk/result/judge": judge
                                     }
                                 };
                             }
@@ -3658,7 +3688,7 @@ function XTTerminate() {
                         method: "POST",
                         url: url,
                         data: {
-                            grade: state.getdScaledScore()
+                            grade: state.getdScaledCompletionWeightedScore()
                         }
                     })
                     .done(function(msg) {
@@ -3982,7 +4012,7 @@ function XTResults(fullcompletion) {
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
                 subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
-                judge &= subinteraction.judge;
+                judge = judge && subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(
                     subinteraction);
             }

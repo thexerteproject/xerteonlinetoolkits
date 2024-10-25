@@ -231,7 +231,7 @@ function update_user_logon_time(){
     $prefix = $xerte_toolkits_site->database_table_prefix;
     
     $query = "UPDATE {$prefix}logindetails SET lastlogin = ? WHERE username = ?";
-    $params = array(date('Y-m-d'), $_SESSION['toolkits_logon_username']); 
+    $params = array(date('Y-m-d H:i:s'), $_SESSION['toolkits_logon_username']);
 
     if(db_query($query, $params) !== false){
 

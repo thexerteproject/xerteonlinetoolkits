@@ -1446,7 +1446,7 @@ function list_blank_templates() {
           ?>
           <button id="<?php echo $template['template_name'] ?>_button" type="button" class="xerte_button_c_no_width"
                   onclick="javascript:template_toggle('<?php echo $template['template_name'] ?>')">
-              <i class="fa fa-circle-plus xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
+              <i class="fa fa-plus xerte-icon"></i><?php echo DISPLAY_CREATE; ?><span class="sr-only"> <?php echo $template['display_name']; ?></span>
           </button>
           </div>
           <div id="<?php echo $template['template_name']; ?>" class="rename">
@@ -1581,27 +1581,58 @@ function error_show_template() {
 
 function output_locked_file_code($lock_file_creator) {
 
+    global $xerte_toolkits_site;
+    _load_language_file("/index.inc");
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+    <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 </head>
-<body>
+<body class="lockFileContent">
+<header class='topbar'>
+    <div>
+        <img src='website_code/images/logo.png' style='margin-left:10px; float:left' />
+        <img src='website_code/images/apereoLogo.png' style='margin-right:10px; float:right' />
+    </div>
+</header>
+<main>
+    <div>
 <?php
-
     // get username only
     $temp = explode(" ", $lock_file_creator);
     $lock_file_creator_username = $temp[0];
     if ($lock_file_creator_username == $_SESSION['toolkits_logon_username']) {
-        $user = str_replace($lock_file_creator_username,  DISPLAY_LOCKFILE_YOU . '! ', $lock_file_creator);
-        echo "<p>" . DISPLAY_EDITED . $user . "</p><p>" . DISPLAY_LOCKFILE_YOU_MESSAGE . "</p>";
+        // replace username with "you" text and remove brackets from the date/time
+        $user = str_replace($lock_file_creator_username,  DISPLAY_LOCKFILE_YOU . '! ' . DISPLAY_LOCKFILE_TIME, $lock_file_creator);
+        $user = preg_replace('/\(([^()]*)\)(?!.*\([^()]*\))/','$1',$user,1);
+        echo "<p>" . DISPLAY_EDITED . $user . ".</p><p>" . DISPLAY_LOCKFILE_YOU_MESSAGE . "</p>";
     }
     else {
-        echo "<p>" . DISPLAY_EDITED . $lock_file_creator . "!</p><p>" . DISPLAY_LOCKFILE_MESSAGE . "</p>";
+        $user = str_replace($lock_file_creator_username,  $lock_file_creator_username . '. ' . DISPLAY_LOCKFILE_TIME, $lock_file_creator);
+        $user = preg_replace('/\(([^()]*)\)(?!.*\([^()]*\))/','$1',$user,1);
+        echo "<p>" . DISPLAY_EDITED . $user . ".</p><p>" . DISPLAY_LOCKFILE_MESSAGE . "</p>";
     }
-    echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"" . DISPLAY_LOCKFILE_DELETE . "\" /></form>";
+    echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input class=\"xerte_button\" type=\"submit\" value=\"" . DISPLAY_LOCKFILE_DELETE . "\" /></form>";
 ?>
+    </div>
+</main>
+<footer>
+    <div>
+        <p class="copyright">
+            <?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
+        </p>
+        <div class="footerlogos">
+            <a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
 <?php

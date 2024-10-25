@@ -73,7 +73,7 @@
 
 	div.hotspot_bubble {
 	z-index: 34;
-	position: absolute;
+	position: fixed;
 		text-align: center;
 		overflow-y: auto;
 	background: white;

@@ -334,7 +334,7 @@ form[name='user_templates'] {
 
 .grid{
 	display: grid;
-	grid-template-columns: min-content min-content;
+	grid-template-columns: min-content min-content min-content;
 	white-space: nowrap;
 }
 

@@ -74,11 +74,15 @@ function NoopTrackingState()
     this.getCompletionPercentage = getCompletionPercentage;
     this.getSuccessStatus = getSuccessStatus;
     this.getdScaledScore = getdScaledScore;
+    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawScore = getdRawScore;
+    this.getdRawCompletionWeightedScore = getdRawCompletionWeightedScore;
     this.getdMinScore = getdMinScore;
     this.getdMaxScore = getdMaxScore;
     this.getScaledScore = getScaledScore;
+    this.getScaledCompletionWeightedScore = getScaledCompletionWeightedScore;
     this.getRawScore = getRawScore;
+    this.getRawCompletionWeightedScore = getRawCompletionWeightedScore;
     this.getMinScore = getMinScore;
     this.getMaxScore = getMaxScore;
     this.setPageType = setPageType;
@@ -181,6 +185,14 @@ function NoopTrackingState()
         return Math.round(this.getdScaledScore()*100)/100 + "";
     }
 
+    function getdScaledCompletionWeightedScore(){
+        return getdScaledScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getScaledCompletionWeightedScore(){
+        return Math.round(getdScaledCompletionWeightedScore() * 100) / 100 + "";
+    }
+
     function getdRawScore()
     {
         if (this.lo_type == "pages only")
@@ -228,6 +240,14 @@ function NoopTrackingState()
     function getRawScore()
     {
         return Math.round(this.getdRawScore()*100)/100 + "";
+    }
+
+    function getdRawCompletionWeightedScore(){
+        return getdRawScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getRawCompletionWeightedScore(){
+        return Math.round(getdRawCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdMinScore()
@@ -1243,7 +1263,7 @@ function XTTerminate()
                     method: "POST",
                     url: url,
                     data: {
-                        grade: state.getdScaledScore() * state.getCompletionPercentage() / 100.0,
+                        grade: state.getdScaledCompletionWeightedScore(),
                     }
                 })
                     .done(function (msg) {
@@ -1382,7 +1402,7 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result != null.judge != null ? state.interactions[i].result != null.judge : true);
+                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
                         judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
@@ -1420,7 +1440,7 @@ function XTResults(fullcompletion) {
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
                 subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
-                judge &= subinteraction.judge;
+                judge = judge && subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
             }
 						results.interactions[nrofquestions - 1].judge = judge;

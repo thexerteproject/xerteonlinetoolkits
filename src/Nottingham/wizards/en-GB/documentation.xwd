@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
+      <documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -12,16 +12,17 @@
     <text label="Page Text" type="TextArea" height="120" placeholder="Enter text for the page here"/>
 	<intro label="Introduction Text" type="TextArea" height="120" placeholder="Enter introductory text here"/>
 	<display label="Show Introduction Text" data="separate,first,all" type="ComboBox" options="On additional page,On first page only,On all pages" width="120"/>
-	<download label="Show Download Button" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
+	<download label="Show Download/Submit Buttons" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true" />
 
-	<track label="Should Be Tracked" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
-	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
+	<track label="Submit Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="Include a button that submits answers to the results page"/>
+	<showDownload label="Download Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="A download button will be shown by default. Uncheck this option to remove the download button."/>
+	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0" /> 
 	
-    <filename condition="track!='true'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
-	<fileOrientation condition="track!='true'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+    <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
+	<fileOrientation condition="showDownload!='false'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
 
-	<fontSize condition="track!='true'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
+	<fontSize condition="showDownload!='false'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
 		<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
 		<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
 		<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
@@ -29,9 +30,11 @@
     </fontSize>
 
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true" />
+	<submittedTxt label="Submitted Text" type="TextInput" language="true" defaultValue="Your answers have been submitted" mandatory="true" />
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
-	<downloadTxt label="Download Button Label" type="TextInput" language="true" />
+	<downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" language="true" />
+	<submitTxt label="Submit Button Label" type="TextInput" condition="track=='true'" language="true" />
 	<nextTxt label="Next Button Label" type="TextInput" language="true" />
 	<prevTxt label="Previous Button Label" type="TextInput" language="true" />
 	
