@@ -36,8 +36,8 @@
         var classtitles = [];
         var numUserSubmits = 0;
         var xertelo = interaction.getAttribute('xertelo');
-        if (xertelo == "") {
-            xertelo = x_TemplateId
+        if (xertelo==null || xertelo == "") {
+            xertelo = x_TemplateId;
         }
         var radarData = interaction.getAttribute('opinionRadarData');
         var textSize = Math.round(interaction.getAttribute("labelFontSize"));
@@ -667,8 +667,8 @@
     }
 
     function getUrl(xerteurl, xertelo, xertelabel, opinionClass) {
-        if (xerteurl == '') {
-            var url = x_siteUrl + xertelo
+        if (xerteurl == null || xerteurl == '') {
+            var url = x_siteUrl + xertelo;
         } else {
             var url = xerteurl + xertelo;
         }
@@ -1276,9 +1276,12 @@
       fullWidth
     ) {
       xerteurl = interaction.getAttribute("xerteurl");
+      if (xerteurl == null || xerteurl == "") {
+        xerteurl = x_siteUrl;
+      }
       xertelo = interaction.getAttribute("xertelo");
-      if (xertelo == "") {
-          xertelo = x_TemplateId
+      if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId;
       }
       xertelabel = interaction.getAttribute("label");
       xertegrouping = interaction.getAttribute("grouping");
@@ -1657,18 +1660,20 @@
       if (IncorrectText == undefined) {
         IncorrectText = "Incorrect";
       }
+      var xerteurl = interaction.getAttribute("xerteurl");
+      if (xerteurl == null || xerteurl == "") {
+        xerteurl = x_siteUrl;
+      }
       var xertelo = interaction.getAttribute("xertelo");
-        if (xertelo == "") {
-            xertelo = x_TemplateId
-        }
+      if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId;
+      }
       var ownstatements = filterOwnStatements(data, xertelo);
 
-
-      xerteurl = interaction.getAttribute("xerteurl");
-      xertelabel = interaction.getAttribute("label");
-      name = interaction.getAttribute("name");
-      interactionType = interaction.getAttribute("interactionType");
-      opinionClass = interaction.getAttribute("opinionClass");
+      var xertelabel = interaction.getAttribute("label");
+      var name = interaction.getAttribute("name");
+      var interactionType = interaction.getAttribute("interactionType");
+      var opinionClass = interaction.getAttribute("opinionClass");
       var nrbars = interaction.getAttribute("graphNrDataPoints");
       if (nrbars == undefined) {
         nrbars = 10;
@@ -3446,6 +3451,11 @@
                 dataset.push(statement);
               });
             });
+            statements = dataset;
+          }
+          else
+          {
+            statements = data;
           }
 
           //var dash = new ADL.XAPIDashboard();
@@ -3469,11 +3479,11 @@
             yAxisLabelBarAnswers = "Number of answers";
           var xDomain = [];
           if (
-            data.length > 0 &&
-            data[0].object.definition != "undefined" &&
-            data[0].object.definition.choices != "undfined"
+            statements.length > 0 &&
+            statements[0].object.definition != "undefined" &&
+            statements[0].object.definition.choices != "undfined"
           ) {
-            var choices = data[0].object.definition.choices;
+            var choices = statements[0].object.definition.choices;
             for (var i = 0; i < choices.length; i++) {
               xDomain[i] = choices[i].id;
             }
@@ -3490,18 +3500,18 @@
                         labels[statements[i].result.response] += 1;
                     }
                     if (statements[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
+                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
                     }
                 }
             } else {
-                for (let i = 0; i < dataset.length; i++) {
-                    if (!labels.hasOwnProperty(dataset[i].result.response)) {
-                        labels[dataset[i].result.response] = 1;
+                for (let i = 0; i < statements.length; i++) {
+                    if (!labels.hasOwnProperty(statements[i].result.response)) {
+                        labels[statements[i].result.response] = 1;
                     } else {
-                        labels[dataset[i].result.response] += 1;
+                        labels[statements[i].result.response] += 1;
                     }
-                    if (dataset[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
+                    if (statements[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
                     }
                 }
             }
@@ -3524,7 +3534,7 @@
                 }
             } else {
                 for (let i = 0; i < barData.length; i++) {
-                    barData[i] = barData[i] / dataset.length * 100;
+                    barData[i] = barData[i] / statements.length * 100;
                 }
             }
 
@@ -4423,15 +4433,18 @@
           });
           continue;
         }
-        xerteurl = interaction.getAttribute("xerteurl");
-        xertelo = interaction.getAttribute("xertelo");
-          if (xertelo == "") {
-              xertelo = x_TemplateId
-          }
-        xertelabel = interaction.getAttribute("label");
-        name = interaction.getAttribute("name");
-        interactionType = interaction.getAttribute("interactionType");
-        opinionClass = interaction.getAttribute("opinionClass");
+        var xerteurl = interaction.getAttribute("xerteurl");
+        if (xerteurl == null || xerteurl == "") {
+          xerteurl = x_siteUrl;
+        }
+        var xertelo = interaction.getAttribute("xertelo");
+        if (xertelo == null || xertelo == "") {
+            xertelo = x_TemplateId;
+        }
+        var xertelabel = interaction.getAttribute("label");
+        var name = interaction.getAttribute("name");
+        var interactionType = interaction.getAttribute("interactionType");
+        var opinionClass = interaction.getAttribute("opinionClass");
         if (opinionClass == undefined) {
           opinionClass = null;
         }
@@ -4903,19 +4916,22 @@
           });
           continue;
         }
-        xerteurl = interaction.getAttribute("xerteurl");
-        xertelo = interaction.getAttribute("xertelo");
-          if (xertelo == "") {
-              xertelo = x_TemplateId
-          }
-        xertelabel = interaction.getAttribute("label");
-        name = interaction.getAttribute("name");
-        interactionType = interaction.getAttribute("interactionType");
-        opinionClass = interaction.getAttribute("opinionClass");
+        var xerteurl = interaction.getAttribute("xerteurl");
+        if (xerteurl == null || xerteurl == "") {
+          xerteurl = x_siteUrl;
+        }
+        var xertelo = interaction.getAttribute("xertelo")
+        if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId
+        }
+        var xertelabel = interaction.getAttribute("label");
+        var name = interaction.getAttribute("name");
+        var interactionType = interaction.getAttribute("interactionType");
+        var opinionClass = interaction.getAttribute("opinionClass");
         if (opinionClass == undefined) {
           opinionClass = "";
         }
-        group = interaction.getAttribute("groupFromUrl");
+        var group = interaction.getAttribute("groupFromUrl");
         if (group == undefined) {
           group = "";
         } else {

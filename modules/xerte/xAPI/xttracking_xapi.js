@@ -1376,7 +1376,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             // Construct answers like a:Answerstring
                             var scormAnswerArray = [];
                             var i = 0;
-												    debugger;
+
                             for (i = 0; i < learnerOptions.length; i++) {
                                 var entry = learnerOptions[i]['answer'].replace(
                                     / /g, "_");
@@ -3271,6 +3271,11 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                 value = Math.round(value * 100.0) / 100.0;
                 var statement = {
                     actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel" : "opinion_class"
+                        }
+                    },
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/scored",
                         display: {

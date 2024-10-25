@@ -882,8 +882,10 @@
         <name label="Title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true" placeholder="Enter introduction here"/>
         <interactionType label="Interaction Type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping,groupings,opinionclasses" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping,Based on all groupings,Based on all classes" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
-        <xerteurl label="URL of Xerte Source Installation" type="xerteurl" mandatory="true" defaultValue=""/>
-        <xertelo label="ID of Xerte Project" type="xertelo" mandatory="true" defaultValue=""/>
+        <sourceGroup label="Source Project" type="group" optional="true">
+          <xerteurl label="URL of Xerte Source Installation" type="xerteurl" optional="true" defaultValue="" placeholder="Enter the Xerte Installation of the source Xerte object (normally this installation)"/>
+          <xertelo label="ID of Xerte Project" type="xertelo" optional="true" defaultValue="" placeholder="Enter the template id of the source Xert object"/>
+        </sourceGroup>
         <label label="Tracking Label of Source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false"/>
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used"/>
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="" placeholder="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interaction type is based on score and the score comes from an opinion class"/>
