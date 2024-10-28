@@ -9,7 +9,10 @@
 	 * @copyright Pat Lockley
 	 * @package
 	 */
-	 
+
+    define("THEME_NO_ACCESS", "Access denied");
+
+    define("THEME_BAD_REQUEST", "Bad request, unknown theme");
 
 	define("MANAGEMENT_DELETE_SUCCESS", "succeeded in deleting");
 

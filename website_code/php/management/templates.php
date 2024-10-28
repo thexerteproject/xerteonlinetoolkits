@@ -23,6 +23,7 @@ _load_language_file("/management.inc");
 require("../user_library.php");
 require("management_library.php");
 require("../xwdInspector.php");
+require_once("../themes_library.php");
 
 
 
@@ -43,12 +44,12 @@ if (is_user_permitted("templateadmin")) {
     }
     $xwdData->loadTemplateXML($xwd_path);
 
-	echo "<h2>" . MANAGEMENT_MENUBAR_CENTRAL . "</h2>";
+    echo "<h2>" . MANAGEMENT_MENUBAR_CENTRAL . "</h2>";
 
-    echo "<div class=\"admin_block\">" . TEMPLATE_UPDATE_EXPLANATION . "
-    <p><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p></div>";
+//    echo "<div class=\"admin_block\">" . TEMPLATE_UPDATE_EXPLANATION . "
+//    <p><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p></div>";
 
-    echo "<div class=\"admin_block\"><p>" . TEMPLATE_ADD_EXPLANATION .
+    echo "<div class=\"main_admin_block\"><p>" . TEMPLATE_ADD_EXPLANATION .
     "</p>" .
     "<form action='javascript:template_submit()' method='post' enctype='multipart/form-data' id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
