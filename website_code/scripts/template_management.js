@@ -1405,67 +1405,6 @@ function create_tutorial(tutorial) {
     }
 }
 
-function template_submit()
-{
-    var form = document.getElementById("form-template-upload");
-    var formData = new FormData(form);
-    $.ajax({
-        type: "POST",
-        processData: false,
-        contentType: false,
-        url: "website_code/php/management/upload.php",
-        data: formData
-    })
-    .done(function(response){
-        $("body").css("cursor", "default");
-        alert(response);
-        // Refresh templates list
-        templates_list();
-    })
-    .fail(function(response){
-        $("body").css("cursor", "default");
-        alert(response);
-    });
-}
-
-function theme_submit(){
-    var form = document.getElementById("form-theme-upload");
-    var formData = new FormData(form);
-    $.ajax({
-        type: "POST",
-        processData: false,
-        contentType: false,
-        url: "website_code/php/management/upload_theme.php",
-        data: formData
-    })
-        .done(function(response){
-            $("body").css("cursor", "default");
-            alert(response);
-            templates_list()
-        })
-        .fail(function(response){
-            $("body").css("cursor", "default");
-            alert(response);
-        });
-}
-
-function theme_delete(theme, type){
-    debugger
-    if (window.confirm(THEME_DELETE)) {
-        $.ajax({
-            type: "POST",
-            url: "website_code/php/management/delete_theme.php",
-            data: {
-                theme: theme,
-                type: type,
-            },
-        })
-            .done(function (response) {
-                templates_list()
-            });
-    }
-
-}
 
 /********** CHECK **************/
 

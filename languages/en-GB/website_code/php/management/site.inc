@@ -52,10 +52,6 @@
 
 	define("MANAGEMENT_SITE_FEEDBACK", "The site's feedback list is (A semi-colon separated list of email addresses to receive feedback from the feedback page)");
 
-    define("MANAGEMENT_SITE_DEFAULT_XERTE", "The default theme for a xerte modules");
-    
-    define("MANAGEMENT_SITE_DEFAULT_SITE", "The default theme for a bootstrap modules");
-
 	define("MANAGEMENT_SITE_SERVER", "Server Settings ");
 
 	define("MANAGEMENT_VIEW", "Show");

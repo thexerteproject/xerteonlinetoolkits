@@ -33,11 +33,13 @@ if($_FILES["fileToUpload"])
     #place folder
 
     $source = $_FILES["fileToUpload"]["tmp_name"];
+    x_check_path_traversal_newpath($source, null, "Invalid file specified");
     $temp_loc = dirname($source);
     $type = $_FILES["fileToUpload"]["type"];
+
     $importpath = $xerte_toolkits_site->root_file_path . "themes/";
-    $theme_type = $_POST['themeType'];
-    $filename_parts = explode(".", $_FILES["fileToUpload"]["name"]);
+    $theme_type = x_clean_input($_POST['themeType']);
+    $filename_parts = explode(".", x_clean_input($_FILES["fileToUpload"]["name"]));
     $importpath = $importpath . $theme_type . '/';
     $importfile = $importpath . "tmp_theme_storage.zip";
 
@@ -57,7 +59,7 @@ if($_FILES["fileToUpload"])
     {
         $zip = new ZipArchive();
         $x = $zip->open($importfile);
-
+        x_check_zip($zip);
         $infoFound = false;
         $folderFound = false;
         $otherFound = false;
@@ -126,10 +128,13 @@ if($_FILES["fileToUpload"])
     }
 }
 
-function str_ends_with($val, $str) {
-    if(mb_substr($val, -mb_strlen($str), mb_strlen($str)) == $str) {
-        return true;
-    } else {
-        return false;
+if (!function_exists("str_ends_with")) {
+    function str_ends_with($val, $str)
+    {
+        if (mb_substr($val, -mb_strlen($str), mb_strlen($str)) == $str) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

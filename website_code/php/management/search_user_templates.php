@@ -63,7 +63,7 @@ if(is_user_permitted("projectadmin")){
             . "{$prefix}logindetails ld," 
             . "{$prefix}logindetails od "
             . "where tr.user_id = ld.login_id "
-            . "and od.login_id = td.creator_id and tr.template_id = td.template_id "
+            . "and od.login_id = td.creator_id and tr.template_id = td.template_id and tr.role = 'creator' "
             . "and (od.username like ? "
             . "     or od.firstname like ? "
             . "     or od.surname like ? "

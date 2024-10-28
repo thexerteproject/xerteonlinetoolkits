@@ -1580,3 +1580,25 @@ function upgrade_48()
     $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `password` `password` varchar(100);");
     return "Changing password column of user to varchar(100) - ok ? " . ($ok !== false ? 'true' : 'false') . "<br>";
 }
+
+function upgrade_49()
+{
+    if (! _db_field_exists('sitedetails', 'default_theme_decision')) {
+        $error1 = _db_add_field('sitedetails', 'default_theme_decision', 'char(255)', 'default', null);
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_decision = ?";
+            $error2 = db_query($sql, array('default'));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating default theme decision field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default theme decision field already present - ok ? true";
+    }
+}

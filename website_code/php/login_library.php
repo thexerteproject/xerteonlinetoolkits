@@ -508,6 +508,12 @@ function login_processing2($firstname = false, $surname = false, $username = fal
 
       require_once dirname(__FILE__) . '/user_library.php';
 
+      if (is_user_admin())
+      {
+          // Ensure user can open Tsugi Admin Panel
+            $_SESSION['admin'] = "yes";
+      }
+
       /*
       * Check to see if this is a users' first time on the site
       */

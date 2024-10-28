@@ -19,37 +19,29 @@
 
 require_once("../../../config.php");
 require_once("../folder_library.php");
+require_once ("../themes_library.php");
 
-_load_language_file("/website_code/php/management/delete_theme.inc");
+_load_language_file("/website_code/php/management/theme_enable_disable.inc");
 
 if(!is_user_permitted("useradmin")) {
     exit(THEME_NO_ACCESS);
 }
 if (isset($_POST["theme"]) && isset($_POST["type"])) {
 
+    $theme = x_clean_input($_POST["theme"]);
+    $type = x_clean_input($_POST["type"]);
+
     $path = $xerte_toolkits_site->root_file_path . "themes/";
 
-    //ensure given type is a proper theme
-    if ($_POST['type'] == '0') {
-        $current_themes = array_diff(scandir($xerte_toolkits_site->root_file_path . '/themes/site/', SCANDIR_SORT_NONE), array('.', '..'));
-        $path .= 'site/';
-
-    } elseif ($_POST['type'] == '1') {
-        $current_themes = array_diff(scandir($xerte_toolkits_site->root_file_path . '/themes/Nottingham/', SCANDIR_SORT_NONE), array('.', '..'));
-        $path .= 'Nottingham/';
-
-    } elseif ($_POST['type'] == '2') {
-        $current_themes = array_diff(scandir($xerte_toolkits_site->root_file_path . '/themes/decision/', SCANDIR_SORT_NONE), array('.', '..'));
-        $path .= 'decision/';
-    } else {
-        die(header(THEME_BAD_REQUEST));
+    if ($type != "site" && $type != "Nottingham" && $type != "decision") {
+        die(THEME_BAD_REQUEST);
     }
 
-    //check if theme exists
-    $theme = $_POST['theme'];
+    $current_themes = get_themes_list($type, true, true);
+    $path .= $type . '/';
 
     if (!in_array($theme, $current_themes)) {
-        die(header(THEME_BAD_REQUEST));
+        die(THEME_BAD_REQUEST);
     }
 
     $path .= $theme . '/';
@@ -57,18 +49,9 @@ if (isset($_POST["theme"]) && isset($_POST["type"])) {
     $infofound = false;
 
     if (in_array('hidden.info', $files)) {
-        if (unlink($path . 'hidden.info') !== false){
-            die(THEME_ENABLE_SUCCESS);
-        } else {
-            die(THEME_ENABLE_FAIL);
-        }
+        unlink($path . 'hidden.info');
     } else {
         $createfile = fopen($path . 'hidden.info', "w");
-        if ($createfile !== false){
-            die(THEME_DISABLE_SUCCESS);
-        } else {
-            die(THEME_DISABLE_FAIL);
-        }
+        fclose($createfile);
     }
-
 }

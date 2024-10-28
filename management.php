@@ -373,6 +373,10 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                             <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                 <?php
                             }
+                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab ?? 'themes_list()'?>
+                                <button type="button" class="xerte_button" onclick="javascript:themes_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_THEMES; ?>	</button>
+                                <?php
+                            }
                             if (is_user_permitted("useradmin")) {  $firsttab = $firsttab ?? 'users_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users-cog"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
                                 <?php
