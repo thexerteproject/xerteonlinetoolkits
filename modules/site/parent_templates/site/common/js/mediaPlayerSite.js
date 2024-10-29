@@ -107,30 +107,30 @@
 				var elementobj = element.appendTo(thisMedia);
 				
 				elementobj.mediaelementplayer({
-					startVolume:		x_volume,
+					startVolume:		m_volume,
 					pauseOtherPlayers:	true,
 					enableAutosize:		true,
-					playpauseText:		x_mediaText[1].label,
-					muteText:			x_mediaText[2].label,
-					fullscreenText:		x_mediaText[3].label,
-					stopText:			x_mediaText[0].label,
-					tracksText:			x_mediaText[4].label,
+					//playpauseText:		x_mediaText[1].label,
+					//muteText:			x_mediaText[2].label,
+					//fullscreenText:		x_mediaText[3].label,
+					//stopText:			x_mediaText[0].label,
+					//tracksText:			x_mediaText[4].label,
 					enableKeyboard:		false,
 					enablePluginDebug:  false,
 					
 					success: function (mediaElement, domObject) {
 						// forces Jaws screen reader to find label for button
 						var $container = $(mediaElement).parents(".mejs-container");
-						$container.find(".mejs-playpause-button button").html(x_mediaText[1].label);
-						$container.find(".mejs-volume-button button").html(x_mediaText[2].label);
-						$container.find(".mejs-fullscreen-button button").html(x_mediaText[3].label);
+						//$container.find(".mejs-playpause-button button").html(x_mediaText[1].label);
+						//$container.find(".mejs-volume-button button").html(x_mediaText[2].label);
+						//$container.find(".mejs-fullscreen-button button").html(x_mediaText[3].label);
 						$container.find(".mejs-overlay-play").attr("aria-hidden", true);
 						
 						if (opts.title != undefined) {
 							$container.find(".mejs-mediaelement").attr("aria-label", opts.title);
-						} else if (opts.type == "video" && x_mediaText[5].label != "") {
-							$container.find(".mejs-mediaelement").attr("aria-label", x_mediaText[5].label);
-						}
+						} //else if (opts.type == "video" && x_mediaText[5].label != "") {
+							//$container.find(".mejs-mediaelement").attr("aria-label", x_mediaText[5].label);
+						//}
 						
 						if (opts.autoNavigate == "true" && x_pageInfo[x_currentPage].standalone != true && x_normalPages.indexOf(x_currentPage) + 1 != x_normalPages.length) { // go to next page when media played to end
 							mediaElement.addEventListener("ended", function() {
@@ -140,20 +140,20 @@
 						
 						mediaElement.addEventListener("volumechange", function(e) { // update volume on all media players on page
 							if (e.volume != undefined) {
-								x_volume = e.volume;
+								m_volume = e.volume;
 							} else {
-								x_volume = e.target.player.getVolume();
+								m_volume = e.target.player.getVolume();
 							}
 							$("audio,video").each(function() {
 								if (this != domObject) {
 									var $this = $(this);
 									if ($this.is(":visible")) { // html5
-										if ($this[0].volume != x_volume) {
-											$this[0].volume = x_volume;
+										if ($this[0].volume != m_volume) {
+											$this[0].volume = m_volume;
 										}
 									} else { // flash
-										if ($this[0].player.media.volume != x_volume) {
-											$this[0].player.media.setVolume(x_volume);
+										if ($this[0].player.media.volume != m_volume) {
+											$this[0].player.media.setVolume(m_volume);
 										}
 									}
 								}
@@ -198,27 +198,13 @@
 								}
 							});
 							
-							mediaElement.addEventListener("loadedmetadata", function() {
-								if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
-									mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]);
-								} else if (opts.pageName == "introVideo") { // it's a video from project or page intro
-									if (mimeType.toLowerCase() === 'video/mp4') {
-										x_introMediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')])
-									}
-								} else {
-									try {
-										eval(x_pageInfo[x_currentPage].type).mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]); // send dimensions details back to page
-									} catch(e) {};
-								}
+							mediaElement.addEventListener("loadedmetadata", function(e) {
+								var $video = $(e.detail.target);
+								$video.add($video.parents('.mejs-container')).css({
+									//'max-width': e.detail.target.videoWidth,
+									//'max-height': e.detail.target.videoHeight
+								});
 							});
-						}
-						
-						if (opts.pageName == "mediaHTML5") { // it's media from mediaViewer window not main interface 
-							mediaHTML5.mediaFunct(mediaElement);
-						} else {
-							try {
-								eval(x_pageInfo[x_currentPage].type).mediaFunct(mediaElement); // send mediaElement back to page so you can set up events for media
-							} catch(e) {};
 						}
 					},
 					

@@ -46,8 +46,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             mediaData.media += urlsep + "controls=2&playsinline=1"
         }
         // is it from youtube or vimeo or mediasite?
-        debugger;
-        if (mediaData.media.indexOf('youtu') > 0 
+        if (mediaData.media.indexOf('youtu') > 0
          || mediaData.media.indexOf('vimeo') > 0 
          || mediaData.media.indexOf('videos/embed') > 0 // Peertube
          || mediaData.media.indexOf('mediamission') > 0 
