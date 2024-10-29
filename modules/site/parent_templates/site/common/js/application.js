@@ -154,8 +154,8 @@ function iframeInit($mediaElement) {
 
 // resize iframe height to keep aspect ratio
 function iframeResize($iframe) {
-	if ($iframe.parents('.navigator.carousel').length > 0) {
-		$iframe.height(($iframe.parents('.navigator.carousel').width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+	if ($iframe.parents('.navigator').length > 0) {
+		$iframe.height(($iframe.parents('.navigator').width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
 		$iframe.parents('.mejs-container').height('auto');
 	} else {
 		$iframe.height(($iframe.width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
@@ -269,6 +269,9 @@ function loadContent(){
 
 		$('.vidHolder .popcornMedia').each(function() {
 			videoResize($(this))
+		});
+		$('.vidHolder iframe').each(function() {
+			iframeResize($(this))
 		});
 		
 		fixSideBar();
