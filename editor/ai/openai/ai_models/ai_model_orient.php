@@ -1,9 +1,8 @@
 <?php
 //quiz model using gpt-3.5 turbo
 require_once(dirname(__FILE__) . "/../../../../config.php");
-_load_language_file("/editor/ai_models/openai_model_ivoverlaypanel_ai.inc");
+_load_language_file("/editor/ai_models/openai_model_orient_ai.inc");
 
-//generates questions
 $model = $_POST['model'] ?? "gpt-4o";
 $assistantId = $_POST['asst_id'] ?? "asst_IyiBKzr8nvwddAzVKuh6OnlC";
 $context = $_POST['context'] ?? 'standard';  // Default to 'standard'
@@ -13,19 +12,19 @@ $assistantOn = !empty($_POST['url']);
 $chat_url = $assistantOn ? "https://api.openai.com/v1/threads/runs" : "https://api.openai.com/v1/chat/completions";
 
 //set default parameters here, override later in case of specific model or context requirements
-$instructions = "Follow the instructions in the last message from the user. Use the appropriate uploaded transcription_result as your source. If no source has been uploaded or the source does not contain information relevant to the subject, and you have been given explicit permission to use knowledge outside of the uploaded file, try to fulfil the request using general knowledge about the specified subject and leave the timesync fields empty - as then there is no transcript to draw the timestamps from. Regardless of what you end up doing, never return anything except the XML in plaintext. Do not use markdown to denote the xml. Do not add any explanations before or after the xml.";
+$instructions = "Follow the instructions in the last message from the user. Use the appropriate uploaded transcript as your source. If no source has been uploaded or the source does not contain information relevant to the subject, and you have been given explicit permission to use knowledge outside of the uploaded file, try to fulfil the request using general knowledge about the specified subject. Regardless of what you end up doing, never return anything except the XML in plaintext. Do not use markdown to denote the xml. Do not add any explanations before or after the xml.";
 $additionalInstructions = "When following XML examples, make sure you follow it exactly. This includes formatting, special characters, node structure and everything else. Do not deviate from the example AND how it is presented other than the content and the amount of each type of node and the contents therein. Notably, do NOT use markdown syntax when formatting your answer! Only return plain text.";
 
 // Context-specific settings
 if ($context === 'standard') {
-    $q = LEARNING_PROMPT_IVOVERLAYPANEL;
-    $object = LEARNING_RESULT_IVOVERLAYPANEL;
-    $defaultPrompt = DEFAULT_PROMPT_IVOVERLAYPANEL;
+    $q = LEARNING_PROMPT_ORIENT;
+    $object = LEARNING_RESULT_ORIENT;
+    $defaultPrompt = DEFAULT_PROMPT_ORIENT;
 }
 elseif ($context === 'bootstrap') {
-    $q = LEARNING_PROMPT_IVOVERLAYPANEL_BOOTSTRAP;
-    $object = LEARNING_RESULT_IVOVERLAYPANEL_BOOTSTRAP;
-    $defaultPrompt = DEFAULT_PROMPT_IVOVERLAYPANEL_BOOTSTRAP;
+    $q = LEARNING_PROMPT_BOOTSTRAP_ORIENT;
+    $object = LEARNING_RESULT_BOOTSTRAP_ORIENT;
+    $defaultPrompt = DEFAULT_PROMPT_BOOTSTRAP_ORIENT;
 }
 if ($assistantOn){
     //default payload for threads/runs endpoint
@@ -109,8 +108,8 @@ else{
 }
 
 
-$openAI_preset_models->type_list["ivOverlayPanel"] = ["payload" => $payload, "url" => $chat_url];
+$openAI_preset_models->type_list["orient"] = ["payload" => $payload, "url" => $chat_url];
 
-$openAI_preset_models->prompt_list["ivOverlayPanel"] = explode(",", $defaultPrompt);
+$openAI_preset_models->prompt_list["orient"] = explode(",", $defaultPrompt);
 
-$openAI_preset_models->multi_run[] = "ivOverlayPanel";
+$openAI_preset_models->multi_run[] = "orient";

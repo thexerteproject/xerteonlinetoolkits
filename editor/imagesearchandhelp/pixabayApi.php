@@ -29,8 +29,8 @@ class pixabayApi
         if (isset($aiParams->color) && $aiParams->color !== 'unmentioned') {
             $url .= "&colors=" . urlencode($aiParams->color);
         }
-        if (isset($aiParams->size) && $aiParams->image_type !== 'unmentioned') {
-            $url .= "&image_type=" . urlencode($aiParams->image_type);
+        if (isset($aiParams->type) && $aiParams->type !== 'unmentioned') {
+            $url .= "&image_type=" . urlencode($aiParams->type);
         }
 
         // Initialize cURL

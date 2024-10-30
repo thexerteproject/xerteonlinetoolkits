@@ -68,7 +68,6 @@ class pexelsApi
     }
 
     private function extractParameters($input){
-        // Your OpenAI API key
         $openAiKey = $this->xerte_toolkits_site->openAI_key;
 
         // If it's the first time, initialize the conversation with the instructions and the first example

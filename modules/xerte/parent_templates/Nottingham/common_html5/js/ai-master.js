@@ -65,50 +65,55 @@ function build_xerte_xml(xml_tree, parent_name, parser){
 }*/
 
 function ai_to_xerte_content(data, key, pos, tree, realParent) {
-    $('body').css("cursor", "default");
-    var parser = new DOMParser();
-    //
-    var result = JSON.parse(data);
-    if (result.status == 'success') {
-        //rename x eventually
-        var x = parser.parseFromString(result["result"], "text/xml").children[0];
-        // Merge Xerte object root with AI result at root level.
-        for (var prop in x.attributes) {
-            if (Object.prototype.hasOwnProperty.call(x.attributes, prop)) {
-                const prop_name = x.attributes[prop];
-                if (Object.prototype.hasOwnProperty.call(lo_data[key].attributes, prop_name.nodeName)) {
-                    lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
-                } else {
-                    lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+    try {
+        $('body').css("cursor", "default");
+        var parser = new DOMParser();
+        //
+        var result = JSON.parse(data);
+        if (result.status == 'success') {
+            //rename x eventually
+            var x = parser.parseFromString(result["result"], "text/xml").children[0];
+            // Merge Xerte object root with AI result at root level.
+            for (var prop in x.attributes) {
+                if (Object.prototype.hasOwnProperty.call(x.attributes, prop)) {
+                    const prop_name = x.attributes[prop];
+                    if (Object.prototype.hasOwnProperty.call(lo_data[key].attributes, prop_name.nodeName)) {
+                        lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                    } else {
+                        lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                    }
                 }
             }
-        }
-          if (lo_data[key].data !== null && x.textContent !== null) {
-              if (x.firstChild && x.firstChild.nodeType === 4){
-                  lo_data[key].data = x.textContent;
-              }
+            if (lo_data[key].data !== null && x.textContent !== null) {
+                if (x.firstChild && x.firstChild.nodeType === 4) {
+                    lo_data[key].data = x.textContent;
+                }
 
-          }
-        console.log(x.tagName);
-        build_xerte_xml(x, x.tagName, parser);
+            }
+            console.log(x.tagName);
+            build_xerte_xml(x, x.tagName, parser);
 
-        //var children = x.children;
-        var children = x.childNodes;
-        var size = children.length;
-        // Add all populated children of top level object for example "quiz"
-        for (let i = 0; i < size; i++) {
-            addAINodeToTree(key, pos, children[i].tagName, children[i], tree, true, true);
+            //var children = x.children;
+            var children = x.childNodes;
+            var size = children.length;
+            // Add all populated children of top level object for example "quiz"
+            for (let i = 0; i < size; i++) {
+                addAINodeToTree(key, pos, children[i].tagName, children[i], tree, true, true);
+            }
+            alert("Make sure to check the generated results for mistakes!!");
+            var node = tree.get_node(key, false);
+            if (node) {
+                // Refresh the node to reflect the updated attributes
+                //tree.refresh_node(node);
+                realParent.tree.showNodeData(node.id, true);
+            }
+            console.log("done!")
+        } else {
+            console.log(result.message);
         }
-        alert("Make sure to check the generated results for mistakes!!");
-         var node = tree.get_node(key, false);
-         if (node) {
-             // Refresh the node to reflect the updated attributes
-             //tree.refresh_node(node);
-             realParent.tree.showNodeData(node.id, true);
-         }
-        console.log("done!")
-    } else {
-        console.log(result.message);
+    }   catch (error) {
+        console.log('Error:', error); //log the error for debugging
+        throw error;
     }
 }
 

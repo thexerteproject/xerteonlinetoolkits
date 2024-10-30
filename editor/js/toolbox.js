@@ -4826,6 +4826,20 @@ var EDITOR = (function ($, parent) {
 				break;
             case 'info':
                 break;
+            case 'autotranslatebutton':
+                var atr_button_id = 'ishButton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', atr_button_id)
+                    .attr('class', 'imgsh_button')
+                    .text('translate')
+                    .click({key: key}, function(event) {
+                        var api = lo_data[key].attributes['translateApi'] || 'openai';
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var targetLanguage = lo_data[key].attributes["targetLanguage"];
+                        auto_translate(event, api, baseUrl, targetLanguage);
+                    });
+                break;
             case 'imgsearchandhelpbutton':
                 var ish_id = 'ishButton_' + form_id_offset;
                 form_id_offset++;
@@ -4920,7 +4934,10 @@ var EDITOR = (function ($, parent) {
                     .attr('id', id)
                     .attr('class', 'ai_button')
                     .text('Generate')
-                    .click({key: key}, function(event) {
+                    .click({key: key}, async function(event) {
+                        // Disable the button to prevent multiple clicks
+                        html.prop('disabled', true);
+
                         var type = lo_data[key].attributes.nodeName; //get the node-type
                         var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                         var fileUrl = lo_data[key].attributes["file"];
@@ -5005,6 +5022,15 @@ var EDITOR = (function ($, parent) {
                                         constructorObject["summaryObject"] = "the following text: " + lo_data[key].attributes["sourceText"];
                                     }
                                     break;
+
+                                case 'orient':
+                                    constructorObject = {
+                                        "instruction": lo_data[key].attributes["instruction"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    useContext = true;
+                                    break;
                                 case 'textCorrection':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
@@ -5012,6 +5038,21 @@ var EDITOR = (function ($, parent) {
                                         "length": lo_data[key].attributes["paragraphLength"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    break;
+                                case 'modify':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "textInstructions": lo_data[key].attributes["textInstructions"],
+                                        "length": lo_data[key].attributes["paragraphLength"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "tasknr": lo_data[key].attributes["taskType"],
+                                    }
+                                    if (lo_data[key].attributes["taskType"] === 'task1'){
+                                        constructorObject["modifyRequest"] = "";
+                                    }else{
+                                        constructorObject["modifyRequest"] = lo_data[key].attributes["text"];
                                     }
                                     break;
                                 case 'grid':
@@ -5046,6 +5087,11 @@ var EDITOR = (function ($, parent) {
                                         "length": lo_data[key].attributes["paragraphLength"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    if (lo_data[key].attributes["interactivity"]==="Timeline"){
+                                        constructorObject["interactivityDetails"] = "In this case specifically, replace all 'name' attributes with numbers.";
+                                    }else{
+                                        constructorObject["interactivityDetails"] = "";
                                     }
                                     break;
                                 case 'dialog':
@@ -5092,6 +5138,106 @@ var EDITOR = (function ($, parent) {
 
                                     }
                                     break;
+                                case 'columnPage':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'nestedColumnPage':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'nestedTab':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'nestedPage':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'nav':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'navPage':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'mpText':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'movie':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'sound':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
+                                case 'image':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "exampleContent": lo_data[key].attributes["exampleContent"]
+
+                                    }
+                                    break;
                                 case 'selectlist':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
@@ -5099,6 +5245,15 @@ var EDITOR = (function ($, parent) {
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
 
+                                    }
+                                    break;
+                                case 'bullets':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nro": lo_data[key].attributes["numberOptions"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
                                     }
                                     break;
                                 case 'textbox':
@@ -5150,6 +5305,7 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"]
                                     }
                                     fileUrl = lo_data[key].attributes["file"];
+                                    uploadPrompt = 'true';
                                     break;
                                 case 'flashCards':
                                     constructorObject = {
@@ -5239,14 +5395,23 @@ var EDITOR = (function ($, parent) {
                         }else{
                             constructorObject["access"] = "DON'T HAVE";
                         }
-                        if (fileUrl!=null && uploadPrompt === 'true'){
-                            var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
-                            var fullUrl = baseUrl + cleanFileUrl;
-                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, sourceContext, assisstantPrompt, baseUrl, useContext);
-                        }else if(fileUrl===null && uploadPrompt === 'true'){
-                            alert("You've selected the 'file upload' option but have not selected a file to upload or provided a valid link. Please either do so, or uncheck the 'Upload file' option.");
-                        }else{
-                            ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, sourceContext, assisstantPrompt, baseUrl, useContext);
+                        try {
+                            // Check if file upload is selected
+                            if (fileUrl != null && uploadPrompt === 'true') {
+                                var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
+                                var fullUrl = baseUrl + cleanFileUrl;
+                                await ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, sourceContext, assisstantPrompt, baseUrl, useContext);
+                            } else if (fileUrl === null && uploadPrompt === 'true') {
+                                alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link.");
+                            } else {
+                                await ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, sourceContext, assisstantPrompt, baseUrl, useContext);
+                            }
+                        } catch (error) {
+                            console.log('Error occurred:', error);
+                            alert("Something went wrong. Please try making another AI request.");
+                        } finally {
+                            // Re-enable the button after the function completes (success or failure)
+                            html.prop('disabled', false);
                         }
 
                     });
