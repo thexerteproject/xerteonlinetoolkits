@@ -4831,13 +4831,31 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 html = $('<button>')
                     .attr('id', atr_button_id)
-                    .attr('class', 'imgsh_button')
+                    .attr('class', 'autotranslate_button')
                     .text('translate')
-                    .click({key: key}, function(event) {
+                    .click({key: key}, async function(event) {
+                        $(this).prop('disabled', true);
                         var api = lo_data[key].attributes['translateApi'] || 'openai';
                         var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                         var targetLanguage = lo_data[key].attributes["targetLanguage"];
-                        auto_translate(event, api, baseUrl, targetLanguage);
+                        // Show a confirm dialog with a custom message
+                        if (confirm("Depending on the size of the learning object, translation may take several minutes. Start translation?")) {
+                            // User clicked "OK"
+                            try {
+                                await auto_translate(event, api, baseUrl, targetLanguage);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try using the translate feature again.");
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            // User clicked "Cancel"
+                            console.log("Translation canceled by the user.");
+                            html.prop('disabled', false);
+                        }
+
                     });
                 break;
             case 'imgsearchandhelpbutton':

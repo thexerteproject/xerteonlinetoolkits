@@ -100,7 +100,7 @@ function ai_to_xerte_content(data, key, pos, tree, realParent) {
             for (let i = 0; i < size; i++) {
                 addAINodeToTree(key, pos, children[i].tagName, children[i], tree, true, true);
             }
-            alert("Make sure to check the generated results for mistakes!!");
+
             var node = tree.get_node(key, false);
             if (node) {
                 // Refresh the node to reflect the updated attributes
@@ -108,6 +108,7 @@ function ai_to_xerte_content(data, key, pos, tree, realParent) {
                 realParent.tree.showNodeData(node.id, true);
             }
             console.log("done!")
+            alert("Make sure to check the generated results for mistakes!");
         } else {
             console.log(result.message);
         }

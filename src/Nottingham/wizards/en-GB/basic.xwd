@@ -242,7 +242,12 @@
         <aiContentWarning label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-	
+    <autoTranslateGroup type="group" label="Translate Learning Object (AI)" tooltip="A tool to automatically translate the learning object using AI." optional="true">
+      <translateApi label="Service" options="OpenAI" type="comboBox" data="pexels" defaultValue="openai" width="120" optional="true" tooltip="The service which will perform the translation." />
+      <targetLanguage label="Target Language" options="French, English, Dutch, Flemish, German, Norwegian, Swedish, Danish, Spanish, Italian, Polish" type="comboBox" data="French,English,Dutch,Flemish,German,Norwegian,Swedish,Danish,Spanish,Italian,Polish" defaultValue="Dutch" tooltip="The language the learning object will be translated to." optional="true" />
+      <atrButton type="autotranslatebutton" optional="true"/>
+    </autoTranslateGroup>
+
 	<twittercard type="group" label="Twitter card" optional="true">
 		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter." />
 		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
