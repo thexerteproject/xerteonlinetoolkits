@@ -898,6 +898,10 @@
         if (type != "grouping" && type != "groupings" && type != "opinionclasses") {
             data = filterRelevantStatements(data, sessionStatementUsed);
         }
+        if (type == "open" && adaptiveContent.dashboardMode !== "true"){
+            data = filterOwnStatements(data, xertelo)
+        }
+
         if (
           data.length >= 1 &&
           (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)
