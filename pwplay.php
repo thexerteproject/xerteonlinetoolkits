@@ -86,7 +86,7 @@ if(empty($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     die("Invalid template id");
 }
 
-$template_id = (int) x_clean_input($_GET['template_id'], 'numeric';
+$template_id = (int) x_clean_input($_GET['template_id'], 'numeric');
 
 $query_to_check_peer = "select * from " . $xerte_toolkits_site->database_table_prefix . "additional_sharing where sharing_type=\"peer\" and template_id=\"" . $template_id . "\"";
 
