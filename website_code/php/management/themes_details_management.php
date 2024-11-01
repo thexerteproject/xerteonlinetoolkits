@@ -50,4 +50,3 @@ if(is_user_permitted("templateadmin")) {
 
 }
 
-?>
