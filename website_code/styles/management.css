@@ -167,8 +167,24 @@ div#admin_area form select, div#admin_area form input, div#admin_area form .xert
 	margin-top: 10px;
 }
 
+.main_admin_block {
+	border-top: 2px #758389 solid;
+	margin-top: 10px;
+}
+
+
 .admin_block .xerte_button {
 	margin-top: 5px;
+}
+
+.theme{
+	position:relative;
+	padding:5px;
+	margin:0px;
+	width:100%;
+	box-sizing: border-box;
+	border-bottom: none;
+	cursor:pointer;
 }
 
 .template{
@@ -196,6 +212,10 @@ div#admin_area form select, div#admin_area form input, div#admin_area form .xert
 }
 
 .template_list .template {
+	margin-left: 10px;
+}
+
+.template_list .theme {
 	margin-left: 10px;
 }
 

@@ -86,7 +86,7 @@ if(empty($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     die("Invalid template id");
 }
 
-$template_id = (int) $_GET['template_id'];
+$template_id = (int) x_clean_input($_GET['template_id'], 'numeric');
 
 $query_to_check_peer = "select * from " . $xerte_toolkits_site->database_table_prefix . "additional_sharing where sharing_type=\"peer\" and template_id=\"" . $template_id . "\"";
 
@@ -99,11 +99,14 @@ $query_for_template_access = "select access_to_whom from {$prefix}templatedetail
 $row_access = db_query_one($query_for_template_access, [$template_id]);
 
 if($row_access !== false){
-	$pos = strpos($row_access['access_to_whom'], "-");
+    $extra = explode("," , $query_for_peer_response['extra'],2);
 
-	if($pos !== false){
-		$password = substr($row_access['access_to_whom'], $pos+1);	
-	}
+    $password = $extra[0];
+	//$pos = strpos($row_access['access_to_whom'], "-");
+
+	//if($pos !== false){
+	//	$password = substr($row_access['access_to_whom'], $pos+1);
+	//}
 }
 
 /**

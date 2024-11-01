@@ -312,12 +312,6 @@ function show_template($row, $xapi_enabled=false){
     }else{
         $page_content = str_replace("%TWITTERCARD%", "", $page_content);
     }
-    $user_roles = getRolesFromUser($_SESSION['toolkits_logon_id']);
-    if ($_SESSION['toolkits_logon_id'] === "site_administrator")
-    {
-        $user_roles = array("super");
-    }
-    $page_content = str_replace("%ROLES%", json_encode($user_roles), $page_content);
 
     echo $page_content;
 

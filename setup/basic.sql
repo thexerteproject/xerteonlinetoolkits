@@ -177,6 +177,7 @@ CREATE TABLE `$sitedetails` (
   `globalsocialauth` char(255) DEFAULT 'true',
   `default_theme_xerte` char(255) DEFAULT 'default',
   `default_theme_site` char(255) DEFAULT 'default',
+  `default_theme_decision` char(255) DEFAULT 'default',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

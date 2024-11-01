@@ -874,6 +874,11 @@ function access_change_template(template_id){
 				server_string: document.getElementById('url').value
 			};
 		} else if (access_value=="PasswordPlay") {
+			var pwd = document.getElementById('pwd').value;;
+			if (pwd == null || pwd == "") {
+				alert(PASSWORD_REMINDER);
+				return;
+			}
 			var data = {
 				template_id: template_id,
 				access: access_value,

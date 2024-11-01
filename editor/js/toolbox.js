@@ -994,10 +994,8 @@ var EDITOR = (function ($, parent) {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
 
-		// unlike hidePage, linkPage is initially set to true so tree icon should show immediately
-		if (name == "linkPage") {
-            changeNodeStatus(key, "standalone", defaultvalue == "true");
-        }
+        // update tree icon if necessary
+        changeTreeNodeStatus(key, name, defaultvalue);
 
 		// Enable the optional parameter button
 		$('#insert_opt_' + name)
@@ -2063,54 +2061,29 @@ var EDITOR = (function ($, parent) {
 		}
 	},
 
+    changeTreeNodeStatus = function(key, name, value)
+    {
+        // Get the node name
+        if (name == "hidePage") {
+            changeNodeStatus(key, "hidden", value == "true");
+        }
+
+        if (name == "password") {
+            changeNodeStatus(key, "password", value != "");
+        }
+
+        if (name == "linkPage") {
+            changeNodeStatus(key, "standalone", value == "true");
+        }
+
+        if (name == "unmarkForCompletion") {
+            changeNodeStatus(key, "unmark", value == "true");
+        }
+    },
 
     setAttributeValue = function (key, names, values)
     {
-        // Get the node name
-        if (names[0] == "hidePage") {
-            changeNodeStatus(key, "hidden", values[0] == "true");
-            /*
-            var hiddenIcon = $("#" + key + "_hidden");
-            if (hiddenIcon) {
-                if (values[0] == "true") {
-                    hiddenIcon.switchClass('iconDisabled', 'iconEnabled');
-                    $("#" + key).addClass("hiddenNode");
-                    //$("#" + key + " .jstree-anchor").each(function (i, v) {
-                    //   $(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
-                    //});
-                }
-                else {
-                    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
-                    $("#" + key).removeClass("hiddenNode");
-                    //$("#" + key + " .hidden").contents().unwrap();
-                }
-            }
-            */
-        }
-
-		if (names[0] == "password") {
-            changeNodeStatus(key, "password", values[0] != "");
-        }
-		
-		if (names[0] == "linkPage") {
-            changeNodeStatus(key, "standalone", values[0] == "true");
-        }
-
-        if (names[0] == "unmarkForCompletion") {
-            changeNodeStatus(key, "unmark", values[0] == "true");
-            /*
-            var unmarkIcon = $("#" + key + "_unmark");
-            if (unmarkIcon) {
-                if (values[0] == "true") {
-                    unmarkIcon.switchClass('iconDisabled', 'iconEnabled');
-                    $("#" + key).addClass("unmarkNode");
-                } else {
-                    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
-                    $("#" + key).removeClass("unmarkNode");
-                }
-            }
-            */
-        }
+        changeTreeNodeStatus(key, names[0], values[0]);
 
         var node_name = lo_data[key]['attributes'].nodeName;
 
