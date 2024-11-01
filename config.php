@@ -225,13 +225,9 @@ if ($subdir_pos !== false)
 {
     $subdir = substr($xerte_toolkits_site->site_url, $subdir_pos);
 }
-if ($host != '')
-{
+if ($host != '' && $scheme != '' && (!isset($force_site_url_from_db) || !$force_site_url_from_db)) {
     $site_url = $scheme . $host . $port . $subdir;
-    $check_url = @file_get_contents($site_url . 'version.txt');
-    if ($check_url !== false) {
-        $xerte_toolkits_site->site_url = $site_url;
-    }
+    $xerte_toolkits_site->site_url = $site_url;
 }
 
 $learning_objects = new StdClass();

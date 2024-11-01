@@ -1696,7 +1696,7 @@ function access_info($template_id){
             }
             else if (substr($accessStr,0,12) == "PasswordPlay")
 		    {
-				$accessTranslation = "PasswordPlay";
+				$accessTranslation = PROJECT_INFO_PASSWORD_PLAY;
                 $accessStr = "PasswordPlay";
                 $nrViews = $row_access["number_of_uses"];
 			}

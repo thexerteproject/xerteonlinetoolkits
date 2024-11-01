@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+
+
 $(document).ready(init);
 
 var XBOOTSTRAP = {};
@@ -45,52 +47,118 @@ function init(){
 }
 
 // called after all content loaded to set up mediaelement.js players
-function initMedia($media){
+// function initMedia($media){
 
-	$media.mediaelementplayer({
-		pauseOtherPlayers: true,
-		enableAutosize: true,
-		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
+// 	$media.mediaelementplayer({
+// 		pauseOtherPlayers: true,
+// 		enableAutosize: true,
+// 		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
 
-		success: function (mediaElement, domObject) {
+// 		success: function (mediaElement, domObject) {
 
-			var $mediaElement = $(mediaElement);
+// 			var $mediaElement = $(mediaElement);
 
-			// iframe scaling to maintain aspect ratio
-			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
-				iframeInit($mediaElement);
+// 			// iframe scaling to maintain aspect ratio
+// 			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
+// 				iframeInit($mediaElement);
 
-				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
-				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
-					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
-				}
-			}
+// 				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
+// 				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
+// 					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
+// 				}
+// 			}
 
-			// stops mp4 videos being shown larger than original
-			mediaElement.addEventListener("loadedmetadata", function(e) {
-				var $video = $(e.detail.target);
-				$video.add($video.parents('.mejs-container')).css({
-					'max-width': e.detail.target.videoWidth,
-					'max-height': e.detail.target.videoHeight
-				});
-			});
+// 			// stops mp4 videos being shown larger than original
+// 			mediaElement.addEventListener("loadedmetadata", function(e) {
+// 				var $video = $(e.detail.target);
+// 				$video.add($video.parents('.mejs-container')).css({
+// 					'max-width': e.detail.target.videoWidth,
+// 					'max-height': e.detail.target.videoHeight
+// 				});
+// 			});
+// 		},
+// 		error: function(mediaElement) {
+// 			console.log('mediaelement problem is detected: ', mediaElement);
+// 		}
+// 	});
 
-			// it's audio with a transcript - add a transcript button to the end of the player
-			if ($mediaElement.find("audio").data("transcript") != undefined) {
-				$mediaElement.parents(".mejs-container").parent().addClass("audioTranscript");
+// }
+// function initMedia($media){
 
-				const transcriptLabel = languageData.find("mediaElementControls").find("transcriptButton")[0].getAttribute("label");
-				$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
-					.appendTo($mediaElement.parents(".mejs-container").find(".mejs-controls"))
-					.click(function() {
-						$.featherlight($mediaElement.find("audio").data("transcript"));
-					});
-			}
-		},
-		error: function(mediaElement) {
-			console.log('mediaelement problem is detected: ', mediaElement);
-		}
-	});
+// 			this.popcornInstance = loadContent($("#pageVideo"), "video",
+// 			{
+
+// 					// tip: x_currentPageXML.getAttribute("tip"),
+// 					// width: videoDimensions ? Number(videoDimensions[0]) : 0,
+// 					// height: videoDimensions ? Number(videoDimensions[1]) : 0,
+// 					media: $("video").attr("src"),
+// 					// autoplay: "false",
+// 					// aspect: ratio,
+// 					// transcript: x_currentPageXML.getAttribute("transcript"),
+// 					// transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
+// 					// audioImage: undefined,
+// 					// audioImageTip: "",
+// 					// pageName: "textVideo",
+// 					// trackMedia: true,
+
+// 				}, true);
+// }
+
+// Create parameters needed by the popcorn library and coming from xenith.js
+const xot_offline = false;
+let x_params = new Object();
+x_params.language = "en-GB";
+
+function initMedia($media) {
+	for(let i=0; i<$media.length; i++) {
+		let element = $media[i];
+		const id= $(element).attr('id');
+		const url = $(element).attr('src');
+		let div = $("<div>")
+			.attr('id', id)
+			.attr('class', 'x_videoContainer');
+		element = $(element).replaceWith(div);
+		let width = div.width();
+		let height = width * 9 / 16;
+
+		this.popcornInstance = loadMedia($('#' + id), "video",
+			{
+				// tip: $(data).find.attr("tip"),
+				width: width,
+				height: height,
+				media: url,
+				// autoplay: "false",
+				aspect: 16/9,
+				// transcript: x_currentPageXML.getAttribute("transcript"),
+				// transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
+				// audioImage: undefined,
+				// audioImageTip: "",
+				// pageName: "textVideo",
+				trackMedia: false,
+			}, false);
+
+		$('#' + id)
+			.width(width)
+			.height(height);
+		resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: 16/9});
+
+		var heightCalc = $('.popcornMedia').width();
+		var heightCalc2 = heightCalc * 9 / 16;
+
+		$('.x_videoContainer').css('width', '100%');
+		$('.popcornMedia').css('width', '100%');
+		$('.x_videoContainer').css('height', height);
+		$('.popcornMedia').css('height', height);
+		$(window).resize(function() {
+			setTimeout(function() {
+				$('.x_videoContainer').css('width', '100%');
+				$('.popcornMedia').css('width', '100%');
+				$('.x_videoContainer').css('height',  height);
+				$('.popcornMedia').css('height',  height);
+
+			}, 200);
+		});
+	}
 }
 
 // function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
@@ -509,12 +577,12 @@ function setup() {
 						glossaryTxt.splice(glossaryTxt.length - 1, 1, glossaryTxt[glossaryTxt.length - 1] + '<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
 					}
 				}
-				
-				
+
+
 				var $glossaryTitle = $(data).find('learningObject').attr('glossaryTitle') != undefined ? $(data).find('learningObject').attr('glossaryTitle') : 'Glossary';
 				var $glossaryPage = $('<page name="' + $glossaryTitle + '" subtitle=""></page>');
 
-				// setAttributeNS is used because it doesn't convert the attribute name to lowercase 
+				// setAttributeNS is used because it doesn't convert the attribute name to lowercase
 				if($(data).find('learningObject').attr("glossaryPageID") != undefined){
 
 						$glossaryPage[0]
@@ -523,7 +591,7 @@ function setup() {
 
 				let learningObject = $(data).find('learningObject');
 				let headerImage = learningObject.attr('glossaryHeaderImage');
-				
+
 				if(headerImage != undefined){
 						let element = $glossaryPage[0];
 	// header="FileLocation + 'media/header.jpg'" headerPos="left" headerRepeat="repeat" headerSize="not-set" headerTitleAlign="center" headerColour="" headerTextColour="" headerBanner="fullscreen" headerTopMargin="20" bannerCollapse="true" bannerFixedHeight="false" bannerHeight="20" bannerFullScrolldownInfo="true" bannerFullScrolldownText=""
@@ -601,7 +669,7 @@ function setup() {
 	});
 
 	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
-	$(data).find('page').each( function(index, value){	
+	$(data).find('page').each( function(index, value){
 		var tempID = $(this).attr('customLinkID');
 		var $page = $(this);
 		if (tempID != undefined && tempID != "") {
@@ -1116,7 +1184,7 @@ function setup() {
 		if ($('#nav li:not(.backBtn)').length <= 1) {
 			$("#pageNavBtn, #nav li:not(.backBtn) a").hide();
 		}
-		
+
 		// nav bar can be moved below header bar
 		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 
@@ -1890,7 +1958,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			sectionVisibleIndex++;
 		}
 	});
-	
+
 	updateContent();
 
 	initSidebar();
