@@ -333,7 +333,7 @@ Folder popup is the div that appears when creating a new folder
                 if ($authmech->canManageUser($jsscript)){
                     echo '
                     <div class="settingsDropdown">
-                        <button onclick="changepasswordPopup()" title=" ' . INDEX_CHANGE_PASSWORD . ' " class="fa fa-cog xerte_workspace_button settingsButton"></button>
+                        <button onclick="changepasswordPopup()" title=" ' . INDEX_CHANGE_PASSWORD . ' " class="xerte_workspace_button settingsButton"><i class="fa fa-cog xerte-icon"></i></button>
                         <!-- <div id="settings" class="settings-content">
                             <button class="xerte_button" onclick="changepasswordPopup()">' . INDEX_CHANGE_PASSWORD . '</button>
                             <button class="xerte_button">Placeholder</button>
@@ -344,7 +344,10 @@ Folder popup is the div that appears when creating a new folder
                 ';
                 }
                 if (getRolesFromUser($_SESSION['toolkits_logon_id'])) {
-                    echo '<button onclick="javascript:redirect(\'management.php\')" title=" ' . INDEX_TO_MANAGEMENT . ' " class="fas fa-tools xerte_workspace_button "></button>';
+                    echo '<button onclick="javascript:redirect(\'management.php\')" title=" ' . INDEX_TO_MANAGEMENT . ' " class="xerte_workspace_button "><i class="fas fa-tools xerte-icon"></i></button>';
+                }
+                if (is_user_admin() && file_exists($xerte_toolkits_site->tsugi_dir)) {
+                    echo '<button onclick="javascript:redirect(\'tsugi/admin\')" title=" ' . INDEX_TO_TSUGI_ADMIN . ' " class="xerte_workspace_button"><i class="fa xerte-icon">次</i></button>';
                 }
                ?>
 

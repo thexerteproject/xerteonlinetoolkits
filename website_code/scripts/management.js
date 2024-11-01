@@ -400,6 +400,19 @@ function templates_list(){
 	});
 }
 
+function themes_list(){
+	function_to_use="themes";
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/themes.php",
+		data: {no_id: 1},
+	})
+	.done(function(response){
+		management_stateChanged(response);
+	});
+}
+
+
 // Function delete sharing template
 //
 // remove a share, and check who did it
@@ -409,13 +422,20 @@ function update_template(){
 	debugger
 	// Get selected pages of the active_section
 	// 1. First get non-selected boxes
+	var disable_advanced_cb = $("#sub_page_select_disable_advanced_" + active_section + ":checked");
+	var disable_advanced = (disable_advanced_cb.length > 0);
 	var simple_lo_page_cb = $("#sub_page_select_titleonly_" + active_section + ":checked");
 	var simple_lo_page = (simple_lo_page_cb.length > 0);
 	var checkboxes_all = $(".sub_page_selection_model_" + active_section);
 	var checkboxes_selected = $(".sub_page_selection_model_" + active_section + ":checked");
 	var sub_pages = "";
+	if(disable_advanced_cb.length > 0){
+		sub_pages += "disable_advanced"
+	}
 	if(simple_lo_page_cb.length > 0){
-		sub_pages = "simple_lo_page"
+		if (sub_pages.length > 0)
+			sub_pages += ",";
+		sub_pages += "simple_lo_page"
 	}
 	if (checkboxes_all.length != checkboxes_selected.length)
 	{
@@ -571,14 +591,31 @@ function update_site() {
 			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
 			globalhidesocial: document.getElementById("site_socialicon_globaldisable").value,
 			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value,
-			default_theme_xerte: document.getElementById("default_theme_xerte").value,
-			default_theme_site: document.getElementById("default_theme_site").value
+			//default_theme_xerte: document.getElementById("default_theme_xerte").value,
+			//default_theme_site: document.getElementById("default_theme_site").value
 		},
 	})
 	.done(function (response) {
 		management_alert_stateChanged(response);
 	});
 }
+
+function update_themes() {
+
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/themes_details_management.php",
+		data: {
+			default_theme_xerte: document.getElementById("default_theme_xerte").value,
+			default_theme_site: document.getElementById("default_theme_site").value,
+			default_theme_decision: document.getElementById("default_theme_decision").value
+		},
+	})
+		.done(function (response) {
+			management_alert_stateChanged(response);
+		});
+}
+
 
 // Function update course
 //
@@ -1105,12 +1142,13 @@ function templates_delete_sub(id){
 function save_changes(){
 
 	switch(function_to_use){
-
-		case "templates":update_template();
-		    break;
-		case "users":user_template();
-			break;
 		case "site":update_site();
+			break;
+		case "themes":update_themes();
+			break;
+		case "templates":update_template();
+			break;
+		case "users":user_template();
 			break;
 		case "playsecurity":update_play_security();
 			  break;
@@ -1121,6 +1159,19 @@ function save_changes(){
 
 	}
 
+}
+
+function theme_display(tag){
+
+	var child_tag = tag + "_child";
+	var button_tag = tag + "_btn";
+	if(document.getElementById(child_tag).style.display=="table"){
+		document.getElementById(child_tag).style.display="none";
+		document.getElementById(button_tag).innerHTML = MANAGEMENT_SHOW;
+	}else{
+		document.getElementById(child_tag).style.display="table";
+		document.getElementById(button_tag).innerHTML = MANAGEMENT_HIDE;
+	}
 }
 
 function list_templates_for_user(tag){
@@ -1534,5 +1585,78 @@ function update_roles(userid){
 		}
 }
 
+function template_submit()
+{
+	var form = document.getElementById("form-template-upload");
+	var formData = new FormData(form);
+	$.ajax({
+		type: "POST",
+		processData: false,
+		contentType: false,
+		url: "website_code/php/management/upload.php",
+		data: formData
+	})
+		.done(function(response){
+			$("body").css("cursor", "default");
+			alert(response);
+			// Refresh templates list
+			templates_list();
+		})
+		.fail(function(response){
+			$("body").css("cursor", "default");
+			alert(response);
+		});
+}
+
+function theme_submit(){
+	var form = document.getElementById("form-theme-upload");
+	var formData = new FormData(form);
+	$.ajax({
+		type: "POST",
+		processData: false,
+		contentType: false,
+		url: "website_code/php/management/upload_theme.php",
+		data: formData
+	})
+		.done(function(response){
+			$("body").css("cursor", "default");
+			alert(response);
+			themes_list()
+		})
+		.fail(function(response){
+			$("body").css("cursor", "default");
+			alert(response);
+		});
+}
+
+function theme_disable(theme, type, displayname, btn_enable_txt, btn_disable_txt){
+	if (window.confirm(THEME_DELETE)) {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/theme_enable_disable.php",
+			data: {
+				theme: theme,
+				type: type,
+			},
+		})
+		.done(function (response) {
+			$('#'+ type + '_' + theme).html("<s>" + displayname + " (" + theme + ")</s><button class='xerte_button theme_enable' onclick=\"javascript:theme_enable('" + theme + "','" + type + "','" + displayname + "','" + btn_enable_txt + "','" + btn_disable_txt + "')\">" + btn_enable_txt + "</button>");
+		});
+	}
+}
+
+function theme_enable(theme, type, displayname, btn_enable_txt, btn_disable_txt){
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/theme_enable_disable.php",
+		data: {
+			theme: theme,
+			type: type,
+		},
+	})
+	.done(function (response) {
+		$('#'+ type + '_' + theme).html(displayname + " (" + theme + ")<button class='xerte_button theme_disable' onclick=\"javascript:theme_disable('" + theme + "','" + type + "','" + displayname + "','" + btn_enable_txt + "','" + btn_disable_txt + "')\">" + btn_disable_txt + "</button>");
+	});
+}
 
  

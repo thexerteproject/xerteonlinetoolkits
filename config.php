@@ -207,6 +207,10 @@ if (file_exists($root_file_path . 'import')) {
 }
 
 // Try to get site_url in the same way
+if (file_exists("reverse_proxy_conf.php"))
+{
+    require_once("reverse_proxy_conf.php");
+}
 $host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
 $port = (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80);
 $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
@@ -225,13 +229,9 @@ if ($subdir_pos !== false)
 {
     $subdir = substr($xerte_toolkits_site->site_url, $subdir_pos);
 }
-if ($host != '')
-{
+if ($host != '' && $scheme != '' && (!isset($force_site_url_from_db) || !$force_site_url_from_db)) {
     $site_url = $scheme . $host . $port . $subdir;
-    $check_url = @file_get_contents($site_url . 'version.txt');
-    if ($check_url !== false) {
-        $xerte_toolkits_site->site_url = $site_url;
-    }
+    $xerte_toolkits_site->site_url = $site_url;
 }
 
 $learning_objects = new StdClass();

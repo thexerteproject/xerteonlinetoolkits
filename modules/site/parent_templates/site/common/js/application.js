@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+
+
 $(document).ready(init);
 
 var XBOOTSTRAP = {};
@@ -39,53 +41,98 @@ var validPages = [];
 var collapseBanner = false;
 var collapseHeight = -1;
 var fullscreenBannerTitleMargin=10;
+var m_volume=1;
 
 function init(){
 	loadContent();
 }
 
-// called after all content loaded to set up mediaelement.js players
-function initMedia($media){
 
-	$media.mediaelementplayer({
+
+// Create parameters needed by the popcorn library and coming from xenith.js
+const xot_offline = false;
+let x_params = new Object();
+x_params.language = "en-GB";
+
+function initMedia($media) {
+	for (let i = 0; i < $media.length; i++) {
+		let element = $media[i];
+		if (element.tagName == "VIDEO") {
+			initVideo(element);
+		} else if (element.tagName == "AUDIO") {
+			initAudio(element);
+		} else if (element.tagName == "IFRAME") {
+			iframeInit(element);
+		}
+	}
+}
+
+function initVideo(element) {
+	const id = $(element).attr('id');
+	const url = $(element).attr('src');
+	const iframeRatioAttr = $(element).attr('iframeRatio');
+	let div = $("<div>")
+		.attr('id', id)
+		.attr('class', 'x_videoContainer');
+	element = $(element).replaceWith(div);
+	let iframeRatioStr = iframeRatioAttr != "" && iframeRatioAttr != undefined ? iframeRatioAttr : '16:9';
+	let iframeRatio = iframeRatioStr.split(':');
+	// iframe ratio can be one entered in editor or fallback to 16:9
+	if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+		iframeRatio = [16, 9];
+	}
+	let aspectRatio = iframeRatio[0] / iframeRatio[1];
+	let width = div.width();
+	if (div.parents('.navigator').length > 0) {
+		width = div.parents('.navigator').width();
+	}
+	let height = width / aspectRatio;
+
+	this.popcornInstance = loadMedia($('#' + id), "video",
+		{
+			// tip: $(data).find.attr("tip"),
+			width: width,
+			height: height,
+			media: url,
+			// autoplay: "false",
+			aspect: aspectRatio,
+			// transcript: x_currentPageXML.getAttribute("transcript"),
+			// transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
+			// audioImage: undefined,
+			// audioImageTip: "",
+			// pageName: "textVideo",
+			trackMedia: false,
+		}, false);
+
+	$('#' + id)
+		.width(width)
+		.height(height);
+	//resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: aspectRatio});
+
+	var heightCalc = $('.popcornMedia').width();
+	var heightCalc2 = heightCalc / aspectRatio;
+
+	$('#'+ id + '.x_videoContainer').css('width', '99%');
+	$('#'+ id + ' .popcornMedia').css('width', '100%');
+	$('#'+ id + '.x_videoContainer').css('height', height);
+	$('#'+ id + ' .popcornMedia').css('height', height);
+	$(window).resize(function () {
+		setTimeout(function () {
+			//resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: aspectRatio});
+		}, 200);
+	});
+}
+
+// called after all content loaded to set up mediaelement.js players
+function initAudio(element){
+	$(element).mediaelementplayer({
 		pauseOtherPlayers: true,
 		enableAutosize: true,
 		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
 
 		success: function (mediaElement, domObject) {
-
 			var $mediaElement = $(mediaElement);
 
-			// iframe scaling to maintain aspect ratio
-			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
-				iframeInit($mediaElement);
-
-				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
-				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
-					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
-				}
-			}
-
-			// stops mp4 videos being shown larger than original
-			mediaElement.addEventListener("loadedmetadata", function(e) {
-				var $video = $(e.detail.target);
-				$video.add($video.parents('.mejs-container')).css({
-					'max-width': e.detail.target.videoWidth,
-					'max-height': e.detail.target.videoHeight
-				});
-			});
-
-			// it's audio with a transcript - add a transcript button to the end of the player
-			if ($mediaElement.find("audio").data("transcript") != undefined) {
-				$mediaElement.parents(".mejs-container").parent().addClass("audioTranscript");
-
-				const transcriptLabel = languageData.find("mediaElementControls").find("transcriptButton")[0].getAttribute("label");
-				$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
-					.appendTo($mediaElement.parents(".mejs-container").find(".mejs-controls"))
-					.click(function() {
-						$.featherlight($mediaElement.find("audio").data("transcript"));
-					});
-			}
 		},
 		error: function(mediaElement) {
 			console.log('mediaelement problem is detected: ', mediaElement);
@@ -107,14 +154,31 @@ function iframeInit($mediaElement) {
 
 // resize iframe height to keep aspect ratio
 function iframeResize($iframe) {
-	if ($iframe.parents('.navigator.carousel').length > 0) {
-		$iframe.height(($iframe.parents('.navigator.carousel').width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+	if ($iframe.parents('.navigator').length > 0) {
+		$iframe.height(($iframe.parents('.navigator').width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
 		$iframe.parents('.mejs-container').height('auto');
 	} else {
 		$iframe.height(($iframe.width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
 		$iframe.parents('.mejs-container').height('auto');
 	}
 }
+
+// resize iframe height to keep aspect ratio
+function videoResize($popcorn) {
+	const videoRatio = $popcorn.parents('.vidHolder').data('iframeRatio');
+	const aspect = videoRatio[0] / videoRatio[1];
+	if ($popcorn.parents('.navigator.carousel').length > 0) {
+		$popcorn.height($popcorn.parents('.navigator.carousel').width() / aspect);
+		$popcorn.parent().height($popcorn.height());
+
+		//$popcorn.parents('.mejs-container').height('auto');
+	} else {
+		$popcorn.height($popcorn.width() / aspect);
+		$popcorn.parent().height($popcorn.height());
+		//$popcorn.parents('.mejs-container').height('auto');
+	}
+}
+
 
 function initSidebar(){
 	var $window = $(window)
@@ -203,6 +267,9 @@ function loadContent(){
 			$("#nav").hide();
 		}
 
+		$('.vidHolder .popcornMedia').each(function() {
+			videoResize($(this))
+		});
 		$('.vidHolder iframe').each(function() {
 			iframeResize($(this))
 		});
@@ -509,12 +576,12 @@ function setup() {
 						glossaryTxt.splice(glossaryTxt.length - 1, 1, glossaryTxt[glossaryTxt.length - 1] + '<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
 					}
 				}
-				
-				
+
+
 				var $glossaryTitle = $(data).find('learningObject').attr('glossaryTitle') != undefined ? $(data).find('learningObject').attr('glossaryTitle') : 'Glossary';
 				var $glossaryPage = $('<page name="' + $glossaryTitle + '" subtitle=""></page>');
 
-				// setAttributeNS is used because it doesn't convert the attribute name to lowercase 
+				// setAttributeNS is used because it doesn't convert the attribute name to lowercase
 				if($(data).find('learningObject').attr("glossaryPageID") != undefined){
 
 						$glossaryPage[0]
@@ -523,7 +590,7 @@ function setup() {
 
 				let learningObject = $(data).find('learningObject');
 				let headerImage = learningObject.attr('glossaryHeaderImage');
-				
+
 				if(headerImage != undefined){
 						let element = $glossaryPage[0];
 	// header="FileLocation + 'media/header.jpg'" headerPos="left" headerRepeat="repeat" headerSize="not-set" headerTitleAlign="center" headerColour="" headerTextColour="" headerBanner="fullscreen" headerTopMargin="20" bannerCollapse="true" bannerFixedHeight="false" bannerHeight="20" bannerFullScrolldownInfo="true" bannerFullScrolldownText=""
@@ -601,7 +668,7 @@ function setup() {
 	});
 
 	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
-	$(data).find('page').each( function(index, value){	
+	$(data).find('page').each( function(index, value){
 		var tempID = $(this).attr('customLinkID');
 		var $page = $(this);
 		if (tempID != undefined && tempID != "") {
@@ -1116,7 +1183,7 @@ function setup() {
 		if ($('#nav li:not(.backBtn)').length <= 1) {
 			$("#pageNavBtn, #nav li:not(.backBtn) a").hide();
 		}
-		
+
 		// nav bar can be moved below header bar
 		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 
@@ -1890,7 +1957,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			sectionVisibleIndex++;
 		}
 	});
-	
+
 	updateContent();
 
 	initSidebar();
@@ -3332,23 +3399,7 @@ function setUpVideo(url, iframeRatio, id) {
 	// mp4 / youtube / vimeo
 	} else {
 
-		var mimeType = 'mp4',
-			vidSrc = url;
-
-		// is it from youtube or vimeo?
-		if (vidSrc.indexOf("www.youtube.com") != -1 || vidSrc.indexOf("//youtu") != -1) {
-			mimeType = "youtube";
-			iframeRatio = getAspectRatio(iframeRatio);
-
-		} else if (vidSrc.indexOf("vimeo.com") != -1) {
-			mimeType = "vimeo";
-			iframeRatio = getAspectRatio(iframeRatio);
-
-		}
-
-		mimeType = 'video/' + mimeType;
-
-		return ['<div class="vidHolder"><video src="' + vidSrc + '" type="' + mimeType + '" id="player' + id + '" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', iframeRatio];
+		return ['<div class="vidHolder"><video src="' + url + '" id="player' + id + '" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', getAspectRatio(iframeRatio)];
 	}
 }
 

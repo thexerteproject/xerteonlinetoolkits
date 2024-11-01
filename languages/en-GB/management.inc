@@ -46,7 +46,9 @@
 	
 	define("MANAGEMENT_MENUBAR_SITE","Site");
 	
-	define("MANAGEMENT_MENUBAR_CENTRAL","Central templates");
+	define("MANAGEMENT_MENUBAR_CENTRAL","Templates");
+
+	define("MANAGEMENT_MENUBAR_THEMES","Themes");
 	
 	define("MANAGEMENT_MENUBAR_USERS","Users");
 

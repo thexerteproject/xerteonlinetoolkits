@@ -444,22 +444,22 @@ if ($tsugi_enabled || $pedit_enabled) {
 							/**
 							 *  Check the password againsr the value in the database
 							 */
-							if ($_POST['password'] == $password) {
+							if (x_clean_input($_POST['password']) == $password) {
 
 								/**
 								 *  Output the code
 								 */
-								$_SESSION['template_id'] = $template_id;
+								$_SESSION['template_id'] = $safe_template_id;
 								db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d H:i:s'), $safe_template_id));
-								setcookie("password", $_POST['password'], 0);
+								$_SESSION["PasswordPlay"] = hash('sha256', x_clean_input($_POST['password']));
 								show_template($row_play, $xapi_enabled);
 							} else {
 								setcookie("password", "", 0);
 								show_pwplay_login_form(PWPLAY_LOGON_FAIL);
 							}
 						} else {
-							if (isset($_COOKIE["password"]) && $_COOKIE["password"] == $password) {
-								$_SESSION['template_id'] = $template_id;
+							if (isset($_SESSION["PasswordPlay"]) && $_SESSION["PasswordPlay"] == hash('sha256', $password)) {
+								$_SESSION['template_id'] = $safe_template_id;
 								db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d H:i:s'), $safe_template_id));
 								show_template($row_play, $xapi_enabled);
 							} else {

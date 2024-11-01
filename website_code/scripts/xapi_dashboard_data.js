@@ -733,7 +733,7 @@ DashboardState.prototype.groupStatements = function (data) {
   for (var user in groupedData) {
     var lastcompleted = null;
     var maxcompletedattempt = null;
-    var maxcompletion = 0;
+    var maxcompletion = -1;
     for (var attempt in groupedData[user]["attempts"]) {
       var attemptdata = groupedData[user]["attempts"][attempt];
       // Try to find exited

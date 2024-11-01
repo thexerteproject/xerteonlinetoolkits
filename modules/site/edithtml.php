@@ -17,7 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+require_once (__DIR__ . "/../../website_code/php/themes_library.php");
+
 /**
  * Created by PhpStorm.
  * User: tom
@@ -122,55 +124,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
     $template_sub_pages = array("page");
     $simple_lo_page = get_template_simple_lo_page($row_edit['template_id']);
+    $disable_advanced = get_template_disable_advanced($row_edit['template_id']);
     $simple_mode = $simple_lo_page;
+
 	/**
      * build an array of available themes for this template
      */
-    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['parent_template'] . "/";
-    $ThemeList = array();
-    if (file_exists($theme_folder))
-    {
-        $d = opendir($theme_folder);
-        while($f = readdir($d)){
-            if(is_dir($theme_folder . $f)){
-                if (file_exists($theme_folder . $f . "/" . $f . ".info") && !file_exists($theme_folder . $f . "/hidden.info"))
-                {
-                    $info = file($theme_folder . $f . "/" . $f . ".info", FILE_SKIP_EMPTY_LINES);
-                    $themeProperties = new StdClass();
+    $ThemeList = get_themes_list($row_edit['parent_template']);
 
-                    foreach ($info as $line) {
-                        $attr_data = explode(":", $line, 2);
-                        if (empty($attr_data) || sizeof($attr_data) != 2) {
-                            continue;
-                        }
-                        switch (trim(strtolower($attr_data[0]))) {
-                            case "name" : $themeProperties->name = trim($attr_data[1]);
-                                break;
-                            case "display name" : $themeProperties->display_name = trim($attr_data[1]);
-                                break;
-                            case "description" : $themeProperties->description = trim($attr_data[1]);
-                                break;
-                            case "enabled" : $themeProperties->enabled = strtolower(trim($attr_data[1]));
-                                break;
-                            case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['parent_template'] . "/" . $f . "/" . trim($attr_data[1]);
-                                break;
-                        }
-                    }
-                    if (substr($themeProperties->enabled, 0, 1) == "y") {
-                        $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview);
-                    }
-                }
-            }
-        }
-		// sort into alphabetical order
-		$display_name = array();
-		foreach ($ThemeList as $key => $row) {
-			$display_name[$key] = $row['display_name'];
-		}
-		array_multisort($display_name, SORT_ASC, $ThemeList);
-		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => $xerte_toolkits_site->site_url . "modules/site/parent_templates/site/common/img/default.jpg"));
-    }
     /**
      * Build CategoryList with hierarchy
      */
@@ -429,6 +390,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
+    echo "disable_advanced=" . ($disable_advanced ? "true" : "false") . ";\n";
+
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
     echo "roles=" . json_encode($user_roles) . ";\n";
 

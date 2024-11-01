@@ -38,6 +38,31 @@
     <!--jquery-->
     <script src="%TEMPLATEPATH%common/js/jquery-1.9.1.min.js%VERSION_PARAM%"></script>
 	
+       <!--popcorn js files-->
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/MediasitePlayerControls.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/MediasitePlayerIFrameAPI.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mediaconstructor.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/popcorn-complete.js"></script>
+    <!-- <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mcq.js"></script> -->
+    <!--
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mediaplus.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.slides.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.sortholder.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.subtitleplus.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.textplus.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.xot.js"></script>
+    -->
+
+    <!-- <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn-complete.min.js"></script> -->
+           <!--popcorn css files-->
+    <!--
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mcq.css" />
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.overlaygeneric.css" />
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.slides.css" />
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.subtitleplus.css" />
+    -->
+
+
 	<!-- for lightboxes and lightbox gallery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common/featherlight/featherlight.min.js%VERSION_PARAM%"></script>
 	<script type="text/javascript" src="%TEMPLATEPATH%common/featherlight/featherlight.gallery.min.js%VERSION_PARAM%"></script>
@@ -66,9 +91,12 @@
     <script src="%TEMPLATEPATH%common/js/html5shiv.js%VERSION_PARAM%"></script>
 
     <!--media element and initialisation-->
-	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
-	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/renderers/vimeo.min.js%VERSION_PARAM%"></script>
-	<link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer-legacy.min.css%VERSION_PARAM%" />
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer.min.css%VERSION_PARAM%" />
+    <script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer-legacy.min.css%VERSION_PARAM%" />
+
+    <!-- for audio & video players -->
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaPlayerSite.js%VERSION_PARAM%"></script>
 
     <script type="text/javascript">
         var x_SiteUrl = "%SITEURL%";
@@ -101,7 +129,6 @@
 			dateCreated: x_dateCreatedLocale,
 			numViews: x_numPlays
 		};
-        var roles = "%ROLES%";
     </script>
 
     %TRACKING_SUPPORT%

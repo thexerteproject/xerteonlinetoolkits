@@ -128,4 +128,6 @@ define("INDEX_CHANGE_PASSWORD", "Change Password");
 
 define("INDEX_TO_MANAGEMENT", "Management");
 
+define("INDEX_TO_TSUGI_ADMIN", "LTI/TSUGI Admin Panel");
+
 define("INDEX_SETTINGS_BUTTON", "Settings");

@@ -40,10 +40,10 @@
 	</hideShow>
 	
 	<linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links">
-		<linkPage label="Remove From Page Menu" type="CheckBox" defaultValue="true" optional="true"/>
-		<newWindow label="Open in New Window" type="CheckBox" defaultValue="false" optional="true" tooltip="Links to this page will open in a new browser window"/>
-		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<navbarHide label="Navigation Bar" type="ComboBox" data="default,back,hidden" options="Default,Back Button Only,Hidden" defaultValue="back" optional="true"/>
+		<linkPage label="Remove From Page Menu" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true"/>
+		<newWindow label="Open in New Window" type="CheckBox" defaultValue="false" optional="true" condition="linkPage=='true'" tooltip="Links to this page will open in a new browser window"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true" condition="linkPage=='true'"/>
+		<navbarHide label="Navigation Bar" type="ComboBox" data="default,back,hidden" options="Default,Back Button Only,Hidden" defaultValue="back" optional="true" condition="linkPage=='true'"/>
 	</linkGroup>
 	
 	<sectionGroup type="group" label="Section Menu Options" optional="true" tooltip="Hide the table of contents for this page and set whether or not to expand the main contents to the width of the page">
