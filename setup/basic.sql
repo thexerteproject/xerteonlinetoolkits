@@ -175,7 +175,7 @@ CREATE TABLE `$sitedetails` (
   `tsugi_dir` text,
   `globalhidesocial` char(255) DEFAULT 'false',
   `globalsocialauth` char(255) DEFAULT 'true',
-  `default_theme_xerte` char(255) DEFAULT 'default',
+  `default_theme_xerte` char(255) DEFAULT 'xot1',
   `default_theme_site` char(255) DEFAULT 'default',
   `default_theme_decision` char(255) DEFAULT 'default',
   PRIMARY KEY (`site_id`)
@@ -254,15 +254,15 @@ CREATE TABLE `$templaterights` (
   `user_id` bigint(20) DEFAULT NULL,
   `role` char(255) DEFAULT NULL,
   `folder` bigint(20) DEFAULT NULL,
-  `notes` char(255) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
    KEY `index1` (`template_id`,`user_id`,`role`(10)),
    KEY `index2` (`folder`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (
   `template_id` bigint(20) NOT NULL,
-  `description` char(255) DEFAULT NULL,
-  `keywords` char(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `keywords` text DEFAULT NULL,
   `rss` text,
   `export` text,
   `syndication` text,
