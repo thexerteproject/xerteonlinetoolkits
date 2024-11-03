@@ -50,17 +50,18 @@
 
     define("USERS_ROLE_HARVESTADMIN", "Harvest Admin");
 //  admin roles info -------------------------------------------
-    define("USERS_ROLE_SUPER_INFO", "Super Admin Uitleg");
 
-    define("USERS_ROLE_SYSTEM_INFO", "System Admin Uitleg");
-    
-    define("USERS_ROLE_TEMPLATEADMIN_INFO", "Template Admin Uitleg");
-    
-    define("USERS_ROLE_METAADMIN_INFO", "Meta Admin Uitleg");
-    
-    define("USERS_ROLE_USERADMIN_INFO", "User Admin Uitleg");
-    
-    define("USERS_ROLE_PROJECTADMIN_INFO", "Project Admin Uitleg");
+    define("USERS_ROLE_SUPER_INFO", "This role gives access to th ewhole management page. It is the highest level of access.");
 
-    define("USERS_ROLE_HARVESTADMIN_INFO", "Harvest Admin Uitleg");
+    define("USERS_ROLE_SYSTEM_INFO", "This rol gives access to the Site, Log Files, Play security Licenses and Feeds tabs in the management page.");
+    
+    define("USERS_ROLE_TEMPLATEADMIN_INFO", "This role gives access to the Templates and Themes tabs in the management page.");
+    
+    define("USERS_ROLE_METAADMIN_INFO", "This role gives access to the Categories, Educations, Groupings and Courses tabs in the management page.");
+    
+    define("USERS_ROLE_USERADMIN_INFO", "This role gives access to the Users and User Groups tabs in the management page.");
+    
+    define("USERS_ROLE_PROJECTADMIN_INFO", "This role gives access to the User Projects tab in the management page.");
+
+    define("USERS_ROLE_HARVESTADMIN_INFO", "This role allows you to enable a project to be harvested using OAI-PMH.");
 
