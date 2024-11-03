@@ -351,7 +351,15 @@
 
             let labelCounter = 0;
             let data = [];
-            if (datasets.length < 2) {
+            if (showall_only)
+            {
+                var notWorkingInDashboardMode = interaction.getAttribute("notWorkingInDashboardMode");
+                if (notWorkingInDashboardMode == undefined) {
+                    notWorkingInDashboardMode = "This graph does not work in dashboard mode";
+                }
+                $(ctx).parent().append('<p><em>' + notWorkingInDashboardMode + '</em></p>');
+            }
+            else if (datasets.length < 2) {
                 var insufficientDataText = interaction.getAttribute("insufficientDataText");
                 if (insufficientDataText == undefined) {
                     insufficientDataText = "There is insufficient data for this graph";

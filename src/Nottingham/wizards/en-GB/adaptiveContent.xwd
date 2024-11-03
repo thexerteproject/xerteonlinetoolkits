@@ -35,6 +35,8 @@
         groupUserLabel = "participants in group"
         groupScore = "Avg. Score"
         userScore = "User score"
+        insufficientDataText = "There is insufficient data for this graph"
+        notWorkingInDashboardMode = "This graph does not work in dashboard mode"
         personalAvgLabelText = "Avg. of your attempts"
         personalLabelText = "Your last attempt"
         avgAllLabelText = "Avg. of all attempts"
@@ -127,7 +129,8 @@
         <groupUserLabel label="Term used for a member of a block" type="TextInput" language="true" />
         <groupScore label="Term used te describe the score of a block" type="TextInput" language="true" />
         <userScore label="Term used te describe the user score" type="TextInput" language="true" />
-
+        <insufficientDataText label="Insufficient data text" type="TextInput" wysiwyg="true" language="true" />
+        <notWorkingInDashboardMode label="Not working in dashboard mode text" type="TextInput" wysiwyg="true" language="true" />
 
         <avgAllLabelText label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
         <personalLabelText label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
