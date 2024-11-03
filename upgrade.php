@@ -1602,3 +1602,20 @@ function upgrade_49()
         return "Default theme decision field already present - ok ? true";
     }
 }
+
+function upgrade_50()
+{
+    //Extend notes fields in database (make it text fields)
+    $table = table_by_key('templaterights');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `notes` `notes` TEXT;");
+    $message = "Changing notes column of templaterights to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    // Extend description and keywords field in database (make it text fields)
+    $table = table_by_key('templatesyndication');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `description` `description` TEXT;");
+    $message .= "Changing description column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `keywords` `keywords` TEXT;");
+    $message .= "Changing keywords column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
