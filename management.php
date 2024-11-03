@@ -369,7 +369,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                             <button type="button" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
                             <?php
                             }
-                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab ?? 'template_list()'?>
+                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab ?? 'templates_list()'?>
                             <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                 <?php
                             }

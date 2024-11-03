@@ -728,6 +728,9 @@
 										$('img').mapster('set_options', tabfocusoptions);
 										$(this).addClass("highlight");
 										$(this).mapster('highlight');
+										if (hs_hover == "true") {
+											$(this).trigger("mouseenter")
+										}
 									} else {
 										$("#pageContents .selected").removeClass("selected");
 										$("#pageContents .highlighted").removeClass("highlighted");

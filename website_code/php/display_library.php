@@ -768,7 +768,14 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
             $titem->type = strtolower($template['parent_template'] . "_group");
         $titem->xot_type = "file";
         $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
-        $titem->shared = $template['nrshared'] > 1;
+        if (isset($template['nrshared']))
+        {
+            $titem->shared = $template['nrshared'] > 1;
+        }
+        else
+        {
+            $titem->shared = false;
+        }
         if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size)) {
 			$titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
 		}

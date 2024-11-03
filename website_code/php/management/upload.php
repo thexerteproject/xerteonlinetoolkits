@@ -335,7 +335,7 @@ function checkParent($templateName)
 
     $row = db_query_one($query, $params);
 
-    if(strcasecmp($templateName, $row['parent_template']) === 0)
+    if($row != null && strcasecmp($templateName, $row['parent_template']) === 0)
     {
         return true;
     }

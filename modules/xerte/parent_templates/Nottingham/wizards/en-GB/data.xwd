@@ -882,8 +882,10 @@
         <name label="Title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true" placeholder="Enter introduction here"/>
         <interactionType label="Interaction Type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping,groupings,opinionclasses" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping,Based on all groupings,Based on all classes" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
-        <xerteurl label="URL of Xerte Source Installation" type="xerteurl" mandatory="true" defaultValue=""/>
-        <xertelo label="ID of Xerte Project" type="xertelo" mandatory="true" defaultValue=""/>
+        <sourceGroup label="Source Project" type="group" optional="true">
+          <xerteurl label="URL of Xerte Source Installation" type="xerteurl" optional="true" defaultValue="" placeholder="Enter the Xerte Installation of the source Xerte object (normally this installation)"/>
+          <xertelo label="ID of Xerte Project" type="xertelo" optional="true" defaultValue="" placeholder="Enter the template id of the source Xert object"/>
+        </sourceGroup>
         <label label="Tracking Label of Source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false"/>
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used"/>
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="" placeholder="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interaction type is based on score and the score comes from an opinion class"/>
@@ -899,7 +901,8 @@
           <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" condition="interactionType=='opinion'&amp;&amp;opinionClass==null&amp;&amp;opinionGraphType=='radar'" defaultValue="12" optional="true"/>
           <graphFollowBlock label="Use block settings for bars" type="checkbox" optional="true" defaultValue="false" conditionTrigger="true" condition="(interactionType!='opinion'||opinionClass!=null) &amp;&amp; graphType=='bar_marks'" tooltip="Use the number of Interaction Blocks as the number of bars and the 'score between' settings of the Interaction Blocks to determine the boundaries of the bars"/>
           <graphNrDataPoints label="No. of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" condition="(interactionType!='opinion'||opinionClass!=null) &amp;&amp; graphFollowBlock!='true'" tooltip="The number of bars in a bar graph, or the number of points in a line graph"/>
-          <graphShowAvg label="Show average and score" type="checkbox" defaultValue="false" optional="true" condition="graphType=='bar_marks'" tooltip="Adds indicators for the avg and user score"/>
+          <graphShowAvg label="Show average" type="checkbox" defaultValue="false" optional="true" condition="graphType=='bar_marks'"/>
+          <graphShowScore label="Show user score" type="checkbox" defaultValue="false" optional="true" condition="graphType=='bar_marks'"/>
           <graphShowAvgBar label="Display the average and score with a bar" type="checkbox" defaultValue="false" optional="true" condition="graphType=='bar_marks'" tooltip="Adds a line in the graph for the avg and user score"/>
           <graphFitInfoInBar label="Show info in bar" type="checkbox" defaultValue="false" optional="true" condition="graphType=='bar_marks'" tooltip="Scales the user score and avg and displays them in the bars"/>
           <graphColorScale label="Colour scale" type="textInput" wysiwyg="false" defaultValue="#FF6384,#4BC0C0,#FFCD56,#C9CBCF,#36A2EB,#B284BE" optional="true" condition="((interactionType!='opinion'||opinionClass!=null)&amp;&amp;graphType=='polar_area_per_category')||(interactionType=='opinion'&amp;&amp;opinionClass==null&amp;&amp;(opinionGraphType=='hor_bar_comb_marks_avg'||opinionRadarData=='group'))" tooltip="The colour scale for the bars in a bar graph, or the colour scale for the points in a polar graph"/>
@@ -2197,6 +2200,7 @@
     <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	<highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
+	<hs_showTooltip label="Show Tooltip" type="CheckBox" defaultValue="true" tooltip="Show tooltip on hover. When checked, the label text is used as the hotspot tooltip"/>
 
 	<image type="group" label="Image">
 		<url label="File" type="media" placeholder="Select an image"/>
@@ -2217,7 +2221,6 @@
             <hs_fillColor label="Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" condition="hs_fill=='true'" tooltip="The colour of the hotspot background"/>
             <hs_fillOpacity label="Opacity" type="TextInput" optional="true" defaultValue="1" condition="hs_fill=='true'" tooltip="The opacity (a decimal number between 0 and 1) of hotspot background"/>
         </hsFill>
-        <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover. When checked, the label text is used as the hotspot tooltip"/>
 	</hsAppearance>
 
     <hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of all hotspot.">
@@ -2233,7 +2236,7 @@
     <imageTransition label="Image Transition" options="Blinds,Dissolve,Fade,Fly,Iris,Squeeze,Wipe,Zoom" type="ComboBox" data="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" defaultValue="wipe" width="100" optional="true" deprecated="This property is no longer required"/>
 
     <newNodes>
-      <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" tooltip="false" iconCode="fas fa-info" windowType="dialog" hotspotHover='false' destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
+      <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" disableTooltip="false" iconCode="fas fa-info" windowType="dialog" hotspotHover='false' destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -2312,9 +2315,8 @@
 	<name label="Title" type="TextInput" wysiwyg="false"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
-	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
-	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
-	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="false" width="200"/>
+	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" conditionTrigger="true" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
+	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="((imageFile!=null||hotspotPopUp!=null)&amp;&amp;hotspotSound==null&amp;&amp;hotspotMovie==null)&amp;&amp;windowType=='bubble'" defaultValue="false" width="200"/>
     <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="mode=='icon'"/>
 
 	<hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
@@ -2322,7 +2324,7 @@
 		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
 	</hsIconAppearance>
 
-	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
+	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked" condition="windowType=='dialog'">
 		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select a video file or enter a URL/embed code"/>
 		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 
@@ -2338,7 +2340,7 @@
 
     <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is deprecated. Videos now reset on completion by default."/>
 
-	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
+	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked" condition="windowType!='bubble'">
 		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select an audio file"/>
 		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" conditionTrigger="true" data="player,auto" defaultValue="player" width="200" optional="true"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" condition="playerType!='auto'" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
@@ -4538,7 +4540,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Image Comparison" hint="An interaction allowing you to compare two image" icon="icImageCompare" thumb="thumbs/imageCompare.jpg" example=" https://xot.xerte.org.uk/play_116#imagecompare" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_comparison_page" remove="true">
+    </pageHeaderGroup></iSpring><imageCompare menu="Media" menuItem="Compare Images" hint="An interaction allowing you to compare two image" icon="icImageCompare" thumb="thumbs/imageCompare.jpg" example=" https://xot.xerte.org.uk/play_116#imagecompare" wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_compare_page" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	

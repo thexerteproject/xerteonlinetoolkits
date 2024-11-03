@@ -23,7 +23,7 @@ _load_language_file("/website_code/php/management/themes_details_management.inc"
 
 require("../user_library.php");
 
-if(is_user_permitted("system")) {
+if(is_user_permitted("templateadmin")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 
@@ -50,4 +50,3 @@ if(is_user_permitted("system")) {
 
 }
 
-?>

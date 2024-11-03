@@ -221,4 +221,4 @@ if(is_numeric($id) || $id == null)
     }
     require("play.php");
 }
-?>
+

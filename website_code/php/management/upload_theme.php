@@ -12,7 +12,7 @@ _load_language_file("/website_code/php/management/upload_theme.inc");
 global $xerte_toolkits_site;
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if (!is_user_permitted("useradmin"))
+if (!is_user_permitted("templateadmin"))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
