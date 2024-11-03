@@ -63,7 +63,7 @@
 						prefix += section.sectionName + " - ";
 					}
 					for(let item of section.items){
-						if(item.itemName == null)
+						if(item.itemName == null | item.itemValue == "")
 							continue;
 						items.push(prefix + item.itemName);
 						itemCount += 1;
@@ -843,8 +843,7 @@
 						prefix += section.sectionName + " - ";
 					}
 					for(let item of section.items){
-						if(item.itemName == null)
-							continue;
+						if(!(item.itemName == null | item.itemValue == "")){
 						let result = {
 							success: true,
 							score: 100,
@@ -873,6 +872,7 @@
 							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, tableCSV, null/*not used*/);
 						}
 						itemCount += 1;
+						}
 					}
 				}
 			}
