@@ -1,7 +1,7 @@
 Xerte Online Toolkits
 =====================
 
-Latest release : v3.10 (released on June 30, 2021)
+Latest release : v3.13 (released on October 31, 2024)
 
 Installation Instructions (Stable release, .zip)
 ------------------------------------------------
