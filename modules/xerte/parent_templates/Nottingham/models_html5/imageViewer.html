@@ -110,9 +110,8 @@
 			} else {
 				$panel.addClass("x_floatRight");
 			}
-			
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-			
+
+			$textHolder.html(x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
 			// set up control panel & buttons
 			$controlPanel.draggable({containment:	"parent"});

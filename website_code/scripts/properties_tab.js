@@ -51,9 +51,11 @@ function properties_ajax_send_prepare(url){
 	 * @author Patrick Lockley
 	 */
 
-function properties_stateChanged(response){
+function properties_stateChanged(response, tabId){
 	if(response!=""){
-		document.getElementById('dynamic_area').innerHTML = response;
+		$("#dynamic_area .tabPanel").empty().hide();
+		
+		$("#" + tabId).html(response).show();
 	}
 }
 
@@ -72,7 +74,7 @@ function publish_template(){
 		data: {template_id: window.name},
 	})
 	.done(function(response){
-		properties_stateChanged(response);
+		properties_stateChanged(response, 'panelProject');
 	});
 }
 
@@ -171,7 +173,8 @@ function rename_stateChanged(response){
 		*/
 
 		array_response = response.split("~~**~~");
-		document.getElementById('dynamic_area').innerHTML = array_response[2];
+		properties_stateChanged(array_response[2], 'panelProject');
+		
 		/*
 		* set the file name in the file_area
 		*/
@@ -181,6 +184,8 @@ function rename_stateChanged(response){
 		else {
 			window_reference.refresh_workspace();
 		}
+		
+		//properties_stateChanged(response, 'panelProject');
 	}
 }
 
@@ -198,7 +203,8 @@ var after_sharing_deleted = false;
 	 */
 
 
-function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
+function delete_sharing_template(template_id,id,who_deleted_flag, group){
+	
 	var answer = confirm(SHARING_CONFIRM);
 	if(answer){
 		if(who_deleted_flag){
@@ -270,7 +276,9 @@ function syndication_template() {
 		 }
 	 })
 	 .done(function (response) {
-		 rss_stateChanged(response);
+		if (response!="") {
+			properties_stateChanged(response, 'panelSyn');
+		}
 	 });
  }
 
@@ -284,16 +292,11 @@ function syndication_template() {
 
 function syndication_change_template(){
 
-	var synd = "false";
-
-	if(document.getElementById("syndon").src==(site_url + "website_code/images/TickBoxOn.gif")){
-		synd="true";
-	}
-
-	var category_value = document.getElementById("category_list").value;
-	var license_value = document.getElementById("license_list").value;
-	var description = document.getElementById("description").value;
-	var keywords = document.getElementById("keywords").value;
+	var synd = $('#syndon').prop('checked');
+	var category_value = $('#category_list').find(":selected").val();
+	var license_value = $('#license_list').find(":selected").val();
+	var description = $('#description').val();
+	var keywords = $('#keywords').val();
 
 	$.ajax({
 		type: "POST",
@@ -305,10 +308,10 @@ function syndication_change_template(){
 			keywords: keywords,
 			category_value: category_value,
 			license_value:license_value
-			}
+		}
 	})
 	.done(function (response) {
-		properties_stateChanged(response);
+		properties_stateChanged(response, 'panelSyn');
 	});
 }
 
@@ -329,7 +332,9 @@ function rss_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 rss_stateChanged(response);
+		if (response!="") {
+			properties_stateChanged(response, 'panelRss');
+		}
 	 });
 }
 
@@ -343,7 +348,7 @@ function rss_template(){
 
 function rss_stateChanged(response){
 	if(response!=""){
-		document.getElementById('dynamic_area').innerHTML=response;
+		document.getElementById('panelRss').innerHTML=response;
 	}
 }
 
@@ -368,30 +373,6 @@ function screen_size_template(){
 	});
 }
 
- /** *********OBSOLETE***************
- *
- * Function delete sharing template
- * This function handles the deletion of a share by a user
- * @param string template_id = window type to open
- * @param string user_id = user we are removing
- * @param string who_deleted_flag = obsolete ***** CHECK ******
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function links_template() {
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/properties/links_template.php",
-		 data: {
-			 template_id: window.name
-		 }
-	 })
-	 .done(function (response) {
-		 properties_stateChanged(response);
-	 });
-}
-
  /**
  *
  * Function peer template
@@ -401,6 +382,7 @@ function links_template() {
 */
 
 function peer_template(){
+	
 	 $.ajax({
 		 type: "POST",
 		 url: "website_code/php/properties/peer_template.php",
@@ -409,7 +391,7 @@ function peer_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelPeer');
 	 });
 }
 
@@ -447,81 +429,29 @@ function peer_tick_toggle(tag){
 	 */
 
 function peer_change_template(){
+	var peeron = $('#peeron').prop('checked') ? 'on' : 'off';
+	var pswd = peeron == 'on' ? ($('#password').val() != '' ? $('#password').val() : '') : '';
+	var email = pswd != '' ? ($('#retouremail').val() != '' ? ',' + $('#retouremail').val() : '') : '';
 
-	if(document.getElementById("peeron").src==site_url + "website_code/images/TickBoxOn.gif"){
-
-		if(document.peer.password.value!=""){
-			var extra = document.peer.password.value;
-			if (document.peer.retouremail.value!="")
-			{
-				extra += ",";
-				extra += document.peer.retouremail.value;
-			}
-			$.ajax({
-				type: "POST",
-				url: "website_code/php/properties/peer_change_template.php",
-				data: {
-					template_id: window.name,
-					peer_status: 'on',
-					extra: extra
-				}
-			})
-			.done(function (response) {
-				properties_stateChanged(response);
-			});
-
-		}else{
-			alert(PASSWORD_REMINDER);
-		}
-	}else{
+	if (peeron == 'on' && pswd == ''){
+		
+		alert(PASSWORD_REMINDER);
+		
+	} else {
 		$.ajax({
 			type: "POST",
 			url: "website_code/php/properties/peer_change_template.php",
 			data: {
 				template_id: window.name,
-				peer_status: 'off'
+				peer_status: peeron,
+				extra: pswd + email
 			}
 		})
 		.done(function (response) {
-			properties_stateChanged(response);
+			properties_stateChanged(response, 'panelPeer');
 		});
-	}
-}
-
-     /**
-	 *
-	 * Function rss tick toggle
- 	 * This function handles the ticking and unticking on the rss page
-	 * @param string tag = the tick image clicked on
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-function rss_tick_toggle(tag){
-
-	switch(tag){
-
-		case "rsson":document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
-			      document.getElementById("rssoff").src = "website_code/images/TickBoxOff.gif";
-			      break;
-		case "rssoff":document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
-			      document.getElementById("rsson").src = "website_code/images/TickBoxOff.gif";
-			      break;
-		case "exporton":document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
-			      document.getElementById("exportoff").src = "website_code/images/TickBoxOff.gif";
-			      break;
-		case "exportoff":document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
-			      document.getElementById("exporton").src = "website_code/images/TickBoxOff.gif";
-			      break;
-		case "syndon":document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
-			      document.getElementById("syndoff").src = "website_code/images/TickBoxOff.gif";
-			      break;
-		case "syndoff":document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
-			      document.getElementById("syndon").src = "website_code/images/TickBoxOff.gif";
-			      break;
 
 	}
-
 }
 
      /**
@@ -533,23 +463,10 @@ function rss_tick_toggle(tag){
 	 */
 
 function rss_change_template(){
-
-	var rssing = "false";
-	var exporting = "false";
-
-	if(document.getElementById("rsson").src==(site_url + "website_code/images/TickBoxOn.gif")){
-
-		rssing="true";
-
-	}
-
-	if(document.getElementById("exporton").src==(site_url + "website_code/images/TickBoxOn.gif")){
-
-		exporting="true";
-
-	}
-
-	var desc = document.getElementById("desc").value;
+	
+	var rssing = $('#rsson').prop('checked'),
+		exporting = $('#exporton').prop('checked'),
+		desc = document.getElementById("desc").value;
 
 	 $.ajax({
 		 type: "POST",
@@ -562,7 +479,7 @@ function rss_change_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelRss');
 	 });
 }
 
@@ -583,7 +500,7 @@ function xml_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelRss');
 	 });
 }
 
@@ -623,33 +540,21 @@ function xml_tick_toggle(tag){
 
 function xml_change_template(){
 
-	if(document.getElementById("xmlon").src==site_url + "website_code/images/TickBoxOn.gif"){
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/properties/xml_change_template.php",
-			data: {
-				template_id: window.name,
-				xml_status: 'on',
-				address: (document.xmlshare.sitename.value!="" ? document.xmlshare.sitename.value : 'null')
-			}
-		})
-		.done(function (response) {
-			properties_stateChanged(response);
-		});
-	}else {
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/properties/xml_change_template.php",
-			data: {
-				template_id: window.name,
-				xml_status: 'off',
-				address: 'null'
-			}
-		})
-		.done(function (response) {
-			properties_stateChanged(response);
-		});
-	}
+	var xmlon = $('#xmlon').prop('checked') ? 'on' : 'off';
+	var address = xmlon == 'on' ? ($('#sitename').val() != '' ? $('#sitename').val() : 'null') : 'null';
+
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/xml_change_template.php",
+		data: {
+			template_id: window.name,
+			xml_status: xmlon,
+			address: address
+		}
+	})
+	.done(function (response) {
+		properties_stateChanged(response, 'panelXml');
+	});
 }
 
      /**
@@ -670,28 +575,23 @@ function properties_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelProject');
 	 });
 }
 
-function default_engine_toggle(tag, engine1, engine2)
+function default_engine_toggle(type)
 {
-    var engine = engine1;
-    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 )
-	{
-		engine = engine2;
-	}
 	$.ajax({
 		type: "POST",
 		url: "website_code/php/properties/properties_default_engine.php",
 		data: {
 			template_id: window.name,
-			engine: engine,
+			engine: $('input[name="engine"]:checked').attr('id'),
 			page:'properties'
 		}
 	})
 	.done(function (response) {
-		properties_stateChanged(response);
+		properties_stateChanged(response, 'panelProject');
 	});
 }
 
@@ -712,7 +612,7 @@ function publish_engine_toggle(tag, engine1, engine2)
 		}
 	})
 	.done(function (response) {
-		properties_stateChanged(response);
+		properties_stateChanged(response, 'panelProject');
 	});
 }
 
@@ -736,7 +636,7 @@ function name_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelProject');
 	 });
 }
 
@@ -757,7 +657,7 @@ function notes_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelNotes');
 	 });
 }
 
@@ -784,7 +684,7 @@ function change_notes(template_id, form_tag){
 		}
 	})
 	.done(function (response) {
-		properties_stateChanged(response);
+		properties_stateChanged(response, 'panelNotes');
 	});
 }
 
@@ -893,7 +793,7 @@ function media_and_quota_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelMedia');
 	 });
 }
 
@@ -909,7 +809,7 @@ function media_and_quota_template(){
 
 function rename_template(template_id,form_tag){
 
-	new_name = document.getElementById(form_tag).childNodes[0].value;
+	new_name = document.getElementById(form_tag).childNodes[1].value;
 
 	if(is_ok_name(new_name)){
 		$.ajax({
@@ -945,7 +845,7 @@ function access_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelAccess');
 	 });
 }
 
@@ -959,30 +859,8 @@ function access_template(){
 	 */
 
 function access_change_template(template_id){
-
-	path = site_url;
-
-	z = document.getElementById('security_list').childNodes.length;
-
-	x=0;
-
-	access_value="";
-
-	while(x!=z){
-
-		if(document.getElementById('security_list').childNodes[x].id!=""){
-
-			if(document.getElementById('security_list').childNodes[x].childNodes[0].src== path + "website_code/images/TickBoxOn.gif"){
-
-				access_value = document.getElementById('security_list').childNodes[x].id;
-
-			}
-
-		}
-
-		x++;
-
-	}
+	
+	var access_value = $('#security_list').find('input:checked').attr('value');
 
 	if(access_value=="Other"&&document.getElementById('url').value==""){
 
@@ -995,8 +873,18 @@ function access_change_template(template_id){
 				access: access_value,
 				server_string: document.getElementById('url').value
 			};
-		}
-		else {
+		} else if (access_value=="PasswordPlay") {
+			var pwd = document.getElementById('pwd').value;;
+			if (pwd == null || pwd == "") {
+				alert(PASSWORD_REMINDER);
+				return;
+			}
+			var data = {
+				template_id: template_id,
+				access: access_value,
+				password: document.getElementById('pwd').value
+			};
+		} else {
 			var data = {
 				template_id: template_id,
 				access: access_value
@@ -1008,7 +896,7 @@ function access_change_template(template_id){
 			data: data
 		})
 		.done(function (response) {
-			properties_stateChanged(response);
+			properties_stateChanged(response, 'panelAccess');
 		});
 	}
 }
@@ -1059,7 +947,8 @@ function access_tick_toggle(imagepath){
 	 */
 
 function gift_stateChanged(response){
-	document.getElementById('dynamic_area').innerHTML = response;
+	
+	document.getElementById('area3').innerHTML = response;
 
 	if(typeof window_reference==="undefined"){
 		window.opener.refresh_workspace();
@@ -1081,6 +970,7 @@ function gift_stateChanged(response){
 	 */
 
 function gift_this_template(tutorial_id, user_id, action){
+	
 	 $.ajax({
 		 type: "POST",
 		 url: "website_code/php/properties/gift_this_template.php",
@@ -1105,13 +995,14 @@ function gift_this_template(tutorial_id, user_id, action){
 	 */
 
 function name_select_gift_template(){
-	debugger;
+	
 	if(setup_ajax()!=false){
 
-		search_string = document.getElementById('share_form').childNodes[0].value;
+		search_string = document.getElementById('searcharea').value;
 
 		if(search_string==""){
 			document.getElementById('area2').innerHTML="<p>Names will appear here</p>";
+			document.getElementById('area3').innerHTML="";
 		}
 
 		if(is_ok_user(search_string)){
@@ -1125,10 +1016,12 @@ function name_select_gift_template(){
 			})
 			.done(function (response) {
 				$('#area2').html(response);
+				$('#area3').html("");
 			});
 		}else{
 
 			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
+			$('#area3').html("");
 		}
 	}
 }
@@ -1142,10 +1035,9 @@ function name_select_gift_template(){
 	 */
 
 function name_select_template(){
-	debugger
 	if(setup_ajax()!=false){
 
-		search_string = document.getElementById('share_form').childNodes[0].value;
+		search_string = document.getElementById('searcharea').value;
 
 		if(search_string==""){
 			document.getElementById('area2').innerHTML="<p>" + NAMES_APPEAR + "</p>";
@@ -1186,7 +1078,7 @@ function gift_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelGive');
 	 });
 }
 
@@ -1240,7 +1132,7 @@ function sharing_status_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		 properties_stateChanged(response, 'panelShare');
 	 });
 }
 
@@ -1261,7 +1153,7 @@ function group_sharing_status_template(){
 		}
 	})
 	.done(function (response) {
-		properties_stateChanged(response);
+		properties_stateChanged(response, 'panelShare');
 	});
 }
 
@@ -1306,7 +1198,7 @@ function export_template(){
 		 }
 	 })
 	 .done(function (response) {
-		 properties_stateChanged(response);
+		properties_stateChanged(response, 'panelExport');
 	 });
 }
 
@@ -1319,7 +1211,7 @@ function tsugi_template(){
 		}
 	})
 	.done(function (response) {
-		document.getElementById('dynamic_area').innerHTML=response;
+		properties_stateChanged(response, 'panelLti');
 		showOptions();
 	});
 }
@@ -1356,7 +1248,10 @@ function showOptions() {
 	 * @author Patrick Lockley
 	 */
 
-function set_sharing_rights_template(role, template, id, group=false){
+function set_sharing_rights_template(template, id, group){
+	
+	var idPrefix = group == true ? 'groupRole' : 'role';
+	var role = document.getElementById(idPrefix + '_' + id).value.split('_')[0];
 
 	 if(setup_ajax()!=false){
 		 $.ajax({
@@ -1370,13 +1265,11 @@ function set_sharing_rights_template(role, template, id, group=false){
 			 },
 		 })
 			 .done(function(response){
-				 //$('#area3').html(response);
+				 $('#area3').html(response);
 				 sharing_status_template()
 			 });
 	 }
 }
-
-var last_selected=null;
 
      /**
 	 *
@@ -1387,39 +1280,13 @@ var last_selected=null;
 	 * @author Patrick Lockley
 	 */
 
-function tab_highlight(id){
+function tabClicked(tab){
+	
+	$("#tabs button:not(#" + tab + ")").attr("aria-selected", "false");
+	$("#tabs button:not(#" + tab + ")").removeClass("tabSelected");
+	$("#tabs button#" + tab).attr("aria-selected", "true");
+	$("#tabs button#" + tab).addClass("tabSelected");
 
-
-	document.getElementById("tab"+id).className = "tab_selected";
-
-	if((last_selected!=null)&&(last_selected!=id)){
-		document.getElementById("tab" + last_selected).className = "tab";
-	}
-
-	last_selected = id;
-
-}
-
-function export_engine_toggle(tag){
-    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 ){
-        document.getElementById(tag).src = "website_code/images/TickBoxOff.gif";
-    }
-    else
-    {
-        document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
-    }
-}
-
-function export_use_engine(tag)
-{
-    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0)
-    {
-        return 'true';
-    }
-    else
-    {
-        return 'false';
-    }
 }
 
 function property_tab_download(id,html5_tag, flash_tag, url)
@@ -1427,14 +1294,19 @@ function property_tab_download(id,html5_tag, flash_tag, url)
     var ifrm = document.getElementById(id);
     var export_html5_engine="";
     var export_flash_engine="";
-    if (html5_tag.length>0) {
-        export_html5_engine = export_use_engine(html5_tag);
-    }
-    if(flash_tag.length>0) {
-        export_flash_engine = export_use_engine(flash_tag);
-    }
-    var urlparams = url.indexOf('?') !== false;
-    ifrm.src = url + (urlparams ? '&' : '?') + 'html5='+export_html5_engine+'&flash='+export_flash_engine;
+	
+	if ($('input[name="exportEngine"]:checked').length > 0) {
+		if (html5_tag.length>0) {
+			export_html5_engine = $('input[name="exportEngine"]:checked').attr('id') == html5_tag;
+		}
+		if(flash_tag.length>0) {
+			
+			export_flash_engine = $('input[name="exportEngine"]:checked').attr('id') == flash_tag;
+		}
+	}
+	
+	var urlparams = url.indexOf('?') !== false;
+	ifrm.src = url + (urlparams ? '&' : '?') + 'html5='+export_html5_engine+'&flash='+export_flash_engine;
 }
 
 
@@ -1446,9 +1318,11 @@ function property_tab_file_download(id, url)
 
 function setup_download_link(path, buttonlbl, file)
 {
-    var button = '<button type="button" class="xerte_button" onclick="property_tab_file_download(\'download_frame\', \'getfile.php?file=' + file + '\')">' + buttonlbl +  '</button>';
-    document.getElementById('linktext').value=path;
-    document.getElementById('download_link').innerHTML=button;
+	var lbContents = "<textarea name='linktext' id='linktext' readonly='' rows='3' cols='80' onfocus='this.select()' class='indent'>" + path + "</textarea>";
+	lbContents += "<p style='margin:0px; padding:0px; margin-left:10px;' id='download_link'>";
+	lbContents += "<button type='button' class='xerte_button' onclick='property_tab_file_download(\"download_frame\", \"getfile.php?file=" + file + "\")'><i class='fa fa-download'></i> " + buttonlbl +  "</button>";
+	lbContents += "</p>";
+	$.featherlight($(lbContents));
 }
 
 
@@ -1470,11 +1344,13 @@ function lti_update(id) {
 			tsugi_xapi_username: $("[name=tsugi_xapi_username]").val(),
 			tsugi_xapi_password: $("[name=tsugi_xapi_password]").val(),
 			dashboard_urls: $("[name=dashboard_urls]").val(),
-			tsugi_xapi_student_id_mode: $("[name=tsugi_xapi_student_id_mode]").val()
+			tsugi_xapi_student_id_mode: $("[name=tsugi_xapi_student_id_mode]").val(),
+			tsugi_publish_in_store: $("[name=tsugi_publish_in_store]").prop('checked'),
+			tsugi_publish_dashboard_in_store: $("[name=tsugi_publish_dashboard_in_store]").prop('checked')
 		}
 	})
 	.done(function (response) {
-		document.getElementById('dynamic_area').innerHTML = response;
+		document.getElementById('panelLti').innerHTML = response;
 		showOptions();
 	});
 }
@@ -1482,24 +1358,27 @@ function lti_update(id) {
 function xapi_toggle_useglobal(lti_def_str)
 {
 	var useglobal = $("#tsugi_xapi_useglobal").prop('checked');
-	var lti_def = JSON.parse(lti_def_str);
-	$("#tsugi_xapi_useglobal").prop('checked', useglobal);
 	if (useglobal) {
-        $("#tsugi_xapi_endpoint").val("").prop('disabled', true);
-        $("#tsugi_xapi_username").val("").prop('disabled', true);
-        $("#tsugi_xapi_password").val("").prop('disabled', true);
-    }
-    else {
-        $("#tsugi_xapi_endpoint").val(lti_def['xapi_endpoint']).prop('disabled', false);
-        $("#tsugi_xapi_username").val(lti_def['xapi_username']).prop('disabled', false);
-        $("#tsugi_xapi_password").val(lti_def['xapi_password']).prop('disabled', false);
-
+		$("#tsugi_xapi_endpoint").val("").prop('disabled', true);
+		$("#endpoint").addClass('disabled');
+		$("#tsugi_xapi_username").val("").prop('disabled', true);
+		$("#username").addClass('disabled');
+		$("#tsugi_xapi_password").val("").prop('disabled', true);
+		$("#password").addClass('disabled');
+	} else {
+		$("#tsugi_xapi_endpoint").val("").prop('disabled', false);
+		$("#endpoint").removeClass('disabled');
+		$("#tsugi_xapi_username").val("").prop('disabled', false);
+		$("#username").removeClass('disabled');
+		$("#tsugi_xapi_password").val("").prop('disabled', false);
+		$("#password").removeClass('disabled');
 	}
 }
 
 function tsugi_toggle_tsugi_publish(lti_def_str)
 {
 	var published = $("#pubChk").prop('checked');
+	var xapi = $("#xChk").prop('checked');
 	var useglobal = $("#tsugi_useglobal").prop('checked');
 	var lti_def = JSON.parse(lti_def_str);
 	if (published) {
@@ -1510,33 +1389,81 @@ function tsugi_toggle_tsugi_publish(lti_def_str)
 			$("label[for=tsugi_useprivateonly]").addClass("disabled");
 			$("#tsugi_title").val("").prop('disabled', true);
 			$("#tsugi_key").val("").prop('disabled', true);
+			$("label[for=tsugi_key]").addClass("disabled");
 			$("#tsugi_secret").val("").prop('disabled', true);
+			$("label[for=tsugi_secret]").addClass("disabled");
+		}
+		else
+		{
+			$("#tsugi_useprivateonly").prop('disabled', false);
+			$("label[for=tsugi_useprivateonly]").removeClass("disabled");
+			$("#tsugi_title").val(lti_def['title']).prop('disabled', false);
+			$("#tsugi_key").val(lti_def['key']).prop('disabled', false);
+			$("label[for=tsugi_key]").removeClass("disabled");
+			$("#tsugi_secret").val(lti_def['secret']).prop('disabled', false);
+			$("label[for=tsugi_secret]").removeClass("disabled");
 		}
 	}
 	else {
 		$("#publish").addClass("disabled");
 		$("#publish input").prop("disabled", true);
 	}
+	// Set state of publish in dashboard
+	if (published && xapi) {
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', false);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', false);
+		$("#xApi_dashboard").removeClass("disabled");
+	}
+	else
+	{
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', true);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', true);
+		$("#xApi_dashboard").addClass("disabled");
+	}
 }
 
 function tsugi_toggle_usexapi(lti_def_str)
 {
 	var xapi = $("#xChk").prop('checked');
+	var published = $("#pubChk").prop('checked');
 	var useglobal = $("#tsugi_xapi_useglobal").prop('checked');
 	var lti_def = JSON.parse(lti_def_str);
 
 	if (xapi) {
-		$("#xApi").removeClass("disabled");
-		$("#xApi input, #xApi select").prop("disabled", false);
+		$("#xApi, #xAPI_enabled, #studentid").removeClass("disabled");
+		$("#xAPI_enabled input, #xAPI_enabled select").prop("disabled", false);
 		if (useglobal) {
 			$("#tsugi_xapi_endpoint").val("").prop('disabled', true);
+			$("#endpoint").addClass('disabled');
 			$("#tsugi_xapi_username").val("").prop('disabled', true);
+			$("#username").addClass('disabled');
 			$("#tsugi_xapi_password").val("").prop('disabled', true);
+			$("#password").addClass('disabled');
+		} else {
+			$("#tsugi_xapi_endpoint").val("").prop('disabled', false);
+			$("#endpoint").removeClass('disabled');
+			$("#tsugi_xapi_username").val("").prop('disabled', false);
+			$("#username").removeClass('disabled');
+			$("#tsugi_xapi_password").val("").prop('disabled', false);
+			$("#password").removeClass('disabled');
 		}
 	}
 	else {
-		$("#xApi").addClass("disabled");
-		$("#xApi input, #xApi select").prop("disabled", true);
+		$("#xApi, #xAPI_enabled, #studentid").addClass("disabled");
+		$("#xAPI_enabled input, #xAPI_enabled select").prop("disabled", true);
+		// ** should some of the 
+	}
+	// Set state of publish in dashboard
+	if (published && xapi) {
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', false);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', false);
+		$("#xApi_dashboard").removeClass("disabled");
+	}
+	else
+	{
+		$("#tsugi_publish_dashboard_in_store").prop('disabled', true);
+		$("label[for=tsugi_publish_dashboard_in_store]").prop('disabled', true);
+		$("#xApi_dashboard").addClass("disabled");
 	}
 }
 
@@ -1544,21 +1471,24 @@ function tsugi_toggle_useglobal(lti_def_str)
 {
 	var useglobal = $("#tsugi_useglobal").prop('checked');
 	var lti_def = JSON.parse(lti_def_str);
-	$("#tsugi_useglobal").prop('checked', useglobal);
 	if (useglobal) {
 		$("#tsugi_useprivateonly").prop('disabled', true);
 		$("label[for=tsugi_useprivateonly]").addClass("disabled");
 		$("#tsugi_title").val("").prop('disabled', true);
 		$("#tsugi_key").val("").prop('disabled', true);
+		$("label[for=tsugi_key]").addClass("disabled");
 		$("#tsugi_secret").val("").prop('disabled', true);
+		$("label[for=tsugi_secret]").addClass("disabled");
 	}
-	else {
+	else
+	{
 		$("#tsugi_useprivateonly").prop('disabled', false);
 		$("label[for=tsugi_useprivateonly]").removeClass("disabled");
 		$("#tsugi_title").val(lti_def['title']).prop('disabled', false);
 		$("#tsugi_key").val(lti_def['key']).prop('disabled', false);
+		$("label[for=tsugi_key]").removeClass("disabled");
 		$("#tsugi_secret").val(lti_def['secret']).prop('disabled', false);
-
+		$("label[for=tsugi_secret]").removeClass("disabled");
 	}
 }
 

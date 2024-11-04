@@ -176,12 +176,14 @@
 		<Buttons>
 			<Rectangle>Rectangle mode</Rectangle>
 			<Polygon>Polygon mode</Polygon>
+			<Icon>Icon mode</Icon>
 			<Reset>Reset</Reset>
 		</Buttons>
 		<Instructions>
 			<header>Hotspot instructions:</header>
 			<rectangle>Draw a rectangle by pressing the left mouse button and dragging.</rectangle>
 			<polygon>Click to add points to the polygon. Click the first (red) point to stop.</polygon>
+			<icon>Click to place an icon.</icon>>
 			<reset>Press the &#8634; reset button to start over.</reset>
 			<edit>The hotspot can be moved and changed by clicking on it.</edit>
 			<save>To save your selection, click the &#9745; Ok button. If you want to go back without saving, click the &#9746; cancel button.</save>
@@ -239,9 +241,9 @@
 		<errorEmpty>Add data to {x} first</errorEmpty>
 	</categoryList>
 	<UploadCSV>
-		<UploadCSVBtn label = "Upload csv"/>
+		<UploadCSVBtn label = "Upload CSV"/>
 		<Info label = "Warning: This will overwrite the current table, are you sure?"> </Info>
 		<Info2 label = "Warning: This will add the new table to the current table, are you sure? Please note that there might be duplicate entries after merge."> </Info2>
-		<mergeOld label = "Keep the old table when importing a csv file:"/>
+		<mergeOld label = "Keep the old table when importing a CSV file:"/>
 	</UploadCSV>>
 </language>

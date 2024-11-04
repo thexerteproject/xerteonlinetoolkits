@@ -113,14 +113,19 @@ else {
 
 
 if(!$magic_quotes){
-    $import_path = addslashes($_POST['import_path']);
+    $import_path = addslashes(x_clean_input($_POST['import_path']));
 }else{
-    $import_path = $_POST['import_path'];
+    $import_path = x_clean_input($_POST['import_path']);
 }
 
-$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=\"" . str_replace("\\\\","/",$import_path) . "\" where site_id=\"1\"";	
+// Check whether $import_path is a path
+if (!is_dir($import_path)) {
+    $fail_string .= "The import path is not a valid directory<br>";
+}
 
-$query_response = db_query($query);
+$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=? where site_id=\"1\"";
+
+$query_response = db_query($query, array(str_replace("\\\\","/",$import_path)));
 
 if($query_response === false){
     $fail_string .= "The sitedetails import_path query " . $query . " has failed.<br>";
@@ -129,33 +134,38 @@ if($query_response === false){
 }
 
 if(!$magic_quotes){
-    $root_path = addslashes($_POST['root_file_path']);
+    $root_path = x_clean_input($_POST['root_file_path']);
 }else{
-    $root_path = $_POST['root_file_path'];
+    $root_path = x_clean_input($_POST['root_file_path']);
 
 }
 
-$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set root_file_path='" . str_replace("\\\\","/",$root_path) . "' where site_id=\"1\"";	
-$query_response = db_query($query);
+// Check whether $root_path is a path
+if (!is_dir($root_path)) {
+    $fail_string .= "The root path is not a valid directory<br>";
+}
+
+$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set root_file_path=? where site_id=\"1\"";
+$query_response = db_query($query, array(str_replace("\\\\","/",$root_path)));
 
 if($query_response === false){
-    $fail_string .= "The sitedetails root_file_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+    $fail_string .= "The sitedetails root_file_path query " . $query . " has failed.<br>";
 }else{
     $success_string .= "The sitedetails root_file_path query succeeded <br>";
 
 }
 
 if(!$magic_quotes){
-    $clamav_path = addslashes($_POST['clamav_cmd']);
+    $clamav_path = addslashes(x_clean_input($_POST['clamav_cmd']));
 }else{
-    $clamav_path = $_POST['clamav_cmd'];
+    $clamav_path = x_clean_input($_POST['clamav_cmd']);
 }
 
-$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set clamav_cmd='" . str_replace("\\\\","/",$clamav_path) . "' where site_id=\"1\"";	
-$query_response = db_query($query);
+$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set clamav_cmd=? where site_id=\"1\"";
+$query_response = db_query($query, array(str_replace("\\\\","/",$clamav_path)));
 
 if($query_response === false){
-    $fail_string .= "The sitedetails clamav_cmd query " . $query . " has failed due to " . mysql_error() . "<br>";
+    $fail_string .= "The sitedetails clamav_cmd query " . $query . " has failed.<br>";
 }else{
     $success_string .= "The sitedetails clamav_cmd query succeeded <br>";
 }
@@ -194,7 +204,7 @@ if($success_string!=""){
 }
 
 ?>
-<p> Your site URL is  <a href="http://<?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?></a> </p>
+<p> Your site URL is  <a href="http://<?php echo x_clean_input($_SERVER['HTTP_HOST']) . substr(x_clean_input($_SERVER['PHP_SELF']),0,strlen(x_clean_input($_SERVER['PHP_SELF']))-15); ?>"><?php echo x_clean_input($_SERVER['HTTP_HOST']) . substr(x_clean_input($_SERVER['PHP_SELF']),0,strlen(x_clean_input($_SERVER['PHP_SELF']))-15); ?></a> </p>
 
 <h2>Security Warning</h2>
 <p><strong><u>If you have installed this on a public facing server, ensure you delete the following:<br/>
@@ -211,7 +221,7 @@ if($success_string!=""){
 
 <h2>Register!</h2>
 <p>Please register your site to receive valuable notifications regarding Xerte Online Toolkits. You can find the registration button in the management page:
-    <a href="http://<?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "management.php?register"; ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "management.php"; ?></a></p>
+    <a href="http://<?php echo x_clean_input($_SERVER['HTTP_HOST']) . substr(x_clean_input($_SERVER['PHP_SELF']),0,strlen(x_clean_input($_SERVER['PHP_SELF']))-15) . "management.php?register"; ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "management.php"; ?></a></p>
 
 <h2>Need more help?</h2>
 <p>Please see the Xerte Community site at <a href="http://www.xerte.org.uk" target="new">http://www.xerte.org.uk</a> and please consider joining the forum.</p>

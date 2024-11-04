@@ -154,7 +154,7 @@ var EDITOR = (function ($, parent) {
                         {
                             name: language.btnMerge.$label,
                             tooltip: language.btnMerge.$tooltip,
-                            imgicon: 'editor/img/mergeIcon.svg',
+                            icon: 'fa-file-import',
                             id: 'merge_button',
                             click: refresh_workspaceMerge
                         },
@@ -199,7 +199,7 @@ var EDITOR = (function ($, parent) {
                         }
                     ]
             }
-            if (simple_mode) {
+            if (simple_mode && !disable_advanced) {
                 if (advanced_mode) {
                     button_def.push({
                         name: language.btnAdvanced.$label_off,
@@ -368,7 +368,7 @@ var EDITOR = (function ($, parent) {
                 window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
             }
         })
-        .fail(function() {
+        .fail(function(data, status, error) {
             $('#loader').hide();
 			// alert from play button click
 			var sessionError = language.Alert.sessionError;
@@ -538,7 +538,7 @@ var EDITOR = (function ($, parent) {
         var passwordIcon = toolbox.getExtraTreeIcon(key, "password", lo_data[key].attributes.password != undefined && lo_data[key].attributes.password != '');
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
-		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && !disable_advanced && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
         // Be careful. You cannot just find $("#" + current_node.id + "_text").html(), because if the node is collapsed this will return undefined!
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
@@ -836,7 +836,7 @@ var EDITOR = (function ($, parent) {
             if (node_label.length > 0 && !node_options['cdata']) {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
             }
-			
+
 			getGroups(node_options['normal']);
 
             // The rest of the normal params
@@ -895,10 +895,10 @@ var EDITOR = (function ($, parent) {
                 .attr('alt', 'Flash only attribute');
             var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
             var tooltipavailable = '<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>';
-			
+
 			getGroups(node_options['optional']);
 			
-            // Determine whether optional properties are used and if they are visble according to their condition
+            // Determine whether optional properties are used and if they are visible according to their condition
             // is optional property (or any children of group) already in project?
             for (var i = 0; i < node_options['optional'].length; i++) {
                 var found = [];
@@ -956,7 +956,6 @@ var EDITOR = (function ($, parent) {
 										for (var j = 0; j < data.children.length; j++) {
 											if (!data.children[j].value.deprecated) {
 												var load = (j == data.children.length - 1);
-												
 												if (data.children[j].value.children != undefined) {
 													// nested group
 													var temp = data.children[j].value;
@@ -1070,9 +1069,7 @@ var EDITOR = (function ($, parent) {
                             toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
                         }
                     } else {
-						
                         if (node_options['optional'][i].visible) {
-							
 							groupSetUp(node_options['optional'][i], attributes, node_options, key);
 							
                         }
@@ -1340,12 +1337,17 @@ var EDITOR = (function ($, parent) {
 	{
 		var found = [];
 		var groupChildren = group.value.children;
-		for (var j = 0; j < groupChildren.length; j++) {
-			var child_value = toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key);
-			found.push(child_value.found);
-		}
-		
-		return found;
+        for (var j = 0; j < groupChildren.length; j++) {
+            if (groupChildren[j].value.type == 'group') {
+                // it's a nested group so check inside this too
+                $.merge(found,checkGroupFound(groupChildren[j], attributes, node_options, key));
+            } else {
+                var child_value = toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key);
+                found.push(child_value.found);
+            }
+        }
+
+        return found;
 	}
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
@@ -1388,7 +1390,7 @@ var EDITOR = (function ($, parent) {
         var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
         var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
         var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
-		var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
+		var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && !disable_advanced && template_sub_pages.indexOf(nodeName) == -1);
 
         var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {

@@ -86,17 +86,34 @@ if(empty($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     die("Invalid template id");
 }
 
-$template_id = (int) $_GET['template_id'];
+$template_id = (int) x_clean_input($_GET['template_id'], 'numeric');
 
 $query_to_check_peer = "select * from " . $xerte_toolkits_site->database_table_prefix . "additional_sharing where sharing_type=\"peer\" and template_id=\"" . $template_id . "\"";
 
 $query_for_peer_response = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}additional_sharing WHERE sharing_type = ? AND template_id = ?", array('peer', $template_id));
 
+
+$prefix =  $xerte_toolkits_site->database_table_prefix ;
+$query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
+
+$row_access = db_query_one($query_for_template_access, [$template_id]);
+
+if($row_access !== false){
+    $extra = explode("," , $query_for_peer_response['extra'],2);
+
+    $password = $extra[0];
+	//$pos = strpos($row_access['access_to_whom'], "-");
+
+	//if($pos !== false){
+	//	$password = substr($row_access['access_to_whom'], $pos+1);
+	//}
+}
+
 /**
  *  The number of rows being not equal to 0, indicates peer review has been set up.
  */
 
-if(!empty($query_for_peer_response)) {
+if(!empty($query_for_peer_response) || isset($password)) {
 
     $query_for_play_content = "select otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags";
     $query_for_play_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
@@ -118,7 +135,6 @@ if(!empty($query_for_peer_response)) {
          */
         $extra = explode("," , $query_for_peer_response['extra'],2);
 
-        $passwd = $extra[0];
         if (count($extra) > 1)
         {
             $retouremail = $extra[1];
@@ -133,7 +149,7 @@ if(!empty($query_for_peer_response)) {
 
         }
 
-        if($_POST['password'] == $passwd) {
+        if($_POST['password'] == $password) {
 
             /**
              *  Output the code

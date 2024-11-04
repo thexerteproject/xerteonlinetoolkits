@@ -96,9 +96,9 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
     public function login($username, $password)
     {
         global $xerte_toolkits_site;
-        $spassword = $this->_hashAndSalt($username, $password);
-        $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user WHERE username = ? AND password = ?", array($username, $spassword));
-        if (!empty($row)) {
+        $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user WHERE username = ?", array($username));
+        $password_ok = $this->_checkPassword($username, $password, $row['password']);
+        if ($password_ok) {
             $this->_record = $row;
             return true;
         }
@@ -109,12 +109,52 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
      * Return salted value of the user's password - this is what we'll store in the DB.
      * @param type $username (you might change this to store a unique salt against each user!).
      * @param type $password
+     * @param type $salt if null, create a new ed password with password_hash, if $salt is the old salt value ('stablehorseboltapple')
+     *
      * @return type string sha1'ed password.
      */
     private function _hashAndSalt($username, $password)
     {
-        // well, it's better than no salt!
-        return sha1("stablehorseboltapple" . $username . $password);
+        // New way of storing password
+        return password_hash($username . $password, PASSWORD_BCRYPT);
+    }
+
+    private function _checkPassword($username, $password, $hash)
+    {
+        if (password_verify($username . $password, $hash)) {
+            return true;
+        }
+        else
+        {
+            // Check for old password
+            if ($hash == sha1("stablehorseboltapple" . $username . $password))
+            {
+                // Check length of password field in database
+                $sql = "show columns from {$xerte_toolkits_site->database_table_prefix}user where field='password'";
+                $res = db_query_one($sql);
+
+                if ($res['Type'] != 'varchar(60)')
+                {
+                    // Update password field to new length
+                    $sql = "alter table {$xerte_toolkits_site->database_table_prefix}user modify password varchar(60)";
+                    $res = db_query($sql);
+                    if ($res === false)
+                    {
+                        return false;
+                    }
+                }
+
+                // Update password to new hash
+                $newhash = $this->_hashAndSalt($username, $password);
+                global $xerte_toolkits_site;
+                $query="update {$xerte_toolkits_site->database_table_prefix}user set password=? where username=?";
+                $params = array($newhash, $username);
+                $res = db_query($query, $params);
+                if ($res !== false)
+                    return true;
+            }
+        }
+        return false;
     }
 
     public function canManageUser(&$jsscript)
@@ -272,7 +312,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         }
         if (strlen($passwd) > 0)
         {
-            $spassword = $this->_hashAndSalt($username, $passwd);
+            $password = $this->_hashAndSalt($username, $passwd);
             if (strlen($set) > 0)
                 $set .= ", ";
             $set .= "password=?";

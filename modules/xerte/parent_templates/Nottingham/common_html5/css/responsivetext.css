@@ -138,7 +138,7 @@
 
   #targetHolder .target {
     font-size: 2vmin;
-    padding: 0.6vmin !important;
+    /*padding: 0.6vmin !important;*/
   }
 
   #targetHolder p {
@@ -149,7 +149,7 @@
     font-size: 2vmin;
   }
 
-  .featherlight input, .featherlight label {
+  .featherlight input, .featherlight label, .featherlight select {
     font-size: 2.5vmin;
   }
 
@@ -261,11 +261,11 @@
     font-size: 2vmin;
   }
 
-  #thumbBar #thumbHolder .thumbBox h3 {
+  #thumbBar #thumbHolder .thumbBox h3, #thumbBar #thumbHolder .thumbBox .thumbTitle {
     font-size: 2vmin;
   }
 
-  #thumbBar.large #thumbHolder .thumbBox h3 {
+  #thumbBar.large #thumbHolder .thumbBox h3, #thumbBar.large #thumbHolder .thumbBox .thumbTitle {
     font-size: 2.5vmin;
   }
 
@@ -273,20 +273,24 @@
     font-size: 2.5vmin;
   }
 
-  #thumbHolder .playAll h3 {
+  #thumbHolder .playAll .thumbTitle {
     font-size: 5.2vmin !important;
   }
 
-  #thumbBar.small #thumbHolder .playAll h3 {
+  #thumbBar.small #thumbHolder .playAll .thumbTitle {
     font-size: 3.1vmin !important;
   }
 
-  #thumbBar.large #thumbHolder .playAll h3 {
+  #thumbBar.large #thumbHolder .playAll .thumbTitle {
     font-size: 7.5vmin !important;
   }
 
   #x_glossaryHover, .splitScreen .tip {
     font-size: 2vmin;
+  }
+
+  .fa.fa-x-tick, .fa.fa-x-cross {
+    font-size: 2.5vmin;
   }
 }
 @media only screen and (max-width: 500px) {

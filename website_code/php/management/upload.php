@@ -7,11 +7,13 @@
  */
 include ('../xmlInspector.php');
 
-require_once("../../../config.php");
-require_once("../user_library.php");
+#require_once("../../../config.php");
+#require_once("../user_library.php");
 
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+require_once("../folder_library.php");
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 _load_language_file("/website_code/php/management/upload.inc");
 
@@ -34,7 +36,7 @@ function cleardir($src) {
     closedir($dir);
 }
 
-if (!is_user_admin())
+if (!is_user_permitted("templateadmin"))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
@@ -47,12 +49,12 @@ if($_FILES['fileToUpload']['error'] == 4)
 
 if($_FILES["fileToUpload"]["name"])
 {
-    $filename =  $_FILES["fileToUpload"]["name"];
-    $filename_parts = explode(".", $_FILES["fileToUpload"]["name"]);
+    $filename =  x_clean_input($_FILES["fileToUpload"]["name"]);
+    $filename_parts = explode(".", $filename);
 
     if (isset($_POST["templateName"]) && $_POST["templateName"] != "")
     {
-        $name = $_POST['templateName'];
+        $name = x_clean_input($_POST['templateName']);
     }
     else
     {
@@ -63,7 +65,7 @@ if($_FILES["fileToUpload"]["name"])
 
     if (isset($_POST["templateDisplayname"]) && $_POST["templateDisplayname"] != "")
     {
-        $displayname = $_POST["templateDisplayname"];
+        $displayname = x_clean_input($_POST["templateDisplayname"]);
     }
     else
     {
@@ -71,7 +73,7 @@ if($_FILES["fileToUpload"]["name"])
     }
     if (isset($_POST["templateDescription"]) && $_POST["templateDescription"] != "")
         {
-        $description = $_POST["templateDescription"];
+        $description = x_clean_input($_POST["templateDescription"]);
     }
     else
     {
@@ -79,6 +81,7 @@ if($_FILES["fileToUpload"]["name"])
     }
 
     $source = $_FILES["fileToUpload"]["tmp_name"];
+    x_check_path_traversal_newpath($source, null, "Invalid file specified");
     $temp_loc = dirname($source);
     $type = $_FILES["fileToUpload"]["type"];
     $importpath = $xerte_toolkits_site->import_path . $name . "/";
@@ -99,6 +102,8 @@ if($_FILES["fileToUpload"]["name"])
     {
         $zip = new ZipArchive();
         $x = $zip->open($importfile);
+
+        x_check_zip($zip);
 
         $templateFound = false;
         $mediaFound = false;
@@ -272,24 +277,6 @@ function returnParentObject($targetFolder)
 
 }
 
-function rrmdir($src) {
-    if ($src != "") {
-        $dir = opendir($src);
-        while (false !== ($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
-                $full = $src . '/' . $file;
-                if (is_dir($full)) {
-                    rrmdir($full);
-                } else {
-                    unlink($full);
-                }
-            }
-        }
-        closedir($dir);
-        rmdir($src);
-    }
-}
-
 function returnInfoFile($parentTemplateFramework, $parentTemplateName)
 {
     global $xerte_toolkits_site;
@@ -330,22 +317,10 @@ function editInfoFile($infoContents, $displayName, $description)
 
 function createInfoFile($dir, $templateName, $content)
 {
+    x_check_path_traversal_newpath($dir . $templateName . DIRECTORY_SEPARATOR . $templateName . ".info");
     $file = fopen($dir . $templateName . DIRECTORY_SEPARATOR . $templateName . ".info" , 'w');
     fwrite($file, $content);
     fclose($file);
-}
-
-function deleteZip($dir, $templateName)
-{
-    $files = glob($dir . '*');
-
-    foreach($files as $file)
-    {
-        if(strpos($file, $templateName . ".zip") !== false)
-        {
-            unlink($file);
-        }
-    }
 }
 
 function checkParent($templateName)
@@ -360,7 +335,7 @@ function checkParent($templateName)
 
     $row = db_query_one($query, $params);
 
-    if(strcasecmp($templateName, $row['parent_template']) === 0)
+    if($row != null && strcasecmp($templateName, $row['parent_template']) === 0)
     {
         return true;
     }

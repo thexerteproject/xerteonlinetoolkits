@@ -13,4 +13,4 @@
 
 	define("FOLDER_CONTENT_TEMPLATE_CONTENTS","Folder contents");
 
-    define("FOLDER_CONTENT_FAIL","Sorry you do not have rights to this folder");
+    define("FOLDER_CONTENT_FAIL","You do not have rights to this folder");

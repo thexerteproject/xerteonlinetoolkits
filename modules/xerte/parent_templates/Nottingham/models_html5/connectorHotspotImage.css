@@ -42,3 +42,44 @@
 	#audioHolder {
 		display: none;
 	}
+
+	div.hotspotIconHolder {
+	transform: translate(-50%, -50%);
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 32;
+	}
+
+	span.hotspotIcon {
+	z-index: 33;
+	border-style: solid;
+	cursor: pointer;
+	border-radius: 50%;
+	box-sizing: border-box;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	}
+
+	span.hotspotIcon.selected {
+		z-index: 36;
+		height: 110%;
+		width: 110%;
+	}
+
+	div.hotspot_bubble {
+	z-index: 34;
+	position: fixed;
+		overflow-y: auto;
+		word-wrap: break-word;
+	background: white;
+		border-radius: 10px;
+		border-color: black;
+		border-width: 1px;
+		border-style: solid;
+		padding: 8px;
+	}

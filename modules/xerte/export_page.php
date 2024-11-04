@@ -24,27 +24,27 @@
 
     if (get_default_engine($_POST['template_id']) == 'javascript')
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:export_engine_toggle('html5')\" /> " . XERTE_EXPORT_HTML5 . "</p>";
-        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:export_engine_toggle('flash')\" /> " . XERTE_EXPORT_FLASH . "</p>";
+		echo "<fieldset id=\"exportFS\" class=\"plainFS\"><legend>" . XERTE_EXPORT_INTERFACE . "</legend>";
+		echo "<div><input checked=\"true\" type=\"radio\" id=\"html5\" name=\"exportEngine\" value=\"html5\"><label for=\"html5\">" . XERTE_EXPORT_HTML5 . "</label></div>";
+		echo "<div><input type=\"radio\" id=\"flash\" name=\"exportEngine\" value=\"flash\"><label for=\"flash\">" . XERTE_EXPORT_FLASH . "</label></div>";
+		echo "</fieldset>";
     }
     else
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:export_engine_toggle('html5')\" /> " . XERTE_EXPORT_HTML5 . "</p>";
-        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:export_engine_toggle('flash')\" /> " . XERTE_EXPORT_FLASH . "</p>";
+        echo "<fieldset id=\"exportFS\" class=\"plainFS\"><legend>" . XERTE_EXPORT_INTERFACE . "</legend>";
+		echo "<div><input type=\"radio\" id=\"html5\" name=\"exportEngine\" value=\"html5\"><label for=\"html5\">" . XERTE_EXPORT_HTML5 . "</label></div>";
+		echo "<div><input checked=\"true\" type=\"radio\" id=\"flash\" name=\"exportEngine\" value=\"flash\"><label for=\"flash\">" . XERTE_EXPORT_FLASH . "</label></div>";
+		echo "</fieldset>";
     }
 
-    echo "<ol type='1'>";
-    echo "<li>" . XERTE_EXPORT_ZIP . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_LINK . "</button></li></ul></li><br />";
-    echo "<li>" . XERTE_EXPORT_SCORM;
+    echo "<ol id=\"exportList\" type='1'>";
+    echo "<li>" . XERTE_EXPORT_ZIP_TITLE . "<br/>" . XERTE_EXPORT_ZIP . "<br/><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_LINK . "</button></li>";
+    echo "<li>" . XERTE_EXPORT_SCORM_TITLE . "<br/>" . XERTE_EXPORT_SCORM;
     echo "<ol type='a'>";
-    echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_SCORM_12_LINK . "</button></li><br/>";
-    echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("scorm2004" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_SCORM_2004_LINK . "</button></li><br /></ol></li>";
-    //echo "<li>" . XERTE_EXPORT_XAPI;
-    //echo "<ul type='a'>";
-    //echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("xAPI" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_XAPI_LINK . "</button></li><br />";
-	//echo "</ul></li>";
-    echo "<li>" . XERTE_EXPORT_ZIP_ARCHIVE . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_ARCHIVE_LINK . "</button></li></ul><br /></li>";
-    echo "<li>" . XERTE_EXPORT_ZIP_OFFLINE . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export_offline" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_OFFLINE_LINK . "</button></li></ul><br /></li>";
+    echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_SCORM_12_LINK . "</button></li>";
+    echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("scorm2004" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_SCORM_2004_LINK . "</button></li></ol></li>";
+    echo "<li>" . XERTE_EXPORT_ZIP_ARCHIVE_TITLE . "<br/>" . XERTE_EXPORT_ZIP_ARCHIVE . "<br/><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_ARCHIVE_LINK . "</button></li>";
+    echo "<li>" . XERTE_EXPORT_ZIP_OFFLINE_TITLE . "<br/>" . XERTE_EXPORT_ZIP_OFFLINE . "<br/><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export_offline" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_OFFLINE_LINK . "</button></li>";
     echo "</ol>";
 
 ?>

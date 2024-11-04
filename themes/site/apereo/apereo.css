@@ -480,7 +480,7 @@ body {
 }
 
 /*--Heading and other text changes---------------------------------------*/
-h1 {
+h1, h2.sectionTitle {
   color: #065465;
   font-weight: 400;
 }

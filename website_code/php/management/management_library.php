@@ -367,7 +367,11 @@
         echo "<ul>";
         foreach($codes as $code)
         {
-            echo "<li>" . $langs[$code];
+	        $version = "";
+            if($langs[$code]->version != ""){
+                $version = " " . $langs[$code]->version;
+            }
+            echo "<li>" . $langs[$code]->name . $version;
             if ($code != "en-GB")
             {
                 echo " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_language('" . $code .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></li>";

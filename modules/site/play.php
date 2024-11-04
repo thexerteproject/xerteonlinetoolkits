@@ -23,7 +23,10 @@ require(dirname(__FILE__) . "/module_functions.php");
 //
 // (pl)
 // Set up the preview window for a xerte piece
+
+//popcorn bestanden toevoegen
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
+require(dirname(__FILE__) .  '/../../website_code/php/user_library.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
@@ -147,7 +150,7 @@ function show_template($row, $xapi_enabled=false){
     $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
     $page_content = str_replace("%TITLE%", $title , $page_content);
     $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
-    $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
+    $page_content = str_replace("%TEMPLATEID%", $row['template_id'], $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);

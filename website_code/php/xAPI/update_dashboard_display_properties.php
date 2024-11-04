@@ -14,4 +14,3 @@ if(is_numeric($id))
         db_query("update ${prefix}templatedetails set dashboard_display_options = ? where template_id = ?", array($properties, $id));
     }
 }
-?>

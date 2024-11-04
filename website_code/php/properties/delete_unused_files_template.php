@@ -37,13 +37,19 @@ if (!isset($_SESSION['toolkits_logon_id']))
     die("Session is invalid or expired");
 }
 
-$data = json_decode(base64_decode($_POST['data']));
+$data = json_decode(base64_decode(x_clean_input($_POST['data'])));
 
 foreach ($data as $d) {
-    if(unlink(urldecode($d))){
+    $file = urldecode($d);
+    // Check if $file is inside the users_file_area_short
+    if (strpos($file, $xerte_toolkits_site->users_file_area_full) !== 0) {
+        receive_message($_SESSION['toolkits_logon_username'], "FILE", "MAJOR", "The file " . $d . "hasn't been deleted", "User " . $_SESSION['toolkits_logon_username'] . " was not deleted " . $d);
+        continue;
+    }
+    x_check_path_traversal($file, $xerte_toolkits_site->users_file_area_full, "Invalid file specified");
+    if(unlink($file)){
         receive_message($_SESSION['toolkits_logon_username'], "FILE", "SUCCESS", "The file " . $d . "has been deleted", "User " . $_SESSION['toolkits_logon_username'] . " has deleted " . $d);
     } else{
         receive_message($_SESSION['toolkits_logon_username'], "FILE", "MAJOR", "The file " . $d . "hasn't been deleted", "User " . $_SESSION['toolkits_logon_username'] . " was not deleted " . $d);
     }
-
 }

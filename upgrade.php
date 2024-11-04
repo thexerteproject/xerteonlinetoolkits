@@ -216,6 +216,18 @@ function _do_cleanup()
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
+        'drawing.php',
+        'drawingjs.php',
+        'modules/xerte/engine/*',
+        'modules/site/engine/*',
+        'modules/decision/engine/*',
+        'LTI/*',
+        'play_html5.php',
+        'play_site.php',
+        'setup/xampp.php',
+        'setup/xampp.txt',
+        'setup/xampp_database.txt',
+        'rloObject.js',
     );
 
     foreach ($filelist as $file)
@@ -1449,5 +1461,161 @@ function upgrade_43()
         return $message;
     }
     $message = 'Index on folderrights table is already present';
+    return $message;
+}
+
+function upgrade_44()
+{
+	if (! _db_field_exists('sitedetails', 'default_theme_xerte')) {
+        $error1 = _db_add_field('sitedetails', 'default_theme_xerte', 'char(255)', 'default', null);
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_xerte = ?";
+            $error2 = db_query($sql, array('default'));
+        }
+        else {
+            $error2 = false;
+        }
+        $error3 = _db_add_field('sitedetails', 'default_theme_site', 'char(255)', 'default', null);
+
+        if ($error3) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_site = ?";
+            $error4 = db_query($sql, array('default'));
+        }
+        else {
+            $error4 = false;
+        }
+
+        return "Creating default theme xerte and site fields - ok ? " . ($error1 && $error2 && $error3 && $error4 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default theme xerte and site fields already present - ok ? true";
+    }
+}
+
+function upgrade_45()
+{
+    $roleTable = table_by_key("role");
+    $loginDetailsRoleTable = table_by_key("logindetailsrole");
+
+    $message = '';
+    if (!_table_exists($roleTable))
+    {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
+        `roleid` int NOT NULL AUTO_INCREMENT,
+        `name` varchar(45) NOT NULL UNIQUE,
+        PRIMARY KEY (`roleid`)
+      )"
+        );
+
+        $message .= "Creating role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        $ok = db_query("insert into $roleTable(`roleid`, `name`) values
+          (1, 'super'),
+          (2, 'system'),
+          (3, 'templateadmin'),
+          (4, 'metaadmin'),
+          (5, 'useradmin'),
+          (6, 'projectadmin'),
+          (7, 'harvestadmin');"
+        );
+        $message .= "Creating default roles - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table roles already exists - ok ? true". "<br>";
+    }
+
+    if (!_table_exists($loginDetailsRoleTable)) {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
+        `roleid` int NOT NULL,
+        `userid` bigint(20) NOT NULL,
+        PRIMARY KEY (`roleid`, `userid`)
+      )"
+        );
+
+        $message .= "Creating logindetailsrole table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table logindetailsrole already exists - ok ? true". "<br>";
+    }
+
+	return $message;
+}
+
+function upgrade_46()
+{
+    // Add users_file_area_path to sitedetails
+    if (! _db_field_exists('sitedetails', 'users_file_area_path')) {
+        $error1 = _db_add_field('sitedetails', 'users_file_area_path', 'text', null, 'users_file_area_short');
+
+        return "Creating users_file_area_path field - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Users file area path field already present - ok ? true";
+    }
+}
+
+function upgrade_47()
+{
+    // Add fields to determin whther to publish projects in TSUGI's store
+    if (! _db_field_exists('templatedetails', 'tsugi_publish_in_store')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_publish_in_store', 'int', '1', 'tsugi_xapi_student_id_mode');
+        $error2 = _db_add_field('templatedetails', 'tsugi_publish_dashboard_in_store', 'int', '0', 'tsugi_publish_in_store');
+        return "Creating publish in store fields - ok ? " . ($error1 && $error2  ? 'true' : 'false');
+    }
+    else
+    {
+        return "Publish in store fields already present - ok ? true";
+    }
+}
+
+function upgrade_48()
+{
+    // Correct the length of the user table password field
+    $table = table_by_key('user');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `password` `password` varchar(100);");
+    return "Changing password column of user to varchar(100) - ok ? " . ($ok !== false ? 'true' : 'false') . "<br>";
+}
+
+function upgrade_49()
+{
+    if (! _db_field_exists('sitedetails', 'default_theme_decision')) {
+        $error1 = _db_add_field('sitedetails', 'default_theme_decision', 'char(255)', 'default', null);
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_decision = ?";
+            $error2 = db_query($sql, array('default'));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating default theme decision field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default theme decision field already present - ok ? true";
+    }
+}
+
+function upgrade_50()
+{
+    //Extend notes fields in database (make it text fields)
+    $table = table_by_key('templaterights');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `notes` `notes` TEXT;");
+    $message = "Changing notes column of templaterights to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    // Extend description and keywords field in database (make it text fields)
+    $table = table_by_key('templatesyndication');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `description` `description` TEXT;");
+    $message .= "Changing description column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `keywords` `keywords` TEXT;");
+    $message .= "Changing keywords column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
     return $message;
 }

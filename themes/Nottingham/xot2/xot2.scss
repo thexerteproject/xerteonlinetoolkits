@@ -1,0 +1,176 @@
+@import "scss/_allvariables"; /*start here and set the default values for all the variables*/
+@import "scss/_header";
+@import "scss/_pagetypes";
+@import "scss/_footer";
+@import "scss/_animations";
+@import "scss/editorstyles";
+@import "scss/_webkitCustoms";
+@import "scss/_sliders";
+/* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
+/*You should not edit the .css files directly or change values directly unless you wish to override something*/
+/*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
+
+//* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
+//*You should not edit the .css files directly or change values directly unless you wish to override something*/
+//*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
+
+body {
+	background:$bodybackgroundcolor;
+	color:$mainfontcolour;
+	font-family: $mainfonts;
+}
+.cke_editable {
+	background: $defaultpagebackground;
+}
+//******Fonts******/
+.ui-button .ui-button-text {
+	font-family: $mainfonts;
+}
+/*Note: these font-sizes will be ignored when responsive text is on*/
+p{
+	font-size:1.1em;
+}
+h1 {
+	font-size:	1em;
+	margin:		0;
+}
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0 0 0;
+}
+h3 {
+	font-size:	1.2em;
+	margin:		0;
+}
+a{
+	color:$linkcolor;
+}
+a:visited{
+	color:$linkvisited;
+}
+a:hover{
+	color:$linkhover;
+}
+
+#x_mainHolder{
+	background:$defaultpagebackground;
+	border: none !important;/*remove this to restore the default border*/
+}
+body:not(.sb_right):not(.sb_left) #x_mainHolder {
+	border-radius:$largeroundedcorners;
+	max-width:98%;
+}
+//for this theme display at least a small inset at all sizes even mobiles
+#x_mainHolder{
+	margin:auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+///////////////////////////////
+#x_pageDiv {
+	padding-top: $defaultpagepadding;
+	padding-left: $defaultpagepadding;
+	padding-right:$defaultpagepadding;
+	padding-bottom:10px;
+}
+#infoHolder{
+	border-radius:$mediumroundedcorners;
+	background: $lightgrey;
+}
+//*****panel all pages with a panel*****/
+.panel {
+	border-radius: $mediumroundedcorners;
+	background:$lightgrey;
+	box-shadow: none;
+	border-color: $lightgrey;
+}
+.panelPage{
+	padding:1%;
+}
+//*****all images*****/
+img {
+	border-radius: $imageroundedcorners;
+}
+
+.focusBorder {
+	border-color: $lightestcolor2;
+}
+
+//*****table styles*****/
+table tr.shaded {
+	background:	$midgrey;
+}
+table.full td {
+	border-color: $darkestcolor;
+}
+table.full.shaded th,
+table.footer.shaded.full tbody tr:last-child td {
+	border-color: $lightgrey;
+}
+table.simple {
+	border-top-color: $darkestcolor;
+	border-bottom-color: $darkestcolor;
+}
+table.horizontal tr {
+	border-bottom-color: $darkestcolor;
+}
+table.vertical td {
+	border-right-color: $darkestcolor;
+}
+table.vertical.shaded th,
+table.footer.shaded.vertical tbody tr:last-child td {
+	border-right-color: lightgrey;
+}
+table.outside {
+	border-color: $darkestcolor;
+}
+table tr {
+	background: $whiteorlightest;
+	color: $blackordarkest;
+}
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+table.footer.shaded tbody tr:last-child {
+	background:	$darkestcolor;
+	color: $whiteorlightest;
+}
+table.headerCol.shaded td.header {
+	background-color: inherit;
+}
+
+//******@media changes******/
+@media (min-width: 1366px) {
+	/*tablet and above css below here*/
+	body:not(.sb_right):not(.sb_left) #x_mainHolder{
+		max-width:90%;
+		max-height:92%;
+		margin:auto;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+}
+
+//* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+	body:not(.sb_right):not(.sb_left) #x_mainHolder{
+		max-width:98%;
+		max-height:98%;
+		margin:auto;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+}

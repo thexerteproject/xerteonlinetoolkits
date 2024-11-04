@@ -28,7 +28,7 @@ _load_language_file( "/website_code/php/properties/sharing_status_template.inc")
 require_once("../user_library.php");
 require_once("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("system")){
 
     $database_id = database_connect("templates list connected","template list failed");
 
@@ -164,6 +164,8 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_PATH_WEBSITE . "<form><textarea id=\"website_code_path\">" . $row['website_code_path'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_PATH_SHORT . "<form><textarea id=\"users_file_area_short\">" . $row['users_file_area_short'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_PATH_USERS_FILE_AREA . "<form><textarea id=\"users_file_area_path\">" . ($row['users_file_area_path'] !== null ? $row['users_file_area_path'] : '') . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_PATH_LIBRARY . "<form><textarea id=\"php_library_path\">" . $row['php_library_path'] . "</textarea></form></p>";
 

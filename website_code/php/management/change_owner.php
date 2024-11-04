@@ -21,7 +21,7 @@ require_once("../../../config.php");
 
 require("../user_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("projectadmin")){
 
     $database_id = database_connect("change_owner.php connected","change_owner.php failed");
 

@@ -54,6 +54,10 @@
 
 	define("TEMPLATE_REPLACE", "Upload a new version of this template");
 
+    define("TEMPLATE_SUB_PAGES_DISABLE_ADVANCED", "Disable the possibility to switch between normal and simple mode in the wizard.");
+
+    define("TEMPLATE_SUB_PAGES_SELECT_DISABLE_ADVANCED", "Disable switch to normal mode.");
+
 	define("TEMPLATE_SUB_PAGES_TITLEONLY", "Only show the title of the Learning Object on the main node in 'Simple' mode of the wizard.");
 
 	define("TEMPLATE_SUB_PAGES_SELECT_TITLEONLY", "Show title only");

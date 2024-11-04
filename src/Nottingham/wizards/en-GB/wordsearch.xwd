@@ -1,7 +1,7 @@
 <wizard menus="Games">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <wordsearch><![CDATA[<wordsearch name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line" solveBtnTxt="Solve Puzzle" fillChars="" retryBtnTxt="Restart Puzzle"
+      <wordsearch><![CDATA[<wordsearch name="Enter Page Title" text="" words="" solveBtnTxt="Solve Puzzle" fillChars="" retryBtnTxt="Restart Puzzle"
 	  />]]></wordsearch>
     </newNodes>
   </pageWizard>
@@ -9,8 +9,8 @@
   <!-- WORDSEARCH============================== -->
   <wordsearch menu="Games" menuItem="Wordsearch" hint="A wordsearch game. Create a list of words for the user to find." icon="icWordsearch" thumb="thumbs/wordsearch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#wordsearch" wiki="https://xerte.org.uk/wiki/doku.php?id=games_wordsearch_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Instructions" type="TextArea" height="100"/>
-    <words label="Words" type="script" height="100"/>
+    <text label="Instructions" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <words label="Words" type="script" height="100" tooltip="Enter words here, placing each on a new line"/>
 	
 	<colours type="group" label="Colours" optional="true">
 		<colour1 label="Select" type="ColourPicker" defaultValue="0xFFA500" optional="true"/>

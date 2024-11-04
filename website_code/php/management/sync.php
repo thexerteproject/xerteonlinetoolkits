@@ -24,7 +24,7 @@ _load_language_file("/website_code/php/management/sync.inc");
 require("../user_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("templateadmin")){
 
 	$dir = opendir($xerte_toolkits_site->root_file_path . "modules/");
 	
@@ -58,9 +58,9 @@ if(is_user_admin()){
 							
 								switch(trim(strtolower($attr_data[0]))){
 							
-									case "display name" : $template_object['display_name'] = trim($attr_data[1]); break;
-									case "description" : $template_object['description'] = trim($attr_data[1]); break;
-									case "requires" : $template_object['requires'] = trim($attr_data[1]); break;
+									case "display name" : $template_object['display_name'] = x_clean_input(trim($attr_data[1])); break;
+									case "description" : $template_object['description'] = x_clean_input(trim($attr_data[1])); break;
+									case "requires" : $template_object['requires'] = x_clean_input(trim($attr_data[1])); break;
 							
 								}
 						

@@ -96,7 +96,9 @@
 
 	define("MANAGEMENT_SITE_PATH_WEBSITE", "The website code path is ");
 
-	define("MANAGEMENT_SITE_PATH_SHORT", "The short file area path is ");
+	define("MANAGEMENT_SITE_PATH_SHORT", "The short file area path is (this is a releative apth used in URL's) ");
+
+	define("MANAGEMENT_SITE_PATH_USERS_FILE_AREA", "The full actual path to the user file area (Use this only when the short path is a symbolic link, leave empty otherwise) ");
 
 	define("MANAGEMENT_SITE_PATH_LIBRARY", "The php library path is ");
 

@@ -40,8 +40,8 @@ if ( !isset($_POST['database_created']) )
 {
     $xot_setup->database    = new SetupDatabase($_POST);
     $xerte_toolkits_site    = $xot_setup->database->getSettings();
-    $_POST['account']       = $_POST['username'];
-    $_POST['accountpw']     = $_POST['password'];
+    $_POST['account']       = x_clean_input($_POST['username']);
+    $_POST['accountpw']     = x_clean_input($_POST['password']);
 
     // Create a PDO instance to represent a connection to the database.
     $connection = $xot_setup->database->connect();
@@ -53,13 +53,13 @@ if ( !isset($_POST['database_created']) )
         $success = false;
     // create the database
     } else {
-        $query = "create database if not exists `" . $_POST['database_name'] . "`";
+        $query = "create database if not exists ?";
 
-        if ( $xot_setup->database->create($connection, $query) )
+        if ( $xot_setup->database->create($connection, $query, array(x_clean_input($_POST['database_name']))) )
         {
             // set the database name - for the next conncection test and session variables
-            $xerte_toolkits_site->database_name = $_POST['database_name'];
-            $xot_setup->database->setName( $_POST['database_name'] );
+            $xerte_toolkits_site->database_name = x_clean_input($_POST['database_name']);
+            $xot_setup->database->setName( x_clean_input($_POST['database_name']) );
 
             // display error if database not created            
             if ( !$statement = $xot_setup->database->connect() ) 
@@ -114,13 +114,13 @@ if ($success):
 
         <div class="form_field">
             <label for="account">Database username</label>
-            <input type="text" width="100" name="account" id="account" value="<?php echo $_POST['account'];?>"/>
+            <input type="text" width="100" name="account" id="account" value="<?php echo x_clean_input($_POST['account']);?>"/>
             <span class="form_help">Database account name for users of the site. XAMPP should type in root.</span>
         </div>
 
         <div class="form_field">
             <label for="password">Database password</label>
-            <input type="password" width="100" name="accountpw" id="accountpw" value="<?php echo $_POST['accountpw'];?>"/>
+            <input type="password" width="100" name="accountpw" id="accountpw" value="<?php echo x_clean_input($_POST['accountpw']);?>"/>
             <span class="form_help">Database password for the account above. XAMPP should leave this field blank UNLESS they have setup a MySQL password.</span>
         </div>
 
@@ -140,11 +140,11 @@ if ($success):
     <?php endif; ?>
 
     <form action="page1.php" method="post" enctype="multipart/form-data" class="previous">
-        <input type="hidden" name="host" value="<?php echo $_POST['host'];?>"/>
-        <input type="hidden" name="username" value="<?php echo $_POST['username'];?>"/>
-        <input type="hidden" name="password" value="<?php echo $_POST['password'];?>"/>
-        <input type="hidden" name="database_name" value="<?php echo $_POST['database_name'];?>"/>
-        <input type="hidden" name="database_prefix" value="<?php echo $_POST['database_prefix'];?>"/>
+        <input type="hidden" name="host" value="<?php echo x_clean_input($_POST['host']);?>"/>
+        <input type="hidden" name="username" value="<?php echo x_clean_input($_POST['username']);?>"/>
+        <input type="hidden" name="password" value="<?php echo x_clean_input($_POST['password']);?>"/>
+        <input type="hidden" name="database_name" value="<?php echo x_clean_input($_POST['database_name']);?>"/>
+        <input type="hidden" name="database_prefix" value="<?php echo x_clean_input($_POST['database_prefix']);?>"/>
         <button type="submit">&laquo; Previous</button>
     </form>
 

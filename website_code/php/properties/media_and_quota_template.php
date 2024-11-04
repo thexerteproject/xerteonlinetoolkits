@@ -50,27 +50,6 @@ $quota=0;
  * @author Patrick Lockley
  */
 
-function in_use($file_name)
-{
-
-    global $xmlpath, $previewpath;
-
-    $preview = file_get_contents($previewpath);
-    // Decode all filenames in preview
-    $preview2 = rawurldecode($preview);
-    $preview3 = html_entity_decode($preview2);
-    $data = file_get_contents($xmlpath);
-    // Decode all filenames in data
-    $data2 = rawurldecode($data);
-    $data3 = html_entity_decode($data2);
-    if (strpos($data3, $file_name) === false && strpos($preview3, $file_name) === false)
-    {
-        return false;
-    } else {
-        return true;
-    }
-
-}
 
 $result_string = array();
 
@@ -100,22 +79,23 @@ function media_folder_loop($folder_name){
             /**
              * Create the string that the function will return
              */
-            $path = $xerte_toolkits_site->site_url . "USER-FILES/" . $end_of_path . "/media/" . $folder_name . $f;
+            $path = $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short . $end_of_path . "/media/" . $folder_name . $f;
             $buttonlbl = MEDIA_AND_QUOTA_DOWNLOAD;
-
-            $result = new stdClass();
+			
+			$result = new stdClass();
             $result->filename = $folder_name . $f;
+			
             if($dataInspector->fileIsUsed($folder_name . $f) || $previewInspector->fileIsUsed($folder_name . $f)){
-                $result->html = "<div class=\"filename found\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">" . MEDIA_AND_QUOTA_USE . " </span>";
+                $result->html = "<tr><td class=\"filename found\"><button class=\"filenameBtn\" onclick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</button></td><td class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</td><td class=\"fileinuse found foundtextcolor\"><i class=\"fa fa-check\"></i><span class=\"sr-only\">" . MEDIA_AND_QUOTA_USE . "</span></td></tr>";
 
             }else{
-                $result->html = "<div class=\"filename notfound\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</div><div class=\"fileinuse notfound notfoundtextcolor\">" . MEDIA_AND_QUOTA_NOT_IN_USE . " <img alt=\"Click to delete\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"  onclick=\"javascript:delete_file('" . str_replace("'", "\\'", $dir_path . $folder_name . $f) . "')" . "\" \" align=\"absmiddle\" src=\"website_code/images/delete.gif\" /></div>";
+                $result->html = "<tr><td class=\"filename notfound\"><button class=\"filenameBtn\" onclick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</button></td><td class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</td><td class=\"fileinuse notfound notfoundtextcolor\"><button class=\"deleteFile\" onclick=\"javascript:delete_file('" . str_replace("'", "\\'", $dir_path . $folder_name . $f) . "')\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"><i class=\"fa fa-times\"></i><span class=\"sr-only\">" . MEDIA_AND_QUOTA_NOT_IN_USE . ": " . MEDIA_AND_QUOTA_DELETE . " " . $folder_name . $f . "</span></button></td></tr>";
 
                 /**
                  * add the files to the delete array that are not in use  so they can be listed for use in the delete function
                  */
-
-                array_push($delete_string, $folder_name . $f);
+				
+				array_push($delete_string, $folder_name . $f);
 
             }
             $quota += filesize($full);
@@ -124,86 +104,102 @@ function media_folder_loop($folder_name){
         }
         else if (strlen($f) > 0 && $f[0] != '.')
         {
-            media_folder_loop($folder_name . $f . '/');
+			media_folder_loop($folder_name . $f . '/');
         }
 
     }
 
 }
 
-if(is_numeric($_POST['template_id'])) {
-    if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
+if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin")) {
 
-        $prefix = $xerte_toolkits_site->database_table_prefix;
-        $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " . 
-            "{$prefix}originaltemplatesdetails, {$prefix}templatedetails, {$prefix}templaterights, {$prefix}logindetails WHERE " .
-            "{$prefix}originaltemplatesdetails.template_type_id = {$prefix}templatedetails.template_type_id AND " . 
-            "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id AND " . 
-            "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id AND " . 
-            "{$prefix}templatedetails.template_id = ? AND (role = ? OR role = ?)";
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " .
+        "{$prefix}originaltemplatesdetails, {$prefix}templatedetails, {$prefix}templaterights, {$prefix}logindetails WHERE " .
+        "{$prefix}originaltemplatesdetails.template_type_id = {$prefix}templatedetails.template_type_id AND " .
+        "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id AND " .
+        "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id AND " .
+        "{$prefix}templatedetails.template_id = ? AND (role = ? OR role = ?)";
 
-        $row_path = db_query_one($sql, array($_POST['template_id'], 'creator', 'co-author'));
+    $row_path = db_query_one($sql, array($template_id, 'creator', 'co-author'));
 
-        $end_of_path = $_POST['template_id'] . "-" . $row_path['username'] . "-" . $row_path['template_name'];
+    $end_of_path = $template_id . "-" . $row_path['username'] . "-" . $row_path['template_name'];
 
-        /**
-         * Set the paths
-         */
+    /**
+     * Set the paths
+     */
 
-        $dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media/";
+    $dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media/";
+    x_check_path_traversal($dir_path, $xerte_toolkits_site->users_file_area_full, "Invalid file specified");
 
-        $xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
+    $xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
 
-        $previewpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml";
+    $previewpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml";
 
-        $dataInspector = new XerteXMLInspector();
-        $dataInspector->loadTemplateXML($xmlpath);
+    $dataInspector = new XerteXMLInspector();
+    $dataInspector->loadTemplateXML($xmlpath);
 
-        $previewInspector = new XerteXMLInspector();
-        $previewInspector->loadTemplateXML($previewpath);
+    $previewInspector = new XerteXMLInspector();
+    $previewInspector->loadTemplateXML($previewpath);
 
-        if(file_exists($xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml")){
+    if(file_exists($xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml")){
 
-            $quota = filesize($xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml") + filesize($xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml");
-
-        }
-
-        media_folder_loop("");
-
-        // Order the result on filename
-        usort($result_string, function($a, $b) {return strcmp($a->filename, $b->filename);});
-
-        echo "<p class=\"header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";
-
-        echo "<p>" . MEDIA_AND_QUOTA_IMPORT_MEDIA . "</p><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/fileupload.php\" onsubmit=\"javascript:iframe_upload_check_initialise(1);\"><input name=\"filenameuploaded\" type=\"file\" /><input type=\"hidden\" name=\"mediapath\" value=\"" . $dir_path . "/\" /><br><br><button id=\"submitbutton\" type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onclick=\"javascript:load_button_spinner(this)\"><i class=\"fa fa-upload\"></i> " . MEDIA_AND_QUOTA_BUTTON_IMPORT . "</button></form><p>" . MEDIA_AND_QUOTA_CLICK_FILENAME . "<br><textarea id=\"linktext\" style=\"width:90%;\" rows=\"3\"></textarea></p>";
-        echo "<p style=\"margin:0px; padding:0px; margin-left:10px;\" id=\"download_link\"></p>";
-
-        echo "<div class=\"template_file_area\"><p>" . MEDIA_AND_QUOTA_PUBLISH . "</p>";
-
-        /**
-         * display the first string
-         */
-
-        foreach($result_string as $file){
-
-            echo $file->html;
-
-        }
-        $delete_string_json = base64_encode(json_encode($delete_string));
-
-        echo "</div>";
-        echo "<div style=\"clear:both;\"></div>";
-        echo "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
-        echo "<button id=\"delete_unused_files\" type=\"submit\" class=\"xerte_button\" name=\"delete_unused_filesBTN\" onclick=\"javascript:delete_unused_files('" . $dir_path . "', '". $delete_string_json ."')\">" . MEDIA_AND_QUOTA_UNUSED_DELETE . "</button>";
-
-    }else{
-
-        echo "<p>" . MEDIA_AND_QUOTA_FAIL . "</p>";
-
+        $quota = filesize($xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml") + filesize($xerte_toolkits_site->users_file_area_full . $end_of_path .  "/preview.xml");
 
     }
 
-}
-else {
+    media_folder_loop("");
+
+    // Order the result on filename
+    usort($result_string, function($a, $b) {return strcmp($a->filename, $b->filename);});
+
+    echo "<h2 class=\"header\">" . PROPERTIES_TAB_MEDIA . "</h2>";
+    echo "<div id=\"mainContent\">";
+
+    echo "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
+
+    echo "<p>" . MEDIA_AND_QUOTA_IMPORT_MEDIA . "</p>";
+    echo "<form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/fileupload.php\" onsubmit=\"javascript:iframe_upload_check_initialise(1);\">";
+    echo "<div id=\"filenameuploaded_container\"><input type=\"file\" id=\"filenameuploaded\" name=\"filenameuploaded\"/><input type=\"hidden\" name=\"mediapath\" value=\"" . $dir_path . "\" /></div>";
+    echo "<button id=\"submitbutton\" type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onclick=\"javascript:load_button_spinner(this)\"><i class=\"fa fa-upload\"></i> " . MEDIA_AND_QUOTA_BUTTON_IMPORT . "</button></form>";
+
+
+    echo "<p id=\"linktextLabel\" class=\"block indent\" for=\"linktext\">" . MEDIA_AND_QUOTA_CLICK_FILENAME . "</p>";
+
+    echo "<p>" . MEDIA_AND_QUOTA_PUBLISH . "</p>";
+    echo "<div class=\"template_file_area\">";
+    echo "<table id=\"mediaTable\">";
+    echo "<tr><th class=\"filename\">" . MEDIA_AND_QUOTA_FILE_NAME . "</th><th class=\"filesize\">" . MEDIA_AND_QUOTA_FILE_SIZE . "</th><th class=\"fileinuse\">" . MEDIA_AND_QUOTA_FILE_USED . "</th></tr>";
+
+    /**
+     * display the first string
+     */
+
+    foreach($result_string as $file){
+
+        echo $file->html;
+
+    }
+
+    $delete_string_json = base64_encode(json_encode($delete_string));
+
+    echo "</table>";
+
+    echo "<button id=\"delete_unused_files\" type=\"submit\" class=\"xerte_button\" name=\"delete_unused_filesBTN\" onclick=\"javascript:delete_unused_files('" . $dir_path . "', '". $delete_string_json ."')\"><i class=\"fa fa-trash\"></i> " . MEDIA_AND_QUOTA_UNUSED_DELETE . "</button>";
+    echo "</div>";
+
+    echo "</div>";
+
+}else {
+
+    echo "<h2 class=\"header\">" . PROPERTIES_TAB_MEDIA . "</h2>";
+
+    echo "<div id=\"mainContent\">";
+
     echo "<p>" . MEDIA_AND_QUOTA_FAIL . "</p>";
+
+    echo "</div>";
+
 }
+

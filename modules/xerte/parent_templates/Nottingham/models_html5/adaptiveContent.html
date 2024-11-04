@@ -36,6 +36,9 @@
         var classtitles = [];
         var numUserSubmits = 0;
         var xertelo = interaction.getAttribute('xertelo');
+        if (xertelo==null || xertelo == "") {
+            xertelo = x_TemplateId;
+        }
         var radarData = interaction.getAttribute('opinionRadarData');
         var textSize = Math.round(interaction.getAttribute("labelFontSize"));
         var groupedData = [];
@@ -348,7 +351,15 @@
 
             let labelCounter = 0;
             let data = [];
-            if (datasets.length < 2) {
+            if (showall_only)
+            {
+                var notWorkingInDashboardMode = interaction.getAttribute("notWorkingInDashboardMode");
+                if (notWorkingInDashboardMode == undefined) {
+                    notWorkingInDashboardMode = "This graph does not work in dashboard mode";
+                }
+                $(ctx).parent().append('<p><em>' + notWorkingInDashboardMode + '</em></p>');
+            }
+            else if (datasets.length < 2) {
                 var insufficientDataText = interaction.getAttribute("insufficientDataText");
                 if (insufficientDataText == undefined) {
                     insufficientDataText = "There is insufficient data for this graph";
@@ -493,17 +504,18 @@
 
     function matchActor(statement, xertelo)
     {
-        if (statement.actor != undefined) {
-            if (statement.actor.mbox != undefined
+
+        if (statement.actor != undefined  ) {
+            if (statement.actor.mbox != undefined && typeof username != 'undefined'
                 && statement.actor.mbox == 'mailto:' + username) {
                 return true;
             }
-            if (statement.actor.mbox_sha1sum != undefined
+            if (statement.actor.mbox_sha1sum != undefined && typeof mboxsha1 != 'undefined'
                 && statement.actor.mbox_sha1sum == mboxsha1) {
                 return true;
             }
             if (statement.actor.account != undefined
-                && statement.actor.account.name != undefined
+                && statement.actor.account.name != undefined && typeof groupname != 'undefined'
                 && statement.actor.account.name == groupname) {
                 return true;
             }
@@ -663,7 +675,11 @@
     }
 
     function getUrl(xerteurl, xertelo, xertelabel, opinionClass) {
+        if (xerteurl == null || xerteurl == '') {
+            var url = x_siteUrl + xertelo;
+        } else {
         var url = xerteurl + xertelo;
+        }
         if (xertelabel != undefined && xertelabel != "") {
             url += "/" + xertelabel.replace(/ /g, "_");
         }
@@ -885,12 +901,15 @@
         if (sessionStatementUsed == undefined) {
             sessionStatementUsed = "all";
         }
-        debugger;
         // You can only do this if you have a very targeted query
         // If type is grouping, groupings  or opinionclasses, we should NOT filter the data on sessions
         if (type != "grouping" && type != "groupings" && type != "opinionclasses") {
             data = filterRelevantStatements(data, sessionStatementUsed);
         }
+        if (type == "open" && adaptiveContent.dashboardMode !== "true"){
+            data = filterOwnStatements(data, xertelo)
+        }
+
         if (
           data.length >= 1 &&
           (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)
@@ -1233,7 +1252,6 @@
     };
 
     this.init = function () {
-      //debugger;
       var loadFiles = true;
       for (var i = 0; i < x_pageInfo.length; i++) {
         if (
@@ -1270,7 +1288,13 @@
       fullWidth
     ) {
       xerteurl = interaction.getAttribute("xerteurl");
+      if (xerteurl == null || xerteurl == "") {
+        xerteurl = x_siteUrl;
+      }
       xertelo = interaction.getAttribute("xertelo");
+      if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId;
+      }
       xertelabel = interaction.getAttribute("label");
       xertegrouping = interaction.getAttribute("grouping");
       name = interaction.getAttribute("name");
@@ -1582,7 +1606,6 @@
         }
       } else if (interactionType == "opinionclasses") {
         // check open question special options
-        //debugger;
         var verb = "http://adlnet.gov/expapi/verbs/answered";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -1649,15 +1672,20 @@
       if (IncorrectText == undefined) {
         IncorrectText = "Incorrect";
       }
+      var xerteurl = interaction.getAttribute("xerteurl");
+      if (xerteurl == null || xerteurl == "") {
+        xerteurl = x_siteUrl;
+      }
       var xertelo = interaction.getAttribute("xertelo");
+      if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId;
+      }
       var ownstatements = filterOwnStatements(data, xertelo);
 
-
-      xerteurl = interaction.getAttribute("xerteurl");
-      xertelabel = interaction.getAttribute("label");
-      name = interaction.getAttribute("name");
-      interactionType = interaction.getAttribute("interactionType");
-      opinionClass = interaction.getAttribute("opinionClass");
+      var xertelabel = interaction.getAttribute("label");
+      var name = interaction.getAttribute("name");
+      var interactionType = interaction.getAttribute("interactionType");
+      var opinionClass = interaction.getAttribute("opinionClass");
       var nrbars = interaction.getAttribute("graphNrDataPoints");
       if (nrbars == undefined) {
         nrbars = 10;
@@ -1673,6 +1701,10 @@
       var graphShowAvg = interaction.getAttribute("graphShowAvg");
       if (graphShowAvg == undefined) {
           graphShowAvg = false;
+      }
+      var graphShowScore = interaction.getAttribute("graphShowScore");
+      if (graphShowScore == undefined) {
+          graphShowScore = false;
       }
       var graphShowAvgLine = interaction.getAttribute("graphShowAvgBar");
       if (graphShowAvgLine == undefined) {
@@ -1805,14 +1837,16 @@
         ) {
           let visitedGroups = {};
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           const sortObject = (obj) =>
             Object.keys(obj)
@@ -1936,8 +1970,8 @@
           "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
         );
         if (
-          interaction.getAttribute("graphType") == "pie_marks" ||
-          interaction.getAttribute("graphType") == "bar_comb_marks" ||
+            interaction.getAttribute("graphType") == "pie_marks" ||
+            interaction.getAttribute("graphType") == "bar_comb_marks" ||
           interaction.getAttribute("graphType") == "polar_area_per_category" ||
              interaction.getAttribute("graphType") == "bar_marks" ||
               interaction.getAttribute("graphType") == "bar_marks_score" ||
@@ -2146,7 +2180,7 @@
                 for (let i = 0; i < barNameValue.length; i++) {
                     labels.push([barNameValue[i].replace(",", "-")])
                 }
-            } else {
+                } else {
                 for (let i = 0; i < 100; i = i + Math.ceil(100 / nrbars)) {
                     let temp = ""
                     labels.push([temp + i + "-" + (i + Math.ceil(100 / nrbars))])
@@ -2222,10 +2256,12 @@
             }
 
             //add block avg to labels
-            if (graphShowAvg == "true") {
+            if (graphShowAvg == "true" || graphShowScore == "true") {
                 for (let i = 0; i < labels.length; i++) {
-                    labels[i].push(groupScore + ": " + (groupAvg[i]/ Math.max(barSizeData[i], 1)).toFixed(2))
-                    if (i == ownUserScore[0]) {
+                    if (graphShowAvg == "true") {
+                        labels[i].push(groupScore + ": " + (groupAvg[i] / Math.max(barSizeData[i], 1)).toFixed(2))
+            }
+                    if (graphShowScore == "true" && i == ownUserScore[0]) {
                         labels[i].push(userScore + ": " + ownUserScore[1])
                     }
                 }
@@ -2744,7 +2780,7 @@
               }
             }
           } else {
-            if (statements[0].result.extensions !== undefined) {
+            if (statements.length > 0 && statements[0].result.extensions !== undefined) {
               let correctQuestionScores =
                 statements[0].result.extensions[
                   "http://xerte.org.uk/result/grouping/scores"
@@ -3065,14 +3101,16 @@
           }
           let visitedGroups = [];
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           if (namedBackgroundColors && Object.keys(visitedGroups).length == Object.keys(backgroundColors).length){
               // Order the keys in visitedGroups to match the order of backgroundColors
@@ -3196,14 +3234,16 @@
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
           let visitedGroups = {};
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           let labelCounter = 0;
           let data = [];
@@ -3308,6 +3348,9 @@
         nrbars = 10;
       }
       var xertelo = interaction.getAttribute("xertelo");
+        if (xertelo == "") {
+            xertelo = x_TemplateId
+        }
       var statements = filterOwnStatements(data, xertelo);
 
         var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
@@ -3394,6 +3437,12 @@
           );
         }
         if (interaction.getAttribute("graphType") == "bar_answers") {
+
+            var xertelo = interaction.getAttribute("xertelo");
+            if (xertelo == "") {
+                xertelo = x_TemplateId
+            }
+            var ownstatements = filterOwnStatements(data, xertelo);
           // Check if data has responses with multiple answers
           var multipleAnswers = false;
           data.forEach(function(s){
@@ -3414,6 +3463,11 @@
                 dataset.push(statement);
               });
             });
+            statements = dataset;
+          }
+          else
+          {
+            statements = data;
           }
 
           //var dash = new ADL.XAPIDashboard();
@@ -3437,11 +3491,11 @@
             yAxisLabelBarAnswers = "Number of answers";
           var xDomain = [];
           if (
-            data.length > 0 &&
-            data[0].object.definition != "undefined" &&
-            data[0].object.definition.choices != "undfined"
+            statements.length > 0 &&
+            statements[0].object.definition != "undefined" &&
+            statements[0].object.definition.choices != "undfined"
           ) {
-            var choices = data[0].object.definition.choices;
+            var choices = statements[0].object.definition.choices;
             for (var i = 0; i < choices.length; i++) {
               xDomain[i] = choices[i].id;
             }
@@ -3449,6 +3503,7 @@
 
             //get used labels and #
             let labels = {};
+            let barBorderColor = barColors.slice();
             if (!multipleAnswers) {
                 for (let i = 0; i < statements.length; i++) {
                     if (!labels.hasOwnProperty(statements[i].result.response)) {
@@ -3456,13 +3511,19 @@
                     } else {
                         labels[statements[i].result.response] += 1;
                     }
+                    if (statements[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
+                    }
                 }
             } else {
-                for (let i = 0; i < dataset.length; i++) {
-                    if (!labels.hasOwnProperty(dataset[i].result.response)) {
-                        labels[dataset[i].result.response] = 1;
+                for (let i = 0; i < statements.length; i++) {
+                    if (!labels.hasOwnProperty(statements[i].result.response)) {
+                        labels[statements[i].result.response] = 1;
                     } else {
-                        labels[dataset[i].result.response] += 1;
+                        labels[statements[i].result.response] += 1;
+                    }
+                    if (statements[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
                     }
                 }
             }
@@ -3485,7 +3546,7 @@
                 }
             } else {
                 for (let i = 0; i < barData.length; i++) {
-                    barData[i] = barData[i] / dataset.length * 100;
+                    barData[i] = barData[i] / statements.length * 100;
                 }
             }
 
@@ -3498,6 +3559,7 @@
                         data: barData,
                         borderWidth: 5,
                         backgroundColor: barColors,
+                        borderColor: barBorderColor,
                         yID: "id1",
                     },
                 ],
@@ -3973,7 +4035,6 @@
       jsonData = jsonData.filter(function (x) {
         return x != undefined;
       });
-      //debugger;
       div = $(
         "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
       );
@@ -4384,12 +4445,18 @@
           });
           continue;
         }
-        xerteurl = interaction.getAttribute("xerteurl");
-        xertelo = interaction.getAttribute("xertelo");
-        xertelabel = interaction.getAttribute("label");
-        name = interaction.getAttribute("name");
-        interactionType = interaction.getAttribute("interactionType");
-        opinionClass = interaction.getAttribute("opinionClass");
+        var xerteurl = interaction.getAttribute("xerteurl");
+        if (xerteurl == null || xerteurl == "") {
+          xerteurl = x_siteUrl;
+        }
+        var xertelo = interaction.getAttribute("xertelo");
+        if (xertelo == null || xertelo == "") {
+            xertelo = x_TemplateId;
+        }
+        var xertelabel = interaction.getAttribute("label");
+        var name = interaction.getAttribute("name");
+        var interactionType = interaction.getAttribute("interactionType");
+        var opinionClass = interaction.getAttribute("opinionClass");
         if (opinionClass == undefined) {
           opinionClass = null;
         }
@@ -4737,7 +4804,6 @@
             $("p").css("font-size", "14px");
             $("ul").css("font-size", "14px");
             adaptiveContent.sizeChanged();
-            //debugger;
 
             await new Promise(resolve => setTimeout(resolve, 1500));
             let opt = {
@@ -4862,16 +4928,22 @@
           });
           continue;
         }
-        xerteurl = interaction.getAttribute("xerteurl");
-        xertelo = interaction.getAttribute("xertelo");
-        xertelabel = interaction.getAttribute("label");
-        name = interaction.getAttribute("name");
-        interactionType = interaction.getAttribute("interactionType");
-        opinionClass = interaction.getAttribute("opinionClass");
+        var xerteurl = interaction.getAttribute("xerteurl");
+        if (xerteurl == null || xerteurl == "") {
+          xerteurl = x_siteUrl;
+        }
+        var xertelo = interaction.getAttribute("xertelo")
+        if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId
+        }
+        var xertelabel = interaction.getAttribute("label");
+        var name = interaction.getAttribute("name");
+        var interactionType = interaction.getAttribute("interactionType");
+        var opinionClass = interaction.getAttribute("opinionClass");
         if (opinionClass == undefined) {
           opinionClass = "";
         }
-        group = interaction.getAttribute("groupFromUrl");
+        var group = interaction.getAttribute("groupFromUrl");
         if (group == undefined) {
           group = "";
         } else {
@@ -4891,10 +4963,7 @@
         }
         filter_context_id = (interaction.getAttribute("contextFilter") == 'true'? true : false);
 
-        url = xerteurl + xertelo + "/" + xertelabel;
-        if (opinionClass != "") {
-          url += "/" + opinionClass;
-        }
+        url = getUrl(xerteurl, xertelo, xertelabel, opinionClass)
         this.drawBlock("#adaptiveContent", interaction, interactionIndex, true);
       }
 

@@ -350,6 +350,19 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   color: #ffffff;
 }
 
+.x_gapFill_page #targetHolder .target.answerShown {
+  color: #ffffff;
+}
+
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed #ffffff;
+}
+
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid #ffffff;
+  border-top: 1px solid transparent;
+}
+
 a.hotspot, a.hotspot.selected {
   background: none;
 }
@@ -550,6 +563,10 @@ div#shorturltodisplay a {
   background: #333333;
 }
 
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   .tick, img.result {
     width: 2.5vmin;
@@ -664,43 +681,43 @@ table.headerCol.shaded td.header {
 }
 
 #x_nextBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f128";
 }
 
 #x_introBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f129";
 }
 
 #x_menuBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c7";
 }
 
 #x_footerBlock button {
@@ -1392,15 +1409,15 @@ h3 {
   margin: 0;
 }
 
-a {
+a, .ui-widget-content a {
   color: #ffffff;
 }
 
-a:hover {
+a:hover, .ui-widget-content a:hover {
   color: lightgrey;
 }
 
-a:visited {
+a:visited, .ui-widget-content a:visited {
   color: lightgrey;
 }
 
@@ -1412,7 +1429,7 @@ table.glossary td {
   background: #000000;
 }
 
-span.x_glossary, span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
+#x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
   color: #ffffff;
 }
 

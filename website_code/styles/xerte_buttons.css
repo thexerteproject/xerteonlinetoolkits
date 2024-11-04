@@ -160,3 +160,8 @@
     -o-filter: grayscale(100%);
     filter: gray; /* IE6+ */
 }
+
+.file_mgt_area_buttons .xerte_workspace_button {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}

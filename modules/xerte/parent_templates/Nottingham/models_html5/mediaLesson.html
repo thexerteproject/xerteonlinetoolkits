@@ -624,9 +624,7 @@
 			   for (var i = 0; i < childs.length; i++) {
 				   if (childs[i].nodeName === 'synchMCQ') {
 					   mcqBool = false;
-					   console.log(childs[i].nodeName);
 				   }
-				   console.log(childs[i].nodeName);
 				   this.isMCQ(childs[i]);
 			   }
 		    }
@@ -689,6 +687,8 @@
                 this.addEvents();
 			}
             this.initTracking();
+
+			$('.mainMedia').parents('.panel').addClass('mediaPanel');
 			x_pageLoaded();
 		};
 

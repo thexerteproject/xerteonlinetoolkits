@@ -83,7 +83,7 @@
 				$("#textHolder").remove();
 				$("#imgHolder").addClass("centerAlign");
 			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+				$("#textHolder").html(x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 				if (x_currentPageXML.getAttribute("align") == "Right") {
 					$("#pageContents .panel").addClass("x_floatLeft");
 				} else {

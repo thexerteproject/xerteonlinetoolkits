@@ -448,7 +448,7 @@ $_SESSION['admin'] = true;
                     $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/.");
                     if ($res === false)
                     {
-                        echo "<span style='color:#F41F15;'>Failed to extract " . $tsugizip . ": " . $zip->getStatusString() . "</span><br>\n";
+                        echo "<span style='color:#F41F15;'>Failed to extract " . $tsugizip . ": " . x_clean_input($zip->getStatusString()) . "</span><br>\n";
                         echo "Aborting!<br>";
                         exit(-1);
                     }

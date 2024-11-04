@@ -843,7 +843,7 @@ function recycle_bin_remove_all_template(template_id) {
         }
     })
     .done(function(response){
-        if (number_of_files_to_delete != 1) {
+        if (number_of_files_to_delete > 1) {
             number_of_files_to_delete -= 1;
         } else {
             refresh_workspace();
@@ -1405,28 +1405,6 @@ function create_tutorial(tutorial) {
     }
 }
 
-function template_submit()
-{
-    var form = document.getElementById("form-template-upload");
-    var formData = new FormData(form);
-    $.ajax({
-        type: "POST",
-        processData: false,
-        contentType: false,
-        url: "website_code/php/management/upload.php",
-        data: formData
-    })
-    .done(function(response){
-        $("body").css("cursor", "default");
-        alert(response);
-        // Refresh templates list
-        templates_list();
-    })
-    .fail(function(response){
-        $("body").css("cursor", "default");
-        alert(response);
-    });
-}
 
 /********** CHECK **************/
 

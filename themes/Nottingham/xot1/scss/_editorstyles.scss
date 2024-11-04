@@ -1,0 +1,353 @@
+/*start here and set the default values for all the variables*/
+//* Important note: unlike some older Xerte themes this part of this default theme has been developed using sass and scss files */
+/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
+//*Use SASS and the files in the scss folder name _allvariables.scss to start any customisation*/
+//***define the Editor Style Colors esc[n]***/
+//***define the colors used in the new styles for the styles menu***/
+$esc1: $brightcolor;
+$esc2: $accent1;
+$esc3: $contrastcolor;
+$esc4: $lightestcolor2;
+$esc5: $darkestcolor;
+$esc6: $accent3;
+
+//*****editor styles*****/
+//****common styles for panels***//
+@mixin panel {
+  // font-family:$mainfonts;
+  border-radius:$smallroundedcorners;
+  display:table;
+  padding:10px;
+  font-style:normal;
+}
+//****common styles for highlights***//
+@mixin highlight{
+  font-family:$mainfonts;
+  background: #fff;
+  display: table;
+  font-weight: normal;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+//****common styles for blockquotes***//
+@mixin blockquote{
+  font: 400 14px/24px $secondaryfonts;
+  border-left: 10px solid;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C" "\201D";
+}
+@mixin beforeblockquote {
+  content: open-quote;
+  font-size: 4rem;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+@mixin afterblockquote{
+  content: close-quote;
+  font-size: 4rem;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+}
+//*****panels*****/
+.panel1{
+  @include panel;
+  background-color:$esc1;
+  color:$whiteorlightest;
+}
+.panel1 a{
+  color:white !important;
+}
+.panel2 {
+  @include panel;
+  background-color:$esc2;
+  color:$whiteorlightest;
+}
+.panel2 a{
+  color:white !important;
+}
+.panel3 {
+  @include panel;
+  background-color:$esc3;
+  color:$whiteorlightest;
+}
+.panel3 a{
+  color:white !important;
+}
+.panel4 {
+  @include panel;
+  background-color:$esc4;
+  color:$blackordarkest;
+}
+.panel4 a{
+  color:black !important;
+}
+.panel5 {
+  @include panel;
+  background-color:$esc5;
+  color:$whiteorlightest;
+  display:table;
+}
+.panel5 a{
+  color:white !important;
+}
+.panel6 {
+  @include panel;
+  background-color:$esc6;
+  color:$whiteorlightest;
+}
+.panel6 a{
+  color:white !important;
+}
+
+//*****highlights*****/
+.highlight1 {
+  @include highlight;
+  //color: $esc1;
+  border-color: $esc1;
+}
+.highlight2 {
+  @include highlight;
+  //color: $esc2;
+  border-color: $esc2;
+}
+.highlight3 {
+  @include highlight;
+  //color: $esc3;
+  border-color: $esc3;
+}
+.highlight4 {
+  @include highlight;
+  //color: $esc4;
+  color: $blackordarkest;
+  border-color: $esc4;
+}
+.highlight5 {
+  @include highlight;
+  //color: $esc5;
+  border-color: $esc5;
+}
+.highlight6 {
+  @include highlight;
+  //color: $esc6;
+  border-color: $esc6;
+}
+//***default gray blockquote***/
+blockquote {
+  @include blockquote;
+  background: #f9f9f9;
+  border-color:#ccc;
+}
+blockquote:before {
+  @include beforeblockquote;
+  color: #ccc;
+}
+blockquote p {
+  display: inline;
+}
+blockquote:after {
+  @include afterblockquote;
+  color:#ccc;
+}
+.bq1{
+  border-color:$esc1;
+}
+.bq1:after {
+  @include afterblockquote;
+  color:$esc1;
+}
+.bq1:before {
+  @include beforeblockquote;
+  color:$esc1;
+}
+.bq2{
+  border-color:$esc2;
+}
+.bq2:after {
+  @include afterblockquote;
+  color:$esc2;
+}
+.bq2:before {
+  @include beforeblockquote;
+  color:$esc2;
+}
+.bq3{
+  border-color:$esc3;
+}
+.bq3:after {
+  @include afterblockquote;
+  color:$esc3;
+}
+.bq3:before {
+  @include beforeblockquote;
+  color:$esc3;
+}
+.bq4{
+  border-color:$esc4;
+}
+.bq4:after {
+  @include afterblockquote;
+  color:$esc4;
+}
+.bq4:before {
+  @include beforeblockquote;
+  color:$esc4;
+}
+.bq5{
+  border-color:$esc5;
+}
+.bq5:after {
+  @include afterblockquote;
+  color:$esc5;
+}
+.bq5:before {
+  @include beforeblockquote;
+  color:$esc5;
+}
+.bq6{
+  border-color:$esc6;
+}
+.bq6:after {
+  @include afterblockquote;
+  color:$esc6;
+}
+.bq6:before {
+  @include beforeblockquote;
+  color:$esc6;
+}
+
+//*****speech bubbles******//
+.speech-bubble1 {
+  background: $esc1;
+  color:white;
+}
+
+.speech-bubble1:after {
+  border-right-color: $esc1;
+}
+
+.speech-bubble2 {
+  background: $esc2;
+  color:white;
+}
+
+.speech-bubble2:after {
+  border-left-color: $esc2;
+}
+.speech-bubble3 {
+  background: $esc3;
+  color:white;
+}
+
+.speech-bubble3:after {
+  border-right-color: $esc3;
+}
+.speech-bubble4 {
+  background: $esc4;
+  color:black;
+}
+
+.speech-bubble4:after {
+  border-left-color: $esc4;
+}
+.speech-bubble5 {
+  background: $esc5;
+  color:white;
+}
+.speech-bubble5:after {
+  border-top-color: $esc5;
+}
+.speech-bubble6 {
+  background: $esc6;
+  color:white;
+}
+.speech-bubble6:after {
+  font-family:$secondaryfonts;
+  border-top-color: $esc6;
+}
+
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble5 a, .speech-bubble6 a{
+  color:white !important;
+  text-decoration:underline;
+}
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble4 a{
+  color:black !important;
+  text-decoration:underline;
+}
+
+//*****default editor styles*****/
+.marker {
+  font-family:$mainfonts;
+  background-color:$darkestcolor;
+  color:$lightestcolor;
+  border-radius:$smallroundedcorners;
+  display:table;
+  padding:10px;
+}
+
+var {
+  font-family:$mainfonts;
+  background-color:$brightcolor;
+  color:$whiteorlightest;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}
+
+kbd {
+  font-family:$mainfonts;
+  background-color:$lightestcolor;
+  color:$darkestcolor;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}
+
+samp {
+  font-family:$mainfonts;
+  background-color:$contrastcolor;
+  color:$whiteorlightest;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}
+
+q {
+  border-bottom:1px solid #ccc;
+  border-top:1px solid #ccc;
+  color:#333;
+  display:block;
+  padding:10px;
+}
+
+cite {
+  font-family:$secondaryfonts;
+  font-size:14px;
+  font-style:normal;
+  padding:10px;
+}
+
+tt {
+  font-family:$mainfonts;
+  background-color:#2196F3;
+  color:$whiteorlightest;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}
+tt a, kbd a, samp a, code a, .marker a, var a {
+  color:white !important;
+  text-decoration:underline;
+}

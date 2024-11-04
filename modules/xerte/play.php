@@ -279,6 +279,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
         $page_content = str_replace("%TEMPLATEID%", $row['template_id'], $page_content);
+        $page_content = str_replace("%SITEURL%", $xerte_toolkits_site->site_url, $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
@@ -440,7 +441,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             else{
                 $embedsupport = "    var x_embed = true;\n";
                 $embedsupport .= "    var x_embed_activated = false;\n";
-                $embedsupport .= "    var x_embed_activation_url = '" . $_SERVER['REQUEST_URI'] . "&activated=true';\n";
+                $embedsupport .= "    var x_embed_activation_url = '" . x_clean_input($_SERVER['REQUEST_URI']) . "&activated=true';\n";
             }
         }
 		else
@@ -462,7 +463,8 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             $popcorn_config .= "<script type=\"text/javascript\" src=\"$peertube_config_js?version=" . $version . "\"></script>\n";
         }
         $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
-        $page_content = str_replace("%SESSION%", $_SESSION['token'], $page_content);
+        $page_content = str_replace("%TOKEN%", $_SESSION['token'], $page_content);
+
     }
 
     return $page_content;

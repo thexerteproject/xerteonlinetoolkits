@@ -42,7 +42,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
 }
 
 if(is_numeric($_POST['template_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
         $tutorial_id = (int)$_POST['template_id'];
 
         $database_id = database_connect("Template name select share access database connect success", "Template name select share database connect failed");
@@ -61,11 +61,16 @@ if(is_numeric($_POST['template_id'])){
             $rows = db_query($query_for_names, $params);
 
             if (sizeof($rows) > 0) {
+				
+				echo "<ul class=\"share_form_results\">";
 
                 foreach ($rows as $row) {
-                    echo "<p>" . $row['firstname'] . "  " . $row['surname'] . " (" . $row['username'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_GIFT_CLICK . "</button>" . NAME_SELECT_GIFT_INSTRUCTION . "</p>";
+					
+                    echo "<li>" . $row['firstname'] . "  " . $row['surname'] . " (" . $row['username'] . ") <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\"><i class=\"fa fa-plus\"></i>&nbsp;" . NAME_SELECT_GIFT_CLICK . "<span class=\"sr-only\"> (" . $row['firstname'] . "  " . $row['surname'] . " - " . $row['username'] . ")</span></button></li>";
 
                 }
+				
+				echo "</ul>";
 
             } else {
 

@@ -39,8 +39,12 @@ require('../template_status.php');
 
 $users_array = array();
 
-$file_path = $_POST['file_path'];
-$temp_array = explode("-", $_POST['file_path']);
+$file_path = x_clean_input($_POST['file_path']);
+$temp_array = explode("-", $file_path);
+
+$lockfile_path = $xerte_toolkits_site->users_file_area_full . $file_path;
+x_check_path_traversal($lockfile_path, $xerte_toolkits_site->users_file_area_full, "Invalid file path");
+$lockfile_path = $lockfile_path . "lockfile.txt";
 
 if (count($temp_array) !== 3)
 {
@@ -69,7 +73,7 @@ if (count($temp_array) !== 3)
 
 database_connect("template close success","template close fail");
 
-if(file_exists($xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt")){
+if(file_exists($lockfile_path)){
 
     /*
      *  Code to delete the lock file
@@ -84,7 +88,7 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $file_path . "lockfi
         $template_name =  $row_template_name['template_name'];
     }
 
-    $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt");
+    $lock_file_data = file_get_contents($lockfile_path);
 
     $temp = explode("*", $lock_file_data);
 
@@ -122,7 +126,7 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $file_path . "lockfi
 
     }
 
-    unlink($xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt");
+    unlink($lockfile_path);
 
     _debug("Lockfile " . $xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt" . " is deleted.");
 }
@@ -134,6 +138,7 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $file_path . "lockfi
 if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
 
     $prefix = $xerte_toolkits_site->users_file_area_full . $file_path;
+    x_check_path_traversal($prefix, $xerte_toolkits_site->users_file_area_full, "Invalid file path");
     $preview_file = $prefix . '/preview.xml';
     $data_file = $prefix . '/data.xml';
 
@@ -147,4 +152,4 @@ if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
 }
 
 
-?>
+

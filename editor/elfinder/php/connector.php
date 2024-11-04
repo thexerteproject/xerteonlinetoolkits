@@ -35,14 +35,23 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."../../../config.php");
 if (!isset($_SESSION['toolkits_logon_id'])){
     header("location: ../../../index.php");
 }
-// Get session data to set paths
-$rootpath = $_REQUEST['uploadDir'];
-$rooturl = $_REQUEST['uploadURL'];
 
-if (strpos($rootpath, 'USER-FILES') === false  || strpos($rootpath, '../') !== false || strpos($rooturl, 'USER-FILES') === false)
+if (empty($_REQUEST['uploadDir']) || empty($_REQUEST['uploadURL']))
 {
     die("Invalid upload location");
 }
+
+// Get session data to set paths
+$rootpath = x_clean_input($_REQUEST['uploadDir']);
+$rooturl = x_clean_input($_REQUEST['uploadURL']);
+
+// Check uploadDir and check for path traversal
+x_check_path_traversal($rootpath, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+
+// Check uploadURL
+// First create a path from URL
+$uploadURL = x_convert_user_area_url_to_path($rooturl);
+x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
 
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinder.class.php';

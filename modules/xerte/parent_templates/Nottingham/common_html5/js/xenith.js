@@ -70,7 +70,7 @@ var x_languageData  = [],
 		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
 	],
 	x_sideBarBtns = [];
-
+	
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
@@ -138,7 +138,7 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
-
+	
     $x_mainHolder = $("#x_mainHolder");
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
@@ -692,7 +692,7 @@ x_projectDataLoaded = function(xmlData) {
     {
         x_params.theme = x_urlParams.theme;
     }
-
+	
 	// Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
 	XTSetOption('toComplete', markedPages);
@@ -743,7 +743,7 @@ x_projectDataLoaded = function(xmlData) {
 			})
 			.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
 	}
-
+	
 	x_getThemeInfo(x_params.theme);
 }
 
@@ -774,13 +774,13 @@ function x_getThemeInfo(thisTheme, themeChg) {
 			success: function (text) {
 				const temp = text.split('\n'),
 					themeInfo = {};
-
+				
 				for (let i=0; i<temp.length; i++) {
 					if (temp[i].split(':').length > 1) {
 						themeInfo[temp[i].split(':')[0]] = temp[i].split(':')[1].trim();
 					}
 				}
-
+				
 				x_setUpThemeBtns(themeInfo, themeChg);
 			},
 			error: function(err) {
@@ -804,12 +804,12 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 	if (themeIcons != 'true' || themeInfo.imgbtns != 'true') {
 		themeIcons = false;
 	}
-
+	
 	// buttons on side bar will always use icons & not images
 	if (themeChg !== true) {
 		x_sideBarBtnInfo();
 	}
-
+	
 	for (let i=0; i<x_btnIcons.length; i++) {
 		x_btnIcons[i].customised = false;
 		x_btnIcons[i].btnImgs = false;
@@ -829,17 +829,17 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 		} else if (themeInfo.imgbtns == 'true') {
 			x_btnIcons[i].btnImgs = true;
 		}
-
+		
 	}
 
 	if (themeChg !== true) {
 		x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
-
+		
 	} else {
 		// theme has been changed sometime after the project has already loaded
 		// change classes on interface buttons as new theme may use a different type of btn (FontAwesome / image)
 		var btns = [ { btn: $x_helpBtn, name: 'help' }, { btn: $x_introBtn, name: 'intro' }, { btn: $x_colourChangerBtn, name: 'accessibility' }, { btn: $x_nextBtn, name: 'next' }, { btn: $x_saveSessionBtn, name: 'saveSession' }, { btn: $x_glossaryBtn, name: 'glossary' } ];
-
+		
 		for (let i=0; i<btns.length; i++) {
 			if (btns[i].btn != undefined) {
 				const btnIcon = x_btnIcons.filter(function(icon){return icon.name === btns[i].name;})[0];
@@ -848,7 +848,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 				if (btnIcon.btnImgs == true) { btns[i].btn.addClass("imgIconBtn"); } else { btns[i].btn.removeClass("imgIconBtn"); };
 			}
 		}
-
+		
 		// now do btns where icon works slightly differently
 		if ($x_cssBtn != undefined) {
 			let btnIcon;
@@ -861,7 +861,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 			if (btnIcon.customised == true) { $x_cssBtn.addClass("customIconBtn"); } else { $x_cssBtn.removeClass("customIconBtn");  };
 			if (btnIcon.btnImgs == true) { $x_cssBtn.addClass("imgIconBtn"); } else { $x_cssBtn.removeClass("imgIconBtn"); };
 		}
-
+		
 		if ($x_prevBtn != undefined) {
 			const btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'prev';})[0];
 			if ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && btnIcon.customised === false) {
@@ -871,7 +871,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 			if (btnIcon.customised == true) { $x_prevBtn.addClass("customIconBtn"); } else { $x_prevBtn.removeClass("customIconBtn");  };
 			if (btnIcon.btnImgs == true) { $x_prevBtn.addClass("imgIconBtn"); } else { $x_prevBtn.removeClass("imgIconBtn"); };
 		}
-
+		
 		if ($x_menuBtn != undefined) {
 			let btnIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
 			if (x_params.navigation == "Historic") {
@@ -1061,6 +1061,8 @@ function x_GetTrackingLabelOfPage() {
 
 // setup functions load interface buttons and events
 function x_setUp() {
+
+	$(".skip-link").html(x_getLangInfo(x_languageData.find("skip")[0], "label", "Skip to main content"));
 	
 	// prevent flashes of css body tag colours before the main interface has loaded
 	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');
@@ -1102,7 +1104,7 @@ function x_setUp() {
 			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
 			$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 		}
-
+		
 		$x_headerBlock.find('h2').append('<span id="x_pageTitle"></span>');
 
 		// calculate author set variables
@@ -1147,9 +1149,9 @@ function x_setUp() {
 function x_desktopSetUp() {
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_cssBtn = $('<button id="x_cssBtn"></button>').prependTo($x_footerL);
-
+		
 		const maxBtnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
-
+		
 		$x_cssBtn
 			.button({
 				icons:	{
@@ -1168,9 +1170,9 @@ function x_desktopSetUp() {
 				}
 
 				if (x_fillWindow == false) {
-
+					
 					x_setFillWindow();
-
+					
 				} else {
 					for (var i=0; i<x_responsive.length; i++) {
 						$x_mainHolder.removeClass("x_responsive");
@@ -1191,14 +1193,14 @@ function x_desktopSetUp() {
 							});
 					}
 					$x_body.css("overflow", "auto");
-
+					
 					$(this)
 						.button({
 							icons:	{ primary: x_btnIcons.filter(function(icon){return icon.name === 'max';})[0].iconClass },
 							label:	x_params.maxLabel != undefined && x_params.maxLabel != "" ? x_params.maxLabel : x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
 						})
 						.addClass('x_maximise').removeClass("x_minimise");
-
+					
 					x_fillWindow = false;
 					x_updateCss();
 				}
@@ -1207,7 +1209,7 @@ function x_desktopSetUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
+		
 		if (maxBtnIcon.customised == true) {
 			$x_cssBtn.addClass("customIconBtn");
 		}
@@ -1363,14 +1365,14 @@ function x_continueSetUp1() {
 			x_dialogInfo.push({type:'menu', built:false});
 		}
 
-
+		
 		// add project help button to footer bar that opens file (or URL) in new window or lightbox
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
-
+			
 			const helpIcon = x_btnIcons.filter(function(icon){return icon.name === 'help';})[0];
 			$x_helpBtn = $('<button id="x_helpBtn"></button>').prependTo($x_footerL);
-
+			
 			$x_helpBtn
 				.button({
 					icons: {
@@ -1393,7 +1395,7 @@ function x_continueSetUp1() {
 						.removeClass("ui-state-focus")
 						.removeClass("ui-state-hover");
 				});
-
+			
 			if (helpIcon.customised == true) {
 				$x_helpBtn.addClass("customIconBtn");
 			}
@@ -1401,16 +1403,16 @@ function x_continueSetUp1() {
 				$x_helpBtn.addClass("imgIconBtn");
 			}
 		}
-
+		
 		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
-
+		
 		// add project intro button to footer bar that opens lightbox
 		if (x_getIntroInfo('project') != false) {
-
+			
 			const introInfo = x_getIntroInfo('project');
 			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'intro';})[0];
 			$x_introBtn = $('<button id="x_introBtn"></button>').prependTo($x_footerL);
-
+		
 			$x_introBtn
 				.button({
 					icons: {
@@ -1423,7 +1425,7 @@ function x_continueSetUp1() {
 				.click(function() {
 					const $thisBtn = $(this);
 					let lb;
-
+					
 					// set up close btn
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button({ label: $.trim(x_params.introBtnTxt) })
@@ -1431,7 +1433,7 @@ function x_continueSetUp1() {
 							$.featherlight.current().close();
 
 						});
-
+					
 					// there are different types of content that might appear in project intro lightbox
 					if (introInfo.type == 'img') {
 
@@ -1448,6 +1450,11 @@ function x_continueSetUp1() {
 										.prependTo($holder)
 										.html(x_params.name);
 								}
+								if (x_params.introCaption != undefined && x_params.introCaption != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_params.introCaption + '</figcaption>');
+								}
 
 								// include start button to close lightbox
 								if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
@@ -1458,17 +1465,17 @@ function x_continueSetUp1() {
 
 							}
 						});
-
+						
 					} else if (introInfo.type == 'video') {
-
+						
 						lb = $.featherlight($('<div id="pageIntroVideo"></div>'));
-
+						
 						$('.featherlight-content').addClass('pageIntroVideo');
-
+						
 						if (introInfo.info.video.indexOf("www.youtube.com") != -1 || introInfo.info.video.indexOf("//youtu") != -1) {
 							$('.featherlight-content').addClass('max youTube');
 						}
-
+						
 						$('#pageIntroVideo')
 							.attr('title', introInfo.info.tip)
 							.mediaPlayer({
@@ -1478,36 +1485,36 @@ function x_continueSetUp1() {
 								height: '100%',
 								pageName: 'introVideo'
 							});
-
+						
 					} else if (introInfo.type == 'url' || introInfo.type == 'file') {
-
+						
 						lb = $.featherlight({
 							iframe: x_evalURL(introInfo.info),
 							iframeMaxWidth: $x_mainHolder.width()*0.8,
 							iframeMaxHeight: $x_mainHolder.height()*0.8
 						});
-
+						
 					} else if (introInfo.type == 'text') {
-
+						
 						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
-
+						
 						$introHolder.find('#x_pageIntroTxtInner').html(introInfo.info);
-
+						
 						// include project title
 						if (x_params.introTitle == 'true') {
 							$('<h1 id="x_introH1"></h1>')
 								.prependTo($introHolder.find('#x_pageIntroTxt'))
 								.html(x_params.name);
 						}
-
+						
 						// include start button to close lightbox
 						if (x_params.introBtn == 'true' && x_params.introBtnTxt != undefined && $.trim(x_params.introBtnTxt)) {
 							$introStartBtn.appendTo($introHolder.find('#x_pageIntroTxt'));
 						}
-
+						
 						lb = $.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_params.introWidth == 'Full' ? x_params.introWidth : 'Auto' ) });
 					}
-
+					
 					// open page intro after project intro has closed if it's also set to auto-open
 					if (lb != undefined && $x_pageIntroBtn != undefined && x_getIntroInfo(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
 						lb.beforeClose = function() {
@@ -1517,9 +1524,9 @@ function x_continueSetUp1() {
 							}
 						};
 					}
-
+					
 				});
-
+			
 			if (introIcon.customised == true) {
 				$x_introBtn.addClass("customIconBtn");
 			}
@@ -1527,7 +1534,7 @@ function x_continueSetUp1() {
 				$x_introBtn.addClass("imgIconBtn");
 			}
 		}
-
+		
 		// media is deprecated but might still be in old projects
 		if (x_params.media != undefined) {
 			x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
@@ -1553,8 +1560,8 @@ function x_continueSetUp1() {
 				}
 			});
 		}
-
-
+		
+		
 		// if any of the pages in this project have an intro - add a button to the footer bar that will open intro when clicked
 		let pageIntro = false;
 		for (let i=0; i<x_pages.length; i++) {
@@ -1563,18 +1570,18 @@ function x_continueSetUp1() {
 				break;
 			}
 		}
-
+		
 		// add page intro button to footer bar that opens lightbox if any of the pages in this project have the introduction optional property added
 		if (pageIntro == true) {
-
+			
 			const introIcon = x_btnIcons.filter(function(icon){return icon.name === 'pageIntro';})[0];
-
+			
 			$x_pageIntroBtn = $('<button id="x_pageIntroBtn"></button>').appendTo($('#x_headerBlock h2'));
-
+			
 			if (x_params.pageIntroBg != 'icon') {
 				$x_pageIntroBtn.addClass('pageIntroBg');
 			}
-
+			
 			$x_pageIntroBtn
 				.button({
 					icons: {
@@ -1586,23 +1593,23 @@ function x_continueSetUp1() {
 				})
 				.click(function() {
 					const thisPageIntro = x_getIntroInfo(x_currentPageXML);
-
+					
 					// set up close btn
 					const $introStartBtn = $('<button id="x_introStartBtn"></button>')
 						.button()
 						.click(function() {
 							$.featherlight.current().close();
 						});
-
+					
 					// there are different types of content that might appear in page intro lightbox
 					if (thisPageIntro.type == 'img') {
 						$.featherlight({
 							image: thisPageIntro.info.img,
 							afterOpen: function() {
 								this.$content.attr('alt', thisPageIntro.info.tip);
-
+								
 								const $holder = this.$content.parent('.featherlight-content');
-
+								
 								// include page title
 								if (x_currentPageXML.getAttribute('introTitle') == 'true') {
 									$('<h1 id="x_introH1" class="x_introImgH1"></h1>')
@@ -1610,6 +1617,12 @@ function x_continueSetUp1() {
 										.html(x_currentPageXML.getAttribute('name'));
 								}
 
+								if (x_currentPageXML.getAttribute('introCaption') != undefined && x_currentPageXML.getAttribute('introCaption') != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + x_currentPageXML.getAttribute('introCaption') + '</figcaption>');
+								}
+								
 								// include start button to close lightbox
 								if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
 									$introStartBtn
@@ -1619,17 +1632,17 @@ function x_continueSetUp1() {
 								}
 							}
 						});
-
+						
 					} else if (thisPageIntro.type == 'video') {
-
+						
 						$.featherlight($('<div id="pageIntroVideo"></div>'));
-
+						
 						$('.featherlight-content').addClass('pageIntroVideo');
-
+						
 						if (thisPageIntro.info.video.indexOf("www.youtube.com") != -1 || thisPageIntro.info.video.indexOf("//youtu") != -1) {
 							$('.featherlight-content').addClass('max youTube');
 						}
-
+						
 						$('#pageIntroVideo')
 							.attr('title', thisPageIntro.info.tip)
 							.mediaPlayer({
@@ -1639,35 +1652,35 @@ function x_continueSetUp1() {
 								height: '100%',
 								pageName: 'introVideo'
 							});
-
+						
 					} else if (thisPageIntro.type == 'url' || thisPageIntro.type == 'file') {
-
+						
 						$.featherlight({
 							iframe: x_evalURL(thisPageIntro.info),
 							iframeMaxWidth: $x_mainHolder.width()*0.8,
 							iframeMaxHeight: $x_mainHolder.height()*0.8
 						});
-
+						
 					} else if (thisPageIntro.type == 'text') {
-
+						
 						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
-
+						
 						$introHolder.find('#x_pageIntroTxtInner').html(thisPageIntro.info);
-
+						
 						// include page title
 						if (x_currentPageXML.getAttribute('introTitle') == 'true') {
 							$('<h1 id="x_introH1"></h1>')
 								.prependTo($introHolder.find('#x_pageIntroTxt'))
 								.html(x_currentPageXML.getAttribute('name'));
 						}
-
+						
 						// include start button to close lightbox
 						if (x_currentPageXML.getAttribute('introBtn') == 'true' && x_currentPageXML.getAttribute('introBtnTxt') != undefined && $.trim(x_currentPageXML.getAttribute('introBtnTxt'))) {
 							$introStartBtn
 								.appendTo($introHolder.find('#x_pageIntroTxt'))
 								.button({ label: $.trim(x_currentPageXML.getAttribute('introBtnTxt')) });
 						}
-
+						
 						$.featherlight($introHolder, { variant: 'lightbox' + (x_browserInfo.mobile != true || x_currentPageXML.getAttribute('introWidth') == 'Full' ? x_currentPageXML.getAttribute('introWidth') : 'Auto' ) });
 					}
 				});
@@ -1685,13 +1698,13 @@ function x_continueSetUp1() {
 				$("#x_pageNo").remove();
 			}
 		}
-
+		
 		x_dialogInfo.push({type:'colourChanger', built:false});
-
+		
 		if (x_params.accessibilityHide != 'true') {
-
+			
 			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
-
+			
 			$x_colourChangerBtn
 				.button({
 					icons: {
@@ -1704,13 +1717,13 @@ function x_continueSetUp1() {
 				.attr("aria-label", $x_colourChangerBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.accessibilityTarget == "lightbox") {
-
+						
 						$.featherlight($(), {
 							contentFilters: 'ajax',
 							ajax: x_templateLocation + 'models_html5/colourChanger.html',
 							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
 						});
-
+						
 					} else {
 						x_openDialog(
 							"colourChanger",
@@ -1727,14 +1740,14 @@ function x_continueSetUp1() {
 						);
 					}
 				});
-
+				
 			if (accessibilityIcon.customised == true) {
 				$x_colourChangerBtn.addClass("customIconBtn");
 			}
 			if (accessibilityIcon.btnImgs == true) {
 				$x_colourChangerBtn.addClass("imgIconBtn");
 			}
-
+			
 		} else {
 			$x_colourChangerBtn.remove();
 		}
@@ -1841,16 +1854,16 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
+		
 		if (prevIcon.customised == true) {
 			$x_prevBtn.addClass("customIconBtn");
 		}
 		if (prevIcon.btnImgs == true) {
 			$x_prevBtn.addClass("imgIconBtn");
 		}
-
+		
 		const nextIcon = x_btnIcons.filter(function(icon){return icon.name === 'next';})[0];
-
+		
 		$x_nextBtn
 			.button({
 				icons: {
@@ -1872,14 +1885,14 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
+		
 		if (nextIcon.customised == true) {
 			$x_nextBtn.addClass("customIconBtn");
 		}
 		if (nextIcon.btnImgs == true) {
 			$x_nextBtn.addClass("imgIconBtn");
 		}
-
+		
 		// icon & label can new be set up in editor but fall back to default if not set
 		let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
 			menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
@@ -1887,9 +1900,9 @@ function x_continueSetUp1() {
 		if (x_params.navigation == "Historic") {
 			menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
 			menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
-			$x_menuBtn.addClass("x_home");
+			$x_menuBtn.addClass("x_home");	
 		}
-
+		
 		$x_menuBtn
 			.button({
 				icons: {
@@ -1902,13 +1915,13 @@ function x_continueSetUp1() {
 			.click(function() {
 				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
 					if (x_params.tocTarget == "lightbox") {
-
+						
 						$.featherlight($(), {
 							contentFilters: 'ajax',
 							ajax: x_templateLocation + 'models_html5/menu.html',
 							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
 						});
-
+						
 					} else {
 						x_openDialog(
 							"menu",
@@ -1931,7 +1944,7 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-
+		
 		if (menuIcon.customised == true) {
 			$x_menuBtn.addClass("customIconBtn");
 		}
@@ -1941,16 +1954,16 @@ function x_continueSetUp1() {
 
 		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
 			x_dialogInfo.push({type:'saveSession', built:false});
-
+			
 			// labels can now be set in editor but fall back to language file if not set
 			var tooltip = x_params.saveSessionLabel != undefined && x_params.saveSessionLabel != "" ? x_params.saveSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
 			if (typeof lti_enabled != "undefined" && lti_enabled)
 			{
 				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
 			}
-
+			
 			const saveSessionIcon = x_btnIcons.filter(function(icon){return icon.name === 'saveSession';})[0];
-
+			
 			$x_saveSessionBtn
 				.button({
 					icons: {
@@ -1975,7 +1988,7 @@ function x_continueSetUp1() {
 						}
 					);
 				});
-
+			
 			if (saveSessionIcon.customised == true) {
 				$x_saveSessionBtn.addClass("customIconBtn");
 			}
@@ -1994,17 +2007,17 @@ function x_continueSetUp1() {
 		}
 		// create side bar
 		x_setUpSideBar();
-
+		
 		//add show/hide footer tools
 		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
-
+			
 			// labels can now be set in editor but fall back to language file if not set
 			var hideMsg = x_params.hideToolsLabel != undefined && x_params.hideToolsLabel != "" ? x_params.hideToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools"),
 				showMsg = x_params.showToolsLabel != undefined && x_params.showToolsLabel != "" ? x_params.showToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
-
+			
 			const hideIcon = x_btnIcons.filter(function(icon){return icon.name === 'hideTools';})[0];
 			const showIcon = x_btnIcons.filter(function(icon){return icon.name === 'showTools';})[0];
-
+			
 			// add a div for the show/hide chevron
 			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="' + hideIcon.iconClass + '" aria-hidden="true"></i></button></div>');
 			$('#x_footerChevron').prop('title', hideMsg);
@@ -2031,7 +2044,7 @@ function x_continueSetUp1() {
 				$('#x_footerChevron').prop('title', showMsg);
 			}
 		}
-
+		
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
 			{
@@ -2109,7 +2122,7 @@ function x_continueSetUp1() {
 			x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 				if (mediaExists) {
 					var alpha = 30;
-					var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
+					var lo_objectfit =  (x_params.backgroundFit != undefined ? x_params.backgroundFit : "fill");
 					if (x_params.backgroundopacity != undefined) {
 						alpha = x_params.backgroundopacity;
 					}
@@ -2165,7 +2178,7 @@ function x_getIntroInfo(xml) {
 			}
 		}
 	}
-
+	 
 	if (xml == 'menu') {
 		return false;
 	} else if (getInfo('introType') == 'image' && getInfo('introImg') != undefined && $.trim(getInfo('introImg')) != '') {
@@ -2186,7 +2199,7 @@ function x_getIntroInfo(xml) {
 function x_sideBarBtnInfo() {
 	// work out what buttons will show on side bar
 	if (x_params.sideBar == 'true') {
-
+		
 		// project level buttons
 		if (x_params.sbToC == 'true') {
 			x_sideBarBtns.push('toc');
@@ -2197,14 +2210,14 @@ function x_sideBarBtnInfo() {
 		if (x_params.sbProjectHelp == 'true' && x_params.nfo != undefined && $.trim(x_params.nfo) != '') {
 			x_sideBarBtns.push('help');
 		}
-
+		
 		if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
 			x_sideBarBtns.push('glossary');
 		}
 		if (x_params.sbAccessibility == 'true' && x_params.accessibilityHide != 'true') {
 			x_sideBarBtns.push('accessibility');
 		}
-
+		
 		// page level buttons (what the button does will change on each page)
 		// does at least one page in project have some page info added?
 		if (x_params.sbPageIntro == 'true') {
@@ -2223,7 +2236,7 @@ function x_sideBarBtnInfo() {
 				}
 			}
 		}
-
+		
 		if (x_sideBarBtns.length > 0 && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 			x_params.displayMode = 'full screen';
 		}
@@ -2235,32 +2248,32 @@ function x_setUpSideBar() {
 	// don't create side bar if it's a standalone page in a lightbox
 	const isSA = x_pageInfo[x_startPage.ID] != undefined && x_pageInfo[x_startPage.ID].standalone == true ? true : false;
 	if (x_sideBarBtns.length > 0 && !isSA) {
-
+		
 		const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
-
+		
 		const $x_sideBar = $('<div id="x_sideBar"><button id="x_sideBarToggleBtn"></button><div id="x_sideBarBtnHolder"></div></div>'),
 			$x_sideBarBtnHolder = $x_sideBar.find('#x_sideBarBtnHolder'),
 			$x_sideBarToggleBtn = $x_sideBar.find('#x_sideBarToggleBtn');
-
+		
 		const minW = 30, borderW = 1;
 		let maxW = 100;
-
+		
 		if (x_params.sideBarSize == 'large') {
 			$x_sideBar.addClass('sideBarLarge');
 		} else {
 			$x_sideBar.addClass('sideBarSmall');
-
+			
 			if (x_params.sideBarBtnTxt != 'true') {
 				maxW = 60;
 			}
 		}
-
+		
 		// labels can be set in editor but fall back to language file if not set
 		const closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar"),
 			openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar"),
 			closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideLeft';})[0].iconClass,
 			openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowLeft';})[0].iconClass;
-
+		
 		if (x_params.sideBarPosition == 'right') {
 			$x_sideBar.insertAfter($x_mainHolder);
 			$x_body.addClass('sb_right');
@@ -2268,10 +2281,10 @@ function x_setUpSideBar() {
 			$x_sideBar.insertBefore($x_mainHolder);
 			$x_body.addClass('sb_left');
 		}
-
+		
 		// side bar open / close
 		$x_sideBar.data('state', x_params.sideBarShow);
-
+		
 		$x_sideBarToggleBtn
 			.button({
 				icons: { primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon },
@@ -2280,47 +2293,47 @@ function x_setUpSideBar() {
 			})
 			.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
 			.click(function() {
-
+				
 				if ($x_sideBar.data('state') == 'open') {
 					$x_sideBar
 						.animate({width: minW + 'px'})
 						.data('state', 'closed');
-
+					
 					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 						.animate({'width': $x_body.width() - minW + borderW});
-
+					
 					$x_mainHolder
 						.animate({['padding-' + x_params.sideBarPosition]: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
-
+					
 					$(this).button({ icons: { primary: openIcon }, label: openLabel, text: false });
-
+					
 				} else {
 					if (overlay) {
 						$x_sideBar
 							.animate({width: maxW})
 							.data('state', 'open');
-
+							
 					} else {
 						$x_sideBar
 							.animate({width: maxW + 'px'})
 							.data('state', 'open');
-
+						
 						$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 							.animate({'width': $x_body.width() - maxW + borderW});
-
+						
 						$x_mainHolder
 							.animate({['padding-' + x_params.sideBarPosition]: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
 					}
-
+						
 					$(this).button({ icons: { primary: closeIcon }, label: closeLabel, text: false });
-
+					
 					$x_sideBarBtnHolder.show();
 				}
 			});
-
+		
 		// add buttons to side bar
 		const btnTxt = x_params.sideBarBtnTxt == 'true' ? true : false;
-
+		
 		if ($.inArray('toc', x_sideBarBtns) != -1) {
 			$x_menuBtn
 				.appendTo($x_sideBarBtnHolder)
@@ -2351,19 +2364,19 @@ function x_setUpSideBar() {
 				.appendTo($x_sideBarBtnHolder)
 				.button({ text: btnTxt });
 		}
-
+		
 		if (x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') {
 			let widestBtn = 0;
-
+			
 			$x_sideBarBtnHolder.find('button').each(function() {
 				widestBtn = Math.max(widestBtn, $(this).outerWidth());
 			});
-
+			
 			maxW = widestBtn + 30;
-
+			
 			$x_sideBarBtnHolder.find('button').width('90%');
 		}
-
+		
 		if (overlay) {
 			maxW = '100%';
 			$x_sideBar.width(maxW);
@@ -2373,25 +2386,25 @@ function x_setUpSideBar() {
 			$x_sideBar.width(maxW + 'px');
 			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
 			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
-
+			
 			// the text may overlap side bar - make sure sidebar expands but without text forced to be on a single line
 			if (x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') {
-
+				
 				let widestBtn = 0;
 				$x_sideBarBtnHolder.find('button').each(function() {
 					widestBtn = Math.max(widestBtn, $(this).outerWidth());
 				});
-
+				
 				if ($x_sideBarBtnHolder.innerWidth() < widestBtn) {
 					$x_sideBar.width('min-content');
-
+					
 					maxW = $x_sideBar.width();
 					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
 					$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
 				}
 			}
 		}
-
+		
 		if (x_params.sideBarShow == 'closed') {
 			$x_sideBar.width(minW + 'px');
 			$x_sideBarBtnHolder.hide();
@@ -2746,7 +2759,7 @@ function x_changePage(x_gotoPage, addHistory) {
 		}
 	}
 	catch(e) {}
-
+	
 	if (x_params.forcePage1 == 'true') {
 		addHistory = false;
 	}
@@ -2808,7 +2821,7 @@ function x_changePage(x_gotoPage, addHistory) {
 		
 		x_pageInfo[x_gotoPage].viewedLightBox = true;
 	}
-
+	
 	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
 	const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
 	if (overlay && !x_firstLoad && $('#x_sideBar').length > 0 && $('#x_sideBar').data('state') == 'open') {
@@ -2959,6 +2972,7 @@ function x_changePageStep5(x_gotoPage) {
     }
 	
     // If special_theme_css does not exist yet, create a disabled special_theme_css
+
     if (x_specialTheme != undefined && x_specialTheme != '') {
         x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
             x_changePageStep5a(x_gotoPage);
@@ -3005,7 +3019,7 @@ function x_changePageStep5a(x_gotoPage) {
 		}
 
 		$("#x_mainBg").show();
-        $(".x_pageNarration").remove(); // narration flash / html5 audio player
+        $(".x_pageNarration").remove(); // narration audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
@@ -3128,13 +3142,51 @@ function x_passwordPage(pswds) {
 			x_updateCss(false);
 			
 			$("#x_pageDiv").show();
+			$x_pageDiv.css("height", "100%");
+			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
+			let pageHeight = $("#x_pageHolder").innerHeight() - paddingBlock;
+			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			
 			var $pswdBlock = $('#x_page' + x_currentPage);
-			$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+			$pswdBlock.css('height', '100%');
+			$pswdBlock.html('<div class="x_pswdBlock" style="height: 100%"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
 			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
 			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
-			$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+			let type = x_currentPageXML.getAttribute('passwordType');
+			if(type == "vault"){
+					$pswdBlock.find('.x_pswdInput').html('<div class="vault"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
+					$pswdBlock.find('.vault-door')
+							.html('<div class="vault-door-dial"><div class="vault-door-dial-inside"></div><div class="vault-door-dial-rod"></div><div class="vault-door-dial-rod rotated"></div></div>');
+					$pswdBlock.find('.vault-door-dial')
+							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">');
+					$pswdBlock.find('.vault-door').append('<button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+
+			}else if(type == "vaultnumeric") {
+					$pswdBlock.find('.x_pswdInput').html('<div class="vault numeric"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
+					$pswdBlock.find('.vault-door')
+							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" style="grid-area: input;" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">')
+							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;"> </button>')
+							.append('<button id="x_pagePswdBtn" style="grid-area: button;">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+
+					$pswdBlock.find('.numberbtn').on('click', function(){
+							let number = $(this).text();
+							let $input = $('#x_pagePswd');
+							$input.val(function(){
+									return this.value + number;
+							});
+							$input[0].selectionStart = $input[0].selectionEnd = $input.val().length;
+					});
+					$pswdBlock.find('#resetbtn').on('click', function(){
+							$('#x_pagePswd').val('');
+					});
+			}else if((type == "standard" || type == null) || type == "centered"){
+					let pswdInput = $pswdBlock.find('.x_pswdInput').append('<input type="text" class="old" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button class="old" id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+					if(type == "standard" || type == null){
+							pswdInput.add($pswdBlock.find(".x_pswdBlock")).addClass('old');
+							
+					}
+			}
 			
 			$pswdBlock.find('#x_pagePswdBtn')
 				.button()
@@ -3144,6 +3196,7 @@ function x_passwordPage(pswds) {
 					if ($.inArray(pswdEntered, pswds) >= 0) {
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						x_pageInfo[x_currentPage].passwordPass = true;
+						x_pageDiv.css("height", "");
 						$pswdBlock.remove();
 						x_addCountdownTimer();
 						x_addNarration('x_changePageStep6', '');
@@ -3179,7 +3232,7 @@ function x_changePageStep6() {
     x_updateCss(false);
 
 	$("#x_pageDiv").show();
-
+	
 	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
 		if (!x_isMenu() && x_getIntroInfo(x_currentPageXML) != false) {
@@ -3206,7 +3259,7 @@ function x_changePageStep6() {
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
-
+		
 		// get short page type var
 		var pt = x_pageInfo[x_currentPage].type;
 		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
@@ -3279,7 +3332,7 @@ function x_changePageStep6() {
 		$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
 		
 		x_focusPageContents(false);
-
+		
 		// show page introduction immediately if set to always auto open
 		if (!x_isMenu() && $x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
 			$x_pageIntroBtn.click();
@@ -3313,7 +3366,7 @@ function x_changePageStep6() {
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
-            XTEnterPage(x_currentPage, label);
+            XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
 
 			var modelfile = x_pageInfo[x_currentPage].type;
 			if (typeof modelfilestrs[modelfile] != 'undefined')
@@ -3428,10 +3481,12 @@ function x_setUpLightBox() {
 						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
 						
 						if (caption != undefined && caption != '') {
+							var $img = $(this.$content[0]);
+							$img.wrap('<figure></figure>');
 							if (before == true) {
-								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').prepend('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							} else {
-								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+								$img.parent('figure').append('<figcaption class="lightBoxCaption">' + caption + '</figcaption>');
 							}
 						}
 					}
@@ -3520,7 +3575,7 @@ function x_setUpPage() {
 	
     if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
         $x_prevBtn.button("enable");
-
+		
     } else {
         $x_prevBtn
             .button("disable")
@@ -3569,13 +3624,16 @@ function x_setUpPage() {
     if (x_firstLoad == true) {
         // project intro can be set to never auto-open, always auto-open or only auto-open when project loaded on first page
 		if ($x_introBtn != undefined && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0))) {
-			$x_introBtn
-				.data('autoOpen', true)
-				.click();
+			// don't auto-open if stand-alone page
+			if (x_pageInfo[x_currentPage].standalone != true) {
+				$x_introBtn
+					.data('autoOpen', true)
+					.click();
+			}
 		}
-
+		
         $x_mainHolder.css("visibility", "visible");
-
+		
 		if (x_params.backgroundGrey == "true") {
 			$("#x_mainBg").show();
 			$("#x_mainBg").gray(); // won't work properly if called when hidden
@@ -3587,7 +3645,7 @@ function x_setUpPage() {
 			}
 		}
 		$('#preventFlash').remove();
-
+		
 		x_firstLoad = false;
     }
 }
@@ -3630,7 +3688,7 @@ function x_pageLoaded() {
 				$("#x_page" + x_currentPage).append('<style type="text/css" id="x_pagePluginCSS">' +  plugins[pt].css + '</style>');
 			}
 		}
-
+		
 		// script & style optional properties for each page added after page is otherwise set up
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
@@ -3672,7 +3730,7 @@ function x_pageLoaded() {
 	
 	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
-
+	
 	// show page introduction immediately on page load if set to auto open - unless the project intro is also set to auto-open at this time
 	if ($x_pageIntroBtn != undefined && x_getIntroInfo(x_currentPageXML) != false && x_currentPageXML.getAttribute("introShow") != 'never') {
 		var projectIntroOpening = x_firstLoad == true && (x_params.introShow == 'always' || (x_params.introShow == 'first' && x_currentPage == 0)) ? true : false;
@@ -3715,7 +3773,7 @@ function x_addNarration(funct, arguments) {
 					autoPlay    :x_currentPageXML.getAttribute("playNarration"),
 					autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
 				});
-
+				
 				// manually add a transcript button to the end of the narration bar
 				if (x_currentPageXML.getAttribute("narrationTranscript") != undefined && x_currentPageXML.getAttribute("narrationTranscript") != '') {
 					x_addAudioTranscript($("#x_footerBlock #x_pageNarration"), x_currentPageXML.getAttribute("narrationTranscript"));
@@ -3735,15 +3793,14 @@ function x_addNarration(funct, arguments) {
 
 // function adds transcript button to the end of audio bars, e.g. page narration - but also called from page models
 function x_addAudioTranscript($audioHolder, transcriptTxt, decode) {
-
 	if (decode == true) {
 		transcriptTxt = $("<div/>").html(transcriptTxt).text();
 	}
-
+	
 	$audioHolder.addClass('audioTranscript');
-
+	
 	const transcriptLabel = x_getLangInfo(x_languageData.find('mediaElementControls').find('transcriptButton')[0], 'label', 'Transcript');
-
+	
 	$('<div class="audioTranscriptBtn mejs-button"><button class="fas fa-comment-dots" type="button" aria-controls="mep_0" title="' + transcriptLabel + '" aria-label="' + transcriptLabel + '"><span class="sr-only">' + transcriptLabel + '</span></button></div>')
 		.appendTo($audioHolder.find('.mejs-container .mejs-controls'))
 		.click(function() {
@@ -3815,7 +3872,7 @@ function x_loadPageBg(loadModel) {
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 
 	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg" alt=""/>');
-    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover" ? "cover" : "fill");
+    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined ? x_currentPageXML.getAttribute("backgroundFit") : "fill");
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({
@@ -3911,12 +3968,12 @@ function x_loadPageBg(loadModel) {
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
 	if (updatePage != false) {
-
+		
 		if ($('#x_sideBar').length > 0) {
 			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
 				.width($x_body.width() - $('#x_sideBar').width() + 1);
 		}
-
+		
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
 		if ($("#x_pageNarration").length > 0) {
 			if ($("#x_pageNarration audio").css("display") == "none") { // flash
@@ -3930,9 +3987,9 @@ function x_updateCss(updatePage) {
 					audioBarW += $(this).outerWidth();
 				});
 				
-				if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -2 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 2) {
-					$x_window.resize();
-				}
+				// if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -7 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 7) {
+				// 	$x_window.resize();
+				// }
 			}
 			
 		}
@@ -4026,7 +4083,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     {
                         $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function () {
                             x_setDialogSize($x_popupDialog, position);
-
+							
 							if (type == "menu") {
 								menu.showCurrent();
 							}
@@ -4253,7 +4310,7 @@ function x_setFillWindow(updatePage) {
     $x_body.css("overflow", "hidden");
     x_updateCss(updatePage);
     window.scrolling = false;
-
+	
     $("#x_cssBtn")
 		.button({
 			icons:  {
@@ -4305,6 +4362,7 @@ function x_insertCSS(href, func, disable, id, keep) {
 				}
             }
             func();
+			css.onload = null; // in FF this continues to be called every time theme is changed (via accessibility options) so force it to only trigger onload once - calling multiple times causes issues such as duplicated narration bar
         };
 		css.onload = f;
 
@@ -4374,12 +4432,12 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgH = $img.data("origSize")[1];
         }
 
-		if (enlarge != true) {
-			maxW = Math.min(maxW, imgW);
-			maxH = Math.min(maxH, imgH);
-		}
+        if (enlarge === false) {
+            maxW = Math.min(maxW, imgW);
+            maxH = Math.min(maxH, imgH);
+        }
 
-        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
+        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge !== false) {
             var scaleW = maxW / imgW,
                 scaleH = maxH / imgH,
                 scaleFactor = Math.min(scaleW, scaleH);
@@ -4615,12 +4673,12 @@ function x_introMediaMetadata($video, wh) {
 		width: wh[0],
 		height: wh[1]
 	});
-
+	
 	$video.closest(".mejs-video").css({
 		"maxWidth": wh[0] + 'px',
 		"maxHeight": wh[1] + 'px'
 	});
-
+	
 	// resize if the media is the wrong size for its holder
 	// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
 	$('.featherlight-content').addClass('max');
@@ -5292,7 +5350,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			multiple_terms = false, // link all terms on page or just the first - default is FIRST ONLY
 			ignore_space = true,  // ignore and remove all multiple whitespace within terms, including - default is IGNORE AND REMOVE
 									// we always remove leading and trailing whitespace
-
+	
 	init = function () {
 		
 		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
@@ -5318,10 +5376,10 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			x_glossary.sort(function(a, b){ // sort by size
 				return a.word.length > b.word.length ? -1 : 1;
 			});
-
+			
 			const glossaryIcon = x_btnIcons.filter(function(icon){return icon.name === 'glossary';})[0];
 			$x_glossaryBtn = $('<button id="x_glossaryBtn"></button>').prependTo($x_footerL);
-
+			
 			$x_glossaryBtn
 				.button({
 					icons: {
@@ -5334,13 +5392,13 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				.attr("aria-label", $x_glossaryBtn.attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.glossaryTarget == "lightbox") {
-
+						
 						$.featherlight($(), {
 							contentFilters: 'ajax',
 							ajax: x_templateLocation + 'models_html5/glossary.html',
 							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
 						});
-
+						
 					} else {
 						x_openDialog(
 							"glossary",
@@ -5357,7 +5415,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 						);
 					}
 				});
-
+			
 			if (glossaryIcon.customised == true) {
 				$x_glossaryBtn.addClass("customIconBtn");
 			}
@@ -5461,23 +5519,23 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
 		}
 		tableData += "</table>";
-
+		
 		if ($("#glossaryItems").parents('.featherlight').length > 0) {
 			tableData = '<div class="glossaryHolder">' + tableData + '</div>';
 		}
-
+		
 		$("#glossaryItems").append(tableData);
 		
 		x_pageContentsUpdated();
 		
 		// add class for shaded rows rather than using css selector as doesnt work for IE8 & below
 		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
-
+		
 		// lightbox
 		if ($("#glossaryItems").parents('.featherlight').length > 0) {
-
+			
 			$('#glossaryItems').prepend('<h1 id="x_introH1">' + (x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary")) + '</h1>');
-
+			
 			$('#glossaryItems .glossaryHolder')
 				.height($('.featherlight-content').height() - $('#x_introH1').outerHeight())
 				.css('overflow', 'auto');
@@ -5521,7 +5579,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 
 		return tempText;
 	},
-
+		
 	getTextNodes = function (fragment) {
 		let textNodes = [];
 		(function recurse(node) {

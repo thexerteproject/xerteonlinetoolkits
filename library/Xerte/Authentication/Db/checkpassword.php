@@ -23,7 +23,7 @@ function checkOldPassword(){
     }
 
     if ($authmech->canManageUser($jsscript)){
-        return $authmech->login($_SESSION['toolkits_logon_username'], $_POST['oldpass']);
+        return $authmech->login($_SESSION['toolkits_logon_username'], x_clean_input($_POST['oldpass']));
     }else{
         return false;
     }
@@ -31,4 +31,3 @@ function checkOldPassword(){
 }
 
 
-?>

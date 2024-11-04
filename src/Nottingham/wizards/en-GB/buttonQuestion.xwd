@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion>
+      <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion>
     </newNodes>
   </pageWizard>
 
@@ -9,9 +9,9 @@
   <buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#stimulatingquestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_stimulating_question_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <instruction label="Instruction" type="TextArea" height="50" />
-    <prompt label="Question" type="TextArea" height="150" />
-    <feedback label="Feedback" type="TextArea" height="150" />
+    <instruction label="Instruction" type="TextArea" height="50" placeholder="Enter instructions here"/>
+    <prompt label="Question" type="TextArea" height="150" placeholder="Enter a question or prompt here"/>
+    <feedback label="Feedback" type="TextArea" height="150" placeholder="Enter the feedback here"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 

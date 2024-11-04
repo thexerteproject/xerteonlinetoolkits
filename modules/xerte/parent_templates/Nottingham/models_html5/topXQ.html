@@ -23,6 +23,10 @@
     var topXQ = new function () {
 			
 			var $pageContents;
+		    var judge = true;
+		    if(!(x_currentPageXML.getAttribute("judge") == "true" || x_currentPageXML.getAttribute("judge") == undefined)){
+				judge = false;
+			}
 			
 			// function called every time the page is viewed after it has initially loaded
             this.pageChanged = function () {
@@ -99,8 +103,7 @@
 					for (x = 0; x < answers[j].options.length; x++) {
 						var givenAnswer = x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined ? inputs[i] : inputs[i].toLowerCase(),
 							correctAnswer = x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined ? answers[j].options[x].trim() : answers[j].options[x].trim().toLowerCase();
-						
-						if (givenAnswer === correctAnswer) {
+						if (givenAnswer === correctAnswer || !judge) {
 							if (answers[j].counter == 1) {
 								// probably a duplicate that will be marked wrong but continue checking in case more than 1 identical answer is allowed
 								isCorrect = true;
@@ -119,7 +122,7 @@
 					}
 				}
 				
-				if (!isCorrect) {
+				if (!isCorrect && judge) {
 					checkAnswers[i].comment = "Wrong Answer";
 				}
 				
@@ -133,12 +136,13 @@
 				var amountOfCorrect = 0,
 					checkAnswers = $pageContents.data('checkAnswers'),
 					inputs = $pageContents.data('inputs');
+
 				
 				for (i = 0; i < inputs.length; i++) {
-
 					var result = {
 						success: checkAnswers[i].correct,
-						score: checkAnswers[i].correct ? 100.0 : 0.0
+						score: checkAnswers[i].correct ? 100.0 : 0.0,
+						judge: judge
 					};
 					XTExitInteraction(x_currentPage, i, result, "", inputs[i], "", x_currentPageXML.getAttribute("trackinglabel"));
 
@@ -178,7 +182,11 @@
                 if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
                     this.weighting = x_currentPageXML.getAttribute("trackingWeight");
                 }
-                XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+				if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+					this.weighting= 0.0;
+				}
+				let nrInteractions = x_currentPageXML.getAttribute("numberAnswers") == "*"? $(x_currentPageXML).children().length : x_currentPageXML.getAttribute("numberAnswers");
+                XTSetPageType(x_currentPage, 'numeric', nrInteractions, this.weighting);
 
                 var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
                     $splitScreen = $("#pageContents .splitScreen");
@@ -310,7 +318,7 @@
 						} else {
 						
 							var tries;
-							if (x_currentPageXML.getAttribute("amountOfTries") != undefined && $.isNumeric(x_currentPageXML.getAttribute("amountOfTries"))) {
+							if (x_currentPageXML.getAttribute("amountOfTries") != undefined && $.isNumeric(x_currentPageXML.getAttribute("amountOfTries")) && judge) {
 								tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
 								$pageContents.data('amountofTries', $pageContents.data('amountofTries')-1);
 								
@@ -322,10 +330,21 @@
 							}
 
 							var blankAnswers = [];
-							for (i = 0; i < x_currentPageXML.getAttribute("numberAnswers"); i++) {
+							let numberAnswers = x_currentPageXML.getAttribute("numberAnswers") == "*"? answers.length : x_currentPageXML.getAttribute("numberAnswers");
+							for (i = 0; i < numberAnswers; i++) {
+								/* let answersString = "";
+								let answer = answers[i];
+								
+								for(j = 0; j < answer.options.length; j++){
+									if(answersString == ""){
+										answersString += answer.options[j];
+									}else {
+										answersString += ", " + answer.options[j];
+									}
+								} */
+								
 								blankAnswers.push("-");
 							}
-							
 							for (i = 0; i < blankAnswers.length; i++) {
 								XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", blankAnswers[i], $pageContents.data('correctOptionsFeedback'), x_currentPageXML.getAttribute("grouping"));
 							}
@@ -397,7 +416,7 @@
 
 													var givenAnswer = inputs[i];
 													var correctAnswer = answers[j].options[x].trim();
-													if (givenAnswer === correctAnswer) {
+													if (givenAnswer === correctAnswer || !judge) {
 														answers[j].counter2++;
 														amountOfGood++;
 														if (answers[j].counter2 > 1) {
@@ -417,7 +436,7 @@
 													var givenAnswer = inputs[i].toLowerCase();
 													var correctAnswer = answers[j].options[x].trim().toLowerCase();
 
-													if (givenAnswer === correctAnswer) {
+													if (givenAnswer === correctAnswer || !judge) {
 														answers[j].counter2++;
 														amountOfGood++;
 														if (answers[j].counter2 > 1) {
@@ -507,9 +526,11 @@
 									if (checkAnswers[i].correct === true) {
 										//disable the input field
 										$("#input-answer-" + i).prop('readonly', true);
-										$("#topXQ-result-" + i)
-											.removeClass("fa-x-cross")
-											.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+										if(judge) {
+											$("#topXQ-result-" + i)
+												.removeClass("fa-x-cross")
+												.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+										}
 										wrong --;
 									}else{
 										$("#topXQ-result-" + i)
@@ -585,21 +606,20 @@
         <div id="infoHolder" class="right">
             <div id="mainPanel" class="panel">
                 <fieldset class="noStyle">
-                    <h3 class="titleQuestion">
+
+                    <div class="titleQuestion">
                         <legend id="question"></legend>
-                    </h3>
-                    <div id="OptionHolder" class="question">
-
                     </div>
-					<button id="checkButton"></button>
+
+                    <div id="OptionHolder" class="question"></div>
+
+                    <button id="checkButton"></button>
                     <div id="attempts"></div>
-                    <div id="result" aria-live="polite">
+                    <div id="result" aria-live="polite"></div>
 
-                    </div>
-					<div id="correctAnswer" aria-live="polite">
-                    </div>
-                    <div id="mainFeedback" aria-live="polite">
-                    </div>
+                    <div id="correctAnswer" aria-live="polite"></div>
+                    <div id="mainFeedback" aria-live="polite"></div>
+
                 </fieldset>
             </div>
         </div>

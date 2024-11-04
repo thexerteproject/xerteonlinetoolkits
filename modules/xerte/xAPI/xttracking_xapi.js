@@ -86,11 +86,15 @@ function XApiTrackingState() {
     this.getSuccessStatus = getSuccessStatus;
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
+    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawScore = getdRawScore;
+    this.getdRawCompletionWeightedScore = getdRawCompletionWeightedScore;
     this.getdMinScore = getdMinScore;
     this.getdMaxScore = getdMaxScore;
     this.getScaledScore = getScaledScore;
+    this.getScaledCompletionWeightedScore = getScaledCompletionWeightedScore
     this.getRawScore = getRawScore;
+    this.getRawCompletionWeightedScore = getRawCompletionWeightedScore;
     this.getMinScore = getMinScore;
     this.getMaxScore = getMaxScore;
     this.setPageType = setPageType;
@@ -318,6 +322,14 @@ function XApiTrackingState() {
         return Math.round(this.getdScaledScore() * 100) / 100 + "";
     }
 
+    function getdScaledCompletionWeightedScore(){
+        return getdScaledScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getScaledCompletionWeightedScore(){
+        return Math.round(getdScaledCompletionWeightedScore() * 100) / 100 + "";
+    }
+
     function getdRawScore() {
         if (this.lo_type == "pages only") {
             if (this.getCompletionStatus() == 'completed')
@@ -354,6 +366,14 @@ function XApiTrackingState() {
 
     function getRawScore() {
         return Math.round(this.getdRawScore() * 100) / 100 + "";
+    }
+
+    function getdRawCompletionWeightedScore(){
+        return getdRawScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getRawCompletionWeightedScore(){
+        return Math.round(getdRawCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdMinScore() {
@@ -417,7 +437,6 @@ function XApiTrackingState() {
 
         sit.exitInteraction(result, learneranswer, learneroptions, feedback,
             page_name);
-
         if (ia_nr < 0) {
             var temp = false;
             var i = 0;
@@ -1274,6 +1293,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         var pweighting = 1.0;
                         var nrinteractions = 1.0;
                     }
+                    let judge = result.judge ?? true;
                     switch (this.ia_type) {
                         case 'match':
                             // We have an options as an array of objects with source and target
@@ -1359,9 +1379,16 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 success: result.success,
                                 completion: true,
                                 extensions: {
-                                    "http://xerte.org.uk/result/match": scorm_lanswer
+                                    "http://xerte.org.uk/result/match": scorm_lanswer,
+																		"http://xerte.org.uk/result/judge": judge
                                 }
                             };
+														if(!judge){
+																// statement.result.score.raw = 100;
+																// statement.result.score.scaled = 1;
+																statement.result.success = true;
+																delete statement.result.score;
+														}
                             break;
                         case 'multiplechoice':
                             // We have an options as an array of numbers
@@ -1413,22 +1440,29 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 choices: scormArray,
                                 correctResponsesPattern: scorm_canswer
                             };
-                            statement.object.definition.name[state.language] = description;
-                            statement.result = {
-                                duration: calcDuration(this.start, this.end),
-                                score: {
-                                    raw: result.score,
-                                    min: 0.0,
-                                    max: 100.0,
-                                    scaled: result.score / 100.0
-                                },
-                                response: scorm_lanswer,
-                                success: result.success,
-                                completion: true,
-                                extensions: {
-                                    "http://xerte.org.uk/result/multiplichoice": scorm_lanswer
-                                }
-                            };
+														statement.object.definition.name[state.language] = description;
+														statement.result = {
+																duration: calcDuration(this.start, this.end),
+																response: scorm_lanswer,
+																score: {
+																		raw: result.score,
+																		min: 0.0,
+																		max: 100.0,
+																		scaled: result.score / 100
+																},
+																success: result.success,
+																completion: true,
+																extensions: {
+																		"http://xerte.org.uk/result/multiplichoice": scorm_lanswer,
+																		"http://xerte.org.uk/result/judge": judge
+																}
+														};
+														if(!judge){
+																// statement.result.score.raw = 100;
+																// statement.result.score.scaled = 1;
+																statement.result.success = true;
+																delete statement.result.score;
+														}
                             break;
                         case 'numeric':
                             statement.object.definition = {
@@ -1457,7 +1491,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     },
                                     response: this.score + "",
                                     success: (this.score >= state.lo_passed),
-                                    completion: true
+                                    completion: true,
+																		extensions: {
+																				"http://xerte.org.uk/result/judge": judge
+																		}
                                 };
                             } else { // Interaction mode
                                 statement.result = {
@@ -1471,7 +1508,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     },
                                     response: this.learnerAnswers + "",
                                     success: result.success,
-                                    completion: true
+                                    completion: true,
+																		extensions: {
+																				"http://xerte.org.uk/result/judge": judge
+																		}
                                 };
                             }
                             break;
@@ -1514,7 +1554,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     success: result.success,
                                     completion: true,
                                     extensions: {
-                                        "http://xerte.org.uk/result/text": this.learnerAnswers
+                                        "http://xerte.org.uk/result/text": this.learnerAnswers,
+																				"http://xerte.org.uk/result/judge": judge
                                     }
                                 };
                                 statement.object.definition = {
@@ -1542,7 +1583,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     completion: true,
                                     extensions: {
                                         "http://xerte.org.uk/result/fill-in": this
-                                            .learnerAnswers
+                                            .learnerAnswers,
+																				"http://xerte.org.uk/result/judge": judge
                                     }
                                 };
                             }
@@ -3249,6 +3291,11 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                 value = Math.round(value * 100.0) / 100.0;
                 var statement = {
                     actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel" : "opinion_class"
+                        }
+                    },
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/scored",
                         display: {
@@ -3646,7 +3693,7 @@ function XTTerminate() {
                         method: "POST",
                         url: url,
                         data: {
-                            grade: state.getdScaledScore()
+                            grade: state.getdScaledCompletionWeightedScore()
                         }
                     })
                     .done(function(msg) {
@@ -3877,6 +3924,7 @@ function XTResults(fullcompletion) {
 
         } else if (results.mode == "full-results") {
             var subinteraction = {};
+						let judge = true;
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
@@ -3928,6 +3976,8 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
+                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
+                        judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;
@@ -3966,9 +4016,12 @@ function XTResults(fullcompletion) {
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
+                subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
+                judge = judge && subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(
                     subinteraction);
             }
+						results.interactions[nrofquestions - 1].judge = judge;
         }
     }
     results.completion = completion;

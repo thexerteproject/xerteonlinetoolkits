@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" dublicate="false">
         <newNodes>
-            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Instruction" prompt= "Enter a Prompt"  align = "Left" panelWidth = "Medium" numberAnswers = "*" caseSensitivity="true"
+            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
 			 attemptLabel="Attempts remaining"
 			 correctAnswersLabel="Correct answers"
@@ -17,20 +17,19 @@
     <!-- TXQ PAGE=============================-->
 <topXQ menu = "Interactivity" menuItem = "Answer X of Y" hint = "Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#answerxofy" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_answer_x_of_y" remove="true">
     <name label = "Page Title" type = "TextInput" wysiwyg = "true"/>
-    <instruction label = "Instruction" type = "TextArea" height = "100"/>
-    <prompt label="Question" type="TextArea" height="100"/>
+    <instruction label="Page Text" type = "TextArea" height="100" placeholder="Enter text for the page here"/>
+    <prompt label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <numberAnswers label="Number of Answers" type="TextInput" defaultValue="*" tooltip="Number of answer fields shown on the page. Specify a number or enter * to create an answer field for every possible answer."/>
 	<caseSensitivity label="Case Sensitive" defaultValue="true" type="CheckBox" tooltip="Treat answers as case sensitive" mandatory="true"/>
 	
-	<feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="Enter feedback here"/>
+	<feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="" placeholder="Enter feedback here"/>
 	<showAnswers label="Show Answers" defaultValue="true" type="ComboBox" options="Show all answers,Show other possible answers,Show no answers" data="true,others,false" optional="true" tooltip="Control whether a list of answers (either all possible answers or only those not already found) is shown when activity is complete"/>
-	<delimiters type="group" label="Delimiters" optional="true">
-        <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
-    </delimiters>
-    <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" tooltip="Attempts allowed before feedback is given"/>
-    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+    <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
+    <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" condition="judge!='false'" tooltip="Attempts allowed before feedback is given"/>
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true" />
@@ -44,13 +43,13 @@
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
     <newNodes>
-        <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
+        <optionXQ><![CDATA[<option answer="" name="Answer" feedback="Feedback for this option" correct="false"/>]]></optionXQ>
     </newNodes>
 </topXQ>
 
     <optionXQ menuItem="Answer" icon="icBullet">
-        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true"/>
-        <name label="Label" type="TextInput" />
+        <name label="Label" type="TextInput" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
+        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true" placeholder="Enter an answer option here" tooltip="A comma-separated list of all possible answers for this item"/>
     </optionXQ>
 
 </wizard>

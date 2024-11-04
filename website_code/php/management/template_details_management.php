@@ -23,7 +23,7 @@ _load_language_file("/website_code/php/management/template_details_management.in
 
 require("../user_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("templateadmin")){
 
     $query="update {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails set description=?,
         date_uploaded=?,

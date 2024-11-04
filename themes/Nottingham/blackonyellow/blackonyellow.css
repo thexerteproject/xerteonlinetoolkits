@@ -612,6 +612,22 @@ div#shorturltodisplay a {
   background: #FFFF99;
 }
 
+.x_audioRecord_page .deleteClipBtn {
+  color: #000000;
+}
+
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus, .x_audioRecord_page .deleteClipBtn:active {
+  color: #1a1a1a;
+}
+
+.x_audioRecord_page .clip.highlight {
+  background-color: yellow;
+}
+
+.x_audioRecord_page #recBtn.recording .ui-icon, #recBtn.recording .ui-button-text {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   .tick, img.result {
     width: 2.5vmin;
