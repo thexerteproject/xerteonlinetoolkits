@@ -53,7 +53,7 @@ if ( !isset($_POST['database_created']) )
         $success = false;
     // create the database
     } else {
-        $query = "create database if not exists ?";
+        $query = "create database if not exists `?`";
 
         if ( $xot_setup->database->create($connection, $query, array(x_clean_input($_POST['database_name']))) )
         {
@@ -86,7 +86,7 @@ if ( !isset($_POST['database_created']) )
                     $ok = $xot_setup->database->runQuery( $query );
 
                     if ( $ok === false ) {
-                        $xot_db_error = 'Failed to execute query line 89 page2.php';
+                        $xot_db_error = "Failed to execute query '$query' at line 89 of page2.php";
                         $statement = null;
                         $connection = null;
                         $success = false;
