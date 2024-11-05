@@ -772,7 +772,7 @@ function statistics_prepare($template_id, $force=false)
             {
                 $info->published = false;
             }
-            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "")) && template_access_settings($template_id)!='Private') {
+            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "")) && (template_access_settings($template_id)!='Private' || $row['tsugi_published'])) {
                 $info->info = $html;
                 $info->xapi_linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
                 $info->xapi_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
