@@ -8,6 +8,7 @@ $model = $_POST['model'] ?? "gpt-4o";
 $assistantId = $_POST['asst_id'] ?? "asst_IyiBKzr8nvwddAzVKuh6OnlC";
 $context = $_POST['context'] ?? 'standard';  // Default to 'standard'
 $assistantOn = !empty($_POST['url']);
+$subtype = $_POST["prompt"]["subtype"] ?? "text_object";
 
 // URL selection based on whether assistant is activated
 $chat_url = $assistantOn ? "https://api.openai.com/v1/threads/runs" : "https://api.openai.com/v1/chat/completions";
@@ -18,9 +19,18 @@ $additionalInstructions = "When following XML examples, make sure you follow it 
 
 // Context-specific settings
 if ($context === 'standard') {
-    $q = LEARNING_PROMPT_IVOVERLAYPANEL;
-    $object = LEARNING_RESULT_IVOVERLAYPANEL;
-    $defaultPrompt = DEFAULT_PROMPT_IVOVERLAYPANEL;
+    switch ($subtype) {
+        case 'text_object':
+            $q = LEARNING_PROMPT_IVOVERLAYPANEL_TEXT;
+            $object = LEARNING_RESULT_IVOVERLAYPANEL_TEXT;
+            $defaultPrompt = DEFAULT_PROMPT_IVOVERLAYPANEL_TEXT;
+            break;
+        case 'mcq':
+            $q = LEARNING_PROMPT_IVOVERLAYPANEL_MCQ;
+            $object = LEARNING_RESULT_IVOVERLAYPANEL_MCQ;
+            $defaultPrompt = DEFAULT_PROMPT_IVOVERLAYPANEL_MCQ;
+            break;
+    }
 }
 elseif ($context === 'bootstrap') {
     $q = LEARNING_PROMPT_IVOVERLAYPANEL_BOOTSTRAP;

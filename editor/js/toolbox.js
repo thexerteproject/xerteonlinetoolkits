@@ -5320,7 +5320,8 @@ var EDITOR = (function ($, parent) {
                                         "nrq": lo_data[key].attributes["nrq"],
                                         "nra": lo_data[key].attributes["nra"],
                                         "nrt": lo_data[key].attributes["nrt"],
-                                        "range": lo_data[key].attributes["ageRange"]
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "subtype": lo_data[key].attributes["subtype"],
                                     }
                                     fileUrl = lo_data[key].attributes["file"];
                                     uploadPrompt = 'true';
