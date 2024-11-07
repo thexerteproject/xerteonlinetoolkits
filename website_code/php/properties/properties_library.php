@@ -131,11 +131,11 @@ function properties_display($xerte_toolkits_site, $template_id, $change, $msgtyp
 
     if(template_access_settings($template_id)!='Private'){
 
-        echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK;
+        echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . PROPERTIES_LIBRARY_PROJECT_LINKS;
 
         echo "<br/><a target=\"new\" href='" . $xerte_toolkits_site->site_url .
                 url_return("play", $template_id) . "'>" .
-                $xerte_toolkits_site->site_url . url_return("play", $template_id) . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a></p>";
+                $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a></p>";
 
 		$template = explode("_", get_template_type($template_id));
 
