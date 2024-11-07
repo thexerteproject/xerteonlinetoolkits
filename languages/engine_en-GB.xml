@@ -202,6 +202,7 @@
   <submitConfirmMsg label="Your answers have been submitted"/>
   <closeBtnLabel label="Close"/>
 
+  <bootstrapNavigation pages="Pages" sections="Sections" subSections="Sub-sections"/>
   <pageMenu label="Page menu"/>
   <top label="Top"/>
   <skip label="Skip to main content"/>
