@@ -502,7 +502,16 @@ h3.contentTitle {
         font-size: 2em;
     }
 
-    /* --SEARCH-------------------------------------------------------------- */
+    .navigator.carousel .autoPlayCtrls {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 5;
+        margin: 0;
+        opacity: 0.5;
+    }
+
+/* --SEARCH-------------------------------------------------------------- */
 
     #searchHolder .searchBtn, #searchHolder #partialMatchBtn {
         color: #fff;
