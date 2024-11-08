@@ -2823,6 +2823,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			if (this.nodeName == 'pdf'){
 
 				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
+				pane.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
 				pdf.push(pane.find('object'));
 
 			}
@@ -3037,6 +3038,8 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 			if (this.nodeName == 'pdf'){
 				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+				inner.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+
 			}
 
 			if (this.nodeName == 'xot'){
@@ -3167,6 +3170,8 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 			if (this.nodeName == 'pdf'){
 				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+				pane.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+
 			}
 
 			if (this.nodeName == 'xot'){
