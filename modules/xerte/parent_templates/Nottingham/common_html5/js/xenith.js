@@ -3366,7 +3366,12 @@ function x_changePageStep6() {
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
-            XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
+			var grouping = null
+			if (!x_isMenu() && x_currentPageXML.getAttribute("grouping") != null && x_currentPageXML.getAttribute("grouping") != "")
+			{
+				grouping = x_currentPageXML.getAttribute("grouping");
+			}
+            XTEnterPage(x_currentPage, label, grouping);
 
 			var modelfile = x_pageInfo[x_currentPage].type;
 			if (typeof modelfilestrs[modelfile] != 'undefined')
