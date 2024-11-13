@@ -958,6 +958,11 @@ x_makeAbsolute = function(html){
 
 // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
 function x_fixLineBreaks(text) {
+
+	// Fix annoying characters that can cause issues
+	// At this time the ascii character STX
+	text = text.replace(/\u0002/g, " ");
+
     var     split_up = text.split(/<\!\[CDATA\[|\]\]>/),
         temp, i, j, len, len2;
 
