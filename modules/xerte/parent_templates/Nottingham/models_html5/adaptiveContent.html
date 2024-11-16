@@ -296,7 +296,6 @@
                 });
             }
         }
-
         if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
             // Show mean_all and latest
             var myRadarChart = new Chart(ctx, {
@@ -666,8 +665,8 @@
         if (interaction.getAttribute("interactionType") == "answer") {
             for (var ci = 0; ci < interaction.children.length; ci++) {
                 c = interaction.children[ci];
-                if (!c.hasAttribute("conScoreAnswer")) {
-                    errors.push("No answer given.");
+                if (!c.hasAttribute("conScoreAnswer") && c.getAttribute("adaptiveContent") !== "" ) {
+                    errors.push("Interaction block is missing result label.");
                 }
             }
         }
@@ -3467,7 +3466,7 @@
           }
           else
           {
-            statements = data;
+              dataset = data;
           }
 
           //var dash = new ADL.XAPIDashboard();
@@ -3505,48 +3504,52 @@
             let labels = {};
             let barBorderColor = barColors.slice();
             if (!multipleAnswers) {
-                for (let i = 0; i < statements.length; i++) {
-                    if (!labels.hasOwnProperty(statements[i].result.response)) {
-                        labels[statements[i].result.response] = 1;
+                //todo fix
+                for (let i = 0; i < dataset.length; i++) {
+                    if (!labels.hasOwnProperty(dataset[i].result.response)) {
+                        labels[dataset[i].result.response] = 1;
                     } else {
-                        labels[statements[i].result.response] += 1;
+                        labels[dataset[i].result.response] += 1;
                     }
-                    if (statements[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
+                    if (dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
                     }
                 }
             } else {
-                for (let i = 0; i < statements.length; i++) {
-                    if (!labels.hasOwnProperty(statements[i].result.response)) {
-                        labels[statements[i].result.response] = 1;
+                for (let i = 0; i < dataset.length; i++) {
+                    if (!labels.hasOwnProperty(dataset[i].result.response)) {
+                        labels[dataset[i].result.response] = 1;
                     } else {
-                        labels[statements[i].result.response] += 1;
+                        labels[dataset[i].result.response] += 1;
                     }
-                    if (statements[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
+                    if (dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
                     }
                 }
             }
             var barData = [];
+            let totalActualResponseCounter = 0;
             //match used labels and # to xDomain
             if (xDomain.length == 0) {
                 xDomain = Object.keys(labels);
                 barData = Object.values(labels);
+                totalActualResponseCounter = barData.length;
             } else {
                 barData = new Array(xDomain.length).fill(0);
                 for (let i = 0; i < xDomain.length; i++) {
                     if (labels[xDomain[i]] !== undefined){
                         barData[i] = labels[xDomain[i]];
+                        totalActualResponseCounter += labels[xDomain[i]];
                     }
                 }
             }
             if (!multipleAnswers) {
                 for (let i = 0; i < barData.length; i++) {
-                    barData[i] = barData[i] / statements.length * 100;
+                    barData[i] = barData[i] / totalActualResponseCounter * 100;
                 }
             } else {
                 for (let i = 0; i < barData.length; i++) {
-                    barData[i] = barData[i] / statements.length * 100;
+                    barData[i] = barData[i] / totalActualResponseCounter * 100;
                 }
             }
 
