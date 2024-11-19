@@ -1023,7 +1023,10 @@ var EDITOR = (function ($, parent) {
                                 .append(button));
 
                         if (sorted_options['optional'][i].value.common) {
-                            table2.append(tablerow);
+                            // chapter folders don't share general optional properties with pages
+                            if (node_name != "chapter") {
+                                table2.append(tablerow);
+                            }
                         } else {
                             table.append(tablerow);
                         }
@@ -1534,13 +1537,14 @@ var EDITOR = (function ($, parent) {
     build = function (xml) {
         var xmlData = $.parseXML(xml);
         topLevelObject = xmlData.childNodes[0].nodeName;
+        let allChildPages = [];
         var tree_json = toolbox.build_lo_data($(xmlData).find(topLevelObject), null),
 
         create_node_type = function (page_name, children) {
             // clone children
             var lchildren = children.slice();
 
-            // Check defaults, and see whther there are children, that are NOT new_nodes
+            // Check defaults, and see whether there are children, that are NOT new_nodes
             // As an example see tableData within table
             for (var i=0; i<wizard_data[topLevelObject].new_nodes.length; i++)
             {
@@ -1566,6 +1570,15 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
+
+            // everything that's accepted as a child of LO is also accepted as a child of a chapter
+            if (page_name == "learningObject") {
+                allChildPages = lchildren.slice();
+                allChildPages.splice($.inArray("chapter", allChildPages), 1);
+            } else if (page_name == "chapter" && allChildPages.length > 0) {
+                lchildren = allChildPages;
+            }
+
             return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: lchildren

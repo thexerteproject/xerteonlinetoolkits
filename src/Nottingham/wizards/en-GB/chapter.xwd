@@ -1,0 +1,18 @@
+<wizard menus="Chapters">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title" headerName=""/>]]></chapter>
+    </newNodes>
+  </pageWizard>
+
+  <!-- CHAPTER================================== -->
+
+  <chapter menu="Chapters" menuItem="Chapter" hint="Chapters are shown on the table of contents and can be used to group a number of related pages together" icon="icFolder" remove="true" deprecated="Chapters are still in development">
+
+    <name label="Chapter Title" type="TextInput" wysiwyg="true"/>
+    <includeInHeader label="Include in Header" type="CheckBox" conditionTrigger="true" defaultValue="false" tooltip="Include the chapter title in the header bar titles in the format 'Chapter title: Page title'"/>
+    <headerName label="Header Name" type="TextInput" wysiwyg="true" defaultValue="" condition="includeInHeader=='true'" tooltip="By default, when the chapter title is shown on the header bar before the page title, the full chapter title will be used. Specify a different chapter title for use on the header bar here, e.g. an abbreviated version"/>
+
+  </chapter>
+
+</wizard>
