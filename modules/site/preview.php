@@ -20,6 +20,7 @@
 
 
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
+require_once(dirname(__FILE__) .  '/../../website_code/php/config/popcorn.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
@@ -162,6 +163,9 @@ function show_preview_code($row)
     }else{
         $page_content = str_replace("%TWITTERCARD%", "", $page_content);
     }
+    // Check popcorn mediasite and peertube config files
+    $popcorn_config = popcorn_config($template_path_string . "common/", $version);
+    $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
 
     echo $page_content;
 }
