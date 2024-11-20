@@ -3201,7 +3201,7 @@ function x_passwordPage(pswds) {
 					if ($.inArray(pswdEntered, pswds) >= 0) {
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						x_pageInfo[x_currentPage].passwordPass = true;
-						x_pageDiv.css("height", "");
+						$x_pageDiv.css("height", "");
 						$pswdBlock.remove();
 						x_addCountdownTimer();
 						x_addNarration('x_changePageStep6', '');
