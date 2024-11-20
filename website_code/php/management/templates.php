@@ -51,7 +51,7 @@ if (is_user_permitted("templateadmin")) {
 
     echo "<div class=\"main_admin_block\"><p>" . TEMPLATE_ADD_EXPLANATION .
     "</p>" .
-    "<form action='javascript:template_submit()' method='post' enctype='multipart/form-data' id='form-template-upload'>" .
+    "<form id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
         "<p>
             <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATENAME . "<br>
@@ -59,7 +59,7 @@ if (is_user_permitted("templateadmin")) {
             <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION . "<br>
         </p>
         <div class=\"management_input\"><p>" . TEMPLATE_UPLOAD_WAIT ."</p>
-        <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
+        <button type='button' id='upload-button' onclick='template_submit()' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></div>";
 
     echo "<div class=\"admin_block\"><p>" . TEMPLATE_MANAGE . "</p>";
