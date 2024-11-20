@@ -58,7 +58,7 @@ if (is_user_permitted("templateadmin")) {
             <input class='management_input' type='text' name='templateDisplayname'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME . "<br>
             <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION . "<br>
         </p>
-        <div class=\"management_input\"><p>" . TEMPLATE_UPLOAD_WAIT ."</p>
+        <!--div class=\"management_input\"><p>" . TEMPLATE_UPLOAD_WAIT ."</p-->
         <button type='button' id='upload-button' onclick='template_submit()' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></div>";
 
