@@ -137,7 +137,7 @@ class XerteXWDBuilder
 			print("The file is not a proper model .xwd file. Root node of the XML should be 'wizard'\n");
 			return -1;
 		}
-		if (strlen($xwd['menus']) == 0)
+		if (!isset($xwd['menus']) || strlen($xwd['menus']) == 0)
 		{
 			if ($verbose == 'true')
 			{
@@ -170,7 +170,7 @@ class XerteXWDBuilder
 		}
         // loop over the newnodes in wizard xwd, and make sure that 1 node has the same name as the model/xwd file or the 'modelFile' attribute
         $found = 'false';
-        if (strlen($xwd['modelFile']) == 0)
+		if (!isset($xwd['modelFile']) || strlen($xwd['modelFile']) == 0)
         {
             $pos = strrpos($fname, '.');
             $nodeName = substr($fname, 0, $pos);
