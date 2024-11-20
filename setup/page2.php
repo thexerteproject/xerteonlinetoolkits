@@ -22,6 +22,7 @@ session_start();
 // prevent PDO warning notices
 // error_reporting(0);
 global $dberr;
+global $xerte_toolkits_site;
 $success       = true;
 $xot_error_tag = 'p';
 $xot_error_css = 'setup_error';
@@ -53,13 +54,16 @@ if ( !isset($_POST['database_created']) )
         $success = false;
     // create the database
     } else {
-        $query = "create database if not exists `?`";
+        $dbname = x_clean_input($_POST['database_name']);
+        // Remove ` characters from the data basename if detected
+        $dbname = str_replace('`', '_', $dbname);
+        $query = "create database if not exists `{$dbname}`";
 
-        if ( $xot_setup->database->create($connection, $query, array(x_clean_input($_POST['database_name']))) )
+        if ( $xot_setup->database->create($connection, $query, array()) )
         {
             // set the database name - for the next conncection test and session variables
-            $xerte_toolkits_site->database_name = x_clean_input($_POST['database_name']);
-            $xot_setup->database->setName( x_clean_input($_POST['database_name']) );
+            $xerte_toolkits_site->database_name = $dbname;
+            $xot_setup->database->setName( $dbname );
 
             // display error if database not created            
             if ( !$statement = $xot_setup->database->connect() ) 
