@@ -633,7 +633,7 @@ var EDITOR = (function ($, parent) {
             return false;
         }
 
-        if (!confirm(language.Alert.deletenode.confirm.prompt)) {
+        if (!confirm(nodeName == "chapter" ? language.Alert.deletenode.confirm.chapterPrompt : language.Alert.deletenode.confirm.prompt)) {
             return;
         }
 
