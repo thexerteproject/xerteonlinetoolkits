@@ -79,17 +79,25 @@
   color: $whiteorlightest;
   font-weight: bold;
 }
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: $whiteorlightest;
   color:$blackordarkest;
 }
-#menuItems .menuItem:hover {
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
   background: darken($lightestcolor,30);
   color:$whiteorlightest;
 }
 
-#menuItems .menuItem.current {
-  border: 2px solid darken($lightestcolor,40);
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+  border: 1px solid darken($lightestcolor,40);
+}
+
+.chapterPageHolder.ui-accordion-content {
+  background: $whiteorlightest;
+}
+
+#menuItems .chapterPageHolder .menuItem {
+  border: 1px solid transparent;
 }
 
 //*****SIDE BAR****/

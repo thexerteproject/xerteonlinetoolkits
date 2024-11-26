@@ -79,20 +79,24 @@
   color: $whiteorlightest;
   font-weight: bold;
 }
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: $blackordarkest;
   color:$whiteorlightest;
+  border: none !important;
 }
-#menuItems .menuItem:hover {
+.chapterPageHolder {
+  border-color:  darken($lightestcolor, 70%);
+}
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
   background: lighten($blackordarkest,40);
   color:$whiteorlightest;
 }
-#menuItems .menuItem:focus {
+#menuItems .menuItem:focus, #menuItems .chapterItem:focus {
   background: lighten($blackordarkest,40);
   color:$whiteorlightest;
 }
 
-#menuItems .menuItem.current {
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
   border: 2px solid darken($lightestcolor,40);
 }
 

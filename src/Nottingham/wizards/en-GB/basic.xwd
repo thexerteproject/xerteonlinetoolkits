@@ -52,11 +52,12 @@
 	</navGroup>
 	
 	<toc type="group" label="Table of Contents" optional="true" tooltip="Customise the appearance of the table of contents / page menu">
-		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'" tooltip="Number pages shown on the table of contents / page menu"/>
-		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" condition="navigation!='Historic'" tooltip="Tick pages on the table of contents / page menu when they have been viewed"/>
 		<tocTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="navigation=='Linear'||navigation=='LinearWithHistoric'||navigation==undefined" optional="true" tooltip="Determines where the table of contents opens"/>
+		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'" tooltip="Tick pages on the table of contents / page menu when they have been viewed"/>
+		<pageTickPostion label="Tick Position" type="ComboBox" data="before,after" options="Before Page Name,After Page Name" defaultValue="after" condition="navigation!='Historic'&amp;&amp;pageTick=='true'" optional="true"/>
+		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'" tooltip="Number pages shown on the table of contents / page menu"/>
 		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
-			<menuImage optional="true" type="media" label="Image" defaultValue="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
+			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
 			<menuImageAlt label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuImageProperties=='Use Panel'" optional="true"/>
 			<menuImageProperties optional="true" type="ComboBox" label="Position" conditionTrigger="true" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
 		</menuImageGroup>
@@ -66,7 +67,7 @@
 		<homePageLink optional="true" type="CheckBox" label="Link Project Title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the project title a link which returns users to the home page" />
 		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="Select which page is classed as the home page (linked to from project title or home button when navigation is set to 'Historic'). The first page will be the home page if no page selected here."/>
 	</homePageGroup>
-	
+
 	<progressBar optional="true" type="ComboBox" options="Show progress bar,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress Bar" defaultValue="pBar" width="100" tooltip="Add a progress bar (indicating the percentage completed) to the footer bar"/>
 	
 	<footerToolsGroup type="group" label="Footer Tools" optional="true" tooltip="The footer tools are the buttons that normally appear on the bottom left of your project, such as Assessibility Options and Glossary. These options allow you to set the initial visibility state of these buttons and customise the show/hide footer tools button.">
@@ -131,7 +132,7 @@
 		<pageIntroIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
-	
+
 	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing buttons which would normally be found on the footer bar.">
 		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>

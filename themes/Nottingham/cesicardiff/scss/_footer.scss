@@ -75,8 +75,11 @@
   color: $whiteorlightest;
   font-weight: bold;
 }
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: $whiteorlightest;
+  color:$blackordarkest;
+}
+#menuItems .chapterItem a {
   color:$blackordarkest;
 }
 #menuItems .menuItem:hover {
@@ -85,7 +88,7 @@
 }
 
 #menuItems .menuItem.current {
-  border: 2px solid darken($lightestcolor,40);
+  border: 2px solid $darkestcolor;
 }
 
 
