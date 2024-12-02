@@ -466,7 +466,14 @@ if (substr($filename, strlen($filename) - 3, 3) === "zip") {
 
             $y = $x['file_name'];
             if (!(strpos($y, "media/") === false)) {
-                $string = $zip->unzip($y, false, 0777);
+                // if last charcter is not '/' then it is a file and we can unzip it
+                if (substr($y, -1) !== "/") {
+                    $string = $zip->unzip($y, false, 0777);
+                }
+                else
+                {
+                    $string = false;
+                }
                 $file_to_create = array($y, $string, "media");
                 if ($file_to_create[0] != "") {
                     $pos = strrpos($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], '/');
@@ -477,14 +484,16 @@ if (substr($filename, strlen($filename) - 3, 3) === "zip") {
                             mkdir($dir, 0777, true);
                         }
                     }
+                    if ($string !== false) {
 
-                    $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], "w");
+                        $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], "w");
 
-                    fwrite($fp, $file_to_create[1]);
+                        fwrite($fp, $file_to_create[1]);
 
-                    fclose($fp);
+                        fclose($fp);
 
-                    chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0777);
+                        chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0777);
+                    }
                 }
             }
 
