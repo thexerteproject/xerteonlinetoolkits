@@ -71,7 +71,7 @@ var x_languageData  = [],
 		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
 	],
 	x_sideBarBtns = [];
-	
+
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
@@ -3495,7 +3495,7 @@ function x_setUpLightBox() {
 	if (x_currentPageXML != undefined && (x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
 		
 		// use the x_noLightBox class in page models to force images to not open in lightboxes
-		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
+		$("#pageContents img:not(.x_noLightBox), .x_popupDialog img:not(.x_noLightBox)").each(function( index ) {
 			var $this = $(this);
 			if ($this.closest('a').length == 0) {
 				if (!$this.parent().hasClass('lightboxWrapper') && $this.parents('.ui-draggable').length == 0) {
@@ -4000,7 +4000,7 @@ function x_loadPageBg(loadModel) {
 
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
 		if ($("#pageBg" + x_currentPage).length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
-			$(".grayscale:not(#x_mainBg):not('[id]')").addClass("pageBg").attr("id", "pageBg" + x_currentPage);
+			$(".grayscale:not(#x_mainBg):not([id])").addClass("pageBg").attr("id", "pageBg" + x_currentPage);
 			$pageBg = $("#pageBg" + x_currentPage);
 			$pageBg.css("visibility", "visible");
 		}
