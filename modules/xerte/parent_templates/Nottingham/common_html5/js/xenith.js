@@ -886,28 +886,30 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
 window.onhashchange = function() {
+	// ignore if triggered by the skip link
+	if (window.location.hash != "#pageContents") {
+		if (x_params.forcePage1 == undefined || x_params.forcePage1 != 'true') {
+			var temp = getDeepLink(window.location.hash);
+			if (temp.length > 1) {
+				x_deepLink = temp[1];
+			}
 
-	if (x_params.forcePage1 == undefined || x_params.forcePage1 != 'true') {
-		var temp = getDeepLink(window.location.hash);
-		if (temp.length > 1) {
-			x_deepLink = temp[1];
+			var pageInfo = getHashInfo(temp[0]);
+
+			if (pageInfo !== false) {
+				x_navigateToPage(false, {type: "index", "ID": pageInfo}, false);
+			}
 		}
-		
-		var pageInfo = getHashInfo(temp[0]);
 
-		if (pageInfo !== false) {
-			x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+		// force lightbox to close
+		// catch error  - in case we're in an iframe, i.e. bootstrap or LMS LTI link
+		try {
+			if (parent.window.$.featherlight.current()) {
+				parent.window.$.featherlight.current().close();
+			}
+		} catch (e) {
 		}
 	}
-	
-	// force lightbox to close
-	// catch error  - in case we're in an iframe, i.e. bootstrap or LMS LTI link
-	try {
-		if (parent.window.$.featherlight.current()) {
-			parent.window.$.featherlight.current().close();
-		}
-	}
-	catch(e) {}
 }
 
 // Get the page info from the URL (called on project load & when page changed via browser fwd/back btns)
@@ -915,8 +917,8 @@ function getHashInfo(urlHash) {
 	if (urlHash.length > 0) {
 		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
 			thisPage;
-		
-		if (pageLink.substring(0,4) == "page") { // numeric page number e.g. URL/play_123#page5
+
+		if (pageLink.substring(0,4) == "page" && pageLink != "pageContents") { // numeric page number e.g. URL/play_123#page5
 			var tempNum = Number(pageLink.substring(4));
 			if (tempNum < 1 || tempNum > x_normalPages.length) {
 				thisPage = false;
