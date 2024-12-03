@@ -1571,7 +1571,7 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, sourceContext, assistantPrompt, baseUrl, useContext) {
+    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, textSnippet, sourceContext, assistantPrompt, baseUrl, useContext) {
         return new Promise((resolve, reject) => {
             try {
                 // Call aiAPI.php via jQuery's AJAX method
@@ -1589,6 +1589,7 @@ var EDITOR = (function ($, parent) {
                         prompt: p,
                         api: api_choice,
                         url: fileUrl,
+                        textSnippet:  textSnippet,
                         context: sourceContext,
                         assistantPrompt: assistantPrompt,
                         baseUrl: baseUrl,
@@ -1672,7 +1673,7 @@ var EDITOR = (function ($, parent) {
             complete: function() {
                 // This function runs after the AJAX request completes (whether success or error)
                 $('body').css("cursor", "default");
-                console.log("Pexels API request completed.");
+                console.log("Image API request completed.");
             }
         });
         },

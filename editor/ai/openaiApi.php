@@ -144,9 +144,6 @@ class openaiApi
         if ($resultConform->error) {
             return (object) ["status" => "error", "message" => "error on api call with type:" . $result->error->type];
         }
-        //if (!$this->conform_to_model($resultConform)){
-        //    return (object) ["status" => "error", "message" => "answer does not match model"];
-        //}
         return $resultConform;
     }
 
@@ -644,7 +641,69 @@ class openaiApi
             return "Failed to save the transcript.";
         }
     }
+    private function describeImage($filePath){
+        // Read and encode the image in Base64
+        $imageData = base64_encode(file_get_contents($filePath));
 
+        // Prepare the authorization header
+        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openAI_key;
+
+        // Define the API URL
+        $url = "https://api.openai.com/v1/chat/completions";
+
+        // Prepare the payload with the Base64 image data
+        $payload = json_encode([
+            "model" => "gpt-4o-mini",
+            "messages" => [
+                [
+                    "role" => "user",
+                    "content" => [
+                        [
+                            "type" => "text",
+                            "text" => "What’s in this image?"
+                        ],
+                        [
+                            "type" => "image_url",
+                            "image_url" => [
+                                "url" => "data:image/jpeg;base64," . $imageData
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            "max_tokens" => 300
+        ]);
+
+        // Initialize cURL session
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [
+            $authorization,
+            "Content-Type: application/json"
+        ]);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+
+        // Execute the request and capture the response
+        $result = curl_exec($curl);
+
+        // Check if cURL executed without errors
+        if ($result === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            throw new Exception("cURL Error: $error");
+        }
+
+        // Close cURL session
+        curl_close($curl);
+
+        // Decode the response and return only the description text
+        $decodedResponse = json_decode($result, true);
+        $descriptionOnly = $decodedResponse['choices'][0]['message']['content'] ?? null;
+
+        return $descriptionOnly;
+    }
     private function extractAudio($videoUrl) {
         // Generate a unique output file name
         $outputFileName = 'output_audio_' . uniqid() . '.mp3';
@@ -890,7 +949,7 @@ class openaiApi
 
     //public function must be ai_request($p, $type) when adding new api
     //todo Timo maybe change this to top level object and extend with api functions?
-    public function ai_request($p, $type, $uploadUrl, $baseUrl, $useContext)
+    public function ai_request($p, $type, $uploadUrl, $textSnippet, $baseUrl, $useContext)
     {
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
@@ -960,7 +1019,7 @@ class openaiApi
 
         $linkSource = $this->isUrl($uploadUrl);
 
-        if ($uploadUrl!=null){
+        if (($uploadUrl!=null) || ($textSnippet!=null)){
             if ($linkSource){
                 try {
                     $uploadUrl = $this->downloadVideo($uploadUrl);
@@ -973,6 +1032,17 @@ class openaiApi
 
             $videoMimeTypes = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime', 'application/octet-stream'];
             $audioMimeTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
+            $imageMimeTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/webp',
+                'image/bmp',
+                'image/tiff',
+                'image/svg+xml',
+                'image/x-icon', // for .ico files
+                'application/octet-stream' // occasionally used for binary image uploads
+            ];
             $textMimeTypes = [
                 'application/pdf',          // PDF
                 'text/plain',               // TXT
@@ -987,7 +1057,19 @@ class openaiApi
                 'application/vnd.openxmlformats-officedocument.presentationml.presentation' // PPTX
             ];
 
-            $filePath = $this->prepareURL($uploadUrl);
+            if ($textSnippet != null) {
+                $baseUrl = rtrim($baseUrl, '/'); // Trim any trailing slash that might be left
+                // Define the file name and path
+                $fileNameSnippet = "snippetFile.txt";
+                $filePathSnippet = $this->prepareURL($baseUrl . '/media');
+                $finalPathSnippet = $filePathSnippet . '/' . $fileNameSnippet;
+                $filePath = $finalPathSnippet;
+                file_put_contents($finalPathSnippet, $textSnippet);
+            } else {
+                $filePath = $this->prepareURL($uploadUrl);
+            }
+
+
             // Get MIME type of the file
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             //$mimeType = finfo_file($finfo, $filePath);
@@ -1099,43 +1181,23 @@ class openaiApi
                         }
                         $delete = $this->deleteFile($fileId);
                     }
+                    if ($textSnippet!=null){
+                        $deleteLocal = $this->deleteLocalFile($finalPathSnippet );
+                    }
                 }
+            } elseif (in_array($mimeType, $imageMimeTypes)) {
+                // If it's an image file, we: 1. Get description. 2. Add description to prompt. 3. In pages such as text page, request description, otherwise use as context.
+                $imageDescription = $this->describeImage($filePath);
+                $prompt = $prompt . " The following is a description of an image I am using as a source for this content. Please make use of the image description as CONTENT when creating the xml: [IMAGE DESCRIPTION: START]\n" . $imageDescription . "\n [IMAGE DESCRIPTION: END]";
+                $results[] = $this->POST_OpenAi_Assistant($prompt, $this->preset_models->type_list[$type]);
             } else {
                 // If the file does not fit any of the above categories
-                echo "The file type is not supported.";
-                // Optionally add code for handling other types of files or just leave as is / do nothing
-                //TODO ALEK: add A sort of default behavior - if the file type is not yet supported, try uploading it anyway.
+                $results[]=["status" => "error", "message" => "The file type is not supported."];
             }
 
         }
         elseif (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])) {
-            //If a file doesn't need to be uploaded (assuming the assistant has pre-made instructions or another reason), skip the upload step and call assisstant directly
-            //only when the assistant is specifically specified/requested - i.e. learning objects
-                /*$filePath = $this->prepareURL($uploadUrl);
-                $fileId = "";
-                $fileId = $this->fileUpload($filePath);
-                if ($fileId!=""){
-                    if (!$this->vectorStorageAttached($this->preset_models->type_list[$type]['payload']['assistant_id'])){
-                        $vectorStorageId = $this->createVectorStorage();
-                        $deleteVectorStorage = true; //if a vector storage is created, this signifies it should be deleted
-                    }
-                    else
-                    {
-                        $vectorStorageId = vectorStorageAttached($this->preset_models->type_list[$type]['payload']['assistant_id']);
-                        $deleteVectorStorage = false; //if a vector storage already exists, this signifies to only delete the uploaded file and to not tamper with the rest
-                    }
-                    $vectorFileId = $this->createVectorStoreFile($fileId, $vectorStorageId);
-                    $this->attachStorageToAssistant($this->preset_models->type_list[$type]['payload']['assistant_id'], $vectorStorageId);
-                }*/
                 $results[] = $this->POST_OpenAi_Assistant($prompt, $this->preset_models->type_list[$type]);
-                /*if ($fileId!=""){
-                    if ($deleteVectorStorage){
-                        $detatchment = $this->detachStorageFromAssistant($this->preset_models->type_list[$type]['payload']['assistant_id'], $vectorStorageId);
-                        $deletion = $this->deleteVectorStorage($vectorStorageId);
-                    }
-                    $delete = $this->deleteFile($fileId);
-                }*/
-
         }
         else {
             //Post using non-assistant chat completion endpoint
@@ -1161,6 +1223,7 @@ class openaiApi
         //return "<". $type ." >" . $answer. "</". $type .">";
         $answer = $this->removeBracketsAndContent($answer);
         $answer = $this->cleanXmlCode($answer);
+        $answer = preg_replace('/&(?!amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
         return $answer;
     }
 

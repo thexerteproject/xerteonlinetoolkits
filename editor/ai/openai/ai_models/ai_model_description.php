@@ -1,5 +1,4 @@
 <?php
-//quiz model using gpt-3.5 turbo
 require_once(dirname(__FILE__) . "/../../../../config.php");
 _load_language_file("/editor/ai_models/openai_model_description_ai.inc");
 
@@ -7,7 +6,7 @@ _load_language_file("/editor/ai_models/openai_model_description_ai.inc");
 $model = $_POST['model'] ?? "gpt-4o";
 $assistantId = $_POST['asst_id'] ?? "asst_IyiBKzr8nvwddAzVKuh6OnlC";
 $context = $_POST['context'] ?? 'standard';  // Default to 'standard'
-$assistantOn = !empty($_POST['url']);
+$assistantOn = !empty($_POST['url']) || !empty($_POST['textSnippet']);
 
 // URL selection based on whether assistant is activated
 $chat_url = $assistantOn ? "https://api.openai.com/v1/threads/runs" : "https://api.openai.com/v1/chat/completions";
