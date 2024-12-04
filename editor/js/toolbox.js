@@ -4980,7 +4980,6 @@ var EDITOR = (function ($, parent) {
                     .click({key: key}, async function(event) {
                         // Disable the button to prevent multiple clicks
                         html.prop('disabled', true);
-
                         var type = lo_data[key].attributes.nodeName; //get the node-type
                         var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                         var fileUrl = lo_data[key].attributes["file"];
@@ -5004,14 +5003,6 @@ var EDITOR = (function ($, parent) {
                         console.log(type);
                         if (sourceContext === "standard"){
                             switch (type) {
-                                case 'crossword':
-                                    constructorObject = {
-                                        "subject": lo_data[key].attributes["subject"],
-                                        "nrw": lo_data[key].attributes["amountOfWords"],
-                                        "range": lo_data[key].attributes["ageRange"],
-                                        "eduLevel": lo_data[key].attributes["eduLevel"],
-                                    };
-                                    break;
                                 case 'quiz':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
@@ -5164,13 +5155,8 @@ var EDITOR = (function ($, parent) {
                                         "eduLevel": lo_data[key].attributes["eduLevel"],
                                     }
                                     break;
+                                case 'crossword':
                                 case 'wordsearch':
-                                    constructorObject = {
-                                        "subject": lo_data[key].attributes["subject"],
-                                        "nrw": lo_data[key].attributes["numberOfWords"],
-                                        "range": lo_data[key].attributes["ageRange"],
-                                    }
-                                    break;
                                 case 'hangman':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],

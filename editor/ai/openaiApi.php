@@ -1223,7 +1223,7 @@ class openaiApi
         //return "<". $type ." >" . $answer. "</". $type .">";
         $answer = $this->removeBracketsAndContent($answer);
         $answer = $this->cleanXmlCode($answer);
-        $answer = preg_replace('/&(?!amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
+        $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
         return $answer;
     }
 
