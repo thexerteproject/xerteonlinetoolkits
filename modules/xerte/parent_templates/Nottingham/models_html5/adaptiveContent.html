@@ -3335,12 +3335,12 @@
       $("#interaction_load_" + interactionIndex).remove();
       var answerLabelText = interaction.getAttribute("answerText");
       if (answerLabelText == undefined) {
-        answerLabelText = "Your answer is {0}";
+        answerLabelText = "Your answer is: {0}";
       }
 
       var nrParticipantsText = interaction.getAttribute("NrParticipantsText");
       if (nrParticipantsText == undefined) {
-        nrParticipantsText = "The number of participants is {0}";
+        nrParticipantsText = "The number of participants is: {0}";
       }
       var nrbars = interaction.getAttribute("graphNrDataPoints");
       if (nrbars == undefined) {
@@ -3452,21 +3452,20 @@
           if (multipleAnswers)
           {
             // Create pseudo dataset with statement for each answer
-            var dataset = [];
+            var answer_dataset = [];
             data.forEach(function(s){
               const answers = s.result.response.split('[,]');
               answers.forEach(function(a){
                 // clone statement
                 var statement = JSON.parse(JSON.stringify(s));
                   statement.result.response = a;
-                dataset.push(statement);
+                  answer_dataset.push(statement);
               });
             });
-            statements = dataset;
           }
           else
           {
-              dataset = data;
+              answer_dataset = data;
           }
 
           //var dash = new ADL.XAPIDashboard();
@@ -3505,25 +3504,25 @@
             let barBorderColor = barColors.slice();
             if (!multipleAnswers) {
                 //todo fix
-                for (let i = 0; i < dataset.length; i++) {
-                    if (!labels.hasOwnProperty(dataset[i].result.response)) {
-                        labels[dataset[i].result.response] = 1;
+                for (let i = 0; i < answer_dataset.length; i++) {
+                    if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
+                        labels[answer_dataset[i].result.response] = 1;
                     } else {
-                        labels[dataset[i].result.response] += 1;
+                        labels[answer_dataset[i].result.response] += 1;
                     }
-                    if (dataset[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
+                    if (answer_dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
                     }
                 }
             } else {
-                for (let i = 0; i < dataset.length; i++) {
-                    if (!labels.hasOwnProperty(dataset[i].result.response)) {
-                        labels[dataset[i].result.response] = 1;
+                for (let i = 0; i < answer_dataset.length; i++) {
+                    if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
+                        labels[answer_dataset[i].result.response] = 1;
                     } else {
-                        labels[dataset[i].result.response] += 1;
+                        labels[answer_dataset[i].result.response] += 1;
                     }
-                    if (dataset[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(dataset[i].result.response)] = "#484848";
+                    if (answer_dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
                     }
                 }
             }
