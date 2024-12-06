@@ -384,8 +384,8 @@
 		<collapse label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true" tooltip="Collapse all accordion panes initially" condition="type=='Accordion'"/>
 		
 		<autoPlayCarousel type="group" label="Auto-Play" optional="true" condition="type=='Carousel'">
-			<autoPlay label="Auto-Play" type="CheckBox" defaultValue="true" optional="true" condition="type=='Carousel'"/>
-			<delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="20" step="1" width="100" defaultValue="4" optional="true" condition="type=='Carousel'"/>
+			<autoPlay label="Auto-Play" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="type=='Carousel'"/>
+			<delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="20" step="1" width="100" defaultValue="4" optional="true" condition="type=='Carousel'&amp;&amp;autoPlay=='true'"/>
 		</autoPlayCarousel>
 
 		<newNodes>

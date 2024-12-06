@@ -1589,6 +1589,7 @@ function template_submit()
 {
 	var form = document.getElementById("form-template-upload");
 	var formData = new FormData(form);
+	$("#upload-button").prop('disabled', true);
 	$.ajax({
 		type: "POST",
 		processData: false,
@@ -1597,12 +1598,14 @@ function template_submit()
 		data: formData
 	})
 		.done(function(response){
+			//$("#upload-button").prop('disabled', false);
 			$("body").css("cursor", "default");
 			alert(response);
 			// Refresh templates list
 			templates_list();
 		})
 		.fail(function(response){
+			//$("#upload-button").prop('disabled', false);
 			$("body").css("cursor", "default");
 			alert(response);
 		});

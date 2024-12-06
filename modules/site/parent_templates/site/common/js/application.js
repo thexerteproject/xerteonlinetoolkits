@@ -2823,6 +2823,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			if (this.nodeName == 'pdf'){
 
 				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
+				pane.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
 				pdf.push(pane.find('object'));
 
 			}
@@ -3037,6 +3038,8 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 			if (this.nodeName == 'pdf'){
 				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+				inner.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+
 			}
 
 			if (this.nodeName == 'xot'){
@@ -3078,7 +3081,6 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 		}
 
 		carDiv.carousel('cycle');
-
 	}
 
 	var indicators = $('<ol class="carousel-indicators"/>');
@@ -3168,6 +3170,8 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 			if (this.nodeName == 'pdf'){
 				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+				pane.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+
 			}
 
 			if (this.nodeName == 'xot'){
@@ -3180,7 +3184,24 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 	});
 
-	carDiv.append(indicators);
+	if (node.attr('autoPlay') !== 'true') {
+		carDiv.append(indicators);
+	} else {
+		carDiv.append('<div class="autoPlayCtrls"><button class="playPauseBtn" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('pause') != null ? languageData.find("carousel")[0].getAttribute('pause') : 'Pause slideshow') + '"><span class="fa fa-pause"></span></button></div>');
+
+		carDiv.find('.playPauseBtn').click(function () {
+			if ($(this).find('.fa').hasClass('fa-pause')) {
+				$(this).find('.fa').removeClass('fa-pause').addClass('fa-play');
+				$(this).attr('aria-label', languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('play') != null ? languageData.find("carousel")[0].getAttribute('play') : 'Play slideshow');
+				carDiv.carousel('pause');
+			} else {
+				$(this).find('.fa').removeClass('fa-play').addClass('fa-pause');
+				$(this).attr('aria-label', languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('pause') != null ? languageData.find("carousel")[0].getAttribute('pause') : 'Pause slideshow');
+				carDiv.carousel('cycle');
+			}
+		});
+	}
+
 	carDiv.append(items);
 	carDiv.append( $('<button class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('prev') != null ? languageData.find("carousel")[0].getAttribute('prev') : 'Previous slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-left"></span></button>') );
 	carDiv.append( $('<button class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next" aria-label="' + (languageData.find("carousel")[0] != undefined && languageData.find("carousel")[0].getAttribute('next') != null ? languageData.find("carousel")[0].getAttribute('next') : 'Next slide') + '" aria-controls="car' + sectionIndex + '_' + itemIndex + 'Items"><span class="fa fa-chevron-right"></span></button>') );

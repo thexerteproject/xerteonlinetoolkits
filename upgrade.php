@@ -228,6 +228,9 @@ function _do_cleanup()
         'setup/xampp.txt',
         'setup/xampp_database.txt',
         'rloObject.js',
+        'package.json',
+        'package-lock.json',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/jsPDF/jspdf.min.js',
     );
 
     foreach ($filelist as $file)

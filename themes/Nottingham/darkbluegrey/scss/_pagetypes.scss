@@ -53,6 +53,12 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
   background: $contrastcolor;
   color:$whiteorlightest;
 }
+.ui-accordion .ui-accordion-content.chapterPageHolder {
+  background: $bodybackgroundcolor;
+}
+.ui-accordion .ui-accordion-content.chapterPageHolder button.menuItem {
+  border: none;
+}
 .ui-accordion .ui-accordion-header {
   border-radius: $smallroundedcorners;
   background: $contrastcolor;

@@ -146,6 +146,10 @@ $relreffedjsonstr = make_refs_local(urldecode($lo_data), $absmedia);
 
 file_put_contents($filenamejson, print_r($relreffedjsonstr, true));
 
+// Remove illegeal characters that we regurarly detect in the content because of copy and paste from other platforms
+// At this point only ASCII character STX (soft hyphen) is replaced by a hyphen
+$relreffedjsonstr = str_replace("\x02", "-", $relreffedjsonstr);
+
 $relreffedjson = json_decode($relreffedjsonstr);
 
 //_debug("upload: decoded json");

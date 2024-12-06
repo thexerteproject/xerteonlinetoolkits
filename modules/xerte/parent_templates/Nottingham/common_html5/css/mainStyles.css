@@ -1395,3 +1395,60 @@ a:focus .wcagLogo {
 [data-cke-editorplaceholder]::before {
 	padding: 0.3em;
 }
+
+
+/* page menu - moved from menu.css as the page model is no longer always loaded */
+#menuItems .menuItem, #menuItems .chapterItem {
+	width: 100%;
+	display: block;
+	margin-bottom: 5px;
+	text-align: left;
+	box-sizing: border-box;
+}
+
+#menuItems .chapterPageHolder .menuItem:last-of-type {
+	margin-bottom: 0;
+}
+
+#menuItems {
+	width: 100%;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+#menuItems .menuItem.current {
+	border: 2px solid #FF9900;
+}
+
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+	font-weight: bold;
+}
+
+#menuItems .menuItem .notvisited:not(.beforeText), #menuItems .chapterItem .notvisited:not(.beforeText) {
+	display: none;
+}
+
+#menuItems .menuItem .notvisited.beforeText:before, #menuItems .chapterItem .notvisited.beforeText:before {
+	content:"\f111";
+	font-weight: 300;
+	opacity: .1;
+}
+
+#menuItems .chapterHolder .chapterPageHolder {
+	padding: .1em;
+	box-sizing: border-box;
+	margin-bottom: 5px;
+}
+
+#menuItems .chapterHolder .chapterPageHolder .menuItem {
+	margin-right: 0;
+}
+
+#menuItems .chapterItem.ui-accordion-header-active {
+	margin-bottom: 0;
+}
+
+#menuItems .ui-accordion .ui-accordion-header .ui-icon {
+	left: 0.3em;
+}

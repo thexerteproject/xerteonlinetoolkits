@@ -1,0 +1,99 @@
+<vdex:vdex xmlns:vdex="http://www.imsglobal.org/xsd/imsvdex_v1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:zt="http://zthes.z3950.org/" profileType="flatTokenTerms">
+  <vdex:vocabName>
+    <vdex:langstring language="nl">BVE domeinoverstijgende vakken</vdex:langstring>
+  </vdex:vocabName>
+  <vdex:vocabIdentifier>bve_domeinoverstijgende_vakken</vdex:vocabIdentifier>
+  <vdex:term>
+    <vdex:termIdentifier>aa2f68ba-69e5-415d-8d9b-8d6ab98942b1</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Burgerschap</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>81a1f605-db58-448d-a1dc-da682316c505</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Duits</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>18f53978-1118-4051-a778-b8d7f60ca982</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Engels</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>9f4710e3-f173-404e-b12e-577657a5da04</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Frans</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>157a7262-bdfc-4714-9f9a-b75fef94c8a2</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Loopbaan</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>3401cf6e-82e4-404c-b216-b980ff407159</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Nederlands</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>e7ef4fc3-5bd3-4907-aacb-a0d5f74cef69</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Nederlands als tweede taal</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>b48fa351-4561-44c7-a071-ebfd6103eec3</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Rekenen</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>952bf604-cc38-44e3-889a-a9e74a18da8e</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Spaans</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:term>
+    <vdex:termIdentifier>7afbb7a6-c29b-425c-9c59-6f79c845f5f0</vdex:termIdentifier>
+    <vdex:caption>
+      <vdex:langstring language="nl">Wiskunde</vdex:langstring>
+    </vdex:caption>
+    <vdex:metadata>
+      <dc:source>http://purl.edustandaard.nl/begrippenkader</dc:source>
+    </vdex:metadata>
+  </vdex:term>
+  <vdex:metadata>
+    <zt:thesNote label="modified">2015-05-22</zt:thesNote>
+  </vdex:metadata>
+</vdex:vdex>

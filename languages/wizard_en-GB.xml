@@ -138,6 +138,7 @@
 		<deletenode>
 			<confirm>
 				<prompt>Do you want to delete the item?</prompt>
+				<chapterPrompt>Do you want to delete the chapter? All pages within the chapter will also be deleted.</chapterPrompt>
 				<title>Confirmation</title>
 			</confirm>
 			<error>

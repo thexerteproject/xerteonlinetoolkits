@@ -911,10 +911,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 #menuItems .menuItem {
   background: #ebebeb;
   border: 2px solid #ebebeb;
-  color: #000000;
 }
 
-#menuItems .menuItem:hover, #menuItems .menuItem:focus, #menuItems .menuItem:active {
+#menuItems .menuItem, #menuItems .chapterItem {
+  color: #000000;
+  border-radius: 0;
+}
+
+#menuItems .menuItem:hover, #menuItems .menuItem:focus, #menuItems .menuItem:active,
+#menuItems .chapterItem:hover, #menuItems .chapterItem:focus, #menuItems .chapterItem:active {
   background: #cfcfcf;
   color: #000000;
   border-color: #cfcfcf;
@@ -922,6 +927,26 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 
 #menuItems .menuItem.current {
   border: 2px solid #000000;
+}
+
+#menuItems .chapterHolder .chapterPageHolder {
+  border-radius: 0;
+  padding: 0;
+}
+
+#menuItems .chapterHolder .chapterItem a {
+  background: #cfcfcf;
+  border-color: #cfcfcf;
+  color: #000000;
+}
+
+#menuItems .chapterHolder .chapterItem.ui-state-active {
+  background: #cfcfcf;
+  border-color: #cfcfcf;
+}
+
+#menuItems .chapterHolder .chapterPageHolder.ui-accordion-content-active {
+  padding-top: 5px;
 }
 
 table.glossary tr td:first-child {
