@@ -1489,7 +1489,7 @@ function x_continueSetUp1() {
 						
 					} else if (introInfo.type == 'video') {
 
-						lb = $.featherlight($('<div id="pageIntroVideo"></div>'));
+						lb = $.featherlight('<div id="pageIntroVideo"></div>');
 
 						$('.featherlight-content').addClass('pageIntroVideo');
 
@@ -1707,16 +1707,27 @@ function x_continueSetUp1() {
 		}
 
 
-		// add optional progress bar
-		if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
-			//add a div for the progress bar
+		/// add optional progress bar to the footer bar
+		// x_params.progressBar is deprecated but will still work for older projects that still use this
+		if (((x_params.progressBar != undefined && x_params.progressBar != "") || x_params.progressBarType == 'true') && x_params.hideFooter != "true") {
 			$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
-			//add the progress bar
-			$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
-			if (x_params.progressBar =="pBarNoCounter") {
-				//remove page counter if that option selected
+			$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div>');
+
+			// add the x% COMPLETE text to the progress bar
+			if (x_params.progressBarPercentage != "false") {
+				$('#x_footerProgress').append('<p class="pbTxt"></p>');
+			}
+
+			// remove page counter if that option selected
+			// in newer projects this is unrelated to progress bar settings and is done below with x_params.pageCounter
+			if (x_params.progressBar == "pBarNoCounter") {
 				$("#x_pageNo").remove();
 			}
+		}
+
+		// hide page counter
+		if (x_params.pageCounter == "true") {
+			$("#x_pageNo").remove();
 		}
 
 		x_dialogInfo.push({type:'colourChanger', built:false});
@@ -3828,11 +3839,10 @@ function doPercentage() {
     var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
 		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.viewed !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
 
-	var progress = Math.round((pagesViewed * 100) / totalPages),
-		pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+	var progress = Math.round((pagesViewed * 100) / totalPages);
 
-    $(".pbBar").css({"width": progress + "%"});
-	$('.pbTxt').html(progress + "% " + pBarText);
+	$(".pbBar").css({"width": progress + "%"});
+	$('.pbTxt').html(progress + "% " + x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE"));
 }
 
 // function adds / reloads narration bar above main controls on interface
