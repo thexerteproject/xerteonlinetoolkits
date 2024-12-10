@@ -906,13 +906,13 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {

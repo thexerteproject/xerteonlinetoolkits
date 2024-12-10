@@ -817,8 +817,8 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {

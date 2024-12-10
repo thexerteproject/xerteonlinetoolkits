@@ -845,8 +845,8 @@ table.headerCol.shaded td.header {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
