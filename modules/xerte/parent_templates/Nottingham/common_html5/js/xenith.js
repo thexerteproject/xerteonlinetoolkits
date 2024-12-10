@@ -5750,6 +5750,8 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 		let $menuItemHolder = $menuItems;
 		let $currentChapter;
 		let chapterNum;
+		let tocNum = 0;
+		let subNum = 0;
 
 		// tick to show page / chapter has been viewed can be placed before or after the page title
 		const tickHtml = '<i class="viewTick fa fa-x-tick-circle notvisited" aria-hidden="true"></i>';
