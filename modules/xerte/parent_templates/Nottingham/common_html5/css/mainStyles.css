@@ -733,7 +733,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 }
 
 :not(.old) .x_pswdError {
-	text-align: centers;
+	text-align: center;
 }
 
 .x_pswdInput.old {
@@ -802,7 +802,7 @@ input#x_pagePswd.old {
 		"four   five   six   "
 		"seven  eight  nine  "
 		"unused zero   reset "
-		"button button button";1
+		"button button button";
 }
 
 .vault-door-dial{
@@ -977,21 +977,29 @@ button.customIconBtn:after {
 	}
 }
 
-.featherlight-content.pageIntroVideo.max {
+.featherlight-content.pageIntroVideo.max,
+.featherlight-content.splashVideo.max {
 	width: 90vw;
 	height: 90vh;
 }
 
-.featherlight-content.pageIntroVideo.hidden {
+.featherlight-content.pageIntroVideo.hidden,
+.featherlight-content.splashVideo.hidden {
 	opacity: 0;
 }
 
-.featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls {
+.featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls,
+.featherlight-content.splashVideo.youTube .mejs-layers, .featherlight-content.splashVideo.youTube .mejs-controls {
 	display: none;
 }
 
-.featherlight .featherlight-content.pageIntroVideo.max.youTube iframe {
+.featherlight .featherlight-content.pageIntroVideo.max.youTube iframe,
+.featherlight .featherlight-content.splashVideo.max.youTube iframe {
 	width: 100%;
+}
+
+.featherlight:has(.featherlight-content.splashVideo), .featherlight .featherlight-content.splashVideo {
+	background: white;
 }
 
 #x_headerBlock #x_pageIntroBtn {

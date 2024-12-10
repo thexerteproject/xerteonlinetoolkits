@@ -1655,7 +1655,7 @@ function x_continueSetUp1() {
 
 					} else if (thisPageIntro.type == 'video') {
 
-						$.featherlight($('<div id="pageIntroVideo"></div>'));
+						$.featherlight('<div id="pageIntroVideo"></div>');
 
 						$('.featherlight-content').addClass('pageIntroVideo');
 
@@ -3675,6 +3675,35 @@ function x_setUpPage() {
 				$x_introBtn
 					.data('autoOpen', true)
 					.click();
+			}
+		}
+
+		// show the video splash screen before the project is shown
+		if (x_params.splashVideo != undefined && x_params.splashVideo != "" && x_params.splashVideo.toLowerCase().indexOf(".mp4") != -1 && (x_params.splashShow == "always" || $.inArray(x_currentPage, x_normalPages) == 0)) {
+			// splash videos always auto-play with hidden controls and are closed when the video is finished
+			lb = $.featherlight('<div id="splashVideo"></div>', { openSpeed: 0, closeSpeed: 400 });
+
+			$('#splashVideo').parents('.featherlight-content').addClass('splashVideo');
+
+			$('#splashVideo')
+				.mediaPlayer({
+					type: 'video',
+					source: x_params.splashVideo,
+					width: '100%',
+					height: '100%',
+					pageName: 'splashVideo',
+					autoPlay: 'true',
+					autoNavigate: 'true',
+					muted: 'true'
+				});
+
+			$('#splashVideo .mejs-container .mejs-controls, #splashVideo .mejs-overlay-button, #splashVideo .mejs-overlay-loading').hide();
+
+			// customise the background colour of the splash video lightbox
+			if (x_params.splashBg != undefined && x_params.splashBg != '') {
+				const customStyle = 'background: ' + formatColour(x_params.splashBg);
+				const customHeaderStyle = '<style id="customSplashStyle">.featherlight:has(.featherlight-content.splashVideo), .featherlight .featherlight-content.splashVideo { ' + customStyle + '}</style>';
+				$('head').append(customHeaderStyle);
 			}
 		}
 

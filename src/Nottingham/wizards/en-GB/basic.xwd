@@ -133,6 +133,12 @@
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
 
+	<splashScreenGroup label="Video Splash Screen" type="group" optional="true" tooltip="Add a short, full screen 'splash' video that is shown and auto-played when the project first loads">
+	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file"/>
+	  <splashShow label="Show" type="ComboBox" defaultValue="first" options="When project loads on first page only,When project loads on any page" data="first,always" optional="true" tooltip="Determines whether the splash screen is shown everytime the project loads (even if the first page shown is not page one) or only when the first page shown is page one."/>
+	  <splashBg type="ColourPicker" label="Background Colour" defaultValue="" optional="true"/>
+	</splashScreenGroup>
+
 	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing buttons which would normally be found on the footer bar.">
 		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
