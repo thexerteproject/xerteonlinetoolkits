@@ -56,7 +56,10 @@
 		<tocTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="navigation=='Linear'||navigation=='LinearWithHistoric'||navigation==undefined" optional="true" tooltip="Determines where the table of contents opens"/>
 		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'" tooltip="Tick pages on the table of contents / page menu when they have been viewed"/>
 		<pageTickPostion label="Tick Position" type="ComboBox" data="before,after" options="Before Page Name,After Page Name" defaultValue="after" condition="navigation!='Historic'&amp;&amp;pageTick=='true'" optional="true"/>
-		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'" tooltip="Number pages on the table of contents / page menu"/>
+		<tocNumberGroup label="Numbering" type="group" optional="true" tooltip="Number pages and chapters on the table of contents / page menu">
+			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'"/>
+			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'&amp;&amp;tocNumbers=='true'"/>
+		</tocNumberGroup>
 		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
 			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
 			<menuImageAlt label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuImageProperties=='Use Panel'" optional="true"/>

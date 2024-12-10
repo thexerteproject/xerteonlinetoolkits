@@ -5766,7 +5766,14 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 					$menuItemHolder = $('<div class="chapterHolder"/>').appendTo($menuItems);
 
 					$currentChapter = $chapterItem.clone().appendTo($menuItemHolder);
-					$currentChapter.html('<a href="#">' + tickBefore + x_chapters[chapterNum].name + tickAfter + '</a>');
+
+					let pageNum = "";
+					if (x_params.tocNumbers == "true" && x_params.tocChapterNumbers == "true") {
+						tocNum++;
+						subNum = 0;
+						pageNum = tocNum + " ";
+					}
+					$currentChapter.html('<a href="#">' + tickBefore + pageNum + x_chapters[chapterNum].name + tickAfter + '</a>');
 
 					$menuItemHolder = $('<div class="chapterPageHolder"/>').appendTo($menuItemHolder);
 				}
@@ -5775,7 +5782,17 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			}
 
 			const $thisItem = $menuItem.clone().appendTo($menuItemHolder);
-			const pageNum = x_params.tocNumbers == "false" ? "" : (i+1) + ". ";
+
+			let pageNum = "";
+			if (x_params.tocNumbers == "true") {
+				if (x_params.tocChapterNumbers == "true" && $menuItemHolder.hasClass("chapterPageHolder")) {
+					subNum++;
+					pageNum = tocNum + "." + subNum + " ";
+				} else {
+					tocNum++;
+					pageNum = tocNum + " ";
+				}
+			}
 			$thisItem.data("pageIndex", i);
 			$thisItem.html(tickBefore + pageNum + x_pages[x_normalPages[i+pageNumOffset]].getAttribute("name") + tickAfter);
 		}
