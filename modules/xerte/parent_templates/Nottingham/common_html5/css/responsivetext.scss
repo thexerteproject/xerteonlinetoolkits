@@ -10,7 +10,7 @@ $perspectivesmedium:5.2vmin;
 $perspectivessmall:3.1vmin;
 
 // --@media TABLETS and above--------------------------------------------------------------
-@media (min-width: 768px) {
+@media (min-width: 768px) and (min-height: 550px) {
 //--start of text size changes-----------------------------------------
 p {
   font-size: $pagecontentslarge;
@@ -241,7 +241,16 @@ table {
   font-size: $pagecontentslarge;
 }
 
-//--end of text size changes-----------------------------------------
+#x_sideBar .ui-button-text, #x_sideBar .ui-accordion .ui-accordion-header a,
+#x_sideBar #x_sideBarBtnHolder button span.ui-button-text {
+  font-size: $pagecontentsmedium;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button, #x_sideBar.sideBarSmall #x_sideBarTocHolder button {
+  font-size: $pagecontentsmedium;
+}
+
+  //--end of text size changes-----------------------------------------
 }
 //--end of TABLETS and above-----------------------------------------
 

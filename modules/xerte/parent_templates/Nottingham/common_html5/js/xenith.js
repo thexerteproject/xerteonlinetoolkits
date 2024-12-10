@@ -64,14 +64,9 @@ var x_languageData  = [],
 		{name: 'saveSession',		defaultIconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
 		{name: 'glossary',			defaultIconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
 		{name: 'intro',				defaultIconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
-		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'},					// page introduction
-		{name: 'sideBarHideLeft',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
-		{name: 'sideBarHideRight',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
-		{name: 'sideBarShowLeft',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
-		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
-	],
-	x_sideBarBtns = [];
-
+		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
+	];
+	
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
@@ -513,6 +508,10 @@ x_projectDataLoaded = function(xmlData) {
 			x_normalPages.push(i);
 		}
 	}
+
+	// will a sidebar need to be built?
+	// need to know now as depending on how it's set up it can change the navigation and displayMode
+	XENITH.SIDEBAR.init();
 	
     if (x_normalPages.length < 2) {
         // don't show navigation options if there's only one page
@@ -521,16 +520,10 @@ x_projectDataLoaded = function(xmlData) {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
         }
-        if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
-            x_pages.splice(0, 0, "menu");
-            x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
-			
-			// adjust normal page indexes to take into account menu page
-			for (var i=0; i<x_normalPages.length; i++) {
-				x_normalPages.splice(i, 1, x_normalPages[i]+1);
-			}
-			x_normalPages.splice(0, 0, 0);
-        }
+
+		if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) {
+			XENITH.PAGEMENU.init("page");
+		}
     }
 
     if (x_params.fixDisplay != undefined) {
@@ -828,12 +821,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 	if (themeIcons != 'true' || themeInfo.imgbtns != 'true') {
 		themeIcons = false;
 	}
-	
-	// buttons on side bar will always use icons & not images
-	if (themeChg !== true) {
-		x_sideBarBtnInfo();
-	}
-	
+
 	for (let i=0; i<x_btnIcons.length; i++) {
 		x_btnIcons[i].customised = false;
 		x_btnIcons[i].btnImgs = false;
@@ -845,9 +833,10 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 			// a custom icon has individually been selected in editor for this button
 			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
 			x_btnIcons[i].customised = true;
-		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(tempName, x_sideBarBtns) != -1)) {
+
+		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && XENITH.SIDEBAR.btnIndex(tempName) != -1)) {
 			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
-			// either because update theme icons is checked or button is on side bar
+			// either because update theme icons is checked or button is on sidebar
 			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
 			x_btnIcons[i].customised = true;
 		} else if (themeInfo.imgbtns == 'true') {
@@ -863,7 +852,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 		// theme has been changed sometime after the project has already loaded
 		// change classes on interface buttons as new theme may use a different type of btn (FontAwesome / image)
 		var btns = [ { btn: $x_helpBtn, name: 'help' }, { btn: $x_introBtn, name: 'intro' }, { btn: $x_colourChangerBtn, name: 'accessibility' }, { btn: $x_nextBtn, name: 'next' }, { btn: $x_saveSessionBtn, name: 'saveSession' }, { btn: $x_glossaryBtn, name: 'glossary' } ];
-		
+
 		for (let i=0; i<btns.length; i++) {
 			if (btns[i].btn != undefined) {
 				const btnIcon = x_btnIcons.filter(function(icon){return icon.name === btns[i].name;})[0];
@@ -931,8 +920,7 @@ window.onhashchange = function() {
 			if (parent.window.$.featherlight.current()) {
 				parent.window.$.featherlight.current().close();
 			}
-		} catch (e) {
-		}
+		} catch (e) {}
 	}
 }
 
@@ -941,7 +929,7 @@ function getHashInfo(urlHash) {
 	if (urlHash.length > 0) {
 		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
 			thisPage;
-
+		
 		if (pageLink.substring(0,4) == "page" && pageLink != "pageContents") { // numeric page number e.g. URL/play_123#page5
 			var tempNum = Number(pageLink.substring(4));
 			if (tempNum < 1 || tempNum > x_normalPages.length) {
@@ -992,7 +980,7 @@ function x_fixLineBreaks(text) {
 	// At this time the ascii character STX (soft hyphen) -> replace with '-'
 	text = text.replace(/\u0002/g, "-");
 
-    var     split_up = text.split(/<\!\[CDATA\[|\]\]>/),
+    var split_up = text.split(/<\!\[CDATA\[|\]\]>/),
         temp, i, j, len, len2;
 
     for (i=0, len=split_up.length; i<len; i+=2) {
@@ -1183,7 +1171,7 @@ function x_setUp() {
 function x_desktopSetUp() {
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_cssBtn = $('<button id="x_cssBtn"></button>').prependTo($x_footerL);
-		
+
 		const maxBtnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
 		
 		$x_cssBtn
@@ -1227,7 +1215,7 @@ function x_desktopSetUp() {
 							});
 					}
 					$x_body.css("overflow", "auto");
-					
+
 					$(this)
 						.button({
 							icons:	{ primary: x_btnIcons.filter(function(icon){return icon.name === 'max';})[0].iconClass },
@@ -1373,7 +1361,7 @@ function x_KeepAlive()
 var setUpComplete = false;
 function x_continueSetUp1() {
 	if (setUpComplete == false) {
-		if (x_pageInfo[0].type == "menu") {
+		if (XENITH.PAGEMENU.menuPage) {
 			$x_pageNo.hide();
 			if (x_params.navigation == "Menu") {
 				$x_prevBtn.hide();
@@ -1384,7 +1372,7 @@ function x_continueSetUp1() {
 		} else if (x_params.navigation == "Historic") {
 			$x_pageNo.hide();
 		} else {
-			x_dialogInfo.push({type:'menu', built:false});
+			XENITH.PAGEMENU.init("dialog");
 		}
 
 		
@@ -1655,7 +1643,7 @@ function x_continueSetUp1() {
 
 					} else if (thisPageIntro.type == 'video') {
 
-						$.featherlight('<div id="pageIntroVideo"></div>');
+						$.featherlight($('<div id="pageIntroVideo"></div>'));
 
 						$('.featherlight-content').addClass('pageIntroVideo');
 
@@ -1707,7 +1695,7 @@ function x_continueSetUp1() {
 		}
 
 
-		/// add optional progress bar to the footer bar
+		// add optional progress bar to the footer bar
 		// x_params.progressBar is deprecated but will still work for older projects that still use this
 		if (((x_params.progressBar != undefined && x_params.progressBar != "") || x_params.progressBarType == 'true') && x_params.hideFooter != "true") {
 			$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
@@ -1723,6 +1711,7 @@ function x_continueSetUp1() {
 			if (x_params.progressBar == "pBarNoCounter") {
 				$("#x_pageNo").remove();
 			}
+
 		}
 
 		// hide page counter
@@ -1924,63 +1913,53 @@ function x_continueSetUp1() {
 			$x_nextBtn.addClass("imgIconBtn");
 		}
 
-		// icon & label can new be set up in editor but fall back to default if not set
-		let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
-		let menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+		if ($x_menuBtn.length > 0) {
+			// icon & label can new be set up in editor but fall back to default if not set
+			let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
+			let menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
-		if (x_params.navigation == "Historic") {
-			menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
-			menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
-			$x_menuBtn.addClass("x_home");
-		}
+			if (x_params.navigation == "Historic") {
+				menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
+				menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+				$x_menuBtn.addClass("x_home");
+			}
 
-		$x_menuBtn
-			.button({
-				icons: {
-					primary: menuIcon.iconClass
-				},
-				label:	menuLabel,
-				text:	false
-			})
-			.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
-			.click(function() {
-				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
-					if (x_params.tocTarget == "lightbox") {
+			$x_menuBtn
+				.button({
+					icons: {
+						primary: menuIcon.iconClass
+					},
+					label:	menuLabel,
+					text:	false
+				})
+				.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
+				.click(function() {
+					if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
+						if (x_params.tocTarget == "lightbox") {
 
-						lb = $.featherlight(
-							'<div id="tocMenuLightBox"></div>',
-							{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
-						);
-						XENITH.PAGEMENU.init($("#tocMenuLightBox"));
+							lb = $.featherlight(
+								'<div id="tocMenuLightBox"></div>',
+								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
+							);
+							XENITH.PAGEMENU.build($("#tocMenuLightBox"));
 
-					} else {
-						x_openDialog(
-							"menu",
-							x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
-							x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
-							null,
-							'<div id="tocMenuDialog"></div>',
-							function () {
-								$x_menuBtn
-									.blur()
-									.removeClass("ui-state-focus")
-									.removeClass("ui-state-hover");
-							}
-						);
-					}
-				} else x_goHome();
+						} else {
+							XENITH.PAGEMENU.buildDialog();
+						}
+					} else x_goHome();
 
-				$(this)
-					.blur()
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
-			});
+					$(this)
+						.blur()
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+				});
 
-		if (menuIcon.customised == true) {
-			$x_menuBtn.addClass("customIconBtn");
-		}
-		if (menuIcon.btnImgs == true) {
-			$x_menuBtn.addClass("imgIconBtn");
+			if (menuIcon.customised == true) {
+				$x_menuBtn.addClass("customIconBtn");
+			}
+			if (menuIcon.btnImgs == true) {
+				$x_menuBtn.addClass("imgIconBtn");
+			}
 		}
 
 		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
@@ -2036,8 +2015,9 @@ function x_continueSetUp1() {
 		if (XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
 			x_KeepAlive();
 		}
+
 		// create side bar
-		x_setUpSideBar();
+		XENITH.SIDEBAR.build();
 
 		//add show/hide footer tools
 		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
@@ -2227,226 +2207,9 @@ function x_getIntroInfo(xml) {
 	}
 }
 
-function x_sideBarBtnInfo() {
-	// work out what buttons will show on side bar
-	if (x_params.sideBar == 'true') {
-		// project level buttons
-		if (x_params.sbToC == 'true') {
-			x_sideBarBtns.push('toc');
-		}
-		if (x_params.sbProjectIntro == 'true' && x_params.intro != undefined && $.trim(x_params.intro) != '') {
-			x_sideBarBtns.push('intro');
-		}
-		if (x_params.sbProjectHelp == 'true' && x_params.nfo != undefined && $.trim(x_params.nfo) != '') {
-			x_sideBarBtns.push('help');
-		}
-
-		if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
-			x_sideBarBtns.push('glossary');
-		}
-		if (x_params.sbAccessibility == 'true' && x_params.accessibilityHide != 'true') {
-			x_sideBarBtns.push('accessibility');
-		}
-
-		// page level buttons (what the button does will change on each page)
-		// does at least one page in project have some page info added?
-		if (x_params.sbPageIntro == 'true') {
-			for (let i=0; i<x_pages.length; i++) {
-				if (x_pageInfo[i].type != "menu") {
-					if (x_params.sbPageIntro == 'true' && (
-							(x_pages[i].getAttribute('introType') == 'text' && $.trim(x_pages[i].getAttribute('pageIntro')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'image' && $.trim(x_pages[i].getAttribute('introImg')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'video' && $.trim(x_pages[i].getAttribute('introVideo')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'url' && $.trim(x_pages[i].getAttribute('introURL')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'file' && $.trim(x_pages[i].getAttribute('introFile')) != '')
-					)) {
-						x_sideBarBtns.push('pageIntro');
-						break;
-					}
-				}
-			}
-		}
-
-		if (x_sideBarBtns.length > 0 && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
-			x_params.displayMode = 'full screen';
-		}
-	}
-}
-
-function x_setUpSideBar() {
-	// only create side bar if there are some buttons that will appear on it
-	// don't create side bar if it's a standalone page in a lightbox
-	const isSA = x_pageInfo[x_startPage.ID] != undefined && x_pageInfo[x_startPage.ID].standalone == true ? true : false;
-	if (x_sideBarBtns.length > 0 && !isSA) {
-
-		const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
-
-		const $x_sideBar = $('<div id="x_sideBar"><button id="x_sideBarToggleBtn"></button><div id="x_sideBarBtnHolder"></div></div>'),
-			$x_sideBarBtnHolder = $x_sideBar.find('#x_sideBarBtnHolder'),
-			$x_sideBarToggleBtn = $x_sideBar.find('#x_sideBarToggleBtn');
-
-		const minW = 30, borderW = 1;
-		let maxW = 100;
-
-		if (x_params.sideBarSize == 'large') {
-			$x_sideBar.addClass('sideBarLarge');
-		} else {
-			$x_sideBar.addClass('sideBarSmall');
-
-			if (x_params.sideBarBtnTxt != 'true') {
-				maxW = 60;
-			}
-		}
-
-		// labels can be set in editor but fall back to language file if not set
-		const closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar"),
-			openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar"),
-			closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideLeft';})[0].iconClass,
-			openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowLeft';})[0].iconClass;
-
-		if (x_params.sideBarPosition == 'right') {
-			$x_sideBar.insertAfter($x_mainHolder);
-			$x_body.addClass('sb_right');
-		} else {
-			$x_sideBar.insertBefore($x_mainHolder);
-			$x_body.addClass('sb_left');
-		}
-
-		// side bar open / close
-		$x_sideBar.data('state', x_params.sideBarShow);
-
-		$x_sideBarToggleBtn
-			.button({
-				icons: { primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon },
-				label: x_params.sideBarShow == 'closed' ? openLabel : closeLabel,
-				text: false
-			})
-			.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
-			.click(function() {
-
-				if ($x_sideBar.data('state') == 'open') {
-					$x_sideBar
-						.animate({width: minW + 'px'})
-						.data('state', 'closed');
-
-					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
-						.animate({'width': $x_body.width() - minW + borderW});
-
-					$x_mainHolder
-						.animate({['padding-' + x_params.sideBarPosition]: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
-
-					$(this).button({ icons: { primary: openIcon }, label: openLabel, text: false });
-
-				} else {
-					if (overlay) {
-						$x_sideBar
-							.animate({width: maxW})
-							.data('state', 'open');
-
-					} else {
-						$x_sideBar
-							.animate({width: maxW + 'px'})
-							.data('state', 'open');
-
-						$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
-							.animate({'width': $x_body.width() - maxW + borderW});
-
-						$x_mainHolder
-							.animate({['padding-' + x_params.sideBarPosition]: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
-					}
-
-					$(this).button({ icons: { primary: closeIcon }, label: closeLabel, text: false });
-
-					$x_sideBarBtnHolder.show();
-				}
-			});
-
-		// add buttons to side bar
-		const btnTxt = x_params.sideBarBtnTxt == 'true' ? true : false;
-
-		if ($.inArray('toc', x_sideBarBtns) != -1) {
-			$x_menuBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('intro', x_sideBarBtns) != -1) {
-			$x_introBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('help', x_sideBarBtns) != -1) {
-			$x_helpBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('glossary', x_sideBarBtns) != -1) {
-			$x_glossaryBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('accessibility', x_sideBarBtns) != -1) {
-			$x_colourChangerBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
-			$x_pageIntroBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-
-		if (x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') {
-			let widestBtn = 0;
-
-			$x_sideBarBtnHolder.find('button').each(function() {
-				widestBtn = Math.max(widestBtn, $(this).outerWidth());
-			});
-
-			maxW = widestBtn + 30;
-
-			$x_sideBarBtnHolder.find('button').width('90%');
-		}
-
-		if (overlay) {
-			maxW = '100%';
-			$x_sideBar.width(maxW);
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
-			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
-		} else {
-			$x_sideBar.width(maxW + 'px');
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
-			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
-
-			// the text may overlap side bar - make sure sidebar expands but without text forced to be on a single line
-			if (x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') {
-
-				let widestBtn = 0;
-				$x_sideBarBtnHolder.find('button').each(function() {
-					widestBtn = Math.max(widestBtn, $(this).outerWidth());
-				});
-
-				if ($x_sideBarBtnHolder.innerWidth() < widestBtn) {
-					$x_sideBar.width('min-content');
-
-					maxW = $x_sideBar.width();
-					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
-					$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
-				}
-			}
-		}
-
-		if (x_params.sideBarShow == 'closed') {
-			$x_sideBar.width(minW + 'px');
-			$x_sideBarBtnHolder.hide();
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
-			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
-		}
-	}
-}
-
 function x_goHome() {
 	// home page can be changed from page 1 (except for menu pages where home page will always be TOC)
-	if (x_params.navigation != 'Menu' && x_params.navigation != 'Menu with Page Controls' && x_params.homePage != undefined && x_params.homePage != "") {
+	if (!XENITH.PAGEMENU.menuPage && x_params.homePage != undefined && x_params.homePage != "") {
 		x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
 	} else {
 		x_changePage(0);
@@ -2815,7 +2578,7 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 
 	// normal page change, or a standalone page being opened in same window
-	if ((x_gotoPage == 0 && x_pageInfo[0].type == "menu") || !standAlonePage || x_pages[x_gotoPage].getAttribute('linkTarget') == 'same' || x_firstLoad) {
+	if ((x_gotoPage == 0 && XENITH.PAGEMENU.menuPage) || !standAlonePage || x_pages[x_gotoPage].getAttribute('linkTarget') == 'same' || x_firstLoad) {
 		if ($x_body.width() == 0 && $x_body.height() == 0) {
 			// don't load page yet as it probably won't load properly (possibly because it's being loaded in an iframe on non-active tab on a navigator)
 			x_pageLoadPause = x_gotoPage;
@@ -2873,12 +2636,10 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 
 	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
-	const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
-	if (overlay && !x_firstLoad && $('#x_sideBar').length > 0 && $('#x_sideBar').data('state') == 'open') {
-		$('#x_sideBar #x_sideBarToggleBtn').click();
+	if (x_browserInfo.mobile === true && !x_firstLoad) {
+		XENITH.SIDEBAR.close();
 	}
 }
-
 
 function x_closeStandAlonePage(event) {
 	$.featherlight.defaults.beforeClose = $.noop;
@@ -2974,7 +2735,7 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 		x_gotoPage = -1;
 	}
 	// End page tracking of x_currentPage
-    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
+    if (x_currentPage != -1 && !XENITH.PAGEMENU.isThisMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {
         var pageObj;
 
@@ -3114,7 +2875,7 @@ function x_changePageStep5a(x_gotoPage) {
 	}
 
     // change page title and add narration / timer before the new page loads so $x_pageHolder margins can be sorted - these often need to be right so page layout is calculated correctly
-    if (x_isMenu()) {
+    if (XENITH.PAGEMENU.isThisMenu()) {
         pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 
 		x_changePageStep6();
@@ -3287,7 +3048,7 @@ function x_changePageStep6() {
 
 	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
-		if (!x_isMenu() && x_getIntroInfo(x_currentPageXML) != false) {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_getIntroInfo(x_currentPageXML) != false) {
 			$x_pageIntroBtn.show();
 		} else {
 			$x_pageIntroBtn.hide();
@@ -3299,7 +3060,7 @@ function x_changePageStep6() {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
         var label = $('<div>').html(pageTitle).text();
-        if (x_currentPageXML != "menu") {
+        if (!XENITH.PAGEMENU.isThisMenu()) {
 			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
 			{
 				label = x_currentPageXML.getAttribute("trackinglabel");
@@ -3316,7 +3077,7 @@ function x_changePageStep6() {
 		var pt = x_pageInfo[x_currentPage].type;
 		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
 
-		if (!x_isMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
@@ -3324,7 +3085,7 @@ function x_changePageStep6() {
 		// show page background & hide main background
 		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
 			$(".pageBg#pageBg" + x_currentPage).show();
-			if (!x_isMenu() && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+			if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
 						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -3358,7 +3119,7 @@ function x_changePageStep6() {
         }
 
 		// updates variables as their values might have changed
-		if (x_currentPageXML != "menu" && x_currentPageXML.getAttribute('varUpdate') != 'false') {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute('varUpdate') != 'false') {
 			// variables on screen
 			if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && $('.x_var').length > 0) {
 				XENITH.VARIABLES.updateVariable();
@@ -3386,9 +3147,11 @@ function x_changePageStep6() {
 		x_focusPageContents(false);
 
 		// show page introduction immediately if set to always auto open
-		if (!x_isMenu() && $x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
+		if (!XENITH.PAGEMENU.isThisMenu() && $x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
 			$x_pageIntroBtn.click();
 		}
+
+		XENITH.SIDEBAR.pageLoad();
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
@@ -3403,7 +3166,7 @@ function x_changePageStep6() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
-			if (!x_isMenu()) {
+			if (!XENITH.PAGEMENU.isThisMenu()) {
 				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
 				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 					x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
@@ -3414,13 +3177,13 @@ function x_changePageStep6() {
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
             var label = $('<div>').html(pageTitle).text();
-            if (!x_isMenu() && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
 			var grouping = null
-			if (!x_isMenu() && x_currentPageXML.getAttribute("grouping") != null && x_currentPageXML.getAttribute("grouping") != "")
-			{
+				if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("grouping") != null && x_currentPageXML.getAttribute("grouping") != "")
+				{
 				grouping = x_currentPageXML.getAttribute("grouping");
 			}
 			XTEnterPage(x_currentPage, label, grouping);
@@ -3437,7 +3200,7 @@ function x_changePageStep6() {
 		}
 
 		// show page background & hide main background
-		if (!x_isMenu() && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -3621,13 +3384,15 @@ function x_setUpPage() {
 			.attr("title", '');
 	}
 
-	if (x_isMenu()) {
-		$x_menuBtn
-			.button("disable")
-			.removeClass("ui-state-focus")
-			.removeClass("ui-state-hover");
-	} else {
-		$x_menuBtn.button("enable");
+	if ($x_menuBtn.length > 0) {
+		if (XENITH.PAGEMENU.isThisMenu()) {
+			$x_menuBtn
+				.button("disable")
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+		} else {
+			$x_menuBtn.button("enable");
+		}
 	}
 	
     if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
@@ -3650,8 +3415,8 @@ function x_setUpPage() {
     }
 
 	// navigation buttons can be disabled on a page by page basis
-	if (!x_isMenu() && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
-		if (x_currentPageXML.getAttribute("home") == "false") {
+	if (!XENITH.PAGEMENU.isThisMenu() && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
+		if ($x_menuBtn.length > 0 && x_currentPageXML.getAttribute("home") == "false") {
 			$x_menuBtn.button("disable");
 		}
 		if (x_currentPageXML.getAttribute("back") == "false") {
@@ -3665,9 +3430,9 @@ function x_setUpPage() {
 				$x_saveSessionBtn.button("disable");
 			}
 		}
-	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
+	} else if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
-		if (x_currentPageXML.getAttribute("navSetting") != "all") {
+		if ($x_menuBtn.length > 0 && x_currentPageXML.getAttribute("navSetting") != "all") {
 			$x_menuBtn.button("disable");
 		}
 		if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
@@ -3719,6 +3484,7 @@ function x_setUpPage() {
 		}
 
 		$x_mainHolder.css("visibility", "visible");
+		XENITH.SIDEBAR.show();
 
 		if (x_params.backgroundGrey == "true") {
 			$("#x_mainBg").show();
@@ -3760,7 +3526,7 @@ function x_pageLoaded() {
         $this.attr(attr_name, x_evalURL(val));
     });
 
-	if (!x_isMenu()) {
+	if (!XENITH.PAGEMENU.isThisMenu()) {
 		x_setUpLightBox();
 		
 		// plugin files are loaded after page is loaded
@@ -3785,7 +3551,7 @@ function x_pageLoaded() {
 	}
 
 	// Check if page headerBgColour/headerTextColour has been set
-	if (!x_isMenu() && ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != ""))) {
+	if (!XENITH.PAGEMENU.isThisMenu() && ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != ""))) {
 		const bgCol = x_currentPageXML.getAttribute("headerBgColor");
 		const textCol = x_currentPageXML.getAttribute("headerTextColor");
 		let customHeaderStyle = '';
@@ -3824,6 +3590,8 @@ function x_pageLoaded() {
 			$x_pageIntroBtn.click();
 		}
 	}
+
+	XENITH.SIDEBAR.pageLoad(true);
 }
 
 //convert picker color to #value
@@ -3833,16 +3601,16 @@ function formatColour(col) {
 
 // detect page loaded change and update progress bar
 function doPercentage() {
-    var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0;
+    var menuOffset = XENITH.PAGEMENU.menuPage === true ? 1 : 0;
 	
 	// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
     var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
 		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.viewed !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
+	
+    var progress = Math.round((pagesViewed * 100) / totalPages);
 
-	var progress = Math.round((pagesViewed * 100) / totalPages);
-
-	$(".pbBar").css({"width": progress + "%"});
-	$('.pbTxt').html(progress + "% " + x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE"));
+    $(".pbBar").css({"width": progress + "%"});
+    $('.pbTxt').html(progress + "% " + x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE"));
 }
 
 // function adds / reloads narration bar above main controls on interface
@@ -4051,12 +3819,11 @@ function x_loadPageBg(loadModel) {
 }
 
 // function sorts out css that's dependant on screensize
-function x_updateCss(updatePage) {
+function x_updateCss(updatePage, updateSidebar) {
 	if (updatePage != false) {
-		
-		if ($('#x_sideBar').length > 0) {
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
-				.width($x_body.width() - $('#x_sideBar').width() + 1);
+
+		if (updateSidebar !== false && XENITH.SIDEBAR.sideBarType != undefined) {
+			XENITH.SIDEBAR.setWidth(true);
 		}
 		
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
@@ -4176,7 +3943,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     $x_popupDialog.html(load);
 
 					if (type == "menu") {
-						XENITH.PAGEMENU.init($("#tocMenuDialog"));
+						XENITH.PAGEMENU.build($("#tocMenuDialog"));
 					}
 
                     x_setDialogSize($x_popupDialog, position);
@@ -4286,15 +4053,10 @@ function x_getLangInfo(node, attribute, fallBack) {
     return string;
 }
 
-// function returns whether current page is menu page
-function x_isMenu() {
-	return x_currentPage == 0 && x_pageInfo[0].type == "menu";
-}
-
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
     var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2", "passwordInfo", "passwordError"],
-        i, j, len;
+        i, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
@@ -5729,20 +5491,40 @@ return parent; })(jQuery, XENITH || {});
 // 	- menu page (when navigation set to menu or menu with page controls)
 //  - dialog (when navigation not set to menu)
 //  - lightbox (when navigation not set to menu and TOC opt property used to change to 'open in' lightbox)
+//  - sidebar (when sidebar opt property is used and 'display' is set to 'table of contents')
 var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
+	// declare global variables
+	let menuPage = false // is the 1st page a menu page?
 
 	// Declare local variables
 	let $menuHolder;
 	let $menuItems;
 	let pageNumOffset = 0;
 
-	// function sets up the TOC page menu
-	init = function ($parent) {
-		// 1st page is menu page - ignore this when making page list
-		if (x_pageInfo[0].type == "menu") {
-			pageNumOffset = 1;
-		}
+	// function does some set up required before TOC will be built later
+	function init(type) {
+		if (type == "page") {
+			// add info about menu page to page arrays (if navigation setting means a menu page exists)
+			x_pages.splice(0, 0, "menu");
+			x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
 
+			// adjust normal page indexes to take into account menu page
+			for (var i=0; i<x_normalPages.length; i++) {
+				x_normalPages.splice(i, 1, x_normalPages[i]+1);
+			}
+			x_normalPages.splice(0, 0, 0);
+
+			pageNumOffset = 1;
+			XENITH.PAGEMENU.menuPage = true;
+
+		} else {
+			// prepare for TOC to be shown in dialog
+			x_dialogInfo.push({type: 'menu', built: false});
+		}
+	}
+
+	// function builds the TOC page menu
+	function build($parent) {
 		$menuHolder = $('<div id="menuHolder"></div>').appendTo($parent);
 		$menuItems = $('<fieldset id="menuItems"></fieldset>').appendTo($menuHolder);
 		const $menuItem = $('<button class="menuItem"/>');
@@ -5750,6 +5532,8 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 		let $menuItemHolder = $menuItems;
 		let $currentChapter;
 		let chapterNum;
+		let tocNum = 0;
+		let subNum = 0;
 
 		// tick to show page / chapter has been viewed can be placed before or after the page title
 		const tickHtml = '<i class="viewTick fa fa-x-tick-circle notvisited" aria-hidden="true"></i>';
@@ -5821,7 +5605,6 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 				$this = $(this);
 				$this.removeClass("ui-state-focus");
 				$this.removeClass("ui-state-hover");
-
 				x_changePage(x_normalPages[$this.data("pageIndex") + pageNumOffset]);
 
 				// close lightbox
@@ -5831,7 +5614,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			});
 
 		// 1st page is menu page so this is being loaded from a page model
-		if (x_pageInfo[0].type == "menu") {
+		if (XENITH.PAGEMENU.menuPage === true) {
 			// calls function in menu page model to finish set up of menu page
 			// there are extra things that might need to be added to page which aren't required when TOC is in lightbox, dialog or sidebar
 			menu.setUpMenuPage();
@@ -5839,24 +5622,37 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 		} else { // menu is in dialog or lightbox
 			// lightbox
 			if ($('#menuHolder').parents('.featherlight').length > 0) {
-				$('#menuHolder').prepend('<h1 id="x_introH1">' + (x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents")) + '</h1>');
-
-				$('#tocMenuLightBox')
-					.height("100%")
-					.css('overflow', 'auto');
+				$('#menuHolder').prepend('<h1 id="x_introH1">' + (x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents")) + '</h1>');
+				$menuItems.height($('#tocMenuLightBox').height() - $("#x_introH1").outerHeight());
 			}
 		}
 
 		XENITH.PAGEMENU.tickViewed();
 
-		if (x_pageInfo[0].type != "menu") {
+		if (XENITH.PAGEMENU.menuPage === false) {
 			XENITH.PAGEMENU.showCurrent();
 		}
-	},
+	}
+
+	function buildDialog() {
+		x_openDialog(
+			"menu",
+			x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+			x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+			null,
+			'<div id="tocMenuDialog"></div>',
+			function () {
+				$x_menuBtn
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			}
+		);
+	}
 
 	// function highlights the current page in the TOC
 	// not called when the TOC is shown on a menu page
-	showCurrent = function() {
+	function showCurrent() {
 		$menuItems.find(".current").removeClass("current");
 		const $currentItem = $menuItems.find(".menuItem:eq(" + x_normalPages.indexOf(x_currentPage) + ")");
 
@@ -5864,34 +5660,46 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 		const $thisChapter = $currentItem.parents(".chapterHolder ");
 		if ($thisChapter.length > 0) {
 			// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
-			if (x_params.tocTarget !== "sidebar") {
-				$thisChapter.accordion({"animate":0});
+			if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
+				$thisChapter.accordion({"animate": 0});
 			}
 
 			$thisChapter.accordion({"active": 0}).find(".chapterItem").addClass("current");
 
 			// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
-			if (x_params.tocTarget !== "sidebar") {
+			if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
 				$thisChapter.accordion({"animate": {}});
 			}
 		}
 
 		// close all other chapters
 		const allChapters = $menuItems.find(".chapterHolder");
-		allChapters.each(function() {
+		allChapters.each(function () {
 			if ($thisChapter.length === 0 || !$thisChapter.is($(this))) {
-				// don't show close animation & then immediately reinstate it
-				$(this).accordion({"animate": 0, "active": false});
-				$(this).accordion({"animate": {}});
+				// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
+				if (XENITH.SIDEBAR.sideBarType !== "toc") {
+					$(this).accordion({"animate": 0});
+				}
+
+				$(this).accordion({"active": false});
+
+				// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
+				if (XENITH.SIDEBAR.sideBarType !== "toc") {
+					$(this).accordion({"animate": {}});
+				}
 			}
 		});
 
+		$currentItem.addClass("current");
+
 		// focus on current page button & this will also ensure it's scrolled into view
-		$currentItem.addClass("current").focus();
-	},
+		if (XENITH.SIDEBAR.sideBarType !== "toc") {
+			$currentItem.focus();
+		}
+	}
 
 	// function checks the viewed pages in the TOC
-	tickViewed = function() {
+	function tickViewed() {
 		if (x_params.pageTick !== "false") {
 			// tick all pages which have been viewed
 			$menuItems.find(".menuItem").each(function(i) {
@@ -5906,12 +5714,436 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 				}
 			});
 		}
+	}
+
+	// function returns whether current page is a menu page
+	function isThisMenu() {
+		return x_currentPage == 0 && XENITH.PAGEMENU.menuPage === true;
+	}
+
+	// make some public methods
+	self.menuPage = menuPage;
+	self.init = init;
+	self.build = build;
+	self.buildDialog = buildDialog;
+	self.showCurrent = showCurrent;
+	self.tickViewed = tickViewed;
+	self.isThisMenu = isThisMenu;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** SIDE BAR *****
+var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
+	// declare global variables
+	let sideBarType; // what should the sidebar contain? (toc or btns)
+
+	// declare local variables
+	let sideBar = false; // should a sidebar be built?
+	const x_sideBarBtns = [];
+	const sidebarBtnIcons = [
+		{name: 'sideBarHideLeft',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
+		{name: 'sideBarHideRight',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
+		{name: 'sideBarShowLeft',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
+		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
+	];
+	let $x_sideBar;
+	let $x_sideBarHolder;
+	let $x_sideBarToggleBtn;
+	let openIcon, openLabel, closeIcon, closeLabel;
+	const minW = 30, borderW = 1;
+	let maxW = 100;
+	const absoluteMaxW = 300; // the max width of the sidebar when not shown as overlay (on smaller mobile devices) - this is also checked to ensure it's not > 50% of whole screen
+	let overlay;
+
+	// determines whether a sidebar will be built and what it will contain
+	function init() {
+		if (x_params.sideBar == 'true') {
+			if (x_params.sideBarTocList == "true") {
+				// sidebar containing TOC will be built if more than one page
+				if (x_normalPages.length > 1) {
+					sideBar = true;
+					XENITH.SIDEBAR.sideBarType = "toc";
+
+					x_params.tocTarget = "sidebar";
+					if (x_params.navigation == "Menu" || x_params.navigation == "Menu with Page Controls") {
+						x_params.navigation = "Linear";
+					}
+
+					// remove the menu button from footer bar unless navigation type is historic (then the menu buttons acts as a home button which returns you to 1st page)
+					if (x_params.navigation != "Historic") {
+						$("#x_menuBtn").remove();
+					}
+				}
+			} else {
+				// work out what buttons will show on side bar
+				// project level buttons
+				if (x_params.sbToC == 'true') {
+					x_sideBarBtns.push('toc');
+				}
+				if (x_params.sbProjectIntro == 'true' && x_params.intro != undefined && $.trim(x_params.intro) != '') {
+					x_sideBarBtns.push('intro');
+				}
+				if (x_params.sbProjectHelp == 'true' && x_params.nfo != undefined && $.trim(x_params.nfo) != '') {
+					x_sideBarBtns.push('help');
+				}
+				if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
+					x_sideBarBtns.push('glossary');
+				}
+				if (x_params.sbAccessibility == 'true' && x_params.accessibilityHide != 'true') {
+					x_sideBarBtns.push('accessibility');
+				}
+
+				// page level buttons (what the button does will change on each page)
+				// does at least one page in project have some page info added?
+				if (x_params.sbPageIntro == 'true') {
+					for (let i=0; i<x_pages.length; i++) {
+						if (x_pageInfo[i].type != "menu") {
+							if (x_params.sbPageIntro == 'true' && (
+								(x_pages[i].getAttribute('introType') == 'text' && $.trim(x_pages[i].getAttribute('pageIntro')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'image' && $.trim(x_pages[i].getAttribute('introImg')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'video' && $.trim(x_pages[i].getAttribute('introVideo')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'url' && $.trim(x_pages[i].getAttribute('introURL')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'file' && $.trim(x_pages[i].getAttribute('introFile')) != '')
+							)) {
+								x_sideBarBtns.push('pageIntro');
+								break;
+							}
+						}
+					}
+				}
+
+				// sidebar containing interface buttons will be built if more than one button
+				if (x_sideBarBtns.length > 0) {
+					sideBar = true;
+					XENITH.SIDEBAR.sideBarType = "btns";
+				}
+			}
+		}
+
+		if (sideBar === true) {
+			// force full screen mode
+			if (x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
+				x_params.displayMode = 'full screen';
+			}
+			if (x_params.fixDisplay != undefined) {
+				x_params.fixDisplay = undefined;
+			}
+
+			// extend the x_btnIcons array to add all the sidebar specific buttons
+			x_btnIcons =  x_btnIcons.concat(sidebarBtnIcons);
+
+			// full screen sidebar overlay is used when viewed on smaller screens
+			overlay = x_browserInfo.mobile && (XENITH.SIDEBAR.sideBarType == "toc" || (x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') ? true : false;
+		}
+	}
+
+	// build the sidebar if needed
+	function build() {
+		if (sideBar === true) {
+			// if this is a standalone page opening in a light box, don't show the side bar (this can't be in init function as it can't be established when that is called whether it is or not)
+			if (x_pageInfo[x_startPage.ID] != undefined && x_pageInfo[x_startPage.ID].standalone) {
+				sideBar = false;
+			} else {
+				// build the sidebar
+				$x_sideBar = $('<div id="x_sideBar"></div>');
+				$x_sideBarHolder = $('<div id="' + (XENITH.SIDEBAR.sideBarType == "toc" ? "x_sideBarTocHolder" : "x_sideBarBtnHolder" ) + '"></div>').appendTo($x_sideBar);
+				$x_sideBarToggleBtn = $('<button id="x_sideBarToggleBtn"></button>').prependTo($x_sideBar);
+
+				// the width of the sidebar depends on the sidebar contents
+				if (x_params.sideBarSize == 'large' || XENITH.SIDEBAR.sideBarType == "toc") {
+					$x_sideBar.addClass('sideBarLarge');
+				} else {
+					$x_sideBar.addClass('sideBarSmall');
+
+					if (x_params.sideBarBtnTxt != 'true') {
+						// small sidebar buttons with no text - only need a narrow sidebar
+						maxW = 60;
+					}
+				}
+
+				// sidebar can be on right or left of the screen
+				if (x_params.sideBarPosition == 'right') {
+					$x_sideBar.insertAfter($x_mainHolder);
+					$x_body.addClass('sb_right');
+				} else {
+					$x_sideBar.insertBefore($x_mainHolder);
+					$x_body.addClass('sb_left');
+				}
+				$x_sideBar.css("visibility", "hidden");
+
+				// sidebar open / close state
+				$x_sideBar.data('state', "open");
+
+				// set up the expand / collapse button at the top (or side) of the sidebar
+				// button labels can be set in editor but fall back to language file if not set
+				closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar");
+				openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar");
+				closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarHideRight';
+				})[0].iconClass : x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarHideLeft';
+				})[0].iconClass;
+				openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarShowRight';
+				})[0].iconClass : x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarShowLeft';
+				})[0].iconClass;
+
+				$x_sideBarToggleBtn
+					.button({
+						icons: {primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon},
+						text: false
+					})
+					.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
+					.click(function () {
+						if ($x_sideBar.data('state') == 'open') {
+							XENITH.SIDEBAR.close();
+						} else {
+							open();
+						}
+					});
+
+				// add content to sidebar
+				if (XENITH.SIDEBAR.sideBarType == "btns") {
+					// add interface buttons
+					const btnTxt = x_params.sideBarBtnTxt == 'true' ? true : false;
+
+					if ($.inArray('toc', x_sideBarBtns) != -1) {
+						$x_menuBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('intro', x_sideBarBtns) != -1) {
+						$x_introBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('help', x_sideBarBtns) != -1) {
+						$x_helpBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('glossary', x_sideBarBtns) != -1) {
+						$x_glossaryBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('accessibility', x_sideBarBtns) != -1) {
+						$x_colourChangerBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
+						$x_pageIntroBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+
+					XENITH.SIDEBAR.setWidth();
+
+					// add table of contents
+				} else {
+					XENITH.PAGEMENU.build($x_sideBarHolder);
+					XENITH.SIDEBAR.setWidth();
+				}
+
+				sideBarHolderFixDimensions();
+
+				// collapse the sidebar when project first loads
+				if (x_params.sideBarShow == 'closed') {
+					XENITH.SIDEBAR.close(true);
+				}
+			}
+		}
+	}
+
+	// function shows the sidebar after the interface has finishd being set up - hidden until then to avoid flashes on loading content
+	function show() {
+		if (sideBar === true) {
+			$x_sideBar.css("visibility", "visible");
+		}
+	}
+
+	// fix the dimensions of the sideBarHolder so it will scroll if needed (height) & so contents doesn't move around when animating open / closed (width)
+	function sideBarHolderFixDimensions() {
+		$x_sideBarHolder
+			.height($x_window.height() - $x_sideBarToggleBtn.outerHeight(true) - ($x_sideBarHolder.outerHeight(true) - $x_sideBarHolder.height()))
+			.width($x_sideBarHolder.width());
+	}
+
+	// this sets the initial open max width of sidebar & makes sure that it's still appropriate after resize of screen
+	function setWidth(resize) {
+		// only set the width of the sidebar if it's currently open
+		if ($x_sideBar.data('state') == 'open') {
+
+			// screen has been resized - remove fixed widths so ideal button widths can be recalculated
+			if (resize) {
+				$x_sideBar.width("auto");
+				$x_sideBarHolder.width("auto");
+			}
+
+			if ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || XENITH.SIDEBAR.sideBarType == "toc") {
+				let widestBtn = 0;
+
+				$x_sideBarHolder.find('button').each(function () {
+					const visible = $(this).is(":visible");
+					if (!visible) {
+						$(this).parents(".chapterPageHolder").show();
+					}
+					widestBtn = Math.max(widestBtn, Math.ceil($(this).outerWidth()));
+					if (!visible) {
+						$(this).parents(".chapterPageHolder").hide();
+					}
+				});
+
+				maxW = Math.min(widestBtn + ($x_sideBarHolder.outerWidth(true) - $x_sideBarHolder.width()) + 5, Math.min(absoluteMaxW, $x_window.width() / 2));
+
+				if (XENITH.SIDEBAR.sideBarType == "btns") {
+					$x_sideBarHolder.find('button').width('90%');
+				}
+			}
+
+			if (overlay) {
+				// side bar fills screen when open on smaller screens
+				maxW = '100%';
+				$x_sideBar.width(maxW);
+				XENITH.SIDEBAR.resize(maxW);
+			} else {
+				$x_sideBar.width(maxW + 'px');
+				XENITH.SIDEBAR.resize(maxW);
+
+				// the text may overlap sidebar - make sure sidebar expands but without text forced to be on a single line
+				if ((x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') || XENITH.SIDEBAR.sideBarType == "toc") {
+
+					let widestBtn = 0;
+					$x_sideBarHolder.find('button').each(function () {
+						widestBtn = Math.max(widestBtn, $(this).outerWidth());
+					});
+
+					if ($x_sideBarHolder.width() < widestBtn) {
+						$x_sideBar.width('min-content');
+						maxW = Math.min(Math.min(absoluteMaxW, $x_window.width() / 2), $x_sideBar.width());
+						XENITH.SIDEBAR.resize(maxW);
+					}
+				}
+			}
+
+			if (resize) {
+				// resizing complete - re-fix the sidebar dimensions again
+				sideBarHolderFixDimensions();
+			}
+
+		} else if (resize) {
+			// the sidebar is closed - delay resizing until it later opens
+			$x_sideBar.data('recalculateW', true);
+			XENITH.SIDEBAR.resize();
+		}
+	}
+
+	// function finds an interface button in the sidebar button array and returns the index of it
+	function btnIndex(name) {
+		return $.inArray(name, x_sideBarBtns);
+	}
+
+	// expand the side bar
+	function open() {
+		if ($x_sideBar.data('state') == 'closed') {
+			$x_sideBar.data('state', 'open');
+
+			XENITH.SIDEBAR.resize(maxW, true, function () {
+				if (!overlay) {
+					if ($x_sideBar.data('recalculateW') === true) {
+						// the screen was resized when the sidebar was closed - resizing to an appropriate size is delayed until now
+						$x_sideBar.data('recalculateW', false);
+						XENITH.SIDEBAR.setWidth(true);
+					}
+					x_updateCss(true, false);
+				}
+			});
+
+			$x_sideBarToggleBtn.button({icons: {primary: closeIcon}, label: closeLabel, text: false});
+
+			$x_sideBarHolder.show();
+		}
+	}
+
+	// collapse the side bar
+	function close(firstLoad) {
+		if (sideBar === true) {
+			if ($x_sideBar.data('state') == 'open') {
+				$x_sideBar.data('state', 'closed');
+
+				XENITH.SIDEBAR.resize(minW, (firstLoad == true ? false : true), function () {
+					$x_sideBarHolder.hide();
+					if (!overlay) {
+						x_updateCss(true, false);
+					}
+				});
+
+				$x_sideBarToggleBtn.button({icons: {primary: openIcon}, label: openLabel, text: false});
+			}
+		}
+	}
+
+	// resize the sidebar & main content areas
+	function resize(width, animate, callback) {
+		if (sideBar === true) {
+			width = width == undefined ? $x_sideBar.width() : width;
+
+			if (animate === true) {
+				if (overlay === false) {
+					$x_sideBar.animate({width: width});
+					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+						.animate({'width': $x_body.width() - width + borderW});
+
+					$x_mainHolder
+						.animate({['padding-' + x_params.sideBarPosition]: (width - borderW) + 'px'}, callback);
+
+				} else {
+					// the sidebar is overlaying the whole screen so don't change the size used for the main content
+					$x_sideBar.animate({width: width}, callback);
+				}
+
+			} else {
+				// no animation - either because project has only just loaded or project has been resized
+				$x_sideBar.width(width);
+
+				$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+					.width($x_body.width() - (width == "100%" ? minW : width) + borderW);
+
+				$x_mainHolder.css('padding-' + x_params.sideBarPosition, ((width == "100%" ? minW : width) - borderW) + 'px');
+
+				if (callback != undefined ) {
+					callback();
+				}
+			}
+		}
+	}
+
+	// function called when page loads - triggers highlight of current page in TOC & ticks page if it's a newly viewed page
+	function pageLoad(firstView) {
+		if (sideBar === true && XENITH.SIDEBAR.sideBarType == "toc") {
+			XENITH.PAGEMENU.showCurrent();
+
+			if (firstView === true) {
+				XENITH.PAGEMENU.tickViewed();
+			}
+		}
 	};
 
 	// make some public methods
+	self.sideBarType = sideBarType;
 	self.init = init;
-	self.showCurrent = showCurrent;
-	self.tickViewed = tickViewed;
+	self.build = build;
+	self.show = show;
+	self.btnIndex = btnIndex;
+	self.close = close;
+	self.resize = resize;
+	self.setWidth = setWidth;
+	self.pageLoad = pageLoad;
 
 	return parent;
 

@@ -1284,6 +1284,7 @@ a:focus .wcagLogo {
 	border-bottom: 1px #666 solid;
 	border-radius: 0;
 	color: #212121;
+	display: block;
 }
 
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
@@ -1294,6 +1295,7 @@ a:focus .wcagLogo {
 .sb_left #x_sideBarToggleBtn .ui-button-icon-primary {
 	text-align: right;
 	right: 5px;
+	margin-left: -1em;
 }
 
 .sb_right #x_sideBarToggleBtn .ui-button-icon-primary {
@@ -1301,13 +1303,16 @@ a:focus .wcagLogo {
 	left: 13px;
 }
 
-#x_sideBarBtnHolder {
+#x_sideBarBtnHolder, #x_sideBarTocHolder {
+	box-sizing: border-box;
 	padding-top: 1em;
-	margin-left: 15px;
-	margin-right: 15px;
+	padding-bottom: 1em;
+	padding-left: 15px;
+	padding-right: 15px;
+	overflow: auto;
 }
 
-#x_sideBarBtnHolder button {
+#x_sideBar #x_sideBarBtnHolder button {
 	color: #212121;
 	background: none;
 	border: none;
@@ -1316,7 +1321,7 @@ a:focus .wcagLogo {
 	height: auto !important;
 }
 
-#x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
+#x_sideBar #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
 	text-indent: 0;
@@ -1352,7 +1357,7 @@ a:focus .wcagLogo {
 	display: inline-block;
 }
 
-#x_sideBarBtnHolder button span.ui-icon {
+#x_sideBar #x_sideBarBtnHolder button span.ui-icon {
 	position: static;
 	box-sizing: border-box;
 	margin-top: 0;
@@ -1382,7 +1387,7 @@ a:focus .wcagLogo {
 	margin: 0 auto;
 }
 
-#x_sideBarBtnHolder button span.ui-button-text {
+#x_sideBar #x_sideBarBtnHolder button span.ui-button-text {
 	font-size: 1em;
 	padding: 0;
 }
@@ -1399,6 +1404,10 @@ a:focus .wcagLogo {
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
 	background-color: #212121;
 	color: white;
+}
+
+#x_sideBar #x_sideBarBtnHolder {
+	overflow-x: hidden;
 }
 
 [data-cke-editorplaceholder]::before {
@@ -1460,4 +1469,13 @@ a:focus .wcagLogo {
 
 #menuItems .ui-accordion .ui-accordion-header .ui-icon {
 	left: 0.3em;
+}
+
+#tocMenuLightBox {
+	height: 100%;
+}
+
+#tocMenuLightBox #menuItems {
+	overflow-x: hidden;
+	overflow-y: auto;
 }
