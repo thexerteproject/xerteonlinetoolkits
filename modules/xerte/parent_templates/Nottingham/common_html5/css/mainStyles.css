@@ -177,8 +177,8 @@ button.ui-button-icon-only {
 
 #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
 	height:		40px;
-	min-height: 1.3em;
-	width: 1.3em;
+	min-height: 1.4em;
+	width: 1.4em;
 	cursor:		pointer;
 	padding: 	0 41px 0 0;
 	/* override JQuery UI css from buttons on footer */
@@ -200,7 +200,7 @@ button.ui-button-icon-only {
 
 .ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
 	width:	41px;
-	min-width: 1.3em;
+	min-width: 1.4em;
 }
 
 .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
@@ -656,7 +656,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	background: none;
 	border: none;
 	height:45px;
-	min-height: 1.3em;
+	min-height: 1.4em;
 	font-size: 14px !important;
 	width:25px !important;
 }
