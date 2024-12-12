@@ -71,5 +71,6 @@
 }
 
 #x_pageHolder{
-	position: absolute
+	position: absolute;
+	overflow: hidden;
 }
