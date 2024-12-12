@@ -65,7 +65,7 @@ if(!isset($_GET['username'])){
 }else{
     // Construct the name as will be done by the software by concatenating first and lastname and replacing space with '_'
     $query_created_by = "select login_id, firstname, surname from {$xerte_toolkits_site->database_table_prefix}logindetails where replace(concat(firstname, '_', surname), ' ', '_')=?";
-    $params = array($_GET['username']);
+    $params = array(x_clean_input($_GET['username']));
     $rows = db_query($query_created_by, $params);
 
     if(sizeof($rows) == 0) {
@@ -76,7 +76,7 @@ if(!isset($_GET['username'])){
 
         $folder_string = 'public';
         if(isset($_GET['folder_name'])){
-            $folder_string = " - " . _html_escape(str_replace("_", " ", $_GET['folder_name']));
+            $folder_string = " - " . _html_escape(str_replace("_", " ", x_clean_input($_GET['folder_name'])));
         }
 
         echo "<rss version=\"2.0\"
@@ -110,7 +110,7 @@ if(!isset($_GET['username'])){
         $params[] = $row_create['login_id'];
     }else{
         $row_folder = db_query_one("SELECT folder_id FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE 
-            folder_name = ? or folder_name = ?", array(str_replace("_", " ", $_GET['folder_name']), $_GET['folder_name']));
+            folder_name = ? or folder_name = ?", array(str_replace("_", " ", x_clean_input($_GET['folder_name'])), x_clean_input($_GET['folder_name'])));
 
         if(empty($row_folder)) {
             die("Invalid folder name");
