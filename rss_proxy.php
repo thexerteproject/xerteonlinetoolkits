@@ -130,6 +130,13 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
 
 
     _debug("RSS: raw url    :" . $url);
+    /// html decode the URL Step 1
+    $url = urldecode($url);
+    _debug("RSS: decoded url(1):" . $url);
+    /// html decode the URL Step 1
+    $url = htmlspecialchars_decode($url);
+    _debug("RSS: decoded url(2):" . $url);
+    // Replace spaces by %20
     $url = str_replace(" ", "%20", $url);
     _debug("RSS: encoded url:" . $url);
     $content = $snoopy->fetch($url);
