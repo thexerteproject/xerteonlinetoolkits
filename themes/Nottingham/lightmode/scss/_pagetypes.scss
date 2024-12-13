@@ -39,7 +39,7 @@
 }
 //background of shaded/alternate rows
 table tr.shaded {
-  background: $dark1;
+  background: $blackordarkest;
 }
 // header/footer shaded
 table.header.shaded thead tr:first-child,
@@ -48,23 +48,24 @@ table.header.shaded :not(tbody) > tr:first-child,
 .x_grid_page table.header.shaded tr:first-child,
 table.footer.shaded tbody tr:last-child,
 table.headerCol.shaded td.header {
-  background: $dark1;
+  background: $blackordarkest;
 }
 
 //***********************************Sliders************************************
 .ui-slider {
-  background: $lightestpanel;
-  border-color: $lightestpanel;
+  background: $blackordarkest;
+  border-color: $blackordarkest;
   border-radius: 20px !important;
 }
 .ui-slider .ui-slider-handle {
   border: 4px solid $mainfontcolour !important;
-  background: $lightestpanel !important;
+  border-color: lighten($mainfontcolour, 30%);
+  background: $blackordarkest !important;
   border-radius: 20px;
 }
 .ui-slider .ui-slider-handle:focus, .ui-slider .ui-slider-handle:hover {
   border-color: $contrastcolor !important;
-  background: $lightestpanel !important;
+  background: $blackordarkest !important;
 }
 
 //***********************************Text*************************************
@@ -115,16 +116,22 @@ table.headerCol.shaded td.header {
   color: $mainfontcolour;
 }
 .x_imageSequence_page .slider {
-  background: $lightestpanel;
+  background: $blackordarkest;
+}
+.x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle {
+  border-color: lighten($mainfontcolour, 30%) !important;
+}
+.x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle:hover, .x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle:focus, .x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle:active {
+  border-color: $contrastcolor !important;
 }
 .x_imageSequence_page input:hover + .slider, .x_imageSequence_page input:focus + .slider {
   background: $dark5;
 }
+.x_imageSequence_page input + .slider:before, .x_imageSequence_page input + .slider:before {
+  background: $panelcolor;
+}
 .x_imageSequence_page input:hover:checked + .slider, .x_imageSequence_page input:focus:checked + .slider {
   background: $contrastcolor;
-}
-.x_decision_page .ui-slider {
-  height: 10px;
 }
 //*****Synched Video*******/
 #x_mainHolder.x_videoSynch_page .right{
@@ -137,11 +144,11 @@ table.headerCol.shaded td.header {
 }
 //*****image compare*****/
 .x_imageCompare_page #slider {
-  background: $dark5;
+  background: $dark1;
 }
 .x_imageCompare_page #slider_handle {
-  background: $dark5;
-  border: 4px solid $mainfontcolour;
+  background: $dark1;
+  border: 4px solid lighten($mainfontcolour, 30%);
 }
 .x_imageCompare_page #slider:focus #slider_handle,.x_imageCompare_page #slider:hover #slider_handle {
   border-color: $contrastcolor;
@@ -180,19 +187,13 @@ table.headerCol.shaded td.header {
 }
 //*****timeline media*****/
 .x_SictTimeline_page .tl-timeline {
-  background: $panelcolor;
   color: $mainfontcolour;
 }
-
-.x_SictTimeline_page .tl-slider-background.tl-animate, .x_SictTimeline_page .tl-timenav {
-  background: $panelcolor !important;
-}
-
 .x_SictTimeline_page #pageContents .tl-text,
 .x_SictTimeline_page #pageContents .tl-text p,
 .x_SictTimeline_page #pageContents .tl-timemarker-text h2,
 .x_SictTimeline_page #pageContents .tl-text .tl-headline-date,
-.x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date
+.x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
 .x_SictTimeline_page #pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class^="tl-icon-"],
 .x_SictTimeline_page #pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class*=" tl-icon-"],
 .x_SictTimeline_page #pageContents .tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-major .tl-timeaxis-tick,
@@ -210,11 +211,6 @@ table.headerCol.shaded td.header {
 }
 .x_SictTimeline_page .tl-slidenav-icon:hover:before, .x_SictTimeline_page .tl-slidenav-icon:focus:before {
   color: $contrastcolor;
-}
-.x_SictTimeline_page .tl-timemarker-content,
-.x_SictTimeline_page .tl-timeaxis-background,
-.x_SictTimeline_page .tl-timeline .tl-attribution {
-  background: $lightestpanel !important;
 }
 .x_SictTimeline_page .tl-timeline p a {
   color: $mainfontcolour;
@@ -265,7 +261,7 @@ table.headerCol.shaded td.header {
   border: none;
 }
 .ui-tabs .ui-tabs-nav li {
-  background: $panelcolor;
+  background: $dark1;
   border: none;
 }
 .ui-tabs .ui-tabs-nav li a, .ui-tabs .ui-tabs-nav li.ui-state-active a {
@@ -318,7 +314,7 @@ table.headerCol.shaded td.header {
   color: $btntxtcolor;
 }
 .panel .ui-button, .featherlight-content .ui-button {
-  background: $panelcolor;
+  background: $blackordarkest;
 }
 .ui-button:not(.ui-button-disabled):hover, .ui-button:not(.ui-button-disabled):active, .ui-button:not(.ui-button-disabled):focus,
 .ui-button:not(.ui-button-disabled):hover p, .ui-button:not(.ui-button-disabled):active p, .ui-button:not(.ui-button-disabled):focus p {
@@ -337,7 +333,7 @@ table.headerCol.shaded td.header {
 }
 .x_nav_page #pageContents.button button.selected {
   border-color: $contrastcolor;
-  background: $panelcolor;
+  //background: $blackordarkest;
   color: $contrastcolor;
 }
 //***Flash cards***/
@@ -357,7 +353,8 @@ table.headerCol.shaded td.header {
   border-color: $btntxtcolor;
 }
 .x_flashCards_page .panel .circleBtn.ui-button {
-  background: $panelcolor;
+  background: $blackordarkest;
+  color: $mainfontcolour;
 }
 .x_flashCards_page .circleBtn.ui-button:hover, .x_flashCards_page .circleBtn.ui-button:focus, .x_flashCards_page .circleBtn.ui-button:active {
   background: $lightbtnselected;
@@ -365,6 +362,9 @@ table.headerCol.shaded td.header {
 }
 .x_flashCards_page .circleBtn.ui-button:hover .ui-icon, .x_flashCards_page .circleBtn.ui-button:focus .ui-icon, .x_flashCards_page .circleBtn.ui-button:active .ui-icon {
   color: $fontcolorforlightestcolor;
+}
+.x_flashCards_page .circleBtn .ui-button-icon-primary {
+  color: $mainfontcolour;
 }
 .x_flashCards_page #cardCtrls .btnHolder button {
   color: $lightbtncolor;
@@ -384,17 +384,17 @@ table.headerCol.shaded td.header {
 }
 
 //***********************************Interactivity*************************************/
-#pageContents textarea,
-#pageContents input {
-  border-radius: $smallroundedcorners;
-  padding-left: 10px;
-}
 //*****draggable labels*****/
 .label.panel.ui-draggable,
 .x_categories_page .label.panel {
   background: $lightestpanel;
   color:$whiteorlightest;
   border: 2px solid $lightestpanel !important;
+}
+.x_categories_page .label.panel,
+.x_timeline_page .label.panel.ui-draggable,
+.x_textMatch_page .label.panel.ui-draggable {
+  border: 2px solid $blackordarkest !important;
 }
 .label.panel.ui-draggable.selected, .label.panel.ui-draggable.focus,
 .x_categories_page #dragDropHolder .label.selected, .x_categories_page #dragDropHolder .label.focus{
@@ -444,6 +444,9 @@ table.headerCol.shaded td.header {
   background: $panelcolor;
 }
 //*******decision tree********//
+.x_decision_page .ui-slider {
+  height: 10px;
+}
 .x_decision_page .highlight{
   background: none;
 }
@@ -454,6 +457,10 @@ table.headerCol.shaded td.header {
   top: -6px;
   height: 14px;
   width: 14px;
+  border-color: lighten($mainfontcolour, 30%) !important;
+}
+.x_decision_page .ui-slider .ui-slider-handle:hover, .x_decision_page .ui-slider .ui-slider-handle:focus, .x_decision_page .ui-slider .ui-slider-handle:active {
+  border-color: $contrastcolor !important;
 }
 //*****Dictation*****/
 .x_dictation_page #answerTxt {
@@ -499,10 +506,18 @@ table.headerCol.shaded td.header {
 }
 .x_gapFill_page #targetHolder.outline .target.highlight {
   border: 1px dashed $whiteorlightest;
+  background: inherit;
 }
 .x_gapFill_page #targetHolder.underline .target.highlight {
   border-bottom: 1px solid $whiteorlightest;
   border-top: 1px solid transparent;
+  background: inherit;
+}
+.x_gapFill_page #labelHolder .label.panel.ui-draggable {
+  background: $blackordarkest;
+}
+.x_gapFill_page #labelHolder .label.panel.ui-draggable:not(.selected) {
+  border-color: $blackordarkest !important;
 }
 //*****audio record*****/
 .x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus {
@@ -566,8 +581,8 @@ a.hotspot, a.hotspot.selected {
   border-color: $contrastcolor;
 }
 .x_grid_page #grid ul li{
-  background:$lighterpanel;
-  border-color: transparent;
+  background:$dark5;
+  border-color: $blackordarkest;
   color:$whiteorlightest !important;
 }
 .x_grid_page #grid ul li.static {
@@ -665,7 +680,7 @@ a.hotspot, a.hotspot.selected {
 .x_results_page #general_summary, .x_results_page #general_summary td, .x_results_page #general_summary th,
 .x_results_page #questionScores, .x_results_page #questionScores td, .x_results_page #questionScores th,
 .x_results_page #fullResults table, .x_results_page #fullResults td, .x_results_page #fullResults th {
-  border: 1px solid $dark5;
+  border: 1px solid $mainfontcolour;
 }
 .x_results_page th, .x_results_page tr.alt td {
   background: inherit;
@@ -681,4 +696,7 @@ a.hotspot, a.hotspot.selected {
 }
 .x_results_page .blue {
   color: $contrastcolor;
+}
+.x_results_page th {
+  color: $mainfontcolour;
 }
