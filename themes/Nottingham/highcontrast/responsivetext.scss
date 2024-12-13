@@ -173,14 +173,16 @@ table {
 .ui-dialog {
     font-size: $pagecontentslarge;
 }
-
-    #grid ul li {
-        font-size: $pagecontentslarge;
-    }
-    //*****multiple perspectives thumb heading too large unless reduced here******
-    #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
-        font-size:$pagecontentssmall;
-    }
+#grid ul li {
+    font-size: $pagecontentslarge;
+}
+//*****multiple perspectives thumb heading too large unless reduced here******
+#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
+    font-size:$pagecontentssmall;
+}
+tick, img.result{
+    width: 2.5vmin;
+}
 
 //--end of text size changes-----------------------------------------
 }
@@ -204,8 +206,6 @@ and (max-width :500px) {
         font-size: 12px;
     }
     #x_footerBlock button {
-        /*font-size: 1em;
-        width: 1em;*/
         margin-left: 5px;
     }
     .pbContainer {
