@@ -82,22 +82,29 @@
   color: $lightbtnselected;
 }
 #menuItems .menuItem, #menuItems .chapterItem {
-  background: $panelcolor;
+  background: $defaultpagebackground;
   color:$mainfontcolour;
-  border: 2px solid $panelcolor;
+  border: 2px solid $defaultpagebackground;
 }
-.featherlight-content #menuItems .menuItem, .featherlight-content #menuItems .chapterItem,
-#x_sideBar #menuItems .menuItem, #x_sideBar #menuItems .chapterItem:not(.ui-accordion-header-active) {
-  background: $lighterpanel;
+.featherlight-content #menuItems .menuItem, .featherlight-content #menuItems .chapterItem {
+  background: $defaultpagebackground;
   color:$mainfontcolour;
-  border: 2px solid $lighterpanel;
+  border: 2px solid $defaultpagebackground;
+}
+#x_sideBar #menuItems .menuItem, #x_sideBar #menuItems .chapterItem:not(.ui-accordion-header-active) {
+  background: $dark5;
+  color:$mainfontcolour;
+  border: 2px solid $dark5;
 }
 .chapterHolder, .chapterPageHolder {
   background: $lighterpanel;
 }
+#x_sideBar #menuItems .chapterHolder .menuItem {
+  border-color: $defaultpagebackground;
+}
 .featherlight-content .chapterPageHolder,
 #x_sideBar .chapterPageHolder {
-  background: $panelcolor;
+  background: $dark5;
 }
 .chapterPageHolder {
   border: 2px solid $dark5;
@@ -112,19 +119,20 @@
 .chapterHolder a, .chapterHolder a:hover, .chapterHolder a:focus, .chapterHolder a:active {
   color: $mainfontcolour !important;
 }
-#menuItems .menuItem:hover, #menuItems .chapterItem:hover, #menuItems .menuItem:focus, #menuItems .chapterItem:focus {
-  background: $dark5 !important;
-  border-color: $dark5;
+#menuItems .menuItem:hover, #menuItems .chapterItem:not(.ui-accordion-header-active):hover, #menuItems .menuItem:focus, #menuItems .chapterItem:not(.ui-accordion-header-active):focus {
+  background: $dark1 !important;
+  border-color: $dark1;
   color:$whiteorlightest;
 }
 
-#menuItems .menuItem.current, #menuItems .chapterItem.current {
-  border: 2px solid $dark5 !important;
+#menuItems .menuItem.current {
+  border: 2px solid $contrastcolor !important;
+  background: $defaultpagebackground !important;
 }
 
 //*****SIDE BAR****/
 #x_sideBar {
-	background-color: $panelcolor;
+	background-color: $defaultpagebackground;
 }
 #x_sideBarToggleBtn {
 	border-color: $dark5;

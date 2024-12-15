@@ -11,19 +11,19 @@
 }
 
 #x_headerBlock #x_pageIntroBtn {
-	color: $btntxtcolor;
+	color: $lightbtncolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg {
-	color: $panelcolor;
-	background-color: $btntxtcolor;
+	color: $lightbtntxt;
+	background-color: $lightbtncolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
-	color: $contrastcolor;
+	color: $lightbtnselected;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
-	color: $panelcolor;
-	background-color: $contrastcolor;
+	color: $lightbtntxt;
+	background-color: $lightbtnselected;
 }

@@ -4,8 +4,8 @@
 // Version 1.4.1
 // MIT License
 
-$track-color: $panelcolor !default;
-$thumb-color: $panelcolor !default;
+$track-color: $blackordarkest !default;
+$thumb-color: $blackordarkest !default;
 
 $thumb-radius: 12px !default;
 $thumb-height: 24px !default;
@@ -14,7 +14,7 @@ $thumb-shadow-size: 0 !default;
 $thumb-shadow-blur: 0 !default;
 $thumb-shadow-color: rgba(0, 0, 0, .2) !default;
 $thumb-border-width: 4px !default;
-$thumb-border-color: $bordercolor !default;
+$thumb-border-color: lighten($mainfontcolour, 30%) !default;
 
 $track-width: 100% !default;
 $track-height: 8px !default;
@@ -22,7 +22,7 @@ $track-shadow-size: 0 !default;
 $track-shadow-blur: 0 !default;
 $track-shadow-color: rgba(0, 0, 0, .2) !default;
 $track-border-width: 0px !default;
-$track-border-color: $bordercolor !default;
+$track-border-color: $blackordarkest !default;
 
 $track-radius: 20px;
 $contrast: 5% !default;

@@ -1,10 +1,10 @@
 @import "scss/_allvariables"; /*start here and set the default values for all the variables*/
 @import "scss/_header";
-@import "scss/_footer";
 @import "scss/_pagetypes";
+@import "scss/_footer";
 @import "scss/editorstyles";
-@import "scss/_sliders";
 @import "scss/_webkitCustoms";
+@import "scss/_sliders";
 /* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
 /*You should not edit the .css files directly or change values directly unless you wish to override something*/
 /*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
@@ -47,14 +47,6 @@ a:hover, .ui-widget-content a:hover {color:$linkhover;}
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br, .ui-corner-top, .ui-corner-left, .ui-corner-bl {
 	border-radius: $smallroundedcorners;
 }
-
-input, select, textarea {
-	background: $blackordarkest;
-	border: 1px solid $bordercolor;
-	caret-color: $whiteorlightest;
-	color: $mainfontcolour;
-}
-
 table.glossary tr {
 	background: $panelcolor;
 }
@@ -62,10 +54,10 @@ table.glossary td {
 	background: $panelcolor;
 }
 table.glossary tr td, table.glossary tr.shaded td {
-	border: 1px solid $bordercolor !important;
+	border: 1px solid $mainfontcolour !important;
 }
 table.glossary tr.shaded td {
-	background: $blackordarkest;
+	background: $dark1;
 }
 #x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited {
 	color: $linkcolor;
@@ -77,9 +69,9 @@ table.glossary tr.shaded td {
 	color: $linkhover;
 }
 #x_glossaryHover {
-	color: $mainfontcolour;
-	background: $bodybackgroundcolor;
-	border-color: $bordercolor;
+	color: $fontcolorforlightestcolor;
+	background: $contrastcolor;
+	border-color: $contrastcolor;
 }
 
 #x_mainHolder{
@@ -100,13 +92,16 @@ table.glossary tr.shaded td {
 .focusBorder {
 	border-color: $contrastcolor;
 }
+.highlight {
+	background-image: none;
+}
 /*****panel all pages with a panel*****/
 .panel {
 	border-radius: $mediumroundedcorners;
 	background:$panelcolor;
 	box-shadow: none;
 	color:$mainfontcolour;
-	border-color: $bordercolor;
+	border-color: $panelcolor;
 }
 .panelPage{
 	padding:1%;
@@ -128,44 +123,13 @@ img {
 /******lightboxes******/
 .featherlight .featherlight-content {
 	background-color: $panelcolor;
-	border: 1px solid $bordercolor;
 }
 .featherlight .featherlight-close-icon {
-	margin-top: 2px;
-	margin-right: 2px;
 	background-color: $panelcolor;
 	color: $btntxtcolor;
-	border: 1px solid $bordercolor;
 }
 .featherlight .featherlight-close-icon:hover, .featherlight .featherlight-close-icon:focus, .featherlight .featherlight-close-icon:active {
-	background-color: $contrastcolor;
-	color: $panelcolor;
-	border: 1px solid $contrastcolor;
-}
-//*****media player*****/
-.mejs-container.mejs-audio {
-	border: 1px solid $bordercolor;
-	background: $panelcolor;
-}
-.mejs-container.mejs-audio .mejs-time-total,
-.mejs-container.mejs-audio .mejs-horizontal-volume-total {
-	border: 1px solid $bordercolor;
-	background: $panelcolor;
-}
-.mejs-container.mejs-audio .mejs-time-loaded {
-	border-right: 1px solid $bordercolor;
-	background: $panelcolor;
-	height: 100%;
-	box-sizing: border-box;
-}
-.mejs-container.mejs-audio .mejs-time-current,
-.mejs-container.mejs-audio .mejs-horizontal-volume-current {
-	border-right: 1px solid $bordercolor;
-	background: $bordercolor;
-	box-sizing: border-box;
-}
-.mejs-container.mejs-audio .mejs-time-current {
-	height: 100%;
+	background: $dark3;
 }
 /*code snippet*/
 .hljs, .hljs-subst, .hljs-tag .hljs-title, .lisp .hljs-title, .clojure .hljs-built_in, .nginx .hljs-title {
@@ -173,11 +137,9 @@ img {
 }
 .hljs {
 	background: $panelcolor;
-	border: 1px solid $bordercolor;
 }
 .panel .hljs {
-	background: $panelcolor;
-	border: 1px solid $bordercolor;
+	background: $bodybackgroundcolor;
 }
 /******@media changes******/
 @media (min-width: 1366px) {

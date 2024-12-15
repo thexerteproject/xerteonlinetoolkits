@@ -10,7 +10,7 @@ $perspectivesmedium:5.2vmin;
 $perspectivessmall:3.1vmin;
 
 // --@media TABLETS and above--------------------------------------------------------------
-@media (min-width: 768px) {
+@media (min-width: 768px) and (min-height: 550px) {
 //--start of text size changes-----------------------------------------
 p {
   font-size: $pagecontentslarge;
@@ -241,7 +241,7 @@ table {
   font-size: $pagecontentslarge;
 }
 
-//--end of text size changes-----------------------------------------
+  //--end of text size changes-----------------------------------------
 }
 //--end of TABLETS and above-----------------------------------------
 
@@ -283,4 +283,8 @@ and (max-width :500px) {
 		margin-top:10px;
 		width:80px;
 	}
+  #x_footerBlock button{
+    font-size: 1.4rem;
+    margin-left: 5px;
+  }
 }

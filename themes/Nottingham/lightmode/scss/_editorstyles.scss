@@ -7,9 +7,9 @@ $esc2txt: $blackordarkest;
 $esc3: $accent6;
 $esc3txt: $blackordarkest;
 $esc4: $accent2;
-$esc4txt: $blackordarkest;
+$esc4txt: $whiteorlightest;
 $esc5: $accent5;
-$esc5txt: $whiteorlightest;
+$esc5txt: $blackordarkest;
 $esc6: $accent3;
 $esc6txt: $blackordarkest;
 
@@ -32,9 +32,6 @@ $esc6txt: $blackordarkest;
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
-  border-right: 1px solid $bordercolor;
-  border-top: 1px solid $bordercolor;
-  border-bottom: 1px solid $bordercolor;
   -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
@@ -146,7 +143,7 @@ tt, .highlight2 {
 }
 
 .panel .highlight1,.panel .highlight2,.panel .highlight3,.panel .highlight4,.panel .highlight5,.panel .highlight6 {
-  background-color: $panelcolor;
+  background-color: $bodybackgroundcolor;
 }
 
 
@@ -172,17 +169,14 @@ cite {
 blockquote {
  @include blockquote;
   background: $panelcolor;
-  border-color: $bordercolor;
-  border-right: 1px solid $bordercolor;
-  border-top: 1px solid $bordercolor;
-  border-bottom: 1px solid $bordercolor;
+  border-color:$dark5;
 }
 blockquote:before {
  @include beforeblockquote;
   color: #ccc;
 }
 .panel blockquote {
-  background: $panelcolor;
+  background: $bodybackgroundcolor;
 }
 blockquote p {
   display: inline;
