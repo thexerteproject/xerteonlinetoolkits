@@ -391,14 +391,14 @@ function is_user_permitted(... $neededRoles){
 	if(!isset($_SESSION['toolkits_logon_id'])) 
 		return false;
 
+    // allow old admin account to do everything
+    if($_SESSION['toolkits_logon_id'] == "site_administrator")
+        return true;
+
     if (!isset($_SESSION['elevated']) || ! $_SESSION['elevated'])
     {
         return false;
     }
-
-	// allow old admin account to do everything
-	if($_SESSION['toolkits_logon_id'] == "site_administrator")
-		return true;
 
 	$toolkits_logon_id = $_SESSION['toolkits_logon_id'];
 	$roles = getRolesFromUser($toolkits_logon_id);
