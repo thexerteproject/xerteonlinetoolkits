@@ -184,6 +184,12 @@ if(isset($_SESSION['toolkits_logon_id'])) {
     /*
      * Password and username provided, so try to authenticate
      */
+    // If user has admin rights, enable elevated
+    if (userHasAdminRights())
+    {
+        $_SESSION['elevated'] = true;
+        $xerte_toolkits_site->rights = 'elevated';
+    }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
