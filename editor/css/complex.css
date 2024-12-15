@@ -606,6 +606,9 @@ div.ui-layout-north div.content {
 	width:100%;
 	padding:0;
 }
+.elevated div.ui-layout-north div.content {
+	background-image: url(../img/warning.png);
+}
 
 div.ui-layout-west, div.ui-layout-east {
     background: #b3b3b5;

@@ -319,3 +319,9 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
     }
 }
 
+// Check whether elevated rights are active
+if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
+{
+    $xerte_toolkits_site->rights = 'elevated';
+}
+

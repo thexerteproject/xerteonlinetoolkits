@@ -21,3 +21,9 @@
 function redirect(url) {
     window.location.href = url;
 }
+
+function elevate(url){
+    if (confirm(ELEVATED_RIGHTS)) {
+        redirect(url);
+    }
+}
