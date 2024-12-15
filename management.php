@@ -190,6 +190,12 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         $_SESSION['elevated'] = true;
         $xerte_toolkits_site->rights = 'elevated';
     }
+    if (is_user_admin())
+    {
+        // Ensure user can open Tsugi Admin Panel
+        $_SESSION['admin'] = true;
+    }
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -251,8 +257,8 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         _include_javascript_file("website_code/scripts/import.js");
         _include_javascript_file("website_code/scripts/template_management.js");
         _include_javascript_file("website_code/scripts/logout.js");
+        _include_javascript_file("website_code/scripts/functions.js");
         echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js\"></script>";
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/functions.js\"></script>";
 
         if ($authmech->canManageUser($jsscript))
         {
@@ -333,6 +339,16 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                     }
                     else
                     {
+                        // Place a button to TSUGI (if you have the rights)
+                        if (is_user_admin() && file_exists($xerte_toolkits_site->tsugi_dir)) {
+                            ?>
+                            <button title="<?php echo MANAGEMENT_TO_TSUGI_ADMIN; ?>"
+                                    type="button" class="xerte_button_c_no_width"
+                                    onclick="javascript:redirect('tsugi/admin', true)" style="margin-bottom: 8px;">
+                                <i class="fa xerte-icon">次</i> <?php echo MANAGEMENT_TO_TSUGI_ADMIN; ?>
+                            </button>
+                           <?php
+                        }
                         // Place button with link to index.php
                     ?>
                         <button title="<?php echo MANAGEMENT_TOWORKSPACE; ?>"

@@ -349,9 +349,7 @@ Folder popup is the div that appears when creating a new folder
                 if (getRolesFromUser($_SESSION['toolkits_logon_id'])) {
                     echo '<button onclick="javascript:elevate(\'management.php\')" title=" ' . INDEX_TO_MANAGEMENT . ' " class="xerte_workspace_button "><i class="fas fa-tools xerte-icon"></i></button>';
                 }
-                if (is_user_admin() && file_exists($xerte_toolkits_site->tsugi_dir)) {
-                    echo '<button onclick="javascript:elevate(\'tsugi/admin\')" title=" ' . INDEX_TO_TSUGI_ADMIN . ' " class="xerte_workspace_button"><i class="fa xerte-icon">次</i></button>';
-                }
+
                ?>
 
                <div style="display: inline-block"><?php display_language_selectionform("general", false); ?></div>
