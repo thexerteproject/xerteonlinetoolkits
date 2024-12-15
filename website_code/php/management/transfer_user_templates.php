@@ -33,7 +33,7 @@ require("../user_library.php");
 require("../url_library.php");
 require("management_library.php");
 
-if(is_user_permitted("projectadmin")) {
+if(is_user_permitted("projectadmin", "system")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 
