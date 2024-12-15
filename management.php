@@ -259,7 +259,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         _include_javascript_file("website_code/scripts/template_management.js?version=" . $version);
         _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
         _include_javascript_file("website_code/scripts/functions.js?version=" . $version);
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js?version=<?php echo $version;?>\"></script>";
+        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js?version={$version}>\"></script>";
 
         if ($authmech->canManageUser($jsscript))
         {
