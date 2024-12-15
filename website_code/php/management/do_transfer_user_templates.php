@@ -260,7 +260,7 @@ if(is_user_permitted("projectadmin", "system"))
 
         // Get username of olduserid
         $q = "select * from {$prefix}logindetails where login_id=?";
-        $params = array(olduserid);
+        $params = array($olduserid);
         $olduser_rec = db_query_one($q, $params);
 
         $olduser = $olduser_rec['username'];
