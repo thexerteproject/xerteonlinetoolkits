@@ -195,6 +195,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         // Ensure user can open Tsugi Admin Panel
         $_SESSION['admin'] = true;
     }
+    $version = getVersion();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -203,14 +204,14 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
 
-        <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-        <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
-        <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
+        <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
+        <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
+        <link href="website_code/styles/management.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 
-        <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css">
+        <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css?version=<?php echo $version;?>">
         <?php
         if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
         {
@@ -250,19 +251,19 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 		<?php
         echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "editor/js/vendor/jquery-1.9.1.min.js\"></script>";
         _include_javascript_file("editor/js/vendor/jquery-1.9.1.min.js");
-        _include_javascript_file("website_code/scripts/file_system.js");
-        _include_javascript_file("website_code/scripts/screen_display.js");
-        _include_javascript_file("website_code/scripts/ajax_management.js");
-        _include_javascript_file("website_code/scripts/management.js");
-        _include_javascript_file("website_code/scripts/import.js");
-        _include_javascript_file("website_code/scripts/template_management.js");
-        _include_javascript_file("website_code/scripts/logout.js");
-        _include_javascript_file("website_code/scripts/functions.js");
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js\"></script>";
+        _include_javascript_file("website_code/scripts/file_system.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/screen_display.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/ajax_management.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/management.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/import.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/template_management.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/functions.js?version=" . $version);
+        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js?version=<?php echo $version;?>\"></script>";
 
         if ($authmech->canManageUser($jsscript))
         {
-            _include_javascript_file($jsscript);
+            _include_javascript_file($jsscript . "?version=" . $version);
         }
         ?>
         <style>
