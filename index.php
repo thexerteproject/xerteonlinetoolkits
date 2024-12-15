@@ -72,6 +72,12 @@ if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_
 	header("location: management.php");
 	exit();
 }
+if(isset($_SESSION["adminTo"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator' || $adminlogin){
+    $url = $_SESSION["adminTo"];
+    unset($_SESSION["adminTo"]);
+    header("location: {$url}");
+    exit();
+}
 
 // Check if any redirection needs to take place for Password protected files...
 if (isset($_SESSION['pwprotected_url']))
