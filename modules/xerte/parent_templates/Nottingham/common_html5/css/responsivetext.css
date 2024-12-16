@@ -244,6 +244,10 @@
     margin-top: 10px;
     width: 80px;
   }
+  #x_footerBlock button{
+    font-size: 1.4rem;
+    margin-left: 5px;
+  }
 }
 
 /*# sourceMappingURL=responsivetext.css.map */
