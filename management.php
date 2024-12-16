@@ -164,17 +164,16 @@ if(isset($_SESSION['toolkits_logon_id'])) {
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+    }
+
     $regenerate_session_id = true;
     if ($xerte_toolkits_site->authentication_method == "Moodle")
     {
         $regenerate_session_id = false;
     }
-    if (isset($_GET['altauth']))
-    {
-        $xerte_toolkits_site->authentication_method = 'Db';
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-    }
-	//	$dbloggedin = false;
 
     $msg = "Admin user: " . $_SESSION['toolkits_logon_username'] ." logged in successfully from " . $_SERVER['REMOTE_ADDR'];
     receive_message("", "SYSTEM", "MGMT", "Successful login", $msg);
@@ -230,13 +229,6 @@ if(isset($_SESSION['toolkits_logon_id'])) {
          echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
 
          echo "var site_apache = \"" . $xerte_toolkits_site->apache . "\";\n";
-         if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
-         {
-             $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
-             $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-             $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
-         }
-
          echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
          ?></script>
 
@@ -261,9 +253,16 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         _include_javascript_file("website_code/scripts/functions.js?version=" . $version);
         echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js?version={$version}>\"></script>";
 
-        if ($authmech->canManageUser($jsscript))
+        if ($authmech->canManageUser($jsscript) || (isset($altauthmech) && $altauthmech->canManageUser($altjsscript)))
         {
-            _include_javascript_file($jsscript . "?version=" . $version);
+            if ($authmech->canManageUser($jsscript))
+            {
+                _include_javascript_file($jsscript . "?version=" . $version);
+            }
+            if (isset($altauthmech) && $altauthmech->canManageUser($altjsscript) && $xerte_toolkits_site->authentication_method != $xerte_toolkits_site->altauthentication)
+            {
+                _include_javascript_file($altjsscript . "?version=" . $version);
+            }
         }
         ?>
         <style>
