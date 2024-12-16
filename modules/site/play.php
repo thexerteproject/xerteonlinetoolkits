@@ -99,6 +99,8 @@ function show_template($row, $xapi_enabled=false){
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile, true);
 
+    _load_language_file("/modules/site/preview.inc");
+
     if (strlen($xmlFixer->getName()) > 0)
     {
         $title = $xmlFixer->getName();
@@ -115,7 +117,6 @@ function show_template($row, $xapi_enabled=false){
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 
-    _load_language_file("/modules/site/preview.inc");
 
     $version = getVersion();
 

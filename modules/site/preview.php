@@ -86,6 +86,8 @@ function show_preview_code($row)
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile, true);
 
+    _load_language_file("/modules/site/preview.inc");
+
     if (strlen($xmlFixer->getName()) > 0)
     {
         $title = $xmlFixer->getName();
@@ -102,8 +104,6 @@ function show_preview_code($row)
     $template_path_string = "modules/site/parent_templates/" . $row['parent_template'] . "/";
 
     require_once("config.php");
-
-    _load_language_file("/modules/site/preview.inc");
 
     $version = getVersion();
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
