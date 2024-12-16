@@ -241,6 +241,14 @@ table {
   font-size: $pagecontentslarge;
 }
 
+#x_sideBar .ui-button-text, #x_sideBar .ui-accordion .ui-accordion-header a,
+#x_sideBar #x_sideBarBtnHolder button span.ui-button-text {
+  font-size: $pagecontentsmedium;
+}
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button, #x_sideBar.sideBarSmall #x_sideBarTocHolder button {
+  font-size: $pagecontentsmedium;
+}
+
   //--end of text size changes-----------------------------------------
 }
 //--end of TABLETS and above-----------------------------------------
