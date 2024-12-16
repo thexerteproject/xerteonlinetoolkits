@@ -32,10 +32,9 @@ if(is_user_permitted("useradmin")){
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if ($xerte_toolkits_site->altauthentication != "" && isset($_SESSION['altauth']))
+    if ($xerte_toolkits_site->altauthentication != "" && !$authmech->canManageUser($jsscript))
     {
-        $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
     }
 	
 	echo "<h2>" . MANAGEMENT_MENUBAR_USERS . "</h2>";
@@ -47,11 +46,11 @@ if(is_user_permitted("useradmin")){
         echo "<div id=\"manage_auth_users\">";
         $authmech->getUserList(false, "");
         echo "</div>";
-		echo "<div id=\"manage_user_roles\">";
-		get_user_roles();
-		echo "</div>";
-        echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
     }
+    echo "<div id=\"manage_user_roles\">";
+    get_user_roles();
+    echo "</div>";
+    echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
 
     $database_id = database_connect("templates list connected","template list failed");
 
