@@ -59,7 +59,7 @@ if($_SESSION['toolkits_logon_id']) {
 
 	echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname'];
 
-	echo "<span class=\"sr-only\">" . FOLDER_RSS_TEMPLATE_LINKS . "</span></a></li>";
+	echo "</a><span class=\"sr-only\">" . FOLDER_RSS_TEMPLATE_LINKS . "</span></li>";
 
 	echo "</ul>";
 
