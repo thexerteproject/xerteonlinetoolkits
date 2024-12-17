@@ -669,37 +669,91 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
     float:left;
 }
 
-/* PROGRESS BAR */
+/* --PROGRESS BAR---------------- */
 #x_footerProgress {
+	box-sizing: border-box;
+	margin: auto;
+	width: 20%;
+	text-align: center;
+}
+#x_headerBlock #x_headerProgress {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	text-align: center;
+	margin: 0;
+}
+#x_headerBlock #x_headerProgress.pbBelowHeader {
+	float: left;
+}
+#x_headerBlock #x_headerProgress div {
+	margin: 0;
+	padding: 0;
 	box-sizing: border-box;
 }
 
+/* the whole bar */
 .pbContainer {
-	width: 50%;
+	width: 100%;
 	height: 6px;
 	margin: auto;
 	margin-top: 15px;
 	background-color: #ddd;
 }
+#x_headerProgress .pbContainer {
+	border-radius: 10px;
+	position: relative;
+}
 
-.pbPercent {
+/* the highlighted parts of the bar */
+.pbBar {
 	text-align: right;
 	padding-right: 2px;
 	line-height: 6px;
 	color: #ffffff;
-}
-
-.pbBar {
-	width: 10%;
+	width: 0;
 	font-size: 8px;
 	background-color: #2196F3;
 	height: 100%;
 	box-sizing: border-box;
 }
+#x_headerProgress .pbBar:first-of-type {
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+#x_headerProgress .pbBar.sub {
+	position: absolute;
+}
+.pbBarContainer {
+	width: 100%;
+}
 
+/* the text next to the progress bar */
 .pbTxt {
 	font-size: 10px;
 	text-align: center;
+}
+#x_headerProgress .pbTxt {
+	text-align: left;
+}
+
+/* progress markers on the progress bar */
+#x_headerProgress .progressMarker {
+	width: 20px;
+	height: 20px;
+	border: 6px solid #ddd;
+	background: black;
+	border-radius: 20px;
+	position: absolute;
+}
+#x_headerProgress .progressMarker.complete {
+	border-color: #2196F3;
+}
+.pbMarkerContainer {
+	position: absolute;
+	top: -7px;
+	left: 0;
+	right: 0;
 }
 
 
@@ -1474,7 +1528,7 @@ a:focus .wcagLogo {
 }
 
 #tocMenuLightBox {
-	height: 100%;
+	height: 99%;
 }
 
 #tocMenuLightBox #menuItems {

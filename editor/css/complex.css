@@ -606,6 +606,7 @@ div.ui-layout-north div.content {
 	width:100%;
 	padding:0;
 }
+
 .elevated div.ui-layout-north div.content {
 	background-image: url(../img/warning.png);
 }
@@ -1304,6 +1305,10 @@ i.tooltipIcon {
 .passwordIcon {
 	margin-right: 5px;
 	color: #444;
+}
+.milestoneIcon {
+	margin-right: 5px;
+	color: #663399;
 }
 .iconEnabled
 {
