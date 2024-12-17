@@ -79,7 +79,7 @@
 		<progressBarType label="Position" type="ComboBox" options="Header bar (above titles),Header bar (below titles),Footer bar" data="header1,header2,true" defaultValue="header1" conditionTrigger="true" optional="true"/>
 		<progressBarPercentage label="Include Percentage" type="Checkbox" defaultValue="true" optional="true"/>
 	    <progressBarSubGroup label="Progress Markers" type="group" optional="true" condition="progressBarType=='header1'||progressBarType=='header2'" tooltip="Add progress marks to the progress bar, based either on reaching the end of a chapter or viewing a milestone page">
-			<progressSub label="Type" type="ComboBox" options="None,Pages,Chapters,Milestones" data="false,pages,chapters,milestones" defaultValue="false" conditionTrigger="true" condition="progressBarType=='header1'||progressBarType=='header2'" optional="true" tooltip="Note that when set to chapters, pages outside of chapters are not included in the project progress"/>
+			<progressSub label="Type" type="ComboBox" options="None,Pages,Chapters,Milestones" data="false,pages,chapters,milestones" defaultValue="false" conditionTrigger="true" condition="progressBarType=='header1'||progressBarType=='header2'" optional="true"/>
 			<progressBarSpacing label="Spacing" type="ComboBox" options="Proportional,Even" data="true,even" defaultValue="even" condition="progressSub!='false'&amp;&amp;progressSub!='pages'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2')" optional="true" tooltip="Determines whether the spacing of progress markers represents the number of pages between each marker or whether they are always evenly spaced"/>
 		</progressBarSubGroup>
 	</progressBarGroup>
