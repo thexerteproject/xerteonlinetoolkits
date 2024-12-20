@@ -3116,11 +3116,13 @@
 	<btnLabel label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
 
     <autoSuggestionGroup type="group" label="Auto Suggestions" optional="true">
+        <importantNotice label="Please make sure to publish the learning object after you apply a suggestion. This helps the model stay up-to-date with your changes!" type="info" optional="true"/>
         <suggestion1 label="Suggestion 1" type="text" wysiwyg="true" optional="true"/>
         <suggestion2 label="Suggestion 2" type="text" wysiwyg="true" optional="true"/>
         <suggestSelect label="Suggestion to apply" options="Suggestion 1, Suggestion 2" type="comboBox" data="suggestion1,suggestion2" defaultValue="suggestion1" width="120" optional="true"/>
         <generateSuggestionsButton type="generatesuggestionbutton" optional="true"/>
         <applySuggestionsButton type="applysuggestionbutton" optional="true"/>
+        <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </autoSuggestionGroup>
 
 	<newNodes>
