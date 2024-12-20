@@ -136,7 +136,8 @@
   .ui-accordion .ui-accordion-header a {
     font-size: 2.5vmin;
   }
-  .ui-button-text-only .ui-button-text {
+  .ui-button-text-only .ui-button-text,
+  #menuItems .chapterHolder.ui-accordion .ui-accordion-header a {
     padding: 0.1em 1em;
   }
   .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {

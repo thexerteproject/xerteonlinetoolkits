@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 require(dirname(__FILE__) . "/module_functions.php");
-
+require_once(dirname(__FILE__) .  '/../../website_code/php/config/popcorn.php');
 //Function show_template
 //
 // (pl)
@@ -312,6 +312,10 @@ function show_template($row, $xapi_enabled=false){
     }else{
         $page_content = str_replace("%TWITTERCARD%", "", $page_content);
     }
+
+    // Check popcorn mediasite and peertube config files
+    $popcorn_config = popcorn_config($template_path . "common/", $version);
+    $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
 
     echo $page_content;
 

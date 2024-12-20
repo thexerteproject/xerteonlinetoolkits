@@ -81,7 +81,6 @@
 			$hsHolder = $("#hsHolder");
 			$infoHolder = $("#infoHolder");
 			$panel = $("#panel");
-			debugger
 			
 			if (x_browserInfo.mobile != true) {
 				if (x_currentPageXML.getAttribute("align") == "Right") {
@@ -548,7 +547,6 @@
 		}
 		
 		this.drawLine = function($hs, $listItem, shape) {
-			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			
 			// startX/Y = centre of hotspot
@@ -572,7 +570,6 @@
 		}
 
 		this.drawLineToText = function ($hs, shape){
-			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			var $panel = $("#panel");
 			var startX = $hs.offset().left - $(context.canvas).offset().left + ($hs.width() / 2);

@@ -88,8 +88,24 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   background: $contrastcolor;
   color:$whiteorlightest;
 }
-#menuItems .menuItem.current {
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
   border: 2px solid $brightcolor;
+}
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
+  background: $contrastcolor;
+  color: $whiteorlightest !important;
+}
+.chapterItem.ui-state-active a {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.ui-accordion .chapterPageHolder.ui-accordion-content {
+  background-color: $contrastcolor;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.chapterPageHolder .menuItem {
+  color: $whiteorlightest;
 }
 
 //*****SIDE BAR****/

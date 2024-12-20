@@ -2415,13 +2415,11 @@ var EDITOR = (function ($, parent) {
      */
 	getPageList = function(thisKey, thisTarget)
 	{
-
 		var tree = $.jstree.reference("#treeview");
 		var pages=[];
 
 		// list of everything at same level or everything at parent's level
 		if (thisTarget != undefined) {
-			
 			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
 			// * makes it include all the children too
 			var children = false;
@@ -2477,37 +2475,38 @@ var EDITOR = (function ($, parent) {
 			var lo_node = tree.get_node("treeroot", false);
 			
 			$.each(lo_node.children, function(i, key){
-					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-					var hidden = lo_data[key]['attributes'].hidePage;
-					
-					if (linkID.found && linkID.value != "")
-					{
-						
-						var page = [];
-						// Also make sure we only take the text from the name, and not the full HTML
-						page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-						page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-						pages.push(page);
+                function checkNode(key, checkChildren, child) {
+                    const name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                    const linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                    const hidden = lo_data[key]['attributes'].hidePage;
 
-						// Now we do the children (if deeplinking is allowed)
-						if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-							var childNode = tree.get_node(key, false);
-							$.each(childNode.children, function(i, key){
-								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-								{
-									var page = [];
-									// Also make sure we only take the text from the name, and not the full HTML
-									page.push(getTextFromHTML("&nbsp;- "+name.value));
-									page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-									pages.push(page);
-								}
-							});
-						}
-					}
+                    if (linkID.found && linkID.value != "") {
+                        // Also make sure we only take the text from the name, and not the full HTML
+                        const page = [];
+                        const prependTxt = child ? "&nbsp;- " : "";
+                        page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(prependTxt + name.value));
+                        page.push(linkID.value);
+                        pages.push(page);
+
+                        // Now we do the children (if deeplinking is allowed)
+                        if (checkChildren && wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+                            const childNode = tree.get_node(key, false);
+                            $.each(childNode.children, function(k, key){
+                                checkNode(key, false, true);
+                            });
+                        }
+                    }
+                }
+
+                // get pages inside a chapter (don't list chapters)
+                if (lo_data[key].attributes.nodeName == "chapter") {
+                    const childNode = tree.get_node(key, false);
+                    $.each(childNode.children, function(j, key) {
+                        checkNode(key, true);
+                    });
+                } else {
+                    checkNode(key, true);
+                }
 			});
 		}
 		

@@ -151,7 +151,8 @@ h1#x_introH1 {
 .ui-accordion .ui-accordion-header a {
     font-size: $pagecontentslarge;
 }
-.ui-button-text-only .ui-button-text {
+.ui-button-text-only .ui-button-text,
+#menuItems .chapterHolder.ui-accordion .ui-accordion-header a {
 //reduce padding inside buttons e.g. zoom, submit, check etc
     padding: .1em 1em;
 }

@@ -411,7 +411,10 @@ function login_processing($exit = true) {
    */
   _debug("login_processing: " . $xerte_toolkits_site->authentication_method);
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-
+  // check if already logged in
+  if (isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id'] !== "") {
+    return array(true, array());
+  }
   if ($authmech->needsLogin()) {
    /**
     *  Check if we are logged in
