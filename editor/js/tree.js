@@ -1571,7 +1571,7 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, textSnippet, sourceContext, assistantPrompt, baseUrl, useContext) {
+    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, textSnippet, sourceContext, assistantPrompt, baseUrl, useContext, contextScope, modelTemplate) {
         return new Promise((resolve, reject) => {
             try {
                 // Call aiAPI.php via jQuery's AJAX method
@@ -1593,7 +1593,9 @@ var EDITOR = (function ($, parent) {
                         context: sourceContext,
                         assistantPrompt: assistantPrompt,
                         baseUrl: baseUrl,
-                        useContext: useContext
+                        useContext: useContext,
+                        contextScope: contextScope,
+                        modelTemplate: modelTemplate,
                     },
                     success: function(data) {
                         try {

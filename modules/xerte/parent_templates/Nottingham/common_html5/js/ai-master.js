@@ -68,7 +68,6 @@ function ai_to_xerte_content(data, key, pos, tree, realParent) {
     try {
         $('body').css("cursor", "default");
         var parser = new DOMParser();
-        //
         var result = JSON.parse(data);
         if (result.status == 'success') {
             //rename x eventually
@@ -91,22 +90,47 @@ function ai_to_xerte_content(data, key, pos, tree, realParent) {
 
             }
             console.log(x.tagName);
-            build_xerte_xml(x, x.tagName, parser);
+
 
             //var children = x.children;
             var children = x.childNodes;
             var size = children.length;
             // Add all populated children of top level object for example "quiz"
+            // Or if nodes exist, update attributes of children
             for (let i = 0; i < size; i++) {
-                addAINodeToTree(key, pos, children[i].tagName, children[i], tree, true, true);
-            }
+                const child = children[i];
+                const childLinkID = child.getAttribute('linkID'); // Use `linkID` to identify the node
+                const existingChild = Object.values(lo_data).find(node => node.attributes?.linkID === childLinkID);
 
+                if (existingChild) {
+                    // Node already exists, update its attributes selectively
+                    const attributes = child.attributes;
+                    for (let j = 0; j < attributes.length; j++) {
+                        const attr = attributes[j];
+
+                        // Update only attributes found in the new node
+                        if (attr.value !== undefined) {
+                            existingChild.attributes[attr.name] = attr.value;
+                        }
+                    }
+                } else {
+                    // Node does not exist, add it
+                    addAINodeToTree(key, pos, child.tagName, child, tree, true, true);
+                }
+            }
+            build_xerte_xml(x, x.tagName, parser);
             var node = tree.get_node(key, false);
             if (node) {
                 // Refresh the node to reflect the updated attributes
                 //tree.refresh_node(node);
                 realParent.tree.showNodeData(node.id, true);
             }
+
+            // Resolve targets for decision_tree children
+            if (node.type === 'decision'){
+                resolveDecisionTreeTargets(tree, key);
+            }
+
             console.log("done!")
             alert("Make sure to check the generated results for mistakes!");
         } else {
@@ -116,6 +140,52 @@ function ai_to_xerte_content(data, key, pos, tree, realParent) {
         console.log('Error:', error); //log the error for debugging
         throw error;
     }
+}
+
+//Used to resolve targets for decision tree, as the AI-generated XMLs don't have the link IDs necessary to achieve correct page-links
+function resolveDecisionTreeTargets(tree, key) {
+    const decisionTreeNode = tree.get_node(key, false);
+    if (!decisionTreeNode) return;
+
+    // Step 1: Build a map of 'name' to 'linkID' for all children (including nested)
+    const nameToIdMap = {};
+
+    function buildNameToIdMap(nodeId) {
+        const node = tree.get_node(nodeId, false);
+        const attributes = lo_data[nodeId]?.attributes;
+
+        if (attributes && attributes.name && attributes.linkID) {
+            nameToIdMap[attributes.name] = attributes.linkID;
+        }
+
+        // Recurse for all children
+        if (node.children && node.children.length > 0) {
+            node.children.forEach(childId => buildNameToIdMap(childId));
+        }
+    }
+
+    // Start building the map from the decisionTreeNode
+    buildNameToIdMap(key);
+
+    // Step 2: Update `targetNew` attributes based on the map (including nested nodes)
+    function updateTargetNewAttributes(nodeId) {
+        const node = tree.get_node(nodeId, false);
+        const attributes = lo_data[nodeId]?.attributes;
+
+        if (attributes && attributes.targetNew && nameToIdMap[attributes.targetNew]) {
+            attributes.targetNew = nameToIdMap[attributes.targetNew]; // Replace name with linkID
+        }
+
+        // Recurse for all children
+        if (node.children && node.children.length > 0) {
+            node.children.forEach(childId => updateTargetNewAttributes(childId));
+        }
+    }
+
+    // Start updating from the decisionTreeNode
+    updateTargetNewAttributes(key);
+
+    console.log("Resolved targetNew attributes for decision_tree and all nested children.");
 }
 
 //cleaner function for prompts, removes unwanted sequences

@@ -30,7 +30,15 @@
 	<overviewString label="Overview Label" type="TextInput" wysiwyg="true" language="true"/>
 	<helpString label="Question Help Label" type="TextInput" wysiwyg="true" language="true"/>
 	<btnLabel label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
-	
+
+    <autoSuggestionGroup type="group" label="Auto Suggestions" optional="true">
+        <suggestion1 label="Suggestion 1" type="text" wysiwyg="true" optional="true"/>
+        <suggestion2 label="Suggestion 2" type="text" wysiwyg="true" optional="true"/>
+        <suggestSelect label="Suggestion to apply" options="Suggestion 1, Suggestion 2" type="comboBox" data="suggestion1,suggestion2" defaultValue="suggestion1" width="120" optional="true"/>
+        <generateSuggestionsButton type="generatesuggestionbutton" optional="true"/>
+        <applySuggestionsButton type="applysuggestionbutton" optional="true"/>
+    </autoSuggestionGroup>
+
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
 		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text="Enter text here"/>]]></infoStep>

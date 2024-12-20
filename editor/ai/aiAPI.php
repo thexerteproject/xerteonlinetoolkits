@@ -14,7 +14,7 @@
 //    die('{"status": "error", "message": "prompt must not be empty"}');
 //}
 
-$prompt_params = $_POST["prompt"];
+$prompt_params = $_POST["prompt"] ?? null;
 $type = $_POST["type"];
 $ai_api = $_POST["api"] ?? 'openai';
 $file_url = $_POST["url"] ?? 'None';
@@ -22,6 +22,8 @@ $textSnippet = $_POST["textSnippet"];
 $context = $_POST["context"] ?? 'None';
 $useContext = $_POST["useContext"] ?? 'false';
 $baseUrl = $_POST["baseUrl"];
+$contextScope = $_POST["contextScope"];
+$modelTemplate = $_POST["modelTemplate"];
 
 $allowed_apis = ['openai', 'anthropic'];
 //todo combine with api check from admin page
@@ -36,8 +38,18 @@ require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
 $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
 
-$result = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, $useContext);
+//Select between a construct, 2 part approach or a single response approach
+if ($modelTemplate=="construct"){
+    $newParams = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, false, $contextScope, $modelTemplate);
 
+    $key_value_array = json_decode($newParams, true);
+
+    $newType = $key_value_array[array_key_first($key_value_array)];
+    $useContext = true;
+    $result = $aiApi->ai_request($key_value_array, $newType, $file_url, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate);
+} else {
+    $result = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate);
+}
 if ($result->status){
     echo json_encode($result);
 } else {

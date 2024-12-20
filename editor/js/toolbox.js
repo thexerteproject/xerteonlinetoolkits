@@ -4970,6 +4970,87 @@ var EDITOR = (function ($, parent) {
                         }
                     });
                 break;
+            case 'generatesuggestionbutton':
+                var id = 'generatesuggestionbutton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('class', 'generate_suggestion_button')
+                    .text('Suggest')
+                    .click({key: key}, async function(event) {
+                        // Disable the button to prevent multiple clicks
+                        html.prop('disabled', true);
+                        var type = lo_data[key].attributes.nodeName; //get the node-type
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var contextScope = lo_data[key].attributes.linkID; //ensures suggestions are made based on the active node where suggestion request comes from
+                        var modelTemplate = "suggestion" //use suggestion to signal we want to use the suggestion prompt for this page
+                        const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
+                            (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
+                        // Build the constructor object based on the type
+                        var constructorObject = {};
+                        console.log(type);
+                        if (confirm("Generated suggestions will override any existing suggestions. Generate anyway?")){
+                            try {
+                                    await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, lo_data[key].attributes.linkID, modelTemplate);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try making another AI request.");
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            html.prop('disabled', false);
+                        }
+
+                    });
+                break;
+            case 'applysuggestionbutton':
+                var id = 'applysuggestionbutton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('class', 'apply_suggestion_button')
+                    .text('Apply suggestion')
+                    .click({key: key}, async function(event) {
+                        // Disable the button to prevent multiple clicks
+                        html.prop('disabled', true);
+                        var type = lo_data[key].attributes.nodeName; //get the node-type
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var contextScope = "local";
+                        var modelTemplate = "construct" //use construct to signal we want a 2 part prompt which doesn't use user parameters
+                        const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
+                            (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
+                        // Build the constructor object based on the type
+                        var suggestionKey = lo_data[key].attributes["suggestSelect"];
+                        var constructorObject = {
+                            suggestion: suggestionKey && lo_data[key].attributes[suggestionKey] ? lo_data[key].attributes[suggestionKey] : null,
+                        };
+
+                        //adjust scope as needed per interactivity
+                        switch (type) {
+                            //for decision trees, we want to use only the decision tree itself as context
+                            case 'decision':
+                                contextScope = lo_data[key].attributes.linkID;
+                                break;
+                        }
+                        console.log(type);
+                        if (confirm("The selected suggestion will be processed and used to alter the contents of this page or generate a new page. Proceed?")){
+                            try {
+                                await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, contextScope, modelTemplate);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try making another AI request.");
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            html.prop('disabled', false);
+                        }
+
+                    });
+                break;
             case 'aibutton':
                 var id = 'aibutton_' + form_id_offset;
                 form_id_offset++;
@@ -4984,6 +5065,8 @@ var EDITOR = (function ($, parent) {
                         var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                         var fileUrl = lo_data[key].attributes["file"];
                         var textSnippet = lo_data[key].attributes["textSnippet"];
+                        var modelTemplate = "standard";
+                        var contextScope = "full"; //Currently supported: "full" for the entire learning object, OR the linkID value for the current node
                         var useContext = lo_data[key].attributes["useContext"];
                         // Check if fileUrl is "Upload a file", empty, or just whitespace
                         if (fileUrl === "Upload a file" || !fileUrl || fileUrl.trim() === "") {
@@ -5260,21 +5343,21 @@ var EDITOR = (function ($, parent) {
                                         "subject": lo_data[key].attributes["subject"],
                                         "nrc": lo_data[key].attributes["amountOfCards"],
                                         "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
                                         "hintMode": lo_data[key].attributes["hintMode"],
                                         "languageMode": lo_data[key].attributes["languageMode"],
                                         "reverseMode": lo_data[key].attributes["reverseMode"],
                                         "language": lo_data[key].attributes["languageChoice"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                     }
-                                    fileUrl = lo_data[key].attributes["file"];
                                     break;
                                 case 'topXQ':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
-                                        "range": lo_data[key].attributes["ageRange"],
                                         "nro": lo_data[key].attributes["numberOfOptions"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
                                     };
                                     break;
                                 case 'buttonSequence':
@@ -5291,10 +5374,10 @@ var EDITOR = (function ($, parent) {
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
                                         "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
                                         "wpc": lo_data[key].attributes["wordsPerCategory"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                     };
-                                    fileUrl = lo_data[key].attributes["file"];
                                     break;
                                 case 'decision':
                                     constructorObject = {
@@ -5372,15 +5455,15 @@ var EDITOR = (function ($, parent) {
                                 if (fileUrl != null && uploadPrompt === 'true') {
                                     var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
                                     var fullUrl = baseUrl + cleanFileUrl;
-                                    await ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], fullUrl, null, sourceContext, assisstantPrompt, baseUrl, useContext);
+                                    await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], fullUrl, null, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
                                 } else if (fileUrl === null && uploadPrompt === 'true') {
                                     alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link.");
                                 } else if (textSnippet != null && uploadPrompt === 'trueText') {
-                                    await ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, textSnippet, sourceContext, assisstantPrompt, baseUrl, useContext);
+                                    await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, textSnippet, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
                                 } else if (textSnippet === null && uploadPrompt === 'trueText') {
                                     alert("You've selected the 'Submit Snippet' option but haven't included any text.");
                                 } else {
-                                    await ai_content_generator(event, constructorObject, lo_data[key].attributes.nodeName, lo_data[key].attributes["aiSelector"], null, null, sourceContext, assisstantPrompt, baseUrl, useContext);
+                                    await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
                                 }
                             } catch (error) {
                                 console.log('Error occurred:', error);

@@ -155,7 +155,7 @@ class openaiApi
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json", "OpenAI-Beta: assistants=v1"]);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json", "OpenAI-Beta: assistants=v2"]);
 
         $result = curl_exec($curl);
         curl_close($curl);
@@ -247,7 +247,7 @@ class openaiApi
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             $authorization,
             'Content-Type: multipart/form-data',
-            //"OpenAI-Beta: assistants=v1"
+            //"OpenAI-Beta: assistants=v2"
         ]);
 
         // Define the POST fields, including the file in 'file' parameter
@@ -440,7 +440,7 @@ class openaiApi
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             $authorization,
             "Content-Type: application/json",
-            "OpenAI-Beta: assistants=v1"
+            "OpenAI-Beta: assistants=v2"
         ]);
         curl_setopt($curl, CURLOPT_POST, true);
         $postData = json_encode(['file_id' => $fileId]);
@@ -465,7 +465,7 @@ class openaiApi
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             $authorization,
             "Content-Type: application/json",
-            "OpenAI-Beta: assistants=v1"
+            "OpenAI-Beta: assistants=v2"
         ]);
 
         // Specify that this is a DELETE request
@@ -512,7 +512,7 @@ class openaiApi
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             $authorization,
             "Content-Type: application/json",
-            "OpenAI-Beta: assistants=v1"
+            "OpenAI-Beta: assistants=v2"
         ]);
 
         // Specify that this is a DELETE request
@@ -866,7 +866,7 @@ class openaiApi
             }
     }
 
-    private function stripXMLTagsFromFile($filePath) {
+    private function stripXMLTagsFromFile($filePath, $contextScope) {
         // Load the XML from the file into DOMDocument
         $dom = new DOMDocument();
         if (!file_exists($filePath)) {
@@ -875,16 +875,49 @@ class openaiApi
         }
 
         $dom->load($filePath, LIBXML_NOCDATA);
-
-        // Traverse through the elements and extract text
-        $textContent = $this->extractTextAndAttributes($dom->documentElement);
-
+        if ($contextScope == "full"){
+            // Traverse through the elements and extract text
+            $textContent = $this->extractTextAndAttributes($dom->documentElement);
+        } else {
+            // Limit only nodes of the linkID in the scope and extract text
+            $this->filterNodes($dom, $contextScope);
+            $textContent = $this->extractTextAndAttributes($dom->documentElement);
+        }
         return trim($textContent);
+    }
+
+    private function filterNodes(&$dom, $linkID) {
+        if (empty($linkID)) {
+            throw new InvalidArgumentException("The linkID parameter cannot be empty.");
+        }
+
+        $xpath = new DOMXPath($dom);
+
+        // Find the node(s) with the specified linkID attribute
+        $nodesToKeep = $xpath->query("//*[@linkID='" . $linkID . "']");
+
+        if ($nodesToKeep->length === 0) {
+            throw new InvalidArgumentException("No nodes found with the specified linkID: " . $linkID);
+        }
+
+        // Create a new DOMDocument to hold the filtered nodes
+        $newDom = new DOMDocument();
+        $newRoot = $newDom->createElement("root"); // Create a new root element
+        $newDom->appendChild($newRoot);
+
+        foreach ($nodesToKeep as $node) {
+            // Import the node and its children into the new DOMDocument
+            $importedNode = $newDom->importNode($node, true);
+            $newRoot->appendChild($importedNode);
+        }
+
+        // Clear the original DOM and replace it with the filtered structure
+        $dom->loadXML($newDom->saveXML());
     }
 
     private function extractTextAndAttributes($node, $parentTag = '') {
         $allowedAttributes = [
-            'name', 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageIntro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialText', 'initialTitle', 'suggestedText', 'suggestedTitle', 'generalFeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongText', 'wordAnswer', 'words', 'url'
+            'name', 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words', 'url', 'targetnew', 'linkid',
         ];
 
         $text = "";
@@ -936,6 +969,22 @@ class openaiApi
         return $xmlString;
     }
 
+    function cleanJsonCode($jsonString) {
+        // Check if the string starts with ```json and remove it
+        if (strpos($jsonString, "```json") === 0) {
+            $jsonString = substr($jsonString, strlen("```json"));
+            $jsonString = ltrim($jsonString); // Trim any leading whitespace after ```json
+        }
+
+        // Check if the string ends with ``` and remove it
+        if (substr($jsonString, -3) === "```") {
+            $jsonString = substr($jsonString, 0, -3);
+            $jsonString = rtrim($jsonString); // Trim any trailing whitespace before ```
+        }
+
+        return $jsonString;
+    }
+
     //meant to remove citations which openAI assistant will automatically add between chinese brackets
     //These will break the xml if not cleaned out.
     function removeBracketsAndContent($text) {
@@ -949,7 +998,7 @@ class openaiApi
 
     //public function must be ai_request($p, $type) when adding new api
     //todo Timo maybe change this to top level object and extend with api functions?
-    public function ai_request($p, $type, $uploadUrl, $textSnippet, $baseUrl, $useContext)
+    public function ai_request($p, $type, $uploadUrl, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate)
     {
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
@@ -966,7 +1015,7 @@ class openaiApi
             $baseUrl = rtrim($baseUrl, '/'); // Trim any trailing slash that might be left
             $xmlLoc = $this->prepareURL($baseUrl . "/data.xml");
 
-            $data = $this->stripXMLTagsFromFile($xmlLoc);
+            $data = $this->stripXMLTagsFromFile($xmlLoc, $contextScope, $type);
 
             $new_messages = array(
                 array(
@@ -1223,6 +1272,7 @@ class openaiApi
         //return "<". $type ." >" . $answer. "</". $type .">";
         $answer = $this->removeBracketsAndContent($answer);
         $answer = $this->cleanXmlCode($answer);
+        $answer = $this->cleanJsonCode($answer);
         $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
         return $answer;
     }
