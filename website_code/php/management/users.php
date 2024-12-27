@@ -48,7 +48,7 @@ if(is_user_permitted("useradmin")){
         echo "</div>";
     }
     echo "<div id=\"manage_user_roles\">";
-    get_user_roles();
+    x_get_user_roles();
     echo "</div>";
     echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
 

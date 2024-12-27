@@ -68,7 +68,7 @@ function changeuserselection_roles($userid){
 /**
  * prints the ui to screen the user that is selected is the db order by surname, firstname and username
  */
-function get_user_roles(){
+function x_get_user_roles(){
 	global $xerte_toolkits_site;
 
     $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails order by surname,firstname,username");
