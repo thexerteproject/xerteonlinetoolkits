@@ -50,8 +50,6 @@
 
     define("USERS_ROLE_HARVESTADMIN", "Harvest Admin");
 //  admin roles info -------------------------------------------
-    define("USERS_ROLE_SUPER_INFO", "Super Admin Uitleg");
-
     define("USERS_ROLE_SUPER_INFO", "This role gives access to the whole management page. It is the highest level of access.");
 
     define("USERS_ROLE_SYSTEM_INFO", "This role gives access to the Site, Log Files, Play security Licenses and Feeds tabs in the management page.");
