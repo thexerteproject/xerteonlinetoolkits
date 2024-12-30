@@ -39,10 +39,10 @@ function changeuserselection_roles($userid){
 	
     foreach($result as $row_users){
         if ($row_users["login_id"] == $userid) {
-            echo "<p><option selected=\"selected\" value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+            echo "<option selected=\"selected\" value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
         }
         else {
-            echo "<p><option value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+            echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
             }
     }
 	
