@@ -86,8 +86,8 @@ function XApiTrackingState() {
     this.getSuccessStatus = getSuccessStatus;
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
-    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawScore = getdRawScore;
+    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawCompletionWeightedScore = getdRawCompletionWeightedScore;
     this.getdMinScore = getdMinScore;
     this.getdMaxScore = getdMaxScore;
@@ -323,11 +323,11 @@ function XApiTrackingState() {
     }
 
     function getdScaledCompletionWeightedScore(){
-        return getdScaledScore() * (getCompletionPercentage() / 100.0);
+        return this.getdScaledScore() * (this.getCompletionPercentage() / 100.0);
     }
 
     function getScaledCompletionWeightedScore(){
-        return Math.round(getdScaledCompletionWeightedScore() * 100) / 100 + "";
+        return Math.round(this.getdScaledCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdRawScore() {
