@@ -193,7 +193,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
             $first = true;
             foreach($result as $row_users){
                 if ($first) {
-                    echo "<p><option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                    echo "<option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
                     $username = $row_users['username'];
                     $firstname = $row_users['firstname'];
                     $surname = $row_users['surname'];
@@ -201,7 +201,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
                     $first = false;
             	}
                 else {
-                    echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                    echo "<option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
                 }
             }
 
