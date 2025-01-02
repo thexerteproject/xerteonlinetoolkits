@@ -34,6 +34,11 @@
 	define("USERS_MODIFY_ROLES", "Modify user roles");
 
     define("USERS_MANAGE_ROLES", "Manage user roles");
+    define("USERS_MANAGE_ROLES_ASSIGN_ROLES", "Assign and edit user roles");
+    define("USERS_MANAGE_ROLES_OVERVIEW", "Currently assigned roles");
+    define("USERS_MANAGE_ROLES_OVERVIEW_USERNAME", "User");
+    define("USERS_MANAGE_ROLES_OVERVIEW_ASSIGNED_ROLES", "Assigned roles");
+    define("USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER", "Select this user to modify their roles");
 
 //  admin roles human names -------------------------------------------
     define("USERS_ROLE_SUPER", "Super Admin");
