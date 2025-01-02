@@ -347,3 +347,12 @@ form[name='user_templates'] {
 .hidden{
 	display: none;
 }
+
+.user-role-overview {
+	margin-left: 10px;
+}
+
+.user-role-overview th, .user-role-overview td {
+	text-align: left;
+	padding-right: 15px;
+}

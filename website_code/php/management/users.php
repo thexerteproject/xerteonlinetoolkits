@@ -36,7 +36,8 @@ if(is_user_permitted("useradmin")){
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
     }
-	
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 	echo "<h2>" . MANAGEMENT_MENUBAR_USERS . "</h2>";
 	echo "<div class=\"admin_block\">";
 
@@ -48,18 +49,63 @@ if(is_user_permitted("useradmin")){
         echo "</div>";
     }
     echo "<div id=\"manage_user_roles\">";
-    get_user_roles();
+    x_get_user_roles();
     echo "</div>";
+    $query = "SELECT ld.*, r.name FROM {$prefix}logindetails ld, {$prefix}role r, {$prefix}logindetailsrole ldr WHERE ld.login_id = ldr.userid AND r.roleid = ldr.roleid ORDER BY ld.surname, ld.firstname, ld.username, r.roleid";
+    $result = db_query($query);
+    echo "<h3>" . USERS_MANAGE_ROLES_OVERVIEW . "</h3>";
+    echo "  <div id=\"manage_user_roles_overview\"></div>";
+    $prevuser = -1;
+    echo "  <table class='user-role-overview'>";
+    echo "    <thead>";
+    echo "      <tr>";
+    echo "          <th>" . USERS_MANAGE_ROLES_OVERVIEW_USERNAME . "</th>";
+    echo "          <th>" . USERS_MANAGE_ROLES_OVERVIEW_ASSIGNED_ROLES . "</th>";
+    echo "          <th></th>";
+    echo "      </tr>";
+    echo "    </thead>";
+    echo "    <tbody>";
+    foreach($result as $row)
+    {
+        if ($prevuser != $row['login_id'])
+        {
+            if ($prevuser != -1) {
+                echo "</td>";
+                // select button
+                echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+                echo "</tr>";
+            }
+            echo "<tr><td class=\"user-roles-username\">";
+            echo $row['surname'] . ", " . $row['firstname'] . " (" . $row['username'] . ")";
+            echo "</td>";
+        }
+        if ($prevuser != $row['login_id'])
+        {
+            echo "<td class=\"user-roles-roles\">";
+            echo constant("USERS_ROLE_".strtoupper($row["name"]));
+        }
+        else{
+            echo ", " . constant("USERS_ROLE_".strtoupper($row["name"]));
+        }
+        $prevuser = $row['login_id'];
+    }
+    echo "</td>";
+    // select button
+    echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+    echo "</tr>";
+    echo "    </tbody>";
+    echo "  </table>";
+    echo "  </div>";
     echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
 
     $database_id = database_connect("templates list connected","template list failed");
 
-    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails";
+    $query="select * from {$prefix}logindetails order by surname,firstname,username";
 
 	$query_response = db_query($query);
 
     foreach($query_response as $row) { 
-        echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
+        echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['surname'] . ", " . $row['firstname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
         echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
         echo "<p>" . USERS_FIRST . "<form><textarea id=\"firstname" . $row['login_id'] .  "\">" . $row['firstname'] . "</textarea></form></p>";

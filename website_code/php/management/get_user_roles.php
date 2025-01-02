@@ -22,6 +22,8 @@ function changeuserselection_roles($userid){
 	}
 
 	echo "<h2>" . USERS_MANAGE_ROLES . "</h2>";
+	echo "<h3>" . USERS_MANAGE_ROLES_ASSIGN_ROLES . "</h3>";
+
 	$roles_query = "select * from " . $xerte_toolkits_site->database_table_prefix . "role order by roleid";
 	$user_roles_query = 
 		"select roleid from " . $xerte_toolkits_site->database_table_prefix . "logindetailsrole " .
@@ -39,10 +41,10 @@ function changeuserselection_roles($userid){
 	
     foreach($result as $row_users){
         if ($row_users["login_id"] == $userid) {
-            echo "<p><option selected=\"selected\" value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+            echo "<option selected=\"selected\" value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
         }
         else {
-            echo "<p><option value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+            echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
             }
     }
 	
@@ -68,7 +70,7 @@ function changeuserselection_roles($userid){
 /**
  * prints the ui to screen the user that is selected is the db order by surname, firstname and username
  */
-function get_user_roles(){
+function x_get_user_roles(){
 	global $xerte_toolkits_site;
 
     $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails order by surname,firstname,username");
