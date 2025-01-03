@@ -95,8 +95,8 @@ copy_extra_files();
  * Theme support
  */
 $theme = $xml->getTheme();
-// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers, no special characters)
-if (!ctype_alnum($theme)) {
+// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers or '_' or '-', no other special characters)
+if (!preg_match('/^[a-zA-Z0-9_\-]+$/', $theme, $matches)) {
     die("Illegal theme name detected!");
 }
 if ($theme != "" && $theme != "default")
