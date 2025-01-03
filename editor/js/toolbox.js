@@ -4987,7 +4987,9 @@ var EDITOR = (function ($, parent) {
                         const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
                             (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
                         // Build the constructor object based on the type
-                        var constructorObject = {};
+                        var constructorObject = {
+                            "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
+                        };
                         console.log(type);
                         if (confirm("Generated suggestions will override any existing suggestions. Generate anyway?")){
                             try {
@@ -5385,6 +5387,7 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                         "depth": lo_data[key].attributes["depth"],
                                         "nor": lo_data[key].attributes["numberOfResults"],
+                                        "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
                                     };
                                     break;
                                 case 'opinion':

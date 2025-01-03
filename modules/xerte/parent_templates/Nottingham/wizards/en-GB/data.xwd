@@ -3117,6 +3117,7 @@
 
     <autoSuggestionGroup type="group" label="Auto Suggestions" optional="true">
         <importantNotice label="Please make sure to publish the learning object after you apply a suggestion. This helps the model stay up-to-date with your changes!" type="info" optional="true"/>
+        <additionalInstructions label="Additional Information" type="text" tooltip="Enter any extra requests here. For example, 'I want to add an multiple choice question about X' or 'I think I need more information steps.'" wysiwyg="true" optional="true" height="100"/>
         <suggestion1 label="Suggestion 1" type="text" wysiwyg="true" optional="true"/>
         <suggestion2 label="Suggestion 2" type="text" wysiwyg="true" optional="true"/>
         <suggestSelect label="Suggestion to apply" options="Suggestion 1, Suggestion 2" type="comboBox" data="suggestion1,suggestion2" defaultValue="suggestion1" width="120" optional="true"/>
