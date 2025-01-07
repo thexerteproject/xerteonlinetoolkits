@@ -6121,11 +6121,6 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 // When in header bar, progress markers can be used to indicate pages, chapters or milestones
 // Milestone is an optional property that can be added to individual pages
 var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
-	/* ** TODO
-		- appearance of progress bar when limited space / on mobiles
-		- check themes
-	 */
-
 	// declare local variables
 	let progressBar = false;
 	let progressBarPosition = "footer";
@@ -6217,7 +6212,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbHolder = $('<div id="x_headerProgress">');
 
 			if (progressBarPosition == "header1") {
-				$pbHolder.prependTo($x_headerBlock).addClass("pbBelowHeader");
+				$pbHolder.prependTo($x_headerBlock).addClass("pbAboveHeader");
 			} else {
 				$pbHolder.appendTo($x_headerBlock).addClass("pbBelowHeader");
 			}
@@ -6458,6 +6453,8 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						x_navigateToPage(false, {type:'linkID', ID:pageDetails[milestones[$(this).index()][milestones[$(this).index()].length-1]].linkID});
 					}
 				});
+
+				$pbHolder.addClass("progressMarkers");
 
 			} else {
 				$pbBar.appendTo($pbContainer);

@@ -160,3 +160,18 @@ font-weight: bold;
 	color: white;
 	background-color: #A40000;
 }
+
+/* progress bar */
+.pbContainer {
+	background-color: white;
+}
+.pbBar {
+	background-color: #A40000;
+}
+#x_headerProgress .progressMarker {
+	border-color: white;
+	background-color: #164883;
+}
+#x_headerProgress .progressMarker.complete {
+	border-color: #A40000;
+}

@@ -27,3 +27,19 @@
 	color: $lightbtntxt;
 	background-color: $lightbtnselected;
 }
+
+/* progress bar */
+#x_headerProgress .pbContainer {
+  background-color: $dark5;
+  border: none;
+}
+#x_headerProgress .pbBar {
+  background-color: $contrastcolor;
+}
+#x_headerProgress .progressMarker {
+  border-color: $dark5;
+  background-color: $bodybackgroundcolor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $contrastcolor;
+}

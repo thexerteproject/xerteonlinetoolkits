@@ -139,6 +139,15 @@
 	color: $bodybackgroundcolor;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: $whiteorlightest;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+
+
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen
 and (max-width :500px) {
@@ -169,7 +178,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

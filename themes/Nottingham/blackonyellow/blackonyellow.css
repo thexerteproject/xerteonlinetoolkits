@@ -39,6 +39,25 @@
   background-color: yellow;
 }
 
+/* progress bar */
+#x_headerProgress .pbContainer {
+  background-color: #FFFF99;
+  border: none;
+}
+
+#x_headerProgress .pbBar {
+  background-color: yellow;
+}
+
+#x_headerProgress .progressMarker {
+  border-color: #FFFF99;
+  background-color: #000000;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: yellow;
+}
+
 .titlePageTxt {
   width: 96% !important;
   overflow: hidden;
@@ -881,6 +900,16 @@ table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
   color: #FFFF99;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #000000;
+  border: 1px solid yellow;
+}
+
+.pbBar {
+  background-color: yellow;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -907,7 +936,6 @@ table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -28,3 +28,12 @@
 	color: $defaultpagebackground;
 	background-color: $lightestcolor;
 }
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: $whiteorlightest;
+  background-color: $bodybackgroundcolor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $progressBarColor;
+}

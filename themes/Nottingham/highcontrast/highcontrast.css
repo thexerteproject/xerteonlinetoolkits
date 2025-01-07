@@ -31,6 +31,26 @@
   background-color: #00FFFF;
 }
 
+/* progress bar */
+#x_headerProgress .pbContainer {
+  background-color: #ffffff;
+  border: none;
+}
+
+#x_headerProgress .pbBar {
+  background-color: #00FFFF;
+  border-color: #00FFFF;
+}
+
+#x_headerProgress .progressMarker {
+  border-color: #ffffff;
+  background-color: #000000;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #00FFFF;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #ffffff;
@@ -323,7 +343,6 @@
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

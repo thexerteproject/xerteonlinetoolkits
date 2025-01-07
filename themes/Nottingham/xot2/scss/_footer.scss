@@ -220,10 +220,19 @@ and (max-width:600px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }
+
+/* progress bar */
+.pbContainer {
+  background-color: $lightgrey;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+
+
 //----------------end of smartphones portrait---------------------------------
 
 
@@ -258,7 +267,6 @@ and (max-width:320px) {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

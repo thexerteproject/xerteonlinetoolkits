@@ -12,6 +12,10 @@
 #x_pageNo {
   background:	none;
 }
+/* progress bar */
+.pbContainer {
+  background-color: $lightbtncolor;
+}
 .pbBar {
   background-color: $progressBarColor;
 }
@@ -184,7 +188,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -54,6 +54,16 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #117BAD;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #BFBFBF;
+  background-color: #000000;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #117BAD;
+}
+
 .titlePageTxt {
   width: 96% !important;
   overflow: hidden;
@@ -890,6 +900,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #BFBFBF;
+}
+
+.pbBar {
+  background-color: #117BAD;
+}
+
 @media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block;
@@ -921,7 +940,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -952,7 +970,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

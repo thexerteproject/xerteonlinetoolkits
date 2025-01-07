@@ -50,6 +50,16 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #D5D6D2;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #2f2E33;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #3A5199;
+}
+
 .titlePageTxt {
   width: 98% !important;
   overflow: hidden;
@@ -577,8 +587,13 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   background: none;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
 .pbBar {
-  background-color: #2196F3;
+  background-color: #3A5199;
 }
 
 /* these buttons will use font awesome icons instead of pngs */
