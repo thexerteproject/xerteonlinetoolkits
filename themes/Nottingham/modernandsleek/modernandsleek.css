@@ -842,7 +842,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
