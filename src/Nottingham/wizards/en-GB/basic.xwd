@@ -76,13 +76,14 @@
 
     <progressBarGroup label="Progress Bar" type="group" optional="true" tooltip="Add a progress bar (indicating the percentage viewed)">
 		<progressBarType label="Position" type="ComboBox" options="Header bar (above titles),Header bar (below titles),Footer bar" data="header1,header2,true" defaultValue="header1" conditionTrigger="true" optional="true"/>
-		<progressBarPercentage label="Include Percentage" type="Checkbox" defaultValue="true" optional="true"/>
+		<progressBarPercentage label="Include Percentage" type="Checkbox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<progressBarTxt label="Percentage Text" type="TextInput" defaultValue="{x}% complete" condition="progressBarPercentage=='true'" optional="true" tooltip="The text shown alongside the progress bar, where {x} will be replaced by the percentage completed"/>
 	    <progressBarSubGroup label="Progress Markers" type="group" optional="true" condition="progressBarType=='header1'||progressBarType=='header2'" tooltip="Add progress marks to the progress bar, based either on reaching the end of a chapter or viewing a milestone page">
 			<progressSub label="Type" type="ComboBox" options="None,Pages,Chapters,Milestones" data="false,pages,chapters,milestones" defaultValue="false" conditionTrigger="true" condition="progressBarType=='header1'||progressBarType=='header2'" optional="true"/>
-			<progressBarSpacing label="Spacing" type="ComboBox" options="Proportional,Even" data="true,even" defaultValue="even" condition="progressSub!='false'&amp;&amp;progressSub!='pages'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2')" optional="true" tooltip="Determines whether the spacing of progress markers represents the number of pages between each marker or whether they are always evenly spaced"/>
+			<progressBarSpacing label="Space Evenly" type="CheckBox" defaultValue="false" condition="progressSub!='false'&amp;&amp;progressSub!='pages'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2')" optional="true" tooltip="Space progress markers evenly, even if the numbers of pages between them varies. When using chapters as milestones, this will only work if all of the pages within the project are in a chapter."/>
 		</progressBarSubGroup>
 	</progressBarGroup>
-	
+
 	<footerToolsGroup type="group" label="Footer Tools" optional="true" tooltip="The footer tools are the buttons that normally appear on the bottom left of your project, such as Assessibility Options and Glossary. These options allow you to set the initial visibility state of these buttons and customise the show/hide footer tools button.">
 		<footerTools type="ComboBox" label="Default State" options="Hidden,Visible,Visible (Remove show/hide button)" data="hideFooterTools,showFooterTools,none" conditionTrigger="true" defaultValue="showFooterTools" width="100" optional="true"/>
 		<footerToolIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="footerTools!='none'" optional="true" tooltip="Override the default icons used on the show / hide footer tools button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>

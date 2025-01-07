@@ -3459,6 +3459,7 @@ function x_setUpPage() {
 		}
 
 		$x_mainHolder.css("visibility", "visible");
+		x_updateCss2(true);
 		XENITH.SIDEBAR.show();
 
 		if (x_params.backgroundGrey == "true") {
@@ -3807,7 +3808,7 @@ function x_updateCss(updatePage, updateSidebar) {
 			
 		}
 	}
-	
+
 	x_updateCss2(updatePage);
 }
 
@@ -6114,22 +6115,23 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 })(jQuery, XENITH || {});
 
 // ***** PROGRESS BAR *****
+// Progress bar might be shown on:
+// - Footer bar (originally used progressBar in xwd but now is an option on new progressBarType - both will still work but progressBar deprecated so can no longer be added)
+// - Header bar (an option in progressBarType - can be above or below titles)
+// When in header bar, progress markers can be used to indicate pages, chapters or milestones
+// Milestone is an optional property that can be added to individual pages
 var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	/* ** TODO
 		- appearance of progress bar when limited space / on mobiles
-		- confusion with standalone pages and what should be done with these when not at end of project
-		- if standalone pages can't be used when progress markers are chapter/milestone - add condition to xwd to remove 'include in project progress' option?
-		- should milestones be marked up differently on the table of contents?
-		- x_pageHolder top margin not being set correctly on page load which is affecting panel sizings etc.
 		- check themes
 	 */
 
 	// declare local variables
 	let progressBar = false;
 	let progressBarPosition = "footer";
-	let progressBarPercentage = true;
+	let progressBarPercentage;
 	let progressSub = false;
-	let progressBarSpacing = "even";
+	let progressBarSpacing;
 	let pageDetails;
 	let totalPages;
 	let menuOffset;
@@ -6139,7 +6141,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	let chaptersCopy; // used to keep track of which pages are still to be viewed (viewed pages are removed from each chapter)
 	let extraPages; // pages outside of chapters
 	let milestones;
-	let milestonesCopy; // used to keep track of which pages are still to be viewed (viewed pages are removed from each milestone array)
 
 	let $pbHolder;
 	let $pbContainer;
@@ -6166,18 +6167,25 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				if (x_params.progressSub != "false") {
 					// additional options are only available when progress bar is in header bar as there is more space available
 					progressSub = x_params.progressSub; // pages|chapters|milestones
-					progressBarSpacing = x_params.progressBarSpacing; // true|even (only for chapters|milestones)
+					progressBarSpacing = x_params.progressBarSpacing; // true = spaced evenly, false = space according to no. pages (only for chapters|milestones)
 				}
 			}
 
 			if (progressBar === true) {
+				// is the progress bar shown alongside some % text?
 				if (x_params.progressBarPercentage === "false") {
 					progressBarPercentage = false;
+				} else {
+					if (x_params.progressBarTxt !== undefined && x_params.progressBarTxt !== "") {
+						progressBarPercentage = x_params.progressBarTxt;
+					} else {
+						progressBarPercentage = "{x}% " + x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+					}
 				}
 
 				// work out total no. pages from which progress % will be determined
-				if (progressSub == "chapters" || progressSub == "milestones") {
-					// standalone pages are always excluded when progress markers for chapters or milestones are shown
+				if (progressSub != false) {
+					// standalone pages are always excluded when progress markers are used
 					pageDetails = $(x_pageInfo).filter(function (i) {
 						return this.standalone != true;
 					});
@@ -6234,12 +6242,12 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 				for (let i=0; i<totalPages; i++) {
 					$pbBar.clone().addClass("sub").appendTo($pbBarContainer)
-						.css("left", i/totalPages*100 +  "%")
-						.width(100 / totalPages + "%")
+						.css("left", (i-1)/(totalPages-1)*100 +  "%")
+						.width(100 / (totalPages-1) + "%")
 						.hide();
 
 					const $progressMarker = $('<div class="progressMarker"></div>');
-					$progressMarker.appendTo($pbMarkerContainer).css("left", "calc(" +  ((i+1)/totalPages*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
+					$progressMarker.appendTo($pbMarkerContainer).css("left", "calc(" +  (i/(totalPages-1)*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
 				}
 
 			} else if (progressSub == "chapters") {
@@ -6266,7 +6274,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				if (extraPages.length > 0) {
 					// there are some pages which sit outside of chapters
 					// force spacing of pages within chapters to be consistent as otherwise it's hard to know what spacing to use for non-chapter pages
-					progressBarSpacing = "true";
+					progressBarSpacing = "false";
 				}
 
 				// remove any chapters that don't contain any pages
@@ -6289,7 +6297,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 							// so pages in different chapters may be shown as different widths on the progress bar
 							left = ((i/chapters.length*100) + (100/chapters.length / chapters[i].length)*j) +  "%";
 							width = (100/chapters.length / chapters[i].length) +  "%";
-							if (progressBarSpacing == "true") {
+							if (progressBarSpacing == "false") {
 								// space chapters according to the no. pages within them
 								// so all pages are equal width but chapters may not be
 								left = (100 / totalPages * count) + "%";
@@ -6297,7 +6305,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 								count++;
 							}
 
-							if (extraPagesCopy.length > 0) {
+							if (extraPagesCopy.length > 0 && j===0) {
 								// there might be pages before this chapter starts that aren't in a chapter at all
 								// add a pbBar for these
 								for (let k=0; k<extraPagesCopy.length; k++) {
@@ -6310,6 +6318,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 										left = (100 / totalPages * count) + "%";
 										width = (100 / totalPages) + "%";
 										count++;
+
+										if (k+1 === extraPagesCopy.length) {
+											extraPagesCopy.splice(0,k+1);
+										}
 
 									} else {
 										extraPagesCopy.splice(0,k);
@@ -6327,7 +6339,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						// create a progress marker at the end of the chapter
 						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
 						let left2 = "calc(" +  ((i+1)/chapters.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
-						if (progressBarSpacing == "true") {
+						if (progressBarSpacing == "false") {
 							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
 						}
 						$progressMarker.css("left", left2);
@@ -6376,7 +6388,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				if (extraPages.length > 0) {
 					// there are some pages which sit after the final milestone
 					// force spacing of pages between milestones to be consistent as otherwise it's hard to know what spacing to use for these extra pages at the end
-					progressBarSpacing = "true";
+					progressBarSpacing = "false";
 				}
 
 				if (milestones.length > 0) {
@@ -6392,7 +6404,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 							// so pages between different milestones may be shown as different widths on the progress bar
 							left = ((i/milestones.length*100) + (100/milestones.length / milestones[i].length)*j) +  "%";
 							width = (100/milestones.length / milestones[i].length) +  "%";
-							if (progressBarSpacing == "true") {
+							if (progressBarSpacing == "false") {
 								// all pages are equal width so milestones may not be equally spaced
 								left = (100 / totalPages * count) + "%";
 								width = (100 / totalPages) + "%";
@@ -6408,7 +6420,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						// create a progress marker at each milestone page (the final page in the array)
 						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
 						let left2 = "calc(" +  ((i+1)/milestones.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
-						if (progressBarSpacing == "true") {
+						if (progressBarSpacing == "false") {
 							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
 						}
 						$progressMarker.css("left", left2);
@@ -6438,7 +6450,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			if (progressSub !== false) {
 				// jump to relevant page/chapter/milestone when progress marker is clicked
 				$pbMarkerContainer.find(".progressMarker").button().click(function() {
-					/* ** TODO chapter & milestone page links can be wrong if there are standalone pages that aren't at the end */
 					if (progressSub == "pages") {
 						x_navigateToPage(false, {type:'linkID', ID:pageDetails[$(this).index()].linkID});
 					} else if (progressSub == "chapters") {
@@ -6457,9 +6468,8 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbBar.appendTo($pbContainer);
 		}
 
-		// add the x% COMPLETE text to the progress bar
-		/* ** TODO change the wording of this? */
-		if (x_params.progressBarPercentage != "false") {
+		// add the x% COMPLETE text holder to the progress bar
+		if (progressBarPercentage !== false) {
 			$pbTxt = $('<p class="pbTxt"></p>');
 
 			if (progressBarPosition == "footer") {
@@ -6477,7 +6487,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 			if (page != undefined) {
 				// page is standalone page opening in lightbox or new window - should its progress be recorded on progress bar?
-				if (x_pages[page].getAttribute('reqProgress') == 'true') {
+				if (progressSub == false && x_pages[page].getAttribute('reqProgress') == 'true') {
 					x_pageInfo[page]["built" + target] = true;
 				} else {
 					update = false;
@@ -6487,17 +6497,17 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			if (update === true) {
 				// progress bar needs to be updated
 
-				// ow many pages have been viewed?
+				// how many pages have been viewed?
 				let pagesViewed;
-				if (progressSub == "chapters" || progressSub == "milestones") {
-					// standalone pages are always excluded when progress markers for chapters or milestones are shown
+				if (progressSub != false) {
+					// standalone pages are always excluded when progress markers are shown
 					pagesViewed = $(x_pageInfo).filter(function (i) {
 						return this.viewed !== false && this.standalone != true;
 					});
 				} else {
 					// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
 					pagesViewed = $(x_pageInfo).filter(function (i) {
-						return (this.viewed !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true;
+						return ((this.viewed !== false || this.builtLightBox == true || this.builtNewWindow == true) && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'));
 					});
 				}
 				pagesViewed = pagesViewed.length - menuOffset;
@@ -6508,7 +6518,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					$pbBar.css({"width": progress + "%"});
 
 				} else {
-					// progress markers - progress bar is split up into sections with marker at end of each one
+					// progress markers - progress bar is split up into sections with an associated marker
 					// each section of bar (& marker) will be highlighted as that section is completed
 					// sections may be not be highlighted consecutively if the pages aren't viewed in order
 
@@ -6517,11 +6527,13 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 						let count = -1;
 						$(x_pageInfo).each(function (i) {
-							if (this.type != "menu" && (this.standalone !== true || x_pages[i].getAttribute('reqProgress') == 'true')) {
+							if (this.type != "menu" && this.standalone !== true) {
 								count++;
-								if (this.viewed !== false || this.builtLightBox == true || this.builtNewWindow == true) {
+								if (this.viewed !== false) {
 									$(".progressMarker:eq(" + count + ")").addClass("complete");
-									$(".pbBar:eq(" + count + ")").show();
+									if (count != 0) { // there's no bar for the first page as the first marker is at the beginning of the progress bar
+										$(".pbBar:eq(" + count + ")").show();
+									}
 								}
 							}
 						});
@@ -6579,9 +6591,14 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					}
 				}
 
-				if (progressBarPercentage === true) {
+				// add class when complete to allow styling of completed bar
+				if (progress === 100) {
+					$pbHolder.addClass("complete");
+				}
+
+				if (progressBarPercentage !== false) {
 					// update the text alongside the progress bar
-					$pbTxt.html(progress + "% " + x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE"));
+					$pbTxt.html(progressBarPercentage.replace("{x}", progress));
 				}
 			}
 		}
