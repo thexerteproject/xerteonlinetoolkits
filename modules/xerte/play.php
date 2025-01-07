@@ -355,7 +355,11 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                     if ($_SESSION['XAPI_PROXY']['db']) {
                         $tracking .= "  var lrsUseDb = true;\n";
                     }
-                    if ($_SESSION['XAPI_PROXY']['extra_install']) {
+                    else
+                    {
+                        $tracking .= "  var lrsUseDb = false;\n";
+                    }
+                    if ($_SESSION['XAPI_PROXY']['extra_install'] && $_SESSION['XAPI_PROXY']['extra_install'] != "") {
                         $tracking .= "  var lrsExtraInstall = " . json_encode($_SESSION['XAPI_PROXY']['extra_install']) . ";\n";
                     }
                 }

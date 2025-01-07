@@ -165,22 +165,17 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
-function require_auth() {
-    global $xerte_toolkits_site;
 
-    header('Cache-Control: no-cache, must-revalidate, max-age=0');
-    $has_supplied_credentials = !(empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']));
-    $is_not_authenticated = (
-        !$has_supplied_credentials ||
-        $_SERVER['PHP_AUTH_USER'] != $xerte_toolkits_site->admin_username ||
-        hash('sha256',$_SERVER['PHP_AUTH_PW'])   != $xerte_toolkits_site->admin_password);
-    if ($is_not_authenticated) {
-        header('WWW-Authenticate: Basic realm="Setup TSUGI for ' . $xerte_toolkits_site->site_title . '"');
-        header('HTTP/1.0 401 Unauthorized');
-        echo '{"error" : "You do not have permission to continue"}';
-        exit;
+$_SESSION['elevated'] = true;
+if (!isset($_SESSION['toolkits_logon_id'])) {
+    unset($_SESSION['elevated']);
+    $url = "setuptsugi";
+    $_SESSION['adminTo'] = $url;
+    if (isset($_GET['altauth'])) {
+        $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
     }
-    return true;
+    header("location: {$xerte_toolkits_site->site_url}");
+    exit();
 }
 
 // Authentication
@@ -191,7 +186,7 @@ if (is_user_admin()){
 }
 else
 {
-    $full_access = require_auth();
+    die("access denied!");
 }
 
 $prefix = $xerte_toolkits_site->database_table_prefix;

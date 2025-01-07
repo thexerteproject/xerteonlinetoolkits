@@ -31,7 +31,14 @@ function CheckLearningLocker($lrs, $allowdb=false)
         $lrs['dblrsendpoint'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['endpoint'];
         $lrs['dblrskey'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['key'];
         $lrs['dblrssecret'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['secret'];
-        $lrs['extra_install'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['extra_install'];
+        if (isset($xerte_toolkits_site->LRSDbs[$lrsendpoint]['extra_install']))
+        {
+            $lrs['extra_install'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['extra_install'];
+        }
+        else
+        {
+            $lrs['extra_install'] = '';
+        }
         $lrs['db'] = true;
     }
     else

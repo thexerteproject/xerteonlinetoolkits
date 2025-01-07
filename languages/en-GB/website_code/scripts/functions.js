@@ -1,1 +1,1 @@
-var ELEVATED_RIGHTS = "You are about to use your admin rights. Be careful with this power. Continue?";
+var ELEVATED_RIGHTS = "You are about to enter the administrator view. Be careful with this power. Are you sure you want to continue?";
