@@ -43,6 +43,16 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #F9BA32;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #426E86;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #F9BA32;
+}
+
 .titlePageTxt {
   width: 98% !important;
   overflow: hidden;
@@ -784,6 +794,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #F9BA32;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -810,7 +829,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -255,6 +255,13 @@ var EDITOR = (function ($, parent) {
                 else {
                     return '<i class="passwordIcon iconDisabled fa fa-lock " id="' + key + '_password" title ="' + language.passwordPage.$tooltip + '"></i>';
                 }
+            case "milestone":
+                if (enabled) {
+                    return '<i class="milestoneIcon iconEnabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="milestoneIcon iconDisabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
         }
     },
 
@@ -266,6 +273,7 @@ var EDITOR = (function ($, parent) {
 		var passwordState = ($("#"+key+"_password.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
+        var milestoneState = ($("#"+key+"_milestone.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
 		var level;
@@ -291,6 +299,10 @@ var EDITOR = (function ($, parent) {
                 if (unmarkState != enabled)
                     change = true;
                 break;
+            case "milestone":
+                if (milestoneState != enabled)
+                    change = true;
+                break;
             case "text":
                 change = true;
                 break;
@@ -309,6 +321,7 @@ var EDITOR = (function ($, parent) {
 			var passwordIcon = getExtraTreeIcon(key, "password", (item == "password" ? enabled : passwordState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
+            var milestoneIcon = getExtraTreeIcon(key, "milestone", (item == "milestone" ? enabled : milestoneState));
             var nodetext;
             if (item == "text")
             {
@@ -317,7 +330,7 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
@@ -407,8 +420,9 @@ var EDITOR = (function ($, parent) {
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
 		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") != undefined && xmlData[0].getAttribute("milestone") != '');
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -954,6 +968,9 @@ var EDITOR = (function ($, parent) {
 			if (toDelete[i] == "linkPage") {
 			    changeNodeStatus(key, "standalone", false);
 			}
+            if (toDelete[i] == "milestone") {
+                changeNodeStatus(key, "milestone", false);
+            }
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
                 //var unmarkIcon = $("#" + key + "_unmark");
@@ -2074,6 +2091,10 @@ var EDITOR = (function ($, parent) {
 
         if (name == "linkPage") {
             changeNodeStatus(key, "standalone", value == "true");
+        }
+
+        if (name == "milestone") {
+            changeNodeStatus(key, "milestone", value != "");
         }
 
         if (name == "unmarkForCompletion") {

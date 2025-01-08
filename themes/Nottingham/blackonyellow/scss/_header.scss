@@ -30,3 +30,19 @@
 	color: $blackordarkest;
 	background-color: yellow;
 }
+
+/* progress bar */
+#x_headerProgress .pbContainer {
+  background-color: $bodybackgroundcolor;
+  border: none;
+}
+#x_headerProgress .pbBar {
+  background-color: yellow;
+}
+#x_headerProgress .progressMarker {
+  border-color: $bodybackgroundcolor;
+  background-color: $blackordarkest;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: yellow;
+}

@@ -37,6 +37,16 @@
   background-color: #FCBC2B;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #ffffff;
+  background-color: #3F4957;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #2196F3;
+}
+
 .titlePageTxt {
   width: 98% !important;
   overflow: hidden;
@@ -799,6 +809,15 @@ table.headerCol.shaded td.header {
   color: #3F4957;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #ffffff;
+}
+
+.pbBar {
+  background-color: #2196F3;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -825,7 +844,6 @@ table.headerCol.shaded td.header {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

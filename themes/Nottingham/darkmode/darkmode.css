@@ -38,6 +38,16 @@
   background-color: #7094DB;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #ffffff;
+  background-color: #121212;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #7094DB;
+}
+
 .x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar, .x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
 .x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
 .x_decision_page #overviewHolder .overviewStep,
@@ -858,6 +868,11 @@ a.hotspot, a.hotspot.selected {
   background: none;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #ffffff;
+}
+
 .pbBar {
   background-color: #7094DB;
 }
@@ -1125,7 +1140,6 @@ a.hotspot, a.hotspot.selected {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -40,6 +40,25 @@
   background-color: #278384;
 }
 
+/* progress bar */
+#x_headerProgress .pbContainer {
+  background-color: #D6D6D6;
+  border: none;
+}
+
+#x_headerProgress .pbBar {
+  background-color: #278384;
+}
+
+#x_headerProgress .progressMarker {
+  border-color: #D6D6D6;
+  background-color: #FFFFFF;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #278384;
+}
+
 .x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar, .x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
 .x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
 .x_decision_page #overviewHolder .overviewStep,
@@ -1138,6 +1157,16 @@ a.hotspot, a.hotspot.selected {
   border-color: #278384;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #FFFFFF;
+  border: 1px solid #278384;
+}
+
+.pbBar {
+  background-color: #278384;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -1163,7 +1192,6 @@ a.hotspot, a.hotspot.selected {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
