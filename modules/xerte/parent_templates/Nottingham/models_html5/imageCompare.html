@@ -12,6 +12,13 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad = false) {
+
+			// set the width & height for the images - 100% minus any padding on the panel
+			$("#img1, #img2").css({
+				"width": "calc(100% - " + (parseInt($(".image_holder").css("padding-right")) + parseInt($(".image_holder").css("padding-right"))) + "px)",
+				"height": "calc(100% - " + (parseInt($(".image_holder").css("padding-top")) + parseInt($(".image_holder").css("padding-bottom"))) + "px)"
+			});
+
 			let mobileHeightComp = 0;
 			if(x_browserInfo.mobile){
 				mobileHeightComp = $("#x_headerBlock").height();
@@ -28,7 +35,7 @@
 			if(this.sizePercentage !== 1){
 				holder.css("left", paddingInline/2);
 				pageHeight -= 10;
-				holder.addClass("sized panel");
+				holder.addClass("sized");
 				let textElem = $(".text");
 				let textSize = 1.0-this.sizePercentage;
 				let holderPaddingTop = (holder.innerHeight() - holder.height())/2 
@@ -36,7 +43,7 @@
 					holder.width(pageWidth);
 					holder.height(pageHeight*this.sizePercentage);
 					maxImageheight = (pageHeight*this.sizePercentage) - 20;
-					holder.css("margin-top", pageHeight*textSize + holderPaddingTop)
+					holder.css("margin-top", pageHeight*textSize + holderPaddingTop + 20)
 					textElem.width(pageWidth);
 					textElem.height(pageHeight*textSize)
 				}else{
@@ -99,6 +106,12 @@
 
 			let img1Elem = $("#img1")[0];
 			let img2Elem = $("#img2")[0];
+
+			// set the width & height for the images - 100% minus any padding on the panel
+			$("#img1, #img2").css({
+				"width": "calc(100% - " + (parseInt($(".image_holder").css("padding-right")) + parseInt($(".image_holder").css("padding-right"))) + "px)",
+				"height": "calc(100% - " + (parseInt($(".image_holder").css("padding-top")) + parseInt($(".image_holder").css("padding-bottom"))) + "px)"
+			});
 
 			let slider = $("#slider");
 
@@ -200,7 +213,7 @@
 	<div class="text">
 	</div>
 	<div class="holder">
-		<div class="image_holder">
+		<div class="image_holder panel">
 			<img class="image x_noLightBox" id="img1" alt="" src="" />
 			<img class="image x_noLightBox" id="img2" alt="" src="" />
 			<div id="slider" tabindex="0">
