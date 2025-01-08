@@ -420,7 +420,7 @@ function x_check_path_traversal_newpath($path, $expected_path=null, $message=nul
     }
     if ($expected_path != null) {
         // Check whether path is as expected
-        if (strpos($path, $expected_path) !== 0) {
+        if (strpos($rpath, $expected_path) !== 0) {
             _debug($mesg);
             die($mesg);
         }
