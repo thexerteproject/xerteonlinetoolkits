@@ -1557,3 +1557,33 @@ a:focus .wcagLogo {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
+
+/* accessibility options dialog / lightbox */
+#x_colourChanger #colourChangerHolder {
+	padding: 0 5px;
+}
+
+#x_colourChanger .optionGroup {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#x_colourChanger #colourChangerOptions input {
+	float: left;
+	display: block;
+}
+
+#x_colourChanger #colourChangerOptions label {
+	position: relative;
+	margin-left: 2em;
+	display: block;
+}
+
+#x_colourChanger #colourChangerOptions label p {
+	padding-top: 0;
+}
+
+#x_colourChanger #checkGroup {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}

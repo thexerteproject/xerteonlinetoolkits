@@ -131,15 +131,17 @@
 
   <colourChanger label="Accessibility Options" description="Change the colours." tooltip="Accessibility Options">
 	  <closeButton label="" description="Close Accessibility Options"/>
-	  <selectTxt label="Please select from the options below"/>
-	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
+	  <selectTxt label="Select a theme for this project"/>
+	  <adviceTxt label="Accessibility advice is available in the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
 	  <wcagTxt label="View the Xerte accessibility statement"/>
 	  <wcagLogo label="WCAG WAI-AA logo"/>
 	  <wcagURL label="https://xot.xerte.org.uk/play.php?template_id=214#home"/>
-	  <off label="Default theme for this resource"/>
-	  <noBg label="Remove Background Images (default theme)"/>
-	  <invert label="Invert, High contrast theme, no background images"/>
-	  <blackYellow label="Black on Yellow theme, no background images"/>
+	  <off label="Default"/>
+	  <invert label="High contrast"/>
+	  <blackYellow label="Black on yellow"/>
+	  <dark label="Dark mode"/>
+	  <light label="Light mode"/>
+	  <noBg label="Remove background images"/>
   </colourChanger>
 
   <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" shortNewWindow="opens in new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">

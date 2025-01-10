@@ -43,7 +43,6 @@ var x_languageData  = [],
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [],
-	x_specialTheme = '',
 	x_pageLoadPause = false,
 	x_btnIcons = [
 	// default interface buttons icons can be overridden:
@@ -705,10 +704,19 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.responsive = x_urlParams.responsive;
 	}
 
-	if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
-    {
+	// url parameters to change default theme used
+	if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true')) {
         x_params.theme = x_urlParams.theme;
     }
+
+	// url parameters to change to remove background images or use a special theme selected via the accessibility options
+	// these will only be present if this is a standalone page opening in a new window or lightbox - ensure that if the parent project that opened this was using a special theme / no bg images then this should too
+	if (x_urlParams.specialTheme != undefined) {
+		XENITH.COLOURCHANGER.specialTheme = x_urlParams.specialTheme;
+	}
+	if (x_urlParams.removeBg != undefined) {
+		XENITH.COLOURCHANGER.removeBg = x_urlParams.removeBg;
+	}
 	
 	// Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
@@ -1107,8 +1115,8 @@ function x_setUp() {
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
 		$x_menuBtn		= $("#x_menuBtn");
+		$x_colourChangerBtn		= $("#x_colourChangerBtn");
 		$x_saveSessionBtn = $("#x_saveSessionBtn");
-		$x_colourChangerBtn	= $("#x_colourChangerBtn");
 		$x_prevBtn		= $("#x_prevBtn");
 		$x_pageNo		= $("#x_pageNo");
 		$x_nextBtn		= $("#x_nextBtn");
@@ -1262,77 +1270,74 @@ function x_cssSetUp(param) {
 				x_cssSetUp("glossary");
 			}
             break;
-        case "language2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/language.css", function () {x_cssSetUp("glossary")});
-            }
-            else
-            {
-                x_cssSetUp("glossary");
-            }
-            break;
         case "glossary":
 			if (x_params.glossary != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("colourChanger")});
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("saveSession")});
 			} else {
-				x_cssSetUp("colourChanger");
+				x_cssSetUp("saveSession");
 			}
-            break;
-        case "glossary2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/glossary.css", function () {x_cssSetUp("colourChanger")});
-            }
-            else
-            {
-                x_cssSetUp("colourChanger");
-            }
-            break;
-        case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("saveSession")});
-            break;
-        case "colourChanger2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("saveSession")});
-            }
-            else
-            {
-                x_cssSetUp("saveSession");
-            }
             break;
 		case "saveSession":
-			x_insertCSS(x_templateLocation + "models_html5/saveSession.css", function() {x_cssSetUp("theme")});
+			x_insertCSS(x_templateLocation + "models_html5/saveSession.css", function() {x_cssSetUp("responsive")});
 			break;
-		case "saveSession2":
-			if (x_params.theme != undefined && x_params.theme != "default") {
-				x_insertCSS(x_themePath + x_params.theme + "/css/saveSession.css", function () {x_cssSetUp("theme")});
-			}
-			else
-			{
-				x_cssSetUp("theme");
-			}
-			break;
-        case "theme":
-            if (!xot_offline) {
-            	if (x_params.theme != undefined) {
-					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-					// Set id
-					$('link[href="' + x_themePath + x_params.theme + '/' + x_params.theme + '.js"]').attr('id', 'theme_js');
-				}
-            }
-            x_cssSetUp("responsive");
-            break;
 		case "responsive":
             if (x_params.responsive == "true") {
 				// adds default responsiveText.css - in some circumstances this will be immediately disabled
 				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("theme")}, true);
 				} else {
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()});
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("theme")});
                 }
 			} else {
-                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
+				x_cssSetUp("theme");
 			}
             break;
+		case "theme":
+			if (x_params.theme != undefined) {
+				if (!xot_offline) {
+					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+				}
+				x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+					x_cssSetUp("responsivetheme");
+				}, false, "theme_css", true);
+			} else {
+				x_cssSetUp("projectStylesheet");
+			}
+			break;
+		case "responsivetheme":
+			if (x_params.responsive == "true" && x_params.theme != "default") {
+				// adds theme responsivetext.css - in some circumstances this will be immediately disabled
+				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+					x_insertCSS(x_themePath + x_params.theme + "/responsivetext.css", function () {x_cssSetUp("projectStylesheet")}, true, "theme_responsive_css", true);
+				} else {
+					x_insertCSS(x_themePath + x_params.theme + "/responsivetext.css", function () {x_cssSetUp("projectStylesheet")}, false, "theme_responsive_css", true);
+				}
+			} else {
+				x_cssSetUp("projectStylesheet");
+			}
+			break;
+		case "projectStylesheet":
+			if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
+				x_insertCSS(x_evalURL(x_params.stylesheet), function () {x_cssSetUp("projectCss")}, false, "lo_sheet_css");
+			} else {
+				x_cssSetUp("projectCss")
+			}
+			break;
+		case "projectCss":
+			if (x_params.styles != undefined || x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
+				let lightboxStyle = '';
+				const loStyles = x_params.styles != undefined ? x_params.styles : '';
+
+				if (x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
+					lightboxColour = x_params.lightboxColour != undefined ? x_params.lightboxColour.substr(x_params.lightboxColour.length - 6) : '000000';
+					lightboxOpacity = x_params.lightboxOpacity != undefined ? x_params.lightboxOpacity / 100 : '0.8';
+					lightboxStyle = '.featherlight:last-of-type { background:' + x_hexToRgb(lightboxColour, lightboxOpacity) + ';}';
+				}
+
+				$x_head.append('<style id="lo_css">' + lightboxStyle + ' ' + loStyles + '</style>');
+			}
+			x_continueSetUp1();
+			break;
     }
 }
 
@@ -1361,6 +1366,8 @@ function x_KeepAlive()
 var setUpComplete = false;
 function x_continueSetUp1() {
 	if (setUpComplete == false) {
+		XENITH.COLOURCHANGER.init();
+
 		if (XENITH.PAGEMENU.menuPage) {
 			$x_pageNo.hide();
 			if (x_params.navigation == "Menu") {
@@ -1375,7 +1382,6 @@ function x_continueSetUp1() {
 			XENITH.PAGEMENU.init("dialog");
 		}
 
-		
 		// add project help button to footer bar that opens file (or URL) in new window or lightbox
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
@@ -1701,58 +1707,7 @@ function x_continueSetUp1() {
 			$x_pageNo.remove();
 		}
 
-		x_dialogInfo.push({type:'colourChanger', built:false});
-
-		if (x_params.accessibilityHide != 'true') {
-
-			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
-
-			$x_colourChangerBtn
-				.button({
-					icons: {
-						primary: accessibilityIcon.iconClass
-					},
-					// label can now be set in editor but fall back to language file if not set
-					label: x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
-					text:	false
-				})
-				.attr("aria-label", $x_colourChangerBtn.attr("title") + " " + x_params.dialogTxt)
-				.click(function() {
-					if (x_params.accessibilityTarget == "lightbox") {
-
-						$.featherlight($(), {
-							contentFilters: 'ajax',
-							ajax: x_templateLocation + 'models_html5/colourChanger.html',
-							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
-						});
-
-					} else {
-						x_openDialog(
-							"colourChanger",
-							x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
-							x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
-							null,
-							null,
-							function () {
-								$x_colourChangerBtn
-									.blur()
-									.removeClass("ui-state-focus")
-									.removeClass("ui-state-hover");
-							}
-						);
-					}
-				});
-
-			if (accessibilityIcon.customised == true) {
-				$x_colourChangerBtn.addClass("customIconBtn");
-			}
-			if (accessibilityIcon.btnImgs == true) {
-				$x_colourChangerBtn.addClass("imgIconBtn");
-			}
-
-		} else {
-			$x_colourChangerBtn.remove();
-		}
+		XENITH.COLOURCHANGER.buildBtn();
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
 		// it's overridden by logo in theme folder
@@ -1919,7 +1874,7 @@ function x_continueSetUp1() {
 					if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
 						if (x_params.tocTarget == "lightbox") {
 
-							lb = $.featherlight(
+							$.featherlight(
 								'<div id="tocMenuLightBox"></div>',
 								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
 							);
@@ -2593,7 +2548,15 @@ function x_changePage(x_gotoPage, addHistory) {
 
 	// standalone page opening in new window
 	} else if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'new') {
-		window.open(window.location.href.split('#')[0] + '#' + pageHash);
+		let url = window.location.href.split('#')[0];
+
+		// is project being shown with a special theme or no bg images (selected via accessibility options)?
+		// if so, make sure page opening in new window also keeps this theme
+		url += XENITH.COLOURCHANGER.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.COLOURCHANGER.specialTheme : "";
+		url += XENITH.COLOURCHANGER.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.COLOURCHANGER.removeBg : "";
+
+		url += '#' + pageHash;
+		window.open(url);
 
 		XENITH.PROGRESSBAR.update(x_gotoPage, "NewWindow");
 
@@ -2601,9 +2564,16 @@ function x_changePage(x_gotoPage, addHistory) {
 
 	// standalone page opening in lightbox
 	} else {
+		let url = window.location.href.split('#')[0];
+
+		// is project being shown with a special theme or no bg images (selected via accessibility options)?
+		// if so, make sure page opening in lightbox also keeps this theme
+		url += XENITH.COLOURCHANGER.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.COLOURCHANGER.specialTheme : "";
+		url += XENITH.COLOURCHANGER.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.COLOURCHANGER.removeBg : "";
+
+		url += '#' + pageHash;
 		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
-		//$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8}, {beforeClose: x_closeStandAlonePage});
-		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+		$.featherlight({iframe: url, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
 
 		XENITH.PROGRESSBAR.update(x_gotoPage, "LightBox");
 
@@ -2646,62 +2616,6 @@ function x_closeStandAlonePage(event) {
 	}
 }
 
-function x_changePageStep2(x_gotoPage) {
-	if (x_params.theme != undefined) {
-		x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
-			x_changePageStep3(x_gotoPage);
-		}, false, "theme_css", true);
-	}
-	else {
-		x_changePageStep3(x_gotoPage);
-	}
-}
-
-function x_changePageStep3(x_gotoPage) {
-	if (x_params.theme != undefined) {
-		var css = document.getElementById('theme_css');
-		css.load = function () {
-			var i = 1;
-		};
-	}
-
-    if (x_params.theme != undefined && x_params.theme != "default") {
-        // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-        if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
-                x_changePageStep4(x_gotoPage);
-            }, true, "theme_responsive_css", true);
-        } else {
-            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
-                x_changePageStep4(x_gotoPage);
-            }, (x_params.responsive == "false"), "theme_responsive_css", true);
-        }
-    }
-    else {
-        x_changePageStep4(x_gotoPage);
-    }
-}
-
-function x_changePageStep4(x_gotoPage) {
-	// Check if saveSession button is styled
-	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
-		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
-		if (!x_varSaveSessionBtnIsStyled) {
-			if ($('#savesessionbtn_css').length == 0) {
-				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
-			}
-		}
-	}
-    if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
-        x_insertCSS(x_evalURL(x_params.stylesheet), function () {
-            x_changePageStep5(x_gotoPage);
-        }, false, "lo_sheet_css");
-    }
-    else {
-        x_changePageStep5(x_gotoPage);
-    }
-}
-
 function x_endPageTracking(pagechange, x_gotoPage) {
     if (pagechange == undefined) {
 		pagechange = false;
@@ -2735,52 +2649,25 @@ function x_endPageTracking(pagechange, x_gotoPage) {
     }
 }
 
-function x_changePageStep5(x_gotoPage) {
-	x_setMaxWidth();
-
-	if (x_params.styles != undefined || x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
-        if ($('#lo_css').length == 0) {
-
-			var lightboxStyle = '',
-				loStyles = x_params.styles != undefined ? x_params.styles : '';
-
-			if (x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
-				lightboxColour = x_params.lightboxColour != undefined ? x_params.lightboxColour.substr(x_params.lightboxColour.length - 6) : '000000';
-				lightboxOpacity = x_params.lightboxOpacity != undefined ? x_params.lightboxOpacity / 100 : '0.8';
-
-				var rgbaColour = x_hexToRgb(lightboxColour, lightboxOpacity);
-
-				lightboxStyle = '.featherlight:last-of-type { background:' + rgbaColour + ';}';
+function x_changePageStep2(x_gotoPage) {
+	// Check if saveSession button is styled
+	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
+		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
+		if (!x_varSaveSessionBtnIsStyled) {
+			if ($('#savesessionbtn_css').length == 0) {
+				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
 			}
+		}
+	}
 
-            $x_head.append('<style type="text/css" id="lo_css">' + lightboxStyle + ' ' + loStyles + '</style>');
-        }
-    }
-
-    // If special_theme_css does not exist yet, create a disabled special_theme_css
-
-    if (x_specialTheme != undefined && x_specialTheme != '') {
-        x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
-            x_changePageStep5a(x_gotoPage);
-        }, false, "special_theme_css", true);
-    }
-    else
-    {
-        x_insertCSS(x_themePath + 'blackonyellow/blackonyellow.css', function () {
-            x_changePageStep5a(x_gotoPage);
-        }, true, "special_theme_css", true);
-    }
-}
-
-function x_changePageStep5a(x_gotoPage) {
-
+	x_setMaxWidth();
     var prevPage = x_currentPage;
 
-    // disable onload of #special_theme_css
-    $('#special_theme_css').bind('load', function()
+    // disable onload of #special_theme_css & special_theme_responsive_css
+    $('#special_theme_css, #special_theme_responsive_css').bind('load', function()
     {
         // Do nothing
-    });
+    })
 
     // End page tracking of x_currentPage
     x_endPageTracking(true, x_gotoPage);
@@ -2853,7 +2740,7 @@ function x_changePageStep5a(x_gotoPage) {
     if (XENITH.PAGEMENU.isThisMenu()) {
         pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 
-		x_changePageStep6();
+		x_changePageStep3();
 
     } else {
 		// if page is in a chapter then there is the option to include the chapter title before the page title on the header bar
@@ -2896,7 +2783,7 @@ function x_changePageStep5a(x_gotoPage) {
 			x_passwordPage(pswds);
 		} else {
 			x_addCountdownTimer();
-			x_addNarration('x_changePageStep6', '');
+			x_addNarration('x_changePageStep3', '');
 		}
     }
 }
@@ -2911,7 +2798,7 @@ function x_passwordPage(pswds) {
 			pageTitle += ' <span class="alert">' + x_getLangInfo(x_languageData.find("password")[0], "pageSupport", "In live projects, an access code must be entered to view this page") + ': ' + pswds + '</span>';
 
 			x_addCountdownTimer();
-			x_addNarration('x_changePageStep6', '');
+			x_addNarration('x_changePageStep3', '');
 
 		} else {
 
@@ -2987,7 +2874,7 @@ function x_passwordPage(pswds) {
 						$x_pageDiv.css("height", "");
 						$pswdBlock.remove();
 						x_addCountdownTimer();
-						x_addNarration('x_changePageStep6', '');
+						x_addNarration('x_changePageStep3', '');
 					} else {
 						$pswdBlock.find('.x_pswdError').show();
 					}
@@ -3009,11 +2896,11 @@ function x_passwordPage(pswds) {
 
 	} else {
 		x_addCountdownTimer();
-		x_addNarration('x_changePageStep6', '');
+		x_addNarration('x_changePageStep3', '');
 	}
 }
 
-function x_changePageStep6() {
+function x_changePageStep3() {
     $("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
@@ -3117,7 +3004,8 @@ function x_changePageStep6() {
             }
         }
 
-		$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
+		// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
+		XENITH.COLOURCHANGER.disableBespokeCSS();
 
 		x_focusPageContents(false);
 
@@ -3432,7 +3320,7 @@ function x_setUpPage() {
 		// show the video splash screen before the project is shown
 		if (x_params.splashVideo != undefined && x_params.splashVideo != "" && x_params.splashVideo.toLowerCase().indexOf(".mp4") != -1 && (x_params.splashShow == "always" || $.inArray(x_currentPage, x_normalPages) == 0)) {
 			// splash videos always auto-play with hidden controls and are closed when the video is finished
-			lb = $.featherlight('<div id="splashVideo"></div>', { openSpeed: 0, closeSpeed: 400 });
+			$.featherlight('<div id="splashVideo"></div>', { openSpeed: 0, closeSpeed: 400 });
 
 			$('#splashVideo').parents('.featherlight-content').addClass('splashVideo');
 
@@ -3538,10 +3426,12 @@ function x_pageLoaded() {
 		if (textCol != undefined && textCol != "") {
 			customHeaderStyle += 'color: ' + formatColour(x_currentPageXML.getAttribute('headerTextColor')) + ';';
 		}
-		customHeaderStyle = '<style id="customHeaderStyle" type="text/css">#x_headerBlock {' + customHeaderStyle + '}</style>';
+		customHeaderStyle = '<style id="customHeaderStyle">#x_headerBlock {' + customHeaderStyle + '}</style>';
 		$('#x_page' + x_currentPage).append(customHeaderStyle);
 	}
-	$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
+
+	// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
+	XENITH.COLOURCHANGER.disableBespokeCSS();
 
 	XENITH.VARIABLES.handleSubmitButton();
 
@@ -3852,7 +3742,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
             if (x_dialogInfo[i].built != false) {
                 $x_body.append(x_dialogInfo[i].built);
 
-                if (load != undefined && type != "menu") {
+                if (load !== undefined && type !== "menu" && type !== "colourChanger") {
                     x_dialogInfo[i].built.children(".x_popupDialog").html(load);
 					x_dialogInfo[i].built.find('.ui-dialog-title').html(title);
                 }
@@ -3906,6 +3796,8 @@ function x_openDialog(type, title, close, position, load, onclose) {
 
 					if (type == "menu") {
 						XENITH.PAGEMENU.build($("#tocMenuDialog"));
+					} else if (type == "colourChanger") {
+						XENITH.COLOURCHANGER.build($("#colourChangerDialog"));
 					}
 
                     x_setDialogSize($x_popupDialog, position);
@@ -4187,21 +4079,23 @@ function x_insertCSS(href, func, disable, id, keep) {
 		}
 	}
 
-	if (element != null)
-    {
-        // Update element
+	if (element != null) {
+        // update element e.g. page model css files which will be replaced with the new page model's css file
         if (donotreplace != true) {
             var parent = element.parentNode;
             parent.replaceChild(css, element);
-        }
-        else
-        {
+        } else {
+			// this has already loaded and we don't need to load again
             if (func != undefined) func();
         }
     }
     else {
         // Create element
-        document.getElementsByTagName("head")[0].appendChild(css);
+		if (id == "page_model_css" && $("#theme_css").length > 0) {
+			$(css).insertBefore($("#theme_css"));
+		} else {
+			document.getElementsByTagName("head")[0].appendChild(css);
+		}
     }
 }
 
@@ -5757,7 +5651,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
 					x_sideBarBtns.push('glossary');
 				}
-				if (x_params.sbAccessibility == 'true' && x_params.accessibilityHide != 'true') {
+				if (x_params.sbAccessibility == 'true' && !XENITH.COLOURCHANGER.hidden) {
 					x_sideBarBtns.push('accessibility');
 				}
 
@@ -6113,6 +6007,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	return parent;
 
 })(jQuery, XENITH || {});
+
 
 // ***** PROGRESS BAR *****
 // Progress bar might be shown on:
@@ -6605,6 +6500,294 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	self.init = init;
 	self.build = build;
 	self.update = update;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** ACCESSIBILITY OPTIONS / COLOUR CHANGER *****
+var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
+	// declare global variables
+	let hidden = false;
+	let specialTheme = false;
+	let removeBg = false;
+
+	// declare local variables
+	// list of available themes
+	const filterMap = [
+		{name:'off', default:'Default', bg:true, theme:''},
+		{name:'dark', default:'Dark mode', bg:false, theme:'darkmode'},
+		{name:'light', default:'Light mode', bg:false, theme:'lightmode'},
+		{name:'invert', default:'High contrast', bg:false, theme:'highcontrast'},
+		{name:'blackYellow', default:'Black on yellow', bg:false, theme:'blackonyellow'}
+	];
+	let lbHtml;
+
+	// creates special_theme_css & special_theme_responsive_css styles tag in HEAD ready for any future theme changes
+	function init() {
+		XENITH.COLOURCHANGER.hidden = x_params.accessibilityHide === 'true' ? true : false;
+
+		if (!XENITH.COLOURCHANGER.hidden) {
+			// insert in HEAD - either at end or before any bespoke project CSS
+			const linkHtml =`<link rel="stylesheet" href="" type="text/css" id="special_theme_css" disabled="">
+			<link rel="stylesheet" href="" type="text/css" id="special_theme_responsive_css" disabled="">`;
+
+			if ($("#lo_sheet_css, lo_css").length > 0) {
+				$(linkHtml).insertBefore($("#lo_sheet_css, lo_css")[0]);
+			} else {
+				$x_head.append(linkHtml);
+			}
+
+
+			if (x_params.accessibilityTarget !== "lightbox") {
+				x_dialogInfo.push({type: 'colourChanger', built: false});
+			}
+
+			if (XENITH.COLOURCHANGER.specialTheme !== false) {
+				// a special theme is already set
+				// this must be a standalone page opening in a new window or lightbox where the parent project that opened this had a special theme already applied
+				// make sure this immediately uses the special theme
+				switchTheme(XENITH.COLOURCHANGER.specialTheme);
+			}
+
+			if (XENITH.COLOURCHANGER.removeBg) {
+				// remove background images is already on
+				// this must be a standalone page opening in a new window or lightbox where the parent project that opened this had no background images forced
+				// make sure this immediately does the same
+				removeBgImages(true);
+			}
+		}
+	}
+
+	// accessibility options button on toolbar - set up or remove if not required
+	function buildBtn() {
+		if (!XENITH.COLOURCHANGER.hidden) {
+			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
+
+			$x_colourChangerBtn
+				.button({
+					icons: {
+						primary: accessibilityIcon.iconClass
+					},
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.accessibilityLabel !== undefined && x_params.accessibilityLabel !== "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
+					text: false
+				})
+				.attr("aria-label", $x_colourChangerBtn.attr("title") + " " + x_params.dialogTxt)
+				.click(function() {
+					if (x_params.accessibilityTarget === "lightbox") {
+						if (lbHtml === undefined) {
+							lbHtml = '<div id="colourChangerLightBox"></div>';
+
+							$.featherlight(
+								lbHtml,
+								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
+							);
+
+							XENITH.COLOURCHANGER.build($("#colourChangerLightBox"));
+
+						} else {
+							$.featherlight(
+								lbHtml, // reload previously used HTML so correct theme is shown selected
+								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
+							);
+
+							checkActive();
+						}
+
+					} else {
+						buildDialog();
+					}
+				});
+
+			if (accessibilityIcon.customised === true) {
+				$x_colourChangerBtn.addClass("customIconBtn");
+			}
+			if (accessibilityIcon.btnImgs === true) {
+				$x_colourChangerBtn.addClass("imgIconBtn");
+			}
+
+		} else {
+			$x_colourChangerBtn.remove();
+		}
+	}
+
+	function buildDialog() {
+		x_openDialog(
+			"colourChanger",
+			x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Accessibility Options"),
+			x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Accessibility Options"),
+			null,
+			'<div id="colourChangerDialog"></div>',
+			function () {
+				$x_colourChangerBtn
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			}
+		);
+	}
+
+	// function builds the accessibility options within the dialog / lightbox
+	function build($parent) {
+		const html = `<div id="colourChangerHolder">
+			<p id="p1"></p>
+			<div id="optionHolder">
+				<div id="colourChangerOptions"></div>
+			</div>
+			<p id="p2"></p>
+		</div>`;
+
+		$parent.append(html);
+
+		const $colourChangerHolder = $parent.find('#colourChangerHolder');
+
+		// opened in lightbox
+		if ($parent.parents('.featherlight').length > 0) {
+			$colourChangerHolder.wrap('<div id="x_colourChanger"></div>');
+
+			$('#x_colourChanger').prepend('<h1 id="x_introH1">' + (x_params.accessibilityLabel !== undefined && x_params.accessibilityLabel !== "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Accessibility Options")) + '</h1>');
+
+			$colourChangerHolder
+				.height($('.featherlight-content').height() - $('#x_introH1').outerHeight())
+				.css('overflow', 'auto');
+		}
+
+		// add instruction text
+		const $p1 = $colourChangerHolder.find("#p1").html(x_getLangInfo(x_languageData.find("colourChanger").find("selectTxt")[0], "label", "Select a theme for this project") + ":");
+		$colourChangerHolder.find("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Accessibility advice is available in the <a target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=151'>Xerte Online Toolkits guide to accessibility</a>."));
+
+		// add wcag logo and link if not hidden
+		if (x_params.wcagHide !== 'true') {
+			$p1.before("<a class='wcagLink' target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=214#home'><img class='wcagLogo' src='" + x_templateLocation + "common_html5/wcag2.1AA-blue-v.png' alt='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo") + "' title='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + "'> </a>");
+
+			if (x_params.wcagAlt !== undefined) {
+				$(".wcagLogo").attr("alt",x_params.wcagAlt);
+			}
+			if (x_params.wcagLinkTitle !== undefined) {
+				$(".wcagLogo").attr("title",x_params.wcagLinkTitle);
+			}
+			if (x_params.wcagLink !== "") {
+				$(".wcagLink").prop("href",x_params.wcagLink);
+			}
+		}
+
+		// add radio buttons & bg checkbox
+		const $colourChangerOptions = $('#colourChangerOptions');
+		let checked = XENITH.COLOURCHANGER.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.COLOURCHANGER.specialTheme);
+
+		for (let i=0; i<filterMap.length; i++) {
+			const $radio = $('<div class="optionGroup"></div>');
+			$radio.append('<input type="radio" name="colourChangerRadios" id="option' + i + '" value="' + i + '"' + (i===checked ? ' checked="checked"' : '') + '>');
+			$radio.append('<label for="option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(filterMap[i].name)[0], "label", filterMap[i].default) + '</p></label>');
+			$colourChangerOptions.append($radio);
+		}
+
+		checked = XENITH.COLOURCHANGER.removeBg ? 'checked="checked"' : '';
+		$colourChangerOptions.append('<div id="checkGroup"><input type="checkbox" id="noBg" name="noBg"' + checked + '><label for="noBg"><p> ' + x_getLangInfo(x_languageData.find("colourChanger").find("noBg")[0], "label", "Remove background images") + '</p></label></div>');
+
+		// trigger change theme on radio change
+		$colourChangerOptions.find('.optionGroup input').change(function() {
+			if (filterMap[this.value].theme === '') {
+				// default theme
+				switchTheme(x_params.theme);
+				XENITH.COLOURCHANGER.specialTheme = false;
+			} else {
+				// custom accessibility theme
+				switchTheme(filterMap[this.value].theme);
+				XENITH.COLOURCHANGER.specialTheme = filterMap[this.value].theme;
+			}
+
+			XENITH.COLOURCHANGER.disableBespokeCSS();
+
+			// rebuild pages of these types as they involve things like writing text on a canvas (text might not be an appropriate colour after the theme change)
+			const pageTypesRequiringRefresh = ['chart', 'textDrawing'];
+
+			// flag built pages of these types as not built yet, so they will be rebuilt when next viewed
+			for (let i=0, len=x_pageInfo.length; i<len; i++) {
+				if (pageTypesRequiringRefresh.indexOf(x_pageInfo[i].type) > -1) {
+					x_pageInfo[i].built = false;
+				}
+			}
+
+			// rebuild current page if required
+			if (pageTypesRequiringRefresh.indexOf(x_pageInfo[x_currentPage].type) > -1) {
+				x_changePage(x_currentPage);
+			}
+		});
+
+		// trigger show/hide background image on checkbox change
+		$colourChangerOptions.find('#noBg').change(function() {
+			removeBgImages(this.checked);
+		});
+
+
+		if ($parent.parents('.featherlight').length > 0) {
+			lbHtml = $parent;
+		}
+	}
+
+	// change the theme
+	function switchTheme(theme) {
+		// any changes made to the project via the default theme's theme.js file will NOT be reversed
+		const currentThemeURL = x_themePath + theme + '/' + theme;
+		const currentResponsiveThemeURL = x_themePath + theme + '/responsivetext';
+
+		const $special_theme_css = $("#special_theme_css");
+		const $special_theme_responsive_css = $("#special_theme_responsive_css");
+		const $theme_css = $("#theme_css");
+		const $theme_responsive_css = $("#theme_responsive_css");
+
+		if (theme !== x_params.theme) {
+			// custom theme in use
+			$theme_css.prop("disabled", true);
+			$theme_responsive_css.prop("disabled", true);
+			$special_theme_css.attr("href", currentThemeURL + ".css");
+			$special_theme_css.prop("disabled", false);
+			$special_theme_responsive_css.attr("href", currentResponsiveThemeURL + ".css");
+			$special_theme_responsive_css.prop("disabled", false);
+		} else {
+			// default theme in use
+			$theme_css.prop("disabled", false);
+			$theme_responsive_css.prop("disabled", false);
+			$special_theme_css.prop("disabled", true);
+			$special_theme_responsive_css.prop("disabled", true);
+		}
+
+		x_getThemeInfo(theme, true);
+	}
+
+	// background images are removed from the project / page unless the default theme for the project is being used
+	function removeBgImages (hideBg) {
+		if (hideBg) {
+			XENITH.COLOURCHANGER.removeBg = true;
+			$x_background.hide();
+		} else {
+			XENITH.COLOURCHANGER.removeBg = false;
+			$x_background.show();
+		}
+	}
+
+	function disableBespokeCSS() {
+		$("#customHeaderStyle").prop('disabled', XENITH.COLOURCHANGER.specialTheme !== false);
+	}
+
+	// when lightbox is reopened - make sure the correct theme is selected
+	function checkActive() {
+		let checked = XENITH.COLOURCHANGER.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.COLOURCHANGER.specialTheme);
+		$('#colourChangerOptions input:eq(' + checked + ')').prop("checked", true);
+		$('#colourChangerOptions #noBg').prop("checked", XENITH.COLOURCHANGER.removeBg);
+	}
+
+	// make some public methods
+	self.init = init;
+	self.buildBtn = buildBtn;
+	self.build = build;
+	self.disableBespokeCSS = disableBespokeCSS;
+	self.hidden = hidden;
+	self.specialTheme = specialTheme;
+	self.removeBg = removeBg;
 
 	return parent;
 
