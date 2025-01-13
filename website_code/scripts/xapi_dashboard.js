@@ -61,8 +61,8 @@ function xAPIDashboard(info) {
   this.data = new DashboardState(info);
 }
 
-xAPIDashboard.prototype.getStatements = function (q, one, callback) {
-  this.data.getStatements(q, one, callback);
+xAPIDashboard.prototype.getStatements = function (q, one, callback, force_xapi=true) {
+  this.data.getStatements(q, one, callback, force_xapi);
 };
 xAPIDashboard.prototype.escapeId = function (id) {
   return id.replace(/[^A-Za-z0-9]/g, "_");
