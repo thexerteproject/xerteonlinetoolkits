@@ -67,9 +67,9 @@
 		<homePageLink optional="true" type="CheckBox" label="Link Project Title to Home Page" defaultValue="false" conditionTrigger="true" tooltip="Make the project title a link which returns users to the home page"/>
 		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="Select which page is classed as the home page (linked to from project title or home button when navigation is set to 'Historic'). The first page will be the home page if no page selected here."/>
 	</homePageGroup>
-	
+
 	<progressBar optional="true" type="ComboBox" options="Show progress bar,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress Bar" defaultValue="pBar" width="100" tooltip="Add a progress bar (indicating the percentage completed) to the footer bar"/>
-	
+
 	<footerToolsGroup type="group" label="Footer Tools" optional="true" tooltip="The footer tools are the buttons that normally appear on the bottom left of your project, such as Assessibility Options and Glossary. These options allow you to set the initial visibility state of these buttons and customise the show/hide footer tools button.">
 		<footerTools type="ComboBox" label="Default State" options="Hidden,Visible,Visible (Remove show/hide button)" data="hideFooterTools,showFooterTools,none" conditionTrigger="true" defaultValue="showFooterTools" width="100" optional="true"/>
 		<footerToolIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="footerTools!='none'" optional="true" tooltip="Override the default icons used on the show / hide footer tools button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
@@ -104,7 +104,7 @@
 		<helpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<helpIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-question" condition="helpIc=='true'" optional="true"/>
 	</helpGroup>
-	
+
 	<introGroup type="group" label="Project Introduction" optional="true" tooltip="Add a Project Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the project first loads.">
 		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this project"/>
 		<intro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
@@ -132,7 +132,7 @@
 		<pageIntroIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Page Introduction button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
-	
+
 	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing buttons which would normally be found on the footer bar.">
 		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
@@ -894,8 +894,8 @@
         <sessionStatementUsed label="Which answer(s) to use within session" type="combobox" data="first,last,best,all" options="First,Last,Best,All" defaultValue="all" optional="true" tooltip="Which answer should be used if within a session the answer is given more than one time."/>
         <graphgroup type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show Graph" type="checkbox" defaultValue="false" optional="true"/>
-          <graphType label="Graph Type" type="combobox" conditionTrigger="true" condition="interactionType!='opinion'||opinionClass!=null" data="bar_answers,bar_marks,bar_marks_score,bar_comb_marks,hor_bar_comb_marks,pie_marks,line_own_marks,line_average_marks,polar_area_per_category" options="Bar graph for given answers,Bar graph for received marks,Bar graph for average scores,Bar graph for combined received marks,Horizontal bar graph for combined received marks,Pie chart for received marks,Line graph for own received marks,Line graph for average marks of others,Polar chart for subject overview" defaultValue="bar_answers" optional="true"/>
-          <opinionGraphType label="Graph Type" type="combobox" conditionTrigger="true" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" data="radar,hor_bar_comb_marks_avg" options="Radar diagram,Horizontal bar graph with averages" defaultValue="radar" optional="true"/>
+          <graphType label="Graph Type" type="combobox" conditionTrigger="true" condition="interactionType!='opinion'" data="bar_answers,bar_marks,bar_marks_score,bar_comb_marks,hor_bar_comb_marks,hor_bar_comb_marks_avg,pie_marks,line_own_marks,line_average_marks,polar_area_per_category" options="Bar graph for given answers,Bar graph for received marks,Bar graph for average scores,Bar graph for combined received marks,Horizontal bar graph for combined received marks, Horizontal bar graph with averages,Pie chart for received marks,Line graph for own received marks,Line graph for average marks of others,Polar chart for subject overview" defaultValue="bar_answers" optional="true"/>
+          <opinionGraphType label="Graph Type" type="combobox" conditionTrigger="true" condition="interactionType=='opinion'" data="radar,hor_bar_comb_marks_avg" options="Radar diagram,Horizontal bar graph with averages" defaultValue="radar" optional="true"/>
           <opinionRadarData label="Radar diagram data" type="combobox" conditionTrigger="true" condition="interactionType=='opinion'&amp;&amp;opinionGraphType=='radar'" optional="true" defaultValue="personal" data="personal,group" options="Personal (last attempt%%2C personal average%%2C group average),Group (last attempt of each member%%2C group average)" tooltip="What data should be shown in the radar diagram"/>
           <colour label="Personal Graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null&amp;&amp;opinionGraphType=='radar'&amp;&amp;opinionRadarData!='group'" defaultValue="0xFF0000" optional="true"/>
           <colourPersonalAvg label="Personal average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null&amp;&amp;opinionGraphType=='radar'&amp;&amp;opinionRadarData!='group'" defaultValue="0x0000FF" optional="true"/>
