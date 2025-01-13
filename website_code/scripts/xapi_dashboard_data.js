@@ -38,8 +38,8 @@ DashboardState.prototype.clear = function () {
   this.pageIndex = 0;
 };
 
-DashboardState.prototype.getStatements = function (q, one, callback) {
-  if (this.info.lrs.aggregate) {
+DashboardState.prototype.getStatements = function (q, one, callback, force_xapi=false) {
+  if (this.info.lrs.aggregate && !force_xapi) {
     this.getStatementsAggregate(q, one, callback);
   } else {
     this.getStatementsxAPI(q, one, callback);
@@ -365,7 +365,7 @@ DashboardState.prototype.retrieveDataThroughAggregate = function (
   }
   // Create a week array
   var periods = [];
-  var currindex = 99;
+  var currindex = 49;
   var currDate = endDate;
   var beginOfPeriod;
   while (currindex < data.length) {
@@ -378,7 +378,7 @@ DashboardState.prototype.retrieveDataThroughAggregate = function (
         '" }}}'
     );
     currDate = moment(data[currindex].timestamp);
-    currindex += 100;
+    currindex += 50;
   }
   periods.push(
     '{"timestamp": { "$gte": { "$dte": "' +
