@@ -6024,7 +6024,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	let progressBarSpacing;
 	let pageDetails;
 	let totalPages;
-	let menuOffset;
 
 	// used when progress markers represent the ends of chapters/milestones
 	let chapters;
@@ -6041,7 +6040,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	function init() {
 		// don't create a progress bar for standalone pages opening in a lightbox
 		if (!x_pageInfo[x_startPage.ID].standalone || x_pages[x_startPage.ID].getAttribute('linkTarget') == "same") {
-			menuOffset = XENITH.PAGEMENU.menuPage ? 1 : 0;
 
 			if (((x_params.progressBar != undefined && x_params.progressBar != "") || x_params.progressBarType == 'true') && x_params.hideFooter != "true") {
 				// add optional progress bar to the footer bar
@@ -6077,15 +6075,15 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				if (progressSub != false) {
 					// standalone pages are always excluded when progress markers are used
 					pageDetails = $(x_pageInfo).filter(function (i) {
-						return this.standalone != true;
+						return this.type !== "menu" && this.standalone !== true;
 					});
 				} else {
 					// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
 					pageDetails = $(x_pageInfo).filter(function (i) {
-						return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true';
+						return this.type !== "menu" && (this.standalone !== true || x_pages[i].getAttribute('reqProgress') === 'true');
 					});
 				}
-				totalPages = pageDetails.length - menuOffset;
+				totalPages = pageDetails.length;
 
 				XENITH.PROGRESSBAR.build();
 			}
@@ -6152,11 +6150,13 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				}
 
 				for (let i = 0; i < x_pages.length; i++) {
-					if (x_pageInfo[i].standalone != true) {
+					if (x_pageInfo[i].standalone != true && x_pages[i] !== "menu") {
+						// ignore standalone pages when getting index of page
+						const offset = i - x_normalPages.indexOf(i) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
 						if (x_pages[i].getAttribute("chapterIndex") !== null) {
-							chapters[x_pages[i].getAttribute("chapterIndex")].push(i);
+							chapters[x_pages[i].getAttribute("chapterIndex")].push(i - offset);
 						} else {
-							extraPages.push(i);
+							extraPages.push(i - offset);
 						}
 					}
 				}
@@ -6264,8 +6264,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 				let current = [];
 				for (let i=0; i<x_pages.length; i++) {
-					if (x_pageInfo[i].standalone != true) {
-						current.push(i);
+					if (x_pageInfo[i].standalone != true && x_pages[i] !== "menu") {
+						// ignore standalone pages when getting index of page
+						const offset = i - x_normalPages.indexOf(i) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
+						current.push(i - offset);
 						if (x_pages[i].getAttribute("milestone") == "true") {
 							milestones.push(current);
 							current = [];
@@ -6394,15 +6396,15 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				if (progressSub != false) {
 					// standalone pages are always excluded when progress markers are shown
 					pagesViewed = $(x_pageInfo).filter(function (i) {
-						return this.viewed !== false && this.standalone != true;
+						return this.viewed !== false && this.standalone !== true && this.type !== "menu";
 					});
 				} else {
 					// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
 					pagesViewed = $(x_pageInfo).filter(function (i) {
-						return ((this.viewed !== false || this.builtLightBox == true || this.builtNewWindow == true) && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'));
+						return ((this.viewed !== false || this.builtLightBox == true || this.builtNewWindow == true) && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true') && this.type !== "menu");
 					});
 				}
-				pagesViewed = pagesViewed.length - menuOffset;
+				pagesViewed = pagesViewed.length;
 				const progress = Math.round((pagesViewed * 100) / totalPages);
 
 				if (progressSub == false) {
@@ -6419,7 +6421,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 						let count = -1;
 						$(x_pageInfo).each(function (i) {
-							if (this.type != "menu" && this.standalone !== true) {
+							if (this.type !== "menu" && this.standalone !== true) {
 								count++;
 								if (this.viewed !== false) {
 									$(".progressMarker:eq(" + count + ")").addClass("complete");
@@ -6434,21 +6436,24 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						// there is a progress marker at the end of each chapter
 
 						$(x_pageInfo).each(function (index) {
-							if (this.type != "menu" && this.standalone !== true && this.viewed !== false) {
+							if (this.type !== "menu" && this.standalone !== true && this.viewed !== false) {
+								// ignore standalone pages when getting index of page
+								const offset = index - x_normalPages.indexOf(index) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
+
 								// check pages that sit outside chapters
 								for (let i = 0; i < extraPages.length; i++) {
-									if (extraPages[i] === index) {
-										$(".pbBar.page" + index).show();
+									if (extraPages[i] === index - offset) {
+										$(".pbBar.page" + (index - offset)).show();
 									}
 								}
 
 								// check pages that are within chapters
 								for (let i = 0; i < chaptersCopy.length; i++) {
 									for (let j = 0; j < chaptersCopy[i].length; j++) {
-										if (chaptersCopy[i][j] === index) {
+										if (chaptersCopy[i][j] === index - offset) {
 											// found a viewed page within this chapter
 											// update the progress bar and remove page from chapter array so it can't be recounted as newly viewed
-											$(".pbBar.chapter" + i + "Page" + index).show();
+											$(".pbBar.chapter" + i + "Page" + (index - offset)).show();
 											chaptersCopy[i].splice(j, 1);
 
 											if (chaptersCopy[i].length === 0) {
@@ -6463,19 +6468,18 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 					} else if (progressSub == "milestones") {
 						// add a progress marker at each milestone
-
-						let count = -1;
-						let count2 = -1;
+						let milestoneIndex = -1;
 						$(x_pageInfo).each(function (i) {
-							if (this.type != "menu" && this.standalone !== true) {
-								count++;
+							if (this.type !== "menu" && this.standalone !== true) {
+								// ignore standalone pages when getting index of page
+								const offset = i - x_normalPages.indexOf(i) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
 								if (x_pages[i].getAttribute('milestone') == "true") {
-									count2++;
+									milestoneIndex++;
 								}
 								if (this.viewed !== false) {
-									$(".pbBar:eq(" + count + ")").show();
+									$(".pbBar:eq(" + (i - offset) + ")").show();
 									if (x_pages[i].getAttribute('milestone') == "true") {
-										$(".progressMarker:eq(" + count2 + ")").addClass("complete");
+										$(".progressMarker:eq(" + milestoneIndex + ")").addClass("complete");
 									}
 								}
 							}
