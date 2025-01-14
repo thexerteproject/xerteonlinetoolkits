@@ -417,7 +417,7 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
-        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
+        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
 		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") != undefined && xmlData[0].getAttribute("milestone") != '');
@@ -965,7 +965,7 @@ var EDITOR = (function ($, parent) {
 			if (toDelete[i] == "password") {
 			    changeNodeStatus(key, "password", false);
 			}
-			if (toDelete[i] == "linkPage") {
+			if (toDelete[i] == "linkPage" || toDelete[i] == "linkPageChapter") {
 			    changeNodeStatus(key, "standalone", false);
 			}
             if (toDelete[i] == "milestone") {
@@ -2089,7 +2089,7 @@ var EDITOR = (function ($, parent) {
             changeNodeStatus(key, "password", value != "");
         }
 
-        if (name == "linkPage") {
+        if (name == "linkPage" || name == "linkPageChapter") {
             changeNodeStatus(key, "standalone", value == "true");
         }
 

@@ -272,10 +272,21 @@ x_projectDataLoaded = function(xmlData) {
 	let tempPages = [];
 	x_pages.each(function (i) {
 		const $this = $(this)
-		if ($this[0].nodeName == "chapter") {
+		if ($this[0].nodeName === "chapter") {
 			$($this.children()).each(function() {
-				$(this)[0].setAttribute("chapterIndex", x_chapters.length)
-				tempPages.push($(this)[0]);
+				const $thisChild = $(this);
+				$thisChild[0].setAttribute("chapterIndex", x_chapters.length);
+
+				// if the chapter is a standalone chapter then all pages within it will take on the same standalone properties
+				// unless the page has separate standalone properties set - these will take priority
+				const standAloneAttrs = ["linkPage", "linkTarget", "headerHide", "footerHide", "reqProgress"];
+				if ($thisChild[0].getAttribute(standAloneAttrs[0]) === null && $this[0].getAttribute(standAloneAttrs[0] + "Chapter") === 'true') {
+					$(standAloneAttrs).each(function() {
+						$thisChild[0].setAttribute(this, $this[0].getAttribute(this + "Chapter"));
+					});
+				}
+
+				tempPages.push($thisChild[0]);
 			});
 
 			const chapterInfo = {};
