@@ -2,8 +2,8 @@
 	
 	#pageContents {
 		position:		absolute;
-		width:			100%;
-		margin-left:	-10px;
+		width:			96%;
+		overflow-x: hidden;
 	}
 	
 	#x_headerBlock.hideTitleTxt h1, #x_headerBlock.hideTitleTxt h2, #x_headerBlock.hideTitleIcon .x_icon, #x_headerBlock.hideTitleTxt.hideTitleIcon {

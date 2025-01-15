@@ -100,7 +100,7 @@
 
 			$("#qHolder .qImg").each(function() {
 				$(this).css({
-					"max-width": $("#mainPanel").width(),
+					"max-width": $("#mainPanel").width() - 10,
 					"max-height": $("#mainPanel").height() - ($(this).parents("figure").find("figcaption").outerHeight(true) - $(this).parents("figure").find("figcaption").height())
 				});
 			});
@@ -400,7 +400,7 @@
                     else if($thisQ.getAttribute("interactivity") == null || $thisQ.getAttribute("interactivity") == "slider")
 					{
                         var $sliderHolder = $("#sliderHolder" + currentQuestion);
-						$sliderHolder.html('<div id="labelHolder' + currentQuestion + '" class="labelHolder"><table><tr id="labelHolderRow' + currentQuestion + '"></tr></table></div><div id="rangeHolder' + currentQuestion + '"></div>');
+						$sliderHolder.html('<div id="labelHolder' + currentQuestion + '" class="labelHolder"><table class="none"><tr id="labelHolderRow' + currentQuestion + '"></tr></table></div><div id="rangeHolder' + currentQuestion + '"></div>');
 						var $labelHolder = $("#labelHolderRow" + currentQuestion),
                             $rangeHolder = $("#rangeHolder" + currentQuestion);
 
