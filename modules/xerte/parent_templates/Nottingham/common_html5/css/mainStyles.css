@@ -1078,6 +1078,7 @@ button.customIconBtn:after {
 
 .featherlight:has(.featherlight-content.splashVideo), .featherlight .featherlight-content.splashVideo {
 	background: white;
+	overflow: hidden;
 }
 
 #x_headerBlock #x_pageIntroBtn {
