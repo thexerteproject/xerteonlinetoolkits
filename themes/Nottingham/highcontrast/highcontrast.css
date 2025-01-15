@@ -1951,6 +1951,7 @@ img {
 .featherlight .featherlight-content {
   background-color: #000000;
   border: 1px solid #ffffff;
+  padding-bottom: 10px;
 }
 
 .featherlight .featherlight-close-icon {
