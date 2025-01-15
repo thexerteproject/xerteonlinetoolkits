@@ -6716,18 +6716,21 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 
 			XENITH.COLOURCHANGER.disableBespokeCSS();
 
-			// rebuild pages of these types as they involve things like writing text on a canvas (text might not be an appropriate colour after the theme change)
-			const pageTypesRequiringRefresh = ['chart', 'textDrawing'];
+			// refresh (trigger pageChanged function) or completely rebuild pages of these types
+			// as they involve things like writing text on a canvas (text might not be an appropriate colour after the theme change)
+			const pageTypesRequiringRebuild = ['chart', 'textDrawing'];
+			const pageTypesRequiringRefresh = ['opinion'];
 
 			// flag built pages of these types as not built yet, so they will be rebuilt when next viewed
 			for (let i=0, len=x_pageInfo.length; i<len; i++) {
-				if (pageTypesRequiringRefresh.indexOf(x_pageInfo[i].type) > -1) {
+				if (pageTypesRequiringRebuild.indexOf(x_pageInfo[i].type) > -1) {
 					x_pageInfo[i].built = false;
 				}
 			}
 
 			// rebuild current page if required
-			if (pageTypesRequiringRefresh.indexOf(x_pageInfo[x_currentPage].type) > -1) {
+			if (pageTypesRequiringRebuild.indexOf(x_pageInfo[x_currentPage].type) > -1 ||
+				pageTypesRequiringRefresh.indexOf(x_pageInfo[x_currentPage].type) > -1) {
 				x_changePage(x_currentPage);
 			}
 		});
