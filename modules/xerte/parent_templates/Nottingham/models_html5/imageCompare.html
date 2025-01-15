@@ -1,9 +1,7 @@
 <script type="text/javascript">
 	var imageCompare = new function() {
-		this.aspectratio = 1;
 		this.position = 50;
-		this.isVertical = false;
-		this.sizePercentage = 1.0;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.position = 50;
@@ -32,24 +30,25 @@
 			let maxImageWidth = pageWidth - 20;
 			let maxImageheight = pageHeight - 20;
 			let holder = $(".holder");
-			if(this.sizePercentage !== 1){
+			const sizePercentage = parseInt(x_currentPageXML.getAttribute("imageSize"))/100;
+			if(sizePercentage !== 1){
 				holder.css("left", paddingInline/2);
 				pageHeight -= 10;
 				holder.addClass("sized");
 				let textElem = $(".text");
-				let textSize = 1.0-this.sizePercentage;
+				let textSize = 1.0-sizePercentage;
 				let holderPaddingTop = (holder.innerHeight() - holder.height())/2 
 				if(this.textPosition == "top"){
 					holder.width(pageWidth);
-					holder.height(pageHeight*this.sizePercentage);
-					maxImageheight = (pageHeight*this.sizePercentage) - 20;
+					holder.height(pageHeight*sizePercentage);
+					maxImageheight = (pageHeight*sizePercentage) - 20;
 					holder.css("margin-top", pageHeight*textSize + holderPaddingTop + 20)
 					textElem.width(pageWidth);
 					textElem.height(pageHeight*textSize)
 				}else{
-					holder.width(pageWidth*this.sizePercentage);
+					holder.width(pageWidth*sizePercentage);
 					holder.height(pageHeight);
-					maxImageWidth = (pageWidth*this.sizePercentage) - 20;
+					maxImageWidth = (pageWidth*sizePercentage) - 20;
 					holder.css("margin-left", pageWidth*textSize + holderPaddingTop)
 					textElem.width(pageWidth*textSize);
 					textElem.height(pageHeight)
@@ -63,21 +62,13 @@
 			}
 
 			x_scaleImg($(".image_holder"), maxImageWidth, maxImageheight, null, firstLoad, true);
-			/* let width = Math.floor(holder.width()/1.5) * this.sizePercentage;
-			//let height = Math.floor(($("#x_mobileScroll").height()-$("#x_headerBlock").height())/1.5) * this.sizePercentage;
-			let height = Math.floor(holder.height()/1.5) * this.sizePercentage;
-			if(height < this.aspectratio * width){
-				$(".image_holder").width(height / this.aspectratio).height(height);
-			}else {
-				$(".image_holder").width(width).height(this.aspectratio * width);
-			} */
 		}
 
 		// updates the ui with the position in javascript
 		this.updatePosition = function() {
 			let img2Elem = $("#img2");
 			let slider = $("#slider");
-			if(this.isVertical){
+			if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
 				img2Elem.css("clip-path", "inset("+ this.position + "% -50% -50% -50%)");
 				slider.css("top", this.position + "%");
 			}else {
@@ -91,13 +82,11 @@
 
 			let img1Url = x_currentPageXML.getAttribute("url1");
 			let img2Url = x_currentPageXML.getAttribute("url2");
-			this.isVertical = x_currentPageXML.getAttribute("sliderPosition") == "vertical" ? true : false;
-			this.sizePercentage = parseInt(x_currentPageXML.getAttribute("imageSize"))/100;
 			let text = x_currentPageXML.getAttribute("text");
 			this.textPosition = x_currentPageXML.getAttribute("textPosition");
 		
 			let textElem = $(".text");
-			if(this.sizePercentage !== 1){
+			if(parseInt(x_currentPageXML.getAttribute("imageSize"))/100 !== 1){
 				$(".holder").addClass("sized");
 				textElem.html(text);
 			}else {
@@ -124,7 +113,6 @@
 				if(loadedimgs == 2){
 					let minHeight =  Math.min(tempImg1.height, tempImg2.height);
 					let minWidth = Math.min(tempImg1.width, tempImg2.width);
-					this.aspectratio = minHeight/minWidth;
 					$(".image_holder").width(minWidth);
 					$(".image_holder").height(minHeight);
 					this.sizeChanged(true);
@@ -134,7 +122,7 @@
 			tempImg1.onload = onImageLoad;
 			tempImg2.onload = onImageLoad;
 
-			if(this.isVertical){
+			if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
 				$("#slider, #slider_handle").addClass("vertical");
 			} else {
 				$("#slider, #slider_handle").addClass("horizontal");
@@ -153,7 +141,7 @@
  				if(!slider.data("dragging")) return;
 				event.preventDefault();
 				let deltaPosition;
-				if(this.isVertical){
+				if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
 					let screenY = event.screenY != null? event.screenY : event.originalEvent.touches[0].screenY;
 					let prevScreenY = prevEvent.screenY != null? prevEvent.screenY : prevEvent.originalEvent.touches[0].screenY;
 					deltaPosition = 100 / $(".image_holder").height() * (screenY-prevScreenY);
@@ -174,7 +162,7 @@
 
 			slider.on("keyup", (event) =>{
 				let delta = 0;
-				if (this.isVertical) {
+				if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
 					if (event.which == 40) {// down arrow
 						delta = 5
 					} else if (event.which == 38) {// up arrow
