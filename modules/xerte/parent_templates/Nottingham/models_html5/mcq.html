@@ -273,12 +273,13 @@
 				});
 
             $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
-			
-			let judge = $("#pageContents").data("judge");
 
-			//if(!$judge){
-			//	correct = true;
-			//}
+			// scroll to the feedback div so there is less chance of feedback being completely off screen
+			$("#mainPanel").animate({
+				scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#feedback").offset().top
+			}, 500);
+
+			let judge = $("#pageContents").data("judge");
 
             var result = {
                 success: correct || !judge,
