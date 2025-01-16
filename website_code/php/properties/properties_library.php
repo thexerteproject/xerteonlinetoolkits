@@ -2008,7 +2008,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 			<label for="pubChk"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label>
 		</div>
 		<div id="publish" class="publish <?php echo($lti_def->published ? "" : "disabled"); ?>">
-            <input type="checkbox" <?php echo($lti_def->tsugi_published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
+            <input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
             <label for="tsugi_publish_in_store"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH_IN_STORE; ?></label><br>
 			<input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>>
 			<label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><br>
