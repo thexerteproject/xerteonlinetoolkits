@@ -486,6 +486,12 @@
 					}
 				}
 
+				// scroll to the buttonHolder div so there is less chance of feedback being completely off screen
+				// not scrolling to feedback directly so the buttons won't be out of sight
+				$("#mainPanel").animate({
+					scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#buttonHolder").offset().top
+				}, 500);
+
 			} else {
 				$("#checkBtn").button("disable");
 				this.nextQuestion();
@@ -495,6 +501,10 @@
         }
 
 		this.nextQuestion = function() {
+
+			// scroll back to top of panel
+			$("#mainPanel").animate({scrollTop: 0}, 0);
+
 			this.tracked = true;
 			var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
 
