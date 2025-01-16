@@ -4992,8 +4992,8 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></imageViewer><interactiveTable menu="Interactivity" menuItem="Interactive Table" hint="A page for creating an interactive table where table cells can contain questions or buttons that show additional information" icon="icTableEdit" thumb="thumbs/interactiveTable.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactiveTable" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_interactiveTable_page" remove="true" deepLink="true" deprecated="This page is still in development">
-	
+    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></imageViewer><interactiveTable menu="Interactivity" menuItem="Interactive Table" hint="A page for creating an interactive table where table cells can contain questions or buttons that show additional information" icon="icTableEdit" thumb="thumbs/interactiveTable.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactiveTable" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_interactiveTable_page" remove="true" deepLink="true">
+
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right"/>
@@ -5048,7 +5048,7 @@
     <srIncorrectTxt label="Incorrect Answer (screen readers only)" type="TextInput" language="true"/>
 
     <newNodes>
-      <tableCell><![CDATA[<tableCell name="Cell" fieldPos="" cellType="question" text="" showIn="cell" replace="end" answer="" type="text" qShowIn="cell" qText="" qAfter="true" qAfterInfo="submitted" />]]></tableCell>
+      <tableCell><![CDATA[<tableCell name="Cell" fieldPos="" cellType="question" text="" showIn="cell" replace="end" required="false" answer="" type="text" qShowIn="cell" qText="" qAfter="true" qAfterInfo="submitted" />]]></tableCell>
     </newNodes>
 	
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -5125,20 +5125,21 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></interactiveTable><tableCell menuItem="Interactive Cell" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" tooltip="When this interactive cell contains a question, the title is used to identify this answer on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
-    <fieldPos label="Position" type="TextInput" placeholder="1,1" tooltip="The position of this interactive cell within the table, using the format: column,row, e.g. 1,1"/>
+    <fieldPos label="Position" type="TextInput" tooltip="The position of this interactive cell within the table, using the format: column,row, e.g. 1,1"/>
     <cellType label="Interactivity" type="ComboBox" options="Question,Information" data="question,info" defaultValue="" conditionTrigger="true"/>
 
     <information label="Information" type="group" tooltip="Display additional information when the table cell is selected" condition="cellType=='info'">
       <text label="Text" type="TextArea" height="50" defaultValue="" placeholder="Enter text here" condition="cellType=='info'"/>
       <showIn label="Display In" type="ComboBox" options="Cell,Lightbox" data="cell,lightbox" defaultValue="cell" conditionTrigger="true" condition="cellType=='info'" tooltip="Determines where the information is shown when the cell is selected"/>
       <replace label="Add Text" type="ComboBox" options="At end,Replace cell content" data="end,replace" defaultValue="end" condition="cellType=='info'&amp;&amp;showIn=='cell'"/>
+      <required label="Required" type="CheckBox" defaultValue="false" condition="cellType=='info'" tooltip="Require this information to be viewed before moving on to the next stage &amp;/or receive feedback"/>
     </information>
 
     <question label="Question" type="group" tooltip="Display a text field or drop down menu in the table cell" condition="cellType=='question'">
       <answer label="Answer" type="TextInput" defaultValue="" placeholder="Enter answer here" condition="cellType=='question'" tooltip="Where there is more than possible correct answer, list each one separated by a comma"/>
       <type label="Type" options="Text field,Drop down menu" type="ComboBox" data="text,menu" defaultValue="text" condition="cellType=='question'" tooltip="When set to drop down menu, use slashes to separate answer options, e.g. England/Scotland/Wales where the first option is the correct answer"/>
       <qShowIn label="Display In" type="ComboBox" options="Cell,Lightbox" data="cell,lightbox" defaultValue="cell" conditionTrigger="true" condition="cellType=='question'" tooltip="Determines where the question is shown"/>
-      <qText label="Text" type="TextArea" height="50" defaultValue="" placeholder="Enter text here" condition="cellType=='question'&amp;&amp;qShowIn=='lightbox'"/>
+      <qText label="Text" type="TextArea" height="50" defaultValue="" placeholder="Enter text here" condition="cellType=='question'&amp;&amp;qShowIn=='lightbox'"/>"
     </question>
 
     <feedback label="Feedback" type="TextArea" height="50" defaultValue="" optional="true" condition="cellType=='question'&amp;&amp;qShowIn=='lightbox'"/>
