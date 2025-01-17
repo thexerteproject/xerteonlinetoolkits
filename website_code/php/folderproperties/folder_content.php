@@ -64,8 +64,7 @@ if (!isset($_POST['folder_id']))
 
 $folder_id = x_clean_input($_POST['folder_id'], 'numeric');
 
-if(has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id'] || is_user_permitted("project"))){
-
+if(has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("project")){
 	echo "<ul class=\"dynamic_area_folder\">";
 	
     list_folder_contents_event_free($folder_id);
