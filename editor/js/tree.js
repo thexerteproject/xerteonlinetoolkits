@@ -668,19 +668,28 @@ var EDITOR = (function ($, parent) {
      */
 
     showNodeData = function(key, keepScrollPos, scrollToId) {
+        // any expanded optional property groups will be kept expanded on wizard reload
+        const expandedGroups = [];
+        $('#mainPanel .wizard fieldset.wizardgroup').each(function() {
+            if ($(this).find('.table_holder').is(':visible')) {
+                expandedGroups.push($(this).parents('.wizardattribute').attr('id'));
+            }
+        });
+        if (scrollToId !== undefined) {
+            expandedGroups.push(scrollToId);
+        }
         setTimeout(function()
         {
             var scrollPos = 0;
             if (keepScrollPos != null && keepScrollPos == true) {
                 scrollPos = $("#content").scrollTop();
             }
-            buildPage(key, scrollPos, scrollToId);
+            buildPage(key, scrollPos, scrollToId, expandedGroups);
         }, 350);
     },
 
     // Refresh the page when a new node is selected
-    buildPage = function (key, scrollPos, scrollToId) {
-		
+    buildPage = function (key, scrollPos, scrollToId, expandedGroups) {
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
@@ -1271,6 +1280,19 @@ var EDITOR = (function ($, parent) {
 		if (menu_options.remove == "false") {
 			$("#delete_button").addClass("disabled");
 		}
+
+        // keep the currently expanded groups expanded
+        for (let i=0; i<expandedGroups.length; i++) {
+            const $expandedGroup = $('#' + expandedGroups[i]);
+            if ($expandedGroup.find('fieldset.wizardgroup').length > 0) {
+                $expandedGroup
+                    .find('fieldset.wizardgroup:not(.wizardnestedgroup)').removeClass('collapsed')
+                    .find('.legend_label:eq(0) .minMaxIcon').removeClass('fa-caret-down').addClass('fa-caret-up');
+
+                $expandedGroup
+                    .find('.table_holder:eq(0)').slideDown(0);
+            }
+        }
 
         // And finally, scroll to the scrollPos, or place scrollToId (if defined) into view
         if (scrollToId === undefined) {

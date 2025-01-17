@@ -840,7 +840,7 @@ var EDITOR = (function ($, parent) {
 		}
 
 		if (options.group == undefined) { // nested groups aren't collapsible
-			$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+			$('<i class="minMaxIcon fa fa-caret-down"></i>').appendTo(legend.find('.legend_label'));
 			
 			legend.find('.legend_label').click(function() {
 				var $icon = $(this).find('i.minMaxIcon');
@@ -889,6 +889,12 @@ var EDITOR = (function ($, parent) {
 		
 		if (options.group == undefined) {
 			$(id).append(tr);
+
+            // collapse optional property groups initially on wizard load (they will be expanded when just added)
+            if (group.hasClass('wizardoptional')) {
+                group.addClass('collapsed');
+                group.find('.table_holder').slideUp(0);
+            }
 		} else {
 			$('#groupTable_' + options.group).append(tr);
 		}
