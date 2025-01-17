@@ -114,7 +114,7 @@ $(document).keydown(function(e) {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherlight)) {
+					if (history.length > 1 && (x_params.forcePage1 != 'true' || shownInFeatherlight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -888,7 +888,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 window.onhashchange = function() {
 	// ignore if triggered by the skip link
 	if (window.location.hash != "#pageContents") {
-		if (x_params.forcePage1 == undefined || x_params.forcePage1 != 'true') {
+		if (x_params.forcePage1 != 'true') {
 			var temp = getDeepLink(window.location.hash);
 			if (temp.length > 1) {
 				x_deepLink = temp[1];
@@ -1850,7 +1850,7 @@ function x_continueSetUp1() {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherLight)) {
+					if (history.length > 1 && (x_params.forcePage1 != 'true' || shownInFeatherLight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
