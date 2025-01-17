@@ -1072,7 +1072,6 @@ function sharing_info($template_id)
         if (!$found)
         {
             // Add $row to $query_shared_folder_users
-            $index = count($query_shared_folder_users);
             $query_shared_folder_users[] = $row;
             if ($row['role'] == "creator") {
                 // Change the role of the user to co-author
