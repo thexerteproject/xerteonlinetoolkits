@@ -116,7 +116,7 @@ li.select-interaction.selected {
 .graph-container {
   width: 60%;
   float: right;
-  display: inline-flex;
+  display: block;
 }
 
 .graph-container fieldset.noStyle {
@@ -137,6 +137,7 @@ li.select-interaction.selected {
     width: 100%;
     float: unset;
     margin-top: 1rem;
+    display: block;
   }
   .summary {
     width: 100%;
@@ -167,6 +168,7 @@ li.select-interaction.selected {
   width: 60%;
   margin-bottom: 2vmin;
   margin-top: 2vmin;
+  display: block;
 }
 
 .graph-container-wide {
@@ -252,6 +254,7 @@ li.select-interaction.selected {
 @media screen and (max-width: 1200px) {
   .graph-container {
     width: 95% !important;
+    display: block;
   }
 
   .graph{

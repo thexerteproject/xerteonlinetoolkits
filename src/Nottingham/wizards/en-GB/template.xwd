@@ -984,6 +984,7 @@
              <contextFilter label="Filter on LTI context" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on LTI context, where the LTI context retrieved from the LTI launch or the URL (lti_context_id=id)"/>
              <contextUsersFilter label="Filter on current users" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on the current users to prevent old users from appearing in results"/>
         </group>
+        <enableMultiPeriod label="Enable multiple date periods" type="checkbox" defaultValue="false" optional="true"/>
 
       <newNodes>
           <interactionBlock><![CDATA[<interactionBlock adaptiveContent="" conScoreBetween="0,100" conScoreAnswer="label of answer" conScoreGrouping="" ></interactionBlock>]]></interactionBlock>
