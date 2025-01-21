@@ -113,11 +113,6 @@ table.headerCol.shaded td.header {
   background: #383838 !important;
 }
 
-.x_title_page .titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
-}
-
 .ui-widget-content {
   color: #ffffff;
 }

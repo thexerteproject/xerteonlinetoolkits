@@ -415,11 +415,6 @@ table, table td, table th, table tr {
   background: #000000 !important;
 }
 
-.x_title_page .titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
-}
-
 .x_audioSlideshow_page .slide {
   margin-left: 5px;
 }

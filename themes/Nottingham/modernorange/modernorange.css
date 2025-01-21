@@ -53,11 +53,6 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-color: #d6c338;
 }
 
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
-}
-
 .highlight {
   background: #d6c338;
 }

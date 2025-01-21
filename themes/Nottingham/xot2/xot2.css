@@ -119,11 +119,6 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border: 0;
 }
 
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
-}
-
 .highlight {
   background: #cfcfcf;
 }

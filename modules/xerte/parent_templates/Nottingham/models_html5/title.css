@@ -1,11 +1,36 @@
 /* title.html */
-	
+
+	#x_pageDiv {
+		padding: 10px !important; /* important so this will override theme padding and ensure the titles are centered regardless of theme */
+	}
 	#pageContents {
-		position:		absolute;
-		width:			96%;
+		position: absolute;
+		width: 96%;
+		margin-left: calc(2% + -10px) !important;
 		overflow-x: hidden;
 	}
-	
+	.titlePageTxt p {
+		font-size: 1em;
+	}
 	#x_headerBlock.hideTitleTxt h1, #x_headerBlock.hideTitleTxt h2, #x_headerBlock.hideTitleIcon .x_icon, #x_headerBlock.hideTitleTxt.hideTitleIcon {
 		display: none !important;
+	}
+	#titleStartBtn, #extraText {
+		margin-top: 1em;
+	}
+	#titleStartBtn {
+		margin-left: 1em;
+		margin-right: 1em;
+	}
+	#titleStartBtn {
+		padding-left: 1em;
+		padding-right: 1em;
+	}
+	#x_mainHolder:not(.x_mobile) #imgHolder {
+		float: right;
+		max-width: 48%;
+		margin: 0 0 0 2%;
+	}
+	#pageImg {
+		width: 100%;
 	}

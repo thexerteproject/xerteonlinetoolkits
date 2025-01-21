@@ -60,11 +60,6 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-color: #3A5199;
 }
 
-.titlePageTxt {
-  width: 98% !important;
-  overflow: hidden;
-}
-
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
   color: #3A5199;
 }

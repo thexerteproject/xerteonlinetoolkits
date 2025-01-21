@@ -69,15 +69,6 @@ table, table td, table th, table tr {
   border-color: $contrastcolor !important;
   background: $panelcolor !important;
 }
-
-//***********************************Text*************************************
-//*****title page******
-.x_title_page .titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:96% !important;
-  overflow: hidden;
-}
-
 //***********************************Media*************************************
 .ui-widget-content {
   //color: $whiteorlightest;
