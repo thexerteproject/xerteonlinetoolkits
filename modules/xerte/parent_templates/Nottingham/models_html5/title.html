@@ -81,6 +81,10 @@
                 $titlePageTxt.html(x_currentPageXML.childNodes[0].nodeValue);
             }
 
+            if (x_currentPageXML.getAttribute("additionalTxt") != undefined && x_currentPageXML.getAttribute("additionalTxt") !== "") {
+                $('<div id="extraText">' + x_currentPageXML.getAttribute("additionalTxt") + '</div>').appendTo($pageContents);
+            }
+
             // add a start button that moves to next page
             // except if next buttons are disabled or hidden or if this is a standalone page
             if (x_currentPageXML.getAttribute("startBtn") === "true" && $.inArray(x_currentPage, x_normalPages) !== -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
@@ -90,10 +94,6 @@
                     .click(function () {
                         x_changePage(x_normalPages[$.inArray(x_currentPage, x_normalPages) + 1]);
                     });
-            }
-
-            if (x_currentPageXML.getAttribute("additionalTxt") != undefined && x_currentPageXML.getAttribute("additionalTxt") !== "") {
-                $('<div id="extraText">' + x_currentPageXML.getAttribute("additionalTxt") + '</div>').appendTo($pageContents);
             }
 
             let triggerLoad = true;
