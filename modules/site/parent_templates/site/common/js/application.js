@@ -2144,10 +2144,10 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'text') {
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
 				section.append($(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>');
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 			section.append(hideContentMessage);
 			}
 		}
@@ -2158,7 +2158,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'markup'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
 				if ($(this).attr('url') != undefined) {
 
@@ -2168,16 +2168,16 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 					section.append($(this).text());
 				}
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 				section.append(hideContentMessage);
 			}
 
 		}
 
 		if (this.nodeName == 'link'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 
 				const $this = $(this);
 				const url = $this.attr('url');
@@ -2198,9 +2198,9 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'canvas'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 				var style;
 
 				if ($(this).attr('style') != undefined) {
@@ -2231,9 +2231,9 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'image'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 
 				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
 					section.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
@@ -2245,9 +2245,9 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'audio'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
 				section.append($audio);
 				$audio.wrap('<p></p>');
@@ -2261,9 +2261,9 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'video'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 				section.append(hideContentMessage);
 				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
 				section.append('<p>' + videoInfo[0] + '</p>');
@@ -2275,9 +2275,9 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'pdf') {
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 				section.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
 				section.append(hideContentMessage);
@@ -2285,18 +2285,18 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'xot'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 				section.append(loadXotContent($(this)));
 				section.append(hideContentMessage);
 			}
 		}
 
 		if (this.nodeName == 'navigator'){
-			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			var hideContent = checkHiddenContent($(this), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-				var hideContentMessage = `<span class="alertMsg">${(hideContent?.[1] ?? '').replace('page', '').trim()}</span>`;
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 
 				if ($(this).attr('type') == 'Tabs') {
 					makeNav($(this), section, 'tabs', sectionIndex, itemIndex);
@@ -3374,6 +3374,12 @@ function loadXotContent($this) {
 
 }
 
+function checkHiddenContent(element, type)
+{
+	return checkIfHidden(element.attr('hideContent'), element.attr('hideOnDate'), element.attr('hideOnTime'), element.attr('hideUntilDate'), element.attr('hideUntilTime'), type);
+}
+
+
 var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hideUntilTime, type) {
 	hidePage = hidePage == "true" ? true : false;
 
@@ -3516,8 +3522,8 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 		infoString = infoString
 			.replace('{from}', langData != undefined && langData.getAttribute('from') != "" && langData.getAttribute('from') != null ? langData.getAttribute('from') : 'Hide from')
 			.replace('{until}', langData != undefined && langData.getAttribute('until') != "" && langData.getAttribute('until') != null ? langData.getAttribute('until') : 'Hide until')
-			.replace('{hidden}', langData != undefined && langData.getAttribute('hidden') != "" && langData.getAttribute('hidden') != null ? langData.getAttribute('hidden') : 'This page is currently hidden in live projects')
-			.replace('{shown}', langData != undefined && langData.getAttribute('shown') != "" && langData.getAttribute('shown') != null ? langData.getAttribute('shown') : 'This page is currently shown in live projects');
+			.replace('{hidden}', langData != undefined && langData.getAttribute('hidden') != "" && langData.getAttribute('hidden') != null ? langData.getAttribute('hidden') : 'This is currently hidden in live projects')
+			.replace('{shown}', langData != undefined && langData.getAttribute('shown') != "" && langData.getAttribute('shown') != null ? langData.getAttribute('shown') : 'This is currently shown in live projects');
 
 		return [hidePage, infoString];
 
