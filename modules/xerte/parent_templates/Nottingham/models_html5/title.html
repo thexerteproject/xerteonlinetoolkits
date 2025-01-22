@@ -162,11 +162,11 @@
             const $txtHolder = $("#txtHolder");
 
             if (x_browserInfo.mobile == true) {
-                $pageContents.css({
-                    "position": "inherit",
-                    "margin-left": 0
-                });
+                // mobile view so title is always positioned at top
+                $pageContents.css("position", "inherit");
+
             } else {
+                // there's an image - reset some css so positions can be calculated correctly
                 if ($imgHolder.length > 0) {
                     $imgHolder.css({
                         "margin-top": 0
@@ -178,28 +178,45 @@
                     $imgHolder.find("#pageImg").css("max-height", $x_pageHolder.height());
                 }
 
-                if (titleAlign == 200 || titleAlign == undefined) { // middle
-                    if ($txtHolder.height() > $imgHolder.height()) {
-                        $imgHolder.css("margin-top", ($pageContents.height() - $imgHolder.height()) / 2);
-                    } else {
-                        $txtHolder.css("margin-top", ($pageContents.height() - $txtHolder.height()) / 2);
-                    }
+                $pageContents.css("margin-top", 0);
 
-                    $pageContents.css({
-                        "top": "50%",
-                        "margin-top": 0 - Math.round($pageContents.height() / 2)
-                    })
-                } else if (titleAlign == 400) { // bottom
-                    if ($txtHolder.height() > $imgHolder.height()) {
-                        $imgHolder.css("margin-top", $pageContents.height() - $imgHolder.height());
-                    } else {
-                        $txtHolder.css("margin-top", $pageContents.height() - $txtHolder.height());
-                    }
+                if ($pageContents.outerHeight() > $x_pageHolder.height()) {
+                    // the titles are more than 100% of available space - position at top
+                    $pageContents.css("position", "inherit");
 
-                    $pageContents.css({
-                        "top": "100%",
-                        "margin-top": 0 - $pageContents.height()
-                    })
+                } else {
+                    // set margin top depending on alignment
+                    $pageContents.css("position", "absolute");
+                    if (titleAlign == 200 || titleAlign == undefined) { // middle
+                        $pageContents.css({
+                            "top": "50%",
+                            "margin-top": 0 - Math.round($pageContents.height() / 2)
+                        })
+
+                        // there's an image - do some more positioning to check image & text are in correct positions next to each other
+                        if ($imgHolder.length > 0) {
+                            if ($txtHolder.outerHeight() > $imgHolder.outerHeight()) {
+                                $imgHolder.css("margin-top", ($pageContents.height() - $imgHolder.outerHeight()) / 2);
+                            } else {
+                                $txtHolder.css("margin-top", ($pageContents.height() - $txtHolder.outerHeight()) / 2);
+                            }
+                        }
+
+                    } else if (titleAlign == 400) { // bottom
+                        $pageContents.css({
+                            "top": "100%",
+                            "margin-top": 0 - $pageContents.outerHeight()
+                        })
+
+                        // there's an image - do some more positioning to check image & text are in correct positions next to each other
+                        if ($imgHolder.length > 0) {
+                            if ($txtHolder.outerHeight() > $imgHolder.outerHeight()) {
+                                $imgHolder.css("margin-top", $pageContents.height() - $imgHolder.outerHeight());
+                            } else {
+                                $txtHolder.css("margin-top", $pageContents.height() - $txtHolder.outerHeight());
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -208,7 +225,6 @@
 	title.init();
 	
 </script>
-
 
 <div id="pageContents">
     <div class="titlePageTxt"></div>
