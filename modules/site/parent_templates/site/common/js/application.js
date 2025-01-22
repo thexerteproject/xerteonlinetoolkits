@@ -3038,64 +3038,94 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				inner.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					inner.append($(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>');
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					inner.append(hideContentMessage);
+				}
 			}
 
 			if (this.nodeName == 'image'){
-				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
-					inner.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
-				} else {
-					inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+						inner.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+					} else {
+						inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+					}
+					inner.append(hideContentMessage);
 				}
 			}
 
 			if (this.nodeName == 'audio'){
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+					inner.append($audio);
+					$audio.wrap('<p></p>');
 
-				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
-				inner.append($audio);
-				$audio.wrap('<p></p>');
-
-				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
-				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
-					$audio.data("transcript", $(this).attr('transcript'));
+					// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+					if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+						$audio.data("transcript", $(this).attr('transcript'));
+					}
+					inner.append(hideContentMessage);
 				}
 			}
 
 			if (this.nodeName == 'video'){
-				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
-				inner.append('<p>' + videoInfo[0] + '</p>');
-
-				if (videoInfo[1] != undefined) {
-					inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					inner.append(hideContentMessage);
+					var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+					inner.append('<p>' + videoInfo[0] + '</p>');
+					if (videoInfo[1] != undefined) {
+						inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+					}
 				}
 			}
 
-			if (this.nodeName == 'link'){
+			if (this.nodeName == 'link') {
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					var url = $(this).attr('url');
+					var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime();
+					var options = '';
+					options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+					options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+					options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+					options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+					options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+					options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+					options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+					options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
 
-				var url = $(this).attr('url');
-				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-				var options = '';
-				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
-
-				inner.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
-
+					inner.append('<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>');
+					inner.append(hideContentMessage);
+				}
 			}
 
 			if (this.nodeName == 'pdf'){
-				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
-				inner.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
-
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+					inner.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+					inner.append(hideContentMessage);
+				}
 			}
 
-			if (this.nodeName == 'xot'){
-				inner.append(loadXotContent($(this)));
+			if (this.nodeName == 'xot') {
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					inner.append(loadXotContent($(this)));
+				}
+				inner.append(hideContentMessage);
 			}
 		});
 
