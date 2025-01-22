@@ -255,6 +255,13 @@ var EDITOR = (function ($, parent) {
                 else {
                     return '<i class="passwordIcon iconDisabled fa fa-lock " id="' + key + '_password" title ="' + language.passwordPage.$tooltip + '"></i>';
                 }
+            case "milestone":
+                if (enabled) {
+                    return '<i class="milestoneIcon iconEnabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="milestoneIcon iconDisabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
         }
     },
 
@@ -266,6 +273,7 @@ var EDITOR = (function ($, parent) {
 		var passwordState = ($("#"+key+"_password.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
+        var milestoneState = ($("#"+key+"_milestone.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
 		var level;
@@ -291,6 +299,10 @@ var EDITOR = (function ($, parent) {
                 if (unmarkState != enabled)
                     change = true;
                 break;
+            case "milestone":
+                if (milestoneState != enabled)
+                    change = true;
+                break;
             case "text":
                 change = true;
                 break;
@@ -309,6 +321,7 @@ var EDITOR = (function ($, parent) {
 			var passwordIcon = getExtraTreeIcon(key, "password", (item == "password" ? enabled : passwordState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
+            var milestoneIcon = getExtraTreeIcon(key, "milestone", (item == "milestone" ? enabled : milestoneState));
             var nodetext;
             if (item == "text")
             {
@@ -317,7 +330,7 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
@@ -404,11 +417,12 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
-        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
+        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
-		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && !disable_advanced && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") != undefined && xmlData[0].getAttribute("milestone") != '');
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -826,7 +840,7 @@ var EDITOR = (function ($, parent) {
 		}
 
 		if (options.group == undefined) { // nested groups aren't collapsible
-			$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+			$('<i class="minMaxIcon fa fa-caret-down"></i>').appendTo(legend.find('.legend_label'));
 			
 			legend.find('.legend_label').click(function() {
 				var $icon = $(this).find('i.minMaxIcon');
@@ -875,6 +889,12 @@ var EDITOR = (function ($, parent) {
 		
 		if (options.group == undefined) {
 			$(id).append(tr);
+
+            // collapse optional property groups initially on wizard load (they will be expanded when just added)
+            if (group.hasClass('wizardoptional')) {
+                group.addClass('collapsed');
+                group.find('.table_holder').slideUp(0);
+            }
 		} else {
 			$('#groupTable_' + options.group).append(tr);
 		}
@@ -951,9 +971,12 @@ var EDITOR = (function ($, parent) {
 			if (toDelete[i] == "password") {
 			    changeNodeStatus(key, "password", false);
 			}
-			if (toDelete[i] == "linkPage") {
+			if (toDelete[i] == "linkPage" || toDelete[i] == "linkPageChapter") {
 			    changeNodeStatus(key, "standalone", false);
 			}
+            if (toDelete[i] == "milestone") {
+                changeNodeStatus(key, "milestone", false);
+            }
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
                 //var unmarkIcon = $("#" + key + "_unmark");
@@ -2072,8 +2095,12 @@ var EDITOR = (function ($, parent) {
             changeNodeStatus(key, "password", value != "");
         }
 
-        if (name == "linkPage") {
+        if (name == "linkPage" || name == "linkPageChapter") {
             changeNodeStatus(key, "standalone", value == "true");
+        }
+
+        if (name == "milestone") {
+            changeNodeStatus(key, "milestone", value != "");
         }
 
         if (name == "unmarkForCompletion") {
@@ -2415,13 +2442,11 @@ var EDITOR = (function ($, parent) {
      */
 	getPageList = function(thisKey, thisTarget)
 	{
-
 		var tree = $.jstree.reference("#treeview");
 		var pages=[];
 
 		// list of everything at same level or everything at parent's level
 		if (thisTarget != undefined) {
-			
 			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
 			// * makes it include all the children too
 			var children = false;
@@ -2477,37 +2502,38 @@ var EDITOR = (function ($, parent) {
 			var lo_node = tree.get_node("treeroot", false);
 			
 			$.each(lo_node.children, function(i, key){
-					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-					var hidden = lo_data[key]['attributes'].hidePage;
-					
-					if (linkID.found && linkID.value != "")
-					{
-						
-						var page = [];
-						// Also make sure we only take the text from the name, and not the full HTML
-						page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-						page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-						pages.push(page);
+                function checkNode(key, checkChildren, child) {
+                    const name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                    const linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                    const hidden = lo_data[key]['attributes'].hidePage;
 
-						// Now we do the children (if deeplinking is allowed)
-						if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-							var childNode = tree.get_node(key, false);
-							$.each(childNode.children, function(i, key){
-								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-								{
-									var page = [];
-									// Also make sure we only take the text from the name, and not the full HTML
-									page.push(getTextFromHTML("&nbsp;- "+name.value));
-									page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-									pages.push(page);
-								}
-							});
-						}
-					}
+                    if (linkID.found && linkID.value != "") {
+                        // Also make sure we only take the text from the name, and not the full HTML
+                        const page = [];
+                        const prependTxt = child ? "&nbsp;- " : "";
+                        page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(prependTxt + name.value));
+                        page.push(linkID.value);
+                        pages.push(page);
+
+                        // Now we do the children (if deeplinking is allowed)
+                        if (checkChildren && wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+                            const childNode = tree.get_node(key, false);
+                            $.each(childNode.children, function(k, key){
+                                checkNode(key, false, true);
+                            });
+                        }
+                    }
+                }
+
+                // get pages inside a chapter (don't list chapters)
+                if (lo_data[key].attributes.nodeName == "chapter") {
+                    const childNode = tree.get_node(key, false);
+                    $.each(childNode.children, function(j, key) {
+                        checkNode(key, true);
+                    });
+                } else {
+                    checkNode(key, true);
+                }
 			});
 		}
 		

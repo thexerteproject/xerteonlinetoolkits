@@ -103,9 +103,13 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 #menuItems .menuItem {
   background: $lightgrey;
   border: 2px solid $lightgrey;
-  color:$blackordarkest;
 }
-#menuItems .menuItem:hover, #menuItems .menuItem:focus, #menuItems .menuItem:active {
+#menuItems .menuItem, #menuItems .chapterItem {
+  color:$blackordarkest;
+  border-radius: 0;
+}
+#menuItems .menuItem:hover, #menuItems .menuItem:focus, #menuItems .menuItem:active,
+#menuItems .chapterItem:hover, #menuItems .chapterItem:focus, #menuItems .chapterItem:active {
   background: $midgrey;
   color:$blackordarkest;
   border-color: $midgrey;
@@ -113,6 +117,23 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 #menuItems .menuItem.current {
   border: 2px solid $blackordarkest;
 }
+#menuItems .chapterHolder .chapterPageHolder {
+  border-radius: 0;
+  padding: 0;
+}
+#menuItems .chapterHolder .chapterItem a {
+  background: $midgrey;
+  border-color: $midgrey;
+  color: $blackordarkest;
+}
+#menuItems .chapterHolder .chapterItem.ui-state-active {
+  background: $midgrey;
+  border-color: $midgrey;
+}
+#menuItems .chapterHolder .chapterPageHolder.ui-accordion-content-active {
+  padding-top: 5px;
+}
+
 table.glossary tr td:first-child {
   border-right-color: $lightgrey;
 }
@@ -122,7 +143,7 @@ table.glossary tr.shaded {
 
 //*****SIDE BAR****/
 #x_sideBar {
-  background-color: $lightgrey;
+  background-color: $whiteorlightest;
   color: $blackordarkest;
 }
 #x_sideBarToggleBtn {
@@ -154,6 +175,16 @@ table.glossary tr.shaded {
   background: $midgrey;
   padding: .5em;
 }
+
+/* progress bar */
+.pbContainer {
+  background-color: $lightgrey;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+
+
 //******** Smartphones 600px (portrait) change progress bar display-----------/
 @media only screen
 and (max-width:600px) {
@@ -175,7 +206,6 @@ and (max-width:600px) {
   }
   #x_footerBlock button{
     font-size: 1.4rem;
-    width: 1em;
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
@@ -189,7 +219,6 @@ and (max-width:600px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -227,7 +256,6 @@ and (max-width:320px) {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

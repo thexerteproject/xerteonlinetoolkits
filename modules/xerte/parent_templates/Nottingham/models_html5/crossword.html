@@ -859,8 +859,8 @@
 					for (var j=0; j<temp.length; j++) {
 						if (j!=0) { letterCount += ','; };
 						letterCount += temp[j].length;
-					}
-                    html.push("<li class='li-clue' name='"+k+"' id='clue"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] + "&nbsp;(" + letterCount + ")</p></li>");
+                    }
+                    html.push("<li class='li-clue' name='"+k+"' id='clue"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] + "<span class='letterCount'>&nbsp;(" + letterCount + ")</span></p></li>");
                 }
                 document.getElementById(k).innerHTML = html.join("\n");
             }
@@ -1326,7 +1326,9 @@
                 var incorrectClues = [];
                 incorrectIndices.forEach(function(index){ incorrectClues.push(x_getAriaText(clues_in[index]).trim());});
                 $(".li-clue > p").each(function(index, element){
-                    var clue = x_getAriaText($(element).text()).trim();
+                    const $tempClone = $(element).clone();
+                    $tempClone.find('.letterCount').remove();
+                    var clue = x_getAriaText($tempClone.text()).trim();
                     if (incorrectClues.indexOf(clue) !== -1) {
                         $(element).addClass("incorrect");
                     }

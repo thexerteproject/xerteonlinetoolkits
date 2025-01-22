@@ -79,17 +79,25 @@
   color: $whiteorlightest;
   font-weight: bold;
 }
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: $whiteorlightest;
   color:$blackordarkest;
 }
-#menuItems .menuItem:hover {
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
   background: darken($lightestcolor,30);
   color:$whiteorlightest;
 }
 
-#menuItems .menuItem.current {
-  border: 2px solid darken($lightestcolor,40);
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+  border: 1px solid darken($lightestcolor,40);
+}
+
+.chapterPageHolder.ui-accordion-content {
+  background: $whiteorlightest;
+}
+
+#menuItems .chapterPageHolder .menuItem {
+  border: 1px solid transparent;
 }
 
 //*****SIDE BAR****/
@@ -130,6 +138,11 @@
 	color: $whiteorlightest;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #BFBFBF;
+}
+
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen
 and (max-width :500px) {
@@ -150,8 +163,8 @@ and (max-width :500px) {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+   /* font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -160,7 +173,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

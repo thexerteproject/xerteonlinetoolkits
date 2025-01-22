@@ -47,9 +47,14 @@
   background-color: #C4551F;
 }
 
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #BFBFBF;
+  background-color: white;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #2196F3;
 }
 
 .highlight {
@@ -85,7 +90,8 @@
   color: #ffffff;
 }
 
-.ui-accordion .ui-accordion-header a {
+.ui-accordion .ui-accordion-header a,
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
   border-radius: 3px;
   color: #ffffff !important;
   background: #84849a;
@@ -96,6 +102,10 @@
   background: #3c3c49 !important;
   border-radius: 3px;
   color: #000000;
+}
+
+.ui-accordion.chapterHolder .ui-state-active a, .ui-accordion.chapterHolder .ui-state-active a:link, .ui-accordion.chapterHolder .ui-state-active a:visited {
+  background: #84849a !important;
 }
 
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {
@@ -720,18 +730,26 @@ table.headerCol.shaded td.header {
   font-weight: bold;
 }
 
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: #ffffff;
   color: #000000;
 }
 
-#menuItems .menuItem:hover {
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
   background: #a0a0b1;
   color: #ffffff;
 }
 
-#menuItems .menuItem.current {
-  border: 2px solid #84849a;
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+  border: 1px solid #84849a;
+}
+
+.chapterPageHolder.ui-accordion-content {
+  background: #ffffff;
+}
+
+#menuItems .chapterPageHolder .menuItem {
+  border: 1px solid transparent;
 }
 
 #x_sideBar {
@@ -770,6 +788,11 @@ table.headerCol.shaded td.header {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #BFBFBF;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -786,8 +809,8 @@ table.headerCol.shaded td.header {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /* font-size: 1em;
+     width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -796,7 +819,6 @@ table.headerCol.shaded td.header {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

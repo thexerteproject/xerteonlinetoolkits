@@ -1,32 +1,44 @@
 /******Header******/
 #x_headerBlock {
-  color:			$lightestcolor;
+  color: $headerfontcolor;
   background-repeat:no-repeat;
   background-position:right;
   background-image:	none;
   width: 100%;
   border-top-right-radius: $largeroundedcorners;
-  ///*border-bottom-right-radius: $largeroundedcorners;*/
-  //*margin-top: 5px;*/
-  background: $blackordarkest !important;
+  background: $headerbackgroundcolor;
   box-shadow: $interfaceboxshadow;
 }
 
-
 #x_headerBlock #x_pageIntroBtn {
-	color: $lightestcolor;
+	color: $headerfontcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg {
-	color: $blackordarkest;
-	background-color: $lightestcolor;
+	color: $headerbackgroundcolor;
+	background-color: $headerfontcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
-	color: yellow;
+	color: $headerhoverfontcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
-	color: $blackordarkest;
-	background-color: yellow;
+	color: $headerbackgroundcolor;
+	background-color: $headerhoverfontcolor;
+}
+
+#x_headerProgress .pbContainer {
+  background-color: $progressBarColor;
+  border: none;
+}
+#x_headerProgress .pbBar {
+  background-color: $progressBarColorHeader;
+  border: none;
+}
+#x_headerProgress .progressMarker {
+  border-color: $progressBarColor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $progressBarColorHeader;
 }

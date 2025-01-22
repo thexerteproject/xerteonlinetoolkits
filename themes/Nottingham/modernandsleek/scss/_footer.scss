@@ -18,8 +18,13 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 #x_pageNo {
   background:	none;
 }
+
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
 .pbBar {
-  background-color: $progressBarColor;
+  background-color: $fontcolorforlightestcolor;
 }
 /* these buttons will use font awesome icons instead of pngs */
 .ui-button .ui-icon.x_help { background-image: none; }
@@ -84,20 +89,32 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 #menuItems .menuItem {
   background: $lightestcolor;
 }
-
+#menuItems .menuItem:hover {
+  background: $darkestcolor;
+  color:$whiteorlightest;
+}
 #menuItems .menuItem .ui-button-text{
   color:$fontcolorforlightestcolor;
-}
-
-#menuItems .menuItem:hover {
-  background: $contrastcolor;
 }
 #menuItems .menuItem:hover .ui-button-text{
   color:$whiteorlightest;
 }
-
 #menuItems .menuItem.current {
   border: 2px solid $darkestcolor;
+}
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
+  color: $whiteorlightest !important;
+  border-color: $blackordarkest;
+  background-color: $darkestcolor;
+}
+.chapterItem.ui-state-active a {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.ui-accordion .chapterPageHolder.ui-accordion-content {
+  border: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 //*****SIDE BAR****/
@@ -161,8 +178,8 @@ and (max-width :500px) {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -171,7 +188,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -296,7 +296,6 @@
                 });
             }
         }
-
         if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
             // Show mean_all and latest
             var myRadarChart = new Chart(ctx, {
@@ -351,7 +350,15 @@
 
             let labelCounter = 0;
             let data = [];
-            if (datasets.length < 2) {
+            if (showall_only)
+            {
+                var notWorkingInDashboardMode = interaction.getAttribute("notWorkingInDashboardMode");
+                if (notWorkingInDashboardMode == undefined) {
+                    notWorkingInDashboardMode = "This graph does not work in dashboard mode";
+                }
+                $(ctx).parent().append('<p><em>' + notWorkingInDashboardMode + '</em></p>');
+            }
+            else if (datasets.length < 2) {
                 var insufficientDataText = interaction.getAttribute("insufficientDataText");
                 if (insufficientDataText == undefined) {
                     insufficientDataText = "There is insufficient data for this graph";
@@ -658,8 +665,8 @@
         if (interaction.getAttribute("interactionType") == "answer") {
             for (var ci = 0; ci < interaction.children.length; ci++) {
                 c = interaction.children[ci];
-                if (!c.hasAttribute("conScoreAnswer")) {
-                    errors.push("No answer given.");
+                if (!c.hasAttribute("conScoreAnswer") && c.getAttribute("adaptiveContent") !== "" ) {
+                    errors.push("Interaction block is missing result label.");
                 }
             }
         }
@@ -1171,7 +1178,7 @@
         } else if (numLoaded == 3) {
           fileToLoad = x_templateLocation + "common_html5/js/apexcharts.min.js";
         } else if (numLoaded == 4) {
-          fileToLoad = x_templateLocation + "common_html5/js/jsPDF/jspdf.min.js";
+          fileToLoad = x_templateLocation + "common_html5/js/jsPDF/jspdf.umd.min.js";
         } else if (numLoaded == 5) {
             fileToLoad = x_templateLocation + "common_html5/js/chartjs-adapter-moment.js";
         }
@@ -3328,12 +3335,12 @@
       $("#interaction_load_" + interactionIndex).remove();
       var answerLabelText = interaction.getAttribute("answerText");
       if (answerLabelText == undefined) {
-        answerLabelText = "Your answer is {0}";
+        answerLabelText = "Your answer is: {0}";
       }
 
       var nrParticipantsText = interaction.getAttribute("NrParticipantsText");
       if (nrParticipantsText == undefined) {
-        nrParticipantsText = "The number of participants is {0}";
+        nrParticipantsText = "The number of participants is: {0}";
       }
       var nrbars = interaction.getAttribute("graphNrDataPoints");
       if (nrbars == undefined) {
@@ -3445,21 +3452,20 @@
           if (multipleAnswers)
           {
             // Create pseudo dataset with statement for each answer
-            var dataset = [];
+            var answer_dataset = [];
             data.forEach(function(s){
               const answers = s.result.response.split('[,]');
               answers.forEach(function(a){
                 // clone statement
                 var statement = JSON.parse(JSON.stringify(s));
                   statement.result.response = a;
-                dataset.push(statement);
+                  answer_dataset.push(statement);
               });
             });
-            statements = dataset;
           }
           else
           {
-            statements = data;
+              answer_dataset = data;
           }
 
           //var dash = new ADL.XAPIDashboard();
@@ -3497,48 +3503,52 @@
             let labels = {};
             let barBorderColor = barColors.slice();
             if (!multipleAnswers) {
-                for (let i = 0; i < statements.length; i++) {
-                    if (!labels.hasOwnProperty(statements[i].result.response)) {
-                        labels[statements[i].result.response] = 1;
+                //todo fix
+                for (let i = 0; i < answer_dataset.length; i++) {
+                    if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
+                        labels[answer_dataset[i].result.response] = 1;
                     } else {
-                        labels[statements[i].result.response] += 1;
+                        labels[answer_dataset[i].result.response] += 1;
                     }
-                    if (statements[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
+                    if (answer_dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
                     }
                 }
             } else {
-                for (let i = 0; i < statements.length; i++) {
-                    if (!labels.hasOwnProperty(statements[i].result.response)) {
-                        labels[statements[i].result.response] = 1;
+                for (let i = 0; i < answer_dataset.length; i++) {
+                    if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
+                        labels[answer_dataset[i].result.response] = 1;
                     } else {
-                        labels[statements[i].result.response] += 1;
+                        labels[answer_dataset[i].result.response] += 1;
                     }
-                    if (statements[i].result.response == givenAnswer) {
-                        barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
+                    if (answer_dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
                     }
                 }
             }
             var barData = [];
+            let totalActualResponseCounter = 0;
             //match used labels and # to xDomain
             if (xDomain.length == 0) {
                 xDomain = Object.keys(labels);
                 barData = Object.values(labels);
+                totalActualResponseCounter = barData.length;
             } else {
                 barData = new Array(xDomain.length).fill(0);
                 for (let i = 0; i < xDomain.length; i++) {
                     if (labels[xDomain[i]] !== undefined){
                         barData[i] = labels[xDomain[i]];
+                        totalActualResponseCounter += labels[xDomain[i]];
                     }
                 }
             }
             if (!multipleAnswers) {
                 for (let i = 0; i < barData.length; i++) {
-                    barData[i] = barData[i] / statements.length * 100;
+                    barData[i] = barData[i] / totalActualResponseCounter * 100;
                 }
             } else {
                 for (let i = 0; i < barData.length; i++) {
-                    barData[i] = barData[i] / statements.length * 100;
+                    barData[i] = barData[i] / totalActualResponseCounter * 100;
                 }
             }
 

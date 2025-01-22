@@ -16,7 +16,6 @@
 		display:		inline-block;
 		text-align:		center;
 		vertical-align:	middle;
-		/*padding:		5px;*/
 		margin:			3px 0 5px 0;
 		cursor: pointer;
 	}
@@ -77,6 +76,15 @@
 		cursor: default;
 		padding-left: 5px;
 		padding-right: 5px;
+	}
+
+	#targetHolder.bg.gapStyle_false .target.answerShown {
+		background: none;
+	}
+
+	#targetHolder.outline.gapStyle_false .target.answerShown,
+	#targetHolder.underline.gapStyle_false .target.answerShown {
+		border-color: transparent;
 	}
 	
 	#targetHolder select {
@@ -151,15 +159,18 @@
 
 
 /* change styling of correct and disable answers */
-#targetHolder input[readonly].correct, #targetHolder:not(.underline):not(.outline) .target.correct, #targetHolder input[correct], #targetHolder select[disabled].correct {
+#targetHolder input[readonly].correct,
+#targetHolder:not(.underline):not(.outline) .target.correct,
+#targetHolder input[correct],
+#targetHolder select[disabled].correct {
 	color:unset;
 	color: green;
 	opacity:1.0;
 	font-weight:400;
-	border-color: unset;
+	/*border-color: unset;
 	border-width:2px;
 	border-style:outset;
-	background:#ffffff;
+	background:#ffffff;*/
 	cursor: default;
 	/*padding:initial !important;*/
 	caret-color: transparent;

@@ -50,6 +50,7 @@
 	<calendar tooltip="Select Date"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
 	<standalonePage tooltip="This is a stand-alone page"/>
+	<milestonePage tooltip="This is a milestone page"/>
 	<passwordPage tooltip="An access code must be entered to view this page/section"/>
 	<unmarkForCompletion tooltip="This page is not required for completion"/>
 	<advancedPage title="Advanced" tooltip="This page is not part of this (sub-)template and can only be added in advanced mode."/>
@@ -138,6 +139,7 @@
 		<deletenode>
 			<confirm>
 				<prompt>Do you want to delete the item?</prompt>
+				<chapterPrompt>Do you want to delete the chapter? All pages within the chapter will also be deleted.</chapterPrompt>
 				<title>Confirmation</title>
 			</confirm>
 			<error>

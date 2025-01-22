@@ -1,13 +1,9 @@
 #x_footerBlock {
   font-size:		1em;
-  color:			$lightestcolor;
+  color:			$footerfontcolor;
   background-image:	none;
   width: 100%;
-  //border-top-left-radius: $largeroundedcorners;
-  //border-bottom-left-radius: $largeroundedcorners;
-  //*margin-left: 2%;*/
-  //margin-bottom:1%;
-  background: $blackordarkest;
+  background: $footerbackgroundcolor;
   box-shadow: $interfaceboxshadow;
 }
 #x_footerBg {
@@ -18,8 +14,16 @@
 }
 .pbBar {
   background-color: $progressBarColor;
+  border: 1px solid $progressBarColor;
 }
-/* these buttons will use font awesome icons instead of pngs */
+.pbContainer {
+  background-color: $footerbackgroundcolor;
+  border: 1px solid $progressBarColor;
+}
+.pbTxt {
+  color: $footerfontcolor;
+}
+  /* these buttons will use font awesome icons instead of pngs */
 .ui-button .ui-icon.x_help { background-image: none; }
 .ui-button .ui-icon.x_info { background-image: none; }
 .ui-button .ui-icon.x_home { background-image: none; }
@@ -45,10 +49,10 @@
 #x_menuBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
 #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {content: "\f0c7"; }
 
-#x_footerBlock button { color: $lightestcolor; }
-#x_footerBlock button.ui-state-hover { color: darken($lightestcolor, 30%); }
-#x_footerBlock button.ui-state-focus { color: darken($lightestcolor, 30%); }
-#x_footerBlock button.ui-state-active { color: darken($lightestcolor, 30%); }
+#x_footerBlock button, button#x_footerChevron { color: $footerfontcolor; }
+#x_footerBlock button.ui-state-hover, button#x_footerChevron:hover { color: $footerhoverfontcolor }
+#x_footerBlock button.ui-state-focus, button#x_footerChevron:focus { color: $footerhoverfontcolor }
+#x_footerBlock button.ui-state-active, button#x_footerChevron:active { color: $footerhoverfontcolor }
 
 #x_footerBlock button {
   font-family: "Font Awesome 5 Free", sans-serif;
@@ -64,74 +68,91 @@
 #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
   padding: 0;
 }
-/*****footer tools chevron*****/
-#x_footerChevron {
-  color: $lightestcolor;
-}
-#x_footerChevron:hover, #x_footerChevron:focus {
-  color: darken($lightestcolor, 30%);
-}
 
 /*****TOC****/
+.ui-dialog.ui-widget-content {
+  border-color: $bordercolor;
+  background: $panelcolor;
+  color: $mainfontcolour;
+}
 .ui-dialog .ui-widget-header {
-  border: 1px solid $whiteorlightest;
-  background: $blackordarkest;
-  color: $lightestcolor;
+  border-color: $bordercolor;
+  background: $headerbackgroundcolor;
+  color: $headerfontcolor;
   font-weight: bold;
 }
-#menuItems .menuItem {
-  background: $lightestcolor;
-  color:$blackordarkest;
-}
-#menuItems .menuItem:hover {
-  background: darken($lightestcolor,30);
-  color:$blackordarkest;
-}
-#menuItems .menuItem:focus {
-  background: darken($lightestcolor,10);
-  color:$blackordarkest;
+.ui-dialog .ui-widget-header .ui-dialog-titlebar-close:hover, .ui-dialog .ui-widget-header .ui-dialog-titlebar-close:active, .ui-dialog .ui-widget-header .ui-dialog-titlebar-close:focus {
+  border-color: $btnhovertxtcolor;
 }
 
+#x_introStartBtn {
+  margin-bottom: 1em;
+}
+.x_pswdBlock .x_pswdError p {
+  color: $red;
+}
+
+//*****TABLE OF CONTENTS****/
+#menuItems .chapterItem {
+  background: $panelcolor;
+  color:$mainfontcolour;
+  border: 1px solid $bordercolor;
+}
+.chapterHolder, .chapterPageHolder {
+  background: $panelcolor;
+}
+.chapterPageHolder {
+  border: 1px solid $bordercolor;
+  border-top: 0;
+}
 #menuItems .menuItem.current {
-  border: 2px solid darken($lightestcolor,40);
+  border: 1px solid $bordercolor;
+  background: $btnhoverbackgroundcolor;
+  color: $btnhovertxtcolor;
+}
+#menuItems .menuItem:not(.current):hover, #menuItems .chapterItem:hover, #menuItems .menuItem:not(.current):focus, #menuItems .chapterItem:focus {
+  background: $midyellow !important;
+  color: $blackordarkest !important;
 }
 
 //*****SIDE BAR****/
-
 #x_sideBar {
-	background-color: lighten($blackordarkest, 30%);
+	background-color: $panelcolor;
+    border-right: 1px solid $bordercolor;
 }
-
+#x_mainHolder + #x_sideBar {
+  border-right: none;
+  border-left: 1px solid $bordercolor;
+}
 #x_sideBarToggleBtn {
-	border-color: lighten($blackordarkest, 10%);
-	color: $bodybackgroundcolor;
+	border-color: $bordercolor;
+	color: $mainfontcolour;
 }
-
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
-	color: $bodybackgroundcolor;
-	background-color: lighten($blackordarkest, 10%);
+  background: $darkyellow;
+  color: $bordercolor;
+  border-color: $bordercolor;
 }
-
-#x_sideBarBtnHolder button {
-	color: $bodybackgroundcolor;
+#x_sideBar #x_sideBarBtnHolder button {
+	color: $iconBtn;
 }
-
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
-	border-color: lighten($blackordarkest, 10%);
+	border-color: $bordercolor
 }
-
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
-	border-color: lighten($blackordarkest, 10%);
+  color: $panelcolor;
+  background: $iconBtn;
+  border-color: $iconBtn;
 }
-
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
-	background-color: lighten($blackordarkest, 10%);
-	color: $bodybackgroundcolor;
+  background: $midyellow;
+  color: $iconBtn;
+  border-color: $bordercolor;
 }
-
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
-	background-color: lighten($blackordarkest, 10%);
-	color: $bodybackgroundcolor;
+  color: $panelcolor;
+  background: $iconHoverBtn;
+  border-color: $iconHoverBtn;
 }
 
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
@@ -154,7 +175,6 @@ and (max-width :500px) {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
     width: 1em;
     margin-left: 5px;
   }
@@ -164,7 +184,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -150,8 +150,8 @@ if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin"))
             $lti_def->xapi_enabled ? $lti_def->xapi_username : "",
             $lti_def->xapi_enabled ? $lti_def->xapi_password : "",
             $lti_def->xapi_enabled ? $lti_def->xapi_student_id_mode : "0",
-            $lti_def->published ? $lti_def->tsugi_publish_in_store: "1",
-            $lti_def->published && $lti_def->xapi_enabled ? $lti_def->tsugi_publish_dashboard_in_store : "0",
+            $lti_def->published ? ($lti_def->tsugi_publish_in_store ? "1" : "0") : "1",
+            $lti_def->published && $lti_def->xapi_enabled ? ($lti_def->tsugi_publish_dashboard_in_store ? '1' : '0') : "0",
             $lti_def->xapi_enabled ? $lti_def->dashboard_urls : "",
             $template_id
         )

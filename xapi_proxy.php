@@ -156,15 +156,15 @@
 //     $enable_jsonp or $enable_native are enabled. Defaults to '/.*/' which
 //     validates all URLs.
 //
-
 if (isset($_GET['tsugisession']))
 {
     $tsugi_disable_xerte_session = true;
     require_once("config.php");
+    // _debug("xapi_proxy: setting tsugi session");
     if (x_clean_input($_GET['tsugisession']) == "1") {
         $contents = "";
 
-        _debug("TSUGI session");
+        // _debug("xapi_proxy: TSUGI session");
         if (file_exists($xerte_toolkits_site->tsugi_dir)) {
             require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
         }
@@ -172,6 +172,7 @@ if (isset($_GET['tsugisession']))
     }
     else
     {
+        // _debug("xapi_proxy: setting normal session");
         ini_set('session.use_cookies', 0);
         ini_set('session.use_only_cookies', 0);
         ini_set('session.use_trans_sid', 1);
@@ -181,6 +182,7 @@ if (isset($_GET['tsugisession']))
 else
 {
     require_once ("config.php");
+    // _debug("xapi_proxy: setting xerte session");
 }
 require_once("website_code/php/xAPI/xAPI_library.php");
 
@@ -288,12 +290,17 @@ if (!isset($_SESSION['XAPI_PROXY']))
 
     } else {
         $headers = getallheaders();
-        if (isset($headers['X-XERTE-USEDB']) && $lrs['db']) {
+        // Create a copy of headers with all lowercase keys
+        $lcheaders = array_change_key_case($headers);
+	    // _debug("xapi_proxy: headers" . print_r($headers, true));
+	    // _debug("xapi_proxy: lcheaders" . print_r($headers, true));
+        if (isset($lcheaders['x-xerte-usedb']) && $lrs['db']) {
             $usedb = true;
         }
         else {
             $usedb = false;
         }
+	    // _debug("xapi_proxy: Use lrsdb = " . $usedb . " (defined by x-xerte-usedb=" . isset($lcheaders['x-xerte-usedb']) . " and lrs[db]=" . $lrs['db'] . ")");
 
         $request_uri = x_clean_input($_SERVER["REQUEST_URI"]);
         _debug("xapi_proxy: Request uri:  " . $request_uri);
@@ -361,7 +368,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
         } else {
             $cHeader = convertToCurl($headers);
 
-            _debug("Headers: " . print_r($headers, true));
+            //_debug("Headers: " . print_r($headers, true));
 
             $sendHeaders = array();
 
@@ -406,8 +413,6 @@ if (!isset($_SESSION['XAPI_PROXY']))
             curl_setopt($ch, CURLOPT_USERAGENT, isset($_GET['user_agent']) && $_GET['user_agent'] ? x_clean_input($_GET['user_agent']) : x_clean_input($_SERVER['HTTP_USER_AGENT']));
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            // Create a copy of headers with all lowercase keys
-            $lcheaders = array_change_key_case($headers);
 
             if (isset($lcheaders['x-experience-api-version']))
             {

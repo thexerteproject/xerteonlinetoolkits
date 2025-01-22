@@ -24,6 +24,9 @@ require_once(dirname(__FILE__) . "/plugins.php");
 startup();
 
 require_once(dirname(__FILE__) . "/config.php");
+// Switch off elevated permissions
+unset($_SESSION['elevated']);
+unset($xerte_toolkits_site->rights);
 
 _load_language_file("/index.inc");
 
@@ -40,7 +43,7 @@ include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 require_once(dirname(__FILE__) . "/website_code/php/login_library.php");
 
-if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
+if ($xerte_toolkits_site->altauthentication != "" && (isset($_GET['altauth']) || $xerte_toolkits_site->altauthentication == $_SESSION['altauth']))
 {
     $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
     $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
@@ -68,6 +71,12 @@ if(isset($_SESSION["toManagement"]) || $_SESSION['toolkits_logon_id'] === 'site_
 	unset($_SESSION["toManagement"]);
 	header("location: management.php");
 	exit();
+}
+if(isset($_SESSION["adminTo"]) || $_SESSION['toolkits_logon_id'] === 'site_administrator' || $adminlogin){
+    $url = $_SESSION["adminTo"];
+    unset($_SESSION["adminTo"]);
+    header("location: {$url}");
+    exit();
 }
 
 // Check if any redirection needs to take place for Password protected files...
@@ -171,6 +180,7 @@ $version = getVersion();
     _include_javascript_file("website_code/scripts/template_management.js?version" . $version);
     _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
     _include_javascript_file("website_code/scripts/import.js?version=" . $version);
+    _include_javascript_file("website_code/scripts/functions.js?version=" . $version);
     ?>
     <script type="text/javascript" src="website_code/scripts/tooltip.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/popper.js?version=<?php echo $version;?>"></script>
@@ -182,7 +192,6 @@ $version = getVersion();
     <script type="text/javascript" src="website_code/scripts/jquery-ui-i18n.min.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/result.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/user_settings.js?version=<?php echo $version;?>"></script>
-    <script type="text/javascript" src="website_code/scripts/functions.js?version=<?php echo $version;?>"></script>
 
     <?php
     _include_javascript_file("website_code/scripts/xapi_dashboard_data.js?version=" . $version);
@@ -344,11 +353,9 @@ Folder popup is the div that appears when creating a new folder
                 ';
                 }
                 if (getRolesFromUser($_SESSION['toolkits_logon_id'])) {
-                    echo '<button onclick="javascript:redirect(\'management.php\')" title=" ' . INDEX_TO_MANAGEMENT . ' " class="xerte_workspace_button "><i class="fas fa-tools xerte-icon"></i></button>';
+                    echo '<button onclick="javascript:elevate(\'management.php\')" title=" ' . INDEX_TO_MANAGEMENT . ' " class="xerte_workspace_button "><i class="fas fa-tools xerte-icon"></i></button>';
                 }
-                if (is_user_admin() && file_exists($xerte_toolkits_site->tsugi_dir)) {
-                    echo '<button onclick="javascript:redirect(\'tsugi/admin\')" title=" ' . INDEX_TO_TSUGI_ADMIN . ' " class="xerte_workspace_button"><i class="fa xerte-icon">次</i></button>';
-                }
+
                ?>
 
                <div style="display: inline-block"><?php display_language_selectionform("general", false); ?></div>
