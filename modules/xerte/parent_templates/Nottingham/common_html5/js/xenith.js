@@ -1108,8 +1108,8 @@ function x_setUp() {
 	// prevent flashes of css body tag colours before the main interface has loaded
 	$('head').append('<style id="preventFlash">body, #x_mainHolder { background: white !important; }; </style>');
 	
-	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
-	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
+	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " (" + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") + ")" : "";
+	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " (" + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") + ")" : "";
 
 	if (x_normalPages.length == 0) {
 		$("body").append(x_getLangInfo(x_languageData.find("noPages")[0], "label", "<p>This project does not contain any pages.</p>"));
@@ -1409,7 +1409,7 @@ function x_continueSetUp1() {
 					label: x_params.helpLabel != undefined && x_params.helpLabel != "" ? x_params.helpLabel : x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 					text:	false
 				})
-				.attr("aria-label", $x_helpBtn.attr("title") + x_params.newWindowTxt)
+				.attr("aria-label", $x_helpBtn.attr("title") + (x_params.helpTarget != 'lightbox' ? x_params.newWindowTxt : x_params.dialogTxt))
 				.click(function() {
 					if (x_params.helpTarget != 'lightbox') {
 						window.open(x_evalURL(x_params.nfo), "_blank");
@@ -1446,7 +1446,7 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction"),
+					label: (x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction")) + x_params.dialogTxt,
 					text: false
 				})
 				.click(function() {
@@ -1613,7 +1613,7 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction"),
+					label: (x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction")) + x_params.dialogTxt,
 					text: false
 				})
 				.click(function() {
@@ -1880,7 +1880,7 @@ function x_continueSetUp1() {
 					label:	menuLabel,
 					text:	false
 				})
-				.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
+				.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? x_params.dialogTxt : ""))
 				.click(function() {
 					if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
 						if (x_params.tocTarget == "lightbox") {
@@ -1930,7 +1930,7 @@ function x_continueSetUp1() {
 					label: tooltip,
 					text: false
 				})
-				.attr("aria-label", $x_saveSessionBtn.attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_saveSessionBtn.attr("title") + x_params.dialogTxt)
 				.click(function () {
 					x_openDialog(
 						"saveSession",
@@ -2830,15 +2830,13 @@ function x_passwordPage(pswds) {
 			$("#x_pageDiv").show();
 			$x_pageDiv.css("height", "100%");
 			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
-			let pageHeight = $("#x_pageHolder").innerHeight() - paddingBlock;
 			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 
 			var $pswdBlock = $('#x_page' + x_currentPage);
 			$pswdBlock.css('height', '100%');
-			$pswdBlock.html('<div class="x_pswdBlock" style="height: 100%"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+			$pswdBlock.html('<div class="x_pswdBlock" style="height: 100%"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError" aria-live="assertive"></div></div>');
 			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
-			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
 			let type = x_currentPageXML.getAttribute('passwordType');
 			if(type == "vault"){
 					$pswdBlock.find('.x_pswdInput').html('<div class="vault"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
@@ -2852,7 +2850,7 @@ function x_passwordPage(pswds) {
 					$pswdBlock.find('.x_pswdInput').html('<div class="vault numeric"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
 					$pswdBlock.find('.vault-door')
 							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" style="grid-area: input;" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">')
-							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;"> </button>')
+							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;" disabled> </button>')
 							.append('<button id="x_pagePswdBtn" style="grid-area: button;">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
 
 					$pswdBlock.find('.numberbtn').on('click', function(){
@@ -2887,7 +2885,7 @@ function x_passwordPage(pswds) {
 						x_addCountdownTimer();
 						x_addNarration('x_changePageStep3', '');
 					} else {
-						$pswdBlock.find('.x_pswdError').show();
+						$pswdBlock.find('.x_pswdError').html(x_currentPageXML.getAttribute('passwordError'));
 					}
 				});
 
@@ -2895,7 +2893,7 @@ function x_passwordPage(pswds) {
 				if (e.which == 13) {
 					$pswdBlock.find('#x_pagePswdBtn').click();
 				} else {
-					$pswdBlock.find('.x_pswdError').hide();
+					$pswdBlock.find('.x_pswdError').html('');
 				}
 			});
 
@@ -3167,7 +3165,7 @@ function x_setUpLightBox() {
 
 				if (caption != undefined && caption != '') {
 					this.$instance.find('.featherlight-content img').attr('alt', caption);
-					
+
 					// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
 					// captions can be turned on at LO or page level
 					if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
@@ -3245,12 +3243,12 @@ function x_setUpPage() {
     $("#x_pageDiv div").scrollTop(0);
     $x_mobileScroll.scrollTop(0);
 	
-	var pageIndex = $.inArray(x_currentPage, x_normalPages);
-	
+	const pageIndex = $.inArray(x_currentPage, x_normalPages);
+	const srOnly = '<span class="sr-only">' + x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length + '</span>';
+	const notSr = '<span aria-hidden="true">' + (pageIndex+1) + " / " + x_normalPages.length + '</span>';
+
 	if (pageIndex != -1) {
-		$x_pageNo
-			.html((pageIndex+1) + " / " + x_normalPages.length)
-			.attr("title", x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length);
+		$x_pageNo.html(srOnly + notSr);
 	} else {
 		// standalone page
 		$x_pageNo
@@ -3539,14 +3537,15 @@ function x_addCountdownTimer() {
 		pageType = (pageType === 'text') ? 'simpleText' : pageType
 
         if (x_countdownTimer > 0) {
-            $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
+            $("#x_footerBlock #x_pageTimer .x_time").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
          	// If page model wants timer tick to know then pass value
         	if (typeof window[ pageType ].onTimerTick === "function") window[ pageType ].onTimerTick(x_countdownTimer);
         }
         else {
             window.clearInterval(x_timer);
-            $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
+			$("#x_footerBlock #x_pageTimer .x_time").html("");
+            $("#x_footerBlock #x_pageTimer .x_timeUp").html(x_timerLangInfo[1]);
 
         	// If page model wants to know then pass event
         	if (typeof window[ pageType ].onTimerZero === "function") window[ pageType ].onTimerZero();
@@ -3573,9 +3572,9 @@ function x_addCountdownTimer() {
     var x_countdownTimer;
     if ((x_currentPageXML.getAttribute("showTimer") == null || x_currentPageXML.getAttribute("showTimer") == "true") && (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "")) {
         clearInterval(x_timer);
-        $("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
+        $("#x_footerBlock div:first").before('<div id="x_pageTimer"><span role="timer" class="x_time"></span><span class="x_timeUp" aria-live="assertive"></span></div>');
         x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
-        $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
+        $("#x_footerBlock #x_pageTimer .x_time").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
         x_timer = setInterval(x_countdownTicker, 1000);
     }
 }
@@ -3753,7 +3752,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
             if (x_dialogInfo[i].built != false) {
                 $x_body.append(x_dialogInfo[i].built);
 
-                if (load !== undefined && type !== "menu" && type !== "colourChanger") {
+                if (load != undefined && type !== "menu" && type !== "colourChanger") {
                     x_dialogInfo[i].built.children(".x_popupDialog").html(load);
 					x_dialogInfo[i].built.find('.ui-dialog-title').html(title);
                 }
@@ -3768,7 +3767,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
 				}
 
             } else {
-                $x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
+                $x_body.append('<div id="x_' + type + '" class="x_popupDialog" tabindex="0"></div>');
 
                 var $x_popupDialog = $("#x_" + type);
                 $x_popupDialog
@@ -5108,7 +5107,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					label: x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 					text:	false
 				})
-				.attr("aria-label", $x_glossaryBtn.attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_glossaryBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.glossaryTarget == "lightbox") {
 						
@@ -5240,7 +5239,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		tableData += "</table>";
 		
 		if ($("#glossaryItems").parents('.featherlight').length > 0) {
-			tableData = '<div class="glossaryHolder">' + tableData + '</div>';
+			tableData = '<div class="glossaryHolder" tabindex="0">' + tableData + '</div>';
 		}
 		
 		$("#glossaryItems").append(tableData);
@@ -6589,7 +6588,7 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 					label: x_params.accessibilityLabel !== undefined && x_params.accessibilityLabel !== "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
 					text: false
 				})
-				.attr("aria-label", $x_colourChangerBtn.attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_colourChangerBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.accessibilityTarget === "lightbox") {
 						if (lbHtml === undefined) {

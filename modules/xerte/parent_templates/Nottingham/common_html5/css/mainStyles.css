@@ -935,7 +935,7 @@ input#x_pagePswd.old {
 	font-weight: bold;
 }
 
-.vault input:focus, .vault input:hover{
+.vault input:focus, .vault input:hover {
 	border: 2px solid #ffffff;
 	outline: none;
 }
@@ -952,13 +952,17 @@ input#x_pagePswd.old {
 	border: 2px solid #505050 !important;
 }
 
-.vault button:not(#x_pagePswdBtn){
+.vault button:not(#x_pagePswdBtn) {
 	border-radius: 0px;
 	height: calc(100% - 1px);
 	margin: 1px;
 }
 
-.vault button:hover, .vault button:focus {
+.vault button:disabled:not(#x_pagePswdBtn) {
+	opacity: 1;
+}
+
+.vault button:hover:enabled, .vault button:focus:enabled {
 	background-color: #bdbdbd;
 	border-color: #4A4A4A;
 }
