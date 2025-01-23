@@ -147,12 +147,13 @@
   <screenReaderInfo label="Screen Reader Information" newWindow="opens in a new window" shortNewWindow="opens in a new window" thisWindow="opens in this window" dialog="opens in a dialog window">
 	  <buttonNav description="This page contains a series of buttons where each one reveals some related information." click="Click to reveal information"/>
 	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
-	  <audioSlideshow description="This page displays content in synch with an audio files. New content is added to the page as the audio plays."/>
-	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>
+	  <audioSlideshow description="This page displays content in sync with an audio file. New content is added to the page as the audio plays." prompt="Slide changed"/>
+	  <videoSynch description="This page displays content in sync with a video. New content is added to the page as the video plays."/>
 	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
 	  <modelAnswerResults selected="Text selected"/>
 	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
 	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
+	  <imageCompare slideHint="Image slider"/>
   </screenReaderInfo>
 
   <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session" tooltip_ltionly="Stop Session">

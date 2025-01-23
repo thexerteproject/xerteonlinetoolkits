@@ -103,8 +103,12 @@
 			});
 
 			let slider = $("#slider");
+			const slideHint = x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") : (x_params.language === "en-GB" ? "Image slider" : undefined);
+			if (slideHint != undefined) {
+				slider.attr("aria-label", slideHint);
+			}
 
-			// use of temperary images to ensure all images are load and fullsize with loaded to get original aspectratio
+			// use of temporary images to ensure all images are load and fullsize with loaded to get original aspectratio
 			let tempImg1 = new Image();
 			let tempImg2 = new Image();
 
@@ -162,20 +166,26 @@
 
 			slider.on("keyup", (event) =>{
 				let delta = 0;
-				if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
-					if (event.which == 40) {// down arrow
-						delta = 5
-					} else if (event.which == 38) {// up arrow
-						delta = -5;
-					}
+				if (event.which == 36) { // home
+					this.position = 0;
+				} else if (event.which == 35) { // end
+					this.position = 100;
 				} else {
-					if (event.which == 39) {// right arrow
-						delta = 5
-					} else if (event.which == 37) {// left arrow
-						delta = -5;
+					if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
+						if (event.which == 40) {// down arrow
+							delta = 5
+						} else if (event.which == 38) {// up arrow
+							delta = -5;
+						}
+					} else {
+						if (event.which == 39) {// right arrow
+							delta = 5
+						} else if (event.which == 37) {// left arrow
+							delta = -5;
+						}
 					}
+					this.position = Math.min(100, Math.max(this.position + delta, 0));
 				}
-				this.position = Math.min(100, Math.max(this.position + delta, 0))
 				this.updatePosition();
 			});
 			
