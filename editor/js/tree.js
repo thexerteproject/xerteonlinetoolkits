@@ -1290,7 +1290,7 @@ var EDITOR = (function ($, parent) {
                     .find('.legend_label:eq(0) .minMaxIcon').removeClass('fa-caret-down').addClass('fa-caret-up');
 
                 $expandedGroup
-                    .find('.table_holder:eq(0)').slideDown(0);
+                    .find('.table_holder:eq(0)').slideDown(0, toolbox.resizeDataGrids);
             }
         }
 

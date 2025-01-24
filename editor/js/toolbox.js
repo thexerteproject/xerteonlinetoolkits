@@ -856,7 +856,7 @@ var EDITOR = (function ($, parent) {
 					});
 
 				} else {
-					$fieldset.find('.table_holder').slideDown(400);
+					$fieldset.find('.table_holder').slideDown(400, resizeDataGrids);
 
 					$icon
 						.removeClass('fa-caret-down')
@@ -1712,7 +1712,6 @@ var EDITOR = (function ($, parent) {
         jqGridsColSel = {};
 
         $.each(datagrids, function(i, options){
-
 			var thisGrid = this;
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
@@ -2023,20 +2022,23 @@ var EDITOR = (function ($, parent) {
 				});
 
 				$(window).on("resizeEnd", function() {
-					$("#mainPanel .ui-jqgrid").hide();
-					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-					$("#mainPanel .ui-jqgrid").show();
-					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                    resizeDataGrids();
 				});
 				
 				// make sure datagrid is correct width when first loaded
-				$("#mainPanel .ui-jqgrid").hide();
-				var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-				$("#mainPanel .ui-jqgrid").show();
-				$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                resizeDataGrids();
 
 				jqGridSetUp == true;
 			}
+        });
+    },
+
+    resizeDataGrids = function() {
+        $("#mainPanel .ui-jqgrid").each(function() {
+            $(this).hide();
+            var newWidth = $(this).parent().width();
+            $(this).show();
+            $(this).find("table").jqGrid("setGridWidth", newWidth, true);
         });
     },
 
@@ -5125,6 +5127,7 @@ var EDITOR = (function ($, parent) {
 	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
     my.convertTreeSelect = convertTreeSelect;
+    my.resizeDataGrids = resizeDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;
