@@ -68,7 +68,7 @@
 						.tabs("refresh");
 					
 					$paneHolder.height($infoHolder.height() - $("#tabHolder").outerHeight());
-					$paneHolder.find(".navChild").height($paneHolder.height() - parseInt($paneHolder.find(".navChild").css("padding-top")) * 2);
+					$paneHolder.find(".navChild").height($paneHolder.height() - ($paneHolder.find(".navChild").outerHeight() - $paneHolder.find(".navChild").height()));
 					
 				} else {
 					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");

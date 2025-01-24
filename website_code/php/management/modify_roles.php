@@ -21,7 +21,7 @@ if(is_user_permitted("useradmin")){
 		for($i = 1; $i < count($role_names);$i++){
 			$questionMarks .= ", ?";
 		}
-		$query = "select distinct roleid from role where name in ({$questionMarks})";
+		$query = "select distinct roleid from  {$xerte_toolkits_site->database_table_prefix}role where name in ({$questionMarks})";
 		$result = db_query($query, $role_names);
 		foreach($result as $row){
 			$roles[] = array_values($row)[0];
@@ -29,7 +29,7 @@ if(is_user_permitted("useradmin")){
 	}
 	
 	// gat all role ids from the roles of the user
-	$query = "select distinct roleid from logindetailsrole where userid=?";
+	$query = "select distinct roleid from  {$xerte_toolkits_site->database_table_prefix}logindetailsrole where userid=?";
 	$result = db_query($query, array($userid));
 	$user_roles = array();
 	foreach($result as $row){
@@ -76,7 +76,7 @@ if(is_user_permitted("useradmin")){
 			$questionMarks .= ", ?";
 
 		}
-		$query = "delete from logindetailsrole where userid=? and roleid in ({$questionMarks})";
+		$query = "delete from  {$xerte_toolkits_site->database_table_prefix}logindetailsrole where userid=? and roleid in ({$questionMarks})";
 		$result = db_query($query, $params);
 		if($result ===  false){
 			$return .= USERS_FAILED_REMOVE_ROLES . PHP_EOL;
@@ -89,7 +89,7 @@ if(is_user_permitted("useradmin")){
 		for($i = 1; $i < count($roles_to_assign); $i++){
 			$questionMarks .= ", (:userid, :param{$i})";
 		}
-		$query = "insert into logindetailsrole (userid, roleid) values " . $questionMarks;
+		$query = "insert into  {$xerte_toolkits_site->database_table_prefix}logindetailsrole (userid, roleid) values " . $questionMarks;
 		
 		$params = array("userid" => $userid);
 		for($i = 0; $i < count($roles_to_assign); $i++){

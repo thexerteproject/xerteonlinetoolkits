@@ -43,7 +43,6 @@ var x_languageData  = [],
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [],
-	x_specialTheme = '',
 	x_pageLoadPause = false,
 	x_btnIcons = [
 	// default interface buttons icons can be overridden:
@@ -64,14 +63,9 @@ var x_languageData  = [],
 		{name: 'saveSession',		defaultIconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
 		{name: 'glossary',			defaultIconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
 		{name: 'intro',				defaultIconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
-		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'},					// page introduction
-		{name: 'sideBarHideLeft',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
-		{name: 'sideBarHideRight',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
-		{name: 'sideBarShowLeft',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
-		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
-	],
-	x_sideBarBtns = [];
-
+		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
+	];
+	
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
@@ -81,7 +75,7 @@ var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock,
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
-	// Place lightbox check in a try block, because an exception will be triggereed if LO is embedded in an iframe
+	// Place lightbox check in a try block, because an exception will be triggered if LO is embedded in an iframe
 	let shownInFeatherlight = false;
 	try
 	{
@@ -115,7 +109,7 @@ $(document).keydown(function(e) {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherlight)) {
+					if (history.length > 1 && (x_params.forcePage1 != 'true' || shownInFeatherlight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -278,10 +272,21 @@ x_projectDataLoaded = function(xmlData) {
 	let tempPages = [];
 	x_pages.each(function (i) {
 		const $this = $(this)
-		if ($this[0].nodeName == "chapter") {
+		if ($this[0].nodeName === "chapter") {
 			$($this.children()).each(function() {
-				$(this)[0].setAttribute("chapterIndex", x_chapters.length)
-				tempPages.push($(this)[0]);
+				const $thisChild = $(this);
+				$thisChild[0].setAttribute("chapterIndex", x_chapters.length);
+
+				// if the chapter is a standalone chapter then all pages within it will take on the same standalone properties
+				// unless the page has separate standalone properties set - these will take priority
+				const standAloneAttrs = ["linkPage", "linkTarget", "headerHide", "footerHide", "reqProgress"];
+				if ($thisChild[0].getAttribute(standAloneAttrs[0]) === null && $this[0].getAttribute(standAloneAttrs[0] + "Chapter") === 'true') {
+					$(standAloneAttrs).each(function() {
+						$thisChild[0].setAttribute(this, $this[0].getAttribute(this + "Chapter"));
+					});
+				}
+
+				tempPages.push($thisChild[0]);
 			});
 
 			const chapterInfo = {};
@@ -513,6 +518,10 @@ x_projectDataLoaded = function(xmlData) {
 			x_normalPages.push(i);
 		}
 	}
+
+	// will a sidebar need to be built?
+	// need to know now as depending on how it's set up it can change the navigation and displayMode
+	XENITH.SIDEBAR.init();
 	
     if (x_normalPages.length < 2) {
         // don't show navigation options if there's only one page
@@ -521,16 +530,10 @@ x_projectDataLoaded = function(xmlData) {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
         }
-        if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
-            x_pages.splice(0, 0, "menu");
-            x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
-			
-			// adjust normal page indexes to take into account menu page
-			for (var i=0; i<x_normalPages.length; i++) {
-				x_normalPages.splice(i, 1, x_normalPages[i]+1);
-			}
-			x_normalPages.splice(0, 0, 0);
-        }
+
+		if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) {
+			XENITH.PAGEMENU.init("page");
+		}
     }
 
     if (x_params.fixDisplay != undefined) {
@@ -622,7 +625,7 @@ x_projectDataLoaded = function(xmlData) {
 			customStartPage = true;
 		}
 	}
-	
+
 	// any params in URL which can change the start page can be disabled from working by adding optional property
 	// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
 	if (x_pageInfo[x_startPage.ID] != undefined) {
@@ -712,10 +715,19 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.responsive = x_urlParams.responsive;
 	}
 
-	if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
-    {
+	// url parameters to change default theme used
+	if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true')) {
         x_params.theme = x_urlParams.theme;
     }
+
+	// url parameters to change to remove background images or use a special theme selected via the accessibility options
+	// these will only be present if this is a standalone page opening in a new window or lightbox - ensure that if the parent project that opened this was using a special theme / no bg images then this should too
+	if (x_urlParams.specialTheme != undefined) {
+		XENITH.COLOURCHANGER.specialTheme = x_urlParams.specialTheme;
+	}
+	if (x_urlParams.removeBg != undefined) {
+		XENITH.COLOURCHANGER.removeBg = x_urlParams.removeBg;
+	}
 	
 	// Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
@@ -828,12 +840,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 	if (themeIcons != 'true' || themeInfo.imgbtns != 'true') {
 		themeIcons = false;
 	}
-	
-	// buttons on side bar will always use icons & not images
-	if (themeChg !== true) {
-		x_sideBarBtnInfo();
-	}
-	
+
 	for (let i=0; i<x_btnIcons.length; i++) {
 		x_btnIcons[i].customised = false;
 		x_btnIcons[i].btnImgs = false;
@@ -845,9 +852,10 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 			// a custom icon has individually been selected in editor for this button
 			x_btnIcons[i].iconClass = x_params[x_btnIcons[i].name + 'Icon'];
 			x_btnIcons[i].customised = true;
-		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && $.inArray(tempName, x_sideBarBtns) != -1)) {
+
+		} else if (themeIcons == 'true' || (themeInfo.imgbtns == 'true' && XENITH.SIDEBAR.btnIndex(tempName) != -1)) {
 			// it's an old theme where all button images are to be overridden with the default FontAwesome icons
-			// either because update theme icons is checked or button is on side bar
+			// either because update theme icons is checked or button is on sidebar
 			x_btnIcons[i].iconClass = x_btnIcons[i].defaultFA;
 			x_btnIcons[i].customised = true;
 		} else if (themeInfo.imgbtns == 'true') {
@@ -863,7 +871,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 		// theme has been changed sometime after the project has already loaded
 		// change classes on interface buttons as new theme may use a different type of btn (FontAwesome / image)
 		var btns = [ { btn: $x_helpBtn, name: 'help' }, { btn: $x_introBtn, name: 'intro' }, { btn: $x_colourChangerBtn, name: 'accessibility' }, { btn: $x_nextBtn, name: 'next' }, { btn: $x_saveSessionBtn, name: 'saveSession' }, { btn: $x_glossaryBtn, name: 'glossary' } ];
-		
+
 		for (let i=0; i<btns.length; i++) {
 			if (btns[i].btn != undefined) {
 				const btnIcon = x_btnIcons.filter(function(icon){return icon.name === btns[i].name;})[0];
@@ -912,7 +920,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 window.onhashchange = function() {
 	// ignore if triggered by the skip link
 	if (window.location.hash != "#pageContents") {
-		if (x_params.forcePage1 == undefined || x_params.forcePage1 != 'true') {
+		if (x_params.forcePage1 != 'true') {
 			var temp = getDeepLink(window.location.hash);
 			if (temp.length > 1) {
 				x_deepLink = temp[1];
@@ -931,8 +939,7 @@ window.onhashchange = function() {
 			if (parent.window.$.featherlight.current()) {
 				parent.window.$.featherlight.current().close();
 			}
-		} catch (e) {
-		}
+		} catch (e) {}
 	}
 }
 
@@ -941,7 +948,7 @@ function getHashInfo(urlHash) {
 	if (urlHash.length > 0) {
 		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
 			thisPage;
-
+		
 		if (pageLink.substring(0,4) == "page" && pageLink != "pageContents") { // numeric page number e.g. URL/play_123#page5
 			var tempNum = Number(pageLink.substring(4));
 			if (tempNum < 1 || tempNum > x_normalPages.length) {
@@ -992,7 +999,7 @@ function x_fixLineBreaks(text) {
 	// At this time the ascii character STX (soft hyphen) -> replace with '-'
 	text = text.replace(/\u0002/g, "-");
 
-    var     split_up = text.split(/<\!\[CDATA\[|\]\]>/),
+    var split_up = text.split(/<\!\[CDATA\[|\]\]>/),
         temp, i, j, len, len2;
 
     for (i=0, len=split_up.length; i<len; i+=2) {
@@ -1101,8 +1108,8 @@ function x_setUp() {
 	// prevent flashes of css body tag colours before the main interface has loaded
 	$('head').append('<style id="preventFlash">body, #x_mainHolder { background: white !important; }; </style>');
 	
-	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
-	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
+	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " (" + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") + ")" : "";
+	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " (" + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") + ")" : "";
 
 	if (x_normalPages.length == 0) {
 		$("body").append(x_getLangInfo(x_languageData.find("noPages")[0], "label", "<p>This project does not contain any pages.</p>"));
@@ -1119,8 +1126,8 @@ function x_setUp() {
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
 		$x_menuBtn		= $("#x_menuBtn");
+		$x_colourChangerBtn		= $("#x_colourChangerBtn");
 		$x_saveSessionBtn = $("#x_saveSessionBtn");
-		$x_colourChangerBtn	= $("#x_colourChangerBtn");
 		$x_prevBtn		= $("#x_prevBtn");
 		$x_pageNo		= $("#x_pageNo");
 		$x_nextBtn		= $("#x_nextBtn");
@@ -1183,7 +1190,7 @@ function x_setUp() {
 function x_desktopSetUp() {
 	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_cssBtn = $('<button id="x_cssBtn"></button>').prependTo($x_footerL);
-		
+
 		const maxBtnIcon = x_btnIcons.filter(function(icon){return icon.name === 'max';})[0];
 		
 		$x_cssBtn
@@ -1227,7 +1234,7 @@ function x_desktopSetUp() {
 							});
 					}
 					$x_body.css("overflow", "auto");
-					
+
 					$(this)
 						.button({
 							icons:	{ primary: x_btnIcons.filter(function(icon){return icon.name === 'max';})[0].iconClass },
@@ -1274,77 +1281,74 @@ function x_cssSetUp(param) {
 				x_cssSetUp("glossary");
 			}
             break;
-        case "language2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/language.css", function () {x_cssSetUp("glossary")});
-            }
-            else
-            {
-                x_cssSetUp("glossary");
-            }
-            break;
         case "glossary":
 			if (x_params.glossary != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("colourChanger")});
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("saveSession")});
 			} else {
-				x_cssSetUp("colourChanger");
+				x_cssSetUp("saveSession");
 			}
-            break;
-        case "glossary2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/glossary.css", function () {x_cssSetUp("colourChanger")});
-            }
-            else
-            {
-                x_cssSetUp("colourChanger");
-            }
-            break;
-        case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("saveSession")});
-            break;
-        case "colourChanger2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("saveSession")});
-            }
-            else
-            {
-                x_cssSetUp("saveSession");
-            }
             break;
 		case "saveSession":
-			x_insertCSS(x_templateLocation + "models_html5/saveSession.css", function() {x_cssSetUp("theme")});
+			x_insertCSS(x_templateLocation + "models_html5/saveSession.css", function() {x_cssSetUp("responsive")});
 			break;
-		case "saveSession2":
-			if (x_params.theme != undefined && x_params.theme != "default") {
-				x_insertCSS(x_themePath + x_params.theme + "/css/saveSession.css", function () {x_cssSetUp("theme")});
-			}
-			else
-			{
-				x_cssSetUp("theme");
-			}
-			break;
-        case "theme":
-            if (!xot_offline) {
-            	if (x_params.theme != undefined) {
-					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-					// Set id
-					$('link[href="' + x_themePath + x_params.theme + '/' + x_params.theme + '.js"]').attr('id', 'theme_js');
-				}
-            }
-            x_cssSetUp("responsive");
-            break;
 		case "responsive":
             if (x_params.responsive == "true") {
 				// adds default responsiveText.css - in some circumstances this will be immediately disabled
 				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("theme")}, true);
 				} else {
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()});
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("theme")});
                 }
 			} else {
-                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
+				x_cssSetUp("theme");
 			}
             break;
+		case "theme":
+			if (x_params.theme != undefined) {
+				if (!xot_offline) {
+					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+				}
+				x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+					x_cssSetUp("responsivetheme");
+				}, false, "theme_css", true);
+			} else {
+				x_cssSetUp("projectStylesheet");
+			}
+			break;
+		case "responsivetheme":
+			if (x_params.responsive == "true" && x_params.theme != "default") {
+				// adds theme responsivetext.css - in some circumstances this will be immediately disabled
+				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+					x_insertCSS(x_themePath + x_params.theme + "/responsivetext.css", function () {x_cssSetUp("projectStylesheet")}, true, "theme_responsive_css", true);
+				} else {
+					x_insertCSS(x_themePath + x_params.theme + "/responsivetext.css", function () {x_cssSetUp("projectStylesheet")}, false, "theme_responsive_css", true);
+				}
+			} else {
+				x_cssSetUp("projectStylesheet");
+			}
+			break;
+		case "projectStylesheet":
+			if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
+				x_insertCSS(x_evalURL(x_params.stylesheet), function () {x_cssSetUp("projectCss")}, false, "lo_sheet_css");
+			} else {
+				x_cssSetUp("projectCss")
+			}
+			break;
+		case "projectCss":
+			if (x_params.styles != undefined || x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
+				let lightboxStyle = '';
+				const loStyles = x_params.styles != undefined ? x_params.styles : '';
+
+				if (x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
+					lightboxColour = x_params.lightboxColour != undefined ? x_params.lightboxColour.substr(x_params.lightboxColour.length - 6) : '000000';
+					lightboxOpacity = x_params.lightboxOpacity != undefined ? x_params.lightboxOpacity / 100 : '0.8';
+					lightboxStyle = '.featherlight:last-of-type { background:' + x_hexToRgb(lightboxColour, lightboxOpacity) + ';}';
+				}
+
+				$x_head.append('<style id="lo_css">' + lightboxStyle + ' ' + loStyles + '</style>');
+			}
+			x_continueSetUp1();
+			break;
     }
 }
 
@@ -1373,7 +1377,9 @@ function x_KeepAlive()
 var setUpComplete = false;
 function x_continueSetUp1() {
 	if (setUpComplete == false) {
-		if (x_pageInfo[0].type == "menu") {
+		XENITH.COLOURCHANGER.init();
+
+		if (XENITH.PAGEMENU.menuPage) {
 			$x_pageNo.hide();
 			if (x_params.navigation == "Menu") {
 				$x_prevBtn.hide();
@@ -1384,10 +1390,9 @@ function x_continueSetUp1() {
 		} else if (x_params.navigation == "Historic") {
 			$x_pageNo.hide();
 		} else {
-			x_dialogInfo.push({type:'menu', built:false});
+			XENITH.PAGEMENU.init("dialog");
 		}
 
-		
 		// add project help button to footer bar that opens file (or URL) in new window or lightbox
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
@@ -1404,7 +1409,7 @@ function x_continueSetUp1() {
 					label: x_params.helpLabel != undefined && x_params.helpLabel != "" ? x_params.helpLabel : x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 					text:	false
 				})
-				.attr("aria-label", $x_helpBtn.attr("title") + x_params.newWindowTxt)
+				.attr("aria-label", $x_helpBtn.attr("title") + (x_params.helpTarget != 'lightbox' ? x_params.newWindowTxt : x_params.dialogTxt))
 				.click(function() {
 					if (x_params.helpTarget != 'lightbox') {
 						window.open(x_evalURL(x_params.nfo), "_blank");
@@ -1441,7 +1446,7 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction"),
+					label: (x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction")) + x_params.dialogTxt,
 					text: false
 				})
 				.click(function() {
@@ -1608,7 +1613,7 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction"),
+					label: (x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction")) + x_params.dialogTxt,
 					text: false
 				})
 				.click(function() {
@@ -1655,7 +1660,7 @@ function x_continueSetUp1() {
 
 					} else if (thisPageIntro.type == 'video') {
 
-						$.featherlight('<div id="pageIntroVideo"></div>');
+						$.featherlight($('<div id="pageIntroVideo"></div>'));
 
 						$('.featherlight-content').addClass('pageIntroVideo');
 
@@ -1706,82 +1711,14 @@ function x_continueSetUp1() {
 				});
 		}
 
-
-		/// add optional progress bar to the footer bar
-		// x_params.progressBar is deprecated but will still work for older projects that still use this
-		if (((x_params.progressBar != undefined && x_params.progressBar != "") || x_params.progressBarType == 'true') && x_params.hideFooter != "true") {
-			$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
-			$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div>');
-
-			// add the x% COMPLETE text to the progress bar
-			if (x_params.progressBarPercentage != "false") {
-				$('#x_footerProgress').append('<p class="pbTxt"></p>');
-			}
-
-			// remove page counter if that option selected
-			// in newer projects this is unrelated to progress bar settings and is done below with x_params.pageCounter
-			if (x_params.progressBar == "pBarNoCounter") {
-				$("#x_pageNo").remove();
-			}
-		}
+		XENITH.PROGRESSBAR.init();
 
 		// hide page counter
 		if (x_params.pageCounter == "true") {
-			$("#x_pageNo").remove();
+			$x_pageNo.remove();
 		}
 
-		x_dialogInfo.push({type:'colourChanger', built:false});
-
-		if (x_params.accessibilityHide != 'true') {
-
-			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
-
-			$x_colourChangerBtn
-				.button({
-					icons: {
-						primary: accessibilityIcon.iconClass
-					},
-					// label can now be set in editor but fall back to language file if not set
-					label: x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
-					text:	false
-				})
-				.attr("aria-label", $x_colourChangerBtn.attr("title") + " " + x_params.dialogTxt)
-				.click(function() {
-					if (x_params.accessibilityTarget == "lightbox") {
-
-						$.featherlight($(), {
-							contentFilters: 'ajax',
-							ajax: x_templateLocation + 'models_html5/colourChanger.html',
-							variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto' )
-						});
-
-					} else {
-						x_openDialog(
-							"colourChanger",
-							x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
-							x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
-							null,
-							null,
-							function () {
-								$x_colourChangerBtn
-									.blur()
-									.removeClass("ui-state-focus")
-									.removeClass("ui-state-hover");
-							}
-						);
-					}
-				});
-
-			if (accessibilityIcon.customised == true) {
-				$x_colourChangerBtn.addClass("customIconBtn");
-			}
-			if (accessibilityIcon.btnImgs == true) {
-				$x_colourChangerBtn.addClass("imgIconBtn");
-			}
-
-		} else {
-			$x_colourChangerBtn.remove();
-		}
+		XENITH.COLOURCHANGER.buildBtn();
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
 		// it's overridden by logo in theme folder
@@ -1874,7 +1811,7 @@ function x_continueSetUp1() {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || shownInFeatherLight)) {
+					if (history.length > 1 && (x_params.forcePage1 != 'true' || shownInFeatherLight)) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -1924,63 +1861,53 @@ function x_continueSetUp1() {
 			$x_nextBtn.addClass("imgIconBtn");
 		}
 
-		// icon & label can new be set up in editor but fall back to default if not set
-		let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
-		let menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+		if ($x_menuBtn.length > 0) {
+			// icon & label can new be set up in editor but fall back to default if not set
+			let	menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'toc';})[0];
+			let menuLabel = x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
 
-		if (x_params.navigation == "Historic") {
-			menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
-			menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
-			$x_menuBtn.addClass("x_home");
-		}
+			if (x_params.navigation == "Historic") {
+				menuIcon = x_btnIcons.filter(function(icon){return icon.name === 'home';})[0];
+				menuLabel = x_params.homeLabel != undefined && x_params.homeLabel != "" ? x_params.homeLabel : x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+				$x_menuBtn.addClass("x_home");
+			}
 
-		$x_menuBtn
-			.button({
-				icons: {
-					primary: menuIcon.iconClass
-				},
-				label:	menuLabel,
-				text:	false
-			})
-			.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
-			.click(function() {
-				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
-					if (x_params.tocTarget == "lightbox") {
+			$x_menuBtn
+				.button({
+					icons: {
+						primary: menuIcon.iconClass
+					},
+					label:	menuLabel,
+					text:	false
+				})
+				.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? x_params.dialogTxt : ""))
+				.click(function() {
+					if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
+						if (x_params.tocTarget == "lightbox") {
 
-						lb = $.featherlight(
-							'<div id="tocMenuLightBox"></div>',
-							{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
-						);
-						XENITH.PAGEMENU.init($("#tocMenuLightBox"));
+							$.featherlight(
+								'<div id="tocMenuLightBox"></div>',
+								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
+							);
+							XENITH.PAGEMENU.build($("#tocMenuLightBox"));
 
-					} else {
-						x_openDialog(
-							"menu",
-							x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
-							x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
-							null,
-							'<div id="tocMenuDialog"></div>',
-							function () {
-								$x_menuBtn
-									.blur()
-									.removeClass("ui-state-focus")
-									.removeClass("ui-state-hover");
-							}
-						);
-					}
-				} else x_goHome();
+						} else {
+							XENITH.PAGEMENU.buildDialog();
+						}
+					} else x_goHome();
 
-				$(this)
-					.blur()
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
-			});
+					$(this)
+						.blur()
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+				});
 
-		if (menuIcon.customised == true) {
-			$x_menuBtn.addClass("customIconBtn");
-		}
-		if (menuIcon.btnImgs == true) {
-			$x_menuBtn.addClass("imgIconBtn");
+			if (menuIcon.customised == true) {
+				$x_menuBtn.addClass("customIconBtn");
+			}
+			if (menuIcon.btnImgs == true) {
+				$x_menuBtn.addClass("imgIconBtn");
+			}
 		}
 
 		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
@@ -2003,7 +1930,7 @@ function x_continueSetUp1() {
 					label: tooltip,
 					text: false
 				})
-				.attr("aria-label", $x_saveSessionBtn.attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_saveSessionBtn.attr("title") + x_params.dialogTxt)
 				.click(function () {
 					x_openDialog(
 						"saveSession",
@@ -2036,8 +1963,9 @@ function x_continueSetUp1() {
 		if (XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
 			x_KeepAlive();
 		}
+
 		// create side bar
-		x_setUpSideBar();
+		XENITH.SIDEBAR.build();
 
 		//add show/hide footer tools
 		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
@@ -2227,226 +2155,9 @@ function x_getIntroInfo(xml) {
 	}
 }
 
-function x_sideBarBtnInfo() {
-	// work out what buttons will show on side bar
-	if (x_params.sideBar == 'true') {
-		// project level buttons
-		if (x_params.sbToC == 'true') {
-			x_sideBarBtns.push('toc');
-		}
-		if (x_params.sbProjectIntro == 'true' && x_params.intro != undefined && $.trim(x_params.intro) != '') {
-			x_sideBarBtns.push('intro');
-		}
-		if (x_params.sbProjectHelp == 'true' && x_params.nfo != undefined && $.trim(x_params.nfo) != '') {
-			x_sideBarBtns.push('help');
-		}
-
-		if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
-			x_sideBarBtns.push('glossary');
-		}
-		if (x_params.sbAccessibility == 'true' && x_params.accessibilityHide != 'true') {
-			x_sideBarBtns.push('accessibility');
-		}
-
-		// page level buttons (what the button does will change on each page)
-		// does at least one page in project have some page info added?
-		if (x_params.sbPageIntro == 'true') {
-			for (let i=0; i<x_pages.length; i++) {
-				if (x_pageInfo[i].type != "menu") {
-					if (x_params.sbPageIntro == 'true' && (
-							(x_pages[i].getAttribute('introType') == 'text' && $.trim(x_pages[i].getAttribute('pageIntro')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'image' && $.trim(x_pages[i].getAttribute('introImg')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'video' && $.trim(x_pages[i].getAttribute('introVideo')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'url' && $.trim(x_pages[i].getAttribute('introURL')) != '') ||
-							(x_pages[i].getAttribute('introType') == 'file' && $.trim(x_pages[i].getAttribute('introFile')) != '')
-					)) {
-						x_sideBarBtns.push('pageIntro');
-						break;
-					}
-				}
-			}
-		}
-
-		if (x_sideBarBtns.length > 0 && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
-			x_params.displayMode = 'full screen';
-		}
-	}
-}
-
-function x_setUpSideBar() {
-	// only create side bar if there are some buttons that will appear on it
-	// don't create side bar if it's a standalone page in a lightbox
-	const isSA = x_pageInfo[x_startPage.ID] != undefined && x_pageInfo[x_startPage.ID].standalone == true ? true : false;
-	if (x_sideBarBtns.length > 0 && !isSA) {
-
-		const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
-
-		const $x_sideBar = $('<div id="x_sideBar"><button id="x_sideBarToggleBtn"></button><div id="x_sideBarBtnHolder"></div></div>'),
-			$x_sideBarBtnHolder = $x_sideBar.find('#x_sideBarBtnHolder'),
-			$x_sideBarToggleBtn = $x_sideBar.find('#x_sideBarToggleBtn');
-
-		const minW = 30, borderW = 1;
-		let maxW = 100;
-
-		if (x_params.sideBarSize == 'large') {
-			$x_sideBar.addClass('sideBarLarge');
-		} else {
-			$x_sideBar.addClass('sideBarSmall');
-
-			if (x_params.sideBarBtnTxt != 'true') {
-				maxW = 60;
-			}
-		}
-
-		// labels can be set in editor but fall back to language file if not set
-		const closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar"),
-			openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar"),
-			closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarHideLeft';})[0].iconClass,
-			openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowRight';})[0].iconClass : x_btnIcons.filter(function(icon){return icon.name === 'sideBarShowLeft';})[0].iconClass;
-
-		if (x_params.sideBarPosition == 'right') {
-			$x_sideBar.insertAfter($x_mainHolder);
-			$x_body.addClass('sb_right');
-		} else {
-			$x_sideBar.insertBefore($x_mainHolder);
-			$x_body.addClass('sb_left');
-		}
-
-		// side bar open / close
-		$x_sideBar.data('state', x_params.sideBarShow);
-
-		$x_sideBarToggleBtn
-			.button({
-				icons: { primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon },
-				label: x_params.sideBarShow == 'closed' ? openLabel : closeLabel,
-				text: false
-			})
-			.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
-			.click(function() {
-
-				if ($x_sideBar.data('state') == 'open') {
-					$x_sideBar
-						.animate({width: minW + 'px'})
-						.data('state', 'closed');
-
-					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
-						.animate({'width': $x_body.width() - minW + borderW});
-
-					$x_mainHolder
-						.animate({['padding-' + x_params.sideBarPosition]: (minW - borderW) + 'px'}, function() { $x_sideBarBtnHolder.hide(); x_updateCss(true); });
-
-					$(this).button({ icons: { primary: openIcon }, label: openLabel, text: false });
-
-				} else {
-					if (overlay) {
-						$x_sideBar
-							.animate({width: maxW})
-							.data('state', 'open');
-
-					} else {
-						$x_sideBar
-							.animate({width: maxW + 'px'})
-							.data('state', 'open');
-
-						$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
-							.animate({'width': $x_body.width() - maxW + borderW});
-
-						$x_mainHolder
-							.animate({['padding-' + x_params.sideBarPosition]: (maxW - borderW) + 'px'}, function() { x_updateCss(true); });
-					}
-
-					$(this).button({ icons: { primary: closeIcon }, label: closeLabel, text: false });
-
-					$x_sideBarBtnHolder.show();
-				}
-			});
-
-		// add buttons to side bar
-		const btnTxt = x_params.sideBarBtnTxt == 'true' ? true : false;
-
-		if ($.inArray('toc', x_sideBarBtns) != -1) {
-			$x_menuBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('intro', x_sideBarBtns) != -1) {
-			$x_introBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('help', x_sideBarBtns) != -1) {
-			$x_helpBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('glossary', x_sideBarBtns) != -1) {
-			$x_glossaryBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('accessibility', x_sideBarBtns) != -1) {
-			$x_colourChangerBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-		if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
-			$x_pageIntroBtn
-				.appendTo($x_sideBarBtnHolder)
-				.button({ text: btnTxt });
-		}
-
-		if (x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') {
-			let widestBtn = 0;
-
-			$x_sideBarBtnHolder.find('button').each(function() {
-				widestBtn = Math.max(widestBtn, $(this).outerWidth());
-			});
-
-			maxW = widestBtn + 30;
-
-			$x_sideBarBtnHolder.find('button').width('90%');
-		}
-
-		if (overlay) {
-			maxW = '100%';
-			$x_sideBar.width(maxW);
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
-			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
-		} else {
-			$x_sideBar.width(maxW + 'px');
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
-			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
-
-			// the text may overlap side bar - make sure sidebar expands but without text forced to be on a single line
-			if (x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') {
-
-				let widestBtn = 0;
-				$x_sideBarBtnHolder.find('button').each(function() {
-					widestBtn = Math.max(widestBtn, $(this).outerWidth());
-				});
-
-				if ($x_sideBarBtnHolder.innerWidth() < widestBtn) {
-					$x_sideBar.width('min-content');
-
-					maxW = $x_sideBar.width();
-					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - maxW + borderW);
-					$x_mainHolder.css('padding-' + x_params.sideBarPosition, (maxW - borderW) + 'px');
-				}
-			}
-		}
-
-		if (x_params.sideBarShow == 'closed') {
-			$x_sideBar.width(minW + 'px');
-			$x_sideBarBtnHolder.hide();
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background).width($x_body.width() - minW + borderW);
-			$x_mainHolder.css('padding-' + x_params.sideBarPosition, (minW - borderW) + 'px');
-		}
-	}
-}
-
 function x_goHome() {
 	// home page can be changed from page 1 (except for menu pages where home page will always be TOC)
-	if (x_params.navigation != 'Menu' && x_params.navigation != 'Menu with Page Controls' && x_params.homePage != undefined && x_params.homePage != "") {
+	if (!XENITH.PAGEMENU.menuPage && x_params.homePage != undefined && x_params.homePage != "") {
 		x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
 	} else {
 		x_changePage(0);
@@ -2685,6 +2396,7 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 
 	var resumeLO = XTStartPage();
 
+
 	// this is a resumed tracked LO, go to the page saved by the LO - unless it's currently trying to show a standalone page in a lightbox
 	if (force && resumeLO >= 0 && (x_pageInfo[page].standalone != true || x_pages[page].getAttribute('linkTarget') == 'new' || x_pages[page].getAttribute('linkTarget') == 'same')) {
 		x_changePage(resumeLO, addHistory);
@@ -2815,7 +2527,7 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 
 	// normal page change, or a standalone page being opened in same window
-	if ((x_gotoPage == 0 && x_pageInfo[0].type == "menu") || !standAlonePage || x_pages[x_gotoPage].getAttribute('linkTarget') == 'same' || x_firstLoad) {
+	if ((x_gotoPage == 0 && XENITH.PAGEMENU.menuPage) || !standAlonePage || x_pages[x_gotoPage].getAttribute('linkTarget') == 'same' || x_firstLoad) {
 		if ($x_body.width() == 0 && $x_body.height() == 0) {
 			// don't load page yet as it probably won't load properly (possibly because it's being loaded in an iframe on non-active tab on a navigator)
 			x_pageLoadPause = x_gotoPage;
@@ -2847,38 +2559,43 @@ function x_changePage(x_gotoPage, addHistory) {
 
 	// standalone page opening in new window
 	} else if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'new') {
-		window.open(window.location.href.split('#')[0] + '#' + pageHash);
+		let url = window.location.href.split('#')[0];
 
-		// update progress bar & record that it's been opened in newWindow
-		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
-			x_pageInfo[x_gotoPage].builtNewWindow = true;
-			doPercentage();
-		}
+		// is project being shown with a special theme or no bg images (selected via accessibility options)?
+		// if so, make sure page opening in new window also keeps this theme
+		url += XENITH.COLOURCHANGER.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.COLOURCHANGER.specialTheme : "";
+		url += XENITH.COLOURCHANGER.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.COLOURCHANGER.removeBg : "";
+
+		url += '#' + pageHash;
+		window.open(url);
+
+		XENITH.PROGRESSBAR.update(x_gotoPage, "NewWindow");
 
 		x_pageInfo[x_gotoPage].viewedNewWindow = true;
 
 	// standalone page opening in lightbox
 	} else {
-		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
-		//$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8}, {beforeClose: x_closeStandAlonePage});
-		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+		let url = window.location.href.split('#')[0];
 
-		// update progress bar & record that it's been opened in lightbox
-		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
-			x_pageInfo[x_gotoPage].builtLightBox = true;
-			doPercentage();
-		}
+		// is project being shown with a special theme or no bg images (selected via accessibility options)?
+		// if so, make sure page opening in lightbox also keeps this theme
+		url += XENITH.COLOURCHANGER.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.COLOURCHANGER.specialTheme : "";
+		url += XENITH.COLOURCHANGER.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.COLOURCHANGER.removeBg : "";
+
+		url += '#' + pageHash;
+		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
+		$.featherlight({iframe: url, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+
+		XENITH.PROGRESSBAR.update(x_gotoPage, "LightBox");
 
 		x_pageInfo[x_gotoPage].viewedLightBox = true;
 	}
 
 	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
-	const overlay = ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') && x_browserInfo.mobile ? true : false ;
-	if (overlay && !x_firstLoad && $('#x_sideBar').length > 0 && $('#x_sideBar').data('state') == 'open') {
-		$('#x_sideBar #x_sideBarToggleBtn').click();
+	if (x_browserInfo.mobile === true && !x_firstLoad) {
+		XENITH.SIDEBAR.close();
 	}
 }
-
 
 function x_closeStandAlonePage(event) {
 	$.featherlight.defaults.beforeClose = $.noop;
@@ -2910,62 +2627,6 @@ function x_closeStandAlonePage(event) {
 	}
 }
 
-function x_changePageStep2(x_gotoPage) {
-	if (x_params.theme != undefined) {
-		x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
-			x_changePageStep3(x_gotoPage);
-		}, false, "theme_css", true);
-	}
-	else {
-		x_changePageStep3(x_gotoPage);
-	}
-}
-
-function x_changePageStep3(x_gotoPage) {
-	if (x_params.theme != undefined) {
-		var css = document.getElementById('theme_css');
-		css.load = function () {
-			var i = 1;
-		};
-	}
-
-    if (x_params.theme != undefined && x_params.theme != "default") {
-        // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-        if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
-                x_changePageStep4(x_gotoPage);
-            }, true, "theme_responsive_css", true);
-        } else {
-            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
-                x_changePageStep4(x_gotoPage);
-            }, (x_params.responsive == "false"), "theme_responsive_css", true);
-        }
-    }
-    else {
-        x_changePageStep4(x_gotoPage);
-    }
-}
-
-function x_changePageStep4(x_gotoPage) {
-	// Check if saveSession button is styled
-	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
-		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
-		if (!x_varSaveSessionBtnIsStyled) {
-			if ($('#savesessionbtn_css').length == 0) {
-				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
-			}
-		}
-	}
-    if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
-        x_insertCSS(x_evalURL(x_params.stylesheet), function () {
-            x_changePageStep5(x_gotoPage);
-        }, false, "lo_sheet_css");
-    }
-    else {
-        x_changePageStep5(x_gotoPage);
-    }
-}
-
 function x_endPageTracking(pagechange, x_gotoPage) {
     if (pagechange == undefined) {
 		pagechange = false;
@@ -2974,7 +2635,7 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 		x_gotoPage = -1;
 	}
 	// End page tracking of x_currentPage
-    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
+    if (x_currentPage != -1 && !XENITH.PAGEMENU.isThisMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {
         var pageObj;
 
@@ -2999,52 +2660,25 @@ function x_endPageTracking(pagechange, x_gotoPage) {
     }
 }
 
-function x_changePageStep5(x_gotoPage) {
-	x_setMaxWidth();
-
-	if (x_params.styles != undefined || x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
-        if ($('#lo_css').length == 0) {
-
-			var lightboxStyle = '',
-				loStyles = x_params.styles != undefined ? x_params.styles : '';
-
-			if (x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
-				lightboxColour = x_params.lightboxColour != undefined ? x_params.lightboxColour.substr(x_params.lightboxColour.length - 6) : '000000';
-				lightboxOpacity = x_params.lightboxOpacity != undefined ? x_params.lightboxOpacity / 100 : '0.8';
-
-				var rgbaColour = x_hexToRgb(lightboxColour, lightboxOpacity);
-
-				lightboxStyle = '.featherlight:last-of-type { background:' + rgbaColour + ';}';
+function x_changePageStep2(x_gotoPage) {
+	// Check if saveSession button is styled
+	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
+		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
+		if (!x_varSaveSessionBtnIsStyled) {
+			if ($('#savesessionbtn_css').length == 0) {
+				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
 			}
+		}
+	}
 
-            $x_head.append('<style type="text/css" id="lo_css">' + lightboxStyle + ' ' + loStyles + '</style>');
-        }
-    }
-
-    // If special_theme_css does not exist yet, create a disabled special_theme_css
-
-    if (x_specialTheme != undefined && x_specialTheme != '') {
-        x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
-            x_changePageStep5a(x_gotoPage);
-        }, false, "special_theme_css", true);
-    }
-    else
-    {
-        x_insertCSS(x_themePath + 'blackonyellow/blackonyellow.css', function () {
-            x_changePageStep5a(x_gotoPage);
-        }, true, "special_theme_css", true);
-    }
-}
-
-function x_changePageStep5a(x_gotoPage) {
-
+	x_setMaxWidth();
     var prevPage = x_currentPage;
 
-    // disable onload of #special_theme_css
-    $('#special_theme_css').bind('load', function()
+    // disable onload of #special_theme_css & special_theme_responsive_css
+    $('#special_theme_css, #special_theme_responsive_css').bind('load', function()
     {
         // Do nothing
-    });
+    })
 
     // End page tracking of x_currentPage
     x_endPageTracking(true, x_gotoPage);
@@ -3114,10 +2748,10 @@ function x_changePageStep5a(x_gotoPage) {
 	}
 
     // change page title and add narration / timer before the new page loads so $x_pageHolder margins can be sorted - these often need to be right so page layout is calculated correctly
-    if (x_isMenu()) {
+    if (XENITH.PAGEMENU.isThisMenu()) {
         pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 
-		x_changePageStep6();
+		x_changePageStep3();
 
     } else {
 		// if page is in a chapter then there is the option to include the chapter title before the page title on the header bar
@@ -3160,7 +2794,7 @@ function x_changePageStep5a(x_gotoPage) {
 			x_passwordPage(pswds);
 		} else {
 			x_addCountdownTimer();
-			x_addNarration('x_changePageStep6', '');
+			x_addNarration('x_changePageStep3', '');
 		}
     }
 }
@@ -3175,7 +2809,7 @@ function x_passwordPage(pswds) {
 			pageTitle += ' <span class="alert">' + x_getLangInfo(x_languageData.find("password")[0], "pageSupport", "In live projects, an access code must be entered to view this page") + ': ' + pswds + '</span>';
 
 			x_addCountdownTimer();
-			x_addNarration('x_changePageStep6', '');
+			x_addNarration('x_changePageStep3', '');
 
 		} else {
 
@@ -3196,15 +2830,13 @@ function x_passwordPage(pswds) {
 			$("#x_pageDiv").show();
 			$x_pageDiv.css("height", "100%");
 			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
-			let pageHeight = $("#x_pageHolder").innerHeight() - paddingBlock;
 			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 
 			var $pswdBlock = $('#x_page' + x_currentPage);
 			$pswdBlock.css('height', '100%');
-			$pswdBlock.html('<div class="x_pswdBlock" style="height: 100%"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+			$pswdBlock.html('<div class="x_pswdBlock" style="height: 100%"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError" aria-live="assertive"></div></div>');
 			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
-			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
 			let type = x_currentPageXML.getAttribute('passwordType');
 			if(type == "vault"){
 					$pswdBlock.find('.x_pswdInput').html('<div class="vault"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
@@ -3218,7 +2850,7 @@ function x_passwordPage(pswds) {
 					$pswdBlock.find('.x_pswdInput').html('<div class="vault numeric"><div class="vault-door-frame"><div class="vault-door"></div></div></div>');
 					$pswdBlock.find('.vault-door')
 							.append('<input type="text" id="x_pagePswd" name="x_pagePswd" style="grid-area: input;" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '">')
-							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;"> </button>')
+							.append('<button class="numberbtn" style="grid-area: one;">1</button><button class="numberbtn" style="grid-area: two;">2</button><button class="numberbtn" style="grid-area: three;">3</button><button class="numberbtn" style="grid-area: four;">4</button><button class="numberbtn" style="grid-area: five;">5</button><button class="numberbtn" style="grid-area: six;">6</button><button class="numberbtn" style="grid-area: seven;">7</button><button class="numberbtn" style="grid-area: eight;">8</button><button class="numberbtn" style="grid-area: nine;">9</button><button class="numberbtn" style="grid-area: zero;">0</button><button id="resetbtn" style="grid-area: reset;">AC</button><button style="grid-area: unused;" disabled> </button>')
 							.append('<button id="x_pagePswdBtn" style="grid-area: button;">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
 
 					$pswdBlock.find('.numberbtn').on('click', function(){
@@ -3251,9 +2883,9 @@ function x_passwordPage(pswds) {
 						$x_pageDiv.css("height", "");
 						$pswdBlock.remove();
 						x_addCountdownTimer();
-						x_addNarration('x_changePageStep6', '');
+						x_addNarration('x_changePageStep3', '');
 					} else {
-						$pswdBlock.find('.x_pswdError').show();
+						$pswdBlock.find('.x_pswdError').html(x_currentPageXML.getAttribute('passwordError'));
 					}
 				});
 
@@ -3261,7 +2893,7 @@ function x_passwordPage(pswds) {
 				if (e.which == 13) {
 					$pswdBlock.find('#x_pagePswdBtn').click();
 				} else {
-					$pswdBlock.find('.x_pswdError').hide();
+					$pswdBlock.find('.x_pswdError').html('');
 				}
 			});
 
@@ -3273,11 +2905,11 @@ function x_passwordPage(pswds) {
 
 	} else {
 		x_addCountdownTimer();
-		x_addNarration('x_changePageStep6', '');
+		x_addNarration('x_changePageStep3', '');
 	}
 }
 
-function x_changePageStep6() {
+function x_changePageStep3() {
     $("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
@@ -3287,7 +2919,7 @@ function x_changePageStep6() {
 
 	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
-		if (!x_isMenu() && x_getIntroInfo(x_currentPageXML) != false) {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_getIntroInfo(x_currentPageXML) != false) {
 			$x_pageIntroBtn.show();
 		} else {
 			$x_pageIntroBtn.hide();
@@ -3299,7 +2931,7 @@ function x_changePageStep6() {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
         var label = $('<div>').html(pageTitle).text();
-        if (x_currentPageXML != "menu") {
+        if (!XENITH.PAGEMENU.isThisMenu()) {
 			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
 			{
 				label = x_currentPageXML.getAttribute("trackinglabel");
@@ -3316,7 +2948,7 @@ function x_changePageStep6() {
 		var pt = x_pageInfo[x_currentPage].type;
 		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
 
-		if (!x_isMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
@@ -3324,7 +2956,7 @@ function x_changePageStep6() {
 		// show page background & hide main background
 		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
 			$(".pageBg#pageBg" + x_currentPage).show();
-			if (!x_isMenu() && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+			if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
 						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -3358,7 +2990,7 @@ function x_changePageStep6() {
         }
 
 		// updates variables as their values might have changed
-		if (x_currentPageXML != "menu" && x_currentPageXML.getAttribute('varUpdate') != 'false') {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute('varUpdate') != 'false') {
 			// variables on screen
 			if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && $('.x_var').length > 0) {
 				XENITH.VARIABLES.updateVariable();
@@ -3381,14 +3013,17 @@ function x_changePageStep6() {
             }
         }
 
-		$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
+		// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
+		XENITH.COLOURCHANGER.disableBespokeCSS();
 
 		x_focusPageContents(false);
 
 		// show page introduction immediately if set to always auto open
-		if (!x_isMenu() && $x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
+		if (!XENITH.PAGEMENU.isThisMenu() && $x_pageIntroBtn != undefined && x_currentPageXML.getAttribute("introShow") == 'always') {
 			$x_pageIntroBtn.click();
 		}
+
+		XENITH.SIDEBAR.pageLoad();
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
@@ -3403,7 +3038,7 @@ function x_changePageStep6() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
-			if (!x_isMenu()) {
+			if (!XENITH.PAGEMENU.isThisMenu()) {
 				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
 				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 					x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
@@ -3414,13 +3049,13 @@ function x_changePageStep6() {
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
             var label = $('<div>').html(pageTitle).text();
-            if (!x_isMenu() && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
 			var grouping = null
-			if (!x_isMenu() && x_currentPageXML.getAttribute("grouping") != null && x_currentPageXML.getAttribute("grouping") != "")
-			{
+				if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("grouping") != null && x_currentPageXML.getAttribute("grouping") != "")
+				{
 				grouping = x_currentPageXML.getAttribute("grouping");
 			}
 			XTEnterPage(x_currentPage, label, grouping);
@@ -3437,7 +3072,7 @@ function x_changePageStep6() {
 		}
 
 		// show page background & hide main background
-		if (!x_isMenu() && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -3530,7 +3165,7 @@ function x_setUpLightBox() {
 
 				if (caption != undefined && caption != '') {
 					this.$instance.find('.featherlight-content img').attr('alt', caption);
-					
+
 					// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
 					// captions can be turned on at LO or page level
 					if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
@@ -3608,12 +3243,12 @@ function x_setUpPage() {
     $("#x_pageDiv div").scrollTop(0);
     $x_mobileScroll.scrollTop(0);
 	
-	var pageIndex = $.inArray(x_currentPage, x_normalPages);
-	
+	const pageIndex = $.inArray(x_currentPage, x_normalPages);
+	const srOnly = '<span class="sr-only">' + x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length + '</span>';
+	const notSr = '<span aria-hidden="true">' + (pageIndex+1) + " / " + x_normalPages.length + '</span>';
+
 	if (pageIndex != -1) {
-		$x_pageNo
-			.html((pageIndex+1) + " / " + x_normalPages.length)
-			.attr("title", x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length);
+		$x_pageNo.html(srOnly + notSr);
 	} else {
 		// standalone page
 		$x_pageNo
@@ -3621,13 +3256,15 @@ function x_setUpPage() {
 			.attr("title", '');
 	}
 
-	if (x_isMenu()) {
-		$x_menuBtn
-			.button("disable")
-			.removeClass("ui-state-focus")
-			.removeClass("ui-state-hover");
-	} else {
-		$x_menuBtn.button("enable");
+	if ($x_menuBtn.length > 0) {
+		if (XENITH.PAGEMENU.isThisMenu()) {
+			$x_menuBtn
+				.button("disable")
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+		} else {
+			$x_menuBtn.button("enable");
+		}
 	}
 	
     if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
@@ -3650,8 +3287,8 @@ function x_setUpPage() {
     }
 
 	// navigation buttons can be disabled on a page by page basis
-	if (!x_isMenu() && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
-		if (x_currentPageXML.getAttribute("home") == "false") {
+	if (!XENITH.PAGEMENU.isThisMenu() && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
+		if ($x_menuBtn.length > 0 && x_currentPageXML.getAttribute("home") == "false") {
 			$x_menuBtn.button("disable");
 		}
 		if (x_currentPageXML.getAttribute("back") == "false") {
@@ -3665,9 +3302,9 @@ function x_setUpPage() {
 				$x_saveSessionBtn.button("disable");
 			}
 		}
-	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
+	} else if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
-		if (x_currentPageXML.getAttribute("navSetting") != "all") {
+		if ($x_menuBtn.length > 0 && x_currentPageXML.getAttribute("navSetting") != "all") {
 			$x_menuBtn.button("disable");
 		}
 		if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
@@ -3692,7 +3329,7 @@ function x_setUpPage() {
 		// show the video splash screen before the project is shown
 		if (x_params.splashVideo != undefined && x_params.splashVideo != "" && x_params.splashVideo.toLowerCase().indexOf(".mp4") != -1 && (x_params.splashShow == "always" || $.inArray(x_currentPage, x_normalPages) == 0)) {
 			// splash videos always auto-play with hidden controls and are closed when the video is finished
-			lb = $.featherlight('<div id="splashVideo"></div>', { openSpeed: 0, closeSpeed: 400 });
+			$.featherlight('<div id="splashVideo"></div>', { openSpeed: 0, closeSpeed: 400 });
 
 			$('#splashVideo').parents('.featherlight-content').addClass('splashVideo');
 
@@ -3719,6 +3356,8 @@ function x_setUpPage() {
 		}
 
 		$x_mainHolder.css("visibility", "visible");
+		x_updateCss2(true);
+		XENITH.SIDEBAR.show();
 
 		if (x_params.backgroundGrey == "true") {
 			$("#x_mainBg").show();
@@ -3760,7 +3399,7 @@ function x_pageLoaded() {
         $this.attr(attr_name, x_evalURL(val));
     });
 
-	if (!x_isMenu()) {
+	if (!XENITH.PAGEMENU.isThisMenu()) {
 		x_setUpLightBox();
 		
 		// plugin files are loaded after page is loaded
@@ -3785,7 +3424,7 @@ function x_pageLoaded() {
 	}
 
 	// Check if page headerBgColour/headerTextColour has been set
-	if (!x_isMenu() && ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != ""))) {
+	if (!XENITH.PAGEMENU.isThisMenu() && ((x_currentPageXML.getAttribute("headerBgColor") != undefined && x_currentPageXML.getAttribute("headerBgColor") != "") || (x_currentPageXML.getAttribute("headerTextColor") != undefined && x_currentPageXML.getAttribute("headerTextColor") != ""))) {
 		const bgCol = x_currentPageXML.getAttribute("headerBgColor");
 		const textCol = x_currentPageXML.getAttribute("headerTextColor");
 		let customHeaderStyle = '';
@@ -3796,10 +3435,12 @@ function x_pageLoaded() {
 		if (textCol != undefined && textCol != "") {
 			customHeaderStyle += 'color: ' + formatColour(x_currentPageXML.getAttribute('headerTextColor')) + ';';
 		}
-		customHeaderStyle = '<style id="customHeaderStyle" type="text/css">#x_headerBlock {' + customHeaderStyle + '}</style>';
+		customHeaderStyle = '<style id="customHeaderStyle">#x_headerBlock {' + customHeaderStyle + '}</style>';
 		$('#x_page' + x_currentPage).append(customHeaderStyle);
 	}
-	$("#customHeaderStyle").prop('disabled', x_specialTheme !== '');
+
+	// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
+	XENITH.COLOURCHANGER.disableBespokeCSS();
 
 	XENITH.VARIABLES.handleSubmitButton();
 
@@ -3812,7 +3453,7 @@ function x_pageLoaded() {
 	var config = $.featherlight.defaults;
     $(config.selector, config.context).featherlight();
 
-	doPercentage();
+	XENITH.PROGRESSBAR.update();
 	
 	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
 	x_focusPageContents(pagesLoaded <= 1 ? true : false);
@@ -3824,25 +3465,13 @@ function x_pageLoaded() {
 			$x_pageIntroBtn.click();
 		}
 	}
+
+	XENITH.SIDEBAR.pageLoad(true);
 }
 
 //convert picker color to #value
 function formatColour(col) {
 	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
-}
-
-// detect page loaded change and update progress bar
-function doPercentage() {
-    var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0;
-	
-	// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
-    var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
-		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.viewed !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
-
-	var progress = Math.round((pagesViewed * 100) / totalPages);
-
-	$(".pbBar").css({"width": progress + "%"});
-	$('.pbTxt').html(progress + "% " + x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE"));
 }
 
 // function adds / reloads narration bar above main controls on interface
@@ -3908,14 +3537,15 @@ function x_addCountdownTimer() {
 		pageType = (pageType === 'text') ? 'simpleText' : pageType
 
         if (x_countdownTimer > 0) {
-            $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
+            $("#x_footerBlock #x_pageTimer .x_time").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
          	// If page model wants timer tick to know then pass value
         	if (typeof window[ pageType ].onTimerTick === "function") window[ pageType ].onTimerTick(x_countdownTimer);
         }
         else {
             window.clearInterval(x_timer);
-            $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
+			$("#x_footerBlock #x_pageTimer .x_time").html("");
+            $("#x_footerBlock #x_pageTimer .x_timeUp").html(x_timerLangInfo[1]);
 
         	// If page model wants to know then pass event
         	if (typeof window[ pageType ].onTimerZero === "function") window[ pageType ].onTimerZero();
@@ -3942,9 +3572,9 @@ function x_addCountdownTimer() {
     var x_countdownTimer;
     if ((x_currentPageXML.getAttribute("showTimer") == null || x_currentPageXML.getAttribute("showTimer") == "true") && (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "")) {
         clearInterval(x_timer);
-        $("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
+        $("#x_footerBlock div:first").before('<div id="x_pageTimer"><span role="timer" class="x_time"></span><span class="x_timeUp" aria-live="assertive"></span></div>');
         x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
-        $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
+        $("#x_footerBlock #x_pageTimer .x_time").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
         x_timer = setInterval(x_countdownTicker, 1000);
     }
 }
@@ -4051,12 +3681,11 @@ function x_loadPageBg(loadModel) {
 }
 
 // function sorts out css that's dependant on screensize
-function x_updateCss(updatePage) {
+function x_updateCss(updatePage, updateSidebar) {
 	if (updatePage != false) {
-		
-		if ($('#x_sideBar').length > 0) {
-			$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
-				.width($x_body.width() - $('#x_sideBar').width() + 1);
+
+		if (updateSidebar !== false && XENITH.SIDEBAR.sideBarType != undefined) {
+			XENITH.SIDEBAR.setWidth(true);
 		}
 		
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
@@ -4079,7 +3708,7 @@ function x_updateCss(updatePage) {
 			
 		}
 	}
-	
+
 	x_updateCss2(updatePage);
 }
 
@@ -4123,7 +3752,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
             if (x_dialogInfo[i].built != false) {
                 $x_body.append(x_dialogInfo[i].built);
 
-                if (load != undefined && type != "menu") {
+                if (load != undefined && type !== "menu" && type !== "colourChanger") {
                     x_dialogInfo[i].built.children(".x_popupDialog").html(load);
 					x_dialogInfo[i].built.find('.ui-dialog-title').html(title);
                 }
@@ -4138,7 +3767,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
 				}
 
             } else {
-                $x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
+                $x_body.append('<div id="x_' + type + '" class="x_popupDialog" tabindex="0"></div>');
 
                 var $x_popupDialog = $("#x_" + type);
                 $x_popupDialog
@@ -4176,7 +3805,9 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     $x_popupDialog.html(load);
 
 					if (type == "menu") {
-						XENITH.PAGEMENU.init($("#tocMenuDialog"));
+						XENITH.PAGEMENU.build($("#tocMenuDialog"));
+					} else if (type == "colourChanger") {
+						XENITH.COLOURCHANGER.build($("#colourChangerDialog"));
 					}
 
                     x_setDialogSize($x_popupDialog, position);
@@ -4286,15 +3917,10 @@ function x_getLangInfo(node, attribute, fallBack) {
     return string;
 }
 
-// function returns whether current page is menu page
-function x_isMenu() {
-	return x_currentPage == 0 && x_pageInfo[0].type == "menu";
-}
-
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
     var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2", "passwordInfo", "passwordError"],
-        i, j, len;
+        i, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
@@ -4463,21 +4089,23 @@ function x_insertCSS(href, func, disable, id, keep) {
 		}
 	}
 
-	if (element != null)
-    {
-        // Update element
+	if (element != null) {
+        // update element e.g. page model css files which will be replaced with the new page model's css file
         if (donotreplace != true) {
             var parent = element.parentNode;
             parent.replaceChild(css, element);
-        }
-        else
-        {
+        } else {
+			// this has already loaded and we don't need to load again
             if (func != undefined) func();
         }
     }
     else {
         // Create element
-        document.getElementsByTagName("head")[0].appendChild(css);
+		if (id == "page_model_css" && $("#theme_css").length > 0) {
+			$(css).insertBefore($("#theme_css"));
+		} else {
+			document.getElementsByTagName("head")[0].appendChild(css);
+		}
     }
 }
 
@@ -4772,6 +4400,9 @@ function x_introMediaMetadata($video, wh) {
 	$x_window.resize();
 	$('.featherlight-content').removeClass('max');
 }
+
+
+// ================== ****** ==================
 
 
 // ***** VARIABLES *****
@@ -5476,7 +5107,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					label: x_params.glossaryLabel != undefined && x_params.glossaryLabel != "" ? x_params.glossaryLabel : x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 					text:	false
 				})
-				.attr("aria-label", $x_glossaryBtn.attr("title") + " " + x_params.dialogTxt)
+				.attr("aria-label", $x_glossaryBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.glossaryTarget == "lightbox") {
 						
@@ -5608,7 +5239,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		tableData += "</table>";
 		
 		if ($("#glossaryItems").parents('.featherlight').length > 0) {
-			tableData = '<div class="glossaryHolder">' + tableData + '</div>';
+			tableData = '<div class="glossaryHolder" tabindex="0">' + tableData + '</div>';
 		}
 		
 		$("#glossaryItems").append(tableData);
@@ -5729,20 +5360,40 @@ return parent; })(jQuery, XENITH || {});
 // 	- menu page (when navigation set to menu or menu with page controls)
 //  - dialog (when navigation not set to menu)
 //  - lightbox (when navigation not set to menu and TOC opt property used to change to 'open in' lightbox)
+//  - sidebar (when sidebar opt property is used and 'display' is set to 'table of contents')
 var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
+	// declare global variables
+	let menuPage = false // is the 1st page a menu page?
 
 	// Declare local variables
 	let $menuHolder;
 	let $menuItems;
 	let pageNumOffset = 0;
 
-	// function sets up the TOC page menu
-	init = function ($parent) {
-		// 1st page is menu page - ignore this when making page list
-		if (x_pageInfo[0].type == "menu") {
-			pageNumOffset = 1;
-		}
+	// function does some set up required before TOC will be built later
+	function init(type) {
+		if (type == "page") {
+			// add info about menu page to page arrays (if navigation setting means a menu page exists)
+			x_pages.splice(0, 0, "menu");
+			x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
 
+			// adjust normal page indexes to take into account menu page
+			for (var i=0; i<x_normalPages.length; i++) {
+				x_normalPages.splice(i, 1, x_normalPages[i]+1);
+			}
+			x_normalPages.splice(0, 0, 0);
+
+			pageNumOffset = 1;
+			XENITH.PAGEMENU.menuPage = true;
+
+		} else {
+			// prepare for TOC to be shown in dialog
+			x_dialogInfo.push({type: 'menu', built: false});
+		}
+	}
+
+	// function builds the TOC page menu
+	function build($parent) {
 		$menuHolder = $('<div id="menuHolder"></div>').appendTo($parent);
 		$menuItems = $('<fieldset id="menuItems"></fieldset>').appendTo($menuHolder);
 		const $menuItem = $('<button class="menuItem"/>');
@@ -5823,7 +5474,6 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 				$this = $(this);
 				$this.removeClass("ui-state-focus");
 				$this.removeClass("ui-state-hover");
-
 				x_changePage(x_normalPages[$this.data("pageIndex") + pageNumOffset]);
 
 				// close lightbox
@@ -5833,7 +5483,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			});
 
 		// 1st page is menu page so this is being loaded from a page model
-		if (x_pageInfo[0].type == "menu") {
+		if (XENITH.PAGEMENU.menuPage === true) {
 			// calls function in menu page model to finish set up of menu page
 			// there are extra things that might need to be added to page which aren't required when TOC is in lightbox, dialog or sidebar
 			menu.setUpMenuPage();
@@ -5841,24 +5491,37 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 		} else { // menu is in dialog or lightbox
 			// lightbox
 			if ($('#menuHolder').parents('.featherlight').length > 0) {
-				$('#menuHolder').prepend('<h1 id="x_introH1">' + (x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents")) + '</h1>');
-
-				$('#tocMenuLightBox')
-					.height("100%")
-					.css('overflow', 'auto');
+				$('#menuHolder').prepend('<h1 id="x_introH1">' + (x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents")) + '</h1>');
+				$menuItems.height($('#tocMenuLightBox').height() - $("#x_introH1").outerHeight());
 			}
 		}
 
 		XENITH.PAGEMENU.tickViewed();
 
-		if (x_pageInfo[0].type != "menu") {
+		if (XENITH.PAGEMENU.menuPage === false) {
 			XENITH.PAGEMENU.showCurrent();
 		}
-	},
+	}
+
+	function buildDialog() {
+		x_openDialog(
+			"menu",
+			x_params.tocLabel != undefined && x_params.tocLabel != "" ? x_params.tocLabel : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+			x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+			null,
+			'<div id="tocMenuDialog"></div>',
+			function () {
+				$x_menuBtn
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			}
+		);
+	}
 
 	// function highlights the current page in the TOC
 	// not called when the TOC is shown on a menu page
-	showCurrent = function() {
+	function showCurrent() {
 		$menuItems.find(".current").removeClass("current");
 		const $currentItem = $menuItems.find(".menuItem:eq(" + x_normalPages.indexOf(x_currentPage) + ")");
 
@@ -5866,34 +5529,46 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 		const $thisChapter = $currentItem.parents(".chapterHolder ");
 		if ($thisChapter.length > 0) {
 			// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
-			if (x_params.tocTarget !== "sidebar") {
-				$thisChapter.accordion({"animate":0});
+			if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
+				$thisChapter.accordion({"animate": 0});
 			}
 
 			$thisChapter.accordion({"active": 0}).find(".chapterItem").addClass("current");
 
 			// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
-			if (x_params.tocTarget !== "sidebar") {
+			if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
 				$thisChapter.accordion({"animate": {}});
 			}
 		}
 
 		// close all other chapters
 		const allChapters = $menuItems.find(".chapterHolder");
-		allChapters.each(function() {
+		allChapters.each(function () {
 			if ($thisChapter.length === 0 || !$thisChapter.is($(this))) {
-				// don't show close animation & then immediately reinstate it
-				$(this).accordion({"animate": 0, "active": false});
-				$(this).accordion({"animate": {}});
+				// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
+				if (XENITH.SIDEBAR.sideBarType !== "toc") {
+					$(this).accordion({"animate": 0});
+				}
+
+				$(this).accordion({"active": false});
+
+				// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
+				if (XENITH.SIDEBAR.sideBarType !== "toc") {
+					$(this).accordion({"animate": {}});
+				}
 			}
 		});
 
+		$currentItem.addClass("current");
+
 		// focus on current page button & this will also ensure it's scrolled into view
-		$currentItem.addClass("current").focus();
-	},
+		if (XENITH.SIDEBAR.sideBarType !== "toc") {
+			$currentItem.focus();
+		}
+	}
 
 	// function checks the viewed pages in the TOC
-	tickViewed = function() {
+	function tickViewed() {
 		if (x_params.pageTick !== "false") {
 			// tick all pages which have been viewed
 			$menuItems.find(".menuItem").each(function(i) {
@@ -5908,12 +5583,1228 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 				}
 			});
 		}
+	}
+
+	// function returns whether current page is a menu page
+	function isThisMenu() {
+		return x_currentPage == 0 && XENITH.PAGEMENU.menuPage === true;
+	}
+
+	// make some public methods
+	self.menuPage = menuPage;
+	self.init = init;
+	self.build = build;
+	self.buildDialog = buildDialog;
+	self.showCurrent = showCurrent;
+	self.tickViewed = tickViewed;
+	self.isThisMenu = isThisMenu;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** SIDE BAR *****
+var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
+	// declare global variables
+	let sideBarType; // what should the sidebar contain? (toc or btns)
+
+	// declare local variables
+	let sideBar = false; // should a sidebar be built?
+	const x_sideBarBtns = [];
+	const sidebarBtnIcons = [
+		{name: 'sideBarHideLeft',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'},		// side bar hide (bar on left)
+		{name: 'sideBarHideRight',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar hide (bar on right)
+		{name: 'sideBarShowLeft',	defaultIconClass:'fa fa-angle-double-right',		custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-right'},	// side bar show (bar on left)
+		{name: 'sideBarShowRight',	defaultIconClass:'fa fa-angle-double-left',			custom: 'sideBarBtnIcons',	defaultFA: 'fas fa-angle-double-left'}		// side bar show (bar on right)
+	];
+	let $x_sideBar;
+	let $x_sideBarHolder;
+	let $x_sideBarToggleBtn;
+	let openIcon, openLabel, closeIcon, closeLabel;
+	const minW = 30, borderW = 1;
+	let maxW = 100;
+	const absoluteMaxW = 300; // the max width of the sidebar when not shown as overlay (on smaller mobile devices) - this is also checked to ensure it's not > 50% of whole screen
+	let overlay;
+
+	// determines whether a sidebar will be built and what it will contain
+	function init() {
+		if (x_params.sideBar == 'true') {
+			if (x_params.sideBarTocList == "true") {
+				// sidebar containing TOC will be built if more than one page
+				if (x_normalPages.length > 1) {
+					sideBar = true;
+					XENITH.SIDEBAR.sideBarType = "toc";
+
+					x_params.tocTarget = "sidebar";
+					if (x_params.navigation == "Menu" || x_params.navigation == "Menu with Page Controls") {
+						x_params.navigation = "Linear";
+					}
+
+					// remove the menu button from footer bar unless navigation type is historic (then the menu buttons acts as a home button which returns you to 1st page)
+					if (x_params.navigation != "Historic") {
+						$("#x_menuBtn").remove();
+					}
+				}
+			} else {
+				// work out what buttons will show on side bar
+				// project level buttons
+				if (x_params.sbToC == 'true') {
+					x_sideBarBtns.push('toc');
+				}
+				if (x_params.sbProjectIntro == 'true' && x_params.intro != undefined && $.trim(x_params.intro) != '') {
+					x_sideBarBtns.push('intro');
+				}
+				if (x_params.sbProjectHelp == 'true' && x_params.nfo != undefined && $.trim(x_params.nfo) != '') {
+					x_sideBarBtns.push('help');
+				}
+				if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
+					x_sideBarBtns.push('glossary');
+				}
+				if (x_params.sbAccessibility == 'true' && !XENITH.COLOURCHANGER.hidden) {
+					x_sideBarBtns.push('accessibility');
+				}
+
+				// page level buttons (what the button does will change on each page)
+				// does at least one page in project have some page info added?
+				if (x_params.sbPageIntro == 'true') {
+					for (let i=0; i<x_pages.length; i++) {
+						if (x_pageInfo[i].type != "menu") {
+							if (x_params.sbPageIntro == 'true' && (
+								(x_pages[i].getAttribute('introType') == 'text' && $.trim(x_pages[i].getAttribute('pageIntro')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'image' && $.trim(x_pages[i].getAttribute('introImg')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'video' && $.trim(x_pages[i].getAttribute('introVideo')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'url' && $.trim(x_pages[i].getAttribute('introURL')) != '') ||
+								(x_pages[i].getAttribute('introType') == 'file' && $.trim(x_pages[i].getAttribute('introFile')) != '')
+							)) {
+								x_sideBarBtns.push('pageIntro');
+								break;
+							}
+						}
+					}
+				}
+
+				// sidebar containing interface buttons will be built if more than one button
+				if (x_sideBarBtns.length > 0) {
+					sideBar = true;
+					XENITH.SIDEBAR.sideBarType = "btns";
+				}
+			}
+		}
+
+		if (sideBar === true) {
+			// force full screen mode
+			if (x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
+				x_params.displayMode = 'full screen';
+			}
+			if (x_params.fixDisplay != undefined) {
+				x_params.fixDisplay = undefined;
+			}
+
+			// extend the x_btnIcons array to add all the sidebar specific buttons
+			x_btnIcons =  x_btnIcons.concat(sidebarBtnIcons);
+
+			// full screen sidebar overlay is used when viewed on smaller screens
+			overlay = x_browserInfo.mobile && (XENITH.SIDEBAR.sideBarType == "toc" || (x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || x_params.sideBarSize == 'large') ? true : false;
+		}
+	}
+
+	// build the sidebar if needed
+	function build() {
+		if (sideBar === true) {
+			// if this is a standalone page opening in a light box, don't show the side bar (this can't be in init function as it can't be established when that is called whether it is or not)
+			if (x_pageInfo[x_startPage.ID] != undefined && x_pageInfo[x_startPage.ID].standalone) {
+				sideBar = false;
+			} else {
+				// build the sidebar
+				$x_sideBar = $('<div id="x_sideBar"></div>');
+				$x_sideBarHolder = $('<div id="' + (XENITH.SIDEBAR.sideBarType == "toc" ? "x_sideBarTocHolder" : "x_sideBarBtnHolder" ) + '"></div>').appendTo($x_sideBar);
+				$x_sideBarToggleBtn = $('<button id="x_sideBarToggleBtn"></button>').prependTo($x_sideBar);
+
+				// the width of the sidebar depends on the sidebar contents
+				if (x_params.sideBarSize == 'large' || XENITH.SIDEBAR.sideBarType == "toc") {
+					$x_sideBar.addClass('sideBarLarge');
+				} else {
+					$x_sideBar.addClass('sideBarSmall');
+
+					if (x_params.sideBarBtnTxt != 'true') {
+						// small sidebar buttons with no text - only need a narrow sidebar
+						maxW = 60;
+					}
+				}
+
+				// sidebar can be on right or left of the screen
+				if (x_params.sideBarPosition == 'right') {
+					$x_sideBar.insertAfter($x_mainHolder);
+					$x_body.addClass('sb_right');
+				} else {
+					$x_sideBar.insertBefore($x_mainHolder);
+					$x_body.addClass('sb_left');
+				}
+				$x_sideBar.css("visibility", "hidden");
+
+				// sidebar open / close state
+				$x_sideBar.data('state', "open");
+
+				// set up the expand / collapse button at the top (or side) of the sidebar
+				// button labels can be set in editor but fall back to language file if not set
+				closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar");
+				openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar");
+				closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarHideRight';
+				})[0].iconClass : x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarHideLeft';
+				})[0].iconClass;
+				openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarShowRight';
+				})[0].iconClass : x_btnIcons.filter(function (icon) {
+					return icon.name === 'sideBarShowLeft';
+				})[0].iconClass;
+
+				$x_sideBarToggleBtn
+					.button({
+						icons: {primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon},
+						text: false
+					})
+					.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
+					.click(function () {
+						if ($x_sideBar.data('state') == 'open') {
+							XENITH.SIDEBAR.close();
+						} else {
+							open();
+						}
+					});
+
+				// add content to sidebar
+				if (XENITH.SIDEBAR.sideBarType == "btns") {
+					// add interface buttons
+					const btnTxt = x_params.sideBarBtnTxt == 'true' ? true : false;
+
+					if ($.inArray('toc', x_sideBarBtns) != -1) {
+						$x_menuBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('intro', x_sideBarBtns) != -1) {
+						$x_introBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('help', x_sideBarBtns) != -1) {
+						$x_helpBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('glossary', x_sideBarBtns) != -1) {
+						$x_glossaryBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('accessibility', x_sideBarBtns) != -1) {
+						$x_colourChangerBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
+						$x_pageIntroBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+
+					XENITH.SIDEBAR.setWidth();
+
+					// add table of contents
+				} else {
+					XENITH.PAGEMENU.build($x_sideBarHolder);
+					XENITH.SIDEBAR.setWidth();
+				}
+
+				sideBarHolderFixDimensions();
+
+				// collapse the sidebar when project first loads
+				if (x_params.sideBarShow == 'closed') {
+					XENITH.SIDEBAR.close(true);
+				}
+			}
+		}
+	}
+
+	// function shows the sidebar after the interface has finishd being set up - hidden until then to avoid flashes on loading content
+	function show() {
+		if (sideBar === true) {
+			$x_sideBar.css("visibility", "visible");
+		}
+	}
+
+	// fix the dimensions of the sideBarHolder so it will scroll if needed (height) & so contents doesn't move around when animating open / closed (width)
+	function sideBarHolderFixDimensions() {
+		$x_sideBarHolder
+			.height($x_window.height() - $x_sideBarToggleBtn.outerHeight(true) - ($x_sideBarHolder.outerHeight(true) - $x_sideBarHolder.height()))
+			.width($x_sideBarHolder.width());
+	}
+
+	// this sets the initial open max width of sidebar & makes sure that it's still appropriate after resize of screen
+	function setWidth(resize) {
+		// only set the width of the sidebar if it's currently open
+		if ($x_sideBar.data('state') == 'open') {
+
+			// screen has been resized - remove fixed widths so ideal button widths can be recalculated
+			if (resize) {
+				$x_sideBar.width("auto");
+				$x_sideBarHolder.width("auto");
+			}
+
+			if ((x_params.sideBarSize == 'small' && x_params.sideBarBtnTxt == 'true') || XENITH.SIDEBAR.sideBarType == "toc") {
+				let widestBtn = 0;
+
+				$x_sideBarHolder.find('button').each(function () {
+					const visible = $(this).is(":visible");
+					if (!visible) {
+						$(this).parents(".chapterPageHolder").show();
+					}
+					widestBtn = Math.max(widestBtn, Math.ceil($(this).outerWidth()));
+					if (!visible) {
+						$(this).parents(".chapterPageHolder").hide();
+					}
+				});
+
+				maxW = Math.min(widestBtn + ($x_sideBarHolder.outerWidth(true) - $x_sideBarHolder.width()) + 5, Math.min(absoluteMaxW, $x_window.width() / 2));
+
+				if (XENITH.SIDEBAR.sideBarType == "btns") {
+					$x_sideBarHolder.find('button').width('90%');
+				}
+			}
+
+			if (overlay) {
+				// side bar fills screen when open on smaller screens
+				maxW = '100%';
+				$x_sideBar.width(maxW);
+				XENITH.SIDEBAR.resize(maxW);
+			} else {
+				$x_sideBar.width(maxW + 'px');
+				XENITH.SIDEBAR.resize(maxW);
+
+				// the text may overlap sidebar - make sure sidebar expands but without text forced to be on a single line
+				if ((x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') || XENITH.SIDEBAR.sideBarType == "toc") {
+
+					let widestBtn = 0;
+					$x_sideBarHolder.find('button').each(function () {
+						widestBtn = Math.max(widestBtn, $(this).outerWidth());
+					});
+
+					if ($x_sideBarHolder.width() < widestBtn) {
+						$x_sideBar.width('min-content');
+						maxW = Math.min(Math.min(absoluteMaxW, $x_window.width() / 2), $x_sideBar.width());
+						XENITH.SIDEBAR.resize(maxW);
+					}
+				}
+			}
+
+			if (resize) {
+				// resizing complete - re-fix the sidebar dimensions again
+				sideBarHolderFixDimensions();
+			}
+
+		} else if (resize) {
+			// the sidebar is closed - delay resizing until it later opens
+			$x_sideBar.data('recalculateW', true);
+			XENITH.SIDEBAR.resize();
+		}
+	}
+
+	// function finds an interface button in the sidebar button array and returns the index of it
+	function btnIndex(name) {
+		return $.inArray(name, x_sideBarBtns);
+	}
+
+	// expand the side bar
+	function open() {
+		if ($x_sideBar.data('state') == 'closed') {
+			$x_sideBar.data('state', 'open');
+
+			XENITH.SIDEBAR.resize(maxW, true, function () {
+				if (!overlay) {
+					if ($x_sideBar.data('recalculateW') === true) {
+						// the screen was resized when the sidebar was closed - resizing to an appropriate size is delayed until now
+						$x_sideBar.data('recalculateW', false);
+						XENITH.SIDEBAR.setWidth(true);
+					}
+					x_updateCss(true, false);
+				}
+			});
+
+			$x_sideBarToggleBtn.button({icons: {primary: closeIcon}, label: closeLabel, text: false});
+
+			$x_sideBarHolder.show();
+		}
+	}
+
+	// collapse the side bar
+	function close(firstLoad) {
+		if (sideBar === true) {
+			if ($x_sideBar.data('state') == 'open') {
+				$x_sideBar.data('state', 'closed');
+
+				XENITH.SIDEBAR.resize(minW, (firstLoad == true ? false : true), function () {
+					$x_sideBarHolder.hide();
+					if (!overlay) {
+						x_updateCss(true, false);
+					}
+				});
+
+				$x_sideBarToggleBtn.button({icons: {primary: openIcon}, label: openLabel, text: false});
+			}
+		}
+	}
+
+	// resize the sidebar & main content areas
+	function resize(width, animate, callback) {
+		if (sideBar === true) {
+			width = width == undefined ? $x_sideBar.width() : width;
+
+			if (animate === true) {
+				if (overlay === false) {
+					$x_sideBar.animate({width: width});
+					$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+						.animate({'width': $x_body.width() - width + borderW});
+
+					$x_mainHolder
+						.animate({['padding-' + x_params.sideBarPosition]: (width - borderW) + 'px'}, callback);
+
+				} else {
+					// the sidebar is overlaying the whole screen so don't change the size used for the main content
+					$x_sideBar.animate({width: width}, callback);
+				}
+
+			} else {
+				// no animation - either because project has only just loaded or project has been resized
+				$x_sideBar.width(width);
+
+				$x_headerBlock.add($x_pageHolder).add($x_footerBlock).add($x_background)
+					.width($x_body.width() - (width == "100%" ? minW : width) + borderW);
+
+				$x_mainHolder.css('padding-' + x_params.sideBarPosition, ((width == "100%" ? minW : width) - borderW) + 'px');
+
+				if (callback != undefined ) {
+					callback();
+				}
+			}
+		}
+	}
+
+	// function called when page loads - triggers highlight of current page in TOC & ticks page if it's a newly viewed page
+	function pageLoad(firstView) {
+		if (sideBar === true && XENITH.SIDEBAR.sideBarType == "toc") {
+			XENITH.PAGEMENU.showCurrent();
+
+			if (firstView === true) {
+				XENITH.PAGEMENU.tickViewed();
+			}
+		}
 	};
 
 	// make some public methods
+	self.sideBarType = sideBarType;
 	self.init = init;
-	self.showCurrent = showCurrent;
-	self.tickViewed = tickViewed;
+	self.build = build;
+	self.show = show;
+	self.btnIndex = btnIndex;
+	self.close = close;
+	self.resize = resize;
+	self.setWidth = setWidth;
+	self.pageLoad = pageLoad;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** PROGRESS BAR *****
+// Progress bar might be shown on:
+// - Footer bar (originally used progressBar in xwd but now is an option on new progressBarType - both will still work but progressBar deprecated so can no longer be added)
+// - Header bar (an option in progressBarType - can be above or below titles)
+// When in header bar, progress markers can be used to indicate pages, chapters or milestones
+// Milestone is an optional property that can be added to individual pages
+var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
+	// declare local variables
+	let progressBar = false;
+	let progressBarPosition = "footer";
+	let progressBarPercentage;
+	let progressSub = false;
+	let progressBarSpacing;
+	let pageDetails;
+	let totalPages;
+
+	// used when progress markers represent the ends of chapters/milestones
+	let chapters;
+	let chaptersCopy; // used to keep track of which pages are still to be viewed (viewed pages are removed from each chapter)
+	let extraPages; // pages outside of chapters
+	let milestones;
+
+	let $pbHolder;
+	let $pbContainer;
+	let $pbBar;
+	let $pbTxt;
+
+	// determines whether a progress bar is needed and where it will be built
+	function init() {
+		// don't create a progress bar for standalone pages opening in a lightbox
+		if (!x_pageInfo[x_startPage.ID].standalone || x_pages[x_startPage.ID].getAttribute('linkTarget') == "same") {
+
+			if (((x_params.progressBar != undefined && x_params.progressBar != "") || x_params.progressBarType == 'true') && x_params.hideFooter != "true") {
+				// add optional progress bar to the footer bar
+				// x_params.progressBar is deprecated but will still work for older projects that still use this
+				progressBar = true;
+				progressBarPosition = "footer";
+
+			} else if ((x_params.progressBarType == 'header1' || x_params.progressBarType == 'header2') && x_params.hideHeader != "true") {
+				// add progress bar to the header bar
+				progressBar = true;
+				progressBarPosition = x_params.progressBarType;
+
+				if (x_params.progressSub != "false") {
+					// additional options are only available when progress bar is in header bar as there is more space available
+					progressSub = x_params.progressSub; // pages|chapters|milestones
+					progressBarSpacing = x_params.progressBarSpacing; // true = spaced evenly, false = space according to no. pages (only for chapters|milestones)
+				}
+			}
+
+			if (progressBar === true) {
+				// is the progress bar shown alongside some % text?
+				if (x_params.progressBarPercentage === "false") {
+					progressBarPercentage = false;
+				} else {
+					if (x_params.progressBarTxt !== undefined && x_params.progressBarTxt !== "") {
+						progressBarPercentage = x_params.progressBarTxt;
+					} else {
+						progressBarPercentage = "{x}% " + x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+					}
+				}
+
+				// work out total no. pages from which progress % will be determined
+				if (progressSub != false) {
+					// standalone pages are always excluded when progress markers are used
+					pageDetails = $(x_pageInfo).filter(function (i) {
+						return this.type !== "menu" && this.standalone !== true;
+					});
+				} else {
+					// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
+					pageDetails = $(x_pageInfo).filter(function (i) {
+						return this.type !== "menu" && (this.standalone !== true || x_pages[i].getAttribute('reqProgress') === 'true');
+					});
+				}
+				totalPages = pageDetails.length;
+
+				XENITH.PROGRESSBAR.build();
+			}
+		}
+	}
+
+	// build the progress bar
+	function build() {
+		if (progressBarPosition == "footer") {
+			$pbHolder = $('<div id="x_footerProgress"></div>').appendTo('#x_footerBlock');
+
+			if (x_params.progressBar == "pBarNoCounter") {
+				// remove page counter
+				// this is only done in old projects where progress bar must be on footer as in newer projects this is unrelated to progress bar settings and is done elsewhere with x_params.pageCounter
+				$x_pageNo.remove();
+			}
+
+		} else {
+			$pbHolder = $('<div id="x_headerProgress">');
+
+			if (progressBarPosition == "header1") {
+				$pbHolder.prependTo($x_headerBlock).addClass("pbAboveHeader");
+			} else {
+				$pbHolder.appendTo($x_headerBlock).addClass("pbBelowHeader");
+			}
+		}
+
+		$pbContainer = $('<div class="pbContainer"></div>').appendTo($pbHolder);
+		$pbBar = $('<div class="pbPercent pbBar">&nbsp;</div>');
+
+		const $pbBarContainer = $('<div class="pbBarContainer"/>');
+		const $pbMarkerContainer = $('<div class="pbMarkerContainer"/>');
+
+		if (progressBarPosition != "footer" && progressSub != false) {
+			// add progress markers to the progress bar
+			// these can indicate pages, chapters or milestones
+
+			$pbBarContainer.appendTo($pbContainer);
+			$pbMarkerContainer.appendTo($pbContainer);
+
+			if (progressSub == "pages") {
+				// add a progress marker to indicate each page
+				// these will always be evenly spaced
+
+				for (let i=0; i<totalPages; i++) {
+					$pbBar.clone().addClass("sub").appendTo($pbBarContainer)
+						.css("left", (i-1)/(totalPages-1)*100 +  "%")
+						.width(100 / (totalPages-1) + "%")
+						.hide();
+
+					const $progressMarker = $('<div class="progressMarker"></div>');
+					$progressMarker.appendTo($pbMarkerContainer).css("left", "calc(" +  (i/(totalPages-1)*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
+				}
+
+			} else if (progressSub == "chapters") {
+				// add a progress marker to indicate the end of each chapter
+				// these might be evenly spaced or spaced in proportion to how many pages are in each chapter
+
+				// create an array of chapters - each item contains an array of page indexes for pages within that chapter
+				chapters = [];
+				extraPages = [];
+				for (let i=0; i<x_chapters.length; i++) {
+					chapters.push([]);
+				}
+
+				for (let i = 0; i < x_pages.length; i++) {
+					if (x_pageInfo[i].standalone != true && x_pages[i] !== "menu") {
+						// ignore standalone pages when getting index of page
+						const offset = i - x_normalPages.indexOf(i) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
+						if (x_pages[i].getAttribute("chapterIndex") !== null) {
+							chapters[x_pages[i].getAttribute("chapterIndex")].push(i - offset);
+						} else {
+							extraPages.push(i - offset);
+						}
+					}
+				}
+
+				if (extraPages.length > 0) {
+					// there are some pages which sit outside of chapters
+					// force spacing of pages within chapters to be consistent as otherwise it's hard to know what spacing to use for non-chapter pages
+					progressBarSpacing = "false";
+				}
+
+				// remove any chapters that don't contain any pages
+				chapters = chapters.filter(subArray => subArray.length > 0);
+
+				// these copies will have items removed as pages are viewed
+				chaptersCopy = JSON.parse(JSON.stringify(chapters));
+				const extraPagesCopy = [...extraPages];
+
+				if (chapters.length > 0) {
+					let count = 0;
+					let left;
+					let width;
+
+					for (let i=0; i<chapters.length; i++) {
+						for (let j=0; j<chapters[i].length; j++) {
+							// create a progress bar sub-item for every page within the chapter
+
+							// by default, chapters are spaced evenly with pages evenly spaced within each chapter
+							// so pages in different chapters may be shown as different widths on the progress bar
+							left = ((i/chapters.length*100) + (100/chapters.length / chapters[i].length)*j) +  "%";
+							width = (100/chapters.length / chapters[i].length) +  "%";
+							if (progressBarSpacing == "false") {
+								// space chapters according to the no. pages within them
+								// so all pages are equal width but chapters may not be
+								left = (100 / totalPages * count) + "%";
+								width = (100 / totalPages) + "%";
+								count++;
+							}
+
+							if (extraPagesCopy.length > 0 && j===0) {
+								// there might be pages before this chapter starts that aren't in a chapter at all
+								// add a pbBar for these
+								for (let k=0; k<extraPagesCopy.length; k++) {
+									if (chapters[i][j] > extraPagesCopy[k]) {
+										$pbBar.clone().addClass("sub page" + extraPagesCopy[k]).appendTo($pbBarContainer)
+											.css("left", left)
+											.width(width)
+											.hide();
+
+										left = (100 / totalPages * count) + "%";
+										width = (100 / totalPages) + "%";
+										count++;
+
+										if (k+1 === extraPagesCopy.length) {
+											extraPagesCopy.splice(0,k+1);
+										}
+
+									} else {
+										extraPagesCopy.splice(0,k);
+										break;
+									}
+								}
+							}
+
+							$pbBar.clone().addClass("sub chapter" + i + "Page" + chapters[i][j]).appendTo($pbBarContainer)
+								.css("left", left)
+								.width(width)
+								.hide();
+						}
+
+						// create a progress marker at the end of the chapter
+						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
+						let left2 = "calc(" +  ((i+1)/chapters.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+						if (progressBarSpacing == "false") {
+							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+						}
+						$progressMarker.css("left", left2);
+					}
+
+					if (extraPagesCopy.length > 0) {
+						// there might be pages after the final chapter that aren't in a chapter at all
+						// add a pbBar for these
+						for (let i=0; i<extraPagesCopy.length; i++) {
+							left = (100 / totalPages * count) + "%";
+							width = (100 / totalPages) + "%";
+							count++;
+
+							$pbBar.clone().addClass("sub page" + extraPagesCopy[i]).appendTo($pbBarContainer)
+								.css("left", left)
+								.width(width)
+								.hide();
+						}
+					}
+
+				} else {
+					// no chapters so no progress markers
+					progressSub = false;
+				}
+			} else {
+				// add a progress marker to indicate each milestone
+				// these can be evenly spaced (regardless of how many pages between milestones) or every page can have an equal width
+
+				// create an array of milestones - each containing an array of page indexes for pages leading up to that milestone
+				milestones = [];
+				extraPages = []; // any pages that fall after the final milestone
+
+				let current = [];
+				for (let i=0; i<x_pages.length; i++) {
+					if (x_pageInfo[i].standalone != true && x_pages[i] !== "menu") {
+						// ignore standalone pages when getting index of page
+						const offset = i - x_normalPages.indexOf(i) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
+						current.push(i - offset);
+						if (x_pages[i].getAttribute("milestone") == "true") {
+							milestones.push(current);
+							current = [];
+						} else if (i == x_pages.length-1) {
+							extraPages = current;
+						}
+					}
+				}
+
+				if (extraPages.length > 0) {
+					// there are some pages which sit after the final milestone
+					// force spacing of pages between milestones to be consistent as otherwise it's hard to know what spacing to use for these extra pages at the end
+					progressBarSpacing = "false";
+				}
+
+				if (milestones.length > 0) {
+					let count = 0;
+					let left;
+					let width;
+
+					for (let i=0; i<milestones.length; i++) {
+						for (let j=0; j<milestones[i].length; j++) {
+							// create a progress bar sub-item for every page
+
+							// by default, milestones are spaced evenly with pages evenly spaced between each milestone
+							// so pages between different milestones may be shown as different widths on the progress bar
+							left = ((i/milestones.length*100) + (100/milestones.length / milestones[i].length)*j) +  "%";
+							width = (100/milestones.length / milestones[i].length) +  "%";
+							if (progressBarSpacing == "false") {
+								// all pages are equal width so milestones may not be equally spaced
+								left = (100 / totalPages * count) + "%";
+								width = (100 / totalPages) + "%";
+								count++;
+							}
+
+							$pbBar.clone().addClass("sub").appendTo($pbBarContainer)
+								.css("left", left)
+								.width(width)
+								.hide();
+						}
+
+						// create a progress marker at each milestone page (the final page in the array)
+						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
+						let left2 = "calc(" +  ((i+1)/milestones.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+						if (progressBarSpacing == "false") {
+							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+						}
+						$progressMarker.css("left", left2);
+					}
+
+					if (extraPages.length > 0) {
+						// there might be pages after the final milestone
+						// add a pbBar for these
+						for (let i=0; i<extraPages.length; i++) {
+							left = (100 / totalPages * count) + "%";
+							width = (100 / totalPages) + "%";
+							count++;
+
+							$pbBar.clone().addClass("sub page" + extraPages[i]).appendTo($pbBarContainer)
+								.css("left", left)
+								.width(width)
+								.hide();
+						}
+					}
+
+				} else {
+					// no milestones so no progress markers
+					progressSub = false;
+				}
+			}
+
+			if (progressSub !== false) {
+				// jump to relevant page/chapter/milestone when progress marker is clicked
+				$pbMarkerContainer.find(".progressMarker").button().click(function() {
+					if (progressSub == "pages") {
+						x_navigateToPage(false, {type:'linkID', ID:pageDetails[$(this).index()].linkID});
+					} else if (progressSub == "chapters") {
+						x_navigateToPage(false, {type:'linkID', ID:pageDetails[chapters[$(this).index()][0]].linkID});
+					} else {
+						x_navigateToPage(false, {type:'linkID', ID:pageDetails[milestones[$(this).index()][milestones[$(this).index()].length-1]].linkID});
+					}
+				});
+
+				$pbHolder.addClass("progressMarkers");
+
+			} else {
+				$pbBar.appendTo($pbContainer);
+			}
+
+		} else {
+			// original, simple style progress bar
+			$pbBar.appendTo($pbContainer);
+		}
+
+		// add the x% COMPLETE text holder to the progress bar
+		if (progressBarPercentage !== false) {
+			$pbTxt = $('<p class="pbTxt"></p>');
+
+			if (progressBarPosition == "footer") {
+				$pbTxt.appendTo($pbHolder);
+			} else {
+				$pbTxt.prependTo($pbHolder);
+			}
+		}
+	}
+
+	// a new page has been viewed - update the progress bar
+	function update(page, target) {
+		if (progressBar) {
+			let update = true;
+
+			if (page != undefined) {
+				// page is standalone page opening in lightbox or new window - should its progress be recorded on progress bar?
+				if (progressSub == false && x_pages[page].getAttribute('reqProgress') == 'true') {
+					x_pageInfo[page]["built" + target] = true;
+				} else {
+					update = false;
+				}
+			}
+
+			if (update === true) {
+				// progress bar needs to be updated
+
+				// how many pages have been viewed?
+				let pagesViewed;
+				if (progressSub != false) {
+					// standalone pages are always excluded when progress markers are shown
+					pagesViewed = $(x_pageInfo).filter(function (i) {
+						return this.viewed !== false && this.standalone !== true && this.type !== "menu";
+					});
+				} else {
+					// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
+					pagesViewed = $(x_pageInfo).filter(function (i) {
+						return ((this.viewed !== false || this.builtLightBox == true || this.builtNewWindow == true) && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true') && this.type !== "menu");
+					});
+				}
+				pagesViewed = pagesViewed.length;
+				const progress = Math.round((pagesViewed * 100) / totalPages);
+
+				if (progressSub == false) {
+					// no progress markers so just have a simple bar moving across according to % of project viewed
+					$pbBar.css({"width": progress + "%"});
+
+				} else {
+					// progress markers - progress bar is split up into sections with an associated marker
+					// each section of bar (& marker) will be highlighted as that section is completed
+					// sections may be not be highlighted consecutively if the pages aren't viewed in order
+
+					if (progressSub == "pages") {
+						// there is a progress marker for each page
+
+						let count = -1;
+						$(x_pageInfo).each(function (i) {
+							if (this.type !== "menu" && this.standalone !== true) {
+								count++;
+								if (this.viewed !== false) {
+									$(".progressMarker:eq(" + count + ")").addClass("complete");
+									if (count != 0) { // there's no bar for the first page as the first marker is at the beginning of the progress bar
+										$(".pbBar:eq(" + count + ")").show();
+									}
+								}
+							}
+						});
+
+					} else if (progressSub == "chapters") {
+						// there is a progress marker at the end of each chapter
+
+						$(x_pageInfo).each(function (index) {
+							if (this.type !== "menu" && this.standalone !== true && this.viewed !== false) {
+								// ignore standalone pages when getting index of page
+								const offset = index - x_normalPages.indexOf(index) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
+
+								// check pages that sit outside chapters
+								for (let i = 0; i < extraPages.length; i++) {
+									if (extraPages[i] === index - offset) {
+										$(".pbBar.page" + (index - offset)).show();
+									}
+								}
+
+								// check pages that are within chapters
+								for (let i = 0; i < chaptersCopy.length; i++) {
+									for (let j = 0; j < chaptersCopy[i].length; j++) {
+										if (chaptersCopy[i][j] === index - offset) {
+											// found a viewed page within this chapter
+											// update the progress bar and remove page from chapter array so it can't be recounted as newly viewed
+											$(".pbBar.chapter" + i + "Page" + (index - offset)).show();
+											chaptersCopy[i].splice(j, 1);
+
+											if (chaptersCopy[i].length === 0) {
+												// progress marker is shown as complete if chapter array is now empty
+												$(".progressMarker:eq(" + i + ")").addClass("complete");
+											}
+										}
+									}
+								}
+							}
+						});
+
+					} else if (progressSub == "milestones") {
+						// add a progress marker at each milestone
+						let milestoneIndex = -1;
+						$(x_pageInfo).each(function (i) {
+							if (this.type !== "menu" && this.standalone !== true) {
+								// ignore standalone pages when getting index of page
+								const offset = i - x_normalPages.indexOf(i) + (XENITH.PAGEMENU.menuPage ? 1 : 0);
+								if (x_pages[i].getAttribute('milestone') == "true") {
+									milestoneIndex++;
+								}
+								if (this.viewed !== false) {
+									$(".pbBar:eq(" + (i - offset) + ")").show();
+									if (x_pages[i].getAttribute('milestone') == "true") {
+										$(".progressMarker:eq(" + milestoneIndex + ")").addClass("complete");
+									}
+								}
+							}
+						});
+					}
+				}
+
+				// add class when complete to allow styling of completed bar
+				if (progress === 100) {
+					$pbHolder.addClass("complete");
+				}
+
+				if (progressBarPercentage !== false) {
+					// update the text alongside the progress bar
+					$pbTxt.html(progressBarPercentage.replace("{x}", progress));
+				}
+			}
+		}
+	}
+
+	// make some public methods
+	self.init = init;
+	self.build = build;
+	self.update = update;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** ACCESSIBILITY OPTIONS / COLOUR CHANGER *****
+var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
+	// declare global variables
+	let hidden = false;
+	let specialTheme = false;
+	let removeBg = false;
+
+	// declare local variables
+	// list of available themes
+	const filterMap = [
+		{name:'off', default:'Default', bg:true, theme:''},
+		{name:'dark', default:'Dark mode', bg:false, theme:'darkmode'},
+		{name:'light', default:'Light mode', bg:false, theme:'lightmode'},
+		{name:'invert', default:'High contrast', bg:false, theme:'highcontrast'},
+		{name:'blackYellow', default:'Black on yellow', bg:false, theme:'blackonyellow'}
+	];
+	let lbHtml;
+
+	// creates special_theme_css & special_theme_responsive_css styles tag in HEAD ready for any future theme changes
+	function init() {
+		XENITH.COLOURCHANGER.hidden = x_params.accessibilityHide === 'true' ? true : false;
+
+		if (!XENITH.COLOURCHANGER.hidden) {
+			// insert in HEAD - either at end or before any bespoke project CSS
+			const linkHtml =`<link rel="stylesheet" href="" type="text/css" id="special_theme_css" disabled="">
+			<link rel="stylesheet" href="" type="text/css" id="special_theme_responsive_css" disabled="">`;
+
+			if ($("#lo_sheet_css, lo_css").length > 0) {
+				$(linkHtml).insertBefore($("#lo_sheet_css, lo_css")[0]);
+			} else {
+				$x_head.append(linkHtml);
+			}
+
+
+			if (x_params.accessibilityTarget !== "lightbox") {
+				x_dialogInfo.push({type: 'colourChanger', built: false});
+			}
+
+			if (XENITH.COLOURCHANGER.specialTheme !== false) {
+				// a special theme is already set
+				// this must be a standalone page opening in a new window or lightbox where the parent project that opened this had a special theme already applied
+				// make sure this immediately uses the special theme
+				switchTheme(XENITH.COLOURCHANGER.specialTheme);
+			}
+
+			if (XENITH.COLOURCHANGER.removeBg) {
+				// remove background images is already on
+				// this must be a standalone page opening in a new window or lightbox where the parent project that opened this had no background images forced
+				// make sure this immediately does the same
+				removeBgImages(true);
+			}
+		}
+	}
+
+	// accessibility options button on toolbar - set up or remove if not required
+	function buildBtn() {
+		if (!XENITH.COLOURCHANGER.hidden) {
+			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
+
+			$x_colourChangerBtn
+				.button({
+					icons: {
+						primary: accessibilityIcon.iconClass
+					},
+					// label can now be set in editor but fall back to language file if not set
+					label: x_params.accessibilityLabel !== undefined && x_params.accessibilityLabel !== "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
+					text: false
+				})
+				.attr("aria-label", $x_colourChangerBtn.attr("title") + x_params.dialogTxt)
+				.click(function() {
+					if (x_params.accessibilityTarget === "lightbox") {
+						if (lbHtml === undefined) {
+							lbHtml = '<div id="colourChangerLightBox"></div>';
+
+							$.featherlight(
+								lbHtml,
+								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
+							);
+
+							XENITH.COLOURCHANGER.build($("#colourChangerLightBox"));
+
+						} else {
+							$.featherlight(
+								lbHtml, // reload previously used HTML so correct theme is shown selected
+								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
+							);
+
+							checkActive();
+						}
+
+					} else {
+						buildDialog();
+					}
+				});
+
+			if (accessibilityIcon.customised === true) {
+				$x_colourChangerBtn.addClass("customIconBtn");
+			}
+			if (accessibilityIcon.btnImgs === true) {
+				$x_colourChangerBtn.addClass("imgIconBtn");
+			}
+
+		} else {
+			$x_colourChangerBtn.remove();
+		}
+	}
+
+	function buildDialog() {
+		x_openDialog(
+			"colourChanger",
+			x_params.accessibilityLabel != undefined && x_params.accessibilityLabel != "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Accessibility Options"),
+			x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Accessibility Options"),
+			null,
+			'<div id="colourChangerDialog"></div>',
+			function () {
+				$x_colourChangerBtn
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			}
+		);
+	}
+
+	// function builds the accessibility options within the dialog / lightbox
+	function build($parent) {
+		const html = `<div id="colourChangerHolder">
+			<p id="p1"></p>
+			<div id="optionHolder">
+				<div id="colourChangerOptions"></div>
+			</div>
+			<p id="p2"></p>
+		</div>`;
+
+		$parent.append(html);
+
+		const $colourChangerHolder = $parent.find('#colourChangerHolder');
+
+		// opened in lightbox
+		if ($parent.parents('.featherlight').length > 0) {
+			$colourChangerHolder.wrap('<div id="x_colourChanger"></div>');
+
+			$('#x_colourChanger').prepend('<h1 id="x_introH1">' + (x_params.accessibilityLabel !== undefined && x_params.accessibilityLabel !== "" ? x_params.accessibilityLabel : x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Accessibility Options")) + '</h1>');
+
+			$colourChangerHolder
+				.height($('.featherlight-content').height() - $('#x_introH1').outerHeight())
+				.css('overflow', 'auto');
+		}
+
+		// add instruction text
+		const $p1 = $colourChangerHolder.find("#p1").html(x_getLangInfo(x_languageData.find("colourChanger").find("selectTxt")[0], "label", "Select a theme for this project") + ":");
+		$colourChangerHolder.find("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Accessibility advice is available in the <a target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=151'>Xerte Online Toolkits guide to accessibility</a>."));
+
+		// add wcag logo and link if not hidden
+		if (x_params.wcagHide !== 'true') {
+			$p1.before("<a class='wcagLink' target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=214#home'><img class='wcagLogo' src='" + x_templateLocation + "common_html5/wcag2.1AA-blue-v.png' alt='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo") + "' title='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + "'> </a>");
+
+			if (x_params.wcagAlt !== undefined) {
+				$(".wcagLogo").attr("alt",x_params.wcagAlt);
+			}
+			if (x_params.wcagLinkTitle !== undefined) {
+				$(".wcagLogo").attr("title",x_params.wcagLinkTitle);
+			}
+			if (x_params.wcagLink !== "") {
+				$(".wcagLink").prop("href",x_params.wcagLink);
+			}
+		}
+
+		// add radio buttons & bg checkbox
+		const $colourChangerOptions = $('#colourChangerOptions');
+		let checked = XENITH.COLOURCHANGER.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.COLOURCHANGER.specialTheme);
+
+		for (let i=0; i<filterMap.length; i++) {
+			const $radio = $('<div class="optionGroup"></div>');
+			$radio.append('<input type="radio" name="colourChangerRadios" id="option' + i + '" value="' + i + '"' + (i===checked ? ' checked="checked"' : '') + '>');
+			$radio.append('<label for="option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(filterMap[i].name)[0], "label", filterMap[i].default) + '</p></label>');
+			$colourChangerOptions.append($radio);
+		}
+
+		checked = XENITH.COLOURCHANGER.removeBg ? 'checked="checked"' : '';
+		$colourChangerOptions.append('<div id="checkGroup"><input type="checkbox" id="noBg" name="noBg"' + checked + '><label for="noBg"><p> ' + x_getLangInfo(x_languageData.find("colourChanger").find("noBg")[0], "label", "Remove background images") + '</p></label></div>');
+
+		// trigger change theme on radio change
+		$colourChangerOptions.find('.optionGroup input').change(function() {
+			if (filterMap[this.value].theme === '') {
+				// default theme
+				switchTheme(x_params.theme);
+				XENITH.COLOURCHANGER.specialTheme = false;
+			} else {
+				// custom accessibility theme
+				switchTheme(filterMap[this.value].theme);
+				XENITH.COLOURCHANGER.specialTheme = filterMap[this.value].theme;
+			}
+
+			XENITH.COLOURCHANGER.disableBespokeCSS();
+
+			// refresh (trigger pageChanged function) or completely rebuild pages of these types
+			// as they involve things like writing text on a canvas (text might not be an appropriate colour after the theme change)
+			const pageTypesRequiringRebuild = ['chart', 'textDrawing'];
+			const pageTypesRequiringRefresh = ['opinion'];
+
+			// flag built pages of these types as not built yet, so they will be rebuilt when next viewed
+			for (let i=0, len=x_pageInfo.length; i<len; i++) {
+				if (pageTypesRequiringRebuild.indexOf(x_pageInfo[i].type) > -1) {
+					x_pageInfo[i].built = false;
+				}
+			}
+
+			// rebuild current page if required
+			if (pageTypesRequiringRebuild.indexOf(x_pageInfo[x_currentPage].type) > -1 ||
+				pageTypesRequiringRefresh.indexOf(x_pageInfo[x_currentPage].type) > -1) {
+				x_changePage(x_currentPage);
+			}
+		});
+
+		// trigger show/hide background image on checkbox change
+		$colourChangerOptions.find('#noBg').change(function() {
+			removeBgImages(this.checked);
+		});
+
+
+		if ($parent.parents('.featherlight').length > 0) {
+			lbHtml = $parent;
+		}
+	}
+
+	// change the theme
+	function switchTheme(theme) {
+		// any changes made to the project via the default theme's theme.js file will NOT be reversed
+		const currentThemeURL = x_themePath + theme + '/' + theme;
+		const currentResponsiveThemeURL = x_themePath + theme + '/responsivetext';
+
+		const $special_theme_css = $("#special_theme_css");
+		const $special_theme_responsive_css = $("#special_theme_responsive_css");
+		const $theme_css = $("#theme_css");
+		const $theme_responsive_css = $("#theme_responsive_css");
+
+		if (theme !== x_params.theme) {
+			// custom theme in use
+			$theme_css.prop("disabled", true);
+			$theme_responsive_css.prop("disabled", true);
+			$special_theme_css.attr("href", currentThemeURL + ".css");
+			$special_theme_css.prop("disabled", false);
+			$special_theme_responsive_css.attr("href", currentResponsiveThemeURL + ".css");
+			$special_theme_responsive_css.prop("disabled", false);
+		} else {
+			// default theme in use
+			$theme_css.prop("disabled", false);
+			$theme_responsive_css.prop("disabled", false);
+			$special_theme_css.prop("disabled", true);
+			$special_theme_responsive_css.prop("disabled", true);
+		}
+
+		x_getThemeInfo(theme, true);
+	}
+
+	// background images are removed from the project / page unless the default theme for the project is being used
+	function removeBgImages (hideBg) {
+		if (hideBg) {
+			XENITH.COLOURCHANGER.removeBg = true;
+			$x_background.hide();
+		} else {
+			XENITH.COLOURCHANGER.removeBg = false;
+			$x_background.show();
+		}
+	}
+
+	function disableBespokeCSS() {
+		$("#customHeaderStyle").prop('disabled', XENITH.COLOURCHANGER.specialTheme !== false);
+	}
+
+	// when lightbox is reopened - make sure the correct theme is selected
+	function checkActive() {
+		let checked = XENITH.COLOURCHANGER.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.COLOURCHANGER.specialTheme);
+		$('#colourChangerOptions input:eq(' + checked + ')').prop("checked", true);
+		$('#colourChangerOptions #noBg').prop("checked", XENITH.COLOURCHANGER.removeBg);
+	}
+
+	// make some public methods
+	self.init = init;
+	self.buildBtn = buildBtn;
+	self.build = build;
+	self.disableBespokeCSS = disableBespokeCSS;
+	self.hidden = hidden;
+	self.specialTheme = specialTheme;
+	self.removeBg = removeBg;
 
 	return parent;
 

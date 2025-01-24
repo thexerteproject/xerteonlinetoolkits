@@ -229,3 +229,18 @@ font-weight: bold;
 #x_introStartBtn {
 	background-color: white;
 }
+
+/* progress bar */
+.pbContainer {
+	background-color: #D3D7CF;
+}
+.pbBar {
+	background-color: black;
+}
+#x_headerProgress .progressMarker {
+	border-color: #D3D7CF;
+	background-color: white;
+}
+#x_headerProgress .progressMarker.complete {
+	border-color: black;
+}

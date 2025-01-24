@@ -133,28 +133,29 @@
 
   <colourChanger label="Accessibility Options" description="Change the colours." tooltip="Accessibility Options">
 	  <closeButton label="" description="Close Accessibility Options"/>
-	  <selectTxt label="Please select from the options below"/>
-	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
+	  <selectTxt label="Select a theme for this project"/>
+	  <adviceTxt label="Accessibility advice is available in the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
 	  <wcagTxt label="View the Xerte accessibility statement"/>
 	  <wcagLogo label="WCAG WAI-AA logo"/>
 	  <wcagURL label="https://xot.xerte.org.uk/play.php?template_id=214#home"/>
-	  <off label="Default theme for this resource"/>
-	  <noBg label="Remove Background Images (default theme)"/>
-	  <invert label="Invert, High contrast theme, no background images"/>
-	  <blackYellow label="Black on Yellow theme, no background images"/>
+	  <off label="Default"/>
+	  <invert label="High contrast"/>
+	  <blackYellow label="Black on yellow"/>
+	  <dark label="Dark mode"/>
+	  <light label="Light mode"/>
+	  <noBg label="Remove background images"/>
   </colourChanger>
 
-  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" shortNewWindow="opens in new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
-	  <!--<tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
-	  <accNav description="This page contains an accordion panel where the selection of a tab changes the information presented. To select a tab click Enter or Space."  click="Click to reveal information"/>-->
+  <screenReaderInfo label="Screen Reader Information" newWindow="opens in a new window" shortNewWindow="opens in a new window" thisWindow="opens in this window" dialog="opens in a dialog window">
 	  <buttonNav description="This page contains a series of buttons where each one reveals some related information." click="Click to reveal information"/>
 	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
-	  <audioSlideshow description="This page displays content in synch with an audio files. New content is added to the page as the audio plays."/>
-	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>
+	  <audioSlideshow description="This page displays content in sync with an audio file. New content is added to the page as the audio plays." prompt="Slide changed"/>
+	  <videoSynch description="This page displays content in sync with a video. New content is added to the page as the video plays."/>
 	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
 	  <modelAnswerResults selected="Text selected"/>
 	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
 	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
+	  <imageCompare slideHint="Image slider"/>
   </screenReaderInfo>
 
   <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session" tooltip_ltionly="Stop Session">

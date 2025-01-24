@@ -148,6 +148,14 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 	color: $whiteorlightest;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+.pbBar {
+  background-color: $lightestcolor;
+}
+
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen
 and (max-width :500px) {
@@ -178,7 +186,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

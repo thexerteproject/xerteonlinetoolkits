@@ -150,7 +150,7 @@
   table {
     font-size: 2.5vmin;
   }
-  #pageContents.titlePageTxt, #pageContents.titlePageTxt p {
+  .titlePageTxt, .titlePageTxt p {
     font-size: 7vmin;
   }
   .paneList a, .paneList {
@@ -187,7 +187,6 @@
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

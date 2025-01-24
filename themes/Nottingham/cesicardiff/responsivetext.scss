@@ -23,7 +23,7 @@ $resultsHolderwidth:8vmin;//previously 8vmin
        margin: unset;
     }
 
-    #pageContents.titlePageTxt{
+    .titlePageTxt{
         max-width:100% !important;
     }
 //---end of cesicardiff overrides----------------------------------------------------
@@ -185,7 +185,7 @@ figcaption {
 table {
 	font-size: $pagecontentslarge;
 }
-#pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
+.titlePageTxt,  .titlePageTxt p {
 	font-size: $pagecontentstitlesize;
 }
 .paneList a, .paneList {
@@ -233,7 +233,6 @@ and (max-width :500px) {
         margin-top: 1.2em;
     }
     .pbTxt {
-        font-size: 6px;
         text-align: center;
     }
 }

@@ -69,8 +69,12 @@
 	padding-top: 0;
 }
 
-#recordedClips .clip .clipPlayer {
+#recordedClips .clip:not(.noTitle) .clipPlayer {
 	clear: both;
+}
+
+#recordedClips .clip.noTitle .clipPlayer {
+	margin-left: 1.25em;
 }
 
 #feedbackTxt {

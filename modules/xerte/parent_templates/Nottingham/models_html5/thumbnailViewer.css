@@ -161,4 +161,13 @@
 	#panelTxt .x_glossary {
 		color: #ffffff;
 	}
+
+	.featherlight-inner #panelImg {
+		max-width: 100%;
+	}
+
+	.featherlight-inner #panelTxt, .featherlight-inner #panelTxt div {
+		position: relative;
+		top: auto;
+	}
 	

@@ -42,7 +42,7 @@ require_once ($xerte_toolkits_site->root_file_path . "website_code/php/url_libra
  * Set up the paths
  */
 $dir_path = $xerte_toolkits_site->users_file_area_full . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
-$parent_template_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+$parent_template_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
 $js_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/js/";
 
 
@@ -95,8 +95,8 @@ copy_extra_files();
  * Theme support
  */
 $theme = $xml->getTheme();
-// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers, no special characters)
-if (!ctype_alnum($theme)) {
+// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers or '_' or '-', no other special characters)
+if (!preg_match('/^[a-zA-Z0-9_\-]+$/', $theme, $matches)) {
     die("Illegal theme name detected!");
 }
 if ($theme != "" && $theme != "default")

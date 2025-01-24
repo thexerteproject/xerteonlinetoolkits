@@ -51,7 +51,7 @@
 			
 			$labels.each(function() {
 				var $this = $(this);
-				$this.width(Math.floor($target.width() - parseInt($target.css("padding-left")) * 2) + 5); // + 5 is so drop shadow width is ignored
+				$this.width(Math.floor($target.width() - ($this.outerWidth() - $this.width())));
 				if ($this.outerHeight() > tallestLabel) {
 					tallestLabel = $this.outerHeight();
 				}
