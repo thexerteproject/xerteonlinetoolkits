@@ -242,7 +242,7 @@
 
 			foreach($query_response as $row) {
 
-				echo "<p>" . $row['template_name'];
+				echo "<p>" . $row['template_name'] . " (" . $row['template_id'] . ")";
 
 				if($row['rss'] == "true") {
 

@@ -143,7 +143,7 @@ table.glossary tr.shaded {
 
 //*****SIDE BAR****/
 #x_sideBar {
-  background-color: $lightgrey;
+  background-color: $whiteorlightest;
   color: $blackordarkest;
 }
 #x_sideBarToggleBtn {
@@ -175,6 +175,16 @@ table.glossary tr.shaded {
   background: $midgrey;
   padding: .5em;
 }
+
+/* progress bar */
+.pbContainer {
+  background-color: $lightgrey;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+
+
 //******** Smartphones 600px (portrait) change progress bar display-----------/
 @media only screen
 and (max-width:600px) {
@@ -196,7 +206,6 @@ and (max-width:600px) {
   }
   #x_footerBlock button{
     font-size: 1.4rem;
-    width: 1em;
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
@@ -210,7 +219,6 @@ and (max-width:600px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -248,7 +256,6 @@ and (max-width:320px) {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

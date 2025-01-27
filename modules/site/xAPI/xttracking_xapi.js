@@ -86,8 +86,8 @@ function XApiTrackingState() {
     this.getSuccessStatus = getSuccessStatus;
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
-    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawScore = getdRawScore;
+    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawCompletionWeightedScore = getdRawCompletionWeightedScore;
     this.getdMinScore = getdMinScore;
     this.getdMaxScore = getdMaxScore;
@@ -323,11 +323,11 @@ function XApiTrackingState() {
     }
 
     function getdScaledCompletionWeightedScore(){
-        return getdScaledScore() * (getCompletionPercentage() / 100.0);
+        return this.getdScaledScore() * (this.getCompletionPercentage() / 100.0);
     }
 
     function getScaledCompletionWeightedScore(){
-        return Math.round(getdScaledCompletionWeightedScore() * 100) / 100 + "";
+        return Math.round(this.getdScaledCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdRawScore() {
@@ -1935,12 +1935,18 @@ function getMboxSha1(statement)
 async function getStatementsFromDB(q, one)
 {
     let search = {};
+    let activity = "";
     if (q['filter_current_users'] != undefined) {
         if (q['filter_current_users'] == 'true') {
             const lti_user_list = lti_users.split(',');
             search['actor'] = lti_user_list;
         }
         delete q['filter_current_users'];
+    }
+    if (q['activity'] != undefined && typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && q['activity'].indexOf(lrsExtraInstall['source']) == 0) {
+        search['xapiobjectid'] = [q['activity'], q['activity'].replace(lrsExtraInstall['source'], lrsExtraInstall['extra'])];
+        activity = q['activity'];
+        delete q['activity'];
     }
     $.each(q, function(i, value) {
         search[i] = value;
@@ -1965,6 +1971,14 @@ async function getStatementsFromDB(q, one)
             query = null;
         }
     } while (query != null && query != "");
+    // Transform the statements to the correct activity
+    if (typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && activity.indexOf(lrsExtraInstall['source']) == 0) {
+        for (let i = 0; i < statements.length; i++) {
+            if (statements[i].object.id.indexOf(lrsExtraInstall['extra']) == 0) {
+                statements[i].object.id = activity;
+            }
+        }
+    }
     return statements;
 }
 

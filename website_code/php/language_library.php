@@ -58,10 +58,10 @@ function getLanguages()
     {
         if (languageInstalled((string)$xml_lang['code']))
         {
-            $langs[(string)$xml_lang['code']] = (object)[
+            $langs[(string)$xml_lang['code']] = (object)array(
                 "name"  => (string)$xml_lang['name'],
                 "version" => versionLanguageInstalled((string)$xml_lang['code'])
-            ];
+            );
         }
     }
     return $langs;

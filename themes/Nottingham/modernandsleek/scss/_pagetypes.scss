@@ -1,11 +1,3 @@
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:98% !important;
-  overflow: hidden;
-}
-
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
   color: $darkestcolor;
 }

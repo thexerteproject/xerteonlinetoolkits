@@ -1,0 +1,5 @@
+name: darkmode
+display name: Accessibility: Dark Mode
+description: A dark mode theme that is available for all users via the accessibility options menu
+enabled: yes
+preview: darkmode.jpg

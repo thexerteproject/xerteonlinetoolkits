@@ -1559,6 +1559,21 @@ function changeUserSelection_user_roles(){
 		}
 }
 
+function manage_user_roles_select(user_id)
+{
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/get_user_roles.php",
+		data : {
+			userid: user_id
+		},
+	}).done(function (response){
+		document.getElementById("manage_user_roles").innerHTML = response;
+	}).fail(function (){
+		alert("something went wrong");
+	});
+}
+
 function update_roles(userid){
 		// usage of fromdata because you don't have to hard code the roles
 		let formdata = new FormData(document.getElementById("roles"));

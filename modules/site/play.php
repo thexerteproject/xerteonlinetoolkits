@@ -99,6 +99,8 @@ function show_template($row, $xapi_enabled=false){
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile, true);
 
+    _load_language_file("/modules/site/preview.inc");
+
     if (strlen($xmlFixer->getName()) > 0)
     {
         $title = $xmlFixer->getName();
@@ -115,7 +117,6 @@ function show_template($row, $xapi_enabled=false){
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 
-    _load_language_file("/modules/site/preview.inc");
 
     $version = getVersion();
 
@@ -196,7 +197,22 @@ function show_template($row, $xapi_enabled=false){
             $tracking .= "  var lti13Endpoint = '" .  (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
             $tracking .= "  var peditEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
             $tracking .= "  var xapiEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
-
+            if (isset($_SESSION['XAPI_PROXY'])){
+                if ($_SESSION['XAPI_PROXY']['db']) {
+                    $tracking .= "  var lrsUseDb = true;\n";
+                }
+                else
+                {
+                    $tracking .= "  var lrsUseDb = false;\n";
+                }
+                if ($_SESSION['XAPI_PROXY']['extra_install'] && $_SESSION['XAPI_PROXY']['extra_install'] != "") {
+                    $tracking .= "  var lrsExtraInstall = " . json_encode($_SESSION['XAPI_PROXY']['extra_install']) . ";\n";
+                }
+            }
+            else
+            {
+                $tracking .= "  var lrsUseDb = false;\n";
+            }
             if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                 _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                 $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";

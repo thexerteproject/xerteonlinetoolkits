@@ -18,8 +18,9 @@
  * limitations under the License.
  */
 require_once(dirname(__FILE__) . "/../../config.php");
+require_once(__DIR__ . "/user_library.php");
 
-if ($_SESSION['toolkits_logon_id'] == "site_administrator")
+if (is_user_admin())
 {
     // Check for registration table
     $x = db_query("select 1 from {$xerte_toolkits_site->database_table_prefix}registration");

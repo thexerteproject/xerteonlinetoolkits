@@ -23,7 +23,7 @@ $resultsHolderwidth:8vmin;//previously 8vmin
        margin: unset;
     }
 
-    #pageContents.titlePageTxt{
+    .titlePageTxt{
         max-width:100% !important;
     }
 //---end of cesicardiff overrides----------------------------------------------------
@@ -185,7 +185,7 @@ figcaption {
 table {
 	font-size: $pagecontentslarge;
 }
-#pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
+.titlePageTxt,  .titlePageTxt p {
 	font-size: $pagecontentstitlesize;
 }
 .paneList a, .paneList {
@@ -225,15 +225,14 @@ and (max-width :500px) {
         font-size: 12px;
     }
     #x_footerBlock button {
-        font-size: 1em;
-        width: 1em;
+        /*font-size: 1em;
+        width: 1em;*/
         margin-left: 5px;
     }
     .pbContainer {
         margin-top: 1.2em;
     }
     .pbTxt {
-        font-size: 6px;
         text-align: center;
     }
 }

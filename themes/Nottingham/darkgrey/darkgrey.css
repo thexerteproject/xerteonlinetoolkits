@@ -288,5 +288,19 @@ table.headerCol.shaded td.header {
 	color: #1c1c1c;
 }
 
-
-.x_results_page tr.alt td
+/* progress bar */
+.pbContainer {
+	background-color: #1c1c1c;
+	border: 1px solid #cfcfcf;
+}
+#x_footerBlock .pbBar {
+	background-color: #cfcfcf;
+}
+#x_headerProgress .pbContainer {
+	background-color: #cfcfcf;
+	border: none;
+}
+#x_headerProgress .progressMarker {
+	border-color: #cfcfcf;
+	background-color: #1c1c1c;
+}

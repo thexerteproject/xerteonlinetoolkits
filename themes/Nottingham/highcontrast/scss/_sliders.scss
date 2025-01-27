@@ -4,31 +4,31 @@
 // Version 1.4.1
 // MIT License
 
-$track-color: darken($lightestcolor, 40%) !default;//#eceff1
-$thumb-color: darken($lightestcolor, 70%) !default;//#607d8b
+$track-color: $panelcolor !default;
+$thumb-color: $panelcolor !default;
 
 $thumb-radius: 12px !default;
 $thumb-height: 24px !default;
 $thumb-width: 24px !default;
-$thumb-shadow-size: 4px !default;
-$thumb-shadow-blur: 4px !default;
+$thumb-shadow-size: 0 !default;
+$thumb-shadow-blur: 0 !default;
 $thumb-shadow-color: rgba(0, 0, 0, .2) !default;
-$thumb-border-width: 2px !default;
-$thumb-border-color: darken($lightestcolor, 70%) !default;//#eceff1
+$thumb-border-width: 4px !default;
+$thumb-border-color: $bordercolor !default;
 
 $track-width: 100% !default;
 $track-height: 8px !default;
-$track-shadow-size: 1px !default;
-$track-shadow-blur: 1px !default;
+$track-shadow-size: 0 !default;
+$track-shadow-blur: 0 !default;
 $track-shadow-color: rgba(0, 0, 0, .2) !default;
-$track-border-width: 2px !default;
-$track-border-color: darken($lightestcolor, 40%) !default;
+$track-border-width: 0px !default;
+$track-border-color: $bordercolor !default;
 
-$track-radius: 5px !default;
+$track-radius: 20px;
 $contrast: 5% !default;
 
 @mixin shadow($shadow-size, $shadow-blur, $shadow-color) {
-  box-shadow: $shadow-size $shadow-size $shadow-blur $shadow-color, 0 0 $shadow-size lighten($shadow-color, 5%);
+  box-shadow: none;
 }
 
 @mixin track {
@@ -53,11 +53,12 @@ $contrast: 5% !default;
   margin: $thumb-height / 2 0;
   width: $track-width;
 
+  /*
   &:focus {
     outline: 0;
 
     &::-webkit-slider-runnable-track {
-      background: lighten($track-color, $contrast);
+      background: $track-color, $contrast);
     }
 
     &::-ms-fill-lower {
@@ -68,12 +69,13 @@ $contrast: 5% !default;
       background: lighten($track-color, $contrast);
     }
   }
+   */
 
   &::-webkit-slider-runnable-track {
     @include track;
     @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
     background: $track-color;
-    border: $track-border-width solid $track-border-color;
+    border: none;
     border-radius: $track-radius;
   }
 
@@ -83,11 +85,16 @@ $contrast: 5% !default;
     margin-top: ((-$track-border-width * 2 + $track-height) / 2) - ($thumb-height / 2);
   }
 
+  &:focus, &:hover {
+    &::-webkit-slider-thumb {
+      border-color: $contrastcolor;
+    }
+  }
+
   &::-moz-range-track {
     @include track;
-    @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
     background: $track-color;
-    border: $track-border-width solid $track-border-color;
+    border: none;
     border-radius: $track-radius;
   }
 
@@ -99,22 +106,8 @@ $contrast: 5% !default;
     @include track;
     background: transparent;
     border-color: transparent;
-    border-width: ($thumb-height / 2) 0;
+    border-width: 0;
     color: transparent;
-  }
-
-  &::-ms-fill-lower {
-    @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
-    background: darken($track-color, $contrast);
-    border: $track-border-width solid $track-border-color;
-    border-radius: $track-radius * 2;
-  }
-
-  &::-ms-fill-upper {
-    @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
-    background: $track-color;
-    border: $track-border-width solid $track-border-color;
-    border-radius: $track-radius * 2;
   }
 
   &::-ms-thumb {

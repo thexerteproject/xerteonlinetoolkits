@@ -47,9 +47,14 @@
   background-color: #C4551F;
 }
 
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #BFBFBF;
+  background-color: white;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #2196F3;
 }
 
 .highlight {
@@ -783,6 +788,11 @@ table.headerCol.shaded td.header {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #BFBFBF;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -799,8 +809,8 @@ table.headerCol.shaded td.header {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /* font-size: 1em;
+     width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -809,7 +819,6 @@ table.headerCol.shaded td.header {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

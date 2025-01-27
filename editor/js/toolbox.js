@@ -255,6 +255,13 @@ var EDITOR = (function ($, parent) {
                 else {
                     return '<i class="passwordIcon iconDisabled fa fa-lock " id="' + key + '_password" title ="' + language.passwordPage.$tooltip + '"></i>';
                 }
+            case "milestone":
+                if (enabled) {
+                    return '<i class="milestoneIcon iconEnabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="milestoneIcon iconDisabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
         }
     },
 
@@ -266,6 +273,7 @@ var EDITOR = (function ($, parent) {
 		var passwordState = ($("#"+key+"_password.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
+        var milestoneState = ($("#"+key+"_milestone.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
 		var level;
@@ -291,6 +299,10 @@ var EDITOR = (function ($, parent) {
                 if (unmarkState != enabled)
                     change = true;
                 break;
+            case "milestone":
+                if (milestoneState != enabled)
+                    change = true;
+                break;
             case "text":
                 change = true;
                 break;
@@ -309,6 +321,7 @@ var EDITOR = (function ($, parent) {
 			var passwordIcon = getExtraTreeIcon(key, "password", (item == "password" ? enabled : passwordState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
+            var milestoneIcon = getExtraTreeIcon(key, "milestone", (item == "milestone" ? enabled : milestoneState));
             var nodetext;
             if (item == "text")
             {
@@ -317,7 +330,7 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
@@ -404,11 +417,12 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
-        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
+        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
 		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") != undefined && xmlData[0].getAttribute("milestone") != '');
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -826,7 +840,7 @@ var EDITOR = (function ($, parent) {
 		}
 
 		if (options.group == undefined) { // nested groups aren't collapsible
-			$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+			$('<i class="minMaxIcon fa fa-caret-down"></i>').appendTo(legend.find('.legend_label'));
 			
 			legend.find('.legend_label').click(function() {
 				var $icon = $(this).find('i.minMaxIcon');
@@ -842,7 +856,7 @@ var EDITOR = (function ($, parent) {
 					});
 
 				} else {
-					$fieldset.find('.table_holder').slideDown(400);
+					$fieldset.find('.table_holder').slideDown(400, resizeDataGrids);
 
 					$icon
 						.removeClass('fa-caret-down')
@@ -875,6 +889,12 @@ var EDITOR = (function ($, parent) {
 		
 		if (options.group == undefined) {
 			$(id).append(tr);
+
+            // collapse optional property groups initially on wizard load (they will be expanded when just added)
+            if (group.hasClass('wizardoptional')) {
+                group.addClass('collapsed');
+                group.find('.table_holder').slideUp(0);
+            }
 		} else {
 			$('#groupTable_' + options.group).append(tr);
 		}
@@ -951,9 +971,12 @@ var EDITOR = (function ($, parent) {
 			if (toDelete[i] == "password") {
 			    changeNodeStatus(key, "password", false);
 			}
-			if (toDelete[i] == "linkPage") {
+			if (toDelete[i] == "linkPage" || toDelete[i] == "linkPageChapter") {
 			    changeNodeStatus(key, "standalone", false);
 			}
+            if (toDelete[i] == "milestone") {
+                changeNodeStatus(key, "milestone", false);
+            }
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
                 //var unmarkIcon = $("#" + key + "_unmark");
@@ -1689,7 +1712,6 @@ var EDITOR = (function ($, parent) {
         jqGridsColSel = {};
 
         $.each(datagrids, function(i, options){
-
 			var thisGrid = this;
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
@@ -2000,20 +2022,23 @@ var EDITOR = (function ($, parent) {
 				});
 
 				$(window).on("resizeEnd", function() {
-					$("#mainPanel .ui-jqgrid").hide();
-					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-					$("#mainPanel .ui-jqgrid").show();
-					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                    resizeDataGrids();
 				});
 				
 				// make sure datagrid is correct width when first loaded
-				$("#mainPanel .ui-jqgrid").hide();
-				var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-				$("#mainPanel .ui-jqgrid").show();
-				$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                resizeDataGrids();
 
 				jqGridSetUp == true;
 			}
+        });
+    },
+
+    resizeDataGrids = function() {
+        $("#mainPanel .ui-jqgrid").each(function() {
+            $(this).hide();
+            var newWidth = $(this).parent().width();
+            $(this).show();
+            $(this).find("table").jqGrid("setGridWidth", newWidth, true);
         });
     },
 
@@ -2072,8 +2097,12 @@ var EDITOR = (function ($, parent) {
             changeNodeStatus(key, "password", value != "");
         }
 
-        if (name == "linkPage") {
+        if (name == "linkPage" || name == "linkPageChapter") {
             changeNodeStatus(key, "standalone", value == "true");
+        }
+
+        if (name == "milestone") {
+            changeNodeStatus(key, "milestone", value != "");
         }
 
         if (name == "unmarkForCompletion") {
@@ -5098,6 +5127,7 @@ var EDITOR = (function ($, parent) {
 	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
     my.convertTreeSelect = convertTreeSelect;
+    my.resizeDataGrids = resizeDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;

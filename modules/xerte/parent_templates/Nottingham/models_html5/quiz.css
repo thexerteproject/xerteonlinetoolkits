@@ -92,6 +92,7 @@
 
 	#mainPanel {
 		overflow: auto;
+		position: relative;
 	}
 
 	#qNo {
