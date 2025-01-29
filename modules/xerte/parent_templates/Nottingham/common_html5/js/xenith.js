@@ -1446,9 +1446,10 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: (x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction")) + x_params.dialogTxt,
+					label: x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction"),
 					text: false
 				})
+				.attr("aria-label", $x_introBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					const $thisBtn = $(this);
 					let lb;
@@ -1613,9 +1614,10 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: (x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction")) + x_params.dialogTxt,
+					label: x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction"),
 					text: false
 				})
+				.attr("aria-label", $x_pageIntroBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					const thisPageIntro = x_getIntroInfo(x_currentPageXML);
 
