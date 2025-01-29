@@ -781,11 +781,38 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
 .x_pswdInfo {
-	margin-bottom: 2vmin;
+	margin-bottom: 1em;
 }
 
-.x_pswdInput:not(.old) {
+#x_pagePswd {
+	margin-left: .5em;
+	margin-right: .5em;
+}
+
+.vault-door-dial #x_pagePswd {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.x_pswdInput.old input#x_pagePswd {
+	margin-right: .5em;
+	margin-bottom: .5em;
+}
+
+.x_pswdInput #x_pagePswdBtn.old {
+	margin-left: .5em;
+	margin-right: .5em;
+	margin-top: .5em;
+}
+
+.x_pswdBlock:not(.old) .x_pswdInfo,
+.x_pswdBlock.centered .x_pswdInput {
+	text-align: center;
+}
+
+.x_pswdBlock:not(.centered) .x_pswdInput:not(.old) {
 	width: 90vmin;
+	max-width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -822,10 +849,6 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 input#x_pagePswd.old {
 	margin-bottom: 0;
 }
-
-/* #x_pagePswdBtn.old { */
-/* 	margin-top: 1em; */
-/* } */
 
 .vault {
 	width: 50%;
@@ -947,12 +970,12 @@ input#x_pagePswd.old {
 }
 
 .vault button {
-	font-size: 3vmin;
 	background-color: #808080;
 	border: 2px solid #505050 !important;
 }
 
 .vault button:not(#x_pagePswdBtn) {
+	font-size: 1.5em;
 	border-radius: 0px;
 	height: calc(100% - 1px);
 	margin: 1px;
@@ -1364,10 +1387,35 @@ a:focus .wcagLogo {
 	font-size: 20px;
 	background: none;
 	border: none;
-	border-bottom: 1px #666 solid;
+	border-color: #666;
+	border-style: solid;
+	border-top-width: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+	border-bottom-width: 1px;
 	border-radius: 0;
 	color: #212121;
 	display: block;
+}
+
+#x_sideBar.toggleSide #x_sideBarToggleBtn {
+	width: 30px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-top-width: 0;
+	border-bottom-width: 0;
+	border-right-width: 0;
+	border-left-width: 1px;
+	margin: 0;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarToggleBtn {
+	right: auto;
+	left: 0;
+	border-left-width: 0;
+	border-right-width: 1px;
 }
 
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
@@ -1386,6 +1434,10 @@ a:focus .wcagLogo {
 	left: 13px;
 }
 
+#x_sideBar #x_sideBarToggleBtn .ui-button-icon-primary {
+	top: 15px;
+}
+
 #x_sideBarBtnHolder, #x_sideBarTocHolder {
 	box-sizing: border-box;
 	padding-top: 1em;
@@ -1393,6 +1445,22 @@ a:focus .wcagLogo {
 	padding-left: 15px;
 	padding-right: 15px;
 	overflow: auto;
+}
+
+.sb_left #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_left #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-right: 30px;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_right #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-left: 30px;
+}
+
+#x_sideBar #x_sideBarLogo {
+	margin: 0 .2em 1em;
+}
+
+#x_sideBar #x_sideBarLogo img {
+	max-width: 100%;
 }
 
 #x_sideBar #x_sideBarBtnHolder button {

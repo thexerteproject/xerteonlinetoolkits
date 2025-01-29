@@ -83,6 +83,19 @@ function process_logos($LO_icon_path, $theme_path, $template_path, $page_content
     return $page_content = str_replace("%LOGO%", '<img class="x_icon" src="" alt="" />' , $page_content);
 }
 
+function process_sidebar_logo($theme_path, $page_content) {
+    $extensions = array('svg',  'png', 'jpg', 'gif');
+
+    // check the theme logo
+    foreach($extensions as $ext) {
+        if (file_exists($theme_path . '/logo_sidebar.' . $ext)) {
+            return str_replace("%SIDEBARLOGO%", $theme_path . '/logo_sidebar.'. $ext, $page_content);
+        }
+    }
+
+    return $page_content = str_replace("%SIDEBARLOGO%", '' , $page_content);
+}
+
 function display_publish_engine(){
 	
 	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE . " ";
