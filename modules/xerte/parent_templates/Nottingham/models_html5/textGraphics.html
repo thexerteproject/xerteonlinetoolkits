@@ -136,7 +136,7 @@
 			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
 				$imgCaption.html(x_currentPageXML.getAttribute("caption"));
 			} else {
-				$imgCaption.remove();
+				$imgCaption.unwrap().remove();
 			}
 			
 			if (hidePanel == "true") {
@@ -274,9 +274,11 @@
 	
 	<div id="imgHolder" class="mobileAlign">
 		<div id="imgInnerDiv" class="panel inline">
-			<img id="pageImg" style="visibility: hidden" />
-			<div id="pageAudio"></div>
-			<p id="imgCaption"></p>
+			<figure>
+				<img id="pageImg"/>
+				<div id="pageAudio"></div>
+				<figcaption id="imgCaption"></figcaption>
+			</figure>
 			<div id="transcriptHolder">
 				<button id="transcriptBtn"/>
 				<div id="transcript"></div>
