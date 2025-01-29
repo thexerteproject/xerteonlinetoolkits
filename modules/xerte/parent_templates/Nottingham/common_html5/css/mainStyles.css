@@ -781,11 +781,38 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
 .x_pswdInfo {
-	margin-bottom: 2vmin;
+	margin-bottom: 1em;
 }
 
-.x_pswdInput:not(.old) {
+#x_pagePswd {
+	margin-left: .5em;
+	margin-right: .5em;
+}
+
+.vault-door-dial #x_pagePswd {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.x_pswdInput.old input#x_pagePswd {
+	margin-right: .5em;
+	margin-bottom: .5em;
+}
+
+.x_pswdInput #x_pagePswdBtn.old {
+	margin-left: .5em;
+	margin-right: .5em;
+	margin-top: .5em;
+}
+
+.x_pswdBlock:not(.old) .x_pswdInfo,
+.x_pswdBlock.centered .x_pswdInput {
+	text-align: center;
+}
+
+.x_pswdBlock:not(.centered) .x_pswdInput:not(.old) {
 	width: 90vmin;
+	max-width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -822,10 +849,6 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 input#x_pagePswd.old {
 	margin-bottom: 0;
 }
-
-/* #x_pagePswdBtn.old { */
-/* 	margin-top: 1em; */
-/* } */
 
 .vault {
 	width: 50%;
@@ -947,12 +970,12 @@ input#x_pagePswd.old {
 }
 
 .vault button {
-	font-size: 3vmin;
 	background-color: #808080;
 	border: 2px solid #505050 !important;
 }
 
 .vault button:not(#x_pagePswdBtn) {
+	font-size: 1.5em;
 	border-radius: 0px;
 	height: calc(100% - 1px);
 	margin: 1px;
