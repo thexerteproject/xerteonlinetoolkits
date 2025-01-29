@@ -274,7 +274,8 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         }
         $theme_path = 'themes/' . $row['parent_template'] . '/' . $xmlFixer->getTheme();
         $page_content = process_logos($LO_icon_path, $theme_path, $template_path, $page_content);
-        
+        $page_content = process_sidebar_logo($theme_path, $page_content);
+
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);

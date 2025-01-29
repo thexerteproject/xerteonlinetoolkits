@@ -1387,10 +1387,35 @@ a:focus .wcagLogo {
 	font-size: 20px;
 	background: none;
 	border: none;
-	border-bottom: 1px #666 solid;
+	border-color: #666;
+	border-style: solid;
+	border-top-width: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+	border-bottom-width: 1px;
 	border-radius: 0;
 	color: #212121;
 	display: block;
+}
+
+#x_sideBar.toggleSide #x_sideBarToggleBtn {
+	width: 30px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-top-width: 0;
+	border-bottom-width: 0;
+	border-right-width: 0;
+	border-left-width: 1px;
+	margin: 0;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarToggleBtn {
+	right: auto;
+	left: 0;
+	border-left-width: 0;
+	border-right-width: 1px;
 }
 
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
@@ -1409,6 +1434,10 @@ a:focus .wcagLogo {
 	left: 13px;
 }
 
+#x_sideBar #x_sideBarToggleBtn .ui-button-icon-primary {
+	top: 15px;
+}
+
 #x_sideBarBtnHolder, #x_sideBarTocHolder {
 	box-sizing: border-box;
 	padding-top: 1em;
@@ -1416,6 +1445,22 @@ a:focus .wcagLogo {
 	padding-left: 15px;
 	padding-right: 15px;
 	overflow: auto;
+}
+
+.sb_left #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_left #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-right: 30px;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_right #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-left: 30px;
+}
+
+#x_sideBar #x_sideBarLogo {
+	margin: 0 .2em 1em;
+}
+
+#x_sideBar #x_sideBarLogo img {
+	max-width: 100%;
 }
 
 #x_sideBar #x_sideBarBtnHolder button {
