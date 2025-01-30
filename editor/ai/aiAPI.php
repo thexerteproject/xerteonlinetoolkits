@@ -37,19 +37,26 @@ require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
 //dynamically initiate correct api class
 $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
+switch ($ai_api){
+    case 'openai':
+        //Select between a construct, 2 part approach or a single response approach
+        if ($modelTemplate=="construct"){
+            $newParams = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, false, $contextScope, $modelTemplate);
 
-//Select between a construct, 2 part approach or a single response approach
-if ($modelTemplate=="construct"){
-    $newParams = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, false, $contextScope, $modelTemplate);
+            $key_value_array = json_decode($newParams, true);
 
-    $key_value_array = json_decode($newParams, true);
-
-    $newType = $key_value_array[array_key_first($key_value_array)];
-    $useContext = true;
-    $result = $aiApi->ai_request($key_value_array, $newType, $file_url, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate);
-} else {
-    $result = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate);
+            $newType = $key_value_array[array_key_first($key_value_array)];
+            $useContext = true;
+            $result = $aiApi->ai_request($key_value_array, $newType, $file_url, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate);
+        } else {
+            $result = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate);
+        }
+        break;
+    case 'anthropic':
+        $result = $aiApi->ai_request($prompt_params,$type);
+        break;
 }
+
 if ($result->status){
     echo json_encode($result);
 } else {

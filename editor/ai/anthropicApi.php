@@ -4,10 +4,10 @@ class anthropicApi
 {
     //constructor must be like this when adding new api
     function __construct(string $api) {
-        require_once (dirname(__FILE__) . "/../../config.php");
-        $this->xerte_toolkits_site = $xerte_toolkits_site;
-        require_once (dirname(__FILE__) . "/" . $api ."/load_preset_models.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_preset_models.php");
         $this->preset_models = $anthropic_preset_models;
+        require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
+        $this->xerte_toolkits_site = $xerte_toolkits_site;
     }
 
     private function clean_result($answer) {
@@ -62,6 +62,47 @@ class anthropicApi
         return $prompt;
     }
 
+    private function removeBracketsAndContent($text) {
+        // Define the regex pattern to match the brackets and the content inside
+        $pattern = '/【.*?】/u';
+        // Use preg_replace to remove the matched patterns
+        $cleanedText = preg_replace($pattern, '', $text);
+        // Return the cleaned text
+        return $cleanedText;
+    }
+
+    private function cleanXmlCode($xmlString) {
+        // Check if the string starts with ```xml and remove it
+        if (strpos($xmlString, "```xml") === 0) {
+            $xmlString = substr($xmlString, strlen("```xml"));
+            $xmlString = ltrim($xmlString); // Trim any leading whitespace after ```xml
+        }
+
+        // Check if the string ends with ``` and remove it
+        if (substr($xmlString, -3) === "```") {
+            $xmlString = substr($xmlString, 0, -3);
+            $xmlString = rtrim($xmlString); // Trim any trailing whitespace before ```
+        }
+
+        return $xmlString;
+    }
+
+    private function cleanJsonCode($jsonString) {
+        // Check if the string starts with ```json and remove it
+        if (strpos($jsonString, "```json") === 0) {
+            $jsonString = substr($jsonString, strlen("```json"));
+            $jsonString = ltrim($jsonString); // Trim any leading whitespace after ```json
+        }
+
+        // Check if the string ends with ``` and remove it
+        if (substr($jsonString, -3) === "```") {
+            $jsonString = substr($jsonString, 0, -3);
+            $jsonString = rtrim($jsonString); // Trim any trailing whitespace before ```
+        }
+
+        return $jsonString;
+    }
+
     public function ai_request($p, $type){
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
@@ -85,9 +126,11 @@ class anthropicApi
             //todo change to work for anthropic method
             $answer = $answer . $result->content[0]->text;
         }
-        $answer = str_replace(["<". $type .">", "</". $type .">"], "", $answer);
 
-        //todo change if lop level is changed
-        return "<". $type ." >" . $answer. "</". $type .">";
+        $answer = $this->removeBracketsAndContent($answer);
+        $answer = $this->cleanXmlCode($answer);
+        $answer = $this->cleanJsonCode($answer);
+        $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
+        return $answer;
     }
 }

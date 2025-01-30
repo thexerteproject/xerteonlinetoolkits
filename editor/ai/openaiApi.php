@@ -953,7 +953,7 @@ class openaiApi
         return $text;
     }
 
-    function cleanXmlCode($xmlString) {
+    private function cleanXmlCode($xmlString) {
         // Check if the string starts with ```xml and remove it
         if (strpos($xmlString, "```xml") === 0) {
             $xmlString = substr($xmlString, strlen("```xml"));
@@ -969,7 +969,7 @@ class openaiApi
         return $xmlString;
     }
 
-    function cleanJsonCode($jsonString) {
+    private function cleanJsonCode($jsonString) {
         // Check if the string starts with ```json and remove it
         if (strpos($jsonString, "```json") === 0) {
             $jsonString = substr($jsonString, strlen("```json"));

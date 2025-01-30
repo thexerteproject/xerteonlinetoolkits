@@ -1,7 +1,7 @@
 <?php
 //aggregator for all copilot models
 global $anthropic_preset_models;
-
+$anthropic_preset_models = new stdClass();
 //dynamically grows when more models are placed in /openai/ai_models/
 //workaround to prevent __FILE__ and __dir__ being xdebug in ide
 $dir = __DIR__;

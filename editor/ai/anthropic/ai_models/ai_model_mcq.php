@@ -1,7 +1,7 @@
 <?php
-//quiz model using gpt-3.5 turbo
+//mcq model using gpt-3.5 turbo
 require_once(dirname(__FILE__) . "/../../../../config.php");
-_load_language_file("/editor/ai_models/anthropic_model_quiz_ai.inc");
+_load_language_file("/editor/ai_models/anthropic_model_mcq_ai.inc");
 
 //generates questions
 $model = $_POST['model'] ?? "claude-3-haiku-20240307";
@@ -14,14 +14,14 @@ $chat_url = "https://api.anthropic.com/v1/messages";
 
 // Context-specific settings
 if ($context === 'standard') {
-    $q = LEARNING_PROMPT_QUIZ;
-    $object = LEARNING_RESULT_QUIZ;
-    $defaultPrompt = DEFAULT_PROMPT_QUIZ;
+    $q = DEFAULT_PROMPT_MCQ;
+    $object = DEFAULT_PROMPT_MCQ;
+    $defaultPrompt = DEFAULT_PROMPT_MCQ;
 }
 elseif ($context === 'bootstrap') {
-    $q = LEARNING_PROMPT_QUIZ_BOOTSTRAP;
-    $object = LEARNING_RESULT_QUIZ_BOOTSTRAP;
-    $defaultPrompt = DEFAULT_PROMPT_QUIZ_BOOTSTRAP;
+    $q = DEFAULT_PROMPT_MCQ_BOOTSTRAP;
+    $object = DEFAULT_PROMPT_MCQ_BOOTSTRAP;
+    $defaultPrompt = DEFAULT_PROMPT_MCQ_BOOTSTRAP;
 }
 
     //default payload for chat/completions endpoint
@@ -33,8 +33,8 @@ elseif ($context === 'bootstrap') {
             ["role" => "user", "content" => ""]]];
 
 
-$anthropic_preset_models->type_list["quiz"] = ["payload" => $payload, "url" => $chat_url];
+$anthropic_preset_models->type_list["mcq"] = ["payload" => $payload, "url" => $chat_url];
 
-$anthropic_preset_models->prompt_list["quiz"] = explode(",", $defaultPrompt);
+$anthropic_preset_models->prompt_list["mcq"] = explode(",", $defaultPrompt);
 
-$anthropic_preset_models->multi_run[] = "quiz";
+$anthropic_preset_models->multi_run[] = "mcq";
