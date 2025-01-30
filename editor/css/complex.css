@@ -820,7 +820,7 @@ fieldset.wizardgroup .group_info {
 	padding: 0 15px 15px 15px;
 }
 
-#parameter_checkboxes span {
+#parameter_checkboxes label {
     margin-right: 15px;
 }
 img.optional {

@@ -899,8 +899,8 @@ var EDITOR = (function ($, parent) {
 		if (options.group == undefined) {
 			$(id).append(tr);
 
-            // collapse optional property groups initially on wizard load (they will be expanded when just added)
-            if (group.hasClass('wizardoptional')) {
+            // collapse optional property groups initially on wizard load unless expand groups box is checked (they will be expanded when just added)
+            if (group.hasClass('wizardoptional') && !$('#groups_cb').prop('checked')) {
                 group.addClass('collapsed');
                 group.find('.table_holder').slideUp(0);
             }

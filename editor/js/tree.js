@@ -278,7 +278,8 @@ var EDITOR = (function ($, parent) {
         $([
             {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', disabled: true, click:showLanguage},
             {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cb', disabled: true, click:showAdvanced},
-            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar}
+            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar},
+            {name:language.chkShowGroups.$label, tooltip: language.chkShowGroups.$tooltip, id:'groups_cb', disabled: false, click:expandGroups}
         ]).each(function(index, value) {
             var checkbox = $('<input>')
                 .attr('id', value.id)
@@ -288,8 +289,9 @@ var EDITOR = (function ($, parent) {
                 .on('change', value.click)
 
             checkboxes.append(checkbox);
-            var span = $('<span>')
+            var span = $('<label>')
                 .attr('id', value.id + "_span")
+                .attr('for', value.id)
                 .addClass(value.disabled ? "disabled" : "enabled")
                 .append(value.name);
             checkboxes.append(span);
@@ -514,6 +516,16 @@ var EDITOR = (function ($, parent) {
 
     showToolbar = function(){
         parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
+    },
+
+    expandGroups = function(){
+        if ($('#groups_cb').prop('checked')) {
+            // expand optional property groups
+            $('.wizardgroup.wizardoptional.collapsed:not(.wizardnestedgroup) .legend_label').click();
+        } else {
+            // collapse optional property groups
+            $('.wizardgroup.wizardoptional:not(.collapsed):not(.wizardnestedgroup) .legend_label').click();
+        }
     },
 
     duplicateNodes = function(tree, id, parent_id, pos, select)
