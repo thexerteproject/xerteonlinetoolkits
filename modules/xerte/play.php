@@ -351,8 +351,17 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-                if (isset($_SESSION['XAPI_PROXY']) && $_SESSION['XAPI_PROXY']['db']) {
-                    $tracking .= "  var lrsUseDb = true;\n";
+                if (isset($_SESSION['XAPI_PROXY'])){
+                    if ($_SESSION['XAPI_PROXY']['db']) {
+                        $tracking .= "  var lrsUseDb = true;\n";
+                    }
+                    else
+                    {
+                        $tracking .= "  var lrsUseDb = false;\n";
+                    }
+                    if ($_SESSION['XAPI_PROXY']['extra_install'] && $_SESSION['XAPI_PROXY']['extra_install'] != "") {
+                        $tracking .= "  var lrsExtraInstall = " . json_encode($_SESSION['XAPI_PROXY']['extra_install']) . ";\n";
+                    }
                 }
                 else
                 {

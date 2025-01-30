@@ -1,0 +1,45 @@
+/******Header******/
+#x_headerBlock {
+  color: $mainfontcolour;
+  background-repeat:no-repeat;
+  background-position:right;
+  background-image:	none;
+  width: 100%;
+  border-top-right-radius: $largeroundedcorners;
+  background: $bodybackgroundcolor;
+  box-shadow: $interfaceboxshadow;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+	color: $lightbtncolor;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: $lightbtntxt;
+	background-color: $lightbtncolor;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: $lightbtnselected;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: $lightbtntxt;
+	background-color: $lightbtnselected;
+}
+
+/* progress bar */
+#x_headerProgress .pbContainer {
+  background-color: $dark5;
+  border: none;
+}
+#x_headerProgress .pbBar {
+  background-color: $contrastcolor;
+}
+#x_headerProgress .progressMarker {
+  border-color: $dark5;
+  background-color: $bodybackgroundcolor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $contrastcolor;
+}

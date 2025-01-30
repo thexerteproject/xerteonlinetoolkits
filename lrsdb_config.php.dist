@@ -2,4 +2,5 @@
 
 $xerte_toolkits_site->LRSDbs = array();
 
-//$xerte_toolkits_site->LRSDbs['https://lrs.dlearning.nl/data/xAPI'] = array('endpoint' => 'https://courseregister.dlearning.nl/courseregister_sync/query_lrs.php', 'key' => 'lrsquery', 'secret' => '');
+//$xerte_toolkits_site->LRSDbs['https://lrs.dlearning.nl/data/xAPI'] = array('endpoint' => 'https://courseregister.dlearning.nl/courseregister_sync/query_lrs.php', 'key' => 'lrsquery', 'secret' => '', 'extra_installs' => array());
+//$xerte_toolkits_site->LRSDbs['https://lrs.dlearning.nl/data/xAPI'] = array('endpoint' => 'https://courseregister.dlearning.nl/courseregister_sync/query_lrs.php', 'key' => 'lrsquery', 'secret' => '', 'extra_install' => array('source' => 'https://digisprong.be/', 'extra' => 'https://toll-net.be/'));

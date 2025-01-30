@@ -164,7 +164,7 @@ figcaption {
 table {
 	font-size: $pagecontentslarge;
 }
-#pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
+.titlePageTxt,  .titlePageTxt p {
 	font-size: $pagecontentstitlesize;
 }
 .paneList a, .paneList {
@@ -207,12 +207,10 @@ and (max-width:600px) {
     }
     #x_footerBlock button{
         font-size: 1.4rem;
-        width: 1em;
         margin-left: 5px;
     }
     #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
         font-size: 1.4rem;
-        width: 1em;
         margin-left: 5px;
     }
     .pbContainer {
@@ -221,7 +219,6 @@ and (max-width:600px) {
     }
     .pbTxt {
         display:block;
-        font-size: 6px;
         text-align: center;
     }
 }
@@ -264,7 +261,6 @@ and (max-width:320px) {
         margin-top: 1.2em;
     }
     .pbTxt {
-        font-size: 6px;
         text-align: center;
     }
 }

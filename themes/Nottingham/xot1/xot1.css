@@ -49,6 +49,16 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #f86718;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #ebebeb;
+  background-color: #222222;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #2196F3;
+}
+
 .x_columnPage_page #textHolder,
 .x_imageSequence_page #controlBar,
 .x_nav_page #pageContents.col #textHolder,
@@ -107,11 +117,6 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   height: 3px;
   background: #ffffff;
   border: 0;
-}
-
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
 }
 
 .highlight {
@@ -958,7 +963,7 @@ table.glossary tr.shaded {
 }
 
 #x_sideBar {
-  background-color: #ebebeb;
+  background-color: #ffffff;
   color: #000000;
 }
 
@@ -997,6 +1002,15 @@ table.glossary tr.shaded {
   padding: 0.5em;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #ebebeb;
+}
+
+.pbBar {
+  background-color: #2196F3;
+}
+
 @media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block;
@@ -1014,7 +1028,6 @@ table.glossary tr.shaded {
   }
   #x_footerBlock button {
     font-size: 1.4rem;
-    width: 1em;
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
@@ -1028,7 +1041,6 @@ table.glossary tr.shaded {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -1059,7 +1071,6 @@ table.glossary tr.shaded {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

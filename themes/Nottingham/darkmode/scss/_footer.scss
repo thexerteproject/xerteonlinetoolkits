@@ -1,0 +1,194 @@
+#x_footerBlock {
+  font-size:		1em;
+  color:			$mainlight;
+  background-image:	none;
+  width: 100%;
+  background: $bodybackgroundcolor;
+  box-shadow: $interfaceboxshadow;
+}
+#x_footerBg {
+  background-image:none;
+}
+#x_pageNo {
+  background:	none;
+}
+/* progress bar */
+.pbContainer {
+  background-color: $lightbtncolor;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+/* these buttons will use font awesome icons instead of pngs */
+.ui-button .ui-icon.x_help { background-image: none; }
+.ui-button .ui-icon.x_info { background-image: none; }
+.ui-button .ui-icon.x_home { background-image: none; }
+.ui-button .ui-icon.x_glossary { background-image: none; }
+.ui-button .ui-icon.x_maximise { background-image: none; }
+.ui-button .ui-icon.x_minimise {	background-image: none; }
+.ui-button .ui-icon.x_media { background-image: none; }
+.ui-button .ui-icon.x_next { background-image: none; }
+.ui-button .ui-icon.x_prev {	background-image: none; }
+.ui-button .ui-icon.x_prev_hist { background-image: none; }
+.ui-button .ui-icon.x_colourChanger { background-image: none; }
+.ui-button .ui-icon.x_projectIntro { background-image: none; }
+.ui-button .ui-icon.x_saveSession { background-image: none; }
+
+#x_nextBtn:not(.customIconBtn) .ui-icon:before { content: "\f138"; }
+#x_prevBtn:not(.customIconBtn) .ui-icon:before { content: "\f137"; }
+#x_cssBtn:not(.customIconBtn) .ui-icon:before { content: "\f066"; }
+#x_colourChangerBtn:not(.customIconBtn) .ui-icon:before { content: "\f042"; }
+#x_mediaBtn:not(.customIconBtn) .ui-icon:before { content: "\f16a"; }
+#x_glossaryBtn:not(.customIconBtn) .ui-icon:before { content: "\f02d"; }
+#x_helpBtn:not(.customIconBtn) .ui-icon:before { content: "\f128"; }
+#x_introBtn:not(.customIconBtn) .ui-icon:before { content: "\f129"; }
+#x_menuBtn:not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
+#x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {content: "\f0c7"; }
+
+#x_footerBlock button, button#x_footerChevron { color: $lightbtncolor; }
+#x_footerBlock button.ui-state-hover, button#x_footerChevron:hover { color: $contrastcolor }
+#x_footerBlock button.ui-state-focus, button#x_footerChevron:focus { color: $contrastcolor }
+#x_footerBlock button.ui-state-active, button#x_footerChevron:active { color: $contrastcolor }
+
+#x_footerBlock button {
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  font-size: 1.9em;
+  width: 1.5em;
+  padding-right: 0;
+  margin-left: 5px;
+}
+#x_footerBlock button span.ui-button-text {
+  display: none;
+}
+#x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
+  padding: 0;
+}
+
+/*****TOC****/
+.ui-dialog.ui-widget-content {
+  border-color: $lighterpanel;
+  background: $lighterpanel;
+  color: $mainfontcolour;
+}
+.ui-dialog .ui-widget-header {
+  border-color: $lighterpanel;
+  background: $lighterpanel;
+  color: $mainfontcolour;
+  font-weight: bold;
+}
+.ui-dialog .ui-widget-header .ui-dialog-titlebar-close {
+  background: $lighterpanel;
+  border-color: $lighterpanel;
+  color: $btntxtcolor;
+}
+.ui-dialog .ui-widget-header .ui-dialog-titlebar-close:hover, .ui-dialog .ui-widget-header .ui-dialog-titlebar-close:active, .ui-dialog .ui-widget-header .ui-dialog-titlebar-close:focus {
+  color: $lightbtnselected;
+}
+#menuItems .menuItem, #menuItems .chapterItem {
+  background: $panelcolor;
+  color:$mainfontcolour;
+  border: 2px solid $panelcolor;
+}
+.featherlight-content #menuItems .menuItem, .featherlight-content #menuItems .chapterItem,
+#x_sideBar #menuItems .menuItem, #x_sideBar #menuItems .chapterItem:not(.ui-accordion-header-active) {
+  background: $lighterpanel;
+  color:$mainfontcolour;
+  border: 2px solid $lighterpanel;
+}
+.chapterHolder, .chapterPageHolder {
+  background: $lighterpanel;
+}
+.featherlight-content .chapterPageHolder,
+#x_sideBar .chapterPageHolder {
+  background: $panelcolor;
+}
+.chapterPageHolder {
+  border: 2px solid $dark5;
+}
+#menuItems .chapterItem.ui-accordion-header-active {
+  background: $dark5;
+  border-color: $dark5;
+}
+.chapterHolder .ui-state-active a, .chapterHolder .ui-state-active a:hover, .chapterHolder .ui-state-active a:focus {
+  background: none !important;
+}
+.chapterHolder a, .chapterHolder a:hover, .chapterHolder a:focus, .chapterHolder a:active {
+  color: $mainfontcolour !important;
+}
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover, #menuItems .menuItem:focus, #menuItems .chapterItem:focus {
+  background: $dark5 !important;
+  border-color: $dark5;
+  color:$whiteorlightest;
+}
+
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+  border: 2px solid $dark5 !important;
+}
+
+//*****SIDE BAR****/
+#x_sideBar {
+	background-color: $panelcolor;
+}
+#x_sideBarToggleBtn {
+	border-color: $dark5;
+	color: $mainfontcolour;
+}
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+  background: $contrastcolor;
+  color: $lightbtntxt;
+  border-color: $contrastcolor;
+}
+#x_sideBar #x_sideBarBtnHolder button {
+	color: $mainfontcolour;
+}
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-color: $dark5
+}
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border-color: $dark5;
+}
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+  background: $contrastcolor;
+  color: $lightbtntxt;
+  border-color: $contrastcolor;
+}
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+  background: $contrastcolor;
+  color: $lightbtntxt;
+  border-color: $contrastcolor;
+}
+
+//******** Smartphones (portrait) - change progress bar display for small screen-----------*/
+@media only screen
+and (max-width :500px) {
+  //show progress bar in mobile portrait mode with this theme
+  //but also reduce font/button sizes to fit//
+  #x_footerProgress {
+    display: block;
+  }
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding: 12px 5px 0 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px;
+  }
+  #x_footerBlock button {
+    width: 1em;
+    margin-left: 5px;
+  }
+  .pbContainer {
+    display:block;
+    margin-top: 1.2em;
+  }
+  .pbTxt {
+    display:block;
+    text-align: center;
+  }
+}
+//----------------end of smartphones portrait---------------------------------

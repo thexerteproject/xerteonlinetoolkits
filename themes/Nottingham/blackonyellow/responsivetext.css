@@ -182,15 +182,16 @@
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
-}/*# sourceMappingURL=responsivetext.css.map */
+}
+
+/*# sourceMappingURL=responsivetext.css.map */

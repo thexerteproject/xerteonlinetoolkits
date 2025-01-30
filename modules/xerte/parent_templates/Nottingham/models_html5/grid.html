@@ -54,7 +54,7 @@
 			if(x_currentPageXML.getAttribute("align") == "top"){
 				colWidth =  $("#pageContents").width()
 			}
-			colWidth = colWidth - (colWidth/6);
+			colWidth = colWidth - (colWidth/row.length);
 			colWidth = colWidth/row.length;
 			/*
 			if(fixedCols.length>0){
@@ -86,6 +86,8 @@
 				var column = 0;
 				var maxW, maxH = 0;
 
+				var rowsWidth = [];
+
 				$grid.find("ul[class!='preview']").each(function() {
 					maxW = 0;
 					$(this).find("li").each(function(i) {
@@ -94,9 +96,15 @@
 							maxH = Math.max(maxH, $(this).height());
 						}
 					}).width(maxW + 5 + "px");
+					rowsWidth.push(maxW)
 					column += maxW+5;
 				}).find("li")
 						.height(maxH + "px");
+				$grid.find("ul[class='preview']").each(function(i) {
+					const maxW = rowsWidth[i];
+					$(this).find("li").width(maxW + 5 + "px")
+				});
+
 
 
 				// ...unless they're in a fixed row when they must just have same height as other labels on that row
@@ -124,6 +132,7 @@
 						maxH = Math.max(maxH, $(this).height());
 						if ($.inArray(i,fixedCols) == -1) {
 							maxW = Math.max(maxW, $(this).width());
+							console.log($(this).width());
 						}
 						/*if(maxW > ($grid.width()-24)){
 							maxW = $grid.width()-24;
@@ -131,12 +140,13 @@
 					}).height(maxH + "px");
 				}).find("li")
 						.width(maxW + 5 + "px");
+				$grid.find("ul[class='preview']").find("li").width(maxW + 5 + "px");
 
 				column = maxW+5;
 				// ...unless they're in a fixed column when they must just have same width as other labels on that column
 				for (i=0; i<fixedCols.length; i++) {
 					maxW = 0;
-					$grid.find("ul[class!='preview']").find("li:eq(" + fixedCols[i] + ")").each(function() {
+					$grid.find("ul").find("li:eq(" + fixedCols[i] + ")").each(function() {
 						$(this).css("width", "");
 						maxW = Math.max(maxW, $(this).width());
 					}).width(maxW + 5 + "px");
@@ -145,7 +155,7 @@
 			}else{
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
-				$grid.find("ul:not(:first) li").each(function(i) {
+				$grid.find("ul li").each(function(i) {
 					if ($.inArray($(this).data("xy")[0],fixedCols) == -1) {
 						maxW = Math.max(maxW, $(this).width());
 					}
@@ -190,10 +200,10 @@
 			if(x_currentPageXML.getAttribute("constrain") != "col"){
 				if(fixedCols.length>0){
 					//gridWidth = column * (row.length-1) + maxW + 5 + (24*row.length);
-					gridWidth = column * (row.length-1) + (24*row.length);
+					gridWidth = column * (row.length-1) + maxW + 5 + (23.2*row.length);
 				}else{
 					//gridWidth = column * (row.length) + maxW + 5 + (24*row.length);
-					gridWidth = column * (row.length) + (24*row.length);
+					gridWidth = column * (row.length) + (23.2*row.length);
 				}
 				$(".listHolder ul:first").css('width', gridWidth);
 				$(".listHolder ul:not(:first)").css('width', gridWidth);
@@ -225,21 +235,21 @@
 			var num = data[0].split(separator).length;
 
 			$("#gridBorders").find("tr").each(function(i) {
-				var $li = $grid.find("ul[class != 'preview']:eq(0) li:eq("+i+")")
 				if(x_currentPageXML.getAttribute("constrain") == "col") {
-					$(this).height($li.outerHeight(true)-5);
+					var $li = $grid.find("ul[class != 'preview']:eq(0) li:eq(" + i + ")")
+					$(this).height($li.outerHeight(true) - 5);
 				}else{
+					var $li = $grid.find("ul[class != 'preview']:eq(" + i + ") li:eq(0)")
 					$(this).height($li.outerHeight(true));
 				}
 			});
 
 
-
-			$("#gridBorders").find("tr:eq(0) td").each(function(i) {
+			$("#gridBorders").find("col").each(function(i) {
 				if(x_currentPageXML.getAttribute("constrain") == "col"){
-					$(this).width($grid.find("ul[class != 'preview']:eq("+i+") li:eq(0)").width());
+					$(this).width($grid.find("ul[class != 'preview']:eq("+i+") li:eq(0)").outerWidth(true));
 				}else{
-					$(this).width($grid.find("ul[class != 'preview']:eq(0) li:eq(" + i + ")").width());
+					$(this).width($grid.find("ul[class != 'preview']:eq(0) li:eq(" + i + ")").outerWidth(true));
 				}
 
 			});
@@ -443,7 +453,7 @@
 			}
 			this.initTracking();
 			// call this function in every model once everything has loaded
-			//this.sizeChanged();
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 
@@ -582,9 +592,11 @@
 					$tr = $('<tr/>').appendTo($gridBorders);
 
 					if (i == 0) {
+						$cols = $('<colgroup>').appendTo($gridBorders);
 						for (j=0; j<row.length; j++) {
 							$holder = $('<div class="listHolder constrainC"></div>').appendTo($grid);
 							$('<ul></ul>').appendTo($holder);
+							$('<col>').appendTo($cols)
 							labelData.push([]);
 						}
 					}
@@ -633,6 +645,12 @@
 					labelData.push([]);
 					row = data[i].split(separator);
 					$tr = $('<tr/>').appendTo($gridBorders);
+					if (i == 0) {
+						$cols = $('<colgroup>').appendTo($gridBorders);
+						for (j=0; j<row.length; j++) {
+							$('<col>').appendTo($cols)
+						}
+					}
 
 					for (j=0; j<row.length; j++) {
 						this.addLabel(row[j], $ul, i, j);
@@ -670,6 +688,12 @@
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
 					$tr = $('<tr/>').appendTo($gridBorders);
+					if (i == 0) {
+						$cols = $('<colgroup>').appendTo($gridBorders);
+						for (j=0; j<row.length; j++) {
+							$('<col>').appendTo($cols)
+						}
+					}
 
 					for (j=0; j<row.length; j++) {
 						this.addLabel(row[j], $ul, i, j);
@@ -740,7 +764,7 @@
 
 				if (x_currentPageXML.getAttribute("constrain") != "col") {
 					$gridBorders.width($grid.find("ul:eq(0)").width());
-					$gridBorders.find("tr:eq(0) td").each(function(i) {
+					$gridBorders.find("col").each(function(i) {
 						$(this).width($grid.find("ul:eq(0) li:eq(" + i + ")").width());
 					});
 
@@ -762,7 +786,7 @@
 					});
 					$gridBorders
 						.width(totalW)
-						.find("tr:eq(0) td").each(function(i) {
+						.find("col").each(function(i) {
 							$(this).width($grid.find("ul:eq(" + i + ") li:eq(0)").width());
 						});
 					$gridBorders.find("tr").each(function(i) {

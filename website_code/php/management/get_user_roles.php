@@ -22,53 +22,57 @@ function changeuserselection_roles($userid){
 	}
 
 	echo "<h2>" . USERS_MANAGE_ROLES . "</h2>";
-	$roles_query = "select * from " . $xerte_toolkits_site->database_table_prefix . "role order by roleid";
-	$user_roles_query = 
-		"select roleid from " . $xerte_toolkits_site->database_table_prefix . "logindetailsrole " .
-		"where userid=?";
-	
-	$roles_query_result = db_query($roles_query);
-	
-	$user_roles_results = db_query($user_roles_query, array($userid));	
-	$user_roles = array();
-	foreach($user_roles_results as $user_role){
-		$user_roles[] = $user_role["roleid"];
-	}
-    echo "<div style=\"margin-left:20px\">";
-	echo "<select onchange=\"changeUserSelection_user_roles()\" id=\"user_roles\">";
-	
-    foreach($result as $row_users){
-        if ($row_users["login_id"] == $userid) {
-            echo "<p><option selected=\"selected\" value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+    // Only allow superadmin to assign roles
+    if (is_user_admin()) {
+        echo "<h3>" . USERS_MANAGE_ROLES_ASSIGN_ROLES . "</h3>";
+
+        $roles_query = "select * from " . $xerte_toolkits_site->database_table_prefix . "role order by roleid";
+        $user_roles_query =
+            "select roleid from " . $xerte_toolkits_site->database_table_prefix . "logindetailsrole " .
+            "where userid=?";
+
+        $roles_query_result = db_query($roles_query);
+
+        $user_roles_results = db_query($user_roles_query, array($userid));
+        $user_roles = array();
+        foreach ($user_roles_results as $user_role) {
+            $user_roles[] = $user_role["roleid"];
         }
-        else {
-            echo "<p><option value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+        echo "<div style=\"margin-left:20px\">";
+        echo "<select onchange=\"changeUserSelection_user_roles()\" id=\"user_roles\">";
+
+        foreach ($result as $row_users) {
+            if ($row_users["login_id"] == $userid) {
+                echo "<option selected=\"selected\" value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
+            } else {
+                echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
             }
+        }
+
+        echo "</select>";
+
+        echo "<form id=\"roles\"><div class=\"grid\">";
+        $isSuper = is_user_permitted();
+        foreach ($roles_query_result as $role) {
+            $disabled = "";
+
+            if (!$isSuper && in_array($role["roleid"], array(1, 2)))
+                $disabled = "disabled";
+            $input = "<input name=\"" . $role["name"] . "\" type=\"checkbox\" " . (in_array($role["roleid"], $user_roles) ? "checked" : "") . " " . $disabled . "/>";
+            echo "<p title=\"" . constant("USERS_ROLE_" . strtoupper($role["name"]) . "_INFO") . "\">" . constant("USERS_ROLE_" . strtoupper($role["name"])) . "</p> <i class=\"fa fa-info-circle\" title=\"" . constant("USERS_ROLE_" . strtoupper($role["name"]) . "_INFO") . "\"></i> " . $input;
+        }
+
+
+        echo "</div></form>";
+        echo "<button class=\"xerte_button\" onclick=\"javascript:update_roles(" . $userid . ")\">" . USERS_MODIFY_ROLES . "</button>";
+        echo "</div>";
     }
-	
-    echo "</select>";
-	
-	echo "<form id=\"roles\"><div class=\"grid\">";
-	$isSuper = is_user_permitted();
-	foreach($roles_query_result as $role){
-		$disabled = "";
-		
-		if(!$isSuper && in_array($role["roleid"], array(1, 2)))
-			$disabled = "disabled";
-		$input = "<input name=\"" . $role["name"] . "\" type=\"checkbox\" " . (in_array($role["roleid"], $user_roles)? "checked" : "") . " " . $disabled . "/>";
-		echo "<p title=\"" . constant("USERS_ROLE_". strtoupper($role["name"]) . "_INFO") . "\">" . constant("USERS_ROLE_".strtoupper($role["name"])) . "</p> <i class=\"fa fa-info-circle\" title=\"" . constant("USERS_ROLE_". strtoupper($role["name"]) . "_INFO") . "\"></i> " . $input;
-	}
-	
-	
-	echo "</div></form>";
-	echo "<button class=\"xerte_button\" onclick=\"javascript:update_roles(" . $userid . ")\">" . USERS_MODIFY_ROLES . "</button>";
-	echo "</div>";
 }
 
 /**
  * prints the ui to screen the user that is selected is the db order by surname, firstname and username
  */
-function get_user_roles(){
+function x_get_user_roles(){
 	global $xerte_toolkits_site;
 
     $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails order by surname,firstname,username");

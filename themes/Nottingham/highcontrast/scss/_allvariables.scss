@@ -1,41 +1,38 @@
 //*define color pallette*/
 
-$brightcolor:#C4551F;
-$accent1: #418545;
-$contrastcolor:#4078C0;
-$accent2: #278384;
-$darkestcolor: black;
-$accent3:#D13759;
-$lightestcolor:white;
-$whiteorlightest:#ffffff;
-$blackordarkest:#000000;
-$selectedbutton:#4d4d4d;
-$tableheader:#4d4d4d;
+$whiteorlightest: #ffffff;
+$blackordarkest: #000000;
+$contrastcolor: #00FFFF;
 
-/*set background colors*/
-$bodybackgroundcolor:$blackordarkest;
-$defaultpagebackground:$blackordarkest;
-$progressBarColor: #2196F3; /* default #2196F3;*/
+// ** change these editor styles colours?
+$accent1: #33CC33;
+$accent2: #00FFFF;
+$accent3: #FF0000;
+$accent4: #FF9900;
+$accent5: #6600FF;
+$accent6: #FFFF00;
+
+$bodybackgroundcolor: $blackordarkest;
+$defaultpagebackground: $blackordarkest;
+$panelcolor: $blackordarkest;
+$bordercolor: $whiteorlightest;
+$mainfontcolour: $whiteorlightest;
+$btntxtcolor: $mainfontcolour;
+$linkcolor: $mainfontcolour;
+$linkvisited: $mainfontcolour;
+$linkhover: $contrastcolor;
+
+$progressBarColor: $whiteorlightest;
 
 /*set font family*/
 $mainfonts: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
 $secondaryfonts:Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-/*define font colors to match the background colors*/
-$mainfontcolour: $whiteorlightest;
-$fontcolorfordarkestcolor:#ffffff;
-$fontcolorforlightestcolor:#000000;
-$fontcolorfobrightcolor:#ffffff;
-$fontcolorforcontrastcolor:#ffffff;
-$linkcolor: $whiteorlightest;
-$linkvisited: lightgrey;
-$linkhover: lightgrey;
-
 /*define rounded corner and other sizes*/
-$largeroundedcorners: 3px;/*6vmin;*/
-$mediumroundedcorners: 3px;/*2vmin;*/
-$smallroundedcorners: 3px;/*1vmin;*/
-$imageroundedcorners: none;/*2vmin;*/
-$contentmargin: 2%;
-$interfaceboxshadow:none; /*3px 3px 5px grey*/
-$defaultpagepadding:2%;
+$largeroundedcorners: 0;
+$mediumroundedcorners: 0;
+$smallroundedcorners: 0;
+$imageroundedcorners: none;
+$contentmargin: 2%; // **
+$interfaceboxshadow: none;
+$defaultpagepadding: 2%; // **

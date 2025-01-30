@@ -1,31 +1,46 @@
 /******Header******/
 #x_headerBlock {
-  color:			$whiteorlightest;
+  color: $mainfontcolour;
   background-repeat:no-repeat;
   background-position:right;
   background-image:	none;
   width: 100%;
   border-top-right-radius: $largeroundedcorners;
-  ///*border-bottom-right-radius: $largeroundedcorners;*/
-  //*margin-top: 5px;*/
-  background: $blackordarkest;
+  background: $bodybackgroundcolor;
   box-shadow: $interfaceboxshadow;
 }
 
 #x_headerBlock #x_pageIntroBtn {
-	color: white;
+	color: $btntxtcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg {
-	color: black;
-	background-color: white;
+	color: $panelcolor;
+	background-color: $btntxtcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
-	color: #999999;
+	color: $contrastcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
-	color: black;
-	background-color: #999999;
+	color: $panelcolor;
+	background-color: $contrastcolor;
+}
+
+/* progress bar */
+#x_headerProgress .pbContainer {
+  background-color: $btntxtcolor;
+  border: none;
+}
+#x_headerProgress .pbBar {
+  background-color: $contrastcolor;
+  border-color: $contrastcolor;
+}
+#x_headerProgress .progressMarker {
+  border-color: $btntxtcolor;
+  background-color: $bodybackgroundcolor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $contrastcolor;
 }

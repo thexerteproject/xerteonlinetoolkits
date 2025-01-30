@@ -262,7 +262,8 @@
 								const extraData = {
 									text: this.getAttribute("text"),
 									showIn: this.getAttribute("showIn"),
-									replace: this.getAttribute("replace")
+									replace: this.getAttribute("replace"),
+									required: this.getAttribute("required")
 								};
 								Object.assign(data, extraData);
 								if (data.text != "") {
@@ -464,6 +465,11 @@
 				iconInfo = { label: x_currentPageXML.getAttribute(infoIconLabel) != undefined ? x_currentPageXML.getAttribute(infoIconLabel) : fallBack, icon: x_currentPageXML.getAttribute("infoCustomIcon") == "true" ? x_currentPageXML.getAttribute("infoIcon") + " fa-fw" : "fas fa-fw fa-info"};
 				interactiveTable.setUpCellBtn($cell, "info", iconInfo);
 
+				// info cells may not need to be interacted with in order to move on / receive main feedback
+				if (cellInfo.required !== "true") {
+					$cell.addClass("notRequired");
+				}
+
 				$cell.find(".infoIcon").click(function () {
 					if (cellInfo.showIn == 'lightbox') {
 						$tableHolder.data("currentCell", $cell);
@@ -519,7 +525,7 @@
 			const qs = $(".questionCell select,.questionCell input,.questionCell .questionIcon,.infoCell .infoIcon");
 			let readyForReveal = true;
 			qs.each(function() {
-				if ($(this).css("visibility") != "hidden" && !$(this).parent(".questionCell, .infoCell").hasClass("completed")) {
+				if ($(this).css("visibility") != "hidden" && !$(this).parent(".questionCell, .infoCell").hasClass("completed") && !$(this).parent(".questionCell, .infoCell").hasClass("notRequired")) {
 					readyForReveal = false;
 					return false;
 				}
@@ -541,7 +547,7 @@
 			// this means that each cell/row/column must be answered/viewed before you can move on to the next cell/row/column
 
 			// all interactive cells have been answered/viewed - show feedback
-			if ($(".questionCell.completed,.infoCell.completed").length == $(".questionCell,.infoCell").length) {
+			if ($(".questionCell.completed,.infoCell.completed,.infoCell.notRequired:not(.completed)").length === $(".questionCell,.infoCell").length) {
 				$(".qSubmit#tableSubmit").hide();
 				$("#mainFb").html(x_currentPageXML.getAttribute("feedback"));
 
@@ -633,7 +639,7 @@
 			}
 		}
 
-		// the submit button below the table should only be shown when there are visible in cell questions that haven't been answered yet
+		// the submit button below the table should only be shown when there are visible in-cell questions that haven't been answered yet
 		this.revealHideSubmitBtn = function() {
 			if ($(".qSubmit#tableSubmit").length > 0) {
 				let hideTableSubmitBtn = false;
