@@ -99,7 +99,7 @@ function ai_to_xerte_content(data, key, pos, tree, realParent) {
             // Or if nodes exist, update attributes of children
             for (let i = 0; i < size; i++) {
                 const child = children[i];
-                const childLinkID = child.getAttribute('linkID'); // Use `linkID` to identify the node
+                const childLinkID = child?.getAttribute('linkID'); // Use `linkID` to identify the node
                 const existingChild = Object.values(lo_data).find(node => node.attributes?.linkID === childLinkID);
 
                 if (existingChild) {
