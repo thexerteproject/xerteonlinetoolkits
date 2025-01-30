@@ -21,7 +21,7 @@
       <newNodes>
         <interaction ><![CDATA[<interaction name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         xAxisLabelBarAnswers = "Answers given"
-        yAxisLabelBarAnswers = "Number of answers"
+        yAxisLabelBarAnswers = "Percentage of answers"
         xAxisLabelBarMarks = "Score Range [%]"
         yAxisLabelBarMarks = "% of Group"
         y2AxisLabelBarMarks = "Score [%]"
