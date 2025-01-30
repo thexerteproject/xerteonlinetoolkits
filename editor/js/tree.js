@@ -534,7 +534,7 @@ var EDITOR = (function ($, parent) {
 
         // Create node text based on xml, do not use text of original node, as this is not correct
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", [wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecatedLevel], wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
-        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
+        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true" || lo_data[key].attributes.hideContent == "true", lo_data[key].attributes.hidePage == "true" ? language.hidePage.$tooltip : language.hideContent.$tooltip);
         var passwordIcon = toolbox.getExtraTreeIcon(key, "password", lo_data[key].attributes.password != undefined && lo_data[key].attributes.password != '');
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true" || lo_data[key].attributes.linkPageChapter == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');

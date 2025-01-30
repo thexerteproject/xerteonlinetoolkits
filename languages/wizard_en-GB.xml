@@ -49,6 +49,7 @@
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
 	<calendar tooltip="Select Date"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
+	<hideContent tooltip="This content is hidden"/>
 	<standalonePage tooltip="This is a stand-alone page"/>
 	<milestonePage tooltip="This is a milestone page"/>
 	<passwordPage tooltip="An access code must be entered to view this page/section"/>
