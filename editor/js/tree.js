@@ -278,7 +278,8 @@ var EDITOR = (function ($, parent) {
         $([
             {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', disabled: true, click:showLanguage},
             {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cb', disabled: true, click:showAdvanced},
-            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar}
+            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar},
+            {name:language.chkShowGroups.$label, tooltip: language.chkShowGroups.$tooltip, id:'groups_cb', disabled: false, click:expandGroups}
         ]).each(function(index, value) {
             var checkbox = $('<input>')
                 .attr('id', value.id)
@@ -288,8 +289,9 @@ var EDITOR = (function ($, parent) {
                 .on('change', value.click)
 
             checkboxes.append(checkbox);
-            var span = $('<span>')
+            var span = $('<label>')
                 .attr('id', value.id + "_span")
+                .attr('for', value.id)
                 .addClass(value.disabled ? "disabled" : "enabled")
                 .append(value.name);
             checkboxes.append(span);
@@ -516,6 +518,16 @@ var EDITOR = (function ($, parent) {
         parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
     },
 
+    expandGroups = function(){
+        if ($('#groups_cb').prop('checked')) {
+            // expand optional property groups
+            $('.wizardgroup.wizardoptional.collapsed:not(.wizardnestedgroup) .legend_label').click();
+        } else {
+            // collapse optional property groups
+            $('.wizardgroup.wizardoptional:not(.collapsed):not(.wizardnestedgroup) .legend_label').click();
+        }
+    },
+
     duplicateNodes = function(tree, id, parent_id, pos, select)
     {
         var current_node = tree.get_node(id, false);
@@ -534,7 +546,7 @@ var EDITOR = (function ($, parent) {
 
         // Create node text based on xml, do not use text of original node, as this is not correct
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", [wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecatedLevel], wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
-        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
+        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true" || lo_data[key].attributes.hideContent == "true", lo_data[key].attributes.hidePage == "true" ? language.hidePage.$tooltip : language.hideContent.$tooltip);
         var passwordIcon = toolbox.getExtraTreeIcon(key, "password", lo_data[key].attributes.password != undefined && lo_data[key].attributes.password != '');
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true" || lo_data[key].attributes.linkPageChapter == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');

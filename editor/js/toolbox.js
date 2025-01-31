@@ -229,10 +229,10 @@ var EDITOR = (function ($, parent) {
                 }
             case "hidden":
                 if (enabled) {
-                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + tooltip + '"></i>';
                 }
 			case "advanced":
                 if (enabled) {
@@ -270,6 +270,7 @@ var EDITOR = (function ($, parent) {
         // Get icon states
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+        var hiddenContentState = ($("#"+key+"_hidden.iconEnabled").length > 0);
 		var passwordState = ($("#"+key+"_password.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
@@ -285,6 +286,10 @@ var EDITOR = (function ($, parent) {
                 break;
             case "hidden":
                 if (hiddenState != enabled)
+                    change = true;
+                break;
+            case "hiddenContent":
+                if (hiddenContentState != enabled)
                     change = true;
                 break;
 			case "password":
@@ -315,9 +320,13 @@ var EDITOR = (function ($, parent) {
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
 				level = $("#" + key + '_deprecated').hasClass('deprecatedLevel_low') ? 'low' : undefined;
+            } else if (item == "hidden") {
+                tooltip = language.hidePage.$tooltip;
+            } else if (item == "hiddenContent") {
+                tooltip = language.hideContent.$tooltip;
             }
             var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [item == "deprecated" ? enabled : deprecatedState, level], tooltip);
-            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" || item == "hiddenContent" ? enabled : hiddenState), tooltip);
 			var passwordIcon = getExtraTreeIcon(key, "password", (item == "password" ? enabled : passwordState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
@@ -415,7 +424,7 @@ var EDITOR = (function ($, parent) {
         }
 
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
-        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true" || xmlData[0].getAttribute("hideContent") == "true", xmlData[0].getAttribute("hidePage") == "true" ? language.hidePage.$tooltip : language.hideContent.$tooltip);
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
@@ -890,8 +899,8 @@ var EDITOR = (function ($, parent) {
 		if (options.group == undefined) {
 			$(id).append(tr);
 
-            // collapse optional property groups initially on wizard load (they will be expanded when just added)
-            if (group.hasClass('wizardoptional')) {
+            // collapse optional property groups initially on wizard load unless expand groups box is checked (they will be expanded when just added)
+            if (group.hasClass('wizardoptional') && !$('#groups_cb').prop('checked')) {
                 group.addClass('collapsed');
                 group.find('.table_holder').slideUp(0);
             }
@@ -961,12 +970,8 @@ var EDITOR = (function ($, parent) {
         var key = parent.tree.getSelectedNodeKeys();
 
 		for (var i=0; i<toDelete.length; i++) {
-			if (toDelete[i] == "hidePage") {
+			if (toDelete[i] == "hidePage" || toDelete[i] == "hideContent") {
 			    changeNodeStatus(key, "hidden", false);
-                //var hiddenIcon = $("#" + key + "_hidden");
-                //if (hiddenIcon) {
-                //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
-                //}
 			}
 			if (toDelete[i] == "password") {
 			    changeNodeStatus(key, "password", false);
@@ -979,10 +984,6 @@ var EDITOR = (function ($, parent) {
             }
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
-                //var unmarkIcon = $("#" + key + "_unmark");
-                //if (unmarkIcon) {
-                //    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
-                //}
             }
 
 			if (toDelete[i] in lo_data[key]["attributes"])
@@ -2093,6 +2094,10 @@ var EDITOR = (function ($, parent) {
             changeNodeStatus(key, "hidden", value == "true");
         }
 
+        if (name == "hideContent") {
+            changeNodeStatus(key, "hiddenContent", value == "true");
+        }
+
         if (name == "password") {
             changeNodeStatus(key, "password", value != "");
         }
@@ -2463,8 +2468,8 @@ var EDITOR = (function ($, parent) {
 			$.each(lo_node.children, function(i, key){
 				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-				var hidden = lo_data[key]['attributes'].hidePage;
-				
+				var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
+
 				if (linkID.found && linkID.value != "") {
 					var page = [];
 					// Also make sure we only take the text from the name, and not the full HTML
@@ -2478,7 +2483,7 @@ var EDITOR = (function ($, parent) {
 						$.each(childNode.children, function(i, key){
 							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-							var hidden = lo_data[key]['attributes'].hidePage;
+							var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 							
 							if (linkID.found && linkID.value != "") {
 								var page = [];
@@ -2507,7 +2512,7 @@ var EDITOR = (function ($, parent) {
                 function checkNode(key, checkChildren, child) {
                     const name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
                     const linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-                    const hidden = lo_data[key]['attributes'].hidePage;
+                    const hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 
                     if (linkID.found && linkID.value != "") {
                         // Also make sure we only take the text from the name, and not the full HTML

@@ -1218,7 +1218,7 @@ function x_desktopSetUp() {
 					for (var i=0; i<x_responsive.length; i++) {
 						$x_mainHolder.removeClass("x_responsive");
 						$(x_responsive[i]).prop("disabled", true);
-					};
+					}
 
 					// minimised size to come from display size specified in xml or url param
 					if ($.isArray(x_params.displayMode)) {
@@ -1446,9 +1446,10 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: (x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction")) + x_params.dialogTxt,
+					label: x_params.introLabel != undefined && x_params.introLabel != "" ? x_params.introLabel : x_getLangInfo(x_languageData.find("projectIntroButton")[0], "label", "Introduction"),
 					text: false
 				})
+				.attr("aria-label", $x_introBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					const $thisBtn = $(this);
 					let lb;
@@ -1613,9 +1614,10 @@ function x_continueSetUp1() {
 						primary: introIcon.iconClass
 					},
 					// label can be set in editor but fall back to language file if not set
-					label: (x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction")) + x_params.dialogTxt,
+					label: x_params.pageIntroLabel != undefined && x_params.pageIntroLabel != "" ? x_params.pageIntroLabel : x_getLangInfo(x_languageData.find("pageIntroButton")[0], "label", "Page Introduction"),
 					text: false
 				})
+				.attr("aria-label", $x_pageIntroBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					const thisPageIntro = x_getIntroInfo(x_currentPageXML);
 
@@ -1717,7 +1719,6 @@ function x_continueSetUp1() {
 		if (x_params.pageCounter == "true") {
 			$x_pageNo.remove();
 		}
-
 		XENITH.COLOURCHANGER.buildBtn();
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
@@ -2487,7 +2488,7 @@ function x_checkPages(type, id, pageArray) {
 
 function x_setMaxWidth() {
 	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
-		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss','interactiveVideo'];
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioRecord','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveTable','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss','interactiveVideo'];
 		var styleString = '<style>';
 		for (var i=0; i<workingPages.length; i++) {
 			if (i>0) { styleString += ', '; }
@@ -2868,7 +2869,8 @@ function x_passwordPage(pswds) {
 					let pswdInput = $pswdBlock.find('.x_pswdInput').append('<input type="text" class="old" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button class="old" id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
 					if(type == "standard" || type == null){
 							pswdInput.add($pswdBlock.find(".x_pswdBlock")).addClass('old');
-
+					} else {
+						$pswdBlock.find(".x_pswdBlock").addClass('centered');
 					}
 			}
 
@@ -5057,8 +5059,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 return parent; })(jQuery, XENITH || {});
 
 
-
-
 // ***** GLOSSARY *****
 var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 
@@ -5719,7 +5719,6 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				// build the sidebar
 				$x_sideBar = $('<div id="x_sideBar"></div>');
 				$x_sideBarHolder = $('<div id="' + (XENITH.SIDEBAR.sideBarType == "toc" ? "x_sideBarTocHolder" : "x_sideBarBtnHolder" ) + '"></div>').appendTo($x_sideBar);
-				$x_sideBarToggleBtn = $('<button id="x_sideBarToggleBtn"></button>').prependTo($x_sideBar);
 
 				// the width of the sidebar depends on the sidebar contents
 				if (x_params.sideBarSize == 'large' || XENITH.SIDEBAR.sideBarType == "toc") {
@@ -5741,6 +5740,19 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					$x_sideBar.insertBefore($x_mainHolder);
 					$x_body.addClass('sb_left');
 				}
+
+				// sidebar toggle button can be on the top or the side of the sidebar
+				if (x_params.sideBarBtnPosition === "side") {
+					if (x_params.sideBarPosition == 'right') {
+						$x_sideBarToggleBtn = $('<button id="x_sideBarToggleBtn"></button>').prependTo($x_sideBar);
+					} else {
+						$x_sideBarToggleBtn = $('<button id="x_sideBarToggleBtn"></button>').appendTo($x_sideBar);
+					}
+					$x_sideBar.addClass("toggleSide");
+				} else {
+					$x_sideBarToggleBtn = $('<button id="x_sideBarToggleBtn"></button>').prependTo($x_sideBar);
+				}
+
 				$x_sideBar.css("visibility", "hidden");
 
 				// sidebar open / close state
@@ -5750,16 +5762,25 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				// button labels can be set in editor but fall back to language file if not set
 				closeLabel = x_params.sideBarHideLabel != undefined && x_params.sideBarHideLabel != "" ? x_params.sideBarHideLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "hide", "Hide side bar");
 				openLabel = x_params.sideBarShowLabel != undefined && x_params.sideBarShowLabel != "" ? x_params.sideBarShowLabel : x_getLangInfo(x_languageData.find("sideBar")[0], "show", "Show side bar");
-				closeIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function (icon) {
-					return icon.name === 'sideBarHideRight';
-				})[0].iconClass : x_btnIcons.filter(function (icon) {
-					return icon.name === 'sideBarHideLeft';
-				})[0].iconClass;
-				openIcon = x_params.sideBarPosition == 'right' ? x_btnIcons.filter(function (icon) {
-					return icon.name === 'sideBarShowRight';
-				})[0].iconClass : x_btnIcons.filter(function (icon) {
-					return icon.name === 'sideBarShowLeft';
-				})[0].iconClass;
+				const closeR = x_btnIcons.filter(function (icon) {return icon.name === 'sideBarHideRight';})[0];
+				const closeL = x_btnIcons.filter(function (icon) {return icon.name === 'sideBarHideLeft';})[0];
+				const showR = x_btnIcons.filter(function (icon) {return icon.name === 'sideBarShowRight';})[0];
+				const showL = x_btnIcons.filter(function (icon) {return icon.name === 'sideBarShowLeft';})[0];
+				let customisedIcon = false;
+
+				if (x_params.sideBarPosition === 'right') {
+					closeIcon = closeR.iconClass;
+					openIcon = showR.iconClass;
+					if (closeR.customised === true || showR.customised === true) {
+						customisedIcon = true;
+					}
+				} else {
+					closeIcon = closeL.iconClass;
+					openIcon = showL.iconClass;
+					if (closeL.customised === true || showL.customised === true) {
+						customisedIcon = true;
+					}
+				}
 
 				$x_sideBarToggleBtn
 					.button({
@@ -5774,6 +5795,17 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 							open();
 						}
 					});
+
+				if (customisedIcon === true) {
+					$x_sideBarToggleBtn.addClass("customIconBtn");
+				}
+
+				// add a logo to the top of the side bar
+				if (x_params.sideBarLogo !== undefined && x_params.sideBarLogo !== "") {
+					$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_params.sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+				} else if (x_sideBarLogo !== "") {
+					$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+				}
 
 				// add content to sidebar
 				if (XENITH.SIDEBAR.sideBarType == "btns") {
@@ -5829,7 +5861,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 		}
 	}
 
-	// function shows the sidebar after the interface has finishd being set up - hidden until then to avoid flashes on loading content
+	// function shows the sidebar after the interface has finished being set up - hidden until then to avoid flashes on loading content
 	function show() {
 		if (sideBar === true) {
 			$x_sideBar.css("visibility", "visible");
@@ -5839,7 +5871,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	// fix the dimensions of the sideBarHolder so it will scroll if needed (height) & so contents doesn't move around when animating open / closed (width)
 	function sideBarHolderFixDimensions() {
 		$x_sideBarHolder
-			.height($x_window.height() - $x_sideBarToggleBtn.outerHeight(true) - ($x_sideBarHolder.outerHeight(true) - $x_sideBarHolder.height()))
+			.height($x_window.height() - (x_params.sideBarBtnPosition === "side" ? 0 : $x_sideBarToggleBtn.outerHeight(true)) - ($x_sideBarHolder.outerHeight(true) - $x_sideBarHolder.height()))
 			.width($x_sideBarHolder.width());
 	}
 
@@ -5868,7 +5900,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					}
 				});
 
-				maxW = Math.min(widestBtn + ($x_sideBarHolder.outerWidth(true) - $x_sideBarHolder.width()) + 5, Math.min(absoluteMaxW, $x_window.width() / 2));
+				maxW = Math.min(widestBtn + ($x_sideBarHolder.outerWidth(true) - $x_sideBarHolder.width()) + (x_params.sideBarBtnPosition === "side" ? $x_sideBarToggleBtn.outerWidth(true) : 0) + 5, Math.min(absoluteMaxW, $x_window.width() / 2));
 
 				if (XENITH.SIDEBAR.sideBarType == "btns") {
 					$x_sideBarHolder.find('button').width('90%');

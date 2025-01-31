@@ -1,5 +1,9 @@
 /* thumbnailViewer.html */
-	
+
+	#x_pageDiv {
+		position: relative;
+	}
+
 	#thumbBar {
 		position:	absolute;
 		top:		10px;

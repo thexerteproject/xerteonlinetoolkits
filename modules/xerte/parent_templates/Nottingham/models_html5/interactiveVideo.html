@@ -256,9 +256,13 @@
             // Calculate page score
             var questions = x_currentPageXML.getElementsByTagName("ivSynchMCQ");
             var numOfQuestions = questions.length;
-            var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
-                x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
-                x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
+            var trackVideo = numOfQuestions == 0;  // Default is no_mcqs
+            if (x_currentPageXML.getAttribute('trackVideo') != undefined)
+            {
+                trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
+                    x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
+                    x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
+            }
 
             score = 0;
             for (var i = 0; i < numOfQuestions; i++) {

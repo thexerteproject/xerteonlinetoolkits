@@ -137,11 +137,17 @@
 				'qNumTxt': questionNumberText
 			});
 
-            var showfeedback = false;
+			var feedback = '';
+			if (x_currentPageXML.getAttribute("feedback") != undefined)
+			{
+				feedback = x_currentPageXML.getAttribute("feedback");
+			}
+            var showfeedback = feedback !== '';
             if (x_currentPageXML.getAttribute("showfeedback") != undefined)
             {
                 showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
             }
+			$pageContents.data('feedback', feedback);
 			$pageContents.data('showfeedback', showfeedback);
 
 			$("#canvas-container").hide();
@@ -617,8 +623,8 @@
 			$("#questionAudio, #feedback").empty();
 
 			// add main feedback
-            if ($pageContents.data('showfeedback') && x_currentPageXML.getAttribute("feedback") != '') {
-                $("#feedback").append("<div id='mainFb' class='fbBlock'>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</div>');
+            if ($pageContents.data('showfeedback') && $pageContents.data('feedback') != '') {
+                $("#feedback").append("<div id='mainFb' class='fbBlock'>" + x_addLineBreaks($pageContents.data('feedback')) + '</div>');
             }
 
 			// add relevant tailored class feedback
@@ -643,6 +649,16 @@
 
 			if ($('#feedback .fbBlock').length == 0) {
 				$('#feedback').hide();
+				if (x_currentPageXML.getAttribute("diagram") !== "true")
+				{
+					// Show default text if no graph and no feedback
+					var noFeedback = "<p>You have completed all the questions.</p>";
+					if (x_currentPageXML.getAttribute("noFeedbackNoGraph") != undefined)
+					{
+						noFeedback = x_currentPageXML.getAttribute("noFeedbackNoGraph");
+					}
+					$('#feedback').html(noFeedback);
+				}
 			}
 
             $("#qHolder").hide();
