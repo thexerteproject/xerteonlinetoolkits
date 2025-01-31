@@ -62,10 +62,10 @@
   <hiddenSection label="This section will be hidden in live projects" hidden="This section is currently hidden in live projects" shown="This section is currently shown in live projects" until="Hide until" from="Hide from"/>
 
   <hiddenContent label="This content will be hidden in live projects" hidden="This content is currently hidden in live projects" shown="This content is currently shown in live projects" until="Hide until" from="Hide from"/>
-    
-  <tick label="Tick"/>
   
-  <cross label="Cross"/>
+  <tick label="Tick" title="Correct"/>
+  
+  <cross label="Cross" title="Incorrect"/>
 
   <viewed label="Viewed"/>
  

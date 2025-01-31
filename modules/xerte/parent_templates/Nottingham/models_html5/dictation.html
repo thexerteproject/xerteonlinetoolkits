@@ -198,20 +198,7 @@
 					//Checks if the answer is correct, and if so it adds one to the total of correct answers
 					var answer = $('#answerTxt').val();
 					var correct = false;
-					$("#answer").slideDown(function () {
-						if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
-							$("#showBtn").button("enable");
-						}
-						else {
-							if(XTGetMode() == "normal")
-							{
-								$("#showBtn").button("disable");
-							}
-							else {
-								$("#showBtn").button("enable");
-							}
-						}
-					});
+					$("#answer").show();
 					if (answer == text) {
 						correct_answers++;
 						correct = true;
