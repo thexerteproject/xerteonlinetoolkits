@@ -2026,7 +2026,7 @@
             if (xAxisLabelBarAnswers == undefined)
               xAxisLabelBarAnswers = "Answers given";
             if (yAxisLabelBarAnswers == undefined)
-              yAxisLabelBarAnswers = "Number of answers";
+                yAxisLabelBarAnswers = "Percentage of answers";
 
             //get labels and #
             let labels = {};
@@ -3495,7 +3495,7 @@
           if (xAxisLabelBarAnswers == undefined)
             xAxisLabelBarAnswers = "Answers given";
           if (yAxisLabelBarAnswers == undefined)
-            yAxisLabelBarAnswers = "Number of answers";
+            yAxisLabelBarAnswers = "Percentage of answers";
           var xDomain = [];
           if (
             statements.length > 0 &&
@@ -3557,7 +3557,7 @@
                 }
             } else {
                 for (let i = 0; i < barData.length; i++) {
-                    barData[i] = barData[i] / totalActualResponseCounter * 100;
+                    barData[i] = barData[i] / data.length * 100;
                 }
             }
 
