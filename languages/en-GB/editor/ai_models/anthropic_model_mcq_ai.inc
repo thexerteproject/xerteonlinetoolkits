@@ -1,7 +1,7 @@
 <?php
 
     define("LEARNING_PROMPT_MCQ", "Generate 3 possible answers to the question: 'In which city is the largest train station in Germany'.");
-    define("DEFAULT_PROMPT_MCQ", "Using the exact same xml layout generate ,aoa, possible answers (each answer presented as an option node  using the correct, name, text and feedback attributes to store the information --- it should be a child node of the mcq node!) for the following question ,subject,.
+    define("DEFAULT_PROMPT_MCQ", "Using the exact same xml layout generate ,aoa, possible answers (each answer presented as an option node  using the correct, name, text and feedback attributes to store the information --- it should be a child node of the mcq node!) for the following question ,sentence,.
     The question should have:
     1. **A correct answer** that accurately responds to the question, using precise terminology.
     2. **Incorrect answers (distractors)** that:
