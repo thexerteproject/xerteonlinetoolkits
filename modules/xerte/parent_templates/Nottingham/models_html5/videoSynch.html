@@ -33,8 +33,8 @@ var videoSynch = new function() {
 	// function called every time the size of the LO is changed
 	this.sizeChanged = function() {
 		if (x_browserInfo.mobile != true) {
-			$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2);
-			$("#mainText").height($x_pageHolder.height() - ($(".panel").outerHeight(true) + ($("#mainText").outerHeight(true) - $("#mainText").height()) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height())));
+			$infoHolder.height($x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()) - 1);
+			$("#mainText").height($x_pageHolder.height() - ($(".panel").outerHeight(true) + ($("#mainText").outerHeight(true) - $("#mainText").height()) + ($x_pageDiv.outerHeight(true) - $x_pageDiv.height())) - 1);
 		}
 
 		if ($infoHolder.children("div:visible").last().length > 0) {
@@ -113,7 +113,7 @@ var videoSynch = new function() {
 		$(captionInfo).each(function() {
 			var	$this = $(this),
 				imgStr = "",
-				divString = "";
+				divString;
 
 			if ($this.attr("url") != undefined && $this.attr("url") != "") {
 				imgStr += '<div class="myImg">';
@@ -132,14 +132,16 @@ var videoSynch = new function() {
 			}
 
 			if ($this.attr("align") == "Bottom") {
-				divString = '<div aria-live="polite">'  + imgStr + x_addLineBreaks($this.attr("text")) + '</div>'
+				divString = imgStr + x_addLineBreaks($this.attr("text"));
 			} else {
-				divString = '<div aria-live="polite">' + x_addLineBreaks($this.attr("text")) + imgStr + '</div>'
+				divString = x_addLineBreaks($this.attr("text")) + imgStr;
 			}
 
-			var $caption = $(divString)
-					.data("synch", $this.attr("synch"))
-					.hide();
+			var $caption = $('<div aria-live="polite" tabindex="0"></div>')
+					.data({
+						"synch": $this.attr("synch"),
+						"content": divString
+					});
 
 			$infoHolder.append($caption);
 
@@ -148,10 +150,17 @@ var videoSynch = new function() {
 
 		$pageContents.data("captions", captions);
 
-		$(captions).click(function() {
-			$pageContents.data("mediaElement").setCurrentTime($(this).data("synch") + 0.1);
-			this.scrollIntoView(true);
-		});
+		$(captions)
+			.click(function() {
+				videoSynch.popcornInstance.currentTime($(this).data("synch") + 0.1);
+				this.scrollIntoView(true);
+			})
+			.keypress(function(e) {
+				var charCode = e.charCode || e.keyCode;
+				if (charCode == 32) {
+					$(this).trigger("click");
+				}
+			});
 
 		var $pageVideo = $("#pageVideo"),
 			videoDimensions = [320,240];
@@ -192,9 +201,11 @@ var videoSynch = new function() {
 		
 		// Show captions that should happen before the first timeupdate.
 		var $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
-		if ($captionAtStart.length > 0) {
-			$captionAtStart.show();
-		}
+		$captionAtStart.each(function() {
+			$(this)
+				.html($(this).data("content"))
+				.addClass("shown");
+		});
 
 		if (x_browserInfo.mobile == false) {
 			$pageContents.css("padding-left", Number($pageVideo.data("dimensions")[0]) + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
@@ -217,8 +228,10 @@ var videoSynch = new function() {
 				var $thisCaption = $(this);
 				if (erase == "False") {
 					if (pop.currentTime() > $thisCaption.data("synch")) {
-						if ($thisCaption.is(":hidden") == true) {
-							$thisCaption.show();
+						if ($thisCaption.html() === "") {
+							$thisCaption
+								.html($thisCaption.data("content"))
+								.addClass("shown");
 							$thisCaption[0].scrollIntoView(true);
 
 							if (pause == "True") {
@@ -226,19 +239,25 @@ var videoSynch = new function() {
 							}
 						}
 					} else {
-						$thisCaption.hide();
+						$thisCaption
+							.html("")
+							.removeClass("shown");
 					}
 				} else {
 					if (pop.currentTime() > $thisCaption.data("synch") && (pop.currentTime() < $thisCaption.next().data("synch") || $thisCaption.data("synch") && this == $captions.last()[0])) {
-						if ($thisCaption.is(":hidden") == true) {
-							$thisCaption.show();
+						if ($thisCaption.html() === "") {
+							$thisCaption
+								.html($thisCaption.data("content"))
+								.addClass("shown");
 							
 							if (pause == "True") {
 								pop.pause();
 							}
 						}
 					} else {
-						$thisCaption.hide();
+						$thisCaption
+							.html("")
+							.removeClass("shown");
 					}
 				}
 			});
