@@ -2216,7 +2216,8 @@ function x_continueSetUp2() {
 	if (x_params.module != undefined && x_params.module != "") {
 		XTSetOption('module', x_params.module);
 	}
-	if (XTTrackingSystem() === 'xAPI') {
+	// Restart if we're NOT navigating to a standalone page
+	if (XTTrackingSystem() === 'xAPI' && x_pageInfo[x_startPage] != undefined && !x_pageInfo[x_startPage].standalone) {
 		var callStartPage = false;
 		if (x_params.restartOptions == undefined)
 		{
