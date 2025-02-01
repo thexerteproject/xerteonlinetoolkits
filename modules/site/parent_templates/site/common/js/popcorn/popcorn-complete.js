@@ -3225,7 +3225,7 @@
 
     // Search URL segments for hash
     let result = vimeoUrl.match(/^https?:\/\/(www\.)?(player\.)?vimeo.com\/(channels\/[a-zA-Z0-9]*\/)?(?<id>[0-9]*)(\/(?<hash>[a-zA-Z0-9]+)).*$/);
-    if (result['groups'] != undefined) {
+    if (result != undefined && result['groups'] != undefined) {
       return result['groups'].hash;
     }
 
