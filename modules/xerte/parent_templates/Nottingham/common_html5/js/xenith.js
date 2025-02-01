@@ -2604,14 +2604,14 @@ function x_closeStandAlonePage(event) {
 	var standAlonePage = this.$content[0].contentWindow.x_currentPage
 	var template_id = this.$content[0].contentWindow.x_TemplateId;
 	if (template_id == x_TemplateId) {
-		// Tom Reijnders @022-10-06
+		// Tom Reijnders @2022-10-06
 		// We're going to do some juggling with variables/code from the standalone page
 		// Assumptions:
 		// 1. The standalone page is using the same template as the main page
 		// 2. Therefore the standalone page is using the same x_pageInfo array as the main page
-		// 3. The XTInitialise code made sure that the iframe state variable is actually pointing to the main state vairable
-		//    i.e. when calling the leavePage inside the ifraeme, it's updateing the main state variable
-		// 4. It is necessary to call the leavePage from the ifarem in case the pagetype has not been yet in the main page
+		// 3. The XTInitialise code made sure that the iframe state variable is actually pointing to the main state variable
+		//    i.e. when calling the leavePage inside the iframe, it's updating the main state variable
+		// 4. It is necessary to call the leavePage from the iframe in case the pagetype has not been yet in the main page
 		var pageObj, pageObjType;
 
 		if (x_pageInfo[standAlonePage].type == "text") {
