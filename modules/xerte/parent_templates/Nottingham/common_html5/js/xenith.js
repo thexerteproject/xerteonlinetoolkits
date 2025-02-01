@@ -2482,7 +2482,9 @@ function x_continueSetUp2() {
 		XTSetOption('module', x_params.module);
 	}
 	// Restart if we're NOT navigating to a standalone page
-	if (XTTrackingSystem() === 'xAPI' && x_pageInfo[x_startPage] != undefined && !x_pageInfo[x_startPage].standalone) {
+	var standAlonePage = x_startPage.type == 'index' && x_pageInfo[x_startPage.ID] != undefined
+		&& x_pageInfo[x_startPage.ID].standalone != undefined && x_pageInfo[x_startPage.ID].standalone;
+	if (XTTrackingSystem() === 'xAPI' && !standAlonePage) {
 		var callStartPage = false;
 		if (x_params.restartOptions == undefined)
 		{
