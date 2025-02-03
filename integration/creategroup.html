@@ -1,0 +1,53 @@
+<!DOCTYPE html> 
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf" />
+  <title>Create group</title>
+  <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/" />
+  <style>
+  .label {
+	  width: 120px;
+	  float: left;
+  }
+  </style>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet"/>
+    
+<script>
+    doCreate = function()
+	{
+		$.ajax(
+		{
+			method: "POST",
+  			url: "integration/docreate.php",
+		    data: { teacher: $("#teacher").val(), 
+					group: $("#group").val(),
+					template: $("#template").val()}
+		})
+  		.done(function( msg ) {
+    		$("#result").html(msg);
+  		});
+	}
+</script>
+</head>
+
+<body>
+
+<form action="">
+  <p>Create a group of students.</p>
+
+  <p>Please indicate the template to use as a master and the group from the csv
+  file.</p>
+
+  <p><div class="label">
+    <label for="teacher">Teacher name</label></div><input name="teacher" type="text" id="teacher" /></p>
+  <p><div class="label"><label for="group">Group name</label></div><input name="group" type="text" id="group" /></p>
+    <p><div class="label"><label for="template">Template id</label></div><input name="template" type="text" id="template" /></p>
+
+<input name="Create" type="button" onClick="doCreate();" value="Create">
+
+</form>
+
+<div id="result"></div>
+
+</body>
+</html>
