@@ -23,6 +23,8 @@
     var topXQ = new function () {
 			
 			var $pageContents;
+            var tickTxt = x_getLangInfo(x_languageData.find("tick")[0], "title") != undefined ? x_getLangInfo(x_languageData.find("tick")[0], "title") : "Correct";
+            var crossTxt = x_getLangInfo(x_languageData.find("cross")[0], "title") != undefined ? x_getLangInfo(x_languageData.find("cross")[0], "title") : "Incorrect";
 		    var judge = true;
 		    if(!(x_currentPageXML.getAttribute("judge") == "true" || x_currentPageXML.getAttribute("judge") == undefined)){
 				judge = false;
@@ -275,8 +277,10 @@
                     answerFieldLabel = "Answer";
                 }
                 for (i = 0; i < amountOfAnswers; i++) {
-					var actualFieldLabel = answerFieldLabel + ' ' + (i+1);
-					$optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'" aria-label="'+actualFieldLabel+'"/><span id="topXQ-result-' + i + '"></span></div>');
+					const actualFieldLabel = answerFieldLabel + ' ' + (i+1);
+                    const $div = $('<div class="answer"><input class="input-answer" id="input-answer-'+i+'" aria-label="'+actualFieldLabel+'"/><span id="topXQ-result-' + i + '"></span></div>')
+                                    .data("label", actualFieldLabel);
+					$optionHolder.append($div);
                     j++;
                 }
 				
@@ -529,13 +533,15 @@
 										if(judge) {
 											$("#topXQ-result-" + i)
 												.removeClass("fa-x-cross")
-												.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-										}
+												.addClass("fa").addClass("fa-fw").addClass("fa-x-tick")
+                                                .parents(".answer").find(".input-answer").attr("aria-label", $("#topXQ-result-" + i).parents(".answer").data("label") + " " + tickTxt);
+                                        }
 										wrong --;
 									}else{
 										$("#topXQ-result-" + i)
 											.removeClass("fa-x-tick")
-											.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+											.addClass("fa").addClass("fa-fw").addClass("fa-x-cross")
+                                            .parents(".answer").find(".input-answer").attr("aria-label", $("#topXQ-result-" + i).parents(".answer").data("label") + " " + crossTxt);
 									}
 
 								}
@@ -556,7 +562,8 @@
 									if (tries == 1 && checkAnswers[i].correct === true){
 										$("#topXQ-result-" + i)
 											.removeClass("fa-x-cross")
-											.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+											.addClass("fa").addClass("fa-fw").addClass("fa-x-tick")
+                                            .parents(".answer").find(".input-answer").attr("aria-label", $("#topXQ-result-" + i).parents(".answer").data("label") + " " + tickTxt);
 									}
 
 									if (checkAnswers[i].correct === false) {
@@ -565,12 +572,14 @@
 											if (attempt === tries) {
 												$("#topXQ-result-" + i)
 													.removeClass("fa-x-tick")
-													.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+													.addClass("fa").addClass("fa-fw").addClass("fa-x-cross")
+                                                    .parents(".answer").find(".input-answer").attr("aria-label", $("#topXQ-result-" + i).parents(".answer").data("label") + " " + crossTxt);
 											}
 										}else{
 											$("#topXQ-result-" + i)
 												.removeClass("fa-x-cross")
-												.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+												.addClass("fa").addClass("fa-fw").addClass("fa-x-tick")
+                                                .parents(".answer").find(".input-answer").attr("aria-label", $("#topXQ-result-" + i).parents(".answer").data("label") + " " + tickTxt);
 										}
 									}
 								}
@@ -614,7 +623,7 @@
                     <div id="OptionHolder" class="question"></div>
 
                     <button id="checkButton"></button>
-                    <div id="attempts"></div>
+                    <div id="attempts" aria-live="polite"></div>
                     <div id="result" aria-live="polite"></div>
 
                     <div id="correctAnswer" aria-live="polite"></div>

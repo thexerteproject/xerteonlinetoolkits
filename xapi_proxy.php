@@ -495,6 +495,14 @@ if ( (isset($_GET['mode'] ) && $_GET['mode'] == 'native') || (isset($force_nativ
         }
     }
 
+    // TOR 2025-02-03: There is a bug in the javascript JSON.parse function that does not handle escaped " characters
+    // inside a nested escaped string (as can happen with the trackingstate field in xAPI statements).
+    // So, replace \\\" with ' in the JSON string
+    // This is a workaround until the bug is fixed in the JSON.parse function.
+    // We could also consider to base64 encode the trackingstate in the xAPI statement
+
+    // This workaround can FAIL if the string contains a ' character
+    $contents = str_replace("\\\\\\\"", "'", $contents);
     print $contents;
 
 } else {

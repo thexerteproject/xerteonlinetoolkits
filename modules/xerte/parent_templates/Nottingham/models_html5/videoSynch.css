@@ -10,7 +10,7 @@
 	overflow:	auto;
 }
 
-#infoHolder div {
+#infoHolder div.shown {
 	cursor:			pointer;
 	margin-bottom:	10px;
 }

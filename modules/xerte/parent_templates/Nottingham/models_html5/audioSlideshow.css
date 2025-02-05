@@ -5,14 +5,18 @@
 	}
 	
 	#pageContents .pageImg {
-		text-align:		center;
+		text-align: center;
 	}
-	
+
 	#pageContents .padBottom {
-		padding-bottom:	10px;
+		padding-bottom: 1em;
 	}
-	
+
 	#pageContents .padTop {
-		padding-top:	10px;
+		padding-bottom: 1em;
 	}
-	
+
+	.slide .slideTxt {
+		padding-bottom: 1em;
+	}
+

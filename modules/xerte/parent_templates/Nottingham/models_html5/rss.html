@@ -109,7 +109,8 @@
 						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
 						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
 						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
-						resultsString += '<div class="s"><a target="_blank" href="' + item.link + '">'+ item.title + '</a><br><br>';
+						const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+						resultsString += '<div class="s"><a target="_blank" href="' + item.link + '">'+ item.title + ' ' + faIcon + '</a><br><br>';
 
 
 						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {

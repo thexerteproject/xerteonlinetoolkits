@@ -94,7 +94,7 @@
 				synchPoint = 0;
 			
 			$(x_currentPageXML).children().each(function(i){
-				var infoString = this.getAttribute("text") == "" ? "" : x_addLineBreaks('<p class="slideTxt">' + this.getAttribute("text") + '</p>'),
+				var infoString = this.getAttribute("text") == "" ? "" : '<div class="slideTxt">' + x_addLineBreaks(this.getAttribute("text")) + '</div>',
 					synch = this.getAttribute("synch")[0] == "+" ? ($.isNumeric(this.getAttribute("synch").slice(1)) ? Number(this.getAttribute("synch").slice(1)) + synchPoint : 0) : Number(this.getAttribute("synch")),
 					url = this.getAttribute("url");
 				
