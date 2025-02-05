@@ -532,7 +532,7 @@
             // last question answered - show results
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
-            var fbTxt = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+            var fbTxt = "<div>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</div>";
 
             var myScore = 0;
             for (var i=0; i<quiz.myProgress.length; i++) {
