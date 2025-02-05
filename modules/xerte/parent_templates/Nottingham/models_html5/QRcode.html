@@ -64,8 +64,11 @@
 		
 		this.isgdJSON = function (response) {
 			if (response.shorturl && response.shorturl != '') {
-				link = "<a target='_blank' href=" + response.shorturl + ">" + response.shorturl + "</a>";
+				const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+				link = "<a target='_blank' href=" + response.shorturl + ">" + response.shorturl + " " + faIcon + "</a>";
 				$("#shorturltodisplay").html(link);
+			} else {
+				$("#shorturltodisplay").html("");
 			}
 		}
 		

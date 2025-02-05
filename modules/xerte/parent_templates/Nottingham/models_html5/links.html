@@ -43,7 +43,8 @@
 			
 			// warn that links open in new window (for screen readers)
 			var linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "");
-			
+			var lbWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "");
+
 			var $linkBlock = $(".linkBlock:first");
 			$(x_currentPageXML).children().each(function(i) {
 				var $thisLink;
@@ -75,10 +76,12 @@
 				} else {
 					// the text read by screen reader for link (instead of url)
 					// this will be urlTxt (if exists) or name (if exists) or url, followed by the link warning that it opens in new window (if it does)
-					var screenreaderTxt = (this.getAttribute("urlTxt") != undefined && this.getAttribute("urlTxt") != "" ? this.getAttribute("urlTxt") : (this.getAttribute("name") != "" ? this.getAttribute("name") : this.getAttribute("url"))) + (this.getAttribute("target") != "lightbox" ? ": " + linkWarning : "");
+					var screenreaderTxt = (this.getAttribute("urlTxt") != undefined && this.getAttribute("urlTxt") != "" ? this.getAttribute("urlTxt") : (this.getAttribute("name") != "" ? this.getAttribute("name") : this.getAttribute("url"))) + (this.getAttribute("target") != "lightbox" ? ": " + linkWarning : ": " + lbWarning);
 
+
+					const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
 					$thisLink.find(".link a")
-							.html(this.getAttribute("urlTxt") != undefined && this.getAttribute("urlTxt") != "" ? this.getAttribute("urlTxt") : this.getAttribute("url"))
+							.html((this.getAttribute("urlTxt") != undefined && this.getAttribute("urlTxt") != "" ? this.getAttribute("urlTxt") : this.getAttribute("url")) + (this.getAttribute("target") != "lightbox" ? ' ' + faIcon : ''))
 							.attr({
 								"href" : this.getAttribute("url"),
 								"target" : "_blank",

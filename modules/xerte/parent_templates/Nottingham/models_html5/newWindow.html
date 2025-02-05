@@ -56,16 +56,14 @@
 		this.init = function() {
 			$img = $("#pageImg");
 			// warn that links open in new window (for screen readers)
-			var linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "");
-			linkWarning = linkWarning != "" ? '<span id="linkHelper" class="ui-helper-hidden-accessible">' + linkWarning + '</span>' : linkWarning;
+			const linkOpenTxt = x_currentPageXML.getAttribute("target") !== "lightbox" ? ' <i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>' : '<span class="sr-only">: ' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'dialog', 'opens in a dialog window') + '</span>';
 			
 			// descrip is a new field so old projects might not have it
 			var linkTxt = x_currentPageXML.getAttribute("descrip") != undefined ? x_currentPageXML.getAttribute("descrip") : x_currentPageXML.getAttribute("tip");
-			linkTxt += linkWarning;
+			linkTxt += linkOpenTxt;
 			
 			$("#textHolder")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a id="newWindowLink" class="newWindowLink" href="#">' + linkTxt + '</a></p>')
-				.find("a.newWindowLink").attr("aria-labelledby", "newWindowLink"); // forces screen readers to include linkWarning text in link description
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a id="newWindowLink" class="newWindowLink" href="#">' + linkTxt + '</a></p>');
 			
 			$("#pageImg")
 				.one("load", function() {
