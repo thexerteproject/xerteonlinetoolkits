@@ -157,7 +157,7 @@
 			if (lightbox === true) {
 				const $link = $('<a id="panelLink" target="_blank"></a>');
 				const $img = $('<img id="panelImg" alt="' + (thisData.getAttribute("tip") != undefined && thisData.getAttribute("tip") !== '' ? thisData.getAttribute("tip") : '') + '" ' + 'src="' + thisData.getAttribute("url") + '"/>');
-				const $txt = $('<div id="panelTxt">' + (thisData.getAttribute("text") != undefined && thisData.getAttribute("text") !== '' ? x_addLineBreaks(thisData.getAttribute("text")) : '') + '</div>');
+				const $txt = $('<div id="panelTxt" aria-live="assertive">' + (thisData.getAttribute("text") != undefined && thisData.getAttribute("text") !== '' ? x_addLineBreaks(thisData.getAttribute("text")) : '') + '</div>');
 				let $html;
 
 				if (link != "") {
