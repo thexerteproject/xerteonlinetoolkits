@@ -32,39 +32,6 @@
 require_once(dirname(__FILE__) . "/config.php");
 require_once($xerte_toolkits_site->php_library_path  . "user_library.php");
 
-
-function require_auth() {
-    global $xerte_toolkits_site;
-#TODO use hash for authentication
-    header('Cache-Control: no-cache, must-revalidate, max-age=0');
-    $has_supplied_credentials = !(empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']));
-    $is_not_authenticated = (
-        !$has_supplied_credentials ||
-        $_SERVER['PHP_AUTH_USER'] != $xerte_toolkits_site->admin_username ||
-        hash('sha256', $_SERVER['PHP_AUTH_PW'])   != $xerte_toolkits_site->admin_password);
-    if ($is_not_authenticated) {
-        header('HTTP/1.1 401 Authorization Required');
-        header('WWW-Authenticate: Basic realm="Access denied"');
-        header('WWW-Authenticate: Basic realm="Check structure of ' . $xerte_toolkits_site->site_name . '"');
-        header('HTTP/1.0 401 Unauthorized');
-        echo '{"error" : "You do not have permission to retrieve this information"}';
-        exit;
-    }
-    return true;
-}
-
-
-// Authentication
-$full_access = false;
-// Admin user
-if (is_user_admin()){
-    $full_access = true;
-}
-else
-{
-    $full_access = require_auth();
-}
-
 function checkOrphan($folder, $folders)
 {
     $folder_parent = $folder['folder_parent'];
@@ -100,52 +67,74 @@ function getFolderDetails($folder)
     return $details;
 }
 
-$fix = false;
-if (isset($_GET['fix'])) {
-    $fix = true;
-}
+$_SESSION['elevated'] = true;
+if(is_user_admin()) {
+    unset($_SESSION['elevated']);
 
-// Get the user id
-if (isset($_GET['username'])) {
-    $username = x_clean_input($_GET['username']);
+    $fix = false;
+    if (isset($_GET['fix'])) {
+        $fix = true;
+    }
 
     // Get the user id
-    $rowid = $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($username));
-    $user_id = $row['login_id'];
+    if (isset($_GET['username'])) {
+        $username = x_clean_input($_GET['username']);
 
-    // Get root folder of user $user_id
-    $root_folder = get_user_root_folder_id_by_id($user_id);
+        // Get the user id
+        $rowid = $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($username));
+        $user_id = $row['login_id'];
 
-    // Get all the folders the user has access to
-    $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights WHERE login_id = ?";
-    $params = array($user_id);
-    $folders = db_query($sql, $params);
+        // Get root folder of user $user_id
+        $root_folder = get_user_root_folder_id_by_id($user_id);
 
-    $found = false;
-    foreach ($folders as $folder) {
-        $folder_is_orphan = checkOrphan($folder, $folders);
-        if ($folder_is_orphan) {
-            $found = true;
-            echo "Orphaned folder: " . $folder['folder_id'] . "<br>";
-            $details = getFolderDetails($folder);
-            echo "Details: <br><ul>";
-            echo "<li>Folder name         : " . $details['folder_name'] . "</li>";
-            echo "<li>Role                : " . $details['role'] . "</li>";
-            echo "<li>Folder shared by    : " . $details['folder_owner'] . "</li>";
-            echo "<li>Folder parent       : " . $details['folder_parent'] . "</li>";
-            echo "<li>Folder parent owner : " . $details['folder_parent_owner'] . "</li></ul>";
+        // Get all the folders the user has access to
+        $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights WHERE login_id = ?";
+        $params = array($user_id);
+        $folders = db_query($sql, $params);
 
-            if ($fix)
-            {
-                echo "Fixing orphaned folder: {$details['folder_name']} (id={$folder['folder_id']}) and placing it at the root folder of user {$username} (id={$root_folder}) <br>";
-                $sql = "update {$xerte_toolkits_site->database_table_prefix}folderrights set folder_parent=? WHERE folder_id = ? and login_id = ?";
-                $params = array($root_folder,  $folder['folder_id'], $user_id);
-                db_query($sql, $params);
-                echo "Orphaned folder fixed: " . $folder['folder_id'] . "<br>";
+        $found = false;
+        foreach ($folders as $folder) {
+            $folder_is_orphan = checkOrphan($folder, $folders);
+            if ($folder_is_orphan) {
+                $found = true;
+                echo "Orphaned folder: " . $folder['folder_id'] . "<br>";
+                $details = getFolderDetails($folder);
+                echo "Details: <br><ul>";
+                echo "<li>Folder name         : " . $details['folder_name'] . "</li>";
+                echo "<li>Role                : " . $details['role'] . "</li>";
+                echo "<li>Folder shared by    : " . $details['folder_owner'] . "</li>";
+                echo "<li>Folder parent       : " . $details['folder_parent'] . "</li>";
+                echo "<li>Folder parent owner : " . $details['folder_parent_owner'] . "</li></ul>";
+
+                if ($fix) {
+                    echo "Fixing orphaned folder: {$details['folder_name']} (id={$folder['folder_id']}) and placing it at the root folder of user {$username} (id={$root_folder}) <br>";
+                    $sql = "update {$xerte_toolkits_site->database_table_prefix}folderrights set folder_parent=? WHERE folder_id = ? and login_id = ?";
+                    $params = array($root_folder, $folder['folder_id'], $user_id);
+                    db_query($sql, $params);
+                    echo "Orphaned folder fixed: " . $folder['folder_id'] . "<br>";
+                }
             }
         }
+        if (!$found) {
+            echo "No orphaned folders found for user {$username}";
+        }
     }
-    if (!$found) {
-        echo "No orphaned folders found for user {$username}";
+} else if(isset($_SESSION['toolkits_logon_id'])){
+    unset($_SESSION['elevated']);
+    echo "You are not permitted to use this page";
+}else {
+    unset($_SESSION['elevated']);
+    $url = "check_structure.php";
+    if(isset($_GET['username'])){
+        $url .= "?username=" . $_GET['username'];
     }
+    if (isset($_GET['fix'])) {
+        $url .= "&fix=true";
+    }
+    $_SESSION['adminTo'] = $url;
+    if (isset($_GET['altauth'])){
+        $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
+    }
+    header("location: index.php");
+    exit();
 }
