@@ -5408,7 +5408,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 		let subNum = 0;
 
 		// tick to show page / chapter has been viewed can be placed before or after the page title
-		const tickHtml = '<i class="viewTick fa fa-x-tick-circle notvisited" aria-hidden="true"></i>';
+		const tickHtml = '<i class="viewTick fa fa-x-tick-circle notvisited" aria-hidden="true" aria-label="' + x_getLangInfo(x_languageData.find("viewed")[0], "label", "Viewed") + '"></i>';
 		let tickBefore = x_params.pageTick !== "false" && x_params.pageTickPostion == "before" ? tickHtml + " " : "";
 		let tickAfter = x_params.pageTick !== "false" && x_params.pageTickPostion !== "before" ? " " + tickHtml : "";
 
@@ -5576,13 +5576,13 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			// tick all pages which have been viewed
 			$menuItems.find(".menuItem").each(function(i) {
 				const tempIndex = x_normalPages[i + pageNumOffset];
-				if (x_pageInfo[tempIndex].viewed) $(this).find('i').removeClass('notvisited');
+				if (x_pageInfo[tempIndex].viewed) $(this).find('i').removeClass('notvisited').attr("aria-hidden", "false");
 			});
 
 			// tick all chapters that don't contain any unviewed pages
 			$menuItems.find(".chapterHolder").each(function(i) {
 				if ($(this).find(".menuItem .notvisited").length == 0) {
-					$(this).find('.chapterItem i').removeClass('notvisited');
+					$(this).find('.chapterItem i').removeClass('notvisited').attr("aria-hidden", "false");
 				}
 			});
 		}
