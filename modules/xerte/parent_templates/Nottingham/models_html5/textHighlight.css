@@ -44,6 +44,10 @@
 		margin-top: 1em;
 		float: right;
 	}
+
+	.panel {
+		overflow: auto;
+	}
 	
 	.tabHolder.ui-widget-header {
 		border: none;

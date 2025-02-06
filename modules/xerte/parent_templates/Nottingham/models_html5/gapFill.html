@@ -93,10 +93,7 @@
 			var $panel = $("#mainPanel");
 			
 			if (x_browserInfo.mobile == false) {
-				$panel.height(Math.max(
-					$("#targetHolder").height() + $("#labelHolder").outerHeight(true) + $("#btnHolder").height(),
-					$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5
-				));
+				$panel.css("min-height", $x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()) - ($panel.outerHeight(true) - $panel.height()) - 1);
 			}
 			$pageContents.find("#hint").remove();
 			

@@ -66,8 +66,10 @@
 		
 		// function resizes contenteditable div
 		this.resizeEditable = function($editableDiv) {
-			var btnHolderH = $editableDiv.parent().find('.btnHolder').length > 0 ? $editableDiv.parent().find('.btnHolder').outerHeight() : 0;
-			$editableDiv.innerHeight(Math.floor($editableDiv.parents('.panel, .navChild').height() - btnHolderH));
+			if (!$editableDiv.is($("#suggestedTxt"))) {
+				var btnHolderH = $editableDiv.parent().find('.btnHolder').length > 0 ? $editableDiv.parent().find('.btnHolder').outerHeight() : 0;
+				$editableDiv.innerHeight(Math.floor($editableDiv.parents('.panel, .navChild').height() - btnHolderH));
+			}
 		};
 
         this.leavePage = function() {
@@ -293,7 +295,7 @@
 						var $holder = $('.' + info[i].class);
 					
 						if (info[i].class == 'initTxt' || info[i].class == 'notesTxt' || info[i].class == 'suggestedTxt') {
-							$holder.append('<div id="' + info[i].class + '" contenteditable="true" spellcheck="false" class="editableDiv">' + info[i].txt + '</div>');
+							$holder.append('<div id="' + info[i].class + '" contenteditable="' + (info[i].class != 'suggestedTxt') + '" spellcheck="false" class="editableDiv">' + info[i].txt + '</div>');
 							
 							if (info[i].class == 'initTxt') {
 								$holder.append('<div id="' + info[i].class + 'BtnHolder" class="btnHolder"></div>');

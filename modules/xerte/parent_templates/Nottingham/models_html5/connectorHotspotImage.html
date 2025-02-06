@@ -156,8 +156,14 @@
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 			$('#hsIconHolder').empty();
+			$("#hotspot_bubble_holder").remove();
 			$("#panel").append('<div id="hotspot_bubble_holder">' + '</div>');
-			$('#hotspot_bubble_holder').empty();
+
+			$('#hotspot_bubble_holder').keyup(function(e) {
+				if (e.key === "Escape") {
+					$('#hotspot_bubble_holder').empty();
+				}
+			});
 
 			var stroke = true;
 			var highlightColour = "#ffff00";
@@ -400,6 +406,7 @@
 						$hotspot
 								.attr({coords : coords_string})
 								.click(function () {
+									$('#hotspot_bubble_holder').empty();
 									connectorHotspotImage.pauseAudio();
 
 									// force open dialogs to close
@@ -743,7 +750,6 @@
 									$(this).removeClass("highlight");
 									$("img").mapster('highlight', false);
 									$("#pageContents .selected").removeClass("selected");
-									$('#hotspot_bubble_holder').empty()
 								})
 								.keypress(function (e) {
 									var charCode = e.charCode || e.keyCode;
@@ -936,7 +942,6 @@
 
 				}
 			}
-
 		}
 
 		//tmp_left needs to be shifted by some margin as the imge+hotspots move in between
@@ -967,7 +972,9 @@
 			"top": tmp_top,
 			"max-width": Math.min(vw * 0.6,max_w),
 			"max-height": vh * 0.6,
-		});
+		}).focus();
+
+		hideOnClickOutside($hotspot_bubble);
 	}
 
 	connectorHotspotImage.init();

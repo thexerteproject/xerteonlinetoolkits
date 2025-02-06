@@ -519,7 +519,7 @@
 				}
 				// name and id all other panels
 				else{
-                    $('<div class="panel">' + title + '</div>')
+                    $('<div class="panel" tabindex="0">' + title + '</div>')
                         .appendTo($panelHolder)
                         .attr("id", mediaLesson.panelbaseid + i);
 				}
