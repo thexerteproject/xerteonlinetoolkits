@@ -469,10 +469,14 @@ table.headerCol.shaded td.header {
 .x_gapFill_page #targetHolder .highlight {
   background: $lighterpanel;
 }
+.x_gapFill_page #targetHolder .target.selected {
+  border-color: $whiteorlightest !important;
+}
 .x_gapFill_page #targetHolder input[readonly].correct,
 .x_gapFill_page #targetHolder:not(.underline):not(.outline) .target.correct,
 .x_gapFill_page #targetHolder input[correct],
-.x_gapFill_page #targetHolder select[disabled].correct {
+.x_gapFill_page #targetHolder select[disabled].correct,
+.x_gapFill_page #targetHolder select[disabled]{
   background: inherit;
   border: 1px solid $dark5;
 }

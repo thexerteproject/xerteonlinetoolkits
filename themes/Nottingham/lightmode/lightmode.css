@@ -647,6 +647,14 @@ table.headerCol.shaded td.header {
   color: #C4551F;
 }
 
+.x_gapFill_page #targetHolder select[disabled] {
+  background: inherit;
+}
+
+.x_gapFill_page #targetHolder .target.selected {
+  border-color: #278384 !important;
+}
+
 .x_gapFill_page #targetHolder input.incorrect, #targetHolder input[incorrect] {
   color: #D13759;
 }

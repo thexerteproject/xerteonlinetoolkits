@@ -489,6 +489,12 @@ table.headerCol.shaded td.header {
   border: 1px solid $dark5;
   color: $accent4;
 }
+.x_gapFill_page #targetHolder select[disabled] {
+  background: inherit;
+}
+.x_gapFill_page #targetHolder .target.selected {
+  border-color: $contrastcolor !important;
+}
 .x_gapFill_page #targetHolder input.incorrect, #targetHolder input[incorrect] {
   color: $accent3;
 }

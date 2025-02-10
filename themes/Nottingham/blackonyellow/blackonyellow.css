@@ -891,8 +891,15 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 }
 
 .x_gapFill_page #targetHolder.gapStyle_false .target.answerShown,
-.x_gapFill_page #targetHolder.gapStyle_false .target.correct {
+.x_gapFill_page #targetHolder.gapStyle_false .target.correct,
+.x_gapFill_page #targetHolder select[disabled],
+.x_gapFill_page #targetHolder .target.incorrect,
+.x_gapFill_page #targetHolder input[readonly] {
   background: inherit;
+}
+
+.x_gapFill_page #targetHolder .target.selected {
+  border-color: #000000 !important;
 }
 
 .x_gapFill_page #targetHolder .target.correct + span:before,
@@ -907,7 +914,9 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 }
 
 .x_gapFill_page #targetHolder input[readonly].correct,
-.x_gapFill_page #targetHolder select[disabled].correct {
+.x_gapFill_page #targetHolder select[disabled].correct,
+.x_gapFill_page #targetHolder input[readonly],
+.x_gapFill_page #targetHolder select[disabled] {
   background: inherit;
   border: 1px solid #000000;
 }
@@ -934,6 +943,9 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 .x_gapFill_page #targetHolder input.answerShown {
   color: #6600FF;
   background: inherit;
+}
+
+.x_gapFill_page #targetHolder input.answerShown {
   border: 1px solid #000000;
 }
 

@@ -497,8 +497,14 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 
 //*****gap fill*****/
 .x_gapFill_page #targetHolder.gapStyle_false .target.answerShown,
-.x_gapFill_page #targetHolder.gapStyle_false .target.correct {
+.x_gapFill_page #targetHolder.gapStyle_false .target.correct,
+.x_gapFill_page #targetHolder select[disabled],
+.x_gapFill_page #targetHolder .target.incorrect,
+.x_gapFill_page #targetHolder input[readonly] {
   background: inherit;
+}
+.x_gapFill_page #targetHolder .target.selected {
+  border-color: $bordercolor !important;
 }
 .x_gapFill_page #targetHolder .target.correct+span:before,
 .x_gapFill_page #targetHolder select[disabled].correct+span:before,
@@ -510,7 +516,9 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
   background: $midyellow;
 }
 .x_gapFill_page #targetHolder input[readonly].correct,
-.x_gapFill_page #targetHolder select[disabled].correct {
+.x_gapFill_page #targetHolder select[disabled].correct,
+.x_gapFill_page #targetHolder input[readonly],
+.x_gapFill_page #targetHolder select[disabled] {
   background: inherit;
   border: 1px solid $bordercolor;
 }
@@ -533,6 +541,9 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 .x_gapFill_page #targetHolder input.answerShown {
   color: $blue;
   background: inherit;
+}
+
+.x_gapFill_page #targetHolder input.answerShown {
   border: 1px solid $bordercolor;
 }
 
