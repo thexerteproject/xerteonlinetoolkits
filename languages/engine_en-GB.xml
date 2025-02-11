@@ -46,7 +46,9 @@
   <errorPage label="No template is currently available for this page type."/>
   
   <errorBrowser label="Your browser does not fully support this page type."/>
-  
+
+  <errorScreenReader label="This page type is not compatible with screen readers."/>
+
   <errorEmbed label="You have embedded an XOT project preview. You must make the project public and embed the public facing URL."/>
   
   <pageDeprecatedCeased label="This page has been deprecated as the service has ceased."/>

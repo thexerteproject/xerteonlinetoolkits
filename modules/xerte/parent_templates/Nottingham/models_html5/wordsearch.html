@@ -37,6 +37,8 @@
 			if(x_browserInfo.touchScreen){
 				document.body.classList.add("stop-scrolling");
 			}
+
+			$("#puzzleHolder").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
 			
 			if (x_browserInfo.mobile == true) {
 				$("#infoHolder").removeClass("panel");
@@ -228,6 +230,10 @@
 
 		this.begin = function () {
 			wordsearch.game();
+
+			// disable tabbing to letter buttons as it's not keyboard accessible anyway
+			$("#puzzle .puzzleSquare").attr("tabindex", "-1");
+
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
@@ -258,7 +264,7 @@
 
 	<div id="infoHolder" class="panel x_floatRight">
 		<div id="puzzleHolder">
-			<div id="puzzle"></div>
+			<div id="puzzle" aria-hidden="true"></div>
 			<div id="words"></div>
 		</div>
 		<div id="btnHolder"></div>
