@@ -14,13 +14,13 @@ $chat_url = "https://api.anthropic.com/v1/messages";
 
 // Context-specific settings
 if ($context === 'standard') {
-    $q = DEFAULT_PROMPT_CROSSWORD;
-    $object = DEFAULT_PROMPT_CROSSWORD;
+    $q = LEARNING_PROMPT_CROSSWORD;
+    $object = LEARNING_RESULT_CROSSWORD;
     $defaultPrompt = DEFAULT_PROMPT_CROSSWORD;
 }
 elseif ($context === 'bootstrap') {
-    $q = DEFAULT_PROMPT_CROSSWORD_BOOTSTRAP;
-    $object = DEFAULT_PROMPT_CROSSWORD_BOOTSTRAP;
+    $q = LEARNING_PROMPT_CROSSWORD_BOOTSTRAP;
+    $object = LEARNING_RESULT_CROSSWORD_BOOTSTRAP;
     $defaultPrompt = DEFAULT_PROMPT_CROSSWORD_BOOTSTRAP;
 }
 

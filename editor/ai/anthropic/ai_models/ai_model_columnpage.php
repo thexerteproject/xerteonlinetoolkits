@@ -14,13 +14,13 @@ $chat_url = "https://api.anthropic.com/v1/messages";
 
 // Context-specific settings
 if ($context === 'standard') {
-    $q = DEFAULT_PROMPT_COLUMNPAGE;
-    $object = DEFAULT_PROMPT_COLUMNPAGE;
+    $q = LEARNING_PROMPT_COLUMNPAGE;
+    $object = LEARNING_RESULT_COLUMNPAGE;
     $defaultPrompt = DEFAULT_PROMPT_COLUMNPAGE;
 }
 elseif ($context === 'bootstrap') {
-    $q = DEFAULT_PROMPT_COLUMNPAGE_BOOTSTRAP;
-    $object = DEFAULT_PROMPT_COLUMNPAGE_BOOTSTRAP;
+    $q = LEARNING_PROMPT_COLUMNPAGE_BOOTSTRAP;
+    $object = LEARNING_RESULT_COLUMNPAGE_BOOTSTRAP;
     $defaultPrompt = DEFAULT_PROMPT_COLUMNPAGE_BOOTSTRAP;
 }
 

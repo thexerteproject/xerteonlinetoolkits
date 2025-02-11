@@ -1,4 +1,4 @@
-A<?php
+<?php
 //categories model using gpt-3.5 turbo
 require_once(dirname(__FILE__) . "/../../../../config.php");
 _load_language_file("/editor/ai_models/anthropic_model_categories_ai.inc");
@@ -14,13 +14,13 @@ $chat_url = "https://api.anthropic.com/v1/messages";
 
 // Context-specific settings
 if ($context === 'standard') {
-    $q = DEFAULT_PROMPT_CATEGORIES;
-    $object = DEFAULT_PROMPT_CATEGORIES;
+    $q = LEARNING_PROMPT_CATEGORIES;
+    $object = LEARNING_RESULT_CATEGORIES;
     $defaultPrompt = DEFAULT_PROMPT_CATEGORIES;
 }
 elseif ($context === 'bootstrap') {
-    $q = DEFAULT_PROMPT_CATEGORIES_BOOTSTRAP;
-    $object = DEFAULT_PROMPT_CATEGORIES_BOOTSTRAP;
+    $q = LEARNING_PROMPT_CATEGORIES_BOOTSTRAP;
+    $object = LEARNING_RESULT_CATEGORIES_BOOTSTRAP;
     $defaultPrompt = DEFAULT_PROMPT_CATEGORIES_BOOTSTRAP;
 }
 

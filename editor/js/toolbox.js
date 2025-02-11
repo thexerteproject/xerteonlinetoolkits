@@ -5394,20 +5394,20 @@ var EDITOR = (function ($, parent) {
                                 case 'morphImages':
                                 case 'imageViewer':
                                 case 'imageSequence':
-                                case 'singleImg':
-                                case 'imgSeries':
+                                case 'singleImg': //subpage of image sequence
+                                case 'imgSeries': //subpage of image sequence
                                 case 'textGraphics':
                                 case 'flickr':
                                 case 'audioSlideshow':
                                 case 'bleedingImage':
                                 case 'media360':
-                                case 'image':
+                                case 'image': //perspectives subpage
                                 case 'text':
                                     switch (requestTemplate){
                                         case 'custom':
                                             constructorObject = {
                                                 "subject": lo_data[key].attributes["subject"],
-                                                "additionalInstructions": lo_data[key].attributes["additionalInstructions"],
+                                                "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || "",
                                                 "exampleContent": lo_data[key].attributes["exampleContent"],
                                                 "tone": lo_data[key].attributes["voiceSelector"],
                                                 "range": lo_data[key].attributes["ageRange"],
@@ -5545,7 +5545,7 @@ var EDITOR = (function ($, parent) {
                                 case 'columnPage': //columns mainpage
                                     constructorObject = {
                                         "subjects": lo_data[key].attributes["subjects"], //note the plural-for tavbnavextra main page, nav main page, column main page
-                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"],
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || " ",
                                         "exampleContent": lo_data[key].attributes["exampleContent"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
@@ -5563,7 +5563,7 @@ var EDITOR = (function ($, parent) {
                                 case 'mpText':
                                     constructorObject = {
                                         "subject": lo_data[key].attributes["subject"],
-                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"],
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || " ",
                                         "exampleContent": lo_data[key].attributes["exampleContent"],
                                         "tone": lo_data[key].attributes["voiceSelector"],
                                         "range": lo_data[key].attributes["ageRange"],
@@ -5588,7 +5588,7 @@ var EDITOR = (function ($, parent) {
                         //constructor defaults
                         constructorObject["tone"] = lo_data[key].attributes["voiceSelector"] || "semi-formal";
                         constructorObject["range"] = lo_data[key].attributes["ageRange"] || "Intermediate English B2";
-                        constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"] || "high-school";
+                        constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"] || "University";
                         if (infoPrompt === 'true'){
                             constructorObject["access"] = "HAVE";
                         }else{
