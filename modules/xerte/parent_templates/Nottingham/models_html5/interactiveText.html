@@ -22,10 +22,7 @@
 	// other functions for model should also be in here to avoid conflicts
 	var interactiveText = new function() {
 		// vars just used in 1st set up of page
-		var lang1,
-			lang2,
-			lang3,
-			tabIndex = '',
+		var tabIndex = '',
 			interactionText = "",
 			tempTxt = "",
 			tempTxtPos = 0,
@@ -42,6 +39,9 @@
 			correctAnswers = [],
 			correctOptions = [],
 			findAllowSelectionOfAllWords = false;
+
+		this.tickTxt = x_getLangInfo(x_languageData.find("tick")[0], "title") != undefined ? x_getLangInfo(x_languageData.find("tick")[0], "title") : "Correct";
+		this.crossTxt = x_getLangInfo(x_languageData.find("cross")[0], "title") != undefined ? x_getLangInfo(x_languageData.find("cross")[0], "title") : "Incorrect";
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -76,9 +76,6 @@
 			currentGroup = -1;
 			$groupInfo = $("#groupInfo");
 			$instructions = $("#instructions");
-			lang1 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "moreInfo", "Press space to learn more");
-			lang2 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected");
-			lang3 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "toSelect", "Press space to select");
 
 			interactionText = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
 
@@ -282,13 +279,9 @@
 				}
 			}
 
-			if (x_currentPageXML.getAttribute("interactivity") == "show" || x_currentPageXML.getAttribute("interactivity") == "show2") {
-				tabIndex = '';
-			} else {
-				tabIndex = 'tabindex="0"';
-				if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
-					$instructions.remove();
-				}
+			tabIndex = x_currentPageXML.getAttribute("interactivity") === "explore" ? 'tabindex="0"' : '';
+			if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
+				$instructions.remove();
 			}
 
 			// insert span tags into interactionText
@@ -435,8 +428,8 @@
 					var $this = $(this);
 					$this.find(".group")
 						.removeClass("on")
-						.removeAttr("aria-current")
-						.removeAttr("title");
+						.removeAttr("role")
+						.find(".sr-only").remove();
 
 					if ($(e.target).hasClass("group")) {
 						var clicked = $.merge($(e.target), $(e.target).parents(".group"));
@@ -450,29 +443,15 @@
 				});
 
 				$("#passage .group")
-					.focusin(function(e) {
-						var $this = $(this);
-						$this.addClass("highlight");
-
-						if (!$this.hasClass("on")) {
-							$(this).attr("title", lang1);
-						}
-						})
-					.focusout(function() {
-						var $this = $(this);
-						$this.removeClass("highlight");
-
-						if (!$this.hasClass("on")) {
-							$this.removeAttr("title");
-						}
-						})
+					.focusin(function() { $(this).addClass("highlight"); })
+					.focusout(function() { $(this).removeClass("highlight"); })
 					.keypress(function(e) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
 							$("#passage").find(".group")
 								.removeClass("on")
-								.removeAttr("aria-current")
-								.removeAttr("title");
+								.removeAttr("role")
+								.find(".sr-only").remove();
 
 							interactiveText.clickExplore($(this));
 						}
@@ -483,10 +462,10 @@
 						label:	(x_currentPageXML.getAttribute("showBtnTxt") != undefined ? x_currentPageXML.getAttribute("showBtnTxt") : "Show All")
 					}).click(function() {
 						var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
-						$("#passage .group" + currentGroup)
+						$("#passage .group" + currentGroup + ":not(.on)")
 							.addClass("on")
-							.attr("aria-current", "true")
-							.attr("title", lang2 + ": " + plainGrpName);
+							.attr("role", "mark")
+							.prepend("<span class='sr-only'>" + plainGrpName + ": </span>");
 
 						$(this).hide();
 					});
@@ -498,8 +477,8 @@
 				$("#questionHolder").hide();
 				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt2") != undefined ? x_currentPageXML.getAttribute("showMeTxt2") : "Click a group to learn more.") + '</p>');
 
-				var $btnHolder = $("#btnHolder");
-				$btnHolder.insertBefore($("#passage"));
+				$("#btnHolder").remove();
+				const $btnHolder = $('<ul id="btnHolder"></ul>').insertBefore($("#passage"));
 
 				for (var i=0; i<groupInfo.length; i++) {
 					var $groupBtn = $('<a/>');
@@ -509,7 +488,8 @@
 						.attr({"href": "#"})
 						.data("index", i);
 
-					$btnHolder.append($groupBtn);
+					const $li = $("<li></li>").append($groupBtn);
+					$btnHolder.append($li);
 				}
 
 				$btnHolder.find(".listItem")
@@ -519,18 +499,23 @@
 						var index = $(this).data("index");
 
 						if (currentGroup != index) {
-							$("#btnHolder .listItem.highlight").removeClass("highlight").removeAttr("aria-current");
+							$("#btnHolder .listItem.highlight")
+									.removeClass("highlight")
+									.parent().removeAttr("aria-current");
+
 							$("#passage .group")
 								.removeClass("on")
-								.removeAttr("aria-current")
-								.removeAttr("title");
+								.removeAttr("role")
+								.find(".sr-only").remove();
 
-							$(this).addClass("highlight").attr("aria-current", "true");
+							$(this)
+								.addClass("highlight")
+								.parent().attr("aria-current", "true");
+
 							var plainGrpName = $('<p>' + groupInfo[index].name + '</p>').text();
 							$("#passage .group" + index)
 								.addClass("on")
-								.attr("aria-current", "true")
-								.attr("title", lang2 + ": " + plainGrpName);
+								.attr("role", "mark");
 
 							$groupInfo
 								.hide()
@@ -571,14 +556,14 @@
 
 						$("#passage .group")
 							.removeClass("on")
-							.removeAttr("aria-current")
-							.removeAttr("title");
+							.removeAttr("role")
+							.find(".sr-only").remove();
 
 						var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
 						$("#passage .group" + currentGroup)
 							.addClass("on")
-							.attr("aria-current", "true")
-							.attr("title", lang2 + ": " + plainGrpName);
+							.attr("role", "mark")
+							.prepend("<span class='sr-only'>" + plainGrpName + ": </span>");
 
 						$groupInfo
 							.hide()
@@ -606,8 +591,8 @@
 						currentGroup--;
 						$("#passage .group")
 							.removeClass("on")
-							.removeAttr("aria-current")
-							.removeAttr("title");
+							.removeAttr("role")
+							.find(".sr-only").remove();
 
 						if (currentGroup == -1) {
 							$(this).button("disable");
@@ -616,8 +601,8 @@
 							var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
 							$("#passage .group" + currentGroup)
 								.addClass("on")
-								.attr("aria-current", "true")
-								.attr("title", lang2 + ": " + plainGrpName);
+								.attr("role", "mark")
+								.prepend("<span class='sr-only'>" + plainGrpName + ": </span>");
 
 							$groupInfo
 								.hide()
@@ -669,6 +654,9 @@
 
 				// there's only one group marked up - no need for listItems
 				if (count == 1) {
+					// add tab index to groups in passage immediately
+					$("#passageHolder:not(.disabled) #passage .group").attr("tabindex", "0");
+
 					currentGroup = $("#btnHolder .listItem").data("index");
 					$("#btnHolder .listItem").remove();
 					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt3") != undefined ? x_currentPageXML.getAttribute("findTxt3") : "Can you find all of the examples?") + '</p>');
@@ -701,8 +689,13 @@
 					var index = $(this).data("index");
 					if (currentGroup != index) {
 						currentGroup = index;
-						$("#btnHolder .listItem.highlight").removeClass("highlight");
-						$(this).addClass("highlight");
+						$("#btnHolder .listItem.highlight")
+							.removeClass("highlight")
+							.parent().removeAttr("aria-current");
+
+						$(this)
+							.addClass("highlight")
+							.parent().attr("aria-current", true);
 
 						$groupInfo
 							.hide()
@@ -728,35 +721,42 @@
 						// remove all highlights
 						$("#passage .group")
 							.removeClass("on")
-							.removeAttr("aria-current")
-							.removeAttr("title");
+							.removeAttr("role")
+							.find(".sr-only").remove();
 
 						for (var group = 0; group < groupInfo.length; group++){
 							$("#passage span").removeClass("wrongOn" + group);
 						}
 
 						// add correct highlights for this group
-						var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
 						for (var i=0; i<$pageContents.data("found")[index].length; i++) {
 							$("#passage .group" + currentGroup + "[data-index=" + $pageContents.data("found")[index][i] + "]")
 								.addClass("on")
-								.attr("aria-current", "true")
-								.attr("title", lang2 + ": " + plainGrpName);
+								.attr("role", "mark");
 						}
 
 						for (var i=0; i<$pageContents.data("wrongFound")[index].length; i++) {
-							$(".wrongGroup"+  currentGroup + "[data-index=" + $pageContents.data("wrongFound")[index][i] + "]")
-								.addClass("wrongOn" + currentGroup)
-								.attr("aria-current", "true");
+							$(".wrongGroup"+  currentGroup + "[data-index=" + $pageContents.data("wrongFound")[index][i] + "]").addClass("wrongOn" + currentGroup);
 
 							if (intType == "find" || $("#markAtEnd").is(":hidden")) {
-								// if answer is marked incorrect immediately, change title to reflect this
+								// if answer is marked incorrect immediately, change sr-only text to reflect this
 								var incorrectAnswerTxt = (x_currentPageXML.getAttribute('incorrectAnswerTxt') != undefined ? x_currentPageXML.getAttribute('incorrectAnswerTxt') : "Incorrect Answer");
-								$(".wrongGroup"+  currentGroup + "[data-index=" + $pageContents.data("wrongFound")[index][i] + "]").attr("title", lang2 + ": " + plainGrpName + " - " + incorrectAnswerTxt);
+								$(".wrongGroup"+  currentGroup + "[data-index=" + $pageContents.data("wrongFound")[index][i] + "]")
+									.attr("role", "mark")
+									.prepend("<span class='sr-only'>" + incorrectAnswerTxt + ": </span>");
 							} else {
-								// otherwise, title just confirms it's selected
-								$(".wrongGroup"+  currentGroup + "[data-index=" + $pageContents.data("wrongFound")[index][i] + "]").attr("title", lang2 + ": " + plainGrpName);
+								// otherwise, just confirm it's selected
+								$(".wrongGroup"+  currentGroup + "[data-index=" + $pageContents.data("wrongFound")[index][i] + "]").attr("role", "mark");
 							}
+						}
+
+						// add tab index to groups in passage only after a group is selected & if max no. selections haven't been made
+						if (!checkComplete(x_currentPageXML.getAttribute("interactivity"), currentGroup)) {
+							$("#passageHolder:not(.disabled) #passage .group").attr("tabindex", "0");
+
+						} else if (!$("#passageHolder").hasClass("disabled")) {
+							$("#passage .group.on, #passage .group.wrongOn" + currentGroup).attr("tabindex", "0");
+							$("#passage .group:not(.on, .wrongOn" + currentGroup + ")").removeAttr("tabindex");
 						}
 					}
 				});
@@ -765,27 +765,12 @@
 					interactiveText.clickFind($(e.target), currentGroup)
 				});
 
-				$("#passage .group")
-					.focusin(function(e) {
-						if (!$(this).hasClass("on")  && !$(this).hasClass("wrongOn" + currentGroup) && $("#btnHolder .listItem.highlight").length > 0) {
-							$(this).attr("title", lang3);
-						}
-						})
-					.focusout(function() {
-						if (!$(this).hasClass("on") && !$(this).hasClass("wrongOn" + currentGroup)) {
-							$(this).removeAttr("title");
-						}
-						})
-					.keypress(function(e) {
-						if (!$(this).hasClass("on") && !$(this).hasClass("wrongOn" + currentGroup)) {
-							var charCode = e.charCode || e.keyCode;
-							if (charCode == 32) {
-								interactiveText.clickFind($(this), currentGroup);
-							} else {
-								$(this).removeAttr("title");
-							}
-						}
-					});
+				$("#passage .group").keypress(function(e) {
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 32) {
+						interactiveText.clickFind($(this), currentGroup);
+					}
+				});
 
 				$("#markAtEnd").click(function () { interactiveText.endFindInteraction(); $("#markAtEnd").hide();});
 
@@ -821,16 +806,19 @@
 
 				$("#questionHolder").html('<p id="qNum" ' + '" aria-live="polite"></p><div id="qText"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
 
-				var moreInfoIcon = x_currentPageXML.getAttribute("mcqMoreInfo") !== "false" ? '<a id="more" class="fa fa-x-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/>' : '';
+				var moreInfoIcon = x_currentPageXML.getAttribute("mcqMoreInfo") !== "false" ? '<p class="fb"><a id="more" class="fa fa-x-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"><span class="sr-only">' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") + '</span></a></p>' : '';
 
 				$("#feedback")
-					.html('<div id="marking">' + moreInfoIcon + '</div>')
+					.html('<div id="marking"><span id="fb" aria-live="polite"></span>' + moreInfoIcon + '</div>')
 					.appendTo($("#questionHolder"))
-					.on("click", "#more", function(e) {
-						e.preventDefault();
-						correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? $pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")] : subGroups[$pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")]].ref;
-						x_openDialog("interactiveText", groupInfo[correctGroup].name, x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"), {left:"center", top:"middle", width:undefined, height:undefined}, x_addLineBreaks(groupInfo[correctGroup].text));
-					});
+					.removeAttr("aria-live")
+					.find("#more")
+						.click(function(e) {
+							e.preventDefault();
+							correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? $pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")] : subGroups[$pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")]].ref;
+							x_openDialog("interactiveText", groupInfo[correctGroup].name, x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"), {left:"center", top:"middle", width:undefined, height:undefined}, x_addLineBreaks(groupInfo[correctGroup].text));
+						})
+						.hide();
 
 				$("#btnHolder")
 					.html('<button id="quizBtn"></button>')
@@ -849,29 +837,26 @@
 
 						if ($(this).data("state") == 0) { // check
 							var correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? $pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")] : subGroups[$pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")]].ref;
-
-							var $moreInfo = $("#more");
-							$moreInfo.remove();
-
-							l_options.push({
-								answer : parseInt($("#optionHolder input:checked").val()) + 1 + ""
-							});
 							l_answer.push($pageContents.data("mcqAnswerOptions")[$("#optionHolder input:checked").val()]['text']);
-							l_feedback.push($("#marking").text().trim());
+							l_feedback.push($("#fb").text().trim());
 
 							$("#optionHolder input").prop('disabled', true);
 
 							if (correctGroup == $("#optionHolder input:checked").val()) {
-								$("#marking").html('<p>' + $pageContents.data("phrases").mcqCorrect + '</p>');
+								$("#fb").html('<p class="fb">' + $pageContents.data("phrases").mcqCorrect + '</p>');
 								$pageContents.data("mcqScore", $pageContents.data("mcqScore")+1);
 								correct = true;
 							} else {
-								$("#marking").html('<p>' + $pageContents.data("phrases").mcqWrong.replace("{i}", groupInfo[correctGroup].name) + '</p>');
+								$("#fb").html('<p class="fb">' + $pageContents.data("phrases").mcqWrong.replace("{i}", groupInfo[correctGroup].name) + '</p>');
 								correct = false;
 							}
 
-							$("#marking").children().last().append($moreInfo);
-							$("#feedback").show();
+							l_options.push({
+								id: parseInt($("#optionHolder input:checked").val()) + 1 + "",
+								answer: $pageContents.data("mcqAnswerOptions")[$("#optionHolder input:checked").val()]['text'],
+								result: correct
+							});
+
 							if ($("<div/>").html(groupInfo[correctGroup].text).text().trim() != "") {
 								$("#more").show();
 							} else {
@@ -882,7 +867,6 @@
 								success: correct,
 								score: correct ? 100.0 : 0.0
 							};
-
 							XTExitInteraction(x_currentPage, $pageContents.data("mcqCurrentQ"), result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 							$(this)
@@ -893,23 +877,15 @@
 							if ($pageContents.data("mcqCurrentQ") + 1 == $pageContents.data("mcqAnswers").length) {
 								$("#passage .group")
 									.removeClass("on")
-									.removeAttr("aria-current")
-									.removeAttr("title");
+									.removeAttr("role");
 
 								$("#qText").hide();
 								$("#optionHolder").hide();
 
-								var $moreInfo = $("#more");
-								$moreInfo.remove();
-								$("#marking")
-									.html('<p>' + $pageContents.data("phrases").mcqScore.replace("{i}", $pageContents.data("mcqScore")).replace("{n}", $pageContents.data("mcqAnswers").length) + '</p>' + (x_currentPageXML.getAttribute("mcqFB") != "" && x_currentPageXML.getAttribute("mcqFB") != undefined ? x_currentPageXML.getAttribute("mcqFB") : ""))
-									.children().last().append($moreInfo);
+								$("#fb").html('<p>' + $pageContents.data("phrases").mcqScore.replace("{i}", $pageContents.data("mcqScore")).replace("{n}", $pageContents.data("mcqAnswers").length) + '</p>' + (x_currentPageXML.getAttribute("mcqFB") != "" && x_currentPageXML.getAttribute("mcqFB") != undefined ? x_currentPageXML.getAttribute("mcqFB") : ""));
 								$("#more").hide();
 
 								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
-
-                                finalFeedbackMcq($pageContents.data("mcqScore"), $pageContents.data("mcqAnswers").length);
-								$("#feedback").show();
 
 								if (XTGetMode() == "normal")
 								{
@@ -929,8 +905,6 @@
 								interactiveText.createQ();
 							}
 						} else if (XTGetMode() != "normal") { // restart
-
-							$("#feedbackTxt").empty();
 							interactiveText.createQuiz();
 						}
 					});
@@ -948,8 +922,8 @@
 			var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
 			$("#passage").find(".group[data-index='" + index + "']")
 				.addClass("on")
-				.attr("aria-current", "true")
-				.attr("title", lang2 + ": " + plainGrpName);
+				.attr("role", "mark")
+				.prepend("<span class='sr-only'>" + plainGrpName + ": </span>");
 
 			$("#passage .group").removeClass("highlight");
 
@@ -975,6 +949,9 @@
 		// only used in find interactions - sets up arrays to hold found/complete data & create buttons
 		this.setUpFind = function(firstLoad) {
 			var count = 0;
+			$("#btnHolder").remove();
+			const $btnHolder = $('<ul id="btnHolder"></ul>').insertBefore($("#passage"));
+
 			for (var i=0; i<groupInfo.length; i++) {
 				if(firstLoad){
 					$pageContents.data("found").push([]);
@@ -989,7 +966,8 @@
 							.attr({"href": "#"})
 							.data("index", i);
 
-						$("#btnHolder").append($groupBtn);
+						const $li = $("<li></li>").append($groupBtn);
+						$btnHolder.append($li);
 					}
 
 					count++;
@@ -1008,18 +986,19 @@
 
 			var intType = x_currentPageXML.getAttribute("interactivity");
 			if (currentGroup != -1) { // If no group is selected, do nothing.
-
 				// If the user wants to undo their choice:
 				if ($this.hasClass("on")){
-					$this.removeClass("on");
-					$this.removeAttr("aria-current");
-					$this.removeAttr("title");
+					$this
+						.removeClass("on")
+						.removeAttr("role")
+						.find(".sr-only").remove();
 					var arr = $pageContents.data("found")[currentGroup];
 					arr.splice(arr.indexOf($this.data("index")), 1);
 				} else if ($this.hasClass("wrongOn" + currentGroup)){
-					$this.removeClass("wrongOn" + currentGroup);
-					$this.removeClass("wrongGroup" + currentGroup);
-					$this.removeAttr("title");
+					$this
+						.removeClass("wrongOn" + currentGroup + " wrongGroup" + currentGroup)
+						.removeAttr("role")
+						.find(".sr-only").remove();
 					var arr = $pageContents.data("wrongFound")[currentGroup];
 					arr.splice(arr.indexOf($this.data("index")), 1);
 				}
@@ -1031,7 +1010,6 @@
 					var clicked = $.merge($this, $this.parents(".group"));
 					var wrong = true;
 					if (!checkComplete(intType, currentGroup)){
-						var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
 						for (var i=0; i<clicked.length; i++) {
 							if ($(clicked[i]).hasClass("group" + currentGroup)) {
 								wrong = false;
@@ -1039,8 +1017,7 @@
 								if(!$(clicked[i]).hasClass('on')){
 									$(clicked[i])
 										.addClass("on")
-										.attr("aria-current", "true")
-										.attr("title", lang2 + ": " + plainGrpName);
+										.attr("role", "mark");
 
 									//Add found (correct) answer to the found array
 									$pageContents.data("found")[currentGroup].push($(clicked[i]).data("index"));
@@ -1049,7 +1026,9 @@
 								break; // break out of loop when one correct answer is found, no need to check further parents, this would only result in false negatives
 
 							} else if (!$(clicked[i]).hasClass("on") && !$(clicked[i]).hasClass("wrongOn" + currentGroup)) {
-								$(clicked[i]).removeAttr("title");
+								$(clicked[i])
+									.removeAttr("role")
+									.find(".sr-only").remove();
 							}
 						}
 					}
@@ -1072,9 +1051,7 @@
 						$pageContents.data("complete").splice(currentGroup, 1, 1);
 						// If there are no more 0's in the "complete array" (aka everything is complete)
 						if ($.inArray(0, $pageContents.data("complete")) == -1) {
-                            var incorrectFound = $pageContents.data("wrongFound");
-                            finalFeedback(incorrectFound);
-							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "You have completed this activity.") + '</p>');
+                            finalFeedback($pageContents.data("wrongFound"));
 						}
 					}
 				} else if (intType == "find2"){
@@ -1117,6 +1094,12 @@
 						}
 					}
 				}
+				// remove tab index from unselected groups when the max has been reached
+				if (checkComplete(intType, currentGroup)) {
+					$("#passage .group:not(.on, .wrongOn" + currentGroup + ")").removeAttr("tabindex");
+				} else {
+					$("#passage .group").attr("tabindex", "0");
+				}
 			}
 		};
 
@@ -1148,14 +1131,18 @@
 
 				for (var i = 0; i < correctFound[group].length; i++){
 					var span = $('*[data-index=' + correctFound[group][i]+ ']');
+					const $temp = span.clone();
+					$temp
+						.removeAttr("role")
+						.find(".sr-only").remove();
 					l_options[group].push(
 						{
 							id: span.attr("data-index"),
-							answer: span.text(),
+							answer: $temp.text(),
 							result: true
 						}
 					);
-					l_answers[group].push(span.text() + "<br>");
+					l_answers[group].push($temp.text() + "<br>");
 				}
 
 				var percentageCorrect = 0;
@@ -1166,15 +1153,19 @@
 
 				for (var i = 0; i < incorrectFound[group].length; i++){
 					var span = $('*[data-index=' + incorrectFound[group][i]+ ']')
+					const $temp = span.clone();
+					$temp
+						.removeAttr("role")
+						.find(".sr-only").remove();
 					wrongOption =
 						{
 							id: span.attr("data-index"),
-							answer: span.text(),
+							answer: $temp.text(),
 							result: false
 						}
 					l_options[group].push(wrongOption);
 					correctOptions[group].push(wrongOption);
-					l_answers[group].push(span.text() + "<br>");
+					l_answers[group].push($temp.text() + "<br>");
 				}
 
 				var correct = percentageCorrect == 100;
@@ -1196,6 +1187,7 @@
 			var score = endScore / total * 100;
 			XTSetPageScore(x_currentPage, score);
 			$("#passageHolder").addClass("disabled");
+			$("#passageHolder .group").removeAttr("tabindex");
 		};
 
 		//Mark a wrong word as wrong in the find2 interaction
@@ -1204,18 +1196,17 @@
 				return;
 			}
 			if (!$(target).hasClass("wrongGroup" + currentGroup + " wrongOn" + currentGroup)){
-				$(target)
-					.addClass("wrongGroup" + currentGroup + " wrongOn" + currentGroup)
-					.attr("aria-current", true);
+				$(target).addClass("wrongGroup" + currentGroup + " wrongOn" + currentGroup);
 
-				var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
 				if (intType == "find") {
-					// if answer is marked incorrect immediately, change title to reflect this
+					// if answer is marked incorrect immediately, add sr-only text to reflect this
 					var incorrectAnswerTxt = (x_currentPageXML.getAttribute('incorrectAnswerTxt') != undefined ? x_currentPageXML.getAttribute('incorrectAnswerTxt') : "Incorrect Answer");
-					$(target).attr("title", lang2 + ": " + plainGrpName + " - " + incorrectAnswerTxt);
+					$(target)
+						.attr("role", "mark")
+						.prepend("<span class='sr-only'>" + incorrectAnswerTxt + ": </span>");
 				} else {
-					// otherwise, title just confirms it's selected
-					$(target).attr("title", lang2 + ": " + plainGrpName);
+					// otherwise, just confirm it's selected
+					$(target).attr("role", "mark");
 				}
 				$pageContents.data("wrongFound")[currentGroup].push($(target).data("index"))
 			}
@@ -1255,10 +1246,10 @@
 				for (var i = 0; i < l_answers[group].length; i++){
 
 					if (l_options[group][i].result === true) {
-                            text += '<span id="feedbackResult" class="fa fa-fw fa-x-tick"></span>';
+                            text += '<span id="feedbackResult" class="fa fa-fw fa-x-tick"><span class="sr-only"> ' + interactiveText.tickTxt + ': </span></span>';
                             text += (l_answers[group][i]);
 					} else {
-                            text += '<span id="finalResult" class="fa fa-fw fa-x-cross"></span>'
+                            text += '<span id="finalResult" class="fa fa-fw fa-x-cross"><span class="sr-only"> ' + interactiveText.crossTxt + ': </span></span>'
                             text += (l_answers[group][i]);
 					}
 				}
@@ -1274,23 +1265,15 @@
 
 			$("#feedback").empty().append(text).show();
 
-			for(var group = 0; group < correctOptions.length; group++){
-				if (groupInfo[group].name == "#distractor#")
-				{
-					continue;
-				}
-				for (var i = 0; i < correctOptions[group].length; i++){
-					if (correctOptions[group][i].result)
-						$("*[data-index="+ correctOptions[group][i].id + ']').css({"border-bottom": "2px solid " + x_getColour(groupInfo[group].bgColour)});
-				}
-			}
 			// Add cross-through style for wrong answers
 			var linethrough = ".wrongWord .wordOn";
 			for(var group = 0; group < correctOptions.length; group++){
 				linethrough += ", .wrongGroup" + group + ".wrongOn" + group;
 				if (currentGroup != -1) {
-					var plainGrpName = $('<p>' + groupInfo[currentGroup].name + '</p>').text();
-					$("#passage .group.wrongOn" + group).attr("title", lang2 + ": " + plainGrpName + " - " + incorrectAnswerTxt);
+					$("#passage .group.wrongOn" + group + " .sr-only").remove();
+					$("#passage .group.wrongOn" + group)
+						.attr("role", "mark")
+						.prepend("<span class='sr-only'>" + incorrectAnswerTxt + ": </span>");
 				}
 			}
 			linethrough += "{ text-decoration:line-through; }";
@@ -1307,36 +1290,16 @@
 
             if(correct) {
 				$("#passageHolder").addClass("disabled");
+				$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "You have completed this activity.") + '</p>');
 				$("#feedbackTxt").html("<span id='finalResult' class='fa fa-fw fa-x-tick'/>");
                 $("#feedbackTxt").append((x_currentPageXML.getAttribute("passedFindTxt") != undefined ? x_currentPageXML.getAttribute("passedFindTxt") : "All selections are correct"));
+				$("#passage .group").removeAttr("tabindex");
             } else {
 				$("#feedbackTxt").html("<span id='finalResult' class='fa fa-fw fa-x-cross'/>");
                 $("#feedbackTxt").append((x_currentPageXML.getAttribute("failedFindTxt") != undefined ? x_currentPageXML.getAttribute("failedFindTxt") : "You still have incorrect selections"));
             }
 		}
 
-        function finalFeedbackMcq(good, total){
-
-		    var correct = true;
-
-		    if(good !== total){
-		        correct = false;
-			}
-
-            if(correct){
-                $("#feedbackTxt").html((x_currentPageXML.getAttribute("passedQuestionTxt") != undefined ? x_currentPageXML.getAttribute("passedQuestionTxt") : "You passed the question"));
-            }else{
-                $("#feedbackTxt").html((x_currentPageXML.getAttribute("failedQuestionTxt") != undefined ? x_currentPageXML.getAttribute("failedQuestionTxt") : "Not all answers are correct"));
-            }
-
-            $("#feedbackTxt").prepend("<span id=finalResult/>");
-
-            if(correct){
-                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-            }else{
-                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
-            }
-		}
 		// only used in mcq interaction - creates new quiz
 		this.createQuiz = function() {
 			$pageContents.data({
@@ -1346,10 +1309,10 @@
 				"mcqAnswerOptions": []
 			});
 
-
 			$("#qText").show();
 			$("#questionHolder").show();
-			$("#feedback").hide();
+			$("#fb").empty();
+			$("#more").hide();
 
 			// highlight shown for question can be either for all group or an individual sub group
 			if (x_currentPageXML.getAttribute("mcqType") == "all") {
@@ -1380,11 +1343,11 @@
 		this.createQ = function() {
 			$pageContents.data("mcqCurrentQ", $pageContents.data("mcqCurrentQ")+1);
 
-			$("#feedback").hide();
+			$("#fb").empty();
+			$("#more").hide();
 			$("#passage .group")
 				.removeClass("on")
-				.removeAttr("aria-current")
-				.removeAttr("title");
+				.removeAttr("role");
 
 			$("#qNum").html($pageContents.data("phrases").mcqQuesCount.replace("{i}", ($pageContents.data("mcqCurrentQ") + 1)).replace("{n}", $pageContents.data("mcqAnswers").length));
 			$("#quizBtn")
@@ -1403,8 +1366,7 @@
 			if (x_currentPageXML.getAttribute("mcqType") == "all") {
 				$("#passage .group" + $pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")])
 					.addClass("on")
-					.attr("aria-current", "true")
-					.attr("title", lang2);
+					.attr("role", "mark");
 
 				correct = options[$pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")]];
 				options.splice($pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")], 1);
@@ -1412,8 +1374,7 @@
 			} else {
 				$("#passage .group[data-index='" + $pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")] + "']")
 					.addClass("on")
-					.attr("aria-current", "true")
-					.attr("title", lang2);
+					.attr("role", "mark");
 
 				correct = options[subGroups[$pageContents.data("mcqAnswers")[$pageContents.data("mcqCurrentQ")]].ref];
 				options.splice(correct.index, 1);

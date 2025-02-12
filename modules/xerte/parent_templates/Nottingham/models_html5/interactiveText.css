@@ -88,6 +88,15 @@
 		border-top: 1px solid #ccc;
 	}
 
+	#btnHolder {
+		margin-top: 0;
+		padding-left: 0;
+	}
+
+	#btnHolder li {
+		display: inline-block;
+	}
+
 	#btnHolder button {
 		margin:	10px;
 		float:	left;
@@ -151,6 +160,10 @@
 	#more {
 		text-decoration:none;
 		margin-left:	0.5em;
+	}
+
+	p.fb {
+		display: inline-block;
 	}
 
 @media (min-width: 768px) {
