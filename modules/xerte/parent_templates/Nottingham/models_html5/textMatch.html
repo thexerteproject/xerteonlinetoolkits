@@ -462,11 +462,16 @@
 							type		:"audio",
 							source		:labels[i].audio,
 							width		:25
-						});
+						})
 					
 					// manually add a transcript button to the end of the audio bar
 					if (labels[i].transcript != undefined && labels[i].transcript != '') {
 						x_addAudioTranscript($thisLabel.find('.labelTxt').find('.audioHolder'), labels[i].transcript);
+
+						// stop clicks on transcript button from triggering the start of moving labels & resetting feedback
+						$(".audioTranscriptBtn").click(function(e) {
+							e.stopPropagation();
+						});
 					}
 					
 					$thisLabel.addClass('audioFB');
