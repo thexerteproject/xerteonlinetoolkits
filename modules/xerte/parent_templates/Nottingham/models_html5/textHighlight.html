@@ -43,15 +43,8 @@
 				var $thisPanel = $('.' + panels[i]),
 					$thisPanelPaneHolder = $thisPanel.find('.paneHolder'),
 					$thisPanelTabHolder = $thisPanel.find('.tabHolder');
-				
-				var availH;
-				if (x_browserInfo.mobile == true) {
-					availH = $x_mobileScroll.height() - $x_footerBlock.height() - mainBtnHolderH - (parseInt($thisPanel.css('padding-top')) * 2) - 4;
-				} else {
-					availH = $x_pageHolder.height() - textHolderH - mainBtnHolderH - (parseInt($x_pageDiv.css('padding-top')) * 2) - (parseInt($thisPanel.css('padding-top')) * 2) - 4;
-				}
-				
-				$thisPanel.height(availH);
+
+				$thisPanel.height(x_getAvailableHeight([$thisPanel], [(x_browserInfo.mobile == true ? 0 : textHolderH), mainBtnHolderH]));
 				
 				// this resizing is for if the panel is a tabbed navigator
 				$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());

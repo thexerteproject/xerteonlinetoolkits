@@ -704,13 +704,9 @@
 		}
 		
 		this.setInfoHolderHeight = function() {
-			var $mainInfoHolder = $("#mainInfoHolder");
-			var maxH;
-			if (x_browserInfo.mobile != true) {
-				maxH = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (x_currentPageXML.getAttribute("thumbPos") == "grid" ? 0 : $("#thumbBar").height()) - parseInt($mainInfoHolder.css("margin-top")) - parseInt($mainInfoHolder.css("margin-bottom")) - 5;
-			} else {
-				maxH = $(window).height();
-			}
+			const $mainInfoHolder = $("#mainInfoHolder");
+			const offset = x_currentPageXML.getAttribute("thumbPos") !== "grid" ? [$("#thumbBar")] : [];
+			const maxH = x_getAvailableHeight([$mainInfoHolder], offset, true);
 			$mainInfoHolder.data("height", maxH);
 			if (x_currentPageXML.getAttribute("thumbPos") != "grid" && $("#thumbHolder .thumbBox").length > 1 && x_browserInfo.mobile != true) {
 				$mainInfoHolder.height(maxH);

@@ -533,7 +533,7 @@
 			} else {
 				// get max space available (exclude panel border and series controls)
 				var imgHoldersW = $('#infoHolder').width(),
-					imgHoldersH = $x_pageHolder.height() - $('#controlBar').outerHeight(true) - ($('#x_pageDiv').outerHeight(true) - $('#x_pageDiv').height());
+					imgHoldersH = x_getAvailableHeight([], [$('#controlBar')], true);
 				
 				// make sure available space accounts for more than 1 being shown on the screen
 				// work out the best layout that maximises size of images - three possibilities: single row, single column or 2x2 grid
@@ -1262,7 +1262,7 @@
 					
 				// more than one case so set up & show the case drop down menu
 				} else {
-					var selectHtml = '<label for="cases">' + x_currentPageXML.getAttribute('caseLabel') + ':</label><select id="caseSelect"><option></option>';
+					var selectHtml = '<label for="caseSelect">' + x_currentPageXML.getAttribute('caseLabel') + ':</label><select id="caseSelect"><option></option>';
 					for (var i=0; i<allCases.length; i++) {
 						selectHtml += '<option value="case' + i + '">' + allCases[i].name + '</option>';
 					}

@@ -32,10 +32,9 @@ var videoSynch = new function() {
 
 	// function called every time the size of the LO is changed
 	this.sizeChanged = function() {
-		if (x_browserInfo.mobile != true) {
-			$infoHolder.height($x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()) - 1);
-			$("#mainText").height($x_pageHolder.height() - ($(".panel").outerHeight(true) + ($("#mainText").outerHeight(true) - $("#mainText").height()) + ($x_pageDiv.outerHeight(true) - $x_pageDiv.height())) - 1);
-		}
+		$infoHolder.height(x_getAvailableHeight([$infoHolder]));
+		const $mainText = $("#mainText");
+		$mainText.height(x_getAvailableHeight([$mainText], [$(".panel").outerHeight(true)]));
 
 		if ($infoHolder.children("div:visible").last().length > 0) {
 			$infoHolder.children("div:visible").last()[0].scrollIntoView(true);

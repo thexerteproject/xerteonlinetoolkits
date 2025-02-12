@@ -58,15 +58,13 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			const $infoHolder = $("#pageContents .infoHolder");
+			$infoHolder.height(x_getAvailableHeight([$infoHolder], [$('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0]));
+
 			if (x_browserInfo.mobile == false) {
-				var	$infoHolder = $("#pageContents .infoHolder"),
-					$paneHolder = $("#pageContents .paneHolder"),
-					txtH = $('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0;
-				
-				$infoHolder.height($x_pageHolder.height() - ($infoHolder.outerHeight(true) - $infoHolder.height()) - txtH - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()));
 				$infoHolder.tabs("refresh");
-				
-				$paneHolder.height($infoHolder.height() - $("#pageContents .tabList:visible").height() - ($paneHolder.outerHeight(true) - $paneHolder.height()));
+				const $paneHolder = $("#pageContents .paneHolder");
+				$paneHolder.height(x_getAvailableHeight([$infoHolder, $paneHolder], [($('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0), $("#pageContents .tabList:visible")]));
 			}
 
 			if ($pageContents.data("count") != 0) {

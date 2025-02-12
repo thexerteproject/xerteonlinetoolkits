@@ -44,9 +44,7 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
 			var $infoHolder = $("#infoHolder");
-			if (x_browserInfo.mobile == false) {
-				$infoHolder.height($x_pageHolder.height() - $("#pageContents .splitScreen").position().top - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($infoHolder.css("padding-top")) * 2);
-			}
+			$infoHolder.height(x_getAvailableHeight([$infoHolder], [$("#textHolder")]));
 			
 			if (firstLoad != true) {
 				this.scaleImages();

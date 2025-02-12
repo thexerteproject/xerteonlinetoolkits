@@ -59,7 +59,7 @@
 				labelHolderH = labelPos != "text" ? $("#labelHolder").height() : 0,
 				imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
 
-			x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10);
+			x_scaleImg($image, $x_pageHolder.width() * imgSize, x_getAvailableHeight([$("#mainPanel"), $("#dragDropHolderLabelling")], [labelHolderH]));
 			$("#labelHolder").width($image.width());
 
 			// adjust target sizes and positions

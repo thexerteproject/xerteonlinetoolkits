@@ -26,13 +26,10 @@
 
 		this.sizeChanged = function()
 		{
-			var $panel = $("#pageContents .qPanel"),
-				resized = false;
+			const $panel = $("#pageContents .qPanel");
+			let resized = false;
 
-			if (x_browserInfo.mobile == false)
-			{
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
-			}
+			$panel.height(x_getAvailableHeight([$panel]));
 			
 			$.each($(".questionAudio"), function(key, qA) {
 			    var qAudio = $("#" + qA.id);

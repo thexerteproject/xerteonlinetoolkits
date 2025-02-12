@@ -4242,6 +4242,46 @@ function x_addLineBreaks(text, override) {
     }
 }
 
+// function returns the full height available for elements within the page e.g. panels
+function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
+	// get space available on page, excluding margins, borders & padding on parents
+	let availableH;
+	if (x_browserInfo.mobile === false) {
+		availableH = $x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height());
+
+	} else if (mobile === true) {
+		// often height on mobiles will be auto so only return a height for mobile view when requested
+		availableH = $x_mobileScroll.height() - $x_headerBlock.outerHeight(true) - $x_footerBlock.outerHeight(true) - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height());
+	}
+
+	if (availableH != undefined) {
+		// minus the padding/margin/border of some extra elements
+		// e.g. if this is used to resize a panel then take padding of panel into consideration
+		if (excludePadding != undefined) {
+			for (let i=0; i<excludePadding.length; i++) {
+				availableH -= (excludePadding[i].outerHeight(true) - excludePadding[i].height());
+			}
+		}
+
+		// minus the height of some extra elements
+		// e.g. if there's a button below a panel, exclude the height of to ensure the panel takes up the correct available space
+		if (excludeHeight != undefined) {
+			for (let i=0; i<excludeHeight.length; i++) {
+				if ($.isNumeric(excludeHeight[i])) {
+					// a number has been passed instead of an element - minus this
+					availableH -= excludeHeight[i];
+				} else {
+					availableH -= excludeHeight[i].outerHeight(true);
+				}
+			}
+		}
+
+		availableH = Math.floor(availableH);
+	}
+
+	return availableH;
+}
+
 // function called from model pages - returns reference to swfs (different depending on browser)
 function x_getSWFRef(swfID) {
     var flashMovie;

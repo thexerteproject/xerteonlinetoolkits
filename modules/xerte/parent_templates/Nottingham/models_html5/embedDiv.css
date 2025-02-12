@@ -2,10 +2,14 @@
 
 #iFrame {
 	background-color: white;
+	display: block;
 }
 
 .centre iframe {
 	margin:		0 auto;
 	display:	block;
 }
-	
+
+#x_mainHolder.x_mobile #iFrame {
+	position: static !important;
+}

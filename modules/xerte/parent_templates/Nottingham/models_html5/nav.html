@@ -57,22 +57,22 @@
 			if (x_currentPageXML.getAttribute("type") != "Col" && x_browserInfo.mobile == false && x_currentPageXML.getAttribute("panelHeight") != "fit") {
 				if (x_currentPageXML.getAttribute("type") == "Acc") {
 					$("#infoHolder")
-						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
+						.height(x_getAvailableHeight([$("#infoHolder")]))
 						.accordion("refresh");
 				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
 					var $infoHolder = $("#infoHolder"),
 						$paneHolder = $("#paneHolder");
 					
 					$infoHolder
-						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 13)
+						.height(x_getAvailableHeight([$infoHolder]))
 						.tabs("refresh");
 					
-					$paneHolder.height($infoHolder.height() - $("#tabHolder").outerHeight());
-					$paneHolder.find(".navChild").height($paneHolder.height() - ($paneHolder.find(".navChild").outerHeight() - $paneHolder.find(".navChild").height()));
+					$paneHolder.height(x_getAvailableHeight([$infoHolder], [$("#tabHolder")]));
+					$paneHolder.find(".navChild").height(x_getAvailableHeight([$infoHolder, $paneHolder.find(".navChild")], [$("#tabHolder")]));
 					
 				} else {
 					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");
-					$("#infoHolder").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - $("#btnHolder").outerHeight(true) - (parseInt($panel.css("padding-top")) * 2) - (parseInt($("#infoHolder").css("padding-top"))) - (parseInt($("#infoHolder").css("padding-bottom"))) - 5);
+					$("#infoHolder").height(x_getAvailableHeight([$("#infoHolder"), $panel], [$("#btnHolder")]));
 				}
 			}
 			
@@ -120,7 +120,7 @@
 				var $this = $(this);
 				var parentH = x_currentPageXML.getAttribute("type") == "Acc" || x_currentPageXML.getAttribute("type") == "Tab" ? $this.parents(".navChild").height() :
 						x_currentPageXML.getAttribute("type") == "Button" || x_currentPageXML.getAttribute("type") == "Slide" ? $this.parents("#infoHolder").height() :
-						$x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()); // columns
+						x_getAvailableHeight(); // columns
 
 				$this.css({
 					"max-width": $this.parents(".navChild").width() - ($this.outerWidth(true) - $this.width()),

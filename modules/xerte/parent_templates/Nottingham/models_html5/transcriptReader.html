@@ -36,11 +36,9 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$infoHolder.height($panel.height() - x_audioBarH);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
+			$infoHolder.height(x_getAvailableHeight([$panel], [x_audioBarH]));
 			
 			if ($pageContents.data("mediaElement") != undefined) {
 				$pageContents.data("mediaElement").setCurrentTime(0);

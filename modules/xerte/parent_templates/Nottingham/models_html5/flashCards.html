@@ -93,13 +93,7 @@
 			}
 			
 			if (cardHeight == 'default') {
-				
-				var totalSpace = $x_pageHolder.height() - (parseInt($x_pageDiv.css('padding-top')) * 2);
-				
-				if (x_browserInfo.mobile == true) {
-					totalSpace = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-				}
-				
+				const totalSpace = x_getAvailableHeight([], [], true);
 				var spaceTaken = (x_browserInfo.mobile == true ? 0 : $('#textHolder').outerHeight(true)) + $('#cardNoHolder').height() + parseInt($cards.find('div.card').css('margin-top')) + parseInt($cards.find('div.card').css('margin-bottom')) + 10;
 				var maxH = Math.floor(totalSpace - spaceTaken);
 				

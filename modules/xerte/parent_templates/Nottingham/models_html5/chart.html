@@ -74,8 +74,8 @@
 					allSeries = [];
 
 					var	$panel = $("#pageContents .panel"),
-					availW = Math.max(300, $panel.width()),
-					availH = Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15- $("#chartTitle").height());
+					availW = Math.max(200, $panel.width()),
+					availH = Math.max(200, x_getAvailableHeight([$panel], [$("#chartTitle")], true));
 
 					chartHolder.width = availW;
 					chartHolder.height = availH;

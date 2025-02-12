@@ -222,8 +222,7 @@
 					})
 					.hide();
 
-				// ** minus numbers here aren't ideal - are they padding?
-				thumbnailViewer.loadImage($img, [$mainInfoHolder.width() - ($x_pageDiv.outerWidth() - $x_pageDiv.width()) - ($("#mainPanel").outerWidth(true) - $("#mainPanel").width()), $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($("#mainPanel").outerHeight(true) - $("#mainPanel").height())], thisData.getAttribute("url"));
+				thumbnailViewer.loadImage($img, [$mainInfoHolder.width() - ($x_pageDiv.outerWidth() - $x_pageDiv.width()) - ($("#mainPanel").outerWidth(true) - $("#mainPanel").width()), x_getAvailableHeight([$("#mainPanel"), $mainInfoHolder])], thisData.getAttribute("url"));
 
 				// show text on rollover/focus
 				$("#mainPanel").on("mouseenter focusin", function() {

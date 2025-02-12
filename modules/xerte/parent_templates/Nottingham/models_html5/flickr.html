@@ -50,12 +50,7 @@
 		this.setPanelSize = function(firstLoad) {
 			var $btnHolder = $("#btnHolder");
 
-			if (x_browserInfo.mobile == false) {
-				this.$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt(this.$panel.css("padding-top")) - parseInt(this.$panel.css("padding-bottom")) - 5);
-			} else {
-				this.$panel.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt(this.$panel.css("padding-top")) - parseInt(this.$panel.css("padding-bottom")) - 5);
-			}
-
+			this.$panel.height(x_getAvailableHeight([this.$panel], [], true));
 			$("#flickrHolder").height(this.$panel.height() - $btnHolder.outerHeight(true));
 			
 			if (firstLoad == 1) {

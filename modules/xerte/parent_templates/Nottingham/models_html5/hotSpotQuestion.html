@@ -196,7 +196,7 @@
 					if((attempts >= maxAttempts || (amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0)) && amountOfCorrect+amountOfWrong > 0){
 						
 						if (x_currentPageXML.getAttribute("answers") == "true"){
-							
+
 							highlightsArray.forEach((highlight)=>{
 								var points = JSON.parse(highlight.getAttribute("points")),
 									lowestPoint = points[0];
@@ -378,7 +378,7 @@
 			$('.mapster_el').remove(); // force this to be removes as sometimes it's not (don't know why unbind below doesn't always work)
 			$img.mapster('unbind');
 			
-			var imgMaxW, imgMaxH = .95;
+			var imgMaxW, imgMaxH = 1;
 			if (x_browserInfo.mobile == true) {
 				imgMaxW = 1;
 			} else if (x_currentPageXML.getAttribute("textWidth") == "none") {
@@ -392,9 +392,8 @@
 			}
 			
 			imgMaxW = Math.round($x_pageHolder.width() * imgMaxW);
-			imgMaxH = Math.round($x_pageHolder.height() * imgMaxH);
+			imgMaxH = Math.round(x_getAvailableHeight([$("#panel"), $("#textContents")], [$("#checkButton")]) * imgMaxH);
 			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
-			imgMaxH -= ($("#panel").outerHeight(true) - $("#panel").height()) + ($("#textContents").outerHeight(true) - $("#textContents").height()) + $("#checkButton").outerHeight(true) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height());
 			
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
@@ -407,7 +406,7 @@
 			$('#panel').css({
 				'max-width' : $img.width() + 'px',
 			});
-			
+
 			this.createHS();
 		};
 

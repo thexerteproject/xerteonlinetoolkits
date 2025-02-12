@@ -97,9 +97,7 @@
 		this.sizeChanged = function() {
 			// set panel to appropriate size (at least full height of page)
 			var $panel = $("#mainPanel");
-			if (x_browserInfo.mobile == false) {
-				$panel.css("min-height", $x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()) - ($panel.outerHeight(true) - $panel.height()) - 1);
-			}
+			$panel.css("min-height", x_getAvailableHeight([$panel]));
 			$pageContents.find("#hint").remove();
 
 			// resize any audio players in feedback blocks

@@ -51,8 +51,8 @@
 			}
 
 			// max width depends on iframe max but max height is all available space
-			var maxW = x_browserInfo.mobile == true ? 1 : max,
-				maxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($('.x_floatRight').outerHeight() - $('.x_floatRight').height()) - $('.transcriptHolder').outerHeight();
+			const maxW = x_browserInfo.mobile == true ? 1 : max;
+			const maxH = x_getAvailableHeight([$("#videoHolder")], [$('.transcriptHolder')], true)
 
 			// make sure width of video isn't more than screen width when padding & margin on panel are accounted for
 			var width = $x_pageDiv.width() * maxW;
@@ -220,7 +220,7 @@
 				}, true);
 
 				//controls toggle
-				$(".panel.inline.x_floatRight")
+				$("#videoHolder")
 					.mouseover(function(){
 						$(".mejs-controls").show();
 					})
@@ -252,7 +252,7 @@
 <div id="pageContents">
 	
 	<div class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
-		<div class="panel inline">
+		<div id="videoHolder" class="panel inline">
 			<div id="pageVideo"></div>
 		</div>
 	</div>

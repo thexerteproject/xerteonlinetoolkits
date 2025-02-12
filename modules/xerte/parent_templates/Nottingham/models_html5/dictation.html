@@ -57,11 +57,9 @@
 		}
 
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
-			var $panel = $("#pageContents .panel");
-			if (x_browserInfo.mobile == false) {
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
-			}
+		this.sizeChanged = function() {
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 
 			var	audioBarW = 0,
 					$pageAudio = $("#pageAudio");

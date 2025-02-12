@@ -74,7 +74,7 @@
 			$('.spinnerHolder').append('<div class="spinner"></div>')
 
 			var imgMaxW = Math.round($x_pageHolder.width());
-			var imgMaxH = Math.round($x_pageHolder.height());
+			var imgMaxH = Math.round(x_getAvailableHeight([], [], true));
 
 			$('.spinnerHolder').css({
 				'background-color' : 'grey',
@@ -230,8 +230,7 @@
 				language:lan
 			}
 
-			var pageHeight = $('#x_pageHolder').height();
-			$('#timeline-embed').css('height', pageHeight-70);
+			$('#timeline-embed').css('height', x_getAvailableHeight());
 
 			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
 
@@ -323,8 +322,8 @@
 				// TODO mobile implementation
 			}else{
 
-				var pageHeight = $('#x_pageHolder').height();
-				$('#timeline-embed').css('height', pageHeight-70);
+				const pageHeight = x_getAvailableHeight();
+				$('#timeline-embed').css('height', pageHeight);
 
 				var storyslider = pageHeight*0.60
 				$(".tl-storyslider").css({
@@ -338,7 +337,7 @@
 				img = $item.find('.tl-media-item');
 
 				var imgMaxW = Math.round($slideContent.width() * 0.50 - 20);
-				var imgMaxH = Math.round($pageContents.height() - 50);
+				var imgMaxH = Math.round(pageHeight - 50);
 
 				var big = imgMaxH*0.7;
 				var normal = imgMaxH*0.6;

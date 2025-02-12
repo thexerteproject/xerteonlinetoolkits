@@ -35,9 +35,9 @@
 		}
 
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
+		this.sizeChanged = function() {
 			const $panel = $pageContents.find(".panel");
-			$panel.height($x_pageHolder.height() - ($x_pageDiv.outerHeight(true)-$x_pageDiv.height()) - ($panel.outerHeight(true) - $panel.height()) - 1);
+			$panel.height(x_getAvailableHeight([$panel]));
 
 			audioRecord.reloadAudio();
 		}
