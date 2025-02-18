@@ -2627,10 +2627,13 @@ window.onhashchange = function() {
 		parseContent({ type: "check", id: tempPage }, tempSection, tempContent, false);
 	}
 
-    var listID = Number(location.href.substr(location.href.length-1,1));
-	if (!isNaN(listID)) {
-		setTimeout("updateMenu(" + listID + ")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+	if (location.href.lastIndexOf("section") != -1) {
+		var listID = Number(location.href.substr(location.href.lastIndexOf("section")+7));
+		if (!isNaN(listID)) {
+			setTimeout("updateMenu(" + listID + ")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+		}
 	}
+
 }
 
 // update the highlighting of the section menu on click (not auto highlight done when scrolling)
@@ -2638,10 +2641,8 @@ function updateMenu(listID) {
 	if (!$.isNumeric(listID)) {
 		listID = 1;
 	}
-	
     var navUL = document.getElementById("toc");
     navLists = navUL.getElementsByTagName('li');
-	
     for (i=0; i<navLists.length; i++) {
         if (i == listID-1) {
             navLists[i].className = "active";
