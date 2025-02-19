@@ -813,7 +813,7 @@
 	</imgInfo>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" optional="true" defaultValue="Provide a brief summary on the given subject."/>
@@ -1194,7 +1194,7 @@
 	<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -1352,7 +1352,7 @@
     <size label="Text Size" type="ComboBox" options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true" deprecated="This property is deprecated. You can change the text's size in the text toolbar."/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -1467,7 +1467,7 @@
     <showBullets label="Add Bullets to Text" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100" tooltip="Automatically add bullet points to all paragraphs. Note: this is ignored if any bullets/numbers are added via the toolbar buttons."/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject for which a description and accompanying options will be generated." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <numberOptions label="Number of Bulletpoints" type="TextInput" tooltip="The total amount of bulletpoints to generate." wysiwyg="true" defaultValue="5" optional="true"/>
@@ -1695,7 +1695,7 @@
 	<labelWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true" deprecated="Width is now set automatically"/>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-    	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+    	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
         <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the complexity of the language. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." defaultValue="" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" optional="true"/>
@@ -1807,7 +1807,7 @@
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
 	<AIGroup type="group" label="AI" optional="true" tooltip="Generate content automatically with the assistance of AI.">
-	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
       <subject label="Subject" type="TextInput" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." defaultValue="" placeholder="Enter a subject here..." optional="true"/>
       <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
       <amountOfButtons label="Sequence Parts" type="TextInput" defaultValue="5" tooltip="Specify the number of buttons (parts) the sequence should have." wysiwyg="true" optional="true"/>
@@ -2146,7 +2146,7 @@
     </newNodes>
 
   	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-            <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
+            <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
             <subject label="Categories" type="TextInput" tooltip="List each category separated by a comma (,). Categories may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter categories here. E.g. Category 1, Category 2..." optional="true"/>
             <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the entire learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
             <wordsPerCategory label="Words per Category" tooltip="Specify how many words should be included in (each) category. For example, '5' will generate five words per category. '2 (category 1), 3(category 2)' will generate two and three words for each category according to the order in which they were listed." type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
@@ -2382,7 +2382,7 @@
     </newNodes>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-     	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+     	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
      	<subjects label="Column Subjects" type="TextInput" tooltip="List each column subject separated by a comma (,). Column subjects may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter column subjects here. E.g. Subject 1, Subject 2..." optional="true"/>
      	<additionalInstructions label="Instructions" type="text" tooltip="Specify the kind of content which should be generated in each column. For example: 'A list of examples', 'fun facts', 'definitions', 'questions'. If needed, provide a more elaborate description. For example, that each column provides a summary of its subject based on the uploaded file. Pages can later be fine-tuned, or new content generated." wysiwyg="true" defaultValue="Each column should contain a brief summary of its respective subject." optional="true"/>
      	<exampleContent label="Example Content (Optional)" type="text" tooltip="Optionally, provide an example of the kind of content you expect as an output. The model will then attempt to generate a similar output, or follow the additional instructions on how to handle or extrapolate on this output. For example, you may provide a sentence structure which the model will then attempt to emulate for the other subjects." wysiwyg="true" optional="true"/>
@@ -2496,7 +2496,7 @@
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the entire learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" defaultValue="The column should contain a brief summary of the subject." optional="true"/>
@@ -2842,7 +2842,7 @@
 	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
 
 	<AIGroup type="group" label="AI" optional="true">
-    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'."/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the entire learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <numberOfWords label="Number of Words" type="TextInput" wysiwyg="true" defaultValue="10" optional="true" tooltip="The number of words and definitions to be generated. For example, '8' would result in the generation of 8 words and accompanying definitions."/>
@@ -3411,7 +3411,7 @@
     <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 
 	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <numberOfSentences label="Nr. Questions" type="TextInput" tooltip="Specify the number of two-part sentences to generate." wysiwyg="true" defaultValue="5" optional="true"/>
@@ -3825,7 +3825,7 @@
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 
 	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-        	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+        	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
             <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
             <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
             <columns label="Columns" type="TextInput" tooltip="The columns (categories) of the generated grid, separated by comma. For example: Name, Species, Wingspan." defaultValue="" placeholder="Enter columns here. E.g. Column 1, Column 2..." optional="true"/>
@@ -3850,7 +3850,7 @@
 	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject for which a description and accompanying options will be generated." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <numberOptions label="Number of Options" type="TextInput" tooltip="How many options to generate." wysiwyg="true" defaultValue="3" optional="true"/>
@@ -3878,7 +3878,7 @@
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
         <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" defaultValue="Create a brief summary of the given subject." optional="true"/>
@@ -3929,7 +3929,7 @@
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
         <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" defaultValue="Create a brief summary of the given subject." optional="true"/>
@@ -3956,7 +3956,7 @@
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
         <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" defaultValue="Create a brief summary of the given subject." optional="true"/>
@@ -4217,7 +4217,7 @@
     <nextScrollTip label="Scroll Forward Label" type="TextInput" wysiwyg="true" language="true"/>
 
 	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words and definitions will follow. More specific subjects may result in less consistent or reliable content. Examples: 'Birds', 'Terrestrial birds', 'Birds native to the Netherlands', 'Most common birds in the urban areas of the Netherlands'." optional="true"/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <amountOfCards label="Amount Of Flashcards" type="TextInput" defaultValue="5" tooltip="The amount of flash cards the AI will generate." wysiwyg="true" optional="true"/>
@@ -4485,7 +4485,7 @@
     <imageTxt label="Image {i} of {n} images" type="TextInput" wysiwyg="true" language="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -4626,7 +4626,7 @@
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
 	  <taskType label="Task Type" options="Generate a sentence,Mark words as blanks" type="comboBox" data="task1,task2" defaultValue="task1" tooltip="Choose which action the AI should undertake. Generating a sentence will instruct the model to create a brand new sentence based on a subject. Marking words as blanks will take the existing sentence and mark all words of a specific group as blanks automatically." wysiwyg="true" conditionTrigger="true" optional="true"/>
       <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" condition="taskType=='task1'" optional="true"/>
       <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="taskType=='task1' &amp;&amp; aiSelector=='openai'" optional="true"/>
@@ -4864,7 +4864,7 @@
 	</fix>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
         <columns label="Columns" type="TextInput" tooltip="The columns (categories) of the generated grid, separated by comma. For example: Name, Species, Wingspan." defaultValue="" placeholder="Enter columns here. E.g. Column 1, Column 2..." optional="true"/>
@@ -4989,7 +4989,7 @@
     <words label="Words" type="script" height="100"/>
 
 	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'."/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the entire learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <numberOfWords label="Number of Words" type="TextInput" wysiwyg="true" defaultValue="10" optional="true" tooltip="The number of words and definitions to be generated. For example, '8' would result in the generation of 8 words and accompanying definitions."/>
@@ -5502,7 +5502,7 @@
 	</newNodes>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -5640,7 +5640,7 @@
 	<seriesID label="Series ID" type="TextInput" optional="true" tooltip="Link directly to this series by giving it a unique ID"/>
 
     <AIGroup type="group" label="AI" optional="true">
-          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -5669,7 +5669,7 @@
 	<seriesID label="Image ID" type="TextInput" optional="true" tooltip="Link directly to this image by giving it a unique ID"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -5705,7 +5705,7 @@
     <toggleScreenTip label="Toggle Button Tip" type="textInput" language="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -5835,7 +5835,7 @@
 	</mcqOptions>
 
 	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
     	  <taskType label="Task Type" options="Generate a sentence,Mark words by groups" type="comboBox" data="task1,task2" defaultValue="task1" tooltip="Choose which action the AI should undertake. Generating a sentence will instruct the model to create a brand new sentence based on a subject. Marking words will assign delimiters based on the specified groups and take the existing sentence and mark all words of the specified groups with the appropriate delimiter." wysiwyg="true" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" condition="taskType=='task1'" optional="true"/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="taskType=='task1' &amp;&amp; aiSelector=='openai'" optional="true"/>
@@ -6294,7 +6294,7 @@
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
       <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
       <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
       <classlist label="Classes" tooltip="List the classes separated by a comma. Each answer per question will be sorted in a specific class." type="TextInput" defaultValue="" placeholder="Enter classes here. E.g. Class 1, Class 2..." optional="true"/>
@@ -7116,7 +7116,7 @@
 	</feedbackGroup>
 
 	<AIGroup type="group" label="AI" tooltip="Generate possible answers for this question with the help of AI." optional="true">
-          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <amountOfAnswers label="Number of Answers" type="TextInput" tooltip="Amount of answers to be generated. For example, '5' will generate five answers." defaultValue="4" wysiwyg="true" optional="true"/>
           <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the complexity of the language. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." defaultValue="" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" optional="true"/>
@@ -7260,7 +7260,7 @@
 	<lockPswdWrong label="Wrong Password" type="TextInput" wysiwyg="true" language="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -8227,7 +8227,7 @@
 	</modelTxtGroup>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
     	  <taskType label="Task Type" options="Generate Text,Alter Text" type="comboBox" data="task1,task2" defaultValue="task1" tooltip="Choose which action the AI should undertake. Generating the initial text will fill out the initial text field based your specifications for the subject you entered. Generating altered text will take the existing text, and alter it based on the instructions you gave." wysiwyg="true" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" condition="taskType=='task1'" optional="true"/>
           <textInstructions label="Text Specifications" type="text" tooltip="The specifications of the text to be generated or modified, including tense, word complexity or any other request." defaultValue="" placeholder="Specify how the generated or modified text should look like. I.e. 'The text should be in past tense', 'switch the text from present to future tense', etc. Defaults to 'write the text in present tense.'" optional="true"/>
@@ -8367,7 +8367,7 @@
     <zoomBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -8494,7 +8494,7 @@
 	</panelInfo>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subjects label="Page Subjects" type="TextInput" tooltip="List the subject for each page separated by a comma (,). tab subjects may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter page subjects here. E.g. Subject 1, Subject 2..." optional="true"/>
         <additionalInstructions label="Instructions" type="text" tooltip="Specify the kind of content which should be generated in each page of the tab. For example: 'A list of examples', 'fun facts', 'definitions', 'questions'. If needed, provide a more elaborate description. For example, that each column provides a summary of its subject based on the uploaded file. Pages can later be fine-tuned, or new content generated." wysiwyg="true" defaultValue="Each page should contain a brief summary of its respective subject." optional="true"/>
         <exampleContent label="Example Content (Optional)" type="text" tooltip="Optionally, provide an example of the kind of content you expect as an output. The model will then attempt to generate a similar output, or follow the additional instructions on how to handle or extrapolate on this output. For example, you may provide a sentence structure which the model will then attempt to emulate for the other subjects." wysiwyg="true" optional="true"/>
@@ -8611,7 +8611,7 @@
     <text label="Text" type="TextArea" height="250"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" optional="true" defaultValue="Provide a brief summary on the given subject."/>
@@ -8787,7 +8787,7 @@
     </layout>
 
     <AIGroup type="group" label="AI" optional="true">
-      	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+      	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject Description" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="Define the subject here, and specify the purpose. Optionally, define which areas the questions should focus on. This can also be done in the categories page. For example: 'Office stationary survey' will yield a survey-like opinion question. 'Office stationary survey focusing on ergonomics, quality and feel of the material' will ensure the generated questions include these elements in some capacity." optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
         <categories label="Categories" type="TextInput" defaultValue="" placeholder="Enter categories here. E.g. Category 1, Category 2..." tooltip="Define the categories divided by a comma. For example, 'monitors, keyboards, chairs, desks' will create four different groups for each of the categories, each of which will have a certain amount of questions." optional="true"/>
@@ -9294,7 +9294,7 @@
 	</thumbnail>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" optional="true" defaultValue="Provide a brief summary on the given subject."/>
@@ -9326,7 +9326,7 @@
 	</video>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" optional="true" defaultValue="Provide a brief summary on the given subject."/>
@@ -9367,7 +9367,7 @@
 	</imgInfo>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
          <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" optional="true" defaultValue="Provide a brief summary on the given subject."/>
@@ -9395,7 +9395,7 @@
 	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Right" width="100"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" condition="aiSelector=='openai'" conditionTrigger="true" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -9465,7 +9465,7 @@
 	</videoInfo>
 
 	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
+	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
       <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
       <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
       <amountOfQuestions label="Number of Questions" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
@@ -10954,7 +10954,7 @@
     <name label="Panel Name" type="TextInput" wysiwyg="true"/>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+        <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subjects label="Tab Subjects" type="TextInput" tooltip="List each tab subject separated by a comma (,). tab subjects may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter tab subjects here. E.g. Subject 1, Subject 2..." optional="true"/>
         <additionalInstructions label="Instructions" type="text" tooltip="Provide any additional instructions here. For example: create a summary, generate content in the form of a list, use only chapter 3 from the uploaded file. It is also possible to ask questions. For example: 1. Write a summary of the final results of the experiment 2. Specify how they tested their findings. Finally, additional instructions can be targeted and interact with example content. For example, you can copy an interesting paragraph or point into the example content, and then ask to: make the example content more concise, expand on the example content, add more specific examples to the content, add points which are only relevant for teachers in the Netherlands/Flanders, and so on." wysiwyg="true" defaultValue="Each tab should contain a brief summary of its respective subject." optional="true"/>
      	<exampleContent label="Example Content (Optional)" type="text" tooltip="Optionally, provide an example of the kind of content you expect as an output. The model will then attempt to generate a similar output, or follow the additional instructions on how to handle or extrapolate on this output. For example, you may provide a sentence structure which the model will then attempt to emulate for the other subjects." wysiwyg="true" optional="true"/>
@@ -11102,7 +11102,7 @@
     <subSuper label="Superscript Support" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated. Sub/Superscripts now work by default."/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -11243,7 +11243,7 @@
         <answerLabel label="Answer" type="TextInput" wysiwyg="false" language="true"/>
 
         <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-    	    <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+    	    <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
             <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated text will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
             <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
             <mistakeType label="Mistake Type(s)" type="TextInput" tooltip="Which kind of mistakes should be present in the generated text. For example: prepositions, word order, spelling, grammar, mixed. You may list more than one type by separating them with a comma." defaultValue="" placeholder="Specify mistake type. Defaults to 'spelling'." optional="true"/>
@@ -11477,7 +11477,7 @@
     <hidePanel label="Hide Panel" type="checkBox" defaultValue="false" optional="true"/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>
@@ -11623,7 +11623,7 @@
 	</feedbackGroup>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-             <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+             <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
              <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated text will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
              <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
              <paragraphLength label="Text Length" type="TextInput" tooltip="The approximate length of the generated text. For example: 100 words." wysiwyg="true" defaultValue="50" optional="true"/>
@@ -11781,7 +11781,7 @@
 	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 
 	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+    	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <sentenceLength label="Sentence Length" type="TextInput" wysiwyg="true" defaultValue="20" tooltip="Approximate length of sentences. For example, 30-50 words." optional="true"/>
@@ -12261,7 +12261,7 @@
 	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-       <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+       <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
         <timelineSteps label="Number of Steps or Pairs" type="TextInput" tooltip="The total number of matching pairs or steps in a timeline to generate." wysiwyg="true" defaultValue="5" optional="true"/>
@@ -12522,7 +12522,7 @@
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
 	<AIGroup type="group" label="AI" optional="true">
-          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow. More complex subjects may result in less consistent content. For this interactivity, it is recommended to reference countable things when defining the subjects. Examples: 'Provincial capital cities in the Netherlands', 'Rivers in Europe'." optional="true"/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <numberOfOptions label="Number of Options" type="TextInput" tooltip="Amount of words to generate on the designated subject. When the total quantity of the subject is known, avoid requesting a number of words that is higher in quantity. For example, if the subject is 'Provincial capitals in the Netherlands', requesting more than 12 words (the total amount of capitals) may lead to speculative or repeated words past the 12th." wysiwyg="true" defaultValue="5" optional="true"/>
@@ -12975,7 +12975,7 @@
 	</colours>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'."/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the entire learning object when generating this object." condition="aiSelector=='openai'" optional="true"/>
           <numberOfWords label="Number of Words" type="TextInput" wysiwyg="true" defaultValue="10" optional="true" tooltip="The number of words and definitions to be generated. For example, '8' would result in the generation of 8 words and accompanying definitions."/>

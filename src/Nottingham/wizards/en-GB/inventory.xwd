@@ -38,7 +38,7 @@
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
     <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
-	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+	  <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
       <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
       <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional ="true"/>
       <classlist label="Classes" tooltip="List the classes separated by a comma. Each answer per question will be sorted in a specific class." type="TextInput" defaultValue="" placeholder="Enter classes here. E.g. Class 1, Class 2..." optional="true"/>

@@ -25,7 +25,7 @@ $baseUrl = $_POST["baseUrl"];
 $contextScope = $_POST["contextScope"];
 $modelTemplate = $_POST["modelTemplate"];
 
-$allowed_apis = ['openai', 'anthropic'];
+$allowed_apis = ['openai', 'anthropic', 'mistralai'];
 //todo combine with api check from admin page
 if (!in_array($ai_api, $allowed_apis)){
     die(json_encode(["status" => "error", "message" => "api is not allowed"]));
@@ -52,6 +52,7 @@ switch ($ai_api){
             $result = $aiApi->ai_request($prompt_params,$type, $file_url, $textSnippet, $baseUrl, $useContext, $contextScope, $modelTemplate);
         }
         break;
+    case 'mistralai':
     case 'anthropic':
         $result = $aiApi->ai_request($prompt_params,$type);
         break;

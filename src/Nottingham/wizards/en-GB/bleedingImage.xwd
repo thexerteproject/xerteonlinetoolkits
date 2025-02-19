@@ -39,7 +39,7 @@
     <size label="Text Size" type="ComboBox"  options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true" deprecated="This property is deprecated. You can change the text's size in the text toolbar."/>
 
     <AIGroup type="group" label="AI" optional="true">
-         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
          <template label="Template" options="Custom,Image Alt. Text" type="comboBox" data="custom,altText" defaultValue="custom" width="120" conditionTrigger="true" condition="aiSelector=='openai'" optional="true"/>
          <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow." optional="true" condition="template=='custom'"/>
          <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true" condition="template=='custom' &amp;&amp; aiSelector=='openai'"/>

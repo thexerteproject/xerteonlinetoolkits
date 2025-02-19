@@ -23,7 +23,7 @@
     </newNodes>
 
   	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
-            <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
+            <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
             <subject label="Categories" type="TextInput" tooltip = "List each category separated by a comma (,). Categories may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue = "" placeholder="Enter categories here. E.g. Category 1, Category 2..." optional="true"/>
             <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the entire learning object when generating this object." condition="aiSelector=='openai'" optional ="true"/>
             <wordsPerCategory label="Words per Category" tooltip = "Specify how many words should be included in (each) category. For example, '5' will generate five words per category. '2 (category 1), 3(category 2)' will generate two and three words for each category according to the order in which they were listed." type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>

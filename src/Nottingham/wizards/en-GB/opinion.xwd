@@ -51,7 +51,7 @@
     </layout>
 
     <AIGroup type="group" label="AI" optional="true">
-      	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" conditionTrigger="true" defaultValue="openai" width="120" optional="true"/>
+      	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subject label="Subject Description" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip = "Define the subject here, and specify the purpose. Optionally, define which areas the questions should focus on. This can also be done in the categories page. For example: 'Office stationary survey' will yield a survey-like opinion question. 'Office stationary survey focusing on ergonomics, quality and feel of the material' will ensure the generated questions include these elements in some capacity." optional="true"/>
         <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." condition="aiSelector=='openai'" optional ="true"/>
         <categories label="Categories" type="TextInput" defaultValue = "" placeholder="Enter categories here. E.g. Category 1, Category 2..." tooltip = "Define the categories divided by a comma. For example, 'monitors, keyboards, chairs, desks' will create four different groups for each of the categories, each of which will have a certain amount of questions." optional="true"/>

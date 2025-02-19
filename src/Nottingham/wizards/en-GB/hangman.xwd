@@ -15,7 +15,7 @@
     <words label="Words" type="script" height="100"/>
 
 	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
-          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic)" type="comboBox" data="openai,anthropic" defaultValue="openai" conditionTrigger="true" width="120" optional="true"/>
+          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'."/>
           <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the entire learning object when generating this object." condition="aiSelector=='openai'" optional ="true"/>
           <numberOfWords label="Number of Words" type="TextInput" wysiwyg="true" defaultValue = "10" optional="true" tooltip="The number of words and definitions to be generated. For example, '8' would result in the generation of 8 words and accompanying definitions."/>

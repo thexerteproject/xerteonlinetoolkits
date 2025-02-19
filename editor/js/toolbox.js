@@ -5349,7 +5349,7 @@ var EDITOR = (function ($, parent) {
                                         "range": lo_data[key].attributes["ageRange"],
                                     }
                                     if (lo_data[key].attributes["interactivity"]==="Timeline"){
-                                        constructorObject["interactivityDetails"] = "In this case specifically, replace all 'name' attributes with numbers.";
+                                        constructorObject["interactivityDetails"] = "In this case specifically, the value of each 'name' attribute should be a number numbers.";
                                     }else{
                                         constructorObject["interactivityDetails"] = "";
                                     }
