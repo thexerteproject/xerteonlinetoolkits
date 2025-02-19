@@ -5897,7 +5897,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				sideBarHolderFixDimensions();
 
 				// collapse the sidebar when project first loads
-				if (x_params.sideBarShow == 'closed') {
+				if (x_params.sideBarShow == 'closed' || x_browserInfo.mobile == true) {
 					XENITH.SIDEBAR.close(true);
 				}
 			}
