@@ -6097,7 +6097,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 // ***** PROGRESS BAR *****
 // Progress bar might be shown on:
 // - Footer bar (originally used progressBar in xwd but now is an option on new progressBarType - both will still work but progressBar deprecated so can no longer be added)
-// - Header bar (an option in progressBarType - can be above or below titles)
+// - Header bar (an option in progressBarType - can be above, below or between titles)
 // When in header bar, progress markers can be used to indicate pages, chapters or milestones
 // Milestone is an optional property that can be added to individual pages
 var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
@@ -6132,7 +6132,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				progressBar = true;
 				progressBarPosition = "footer";
 
-			} else if ((x_params.progressBarType == 'header1' || x_params.progressBarType == 'header2') && x_params.hideHeader != "true") {
+			} else if ((x_params.progressBarType == 'header1' || x_params.progressBarType == 'header2' || x_params.progressBarType == 'header3') && x_params.hideHeader != "true") {
 				// add progress bar to the header bar
 				progressBar = true;
 				progressBarPosition = x_params.progressBarType;
@@ -6190,9 +6190,14 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbHolder = $('<div id="x_headerProgress">');
 
 			if (progressBarPosition == "header1") {
-				$pbHolder.prependTo($x_headerBlock).addClass("pbAboveHeader");
+				$pbHolder.prependTo($x_headerBlock);
+				$x_headerBlock.addClass('pbAbove');
+			} else if (progressBarPosition == "header2") {
+				$pbHolder.appendTo($x_headerBlock);
+				$x_headerBlock.addClass('pbBelow');
 			} else {
-				$pbHolder.appendTo($x_headerBlock).addClass("pbBelowHeader");
+				$pbHolder.insertAfter($x_headerBlock.find("h1"));
+				$x_headerBlock.addClass('pbBetween');
 			}
 		}
 
@@ -6449,12 +6454,21 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 		// add the x% COMPLETE text holder to the progress bar
 		if (progressBarPercentage !== false) {
-			$pbTxt = $('<p class="pbTxt"></p>');
+			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
 
 			if (progressBarPosition == "footer") {
 				$pbTxt.appendTo($pbHolder);
 			} else {
 				$pbTxt.prependTo($pbHolder);
+			}
+
+			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
+			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
+				$pbTxt.css({
+					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
+					"margin-left": -$pbTxt.outerWidth(true)
+				});
+				$pbHolder.css("padding-left", $pbTxt.outerWidth());
 			}
 		}
 	}

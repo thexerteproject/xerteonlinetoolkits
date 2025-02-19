@@ -680,24 +680,32 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	display: block;
 	box-sizing: border-box;
 	width: 100%;
-	text-align: center;
 	margin: 0;
-	padding: 10px 10px 0 10px;
+	padding: 10px;
 }
 #x_headerBlock #x_headerProgress.progressMarkers {
-	padding: 15px 20px 5px;
+	padding: 15px 20px 15px;
 }
-#x_headerBlock #x_headerProgress.pbBelowHeader {
-	float: left;
-	padding: 0 10px 10px 10px;
-}
-#x_headerBlock #x_headerProgress.pbBelowHeader.progressMarkers {
-	padding: 0px 20px 15px;
-}
-#x_headerBlock #x_headerProgress div {
+#x_headerBlock #x_headerProgress div:not(.pbTxt) {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+}
+/* -- pb between headers -- */
+#x_headerBlock.pbBetween #x_headerProgress,
+#x_headerBlock.pbBetween #x_headerProgress.progressMarkers {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+/* -- pb below header -- */
+#x_mainHolder #x_headerBlock.pbBelow #x_headerProgress {
+	padding: 0 10px 10px 10px;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock.pbBelow #x_headerProgress {
+	float: left;
+}
+#x_mainHolder #x_headerBlock.pbBelow #x_headerProgress.progressMarkers {
+	padding: 0 20px 15px;
 }
 
 /* the whole bar */
@@ -712,6 +720,12 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	border-radius: 10px;
 	position: relative;
 }
+#x_mainHolder:not(.x_mobile) #x_headerBlock #x_headerProgress .pbTxt + .pbContainer {
+	margin-top: -1.2em;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock #x_headerProgress.progressMarkers .pbTxt + .pbContainer {
+	margin-top: -1.1em;
+}
 
 /* the highlighted parts of the bar */
 .pbBar {
@@ -725,6 +739,9 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	height: 100%;
 	box-sizing: border-box;
 }
+.pbBarContainer {
+	width: 100%;
+}
 #x_headerProgress .pbBar:first-of-type {
 	border-top-left-radius: 10px;
 	border-bottom-left-radius: 10px;
@@ -736,26 +753,33 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 #x_headerProgress .pbBar.sub {
 	position: absolute;
 }
-.pbBarContainer {
-	width: 100%;
-}
 
 /* the text next to the progress bar */
 .pbTxt {
 	font-size: 10px;
 	text-align: center;
-
+	padding-top: .5em;
 }
-#x_headerProgress .pbTxt {
+#x_mainHolder #x_headerProgress .pbTxt {
 	font-size: 1em;
 	text-align: left;
-	padding: 0 0 5px;
+}
+#x_mainHolder:not(.x_mobile) #x_headerProgress .pbTxt {
+	display: inline-block;
+	padding: 0 5px 5px;
 }
 #x_headerProgress.progressMarkers .pbTxt {
-	padding: 0 0 10px;
-	margin-left: -10px;
+	padding: 0 5px 10px;
 }
-#x_headerProgress.pbAboveHeader.progressMarkers .pbTxt {
+#x_mainHolder.x_mobile #x_headerProgress .pbTxt {
+	padding: 0 0 10px 0;
+}
+/* -- pb between headers -- */
+#x_headerBlock.pbBetween #x_headerProgress .pbTxt {
+	padding-left: 0;
+}
+/* -- pb above header -- */
+#x_headerBlock.pbAbove #x_headerProgress.progressMarkers .pbTxt {
 	margin-top: -5px;
 }
 
