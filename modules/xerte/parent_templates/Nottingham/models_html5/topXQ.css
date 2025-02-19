@@ -12,10 +12,8 @@
     float:      right;
 }
 #pageContents #feedback {
-    clear:		both;
 }
 #pageContents #result {
-    clear:		both;
     padding-top: 1em;
 }
 #correctAnswer {
@@ -34,7 +32,6 @@
 }
 
 #attempts{
-    margin-top: 10%;
     padding-bottom: 0;
 }
 

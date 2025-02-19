@@ -1,8 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <dialog><![CDATA[<dialog name="Enter Page Title" text="" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog>
+      <dialog><![CDATA[<dialog name="Enter Page Title" text="" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog>
     </newNodes>
   </pageWizard>
 
@@ -18,7 +17,7 @@
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
-    <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true"/>
+    <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true" deprecated="This language string is no longer used"/>
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true" />
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true" />
     <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the possible correct answers for each question"/>

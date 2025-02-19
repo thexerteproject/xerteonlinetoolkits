@@ -120,7 +120,9 @@
 			
 			// create links
 			$(x_currentPageXML).children().each(function(i) {
-				var $listItem = $('<a class="listItem" href="#"></a>').appendTo("#listHolder");
+				// deally this should be a button not a link as it's not opening a new page
+				// using role="button" as changing to button tag may cause theme issues with css selectors
+				var $listItem = $('<a class="listItem" href="#" role="button"></a>').appendTo("#listHolder");
 				
 				// create list of links to each hs / hs group
 				$listItem
