@@ -376,6 +376,9 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if ($expected_path != null) {
+            $expected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
+        }
     }
     else
     {
@@ -392,7 +395,7 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     }
     if ($expected_path != null) {
         // Check whether path is as expected
-        if (strpos($path, $expected_path) !== 0) {
+        if (strpos($rpath, $expected_path) !== 0) {
             _debug($mesg);
             die($mesg);
         }
@@ -405,6 +408,9 @@ function x_check_path_traversal_newpath($path, $expected_path=null, $message=nul
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if ($expected_path != null) {
+            $expected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
+        }
     }
     else
     {
