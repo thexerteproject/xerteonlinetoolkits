@@ -1181,13 +1181,11 @@ function setup() {
 			$jumbotron.css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
 		}
 		if ($(data).find('learningObject').attr('headerSize') != undefined && $(data).find('learningObject').attr('headerSize') != "not-set") {
-			$jumbotron.css('background-size', $(data).find('learningObject').attr('headersize'));
+			$jumbotron.css('background-size', $(data).find('learningObject').attr('headerSize'));
 		}
 		if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '' && $(data).find('learningObject').attr('headerTextColour') != '0x') {
 			$jumbotron.find('#pageTitle, #pageSubTitle').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		}
-
-
 	}
 
 	// store initial header css as it might be needed later if page level header optional property is used
