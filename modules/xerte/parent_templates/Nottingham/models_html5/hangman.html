@@ -61,6 +61,8 @@
 		this.init = function() {
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
+			$(".panel").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
+
 			var nextBtnTxt = x_currentPageXML.getAttribute("nextBtnTxt");
 			if (nextBtnTxt == undefined) {
 				nextBtnTxt = "Next";

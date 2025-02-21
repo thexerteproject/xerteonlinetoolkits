@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <decision><![CDATA[<decision name="Enter Page Title" text="" panelWidth="Medium" firstStep="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
+      <decision><![CDATA[<decision name="Enter Page Title" text="" panelWidth="Medium" firstStep="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" yourAnswerString="Your answer" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
     </newNodes>
   </pageWizard>
 
@@ -23,6 +23,7 @@
 	<fwdBtn label="Forward Button" type="TextInput" wysiwyg="true" language="true"/>
 	<copyBtn label="Copy Button" type="TextInput" wysiwyg="true" language="true"/>
 	<copyShortcutTxt label="Copy Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<yourAnswerString label="Your Answer Label" type="TextInput" language="true" mandatory="true"/>
 	<posAnswerString label="Other Answers Label" type="TextInput" wysiwyg="true" language="true"/>
 	<fromRangeString label="Slider Range Label" type="TextInput" wysiwyg="true" language="true"/>
 	<resultString label="Solution Label" type="TextInput" wysiwyg="true" language="true"/>

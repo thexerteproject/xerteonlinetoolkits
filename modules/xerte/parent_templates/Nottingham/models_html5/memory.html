@@ -37,6 +37,8 @@
 		}
 		
 		this.init = function() {
+
+			$("#pageContents").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
 			
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
 				$('#pageContents').prepend('<div id="txtHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div>');

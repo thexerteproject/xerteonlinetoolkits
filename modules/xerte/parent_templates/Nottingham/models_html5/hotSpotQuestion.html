@@ -27,7 +27,12 @@
 			highlightsIndexArray = [],
 			highlightsArray = [],
 			allHighlightsArray = [];
-		
+
+		const itemSelectedLabel = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
+		const itemNotSelectedLabel = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "noSelect", "Not selected");
+		const tickLabel = x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct");
+		const crossLabel = x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect");
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $('#pageContents');
@@ -215,12 +220,22 @@
 									.css({top: lowestPoint.y * resize, left: lowestPoint.x * resize})
 									.appendTo("#markingIcons");
 							})
-							
+
 							allHighlightsArray.forEach((highlight, index)=>{
-								if(highlight.getAttribute('truth') === "true" && $.inArray(highlight, highlightsArray) == -1){
-									$('area[data-key="'+index+'"]').mapster('deselect')
-									$('img').mapster('set_options', optionsCorrect);
-									$('area[data-key="'+index+'"]').mapster('select')
+								if(highlight.getAttribute('truth') === "true") {
+									if ($.inArray(highlight, highlightsArray) == -1) {
+										// highlight any unselected correct answers label with "Correct: not selected"
+										$('area[data-key="' + index + '"]').mapster('deselect')
+										$('img').mapster('set_options', optionsCorrect);
+										$('area[data-key="' + index + '"]').mapster('select')
+										$('area[data-key="' + index + '"]').attr("title", tickLabel + ": " + itemNotSelectedLabel);
+									} else {
+										// label correctly selected answers with "Correct: item selected"
+										$('area[data-key="' + index + '"]').attr("title", tickLabel + ": " + itemSelectedLabel);
+									}
+								} else if ($.inArray(highlight, highlightsArray) > -1) {
+									// label incorrectly selected answers with "Incorrect: item selected"
+									$('area[data-key="' + index + '"]').attr("title", crossLabel + ": " + itemSelectedLabel);
 								}
 							})
 						}
@@ -473,12 +488,16 @@
 
 						var $this = $(this);
 						if($this.hasClass('hotspot') && highlightsIndexArray.indexOf(i) == -1){
-							$this.addClass("selected");
+							$this
+								.attr("title", itemSelectedLabel)
+								.addClass("selected");
 							highlightsArray.push(_this);
 							highlightsIndexArray.push(i);
 
 						}else{
-							$this.removeClass("selected")
+							$this
+								.removeAttr("title")
+								.removeClass("selected")
 							const index = highlightsArray.indexOf(_this);
 							if (index > -1) {
 								highlightsArray.splice(index, 1);
@@ -639,7 +658,7 @@
 			
 			<div id="textHolder">
 				<div id="mainTxt"></div>
-				<div id="generalFeedback"></div>
+				<div id="generalFeedback" aria-live="polite"></div>
 			</div>
 			
 		</fieldset>

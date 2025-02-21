@@ -114,7 +114,7 @@
 	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
 	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
 	  <blank name="Blank"/>
-	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
+	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." noSelect="Not selected" />
 	  <moreInfoItem name="Learn more" reveal="Reveal information" toSelect="Press space to select" selected="Selected" moreInfo="Press space to learn more" />
 	  <question name="Question"/>
 	  <answer name="Answer"/>
