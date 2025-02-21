@@ -24,6 +24,8 @@
 				'filename': 'documentation',
 				'pages':[]
 			}
+
+
 			notAnsweredDefault = '',
 			required = [];
 		
@@ -374,13 +376,16 @@
 				var $item = $('<div>')
 					.attr('class', 'item');
 
-				if (exclude != 'lo' &&
-					xml.getAttribute('name') &&
+				// aria-labels for textarea & inputs
+				let answerFieldLabel = xml.getAttribute("answerFieldLabel") === undefined || xml.getAttribute("answerFieldLabel") === null ? "Answer" : xml.getAttribute("answerFieldLabel");
+
+				if (xml.getAttribute('name') &&
 					xml.getAttribute('name').length > 0
 				) {
 					$('<h3>')
 						.html(xml.getAttribute('name'))
 						.appendTo($item);
+					answerFieldLabel = xml.getAttribute('name') + ": " + answerFieldLabel;
 				}
 
 				// Required?
@@ -389,12 +394,15 @@
 					xml.getAttribute('required') &&
 					xml.getAttribute('required') == 'true'
 				) {
+
 					$("<span>")
-						.html("* Required")
+						.html("* " + x_getLangInfo(x_languageData.find("interactions")[0], "required", "required"))
 						.addClass("required")
 						.appendTo($item);
 					requiredKey = 'idP' + page + 'S' + section + 'I' + item;
 					required.push({'page' : page, 'section' : section, 'item': item, 'key': requiredKey});
+
+					answerFieldLabel += " (" + x_getLangInfo(x_languageData.find("interactions")[0], "required", "required") + ")";
 				}
 
 				if (
@@ -434,12 +442,7 @@
 						
 						$textarea = $('<textarea class="' + width + '">')
 							.attr('rows', rows);
-							
-						//Add aria-label to answer box
-						var answerFieldLabel = xml.getAttribute("answerFieldLabel");
-						if (answerFieldLabel === undefined | answerFieldLabel === null) {
-							answerFieldLabel = "Answer";
-						}
+
 						$textarea.attr({"aria-label" : answerFieldLabel});
 						
 						if (xml.getAttribute('defaultTxt')) $textarea.attr('placeholder', xml.getAttribute('defaultTxt'));
@@ -526,6 +529,11 @@
 						}
 						
 						$element = this.createTable(xml, classes);
+
+						$element.find("textarea").each(function(i) {
+							const index = $element.find("textarea").length > 1 ? " " + (i+1) : "";
+							$(this).attr("aria-label", answerFieldLabel + index);
+						});
 						
 						if (xml.getAttribute("shade") == "true") {
 							var $tr = $element.find('tr');
@@ -621,7 +629,7 @@
 					default:
 						$input = $('<input>')
 							.attr('type', 'text')
-							.attr('aria-label', 'Answer')
+							.attr('aria-label', answerFieldLabel)
 							.attr('value', '');
 						
 						if (xml.getAttribute('defaultTxt')) $input.attr('placeholder', xml.getAttribute('defaultTxt'));

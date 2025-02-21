@@ -43,8 +43,6 @@
 			
 			// set fixed text fields and page layout
 			$("#mainTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
-
-			$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			if (x_currentPageXML.getAttribute("chartHide") != "true") {
 				$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			}
@@ -200,8 +198,8 @@
 		
 		this.startQs = function() {
 			$("#pageContents .quiz").show();
-			$("#pageContents .chart, #feedbackTxt").hide();
-			$("#pageContents .fbBlock").remove();
+			$("#feedbackTxt").empty();
+			$("#pageContents .chart").hide();
 			$("#nextBtn, #checkBtn").attr("disabled", "disabled");
 			
 			var questions = [],
@@ -358,6 +356,12 @@
 		this.drawChart = function() {
 			$("#pageContents .quiz").hide();
 			$("#pageContents .chart, #feedbackTxt").show();
+
+			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
+				$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+			} else {
+				$("#feedbackTxt").html("");
+			}
 			
 			var	scores = $pageContents.data("scores"),
 				maxScore = 0, // max value to show on bar / line graph
@@ -395,7 +399,6 @@
 			}
 
 			// add relevant tailored class feedback
-			$('#feedbackTxt .fbBlock').remove();
 			for (let i=0; i<$(x_currentPageXML).children('invClassFeedback').length; i++) {
 				const thisFb = $(x_currentPageXML).children('invClassFeedback')[i];
 				const classScore = scores[thisFb.getAttribute('class')];
@@ -644,7 +647,7 @@
 
 		<div id="textHolder" class="left">
 			<div id="mainTxt" class="quiz"></div>
-			<div id="feedbackTxt"></div>
+			<div id="feedbackTxt" aria-live="polite"></div>
 		</div>
 
 		<div id="infoHolder" class="right">

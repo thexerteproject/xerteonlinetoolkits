@@ -214,38 +214,41 @@
 			{
 			    if (pageMode || (pageMode == undefined && listMode == true))
 				{
+					// list in pages
                     $("#qNo").html($pageContents.data('qNumTxt').replace("{i}", (currentQuestion + 1) + " - " + (Math.min(currentQuestion + pageSize, questions.length))).replace("{n}", questions.length));
                     $("#qHolder").html("");
 				    for (i=currentQuestion; i<Math.min(currentQuestion + pageSize, questions.length); i++)
 					{
-                        $("#qHolder").append('<legend id="qTxt' + i + '" class="qTxt"></legend><div id="questionAudio'+ i + '" class="questionAudio"></div><div id="sliderHolder' + i
-                            + '" class="sliderHolder"><div id="labelHolder' + i + '" class="labelHolder"></div><div id="rangeHolder' + i + '" class="rangeHolder"></div></div><div class="qSeparator"><hr></div>');
-					    this.loadQuestion(i);
+						this.addQuestion(i);
 					}
 				}
 				else
 				{
-                    $("#qNo").html($pageContents.data('qNumTxt').replace("{i}", (currentQuestion + 1) + " - " + questions.length).replace("{n}", questions.length));
+					// all on one page
+                    $("#qNo").html("");
                     $("#qHolder").html("");
                     for (i=currentQuestion; i<questions.length; i++)
                     {
-                        $("#qHolder").append('<legend id="qTxt' + i + '" class="qTxt"></legend><div id="questionAudio'+ i + '" class="questionAudio"></div><div id="sliderHolder' + i
-                            + '" class="sliderHolder"><div id="labelHolder' + i + '" class="labelHolder"></div><div id="rangeHolder' + i + '" class="rangeHolder"></div></div><div class="qSeparator"><hr></div>');
-                        this.loadQuestion(i);
+						this.addQuestion(i);
                     }
 				}
 			}
 			else
 			{
+				// one question per page
                 $("#qNo").html($pageContents.data('qNumTxt').replace("{i}", currentQuestion + 1).replace("{n}", questions.length));
-			    $("#qHolder").html('<legend id="qTxt' + currentQuestion + '" class="qTxt"></legend><div id="questionAudio'+currentQuestion + '" class="questionAudio"></div><div id="sliderHolder'
-					+ currentQuestion + '" class="sliderHolder"><div id="labelHolder' + currentQuestion + '" class="labelHolder"></div><div id="rangeHolder' + currentQuestion + '" class="rangeHolder"></div></div>');
-
-                this.loadQuestion(currentQuestion);
+				$("#qHolder").html("");
+			    this.addQuestion(currentQuestion);
 			}
 			
 			this.checkButtonState();
 		};
+
+		this.addQuestion = function(q) {
+			$("#qHolder").append('<fieldset class="noStyle"><legend id="qTxt' + q + '" class="qTxt"></legend><div id="questionAudio'+ q + '" class="questionAudio"></div><div id="sliderHolder' + q
+					+ '" class="sliderHolder"><div id="labelHolder' + q + '" class="labelHolder"></div><div id="rangeHolder' + q + '" class="rangeHolder"></div></div><div class="qSeparator"><hr></div></fieldset>');
+			this.loadQuestion(q);
+		}
 
 		this.checkButtonState = function()
 		{
@@ -607,7 +610,7 @@
             // Last question answered - show results
 			this.drawGraph();
 
-            $("#qNo").html($pageContents.data("onCompletionText"));
+			$("#qNo").html($pageContents.data("onCompletionText"));
 
             var myScore = 0;
 			var answeredValues = $pageContents.data('answeredValues');
@@ -786,6 +789,24 @@
 					maintainAspectRatio: false
 				}
             });
+
+			// give canvas a description including data so it's accessible
+			let chartDescr = "";
+			for (let i=0; i<graphObject.classtitles.length; i++) {
+				chartDescr += graphObject.classtitles[i] + " = " + graphObject.classvalues[i] + "%. "
+			}
+			/*
+			for (i = 0; i < scores.length; i++) {
+				chartDescr += " " + $pageContents.data("classes")[i] + " = " + scores[i];
+				if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+					chartDescr += "%";
+				}
+				if (i != scores.length - 1) {
+					chartDescr += ",";
+				}
+			}*/
+			$("#diagram").attr("title", chartDescr);
+			console.log(graphObject);
 		};
 
 		this.init = function()
@@ -1112,7 +1133,7 @@
 
 					<div id="feedback" aria-live="polite"></div>
 				  <div id="canvas-container">
-					<canvas id="diagram" aria-live="polite"></canvas>
+					<canvas id="diagram"></canvas>
 				  </div>
 
 					<div id="wrapper">

@@ -104,7 +104,7 @@
 
   <microphoneError label="&lt;p&gt;Unable to access your microphone. Common reasons for this problem include:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;No microphone detected&lt;/li&gt;&lt;li&gt;This web page has been blocked from accessing the microphone&lt;/li&gt;&lt;li&gt;The microphone is already in use by another program or browser tab&lt;/li&gt;&lt;/ul&gt;"/>
   
-  <interactions>
+  <interactions required="required">
 	  <button name="Button"/>
 	  <radioButton selected="selected. Use the arrow keys to choose from the options"/>
 	  <checkBox selected="selected" deselected="deselected"/>
