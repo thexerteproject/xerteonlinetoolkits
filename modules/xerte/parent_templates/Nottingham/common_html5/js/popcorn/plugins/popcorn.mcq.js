@@ -183,9 +183,7 @@ optional: feedback page synch play enable
 			if (feedbackTxt != "") {
 				var feedbackLabel = options.feedbackLabel != "" ? '<h5>' + options.feedbackLabel + '</h5>' : "";
 				
-				$feedbackDiv
-					.html(feedbackLabel + feedbackTxt)
-					.show();
+				$feedbackDiv.html(feedbackLabel + feedbackTxt);
 				$continueBtn.show();
 				x_pageContentsUpdated();
 
@@ -399,9 +397,7 @@ optional: feedback page synch play enable
                             });
                     }
 					
-					$feedbackDiv = $('<div class="mcqFeedback"></div>')
-						.appendTo($target)
-						.hide();
+					$feedbackDiv = $('<div class="mcqFeedback" aria-live="polite"></div>').appendTo($target)
 
 					$continueBtn = $('<button class="mcqContinueBtn"></button>').appendTo($target).hide();
 					$continueBtn
@@ -433,7 +429,7 @@ optional: feedback page synch play enable
 					$target.hide();
 					
                 	if(options.optional == "true") {
-						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+						var $showHolder  = $('<div id="showHolder" tabindex="0" />').appendTo($target);
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
 							"background-color": options.attrib.colour1,
@@ -474,7 +470,8 @@ optional: feedback page synch play enable
 							});
 						}
 						$showHolder
-							.click(function () {
+							.click(function (e) {
+								e.stopPropagation();
 								$target.parent().css({"padding": 5, "width": options._w + "%", "height": "auto", "overflow-x": "hidden"});
                                 $("#overlay").show();
 								$showHsActive = true;
@@ -483,6 +480,14 @@ optional: feedback page synch play enable
 								$showHolder.hide();
 								$optHolder.show();
 								$target.prepend($optionText);
+								$target.parent().focus();
+							})
+							.keypress(function(e) {
+								var charCode = e.charCode || e.keyCode;
+								if (charCode == 32) {
+									e.stopPropagation();
+									$(this).trigger("click");
+								}
 							});
 
 					} else {
@@ -535,7 +540,6 @@ optional: feedback page synch play enable
 					
 					$feedbackDiv
 						.html("")
-						.hide()
 						.find("button").remove();
 					if ($showHs) {
 						$optHolder.hide();
@@ -642,6 +646,11 @@ optional: feedback page synch play enable
 					}).show();
 				}
 				$target.show();
+				if ($target.find("#showHolder").length > 0) {
+					$target.find("#showHolder").focus();
+				} else {
+					$target.parent().focus(); // this isn't bringing the overlay into focus - not sure why not
+				}
 				x_pageContentsUpdated();
 			},
 			
