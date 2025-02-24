@@ -3,4 +3,36 @@
 	.orientGroup {
 		margin-bottom: 1.5em;
 	}
-	
+
+	#x_mainHolder.x_mobile .pageAudio,
+	#x_mainHolder.x_mobile .pageVideo {
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	#x_mainHolder:not(.x_mobile) .pageImg {
+		max-width: 48%;
+	}
+
+	#x_mainHolder:not(.x_mobile) .pageAudio {
+		width: 48%;
+	}
+
+	#x_mainHolder:not(.x_mobile) .pageAudio.pageImg {
+		width: 100%;
+	}
+
+	#x_mainHolder:not(.x_mobile) .pageVideo.iframe {
+		width: 48%;
+	}
+
+	.pageVideo.youtubeVimeo .mejs-overlay-button {
+		display: none;
+	}
+
+	.pageVideo.youtubeVimeo #pageVideo,
+	.pageVideo.youtubeVimeo .mejs-container {
+		width: 100% !important;
+		height: 100% !important;
+	}

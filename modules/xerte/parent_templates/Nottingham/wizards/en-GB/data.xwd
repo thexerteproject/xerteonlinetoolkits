@@ -3802,7 +3802,7 @@
 		<media2 label="File" type="Media" optional="true" defaultValue="" placeholder="Select a file" tooltip="Upload an image, audio or video file, or paste in an embed code or YouTube/Vimeo URL"/>
 		<tip2 label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<align2 label="Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
-		<transcript2 label="Audio Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="If media if MP3, a transcript button will appear on the audio player when text is added here"/>
+		<transcript2 label="Audio Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="If media is MP3, a transcript button will appear on the audio player when text is added here"/>
 	</side2Media>
 	
   </card><flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true" deprecated="This page is no longer supported">
@@ -7758,6 +7758,16 @@
 		<howto label="Text" type="TextArea" height="100" placeholder="Describe how the user can best use the resource"/>
 	</howtoGroup>
 
+	<media type="group" label="Media" optional="true" tooltip="Add an image, video or audio player to the page">
+	  	<url label="File" type="media" placeholder="Select a file" optional="true" tooltip="Upload an image, audio or video file, or paste in an embed code or YouTube/Vimeo URL"/>
+	  	<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" optional="true"/>
+
+	  	<audioGroup type="group" label="Additional options (audio only)" optional="true">
+		  	<audioImg label="Image file" type="media" placeholder="Select a file" optional="true" tooltip="Upload an image that will be shown above the audio player"/>
+		  	<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="When text is added here, a transcript button will appear on the audio player"/>
+	  	</audioGroup>
+	</media>
+
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
@@ -9141,10 +9151,20 @@
 		<summary label="Text" type="TextArea" height="100" placeholder="Summarise the key points"/>
 	</summaryGroup>
 	
-	<nextstepsGroup type="group" label="Next Steps">
+	<nextstepsGroup type="group" label="Next steps">
 		<nextstepsHeader label="Header" type="TextInput" wysiwyg="true"/>
 		<nextsteps label="Text" type="TextArea" height="100" placeholder="Suggest how the knowledge can be applied and any useful next steps"/>
 	</nextstepsGroup>
+
+    <media type="group" label="Media" optional="true" tooltip="Add an image, video or audio player to the page">
+        <url label="File" type="media" placeholder="Select a file" optional="true" tooltip="Upload an image, audio or video file, or paste in an embed code or YouTube/Vimeo URL"/>
+        <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" optional="true"/>
+
+        <audioGroup type="group" label="Additional options (audio only)" optional="true">
+            <audioImg label="Image file" type="media" placeholder="Select a file" optional="true" tooltip="Upload an image that will be shown above the audio player"/>
+            <audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="When text is added here, a transcript button will appear on the audio player"/>
+        </audioGroup>
+    </media>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
@@ -10505,7 +10525,7 @@
     <additionalTxt label="Additional Text" type="TextArea" height="100" optional="true" placeholder="Enter text for the page here" tooltip="Add additional text below the title text"/>
 	<startBtn label="Start Button" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include a 'start' button below the title text that moves the project to the next page"/>
 
-   <image type="group" label="Image" optional="true" tooltip="Add an image next to the title text">
+    <image type="group" label="Image" optional="true" tooltip="Add an image next to the title text">
 	    <url label="File" type="media" placeholder="Select an image" optional="true"/>
 	    <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" optional="true"/>
     </image>

@@ -28,7 +28,24 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+            let width = 0;
+            $(".mejs-controls > div").each(function() {
+                width += $(this).width();
+            });
+
+            if ($("#pageAudio").length > 0 && width != $(".pageImg img").width()) {
+                this.loadAudio();
+            } else if ($("#pageVideo").length > 0) {
+                if ($(".pageVideo").hasClass("iframe")) {
+                    const $iframe = $("#pageVideo").find("iframe");
+                    $iframe.height($iframe.width()/16 * 9);
+                } else if ($(".pageVideo").hasClass("youtubeVimeo")) {
+                    $(".pageVideo").width(x_browserInfo.mobile === false ? "48%" : "100%");
+                    $(".pageVideo").height($(".pageVideo").width()/16 * 9);
+                } else {
+                    this.resizeVideo();
+                }
+            }
 		}
 		
 		this.init = function() {
@@ -51,10 +68,162 @@
 			if (x_currentPageXML.getAttribute("nextsteps") != undefined && x_currentPageXML.getAttribute("nextsteps") != '') {
 				$pageContents.append("<div class='summaryGroup'>" + (nextstepsHeader != '' ? "<h3>" + nextstepsHeader + "</h3>" : "") + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</div>");
 			}
-			
-			// call this function in every model once everything's loaded
-			x_pageLoaded();
+
+            // add a panel containing an image, video or audio player to the page
+            if (x_currentPageXML.getAttribute("url") != null && x_currentPageXML.getAttribute("url") != "") {
+                const url = x_currentPageXML.getAttribute("url");
+                const fileExt = url.split('.').pop().toLowerCase();
+                const tip = x_currentPageXML.getAttribute("tip");
+                let $mediaHolder;
+
+                if (fileExt == "mp3") {
+                    // audio
+                    $mediaHolder = $('<div id="mediaHolder" class="pageAudio panel inline">');
+
+                    // add an accompanying image above the audio player
+                    const audioImg = x_currentPageXML.getAttribute("audioImg");
+                    if (audioImg != null && audioImg != "") {
+                        $mediaHolder.addClass("pageImg");
+
+                        const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
+                        $mediaHolder.append('<img src="' + audioImg + '"' + alt + '/>');
+                    }
+
+                    $mediaHolder.append('<div id="pageAudio">');
+
+                } else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif" || fileExt == "svg") {
+                    // image
+                    const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
+                    $mediaHolder = $('<div id="mediaHolder" class="pageImg panel inline"><img src="' + url + '"' + alt + '/></div>');
+
+                } else {
+                    $mediaHolder = $('<div id="mediaHolder" class="pageVideo panel inline">');
+                    $mediaHolder.append('<div id="pageVideo">');
+
+                    if (url.substr(0,7) === "<iframe") {
+                        $mediaHolder.addClass("iframe");
+                    } else if (x_isYouTubeVimeo(url) != false) {
+                        $mediaHolder.addClass("youtubeVimeo");
+                    }
+                }
+
+                if ($mediaHolder != null) {
+                    if (x_browserInfo.mobile === false) {
+                        $mediaHolder.addClass("x_floatRight");
+                    }
+
+                    if ($mediaHolder.hasClass("pageImg")) {
+                        // scale image (either image on its own or above audio player)
+                        $mediaHolder.find("img")
+                            .one("load", function() {
+                                const $this = $(this);
+
+                                const offset = $mediaHolder.hasClass("pageAudio") ? x_audioBarH : 0;
+                                $this.css({
+                                    "max-width": "100%",
+                                    "max-height": x_getAvailableHeight([$mediaHolder], [offset], true)
+                                });
+
+                                $this.css("visibility", "visible");
+                                summary.loadAudio();
+
+                                x_pageLoaded();
+                            })
+                            .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                                if (this.complete) {
+                                    $(this).trigger("load");
+                                }
+                            });
+
+                    }
+
+                    $pageContents.prepend($mediaHolder);
+
+                    if ($mediaHolder.hasClass("pageAudio")) {
+                        this.loadAudio();
+                    }
+
+                    if ($mediaHolder.hasClass("pageVideo")) {
+                        $mediaHolder.find("#pageVideo").mediaPlayer({
+                            type: "video",
+                            source: url,
+                            width: "100%",
+                            height: "100%",
+                            title: tip
+                        });
+
+                        if ($mediaHolder.hasClass("iframe")) {
+                            $mediaHolder.find("iframe").width("100%");
+                            $mediaHolder.find("iframe").height($mediaHolder.find("iframe").width() / 16 * 9);
+                        }
+                    }
+
+                    if (!$mediaHolder.hasClass("pageImg")) {
+                        x_pageLoaded();
+                    }
+
+
+                } else {
+                    x_pageLoaded();
+                }
+
+            } else {
+                x_pageLoaded();
+            }
 		}
+
+        this.loadAudio = function() {
+            $("#pageAudio").mediaPlayer({
+                type: "audio",
+                source: x_currentPageXML.getAttribute("url"),
+                width: "100%"
+            });
+
+            // manually add a transcript button to the end of the audio bar
+            if (x_currentPageXML.getAttribute("audioTranscript") != null && x_currentPageXML.getAttribute("audioTranscript") != '') {
+                x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute("audioTranscript"));
+            }
+
+        }
+
+        // function receives dimensions of video from mediaPlayer.js to set its max dimensions
+        this.mediaMetadata = function($video, dimensions) {
+            $video.closest('.panel')
+                .data({
+                    'max-width'	:dimensions[0],
+                    'max-height':dimensions[1]
+                });
+
+            this.resizeVideo();
+        }
+
+        this.resizeVideo = function() {
+            // video is 100% width & height of holder so just resize the holder
+            const $mediaHolder = $('#mediaHolder.pageVideo');
+            let tempW = $mediaHolder.data('max-width');
+            let tempH = $mediaHolder.data('max-height');
+            const maxW = ($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($mediaHolder.outerWidth(true) - $mediaHolder.width())) * (x_browserInfo.mobile === false ? 0.48 : 1); // max width is 48% of available width
+            const maxH = x_getAvailableHeight([$mediaHolder], [], true); // max height is 100% of available height
+
+            if (tempW > maxW) {
+                const scale = maxW / tempW;
+                tempW = maxW;
+                tempH = Math.floor(tempH * scale);
+            }
+            if (tempH > maxH) {
+                const scale = maxH / tempH;
+                tempH = maxH;
+                tempW = Math.floor(tempW * scale);
+            }
+
+            $mediaHolder.css({
+                'width'	:tempW,
+                'height':tempH
+            });
+
+            // force the mediaplayer resize to occur
+            $x_window.resize();
+        }
 	}
 	
 	summary.init();
