@@ -553,7 +553,8 @@
 							"top"	:"auto",
 							"left"	:"auto"
 							})
-						.data("currentTarget", "");
+						.data("currentTarget", "")
+						.removeClass("onTarget");
 
 					// as displaced label will move to top, hide and labels that were previously showing here
 					$("#dragDropHolder .label").each(function() {
@@ -588,7 +589,8 @@
 				.css({
 					"top"	:$thisTarget.find(".fixedTxt").position().top + $("div#x_pageHolder").scrollTop(),
 					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.outerWidth() + 5
-				});
+				})
+				.addClass("onTarget");
 		}
 	}
 	

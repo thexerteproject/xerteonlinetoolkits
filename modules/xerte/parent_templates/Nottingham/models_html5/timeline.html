@@ -486,7 +486,8 @@
 							"top"	:"auto",
 							"left"	:"auto"
 							})
-						.data("currentTarget", "");
+						.data("currentTarget", "")
+						.removeClass("onTarget");
 					
 					$("#dragDropHolder .label").each(function() {
 						if ($(this).data("currentTarget") == "" && $(this).is(prevLabel) == false) {
@@ -518,7 +519,8 @@
 			$thisTarget.attr("title", targetTxt1 + " " + $thisTarget.find(".targetTitle").text() + ": " + $temp.text());
 			$thisLabel
 				.removeAttr("aria-label")
-				.removeClass("selected");
+				.removeClass("selected")
+				.addClass("onTarget");
 
 			this.positionLabel($thisLabel, $thisTarget);
 		}
