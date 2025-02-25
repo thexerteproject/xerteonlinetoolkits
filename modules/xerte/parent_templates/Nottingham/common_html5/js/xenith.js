@@ -4141,11 +4141,11 @@ function x_checkDecimalSeparator(value, forcePeriod) {
 // function called from model pages to scale images - scale, firstScale & setH are optional
 function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
     var $img = $(img);
-    if (scale != false) {
+    if (scale != false && $img.width() > 0 && $img.height() > 0) {
         var imgW = $img.width(),
             imgH = $img.height();
 
-        if (firstScale == true) { // store orig dimensions - will need them if resized later so it doesn't get larger than orignial size
+        if (firstScale == true || $img.data("origSize") == undefined) { // store orig dimensions - will need them if resized later so it doesn't get larger than orignial size
             $img.data("origSize", [imgW, imgH]);
         } else if ($img.data("origSize") != undefined) { // use orig dimensions rather than current dimensions (so it can be scaled up if previously scaled down)
             imgW = $img.data("origSize")[0];
@@ -4164,6 +4164,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
             imgW = Math.round(imgW * scaleFactor);
             imgH = Math.round(imgH * scaleFactor);
+
             $img.css("width", imgW + "px"); // set width only to constrain proportions
 
             if (setH == true) {

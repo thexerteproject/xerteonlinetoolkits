@@ -1,14 +1,9 @@
 /* title.html */
 
-	#x_pageDiv {
-		padding: 10px !important; /* important so this will override theme padding and ensure the titles are centered regardless of theme */
-	}
-	#pageContents {
-		position: absolute;
-		width: 96%;
-		margin-left: calc(2% + -10px) !important;
+	#x_pageHolder {
 		overflow-x: hidden;
 	}
+
 	.titlePageTxt p {
 		font-size: 1em;
 	}
@@ -26,11 +21,55 @@
 		padding-left: 1em;
 		padding-right: 1em;
 	}
-	#x_mainHolder:not(.x_mobile) #imgHolder {
-		float: right;
-		max-width: 48%;
-		margin: 0 0 0 2%;
+
+	#x_pageDiv.autoLayout {
+		width: auto !important;
+		height: auto !important;
 	}
-	#pageImg {
+
+	#x_pageDiv:not(.autoLayout) > div {
 		width: 100%;
+		height: 100%;
+	}
+
+	#x_mainHolder:not(.x_mobile) #pageContents {
+		padding: 0;
+		margin: 0;
+		display: flex;
+		justify-content: center;
+	}
+
+	#x_mainHolder:not(.x_mobile) #txtHolder {
+		flex-basis: 100%;
+	}
+
+	#x_mainHolder.x_mobile #mediaHolder {
+		margin-top: 1em;
+	}
+
+	#x_pageDiv:not(.autoLayout) #pageContents {
+		height: 100%;
+	}
+
+	#x_pageDiv:not(.autoLayout) #pageContents.topAlign { align-items: normal; }
+	#x_pageDiv:not(.autoLayout) #pageContents.middleAlign { align-items: center; }
+	#x_pageDiv:not(.autoLayout) #pageContents.bottomAlign { align-items: flex-end; }
+
+	#mediaHolder {
+		margin-bottom: 0;
+	}
+
+	#x_mainHolder.x_mobile .pageAudio,
+	#x_mainHolder.x_mobile .pageVideo {
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	#x_mainHolder:not(.x_mobile) .pageAudio:not(.pageImg) {
+		 width: 100%;
+	 }
+
+	.pageVideo.youtubeVimeo .mejs-overlay-button {
+		display: none;
 	}

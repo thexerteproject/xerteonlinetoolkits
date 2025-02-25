@@ -10525,10 +10525,15 @@
     <additionalTxt label="Additional Text" type="TextArea" height="100" optional="true" placeholder="Enter text for the page here" tooltip="Add additional text below the title text"/>
 	<startBtn label="Start Button" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include a 'start' button below the title text that moves the project to the next page"/>
 
-    <image type="group" label="Image" optional="true" tooltip="Add an image next to the title text">
-	    <url label="File" type="media" placeholder="Select an image" optional="true"/>
-	    <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" optional="true"/>
-    </image>
+	<media type="group" label="Media" optional="true" tooltip="Add an image, video or audio player next to the title text">
+	  	<url label="File" type="media" placeholder="Select a file" optional="true" tooltip="Upload an image, audio or video file, or paste in an embed code or YouTube/Vimeo URL"/>
+	  	<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" optional="true"/>
+
+	  	<audioGroup type="group" label="Additional options (audio only)" optional="true">
+		  	<audioImg label="Image file" type="media" placeholder="Select a file" optional="true" tooltip="Upload an image that will be shown above the audio player"/>
+			<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="When text is added here, a transcript button will appear on the audio player"/>
+	  	</audioGroup>
+	</media>
 
 	<background type="group" label="Background" optional="true" tooltip="Add a background image to this page">
 		<bgImageVAlign label="Vert Align" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
