@@ -1599,7 +1599,7 @@ var EDITOR = (function ($, parent) {
                     },
                     success: function(data) {
                         try {
-                            ai_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
@@ -1638,7 +1638,7 @@ var EDITOR = (function ($, parent) {
                     },
                     success: function(data) {
                         try {
-                            ai_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
@@ -1651,7 +1651,44 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             } catch (error) {
-                console.error("Error occurred in ai_content_generator:", error);
+                console.error("Error occurred in auto_translate:", error);
+                reject(error); // Reject the promise with the caught error
+            }
+        });
+    };
+
+    quick_fill = function(event, node_type, parameters) {
+        return new Promise((resolve, reject) => {
+            try {
+                // Call aiAPI.php via jQuery's AJAX method
+                var tree = $.jstree.reference("#treeview");
+                // Show wait icon
+                $('body').css("cursor", "wait");
+                console.log("Start Quick Fill process, please wait...");
+
+                $.ajax({
+                    url: "editor/quickfill/quickfillAPI.php",
+                    type: "POST",
+                    data: {
+                        type: node_type,
+                        parameters: parameters,
+                    },
+                    success: function(data) {
+                        try {
+                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                        } catch (error) {
+                            console.log('Error occurred in success callback:', error);
+                            reject(error);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors from the AJAX request and reject the promise
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
+                    }
+                });
+            } catch (error) {
+                console.error("Error occurred in quick_fill:", error);
                 reject(error); // Reject the promise with the caught error
             }
         });

@@ -18,6 +18,12 @@
 
 		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs"  tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)." />
+
+	    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+          <qfPanel label="Number of Panels" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+          <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
@@ -44,6 +50,20 @@
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
 		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true"/>
 
+	    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+            <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchMCQ label="Number of MCQ Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfSynchMCQOption label="Number of Answers per MCQ Page" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+            <qfSynchSlides label="Number of Slideshows" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfSynchSlide label="Number of Slides per Slideshow" type="TextInput" wysiwyg="true" defaultValue = "6" optional="true"/>
+            <qfSynchTextPlus label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchEmpty label="Number of Clear Panels" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchCue label="Number of Pause/Jump Points" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
 			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
@@ -62,6 +82,22 @@
 	<panel menuItem="Panel" icon="icApplication" remove="true" max="3">
 
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
+
+        <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+            <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchMCQ label="Number of MCQ Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfSynchMCQOption label="Number of Answers per MCQ Page" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+            <qfSynchSlides label="Number of Slideshows" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfSynchSlide label="Number of Slides per Slideshow" type="TextInput" wysiwyg="true" defaultValue = "6" optional="true"/>
+            <qfSynchTextPlus label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchEmpty label="Number of Clear Panels" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchMediaPlus label="Number of Media Pages" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfSynchCue label="Number of Pause/Jump Points per Media Page" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
 			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->

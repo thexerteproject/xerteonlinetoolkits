@@ -4826,8 +4826,302 @@ var EDITOR = (function ($, parent) {
 				break;
             case 'info':
                 break;
+            case 'quickfillbutton':
+                var qf_button_id = 'qfButton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', qf_button_id)
+                    .attr('class', 'quickfill_button')
+                    .text('Quick Fill')
+                    .click({key: key}, async function(event) {
+                        $(this).prop('disabled', true);
+                        // Build the parameters object based on type. The nodes must match the actual node names of the xml in question.
+                        var parameters;
+                        var type = lo_data[key].attributes.nodeName;
+                        console.log(type);
+                        switch (type) {
+                            case 'quiz':
+                                parameters = {
+                                    "question": lo_data[key].attributes["numberOfQuestions"] || "3",
+                                    "option": lo_data[key].attributes["numberOfAnswers"] || "4",
+                                }
+                                break;
+                            case 'tabNavExtra':
+                                parameters = {
+                                    "topic": lo_data[key].attributes["qfTopic"] || "3",
+                                    "nestedTab": lo_data[key].attributes["qfNestedTab"] || "3",
+                                    "nestedPage": lo_data[key].attributes["qfNestedPage"] || "5",
+                                }
+                                break;
+                            case 'columnPage':
+                                parameters = {
+                                    "nestedColumnPage": lo_data[key].attributes["qfNestedColumnPage"] || "3",
+                                }
+                                break;
+                            case 'audioSlideshow':
+                                parameters = {
+                                    "synchPoint": lo_data[key].attributes["qfSynchPoint"] || "3",
+                                }
+                                break;
+                            case 'imageSequence':
+                                parameters = {
+                                    "case": lo_data[key].attributes["qfCase"] || "3",
+                                    "imgSeries": lo_data[key].attributes["qfImgSeries"] || "3",
+                                    "singleImg": lo_data[key].attributes["qfSingleImg"] || "5",
+                                }
+                                break;
+                            case 'thumbnailViewer':
+                                parameters = {
+                                    "thumbnailImage": lo_data[key].attributes["qfThumbnailImage"] || "5",
+                                }
+                                break;
+                            case 'SictTimeline':
+                                parameters = {
+                                    "timeLineText": lo_data[key].attributes["qfTimeLineText"] || "1",
+                                    "timelineimage": lo_data[key].attributes["qfTimelineimage"] || "1",
+                                    "timelinevideo ": lo_data[key].attributes["qfTimelinevideo"] || "1",
+                                    "timeLineAudio": lo_data[key].attributes["qfTimeLineAudio"] || "1",
+                                }
+                                break;
+                            case 'transcriptReader':
+                                parameters = {
+                                    "nestedSynch": lo_data[key].attributes["qfNestedSynch"] || "3",
+                                }
+                                break;
+                            case 'flashCards':
+                                parameters = {
+                                    "card": lo_data[key].attributes["qfCard"] || "5",
+                                }
+                                break;
+                            case 'list':
+                                parameters = {
+                                    "listItem": lo_data[key].attributes["qfListItem"] || "5",
+                                }
+                                break;
+                            case 'nav':
+                                parameters = {
+                                    "navPage": lo_data[key].attributes["qfNavPage"] || "3",
+                                }
+                                break;
+                            case 'perspectives':
+                                parameters = {
+                                    "movie": lo_data[key].attributes["qfMovie"] || "1",
+                                    "sound": lo_data[key].attributes["qfSound"] || "1",
+                                    "image": lo_data[key].attributes["qfImage"] || "1",
+                                    "mpText": lo_data[key].attributes["qfMpText"] || "1",
+                                }
+                                break;
+                            case 'annotatedDiagram':
+                                parameters = {
+                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
+                                }
+                                break;
+                            case 'hotspotGroup':
+                                parameters = {
+                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
+                                }
+                                break;
+                            case 'topXQ':
+                                parameters = {
+                                    "optionXQ": lo_data[key].attributes["qfOptionXQ"] || "5",
+                                }
+                                break;
+                            case 'buttonSequence':
+                                parameters = {
+                                    "button": lo_data[key].attributes["qfButton"] || "5",
+                                }
+                                break;
+                            case 'categories':
+                                parameters = {
+                                    "category": lo_data[key].attributes["qfCategory"] || "3",
+                                    "item": lo_data[key].attributes["qfItem"] || "5",
+                                }
+                                break;
+                            case 'decision':
+                                parameters = {
+                                    "resultStep": lo_data[key].attributes["qfResultStep"] || "1",
+                                    "infoStep": lo_data[key].attributes["qfInfoStep"] || "1",
+                                    "sliderStep": lo_data[key].attributes["qfSliderStep"] || "1",
+                                    "sliderStepOption": lo_data[key].attributes["qfSliderStepOption"] || "4",
+                                    "mcqStep": lo_data[key].attributes["qfMcqStep"] || "1",
+                                    "mcqStepOption": lo_data[key].attributes["qfMcqStepOption"] || "4",
+                                }
+                                break;
+                            case 'dialog':
+                                parameters = {
+                                    "dialogStep": lo_data[key].attributes["qfDialogStep"] || "5",
+                                }
+                                break;
+                            case 'dictation':
+                                parameters = {
+                                    "nestedDictation": lo_data[key].attributes["qfNestedDictation"] || "3",
+                                }
+                                break;
+                            case 'documentation':
+                                parameters = {
+                                    "page": lo_data[key].attributes["qfPage"] || "1",
+                                }
+                                break;
+                            case 'page': //of documentation
+                                parameters = {
+                                    "media": lo_data[key].attributes["qfMedia"] || "1",
+                                    "selectlist": lo_data[key].attributes["qfSelectlist"] || "1",
+                                    "selectitem": lo_data[key].attributes["qfSelectitem"] || "5",
+                                    "description": lo_data[key].attributes["qfDescription"] || "1",
+                                    "tableDoc": lo_data[key].attributes["qfTableDoc"] || "1",
+                                    "checkbox": lo_data[key].attributes["qfCheckbox"] || "1",
+                                    "textArea": lo_data[key].attributes["qfTextArea"] || "1",
+                                    "textBox": lo_data[key].attributes["qfTextBox"] || "1",
+                                }
+                                break;
+                            case 'section': //of documentation
+                                parameters = {
+                                    "media": lo_data[key].attributes["qfMedia"] || "1",
+                                    "selectlist": lo_data[key].attributes["qfSelectlist"] || "1",
+                                    "selectitem": lo_data[key].attributes["qfSelectitem"] || "5",
+                                    "description": lo_data[key].attributes["qfDescription"] || "1",
+                                    "tableDoc": lo_data[key].attributes["qfTableDoc"] || "1",
+                                    "checkbox": lo_data[key].attributes["qfCheckbox"] || "1",
+                                    "textArea": lo_data[key].attributes["qfTextArea"] || "1",
+                                    "textBox": lo_data[key].attributes["qfTextBox"] || "1",
+                                }
+                                break;
+                            case 'dragDropLabel':
+                                parameters = {
+                                    "hotspot": lo_data[key].attributes["qfHotspot"] || "3",
+                                }
+                                break;
+                            case 'hotspotImage':
+                                parameters = {
+                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
+                                }
+                                break;
+                            case 'hotSpotQuestion':
+                                parameters = {
+                                    "QHotSpot": lo_data[key].attributes["qfQHotSpot"] || "3",
+                                }
+                                break;
+                            case 'interactiveText':
+                                parameters = {
+                                    "group": lo_data[key].attributes["qfGroup"] || "5",
+                                }
+                                break;
+                            case 'ivOverlayPanel': //of interactiveVideo
+                                parameters = {
+                                    "ivSynchTextPlus": lo_data[key].attributes["qfIvSynchTextPlus"] || "3",
+                                    "ivSynchMCQ": lo_data[key].attributes["qfIvSynchMCQ"] || "1",
+                                    "ivSynchMCQOption": lo_data[key].attributes["qfIvSynchMCQOption"] || "4",
+                                    "ivSynchXot": lo_data[key].attributes["qfIvSynchXot"] || "1",
+                                    "ivSynchXotChange": lo_data[key].attributes["qfIvSynchXotChange"] || "3",
+                                }
+                                break;
+                            case 'inventory':
+                                parameters = {
+                                    "invQuestion": lo_data[key].attributes["qfInvQuestion"] || "3",
+                                    "invOption": lo_data[key].attributes["qfInvOption"] || "4",
+                                }
+                                break;
+                            case 'textMatch':
+                                parameters = {
+                                    "sentence": lo_data[key].attributes["qfSentence"] || "3",
+                                }
+                                break;
+                            case 'mcq':
+                                parameters = {
+                                    "option": lo_data[key].attributes["qfOption"] || "4",
+                                }
+                                break;
+                            case 'opinion':
+                                parameters = {
+                                    "opinionClass": lo_data[key].attributes["qfOpinionClass"] || "3",
+                                    "opinionQuestion": lo_data[key].attributes["qfOpinionQuestion"] || "3",
+                                    "opinionOption": lo_data[key].attributes["qfOpinionOption"] || "4",
+                                }
+                                break;
+                            case 'timeline':
+                                parameters = {
+                                    "timelinedate": lo_data[key].attributes["qfTimelinedate"] || "6",
+                                }
+                                break;
+                            case 'memory':
+                                parameters = {
+                                    "matchItem": lo_data[key].attributes["qfMatchItem"] || "6",
+                                }
+                                break;
+                            case 'crossword':
+                                parameters = {
+                                    "wordAndHint": lo_data[key].attributes["qfWordAndHint"] || "6",
+                                }
+                                break;
+                            case 'links':
+                                parameters = {
+                                    "link": lo_data[key].attributes["qfLink"] || "3",
+                                }
+                                break;
+                            case 'adaptiveContent':
+                                parameters = {
+                                    "interaction": lo_data[key].attributes["qfInteraction"] || "3",
+                                    "interactionBlock": lo_data[key].attributes["qfInteractionBlock"] || "3",
+                                }
+                                break;
+                            case 'mediaLesson':
+                                parameters = {
+                                    "panel": lo_data[key].attributes["qfPanel"] || "3",
+                                }
+                                break;
+                            case 'mediaPanel': //of mediaLesson
+                                parameters = {
+                                    "synchXot": lo_data[key].attributes["qfSynchXot"] || "1",
+                                    "synchXotChange": lo_data[key].attributes["qfSynchXotChange"] || "3",
+                                    "synchWebpage": lo_data[key].attributes["qfSynchWebpage"] || "3",
+                                    "synchMCQ": lo_data[key].attributes["qfSynchMCQ"] || "1",
+                                    "synchMCQOption": lo_data[key].attributes["qfSynchMCQOption"] || "4",
+                                    "synchSlides": lo_data[key].attributes["qfSynchSlides"] || "1",
+                                    "synchSlide": lo_data[key].attributes["qfSynchSlide"] || "6",
+                                    "synchTextPlus": lo_data[key].attributes["qfSynchTextPlus"] || "3",
+                                    "synchEmpty": lo_data[key].attributes["qfSynchEmpty"] || "3",
+                                    "synchCue": lo_data[key].attributes["qfSynchCue"] || "3",
+                                };
+                                break;
+                            case 'panel': //of mediaLesson
+                                parameters = {
+                                    "synchXot": lo_data[key].attributes["qfSynchXot"] || "1",
+                                    "synchXotChange": lo_data[key].attributes["qfSynchXotChange"] || "3",
+                                    "synchWebpage": lo_data[key].attributes["qfSynchWebpage"] || "3",
+                                    "synchMCQ": lo_data[key].attributes["qfSynchMCQ"] || "1",
+                                    "synchMCQOption": lo_data[key].attributes["qfSynchMCQOption"] || "4",
+                                    "synchSlides": lo_data[key].attributes["qfSynchSlides"] || "1",
+                                    "synchSlide": lo_data[key].attributes["qfSynchSlide"] || "6",
+                                    "synchTextPlus": lo_data[key].attributes["qfSynchTextPlus"] || "3",
+                                    "synchEmpty": lo_data[key].attributes["qfSynchEmpty"] || "3",
+                                    "synchMediaPlus": lo_data[key].attributes["qfSynchMediaPlus"] || "3",
+                                    "synchCue": lo_data[key].attributes["qfSynchCue"] || "3",
+                                };
+                                break;
+                        }
+                        // Show a confirm dialog with a custom message
+                        if (confirm("The specified nodes will be automatically generated with their default values. Proceed?")) {
+                            // User clicked "OK"
+                            try {
+                                await quick_fill(event, type, parameters);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try using the quick fill feature again.");
+                                html.prop('disabled', false);
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            // User clicked "Cancel"
+                            console.log("Quick fill canceled by the user.");
+                            html.prop('disabled', false);
+                        }
+
+                    });
+                break;
             case 'autotranslatebutton':
-                var atr_button_id = 'ishButton_' + form_id_offset;
+                var atr_button_id = 'atrButton_' + form_id_offset;
                 form_id_offset++;
                 html = $('<button>')
                     .attr('id', atr_button_id)

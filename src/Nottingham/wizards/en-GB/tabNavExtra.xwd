@@ -16,6 +16,13 @@
 		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
 		<textPos label="Position" options="Top,Above Topic List" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
 	</txtGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfTopic label="Number of Topics" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfNestedTab label="Number of Tabs per Topic" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfNestedPage label="Number of Pages per Tab" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
 	<rememberTab label="Stay on Current Tab" type="CheckBox" optional="true" tooltip="Display the currently viewed tab when changing between topics containing tabs of the same name"/>
 	

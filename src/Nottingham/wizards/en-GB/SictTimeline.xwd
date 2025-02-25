@@ -14,6 +14,15 @@
           <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
         </image>
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+
+        <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+           <qfTimeLineText label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+           <qfTimelineimage label="Number of Image Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+           <qfTimelinevideo label="Number of Video Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+           <qfTimeLineAudio label="Number of Audio Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+           <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
           <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>

@@ -45,6 +45,11 @@
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+          <qfGroup label="Number of Groups" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
+          <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
 	<exploreTxt label="Explore Instructions" type="TextInput" wysiwyg="true" language="true"/>
 	<showMeTxt2 label="Show Me Instructions" type="TextInput" wysiwyg="true" language="true"/>
 	<showMeTxt label="Show Me (Button) Instructions" type="TextInput" wysiwyg="true" language="true"/>

@@ -43,6 +43,11 @@
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfOptionXQ label="Number of Answers" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
 	<AIGroup type="group" label="AI" optional="true">
           <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated words will follow. More complex subjects may result in less consistent content. For this interactivity, it is recommended to reference countable things when defining the subjects. Examples: 'Provincial capital cities in the Netherlands', 'Rivers in Europe'." optional="true"/>
@@ -60,7 +65,7 @@
     </AIGroup>
 
     <newNodes>
-        <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
+        <optionXQ><![CDATA[<optionXQ answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
     </newNodes>
 </topXQ>
 

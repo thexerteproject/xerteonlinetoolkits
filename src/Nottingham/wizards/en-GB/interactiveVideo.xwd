@@ -51,6 +51,15 @@
             <aiButton type="aibutton" optional="true"/>
         </AIGroup>
 
+        <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+            <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+            <qfIvSynchXot label="Number of Embeded XOT Projects" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfIvSynchXotChange label="Number of Pages per Embeded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
 			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
@@ -162,7 +171,7 @@
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 
 		<newNodes>
-			<ivSynchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
+			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
 
 	</ivSynchMCQ>
@@ -203,7 +212,7 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
 		<newNodes>
-			<ivSynchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
+			<ivSynchXotChange><![CDATA[<ivSynchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
 		</newNodes>
 
 	</ivSynchXot>

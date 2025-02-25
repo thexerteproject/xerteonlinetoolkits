@@ -31,16 +31,34 @@
 	<downloadTxt label="Download Button Label" type="TextInput" language="true" />
 	<nextTxt label="Next Button Label" type="TextInput" language="true" />
 	<prevTxt label="Previous Button Label" type="TextInput" language="true" />
+
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfPage label="Number of Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
     <newNodes>
       <page><![CDATA[<page name="Enter title here" text="Enter text for the nested page here" />]]></page>
 	</newNodes>
+
 
   </documentation>
 
   <page menuItem="Nested Page" icon="icFolderPage">
     <name label="Title" type="TextInput" wysiwyg="true"/>
 	<text label="Text" type="TextArea" height="120"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfMedia label="Number of Images" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfSelectlist label="Number of Lists" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfSelectitem label="Number of Options per List" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
+      <qfDescription label="Number of Descriptions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfTableDoc label="Number of Tables" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfCheckbox label="Number of Checkboxes" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfTextArea label="Number of Text Areas" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfTextBox label="Number of Text Boxes" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text here"/>]]></section>
@@ -60,6 +78,18 @@
     <text label="Text" type="TextArea" height="100"/>
 	
 	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfMedia label="Number of Images" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfSelectlist label="Number of Lists" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfSelectitem label="Number of Options per List" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
+      <qfDescription label="Number of Descriptions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfTableDoc label="Number of Tables" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfCheckbox label="Number of Checkboxes" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfTextArea label="Number of Text Areas" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfTextBox label="Number of Text Boxes" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <line><![CDATA[<line />]]></line>

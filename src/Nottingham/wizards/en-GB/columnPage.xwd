@@ -17,6 +17,11 @@
       <nestedColumnPage><![CDATA[<nestedColumnPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedColumnPage>
     </newNodes>
 
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfNestedColumnPage label="Number of Columns" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
      	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
      	<subjects label="Column Subjects" type="TextInput" tooltip="List each column subject separated by a comma (,). Column subjects may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter column subjects here. E.g. Subject 1, Subject 2..." optional="true"/>

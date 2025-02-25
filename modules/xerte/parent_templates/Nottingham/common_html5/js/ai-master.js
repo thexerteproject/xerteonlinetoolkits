@@ -24,7 +24,7 @@ function build_xerte_xml(xml_tree, parent_name, parser){
 }
 
 //changes ai api result into data usable by xerte, also adds it to the xerte data tree
-/*function ai_to_xerte_content(data, key, pos, tree) {
+/*function xml_to_xerte_content(data, key, pos, tree) {
     $('body').css("cursor", "default");
     var parser = new DOMParser();
     debugger
@@ -64,7 +64,7 @@ function build_xerte_xml(xml_tree, parent_name, parser){
     }
 }*/
 
-function ai_to_xerte_content(data, key, pos, tree, realParent) {
+function xml_to_xerte_content(data, key, pos, tree, realParent) {
     try {
         $('body').css("cursor", "default");
         var parser = new DOMParser();

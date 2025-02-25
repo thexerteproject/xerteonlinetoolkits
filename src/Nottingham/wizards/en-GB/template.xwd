@@ -559,6 +559,15 @@
           <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
         </image>
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+
+        <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+           <qfTimeLineText label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfTimelineimage label="Number of Image Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfTimelinevideo label="Number of Video Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfTimeLineAudio label="Number of Audio Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
           <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
@@ -845,6 +854,12 @@
          <sortOrder label="Sort order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list acoording to this criteria. Only has meaning for 'Listed' display mode"/>
      </listedModeOptions>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfInteraction label="Number of Source Interactions" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfInteractionBlock label="Number of Interaction Blocks per Source Interaction" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
       <newNodes>
         <interaction><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         xAxisLabelBarAnswers = "Answers given"
@@ -1069,6 +1084,10 @@
 	<link label="Hide list" type="Checkbox" optional="true" defaultValue="false" tooltip="Enable or disable the list"/>
 
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="320,240" optional="true" deprecated="This property is deprecated."/>
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <hotspotGroup><![CDATA[<hotspotGroup name="Enter Hotspot Group Title Here" text="Description for the hotspot"/>]]></hotspotGroup>
@@ -1171,6 +1190,11 @@
     <name label="Group Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
 	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
@@ -1210,6 +1234,11 @@
          <aiButton type="aibutton" optional="true"/>
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+        <qfSynchPoint label="Number of Slides" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+        <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <synchPoint><![CDATA[<synchPoint name="Enter Slide Title" text="Content for the slide" align="Top" synch="0"/>]]></synchPoint>
@@ -1823,6 +1852,11 @@
       <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfNodeButton label="Number of Buttons" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <button><![CDATA[<button name="Show More" text="Feedback"/>]]></button>
     </newNodes>
@@ -2145,6 +2179,12 @@
       <category><![CDATA[<category name="Enter Category Name Here"/>]]></category>
     </newNodes>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfCategory label="Number of Categories" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfItem label="Number of Items per Category" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
   	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
             <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
             <subject label="Categories" type="TextInput" tooltip="List each category separated by a comma (,). Categories may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter categories here. E.g. Category 1, Category 2..." optional="true"/>
@@ -2380,6 +2420,11 @@
     <newNodes>
       <nestedColumnPage><![CDATA[<nestedColumnPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedColumnPage>
     </newNodes>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfNestedColumnPage label="Number of Columns" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
      	<aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
@@ -2856,6 +2901,11 @@
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+          <qfWordAndHin label="Number of Items" type="TextInput" wysiwyg="true" defaultValue="6" optional="true"/>
+          <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Label" text="Enter clue here" wordAnswer="Enter word here"/>]]></wordAndHint>
     </newNodes>
@@ -3125,6 +3175,16 @@
         <applySuggestionsButton type="applysuggestionbutton" optional="true"/>
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </autoSuggestionGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfResultStep label="Number of Result Steps" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfInfoStep label="Number of Info Steps" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfSliderStep label="Number of Slider Steps" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfSliderStepOption label="Number of Options per Slider Step" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+      <qfMcqStep label="Number of MCQ Steps" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfMcqStepOption label="Number of Answers per MCQ Step" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
@@ -3426,6 +3486,11 @@
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfDialogStep label="Number of Dialog Steps" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <dialogStep><![CDATA[<dialogStep name="Question - tree label" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
     </newNodes>
@@ -3552,6 +3617,11 @@
 		<sound label="Audio File" type="Media" defaultValue="Select an Audio File" optional="true"/>
 	</tt>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfNestedDictation label="Number of Sentences" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <nestedDictation><![CDATA[<nestedDictation name="Sentence" prompt="Enter Text Here" audio="Select an Audio File" answer="Enter Answer Here"/>]]></nestedDictation>
     </newNodes>
@@ -3676,10 +3746,16 @@
 	<downloadTxt label="Download Button Label" type="TextInput" language="true"/>
 	<nextTxt label="Next Button Label" type="TextInput" language="true"/>
 	<prevTxt label="Previous Button Label" type="TextInput" language="true"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfPage label="Number of Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
     <newNodes>
       <page><![CDATA[<page name="Enter title here" text="Enter text for the nested page here" />]]></page>
 	</newNodes>
+
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -3775,6 +3851,18 @@
     </pageHeaderGroup></documentation><page menuItem="Nested Page" icon="icFolderPage">
     <name label="Title" type="TextInput" wysiwyg="true"/>
 	<text label="Text" type="TextArea" height="120"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfMedia label="Number of Images" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfSelectlist label="Number of Lists" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfSelectitem label="Number of Options per List" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfDescription label="Number of Descriptions" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfTableDoc label="Number of Tables" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfCheckbox label="Number of Checkboxes" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfTextArea label="Number of Text Areas" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfTextBox label="Number of Text Boxes" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text here"/>]]></section>
@@ -3792,6 +3880,18 @@
     <text label="Text" type="TextArea" height="100"/>
 	
 	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfMedia label="Number of Images" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfSelectlist label="Number of Lists" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfSelectitem label="Number of Options per List" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfDescription label="Number of Descriptions" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfTableDoc label="Number of Tables" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfCheckbox label="Number of Checkboxes" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfTextArea label="Number of Text Areas" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfTextBox label="Number of Text Boxes" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <line><![CDATA[<line />]]></line>
@@ -3998,6 +4098,11 @@
 	<labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfHotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
     <newNodes>
 	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
@@ -4235,6 +4340,11 @@
           <aiButton type="aibutton" optional="true"/>
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+          <qfCard label="Number of Cards" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+          <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
 
     <newNodes>
@@ -5134,6 +5244,11 @@
 	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
 	<btnLabel label="Submit Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfQHotSpot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
 	  <QHotSpot><![CDATA[<QHotSpot name="Hotspot" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>
     </newNodes>
@@ -5259,6 +5374,11 @@
 	
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
 	  <flexhotspot><![CDATA[<flexhotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
@@ -5498,7 +5618,7 @@
 	</viewGroup>
 	
     <newNodes>
-      <case><![CDATA[<imgGroup name="Case Name" txt="Enter text here"></imgGroup>]]></case>
+      <case><![CDATA[<case name="Case Name" txt="Enter text here"></case>]]></case>
 	</newNodes>
 
     <AIGroup type="group" label="AI" optional="true">
@@ -5518,6 +5638,13 @@
          <aiButton type="aibutton" optional="true"/>
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+         <qfCase label="Number of Cases" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+         <qfImgSeries label="Number of Series Pages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+         <qfSingleImg label="Number of Single Image Pages" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+         <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -5852,6 +5979,11 @@
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+          <qfGroup label="Number of Groups" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+          <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
 	<exploreTxt label="Explore Instructions" type="TextInput" wysiwyg="true" language="true"/>
 	<showMeTxt2 label="Show Me Instructions" type="TextInput" wysiwyg="true" language="true"/>
 	<showMeTxt label="Show Me (Button) Instructions" type="TextInput" wysiwyg="true" language="true"/>
@@ -6118,6 +6250,15 @@
             <aiButton type="aibutton" optional="true"/>
         </AIGroup>
 
+        <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+            <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+            <qfIvSynchXot label="Number of Embeded XOT Projects" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfIvSynchXotChange label="Number of Pages per Embeded XOT Project" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
 			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
@@ -6220,7 +6361,7 @@
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 
 		<newNodes>
-			<ivSynchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
+			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
 
 	</ivSynchMCQ><ivSynchMCQOption menuItem="Answer" icon="icBullet" remove="true">
@@ -6257,7 +6398,7 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
 		<newNodes>
-			<ivSynchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
+			<ivSynchXotChange><![CDATA[<ivSynchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
 		</newNodes>
 
 	</ivSynchXot><ivSynchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
@@ -6310,6 +6451,12 @@
       <aiButton type="aibutton" optional="true"/>
       <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfInvQuestion label="Number of Questions" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfInvOption label="Number of Answers per Question" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <invQuestion><![CDATA[<invQuestion name="Question" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
@@ -6660,6 +6807,11 @@
     <cols label="Number of Columns" type="NumericStepper" min="1" max="5" step="1" defaultValue="3"/>
     <height label="Link Height" options="Small,Medium,Large" type="ComboBox" data="55,80,105" defaultValue="80" width="100" deprecated="This property is deprecated. Height is now set automatically."/>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfLink label="Number of Links" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <link><![CDATA[<link name="Link title" text="Link Description" url="Link URL" target="new"/>]]></link>
     </newNodes>
@@ -6772,6 +6924,11 @@
 		<hicolback label="Background Colour" type="ColourPicker" optional="true" defaultValue="0xEEEEEE" tooltip="The background colour of the button"/>
 		<hicolHover label="Hover Background Colour" type="ColourPicker" optional="true" defaultValue="0xCCCCCC" tooltip="The colour of the button when the mouse is hovering over the button"/>
 	</btnColours>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+         <qfListItem label="Number of List Items" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+         <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <listItem><![CDATA[<listItem name="Enter Item Title Here" text="Enter text for the list item here"/>]]></listItem>
@@ -7129,6 +7286,11 @@
           <aiButton type="aibutton" optional="true"/>
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+          <qfOption label="Number of Options" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+          <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <option><![CDATA[<option name="Answer" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
@@ -7504,6 +7666,12 @@
 
 		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
+
+	    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+          <qfPanel label="Number of Panels" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+          <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
@@ -7619,6 +7787,20 @@
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
 		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true"/>
 
+	    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+            <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchMCQ label="Number of MCQ Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchMCQOption label="Number of Answers per MCQ Page" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+            <qfSynchSlides label="Number of Slideshows" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchSlide label="Number of Slides per Slideshow" type="TextInput" wysiwyg="true" defaultValue="6" optional="true"/>
+            <qfSynchTextPlus label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchEmpty label="Number of Clear Panels" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchCue label="Number of Pause/Jump Points" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
 			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
@@ -7635,6 +7817,22 @@
 	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
 
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
+
+        <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+            <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchMCQ label="Number of MCQ Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchMCQOption label="Number of Answers per MCQ Page" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+            <qfSynchSlides label="Number of Slideshows" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchSlide label="Number of Slides per Slideshow" type="TextInput" wysiwyg="true" defaultValue="6" optional="true"/>
+            <qfSynchTextPlus label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchEmpty label="Number of Clear Panels" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchMediaPlus label="Number of Media Pages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfSynchCue label="Number of Pause/Jump Points per Media Page" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
 			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
@@ -7880,6 +8078,11 @@
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<backurl label="Card Back Image" type="Media" optional="true"/>
 	<text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfMatchItem label="Number of Items" type="TextInput" wysiwyg="true" defaultValue="6" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
@@ -8493,6 +8696,11 @@
 		<collapsible label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true" condition="type=='Acc'"/>
 	</panelInfo>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+       <qfNavPage label="Number of Columns" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+       <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
         <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
         <subjects label="Page Subjects" type="TextInput" tooltip="List the subject for each page separated by a comma (,). tab subjects may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter page subjects here. E.g. Subject 1, Subject 2..." optional="true"/>
@@ -8804,6 +9012,13 @@
         <aiButton type="aibutton" optional="true"/>
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+        <qfOpinionClass label="Number of Classes" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+        <qfOpinionQuestion label="Number of Questions per Class" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+        <qfOpinionOption label="Number of Options per Question" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+        <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
       <newNodes>
         <opinionClass><![CDATA[<opinionClass title="Title used on graph" name="Class"/>]]></opinionClass>
@@ -9186,6 +9401,14 @@
 	</play>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0"/>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfMovie label="Number of Video Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfSound label="Number of Sound Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfImage label="Number of Image Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfMpText label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
 	  <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
       <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound" mediaW="Medium" align="Right"></sound>]]></sound>
@@ -9480,6 +9703,12 @@
       <aiButton type="aibutton" optional="true"/>
       <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <numberOfQuestions label="Number of Questions" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <numberOfAnswers label="Number of Answers" type="TextInput" tooltip="Number of answers generated respective to each question. For example, '5' will generate five answers per question." wysiwyg="true" defaultValue="4" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <question><![CDATA[<question prompt="Enter question" name="Question" type="Single Answer" />]]></question>
@@ -10843,6 +11072,13 @@
 		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
 		<textPos label="Position" options="Top,Above Topic List" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
 	</txtGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfTopic label="Number of Topics" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfNestedTab label="Number of Tabs per Topic" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfNestedPage label="Number of Pages per Tab" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
 	<rememberTab label="Stay on Current Tab" type="CheckBox" optional="true" tooltip="Display the currently viewed tab when changing between topics containing tabs of the same name"/>
 	
@@ -11796,6 +12032,11 @@
           <aiButton type="aibutton" optional="true"/>
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+         <qfSentence label="Number of Sentences" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+         <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
     <markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
@@ -12133,6 +12374,11 @@
     <nextBtnTip label="Next Button Tip" type="textInput" divider="true" language="true"/>	
     <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfThumbnailImage label="Number of Thumbnails" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <thumbnailImage><![CDATA[<thumbnailImage name="Image" text="Content for the pane" align="Top" url="Select an Image" linktarget="none" link="Link URL" tip=""/>]]></thumbnailImage>
     </newNodes>
@@ -12275,6 +12521,11 @@
         <aiButton type="aibutton" optional="true"/>
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+        <qfTimelinedate label="Number of Items" type="TextInput" wysiwyg="true" defaultValue="6" optional="true"/>
+        <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
 
@@ -12521,6 +12772,11 @@
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true"/>
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfOptionXQ label="Number of Answers" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
 	<AIGroup type="group" label="AI" optional="true">
           <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
           <subject label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated words will follow. More complex subjects may result in less consistent content. For this interactivity, it is recommended to reference countable things when defining the subjects. Examples: 'Provincial capital cities in the Netherlands', 'Rivers in Europe'." optional="true"/>
@@ -12538,7 +12794,7 @@
     </AIGroup>
 
     <newNodes>
-        <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
+        <optionXQ><![CDATA[<optionXQ answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
     </newNodes>
 <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -12642,6 +12898,11 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
 	
 	<timedText label="Timed Text File" type="Media" optional="true"/>
+
+    <QFGroup type="group" label="Quick Fill" tooltip="Generate a blank template based on your specifications." optional="true">
+      <qfNestedSynch label="Number of Synch Points" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <nestedSynch><![CDATA[<nestedSynch text="Enter text here" synch="0" name="Synch point" />]]></nestedSynch>

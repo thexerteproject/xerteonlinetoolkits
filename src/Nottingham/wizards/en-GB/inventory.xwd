@@ -55,6 +55,12 @@
       <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfInvQuestion label="Number of Questions" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfInvOption label="Number of Answers per Question" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <invQuestion><![CDATA[<invQuestion name="Question" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
     </newNodes>
