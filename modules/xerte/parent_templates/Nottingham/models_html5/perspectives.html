@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	
@@ -46,7 +46,6 @@
 						var maxImgSize = [$this.width(), $this.height() - $this.find(".thumbTitle").height() - 5];
 						if ($this.find(".thumbMedia img").length > 0) {
 							x_scaleImg($this.find(".thumbMedia img")[0], maxImgSize[0], maxImgSize[1], true, false, false, true);
-						} else if ($this.find(".thumbMedia video").length > 0) {
 						}
 					});
 				}
@@ -55,7 +54,13 @@
 				
 				// trigger load of main content again so everything will rescale
 				if ($("#mainInfoHolder").data("index") != "undefined") {
-					$("#thumbHolder .thumbBox").filter(function() { return $(this).data("index") == $("#mainInfoHolder").data("index")}).trigger("click");
+					if (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") == "lightbox") {
+						if (parent.window.$.featherlight.current()) {
+							parent.window.$.featherlight.current().close();
+						}
+					} else {
+						$("#thumbHolder .thumbBox").filter(function() { return $(this).data("index") == $("#mainInfoHolder").data("index")}).trigger("click");
+					}
 				}
 
 				$(".popcornmedia .embed").each(function(){
@@ -334,8 +339,11 @@
 					var mediaW = thisData.getAttribute("mediaW"),
 						$media;
 					mediaW = x_browserInfo.mobile == true ? 0.8 : mediaW == "Small" ? 0.2 : mediaW == "Large" ? 0.6 : mediaW == "Full" ? 0.8 : 0.4;
+					if (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") == "lightbox") {
+						mediaW = 0.9;
+					}
 					
-					if (chgInfo == true) {
+					if (chgInfo == true || (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") == "lightbox")) {
 						$("#thumbHolder .current").removeClass("current");
 						
 						var showNew = function() {
@@ -366,7 +374,7 @@
 								
 							} else if (thisData.nodeName == "sound") {
 								var src = x_templateLocation + "common_html5/sound.jpg",
-									alt = this.getAttribute("tooltip") != undefined ? this.getAttribute("tooltip") : x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
+									alt = thisData.getAttribute("tooltip") != undefined ? thisData.getAttribute("tooltip") : x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
 								
 								if (thisData.getAttribute("img") != undefined && thisData.getAttribute("img") != "") {
 									src = x_evalURL(thisData.getAttribute("img"));
@@ -486,7 +494,7 @@
 								$mainInfoHolder.fadeIn();
 							}
 							
-							if (x_currentPageXML.getAttribute("highlight") == "true") {
+							if (x_currentPageXML.getAttribute("highlight") == "true" && (x_currentPageXML.getAttribute("thumbPos") != "grid" || x_currentPageXML.getAttribute("target") != "lightbox")) {
 								$("#thumbHolder .current").removeClass("current");
 								$this.addClass("current");
 							}
