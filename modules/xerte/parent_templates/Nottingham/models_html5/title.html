@@ -22,6 +22,8 @@
 	var title = new function() {
         // function called every time the page is viewed after it has initially loaded
         this.pageChanged = function () {
+            this.responsiveTitle();
+
             if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined || x_currentPageXML.getAttribute("hideIcon") != undefined) {
                 if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined && x_currentPageXML.getAttribute("hideTitleTxt") == "true") {
                     $x_headerBlock.addClass('hideTitleTxt');
@@ -51,11 +53,7 @@
 
         // function called every time the size of the LO is changed
         this.sizeChanged = function () {
-            if (x_params.responsive == "true" && x_fillWindow == true) {
-                this.responsiveTitle();
-            } else {
-                $(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
-            }
+            this.responsiveTitle();
 
             // resize media
             if ($(".pageImg img").length > 0) {
@@ -138,7 +136,7 @@
 
                 if (fileExt == "mp3") {
                     // audio
-                    $mediaHolder = $('<div id="mediaHolder" class="pageAudio"><div class="panel"><div id="pageAudio"></div></div>');
+                    $mediaHolder = $('<div id="mediaHolder" class="pageAudio"><div class="panel"><div id="pageAudio"></div></div></div>');
 
                     // add an accompanying image above the audio player
                     if (audioImg != null && audioImg != "") {
@@ -154,7 +152,7 @@
                     $mediaHolder = $('<div id="mediaHolder" class="pageImg"><div class="panel"><img' + alt + '/></div></div>');
 
                 } else {
-                    $mediaHolder = $('<div id="mediaHolder" class="pageVideo"><div class="panel"><div id="pageVideo"></div></div>');
+                    $mediaHolder = $('<div id="mediaHolder" class="pageVideo"><div class="panel"><div id="pageVideo"></div></div></div>');
 
                     if (url.substr(0,7) === "<iframe") {
                         $mediaHolder.addClass("iframe");
@@ -219,11 +217,7 @@
 
             }
 
-            if (x_params.responsive == "true" && x_params.displayMode != "default" && !$.isArray(x_params.displayMode)) {
-                this.responsiveTitle();
-            } else {
-                $titlePageTxt.css("font-size", x_currentPageXML.getAttribute("size") + "pt");
-            }
+            this.responsiveTitle();
 
             if (x_currentPageXML.getAttribute("titleTextColour") != undefined) {
                 $titlePageTxt.css("color", x_currentPageXML.getAttribute("titleTextColour").replace("0x", "#"));
@@ -253,7 +247,8 @@
         }
 
         this.responsiveTitle = function () {
-            if (window.innerWidth >= 768 && x_fillWindow == true) {
+            if (XENITH.ACCESSIBILITY.checkResponsiveTxt() && window.innerWidth >= 768) {
+                // responsive text is on & the project isn't showing at a fixed size
                 $(".titlePageTxt").css("font-size", "");
             } else {
                 $(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
@@ -282,7 +277,7 @@
             const $mediaHolder = $("#mediaHolder")
             const offset = $("#mediaHolder").hasClass("pageAudio") ? x_audioBarH : 0;
 
-            // max width is 40% of page width or the original width of the image (whichever is smaller)
+            // max width is 48% of page width or the original width of the image (whichever is smaller)
             const maxW = ($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($("#mediaHolder .panel").outerWidth(true) - $("#mediaHolder .panel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
             // max-height is 100% of page height or the original height of the image (whichever is smaller)
             const maxH = x_getAvailableHeight([$mediaHolder, $mediaHolder.find(".panel")], [offset], true);

@@ -710,9 +710,9 @@ x_projectDataLoaded = function(xmlData) {
         }
     }
 
-	// url parameter to turn responsive on / off
-	if (x_urlParams.responsive != undefined && (x_urlParams.responsive == "true" || x_urlParams.responsive == "false")) {
-		x_params.responsive = x_urlParams.responsive;
+	// url parameter to turn responsive text on / off
+	if (x_urlParams.responsiveTxt != undefined && (x_urlParams.responsiveTxt == "true" || x_urlParams.responsiveTxt == "false")) {
+		x_params.responsive = x_urlParams.responsiveTxt;
 	}
 
 	// url parameters to change default theme used
@@ -723,10 +723,15 @@ x_projectDataLoaded = function(xmlData) {
 	// url parameters to change to remove background images or use a special theme selected via the accessibility options
 	// these will only be present if this is a standalone page opening in a new window or lightbox - ensure that if the parent project that opened this was using a special theme / no bg images then this should too
 	if (x_urlParams.specialTheme != undefined) {
-		XENITH.COLOURCHANGER.specialTheme = x_urlParams.specialTheme;
+		XENITH.ACCESSIBILITY.specialTheme = x_urlParams.specialTheme;
 	}
 	if (x_urlParams.removeBg != undefined) {
-		XENITH.COLOURCHANGER.removeBg = x_urlParams.removeBg;
+		XENITH.ACCESSIBILITY.removeBg = x_urlParams.removeBg;
+	}
+	if (x_params.responsive == "true") {
+		XENITH.ACCESSIBILITY.responsiveTxt = true;
+	} else {
+		XENITH.ACCESSIBILITY.responsiveTxt = null;
 	}
 	
 	// Setup nr of pages for tracking
@@ -1133,13 +1138,7 @@ function x_setUp() {
 		$x_nextBtn		= $("#x_nextBtn");
 		$x_background	= $("#x_background");
 
-		if (x_params.responsive == "true") {
-			// Use default font size
-			$x_body.css("font-size", "10pt");
-		}
-		else {
-			$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
-		}
+		x_setProjectTxtSize();
 
 		if (x_params.authorSupport == "true") {
 			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
@@ -1211,13 +1210,14 @@ function x_desktopSetUp() {
 				}
 
 				if (x_fillWindow == false) {
-					
+					// maximise
 					x_setFillWindow();
 					
 				} else {
-					for (var i=0; i<x_responsive.length; i++) {
-						$x_mainHolder.removeClass("x_responsive");
-						$(x_responsive[i]).prop("disabled", true);
+					// minimise
+					if (XENITH.ACCESSIBILITY.responsiveTxt === true) {
+						// turn off responsive text
+						XENITH.ACCESSIBILITY.changeResponsiveTxt(false, false);
 					}
 
 					// minimised size to come from display size specified in xml or url param
@@ -1377,7 +1377,7 @@ function x_KeepAlive()
 var setUpComplete = false;
 function x_continueSetUp1() {
 	if (setUpComplete == false) {
-		XENITH.COLOURCHANGER.init();
+		XENITH.ACCESSIBILITY.init();
 
 		if (XENITH.PAGEMENU.menuPage) {
 			$x_pageNo.hide();
@@ -1719,7 +1719,7 @@ function x_continueSetUp1() {
 		if (x_params.pageCounter == "true") {
 			$x_pageNo.remove();
 		}
-		XENITH.COLOURCHANGER.buildBtn();
+		XENITH.ACCESSIBILITY.buildBtn();
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
 		// it's overridden by logo in theme folder
@@ -2267,6 +2267,16 @@ function x_continueSetUp2() {
 	}
 }
 
+// function sets the default text size
+function x_setProjectTxtSize() {
+	if (XENITH.ACCESSIBILITY.responsiveTxt === true) {
+		// Use default font size
+		$x_body.css("font-size", "10pt");
+	} else {
+		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
+	}
+}
+
 // function checks whether a media file exists
 function x_checkMediaExists(src, callback) {
 	$.get(src)
@@ -2565,10 +2575,11 @@ function x_changePage(x_gotoPage, addHistory) {
 	} else if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'new') {
 		let url = window.location.href.split('#')[0];
 
-		// is project being shown with a special theme or no bg images (selected via accessibility options)?
+		// is project being shown with any of the accessibility options changed?
 		// if so, make sure page opening in new window also keeps this theme
-		url += XENITH.COLOURCHANGER.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.COLOURCHANGER.specialTheme : "";
-		url += XENITH.COLOURCHANGER.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.COLOURCHANGER.removeBg : "";
+		url += XENITH.ACCESSIBILITY.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.ACCESSIBILITY.specialTheme : "";
+		url += XENITH.ACCESSIBILITY.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.ACCESSIBILITY.removeBg : "";
+		url += XENITH.ACCESSIBILITY.responsiveTxt != undefined ? (url.indexOf("?") > -1 ? "&" : "?") + "responsiveTxt=" + XENITH.ACCESSIBILITY.responsiveTxt : "";
 
 		url += '#' + pageHash;
 		window.open(url);
@@ -2581,10 +2592,11 @@ function x_changePage(x_gotoPage, addHistory) {
 	} else {
 		let url = window.location.href.split('#')[0];
 
-		// is project being shown with a special theme or no bg images (selected via accessibility options)?
+		// is project being shown with any of the accessibility options changed?
 		// if so, make sure page opening in lightbox also keeps this theme
-		url += XENITH.COLOURCHANGER.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.COLOURCHANGER.specialTheme : "";
-		url += XENITH.COLOURCHANGER.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.COLOURCHANGER.removeBg : "";
+		url += XENITH.ACCESSIBILITY.specialTheme !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "specialTheme=" + XENITH.ACCESSIBILITY.specialTheme : "";
+		url += XENITH.ACCESSIBILITY.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.ACCESSIBILITY.removeBg : "";
+		url += XENITH.ACCESSIBILITY.responsiveTxt != undefined ? (url.indexOf("?") > -1 ? "&" : "?") + "responsiveTxt=" + XENITH.ACCESSIBILITY.responsiveTxt : "";
 
 		url += '#' + pageHash;
 		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
@@ -3019,7 +3031,7 @@ function x_changePageStep3() {
         }
 
 		// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
-		XENITH.COLOURCHANGER.disableBespokeCSS();
+		XENITH.ACCESSIBILITY.disableBespokeCSS();
 
 		x_focusPageContents(false);
 
@@ -3445,7 +3457,7 @@ function x_pageLoaded() {
 	}
 
 	// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
-	XENITH.COLOURCHANGER.disableBespokeCSS();
+	XENITH.ACCESSIBILITY.disableBespokeCSS();
 
 	XENITH.VARIABLES.handleSubmitButton();
 
@@ -3812,7 +3824,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
 					if (type == "menu") {
 						XENITH.PAGEMENU.build($("#tocMenuDialog"));
 					} else if (type == "colourChanger") {
-						XENITH.COLOURCHANGER.build($("#colourChangerDialog"));
+						XENITH.ACCESSIBILITY.build($("#colourChangerDialog"));
 					}
 
                     x_setDialogSize($x_popupDialog, position);
@@ -4013,11 +4025,8 @@ function x_insertText(node, exclude, list, data) {
 function x_setFillWindow(updatePage) {
 	x_fillWindow = true;
 
-    if (x_params.responsive == "true") {
-        for (var i = 0; i < x_responsive.length; i++) {
-			$x_mainHolder.addClass("x_responsive");
-            $(x_responsive[i]).prop("disabled", false);
-        }
+    if (XENITH.ACCESSIBILITY.responsiveTxt === true && updatePage !== false) {
+		XENITH.ACCESSIBILITY.changeResponsiveTxt(true, false);
     }
 
     $x_mainHolder.css({
@@ -5705,7 +5714,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				if (x_params.sbGlossary == 'true' && x_params.glossary != undefined) {
 					x_sideBarBtns.push('glossary');
 				}
-				if (x_params.sbAccessibility == 'true' && !XENITH.COLOURCHANGER.hidden) {
+				if (x_params.sbAccessibility == 'true' && !XENITH.ACCESSIBILITY.hidden) {
 					x_sideBarBtns.push('accessibility');
 				}
 
@@ -6610,12 +6619,17 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 })(jQuery, XENITH || {});
 
 
-// ***** ACCESSIBILITY OPTIONS / COLOUR CHANGER *****
-var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
+// ***** ACCESSIBILITY OPTIONS *****
+// Controls the dialog / lightbox that displays end-user accessibility options:
+// - Accessibility themes selection
+// - Remove background images
+// - Turn off responsive text
+var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 	// declare global variables
 	let hidden = false;
 	let specialTheme = false;
 	let removeBg = false;
+	let responsiveTxt = null;
 
 	// declare local variables
 	// list of available themes
@@ -6630,9 +6644,9 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 
 	// creates special_theme_css & special_theme_responsive_css styles tag in HEAD ready for any future theme changes
 	function init() {
-		XENITH.COLOURCHANGER.hidden = x_params.accessibilityHide === 'true' ? true : false;
+		XENITH.ACCESSIBILITY.hidden = x_params.accessibilityHide === 'true' ? true : false;
 
-		if (!XENITH.COLOURCHANGER.hidden) {
+		if (!XENITH.ACCESSIBILITY.hidden) {
 			// insert in HEAD - either at end or before any bespoke project CSS
 			const linkHtml =`<link rel="stylesheet" href="" type="text/css" id="special_theme_css" disabled="">
 			<link rel="stylesheet" href="" type="text/css" id="special_theme_responsive_css" disabled="">`;
@@ -6648,14 +6662,14 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 				x_dialogInfo.push({type: 'colourChanger', built: false});
 			}
 
-			if (XENITH.COLOURCHANGER.specialTheme !== false) {
+			if (XENITH.ACCESSIBILITY.specialTheme !== false) {
 				// a special theme is already set
 				// this must be a standalone page opening in a new window or lightbox where the parent project that opened this had a special theme already applied
 				// make sure this immediately uses the special theme
-				switchTheme(XENITH.COLOURCHANGER.specialTheme);
+				switchTheme(XENITH.ACCESSIBILITY.specialTheme);
 			}
 
-			if (XENITH.COLOURCHANGER.removeBg) {
+			if (XENITH.ACCESSIBILITY.removeBg) {
 				// remove background images is already on
 				// this must be a standalone page opening in a new window or lightbox where the parent project that opened this had no background images forced
 				// make sure this immediately does the same
@@ -6666,7 +6680,7 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 
 	// accessibility options button on toolbar - set up or remove if not required
 	function buildBtn() {
-		if (!XENITH.COLOURCHANGER.hidden) {
+		if (!XENITH.ACCESSIBILITY.hidden) {
 			const accessibilityIcon = x_btnIcons.filter(function(icon){return icon.name === 'accessibility';})[0];
 
 			$x_colourChangerBtn
@@ -6689,7 +6703,7 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 								{ variant: 'lightbox' + (x_browserInfo.mobile != true ? 'Medium' : 'Auto') }
 							);
 
-							XENITH.COLOURCHANGER.build($("#colourChangerLightBox"));
+							XENITH.ACCESSIBILITY.build($("#colourChangerLightBox"));
 
 						} else {
 							$.featherlight(
@@ -6779,7 +6793,7 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 
 		// add radio buttons & bg checkbox
 		const $colourChangerOptions = $('#colourChangerOptions');
-		let checked = XENITH.COLOURCHANGER.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.COLOURCHANGER.specialTheme);
+		let checked = XENITH.ACCESSIBILITY.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.ACCESSIBILITY.specialTheme);
 
 		for (let i=0; i<filterMap.length; i++) {
 			const $radio = $('<div class="optionGroup"></div>');
@@ -6788,22 +6802,30 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 			$colourChangerOptions.append($radio);
 		}
 
-		checked = XENITH.COLOURCHANGER.removeBg ? 'checked="checked"' : '';
-		$colourChangerOptions.append('<div id="checkGroup"><input type="checkbox" id="noBg" name="noBg"' + checked + '><label for="noBg"><p> ' + x_getLangInfo(x_languageData.find("colourChanger").find("noBg")[0], "label", "Remove background images") + '</p></label></div>');
+		checked = XENITH.ACCESSIBILITY.removeBg ? 'checked="checked"' : '';
+		$colourChangerOptions.append('<hr/><div class="checkGroup"><input type="checkbox" id="noBg" name="noBg"' + checked + '><label for="noBg"><p> ' + x_getLangInfo(x_languageData.find("colourChanger").find("noBg")[0], "label", "Remove background images") + '</p></label></div>');
+
+		// if responsive text is not turned on by the author, the option to turn it on / off will not be shown in the accessibility options dialog
+		if (x_params.responsive === "true") {
+			checked = XENITH.ACCESSIBILITY.responsiveTxt ? 'checked="checked"' : '';
+			$colourChangerOptions.append('<div class="checkGroup"><input type="checkbox" id="responsiveTxt" name="responsiveTxt"' + checked + '><label for="responsiveTxt"><p> ' + x_getLangInfo(x_languageData.find("colourChanger").find("responsiveTxt")[0], "label", "Responsive text") + ' <i class="fa fa-question-circle" title="' + x_getLangInfo(x_languageData.find("colourChanger").find("responsiveTxt")[0], "tip", "When responsive text is turned on, the text size will adapt to the size of the screen you are viewing this project on. If you use the browser zoom to increase the text size then you may get a better experience if you turn responsive text off.") + '"></i></p></label></div>');
+		}
+
+		$colourChangerOptions.append('<hr/>');
 
 		// trigger change theme on radio change
 		$colourChangerOptions.find('.optionGroup input').change(function() {
 			if (filterMap[this.value].theme === '') {
 				// default theme
 				switchTheme(x_params.theme);
-				XENITH.COLOURCHANGER.specialTheme = false;
+				XENITH.ACCESSIBILITY.specialTheme = false;
 			} else {
 				// custom accessibility theme
 				switchTheme(filterMap[this.value].theme);
-				XENITH.COLOURCHANGER.specialTheme = filterMap[this.value].theme;
+				XENITH.ACCESSIBILITY.specialTheme = filterMap[this.value].theme;
 			}
 
-			XENITH.COLOURCHANGER.disableBespokeCSS();
+			XENITH.ACCESSIBILITY.disableBespokeCSS();
 
 			// refresh (trigger pageChanged function) or completely rebuild pages of these types
 			// as they involve things like writing text on a canvas (text might not be an appropriate colour after the theme change)
@@ -6829,6 +6851,10 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 			removeBgImages(this.checked);
 		});
 
+		// trigger show/hide background image on checkbox change
+		$colourChangerOptions.find('#responsiveTxt').change(function() {
+			changeResponsiveTxt(this.checked, true);
+		});
 
 		if ($parent.parents('.featherlight').length > 0) {
 			lbHtml = $parent;
@@ -6852,14 +6878,22 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 			$theme_responsive_css.prop("disabled", true);
 			$special_theme_css.attr("href", currentThemeURL + ".css");
 			$special_theme_css.prop("disabled", false);
-			$special_theme_responsive_css.attr("href", currentResponsiveThemeURL + ".css");
-			$special_theme_responsive_css.prop("disabled", false);
+
+			// only enable responsive text css files if needed responsive text is currently on
+			if (checkResponsiveTxt()) {
+				$special_theme_responsive_css.attr("href", currentResponsiveThemeURL + ".css");
+				$special_theme_responsive_css.prop("disabled", false);
+			}
 		} else {
 			// default theme in use
-			$theme_css.prop("disabled", false);
-			$theme_responsive_css.prop("disabled", false);
 			$special_theme_css.prop("disabled", true);
 			$special_theme_responsive_css.prop("disabled", true);
+			$theme_css.prop("disabled", false);
+
+			// only enable responsive text css files if needed responsive text is currently on
+			if (checkResponsiveTxt()) {
+				$theme_responsive_css.prop("disabled", false);
+			}
 		}
 
 		x_getThemeInfo(theme, true);
@@ -6868,23 +6902,67 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 	// background images are removed from the project / page unless the default theme for the project is being used
 	function removeBgImages (hideBg) {
 		if (hideBg) {
-			XENITH.COLOURCHANGER.removeBg = true;
+			XENITH.ACCESSIBILITY.removeBg = true;
 			$x_background.hide();
 		} else {
-			XENITH.COLOURCHANGER.removeBg = false;
+			XENITH.ACCESSIBILITY.removeBg = false;
 			$x_background.show();
 		}
 	}
 
+	// responsive text can be turned on / off
+	function changeResponsiveTxt (on, change) {
+		let responsiveCssDisabled = true;
+		if (on) {
+			if (change !== false) {
+				XENITH.ACCESSIBILITY.responsiveTxt = true;
+			}
+			// responsivetext.css may continue to be disabled if the project is being shown at a fixed size
+			if ((x_params.displayMode != "default" && !$.isArray(x_params.displayMode)) || x_fillWindow == true) {
+				$x_mainHolder.addClass("x_responsive");
+				responsiveCssDisabled = false;
+			}
+		} else {
+			if (change !== false) {
+				XENITH.ACCESSIBILITY.responsiveTxt = false;
+			}
+			$x_mainHolder.removeClass("x_responsive");
+		}
+
+		// enable / disable responsivetext css files as appropriate
+		for (let i=0; i<x_responsive.length; i++) {
+			$(x_responsive[i]).prop("disabled", responsiveCssDisabled);
+		}
+
+		// a special theme is in use - this will affect which responsive text css files should be enabled
+		if (XENITH.ACCESSIBILITY.specialTheme !== false && responsiveCssDisabled === false) {
+			$("#theme_responsive_css").prop("disabled", true);
+			$("#special_theme_responsive_css").prop("disabled", false);
+		} else {
+			$("#special_theme_responsive_css").prop("disabled", true);
+		}
+
+		x_setProjectTxtSize();
+
+		// trigger recalculation of interface & page elements with heights / margins etc. that might be affected by turning repsonsive text on / off
+		x_updateCss2();
+	}
+
+	// is responsive text currently on? not just dependant on editor setting - looks at whether it's been changed in accessibility options and whether it's turned off by default as project is being viewed at a fixed size
+	function checkResponsiveTxt() {
+		return XENITH.ACCESSIBILITY.responsiveTxt == true && ((x_params.displayMode != "default" && !$.isArray(x_params.displayMode)) || x_fillWindow == true);
+	}
+
 	function disableBespokeCSS() {
-		$("#customHeaderStyle").prop('disabled', XENITH.COLOURCHANGER.specialTheme !== false);
+		$("#customHeaderStyle").prop('disabled', XENITH.ACCESSIBILITY.specialTheme !== false);
 	}
 
 	// when lightbox is reopened - make sure the correct theme is selected
 	function checkActive() {
-		let checked = XENITH.COLOURCHANGER.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.COLOURCHANGER.specialTheme);
+		let checked = XENITH.ACCESSIBILITY.specialTheme === false ? 0 : filterMap.findIndex(x => x.theme === XENITH.ACCESSIBILITY.specialTheme);
 		$('#colourChangerOptions input:eq(' + checked + ')').prop("checked", true);
-		$('#colourChangerOptions #noBg').prop("checked", XENITH.COLOURCHANGER.removeBg);
+		$('#colourChangerOptions #noBg').prop("checked", XENITH.ACCESSIBILITY.removeBg);
+		$('#colourChangerOptions #responsiveTxt').prop("checked", XENITH.ACCESSIBILITY.responsiveTxt);
 	}
 
 	// make some public methods
@@ -6892,9 +6970,12 @@ var XENITH = (function ($, parent) { var self = parent.COLOURCHANGER = {};
 	self.buildBtn = buildBtn;
 	self.build = build;
 	self.disableBespokeCSS = disableBespokeCSS;
+	self.changeResponsiveTxt = changeResponsiveTxt;
+	self.checkResponsiveTxt = checkResponsiveTxt;
 	self.hidden = hidden;
 	self.specialTheme = specialTheme;
 	self.removeBg = removeBg;
+	self.responsiveTxt = responsiveTxt;
 
 	return parent;
 

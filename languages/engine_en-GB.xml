@@ -147,6 +147,7 @@
 	  <dark label="Dark mode"/>
 	  <light label="Light mode"/>
 	  <noBg label="Remove background images"/>
+	  <responsiveTxt label="Responsive text" tip="When responsive text is turned on, the text size will adapt to the size of the screen you are viewing this project on. If you use the browser zoom to increase the text size then you may get a better experience if you turn responsive text off."/>
   </colourChanger>
 
   <screenReaderInfo label="Screen Reader Information" newWindow="opens in a new window" shortNewWindow="opens in a new window" thisWindow="opens in this window" dialog="opens in a dialog window">

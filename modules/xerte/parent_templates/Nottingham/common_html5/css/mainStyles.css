@@ -1680,7 +1680,7 @@ a:focus .wcagLogo {
 	padding-top: 0;
 }
 
-#x_colourChanger #checkGroup {
-	margin-top: 1em;
-	margin-bottom: 1em;
+#x_colourChanger .checkGroup {
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
