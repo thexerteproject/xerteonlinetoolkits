@@ -512,7 +512,7 @@
 				$("#prevBtn")
 					.button({
 						icons: { primary: "fa fa-x-prev" },
-						label: (x_currentPageXML.getAttribute("prevBtnTip") == undefined || x_currentPageXML.getAttribute("prevBtnTip") == "" ? "Previous" : x_currentPageXML.getAttribute("prevBtnTip")) + " " + x_getLangInfo(x_languageData.find("carousel")[0], "slide", "Slide"),
+						label: x_currentPageXML.getAttribute("prevBtnTip") == undefined || x_currentPageXML.getAttribute("prevBtnTip") == "" ? "Previous" : x_currentPageXML.getAttribute("prevBtnTip"),
 						text: false
 					})
 					.click(function() {
@@ -522,7 +522,7 @@
 				$("#nextBtn")
 					.button({
 						icons: { primary: "fa fa-x-next" },
-						label: (x_currentPageXML.getAttribute("nextBtnTip") == undefined || x_currentPageXML.getAttribute("nextBtnTip") == "" ? "Next" : x_currentPageXML.getAttribute("nextBtnTip")) + " " + x_getLangInfo(x_languageData.find("carousel")[0], "slide", "Slide"),
+						label: x_currentPageXML.getAttribute("nextBtnTip") == undefined || x_currentPageXML.getAttribute("nextBtnTip") == "" ? "Next" : x_currentPageXML.getAttribute("nextBtnTip"),
 						text: false
 					})
 					.click(function() {

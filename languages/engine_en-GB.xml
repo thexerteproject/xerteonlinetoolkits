@@ -2,9 +2,9 @@
 
   <noPages label="This project does not contain any pages."/>
 
-  <nextButton label="Next"/>
+  <nextButton label="Next page"/>
   
-  <backButton label="Back"/>
+  <backButton label="Previous page"/>
   
   <tocButton label="Contents"/>
   
