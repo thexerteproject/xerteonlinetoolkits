@@ -155,4 +155,11 @@
 	#pageContents.tab #paneHolder {
 		overflow: hidden;
 	}
+
+
+	/* __accordion__ */
+	#pageContents.acc .navChildTitle:focus,
+	#pageContents.acc .navChild:focus {
+		outline: auto; /* ensures the browser focus is shown - the jquery ui css removes this */
+	}
 	
