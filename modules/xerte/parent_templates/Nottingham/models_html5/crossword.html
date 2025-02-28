@@ -302,7 +302,7 @@
                     var searching = true
                     removeHighlight();
 					
-                    while(searching) {
+                    //while(searching) {
                         for (var i = 0; i < startPositionArray.length; i++) {
                             if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
                                 tab = i + 1
@@ -325,58 +325,62 @@
                                 return
                             }
                         }
-                        for (var i = 0; i < startPositionArray.length; i++) {
-                            if (startPositionArray[i][0] == wholeNumber) {
-                                tab = i + 1
-                                if(tab >= startPositionArray.length) {
-                                 tab = 0
-                                }
-                                tabColumns = startPositionArray[tab][0] * columns
-                                tabRow = startPositionArray[tab][1]
-                                total = tabColumns + tabRow
-								if (i+1 == startPositionArray.length) {
-									active = 0;
-									$("#show_button").focus();
-								} else {
-									active = total
-									addHighlight(active, i, rows,columns, "tab", false)
-									rePosition();
-								}
+                        if (searching == true) {
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+                                    tab = i + 1
+                                    if (tab >= startPositionArray.length) {
+                                        tab = 0
+                                    }
+                                    tabColumns = startPositionArray[tab][0] * columns
+                                    tabRow = startPositionArray[tab][1]
+                                    total = tabColumns + tabRow
+                                    if (i + 1 == startPositionArray.length) {
+                                        active = 0;
+                                        $("#show_button").focus();
+                                    } else {
+                                        active = total
+                                        addHighlight(active, i, rows, columns, "tab", false)
+                                        rePosition();
+                                    }
 
-                                searching = false
-                                return
+                                    searching = false
+                                    return
+                                }
                             }
                         }
-                        for (var i = 0; i < startPositionArray.length; i++) {
-                            if (startPositionArray[i][1] == remainder) {
-                                tab = i + 1
-                                if(tab >= startPositionArray.length) {
-                                    tab = 0
-                                }
-                                tabColumns = startPositionArray[tab][0] * columns
-                                tabRow = startPositionArray[tab][1]
-                                total = tabColumns + tabRow
-								if (i+1 == startPositionArray.length) {
-									active = 0;
-									$("#show_button").focus();
-								} else {
-									active = total
-									addHighlight(active, i, rows,columns, "tab",false)
-									rePosition();
-								}
+                        if (searching == true) {
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+                                    tab = i + 1
+                                    if (tab >= startPositionArray.length) {
+                                        tab = 0
+                                    }
+                                    tabColumns = startPositionArray[tab][0] * columns
+                                    tabRow = startPositionArray[tab][1]
+                                    total = tabColumns + tabRow
+                                    if (i + 1 == startPositionArray.length) {
+                                        active = 0;
+                                        $("#show_button").focus();
+                                    } else {
+                                        active = total
+                                        addHighlight(active, i, rows, columns, "tab", false)
+                                        rePosition();
+                                    }
 
-                                searching = false
-                                return
+                                    searching = false
+                                    return
+                                }
                             }
                         }
-                    }
+                    //}
                 }else if(e.keyCode == 9 && e.shiftKey){ // shift tab
                     temp = active
                     var wholeNumber = Math.floor(temp/columns)
                     var remainder = active%columns
                     var searching = true
                     removeHighlight();
-                    while(searching) {
+                    //while(searching) {
                         for (var i = 0; i < startPositionArray.length; i++) {
                             if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
                                 tab = i - 1
@@ -395,47 +399,50 @@
                                 return
                             }
                         }
-                        for (var i = 0; i < startPositionArray.length; i++) {
-                            if (startPositionArray[i][0] == wholeNumber) {
-                                tab = i - 1
-                                if(tab < 0) {
-                                    tab = startPositionArray.length-1
-                                }
-                                tabColumns = startPositionArray[tab][0] * columns
-                                tabRow = startPositionArray[tab][1]
-                                total = tabColumns + tabRow
-                                active = total
-                                addHighlight(active, i, rows,columns, "tab",true)
-								rePosition();
+                        if (searching == true) {
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+                                    tab = i - 1
+                                    if (tab < 0) {
+                                        tab = startPositionArray.length - 1
+                                    }
+                                    tabColumns = startPositionArray[tab][0] * columns
+                                    tabRow = startPositionArray[tab][1]
+                                    total = tabColumns + tabRow
+                                    active = total
+                                    addHighlight(active, i, rows, columns, "tab", true)
+                                    rePosition();
 
-                                searching = false
-                                return
+                                    searching = false
+                                    return
+                                }
                             }
                         }
-                        for (var i = 0; i < startPositionArray.length; i++) {
-                            if (startPositionArray[i][1] == remainder) {
-                                tab = i - 1
-                                if(tab <0) {
-                                    tab = startPositionArray.length-1
+                        if (searching == true) {
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+                                    tab = i - 1
+                                    if (tab < 0) {
+                                        tab = startPositionArray.length - 1
+                                    }
+                                    tabColumns = startPositionArray[tab][0] * columns
+                                    tabRow = startPositionArray[tab][1]
+                                    total = tabColumns + tabRow
+                                    active = total
+
+                                    addHighlight(active, i, rows, columns, "tab", true)
+                                    rePosition();
+
+                                    searching = false
+                                    return
                                 }
-                                tabColumns = startPositionArray[tab][0] * columns
-                                tabRow = startPositionArray[tab][1]
-                                total = tabColumns + tabRow
-                                active = total
-
-                                addHighlight(active, i, rows,columns, "tab",true)
-								rePosition();
-
-                                searching = false
-                                return
                             }
                         }
-                    }
+                    //}
                 }
             }
 
             next = function (e, x, y){
-
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
 
                 var tabColumns = x * columns
