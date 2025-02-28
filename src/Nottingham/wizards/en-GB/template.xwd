@@ -9912,7 +9912,7 @@
 		<initialPos label="Position" type="combobox" options="Panel 1,Panel 2" data="panelA,panelB" tooltip="The position of the initial text on the screen"/>
 	</initialGroup>
 	
-	<suggestedGroup type="group" label="Suggested Text" tooltip="The suggested text appears after answers are submitted. It should contain a suggested version of appropriate highlights or notes. Highlights can be added to this text using the background colour button on the text toolbar">
+	<suggestedGroup type="group" label="Suggested Text" tooltip="The suggested text appears after answers are submitted. It should contain a suggested version of appropriate highlights or notes. Accessible highlights can be added to this text using the marked text button on the text toolbar">
 		<suggestedTitle label="Title" type="TextInput" wysiwyg="true" tooltip="Title to appear on tab and in downloaded document"/>
 		<suggestedText label="Text" type="TextArea" height="100" placeholder="Enter suggested answer text here"/>
 		<suggestedPos label="Position" type="combobox" options="Panel 1,Panel 2" data="panelA,panelB" tooltip="The position of the suggested text on the screen"/>
