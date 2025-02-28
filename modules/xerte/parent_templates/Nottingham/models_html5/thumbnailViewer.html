@@ -30,6 +30,7 @@
 					|| (item.toLowerCase() === $(this).text().toLowerCase())
 				) {
 					$(this).click();
+					$(this).addClass("deepLink");
 					return false;
 				}
 			});
@@ -39,12 +40,23 @@
 		this.pageChanged = function() {
 			$("#mainTxt").show();
 			$("#mainInfoHolder").remove();
+			$(".thumbBox.current")
+				.attr("aria-selected", "false")
+				.removeClass("current");
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			$("#mainTxt").show();
 			$("#mainInfoHolder").remove();
+			$(".thumbBox.current")
+				.attr("aria-selected", "false")
+				.removeClass("current");
+
+			// if this a deep link is used, this prevented it from working - check and if it is, reopen the requested thumbnail
+			if ($(".thumbBox.deepLink").length > 0) {
+				$(".thumbBox.deepLink").click();
+			}
 		}
 		
 		this.init = function() {
@@ -57,7 +69,7 @@
 			$("#prevBtn")
 				.button({
 					icons:	{primary: "prev"},
-					label: 	x_currentPageXML.getAttribute("priorBtnTip") == undefined ? "Previous" : x_currentPageXML.getAttribute("priorBtnTip"),
+					label: 	x_currentPageXML.getAttribute("priorBtnTip") == undefined ? "Scroll Back" : x_currentPageXML.getAttribute("priorBtnTip"),
 					text:	false
 				})
 				.click(function() {
@@ -67,7 +79,7 @@
 			$("#nextBtn")
 				.button({
 					icons:	{primary: "next"},
-					label: 	x_currentPageXML.getAttribute("nextBtnTip") == undefined ? "Next" : x_currentPageXML.getAttribute("nextBtnTip"),
+					label: 	x_currentPageXML.getAttribute("nextBtnTip") == undefined ? "Scroll Forward" : x_currentPageXML.getAttribute("nextBtnTip"),
 					text:	false
 				})
 				.click(function() {
@@ -77,13 +89,28 @@
 			if (x_browserInfo.touchScreen == true) {
 				$thumbHolder.css("overflow-x", "auto");
 			}
+
+			if (x_browserInfo.mobile == true) {
+				$thumbHolder.removeAttr("role");
+			}
 			
 			// create thumbs in thumbBar
 			var newThumb = '<button class="thumbBox"></button>';
 			$(x_currentPageXML).children().each(function(i) {
 				if (this.getAttribute("url") != undefined && this.getAttribute("url") !== "") {
 					const $thisThumb = $(newThumb);
-					$thisThumb.html('<span class="sr-only">' + this.getAttribute("name") + '</span><img class="centre x_noLightBox" aria-hidden="true" alt="' + (this.getAttribute("tip") != undefined && this.getAttribute("tip") !== "" ? this.getAttribute("tip") : '') + '" />');
+					$thisThumb.attr("id", "thumb" + 1);
+
+					if (x_browserInfo.mobile !== true) {
+						$thisThumb.attr({
+							"role": "tab",
+							"tabindex": "-1",
+							"aria-selected": "false",
+							"aria-controls": "mainInfoHolder"
+						});
+					}
+
+					$thisThumb.html('<span id="thumbTitle' + i + '" class="sr-only">' + this.getAttribute("name") + '</span><img class="centre x_noLightBox" aria-hidden="true" alt="' + (this.getAttribute("tip") != undefined && this.getAttribute("tip") !== "" ? this.getAttribute("tip") : '') + '" />');
 					$thumbHolder.append($thisThumb);
 					$thisThumb.data("index", i);
 
@@ -92,13 +119,11 @@
 				}
 			});
 			
-			var	$panelImg = $("#panelImg"),
-				$panelTxt =	$("#panelTxt"),
-				$panelLink = $("#panelLink");
-			
 			// set up thumbnail click events
 			$("#thumbHolder .thumbBox")
-				.click(function(e) {
+				.click(function() {
+					$(".deepLink").removeClass("deepLink");
+
 					const thisData = $(x_currentPageXML).children()[$(this).data("index")];
 
 					// desktop view - open info in panel below thumbnail bar
@@ -106,6 +131,20 @@
 						if ($("#mainTxt").css("display") != "none") {
 							$("#mainTxt").fadeOut();
 						}
+
+						$(".thumbBox[tabindex='0']")
+							.attr({
+								"aria-selected": "false",
+								"tabindex": "-1"
+							})
+							.removeClass("current");
+
+						$(this)
+							.attr({
+								"aria-selected": "true",
+								"tabindex": "0"
+							})
+							.addClass("current");
 
 						if ($("#mainInfoHolder").length === 0) {
 							thumbnailViewer.showNew(thisData);
@@ -134,11 +173,36 @@
 					if (charCode == 32) {
 						$(this).trigger("click");
 					}
+				})
+				.keydown(function (e) {
+					// only the current thumb can be tabbed to - then use arrow keys to move focus between the other thumbs
+					// this is the same as the way tabs work and it means if it's a long list of thumbnails, you don't have to tab through them all to get to the content
+					const charCode = e.charCode || e.keyCode;
+					if (charCode == 37 || charCode == 38) {
+						// left/up arrow key - focus on previous thumb
+						if ($(this).prevAll(".thumbBox").length != 0) {
+							$(this).prevAll(".thumbBox").first().focus();
+						} else {
+							$(this).parent().find(".thumbBox:eq(" + ($(this).parent().find(".thumbBox").length - 1) + ")").focus();
+						}
+					} else if (charCode == 39 || charCode == 40) {
+						// right/down arrow key - focus on next thumb
+						if ($(this).nextAll(".thumbBox").length != 0) {
+							$(this).nextAll(".thumbBox").first().focus();
+						} else {
+							$(this).parent().find(".thumbBox").first().focus();
+						}
+					}
 				});
 			
 			$("#thumbHolder .thumbBox:eq(0)").css("margin-left", $("#thumbBar button").width());
+
+			if (x_browserInfo.mobile !== true) {
+				$("#thumbHolder .thumbBox:eq(0)").attr("tabindex", "0");
+			}
+
 			$("#thumbHolder .thumbBox:last-child").css("margin-right", $("#thumbBar button").width());
-			
+
 			x_pageLoaded();
 		}
 
@@ -157,18 +221,17 @@
 			if (lightbox === true) {
 				const $link = $('<a id="panelLink" target="_blank"></a>');
 				const $img = $('<img id="panelImg" alt="' + (thisData.getAttribute("tip") != undefined && thisData.getAttribute("tip") !== '' ? thisData.getAttribute("tip") : '') + '" ' + 'src="' + thisData.getAttribute("url") + '"/>');
-				const $txt = $('<div id="panelTxt" aria-live="assertive">' + (thisData.getAttribute("text") != undefined && thisData.getAttribute("text") !== '' ? x_addLineBreaks(thisData.getAttribute("text")) : '') + '</div>');
-				let $html;
+				const $txt = $('<div id="panelTxt">' + (thisData.getAttribute("text") != undefined && thisData.getAttribute("text") !== '' ? x_addLineBreaks(thisData.getAttribute("text")) : '') + '</div>');
+				let $html = $('<div></div>');
 
 				if (link != "") {
-					$link.attr("href", link);
-					$html = $link;
-
+					$link.attr("href", link)
+					$link.append($img);
+					$html.append($link);
 				} else {
-					$html = $('<div></div>');
+					$html.append($img);
 				}
 
-				$html.append($img);
 				if (thisData.getAttribute("text") != undefined && thisData.getAttribute("text") !== '') {
 					$txt.html(x_addLineBreaks(thisData.getAttribute("text")));
 					$html.append($txt);
@@ -177,7 +240,7 @@
 				$.featherlight($html, {});
 
 			} else {
-				const $mainInfoHolder = $('<div id="mainInfoHolder"><div id="mainPanel" class="panel inline"></div></div>').appendTo('#pageContents');
+				const $mainInfoHolder = $('<div id="mainInfoHolder" role="tabpanel" aria-labelledby="thumbTitle' + $(".thumbBox.current").index() + '"><div id="mainPanel" class="panel inline"></div></div>').appendTo('#pageContents');
 				$mainInfoHolder.css({ // hidden in this way so we can get dimensions
 					"visibility": "hidden",
 					"display": "inherit"
@@ -287,7 +350,7 @@
 	
 	<div id="thumbBar">
 		<button id="prevBtn"/>
-		<div id="thumbHolder"></div>
+		<div id="thumbHolder" role="tablist"></div>
 		<div id="thumbOverlayLeft"/>
 		<div id="thumbOverlayRight"/>
 		<button id="nextBtn"/>

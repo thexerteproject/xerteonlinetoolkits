@@ -451,7 +451,7 @@
 		initTxtLabel2="Initial text - select text before clicking highlight button"
 		suggestedTxtLabel="A suggested answer"
 		notesTxtLabel="Notes"
-	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
+	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
 			 attemptLabel="Attempts remaining"
 			 correctAnswersLabel="Correct answers"
@@ -7929,10 +7929,10 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></pdf><perspectives menu="Navigators" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips alongside related text." icon="icUser" thumb="thumbs/perspectives.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multipleperspectives" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_multiple_perpectives_page" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
-    <backBtnTip label="Scroll Back Tip" type="TextInput" wysiwyg="true" language="true"/>
-    <nextBtnTip label="Scroll Forward Tip" type="TextInput" wysiwyg="true" language="true"/>
-    <videoTip label="Generic Video Tip" type="TextInput" wysiwyg="true" language="true"/>
-    <soundTip label="Generic Sound Tip" type="TextInput" wysiwyg="true" language="true"/>
+    <backBtnTip label="Scroll Back Tip" type="TextInput" language="true"/>
+    <nextBtnTip label="Scroll Forward Tip" type="TextInput" language="true"/>
+    <videoTip label="Generic Video Tip" type="TextInput" language="true"/>
+    <soundTip label="Generic Sound Tip" type="TextInput" language="true"/>
 	<backGrid label="Back Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<playTip label="Play All Text" type="TextInput" wysiwyg="true" language="true"/>
 	
@@ -10327,8 +10327,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page"/>
 	
-    <nextBtnTip label="Next Button Tip" type="textInput" divider="true" language="true"/>	
-    <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
+    <nextBtnTip label="Scroll Forward Tip" type="textInput" language="true"/>
+    <priorBtnTip label="Scroll Back Tip" type="textInput" language="true"/>
 
     <newNodes>
       <thumbnailImage><![CDATA[<thumbnailImage name="Image" text="" align="Top" url="" linktarget="none" link="" tip=""/>]]></thumbnailImage>
