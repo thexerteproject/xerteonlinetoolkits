@@ -1,0 +1,24 @@
+# Ignore temporary files (left by editors and OS)
+*~
+*.bak
+*.swp
+.DS_Store
+out
+
+# Ignore by common IDEs used directories/files
+nbproject
+*.idea
+*.iml
+*.project
+.buildpath
+.settings
+.TemporaryItems
+.webprj
+
+# Temporary files and folders
+.cache
+.php_cs.cache
+.php-cs-fixer.cache
+.sass-cache
+.session
+*.log
