@@ -58,13 +58,25 @@ class basicquickfill
 
         // Check if this node has defined children in the hierarchy
         if (isset($hierarchy[$node])) {
-            foreach ($hierarchy[$node] as $childDef) {
+            foreach ($hierarchy[$node]['nodes'] as $childDef) {
                 // Each child definition is expected to be an array with keys 'node' and optionally 'attributes'
                 $childName = $childDef['node'];
-                $childAttributes = isset($childDef['attributes']) ? $childDef['attributes'] : []; //here, we could add a check based on the 'max' or 'duplicate' attributes to limit the amount of times, if they provided ones exceed those.
+                $childAttributes = isset($childDef['attributes']) ? $childDef['attributes'] : [];
                 // Determine how many times this child should appear.
                 // Defaults to 0 if no parameter is provided.
                 $count = isset($parameters[$childName]) ? intval($parameters[$childName]) : 0;
+
+                // Apply the "max" limit if it exists in topLevelAttributes
+                if (isset($hierarchy[$childDef['node']]['topLevelAttributes']['max'])) {
+                    $max = intval($hierarchy[$childDef['node']]['topLevelAttributes']['max']);
+                    $count = min($count, $max);
+                }
+
+                // If duplicate is "false", set count to 0 if it's greater than 0
+                if (isset($hierarchy[$node]['topLevelAttributes']['duplicate']) && $hierarchy[$node]['topLevelAttributes']['duplicate'] === "false" && $count > 0) {
+                    $count = 0;
+                }
+
                 for ($i = 0; $i < $count; $i++) {
                     $xml .= $this->buildXml($childName, $hierarchy, $parameters, $childAttributes, $depth + 1);
                 }
@@ -77,8 +89,18 @@ class basicquickfill
     }
 
     function processElement($element, &$map) {
+        $topLevelAttributes = [];
+        foreach ($element->attributes() as $attr => $value) {
+            $topLevelAttributes[$attr] = (string)$value;
+        }
         foreach ($element->children() as $child) {
             if ($child->getName() === 'newNodes') {
+                //This way, we only add the top-level attributes of relevant nodes which have child nodes/subpages
+                if (!isset($map[$element->getName()])){
+                    $map[$element->getName()] = [
+                        'topLevelAttributes' => $topLevelAttributes
+                    ];
+                }
                 foreach ($child->children() as $newNode) {
                     // Extract the inner content, which may be wrapped in CDATA
                     $cdata = trim((string)$newNode);
@@ -92,9 +114,9 @@ class basicquickfill
                                 $attributes[$attr] = (string)$value;
                             }
                             // Store both node name and attributes under the parent element name
-                            $map[$element->getName()][] = [
-                                'node'       => $nodeName,
-                                'attributes' => $attributes
+                            $map[$element->getName()]['nodes'][] = [
+                                'node'       => $nodeName, //note that this is the name of the CDATA node found within the <newNodes>
+                                'attributes' => $attributes,
                             ];
                         }
                     } else {
@@ -104,9 +126,9 @@ class basicquickfill
                         foreach ($newNode->attributes() as $attr => $value) {
                             $attributes[$attr] = (string)$value;
                         }
-                        $map[$element->getName()][] = [
-                            'node'       => $nodeName,
-                            'attributes' => $attributes
+                        $map[$element->getName()]['nodes'][] = [
+                            'node'       => $nodeName, //note that this is the name of the CDATA node found within the <newNodes>
+                            'attributes' => $attributes,
                         ];
                     }
                 }
