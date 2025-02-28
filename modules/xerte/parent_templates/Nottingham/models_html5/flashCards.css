@@ -107,7 +107,8 @@
 
 	}
 	
-	#cards.hideOverflow .cardInner {
+	#cards.hideOverflow .cardInner,
+	#cards .panel.hideOverflow .cardInner {
 		overflow: hidden;
 	}
 	
