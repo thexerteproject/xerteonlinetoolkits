@@ -92,9 +92,6 @@
 			
             // Create fallback label
             this.weighting = 1.0;
-			if (x_currentPageXML.getAttribute("markFeedback")){
-				this.weighting = 0.0;
-			}
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
