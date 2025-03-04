@@ -112,7 +112,7 @@
 			}
 
 			if (x_browserInfo.iOS == true) {
-				$("#pdfPage").html('<div id="pdfCover" /><object onload="pdf.createCover()" "id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="' + pdf.calcWidth() + '"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
+				$("#pdfPage").html('<div id="pdfCover" /><object onload="pdf.createCover()" id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="' + pdf.calcWidth() + '"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
 			} else {
 				$("#pdfPage").prepend('<object id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
 			}
@@ -136,7 +136,8 @@
 			const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
 			$("#pdfPage").append('<div id="link"><hr/><a id="pdfLink" href="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" target="_blank">' + (x_currentPageXML.getAttribute("open") == "" || x_currentPageXML.getAttribute("open") == undefined ? "Open PDF in new tab" : x_currentPageXML.getAttribute("open")) + ' ' + faIcon + '</a></div>');
 
-			this.calcHeight();
+			//this.calcHeight();
+			$("#pdfDoc").height(this.calcHeight());
 		}
 		
 		this.calcWidth = function() {
