@@ -1928,7 +1928,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
-
 	if (authorSupport == true && page.attr('passwordPass') == 'true') {
 		$('#pageSubTitle').append(' <span class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('pageSupport') != null ? languageData.find("password")[0].getAttribute('pageSupport') : 'In live projects, an access code must be entered to view this page') + ': ' + pswds + '</span>');
 	}
@@ -2283,22 +2282,19 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 	if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither' && $(data).find('learningObject').attr('topBtnHide') != 'true') {
 		//has the back to top button be set to round
 		var topBtnRound=$(data).find('learningObject').attr('topBtnRound');
-		setTimeout(function() {
-			var skipLinkTarget = '#' + $('#mainContent section:first-of-type').attr('id');
-			if (topBtnRound == 'true') {
-				//add FA icon and make button round via .top-round class
-				//create round button
-				var $button = $('<a class="btn btn-mini pull-right top-round" href="' + skipLinkTarget + '"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
-				//attach the button
-				section.append(
-					$('<p>')
-						.append($('<br>'))
-						.append($button));
-			} else {
-				//original default button
-				section.append($('<p><br><a class="btn btn-mini pull-right" href="' + skipLinkTarget + '">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
-			}
-		},0);
+		if (topBtnRound == 'true') {
+			//add FA icon and make button round via .top-round class
+			//create round button
+			var $button = $('<a class="btn btn-mini pull-right top-round" href="#skipLink"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
+			//attach the button
+			section.append(
+				$('<p>')
+					.append($('<br>'))
+					.append($button));
+		} else {
+			//original default button
+			section.append($('<p><br><a class="btn btn-mini pull-right" href="#skipLink">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
+		}
 	} else if ($(data).find('learningObject').attr('topBtnHide') == 'true') {
 		section.append($('<p>').append($('<br>')));
 	}
@@ -2404,6 +2400,7 @@ function passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAl
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						page.attr('passwordPass', true);
 						$('#mainContent').empty();
+
 						loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
 					} else {
 						$section.find('.pswdError').html($section.find('.pswdError').data('error'));
@@ -2541,7 +2538,7 @@ window.onhashchange = function() {
 		tempSection,
 		tempContent;
 
-	if (pageSectionInfo != false) {
+	if (pageSectionInfo != false && pageSectionInfo != "skipLink") {
 		tempPage = pageSectionInfo[0];
 		tempSection = pageSectionInfo[1];
 		tempContent = pageSectionInfo[2];
