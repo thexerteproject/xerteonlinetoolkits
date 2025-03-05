@@ -32,7 +32,7 @@
             // Calculating actual size of image
             var imageSrc = options.imageSrc ? options.imageSrc : $(this).attr("src");
             var imageTag = "<img class='magnifiedImg' style='display:none;' src='" + imageSrc + "' />";
-			
+
             var widthRatio = 0;
             var heightRatio = 0;
 			
@@ -64,8 +64,9 @@
 				
                 if (leftPos < 0 || topPos < 0 || leftPos > obj.width() || topPos > obj.height()) {
                     target.hide();
+                    $(".magnifiedImg").removeClass("escape");
                 }
-                else {
+                else if (!$(".magnifiedImg").hasClass("escape")) {
                     target.show();
 					
                     leftPos = String(((e.pageX - offset.left) * widthRatio - target.width() / 2) * (-1));

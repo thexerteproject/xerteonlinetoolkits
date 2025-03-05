@@ -756,12 +756,22 @@
 						$img.imageLens(imageLensInfo);
 					}
 				}
-				
+
+				$(document).off(".pageEvent");
+				// escape key will close any open magnifiers
+				$(document).on("keydown.pageEvent", function (e) {
+					// has .pageEvent namespace so it can be removed on page change from xenith.js
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 27 && $(".magnifier").is(":visible")) {
+						$('.magnifyBtn input').click();
+					}
+				});
+
 			} else {
 				$imgHolder.find(".magnifier").remove();
 				$imgHolder.find(".magnifiedImg").remove();
-				
 				$imgHolder.find('.magnifyBtn input').attr('aria-checked', false);
+				$(document).off(".pageEvent");
 			}
 		}
 		

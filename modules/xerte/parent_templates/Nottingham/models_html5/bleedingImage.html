@@ -26,6 +26,10 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
+
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				this.setUpMagnifierEscape();
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -274,8 +278,26 @@
 						.attr('alt', x_currentPageXML.getAttribute("tip"))
 						.addClass('x_noLightBox');
 				}
+
+				this.setUpMagnifierEscape();
 			}
-			
+		}
+
+		this.setUpMagnifierEscape = function() {
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				$(document).off(".pageEvent");
+				$(".magnifiedImg").removeClass("escape");
+
+				// escape key will close any open magnifiers
+				$(document).on("keydown.pageEvent", function (e) {
+					// has .pageEvent namespace so it can be removed on page change from xenith.js
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 27 && $(".magnifier").is(":visible") && !$(".magnifiedImg").hasClass("escape")) {
+						$(".magnifiedImg").addClass("escape");
+						$(".magnifier").hide();
+					}
+				});
+			}
 		}
 	}
 
