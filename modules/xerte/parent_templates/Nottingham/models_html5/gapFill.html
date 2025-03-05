@@ -615,6 +615,16 @@
 							}, 10);
 						}
 					});
+
+				if (x_currentPageXML.getAttribute("showHint") != "false") {
+					$targetHolder.find("input").keydown(function(e) {
+						var charCode = e.charCode || e.keyCode;
+						if (charCode == 27 && $("#hint.x_tooltip").length > 0) {
+							// escape key will close any open hint tooltips
+							$("#hint.x_tooltip").remove();
+						}
+					});
+				}
 				
 			} else {
 				// when mark at end, have show answers button after a no. of attempts instead of a hint
