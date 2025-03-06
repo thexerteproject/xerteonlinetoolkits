@@ -698,7 +698,7 @@
 		// drag drop mode: set up drag & drop exercises
 		this.setUpDragDrop = function() {
 			// get distractor info that will be used later
-			let distractors;
+			let distractors = [];
 			if (x_currentPageXML.getAttribute("noise") != undefined && x_currentPageXML.getAttribute("noise") != "") {
 				const noiseDelimiter = x_currentPageXML.getAttribute("noiseDelimiter") != "" && x_currentPageXML.getAttribute("noiseDelimiter") != undefined ? x_currentPageXML.getAttribute("noiseDelimiter") : " ";
 				distractors = x_currentPageXML.getAttribute("noise").split(noiseDelimiter);
@@ -763,7 +763,7 @@
 						finished = true;
 					});
 			}
-			
+
 			// strings used for label & target titles (for screen readers)
 			labelTxt = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
 			var labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item")
@@ -865,7 +865,7 @@
 			for (i=0; i<distractors.length; i++) {
 				allLabels.push([distractors[i]]);
 			}
-			
+
 			// create labels
 			var	tempMultiAnswers = [];
 			for (i=0; i<allLabels.length; i++) {
