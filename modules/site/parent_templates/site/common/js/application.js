@@ -295,7 +295,7 @@ function loadContent(){
 		// if resize has changed the way the page menu is displayed - make sure any page links in collapsed menu are properly hidden (from keyboard access & screen readers)
 		if (!$('#pageNavBtn').is(':visible')) {
 			$("#nav").show();
-		} else if ($("#pageNavBtn").attr("aria-expanded") == "false") {
+		} else {
 			$("#pageNavBtn").attr("aria-expanded", false);
 			$("#nav").hide();
 		}
