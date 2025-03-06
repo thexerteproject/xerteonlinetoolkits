@@ -161,6 +161,7 @@
 	  <modelAnswerResults selected="Text selected"/>
 	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
 	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
+	  <crossword description="This page contains a crossword. Tab to the across and down clues and use the space bar or enter key to select a clue to complete. You will be moved to the puzzle grid where you can type in your answer."/>
 	  <imageCompare slideHint="Image slider"/>
   </screenReaderInfo>
 

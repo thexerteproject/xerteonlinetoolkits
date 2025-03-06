@@ -50,11 +50,6 @@
     padding: 0;
 }
 
-#clues td {
-    vertical-align: top;
-    padding: 0;
-}
-
 .table-hint{
     list-style-type:none;
 	margin-top: 0.5em;
@@ -64,21 +59,13 @@
     padding-left: 0;
 }
 
-#crosswordHolder.crosswordTop + #clues #across,
-#crosswordHolder.crosswordTop + #clues #down,
-#crosswordHolder.crosswordTop + #textHolder + #clues #across,
-#crosswordHolder.crosswordTop + #textHolder + #clues #down {
-    padding-right: 1em;
-}
-
-#crosswordHolder.crosswordTop + #clues,
-#crosswordHolder.crosswordTop + #textHolder + #clues {
-    min-width: 80%;
-}
-
-#crosswordHolder.crosswordTop + #clues td,
-#crosswordHolder.crosswordTop + #textHolder + #clues td {
+#clues.bottom #Across,
+#clues.bottom #Down {
     width: 50%;
+    padding-right: 1em;
+    padding-left: 1em;
+    float:left;
+    box-sizing: border-box;
 }
 
 #down{
@@ -150,11 +137,12 @@
 	margin-top: 1em;
  }
  
- #clues-container table {
+ #clues-container #clues-across,
+ #clues-container #clues-down {
 	 width: 100%;
  }
  
- #x_pageDiv #clues-container table th, #x_pageDiv #clues th {
+ #x_pageDiv #clues-container h3, #x_pageDiv #clues h3 {
 	 border-bottom: 2px solid black;
 	 padding: .2em;
  }

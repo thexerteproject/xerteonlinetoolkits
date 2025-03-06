@@ -710,22 +710,20 @@
             if (x_browserInfo.mobile === false) {
                 if (position == "Right") {
                     $pageContents.append(
-                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" ><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt" aria-live="polite"></div></div></div>'
+                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" ><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><div id="clues-across"><h3 id="acrossTitle">' + acrossTxt + '</h3><ul class="table-hint" id="across" aria-labelledby="acrossTitle"></ul></div></div><div id="Down"><div id="clues-down"><h3 id="downTitle">' + downTxt + '</h3><ul class="table-hint" id="down" aria-labelledby="downTitle"></ul></div></div><div id="attempt" aria-live="polite"></div></div></div>'
                     );
                 } else if (position == "Left") {
                     $pageContents.append(
-                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt" aria-live="polite"></div></div><div id="crosswordHolder"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
+                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><div id="clues-across"><h3 id="acrossTitle">' + acrossTxt + '</h3><ul class="table-hint" id="across" aria-labelledby="acrossTitle"></ul></div></div><div id="Down"><div id="clues-down"><h3 id="downTitle">' + downTxt + '</h3><ul class="table-hint" id="down" aria-labelledby="downTitle"></ul></div></div<div id="attempt" aria-live="polite"></div></div><div id="crosswordHolder"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $pageContents.append(
-                        '<div id="crosswordHolder" class="crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                        '<div id="attempt" aria-live="polite"></div>'
+                        '<div id="crosswordHolder" class="crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues" class="bottom"><div id="Across"><h3 id="acrossTitle">' + acrossTxt + '</h3><ul id="across" aria-labelledby="acrossTitle"></ul></div><div id="Down"><h3 id="downTitle">' + downTxt + '</h3><ul id="down" aria-labelledby="downTitle"></ul></div></div><div id="attempt" aria-live="polite"></div>'
                     );
                 }
             }else{
                 $pageContents.append(
-                    '<div class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                    '<div id="attempt" aria-live="polite"></div>'
+                    '<div class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues" class="bottom"><div><h3 id="acrossnTitle">' + acrossTxt + '</h3><ul id="across" aria-labelledby="acrossTitle"></ul></div><div><h3 id="downTitle">' + downTxt + '</h3><ul id="down" aria-labelledby="downTitle"></ul></div></div><div id="attempt" aria-live="polite"></div>'
                 );
             }
 			
