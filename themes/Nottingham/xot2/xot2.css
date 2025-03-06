@@ -67,7 +67,6 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-bottom: 3px solid #ebebeb;
 }
 
-.x_crossword_page #attempt h3,
 .x_interactiveText_page #groupInfo h3,
 .x_interactiveText_page #questionHolder,
 .x_results_page #general_summary + #specific {
@@ -668,10 +667,6 @@ a.hotspot, a.hotspot.selected {
 
 .x_memory_page #cardTopHolder .card {
   border: 2px solid #bdbdbd;
-}
-
-.x_crossword_page #x_pageDiv #clues-container table th, .x_crossword_page #x_pageDiv #clues th {
-  border-bottom: 3px solid #000000;
 }
 
 .x_crossword_page #attempt, .x_crossword_page #attempt h3 {
