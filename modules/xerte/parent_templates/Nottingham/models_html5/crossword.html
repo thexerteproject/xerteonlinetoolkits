@@ -63,10 +63,10 @@
 			
 			// force 1st word in crossword to be selected when 1st tabbed to
 			$(window).keyup(function (e) {
-				var code = (e.keyCode ? e.keyCode : e.which);
-				if (code == 9 && $('#crossword input:eq(0):focus').length && e.shiftKey == false) {
-					$("#clue1").click();
-				}
+                var code = (e.keyCode ? e.keyCode : e.which);
+                if (code == 9 && $('#crossword input:eq(0):focus').length && e.shiftKey == false) {
+                    $("#clue1").click();
+                }
 			});
 
             $('#crossword-table td').click(function() {
@@ -867,10 +867,25 @@
 						if (j!=0) { letterCount += ','; };
 						letterCount += temp[j].length;
                     }
-                    html.push("<li class='li-clue' name='"+k+"' id='clue"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] + "<span class='letterCount'>&nbsp;(" + letterCount + ")</span></p></li>");
+                    let $thisClue = $("<div><div class='clueTxt'>" + groups[k][i]['clue'] + "</div></div>");
+                    $thisClue.append("<span class='letterCount'>&nbsp;(" + letterCount + ")</span>");
+                    $thisClue.append("<span class='clueMarking'></span>");
+                    html.push("<li class='li-clue' name='"+k+"' id='clue"+ groups[k][i]['position']+ "'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong>" + $thisClue.html() + "</li>");
                 }
                 document.getElementById(k).innerHTML = html.join("\n");
             }
+
+            $("li.li-clue")
+                .attr("tabindex", "0")
+                .click(function() {
+                    hintClick(this);
+                })
+                .keyup(function (e) {
+                    var charCode = e.charCode || e.keyCode;
+                    if (charCode == 32 || charCode == 13) {
+                        $(this).click();
+                    }
+                });
         }
 
 		// Each cell on the crossword grid is null or one of these
@@ -1332,15 +1347,14 @@
                 }
                 var incorrectClues = [];
                 incorrectIndices.forEach(function(index){ incorrectClues.push(x_getAriaText(clues_in[index]).trim());});
-                $(".li-clue > p").each(function(index, element){
+                $(".li-clue > .clueTxt").each(function(index, element){
                     const $tempClone = $(element).clone();
-                    $tempClone.find('.letterCount').remove();
                     var clue = x_getAriaText($tempClone.text()).trim();
                     if (incorrectClues.indexOf(clue) !== -1) {
-                        $(element).addClass("incorrect");
+                        $(element).parents(".li-clue").find(".clueMarking").append('<span class="ui-helper-hidden-accessible"> ' + x_getLangInfo(x_languageData.find("cross")[0], "title", "incorrect") + '</span><span class="fa fa-fw fa-x-cross"></span>');
                     }
                     else if (clue.length>0) {
-                        $(element).addClass("correct");
+                        $(element).parents(".li-clue").find(".clueMarking").append('<span class="ui-helper-hidden-accessible"> ' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + '</span><span class="fa fa-fw fa-x-tick"></span>');
                     }
                 });
 

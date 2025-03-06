@@ -37,10 +37,6 @@
     font-size: 30px;
 }
 
-/*.crossword-input[type=text]{*/
-/*    text-align: center;*/
-/*}*/
-
 .hide_answer {
     color: transparent;
 }
@@ -66,7 +62,23 @@
 
 #across{
     padding-left: 0;
-    padding-right:20px ;
+}
+
+#crosswordHolder.crosswordTop + #clues #across,
+#crosswordHolder.crosswordTop + #clues #down,
+#crosswordHolder.crosswordTop + #textHolder + #clues #across,
+#crosswordHolder.crosswordTop + #textHolder + #clues #down {
+    padding-right: 1em;
+}
+
+#crosswordHolder.crosswordTop + #clues,
+#crosswordHolder.crosswordTop + #textHolder + #clues {
+    min-width: 80%;
+}
+
+#crosswordHolder.crosswordTop + #clues td,
+#crosswordHolder.crosswordTop + #textHolder + #clues td {
+    width: 50%;
 }
 
 #down{
@@ -178,16 +190,6 @@
      width: 40%;
  }
 
-
-
- /*#pageContents-innerContainer.crosswordLeft #crossword {
-	 margin-right: 1em;
- }
- 
- #pageContents-innerContainer.crosswordRight #crossword {
-	 margin-left: 1em;
- }*/
-
  #pageContents-innerContainer #showButton {
 	 justify-content: flex-start;
  }
@@ -219,32 +221,15 @@
  .hint-number{
      margin-right: 5%;
  }
- 
- #attempt p:first-child{
-     border-top: 1px solid #ccc;
-     padding-top: 1.5em;
- }
 
-#feedback h3{
-    border-top: 1px solid #ccc;
-    padding-top: 1.5em;
-
+#attempt h3{
+    padding: .2em;
+    border-bottom: 2px solid black;
 }
 #pageContents input{
     padding: 0!important;
 }
 
-/*add ticks to correct answers*/
-.x_crossword_page .li-clue p.correct:after {
-	font-family: FontAwesome;
-	content: "\f00c";
-	color: green;
-	margin-left:1px;
-}
-/*show red crosses when incorrect and in tracking mode*/
-.x_crossword_page .li-clue p.incorrect:after {
-	font-family: FontAwesome;
-	content: "\f00d";
-	color: red;
-	margin-left:1px;
+.letterCount {
+    margin-left: auto;
 }
