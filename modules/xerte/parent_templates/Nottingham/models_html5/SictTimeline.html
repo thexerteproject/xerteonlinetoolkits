@@ -230,7 +230,7 @@
 				language:lan
 			}
 
-			$('#timeline-embed').css('height', x_getAvailableHeight());
+			$('#timeline-embed').css('height', x_getAvailableHeight([],[],true));
 
 			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
 
