@@ -2016,6 +2016,9 @@
           );
         }
         if (interaction.getAttribute("graphType") == "bar_answers") {
+            //duplicate from interaction type answer
+            //no longer an option from score
+            //still here for backwards compatability
             let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
             var xAxisLabelBarAnswers = interaction.getAttribute(
               "xAxisLabelBarAnswers"
@@ -2757,6 +2760,9 @@
           });
 
         } else if (interaction.getAttribute("graphType") == "pie_marks") {
+            //only works via groupings
+            //no longer an option from score
+            //still here as grouping relies on score for features
           var correctLabel = interaction.getAttribute("correctLabel");
           var incorrectLabel = interaction.getAttribute("incorrectLabel");
           if (correctLabel == undefined) correctLabel = "Correct";
@@ -3085,6 +3091,9 @@
         } else if (
           interaction.getAttribute("graphType") == "polar_area_per_category"
         ) {
+            //only works via groupings
+            //no longer an option from score
+            //still here as grouping relies on score for features
           let backgroundColors = [
             "#FF6384",
             "#4BC0C0",
@@ -3226,6 +3235,9 @@
         } else if (
           interaction.getAttribute("graphType") == "hor_bar_comb_marks"
         ) {
+            //only works via groupings
+            //no longer an option from score
+            //still here as grouping relies on score for features
           let passingGrade = x_params.trackingPassed;
           if (passingGrade == null) {
             passingGrade = "55";
@@ -3638,6 +3650,10 @@
           // });
           // chart.draw();
         } else if (interaction.getAttribute("graphType") == "bar_marks") {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
+
           //var dash = new ADL.XAPIDashboard();
           //dash.addStatements(data);
           var xAxisLabelBarMarks =
@@ -3746,6 +3762,10 @@
         } else if (
           interaction.getAttribute("graphType") == "line_average_marks"
         ) {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
+
           //var dash = new ADL.XAPIDashboard();
           //dash.addStatements(data);
           var xAxisLabelLineAvgMarks = interaction.getAttribute(
@@ -3852,6 +3872,9 @@
           // });
           // chart.draw();
         } else if (interaction.getAttribute("graphType") == "line_own_marks") {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
           var xAxisLabelLineOwnMarks = interaction.getAttribute(
             "xAxisLabelLineOwnMarks"
           );
