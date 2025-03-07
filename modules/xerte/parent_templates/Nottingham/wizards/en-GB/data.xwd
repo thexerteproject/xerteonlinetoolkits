@@ -148,6 +148,20 @@
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
 
+    <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
+	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
+	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
+	  <resourceCompletionGroup label="Completion" type="group" optional="true">
+	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+        <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
+	    <resourceWarningGroup label="Warning" type="group" condition="resourceCompletion=='true'" optional="true">
+			<resourceCompletionWarning label="Warn if incomplete" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="resourceCompletion=='true'" optional="true"/>
+			<resourceCompletionWarningTitle label="Title" type="TextInput" defaultValue="Incomplete Resources" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true"/>
+			<resourceCompletionWarningTxt label="Text" type="TextArea" height="100" defaultValue="You haven't completed all the supplementary resources. Would you like to proceed or review them first?" placeholder="" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true"/>
+		</resourceWarningGroup>
+	  </resourceCompletionGroup>
+	</resourceGroup>
+
 	<splashScreenGroup label="Video Splash Screen" type="group" optional="true" tooltip="Add a short, full screen 'splash' video that is shown and auto-played when the project first loads">
 	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file"/>
 	  <splashShow label="Show" type="ComboBox" defaultValue="first" options="When project loads on first page only,When project loads on any page" data="first,always" optional="true" tooltip="Determines whether the splash screen is shown everytime the project loads (even if the first page shown is not page one) or only when the first page shown is page one."/>
@@ -481,7 +495,7 @@
 	
     <align label="Align Text" options="Left,Right,Hide Text" type="ComboBox" data="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
     
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -570,7 +584,7 @@
             <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
         </newNodes>
 
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -700,7 +714,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -835,7 +849,7 @@
         ><interactionBlock adaptiveContent="" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
       </newNodes>
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1045,7 +1059,7 @@
 	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1167,7 +1181,7 @@
       <nestedAudio><![CDATA[<nestedAudio name="Title" text="" feedback="" feedbackAfter="1" clipName="false"/>]]></nestedAudio>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1266,7 +1280,7 @@
       <synchPoint><![CDATA[<synchPoint name="Enter Slide Title" text="" align="Top" synch="0"/>]]></synchPoint>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1385,7 +1399,7 @@
 	
     <size label="Text Size" type="ComboBox" options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true" deprecated="This property is deprecated. You can change the text's size in the text toolbar."/>
     
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1467,7 +1481,7 @@
 		<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Full" width="100"/>
 	</panel>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1550,7 +1564,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1633,7 +1647,7 @@
     <label label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<labelWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true" deprecated="Width is now set automatically"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1715,7 +1729,7 @@
       <button><![CDATA[<button name="Show More" text=""/>]]></button>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1806,7 +1820,7 @@
       <cOption><![CDATA[<cOption name="Answer" text="" destination="" />]]></cOption>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1886,7 +1900,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Captivate SWF File" type="media"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1975,7 +1989,7 @@
       <category><![CDATA[<category name="Enter Category Name"/>]]></category>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2075,7 +2089,7 @@
       <reqProgressChapter label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPageChapter=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include pages within this chapter in project progress calculations."/>
     </linkGroupChapter>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2160,7 +2174,7 @@
       <series><![CDATA[<series name="Enter Series Name" data="label|data" colour="0xFF0000"/>]]></series>
     </newNodes>	
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2246,7 +2260,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Column Title" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2362,7 +2376,7 @@
       <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" disableTooltip="false" iconCode="fas fa-info" windowType="dialog" hotspotHover='false' destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2521,7 +2535,7 @@
       <cMenuListedPage><![CDATA[<cMenuListedPage name="Enter Item Title" pageID=""/>]]></cMenuListedPage>
     </newNodes>	
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2624,7 +2638,7 @@
     <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Label" text="" wordAnswer=""/>]]></wordAndHint>
     </newNodes>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2744,7 +2758,7 @@
 	
     <pinAlt label="Pin Description" type="TextInput" language="true" tooltip="A description of the draggable pin image used by screenreaders" mandatory="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2848,7 +2862,7 @@
 		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="" format="radio"/>]]></mcqStep>
 	</newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2999,7 +3013,7 @@
 	
 	<headerTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3091,7 +3105,7 @@
       <dialogStep><![CDATA[<dialogStep name="Question" question="" answer="" hint=""/>]]></dialogStep>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3197,7 +3211,7 @@
       <nestedDictation><![CDATA[<nestedDictation name="Sentence" prompt="" audio="" answer=""/>]]></nestedDictation>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3308,7 +3322,7 @@
       <page><![CDATA[<page name="Enter Nested Page Title" text="" />]]></page>
 	</newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3527,7 +3541,7 @@
 	  <hotspot><![CDATA[<hotspot name="Enter Label Title" text="" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3609,7 +3623,7 @@
 		<windowWidth label="Width" options="Small,Medium,Large" type="ComboBox" data="Large,Medium,Small" defaultValue="Medium" width="100" optional="true"/>
 	</textInfo>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3712,7 +3726,7 @@
       <card><![CDATA[<card name="Enter Title Here" side1="" side2="" textalign="left" contentalign="flex-start"/>]]></card>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3813,7 +3827,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Flash Paper SWF File" type="media"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3897,7 +3911,7 @@
 	<loadingTxt label="Loading Message" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
     <imageTxt label="Image {i} of {n} images" type="TextInput" wysiwyg="true" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4027,7 +4041,7 @@
 	
 	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" condition="interactivity=='Fill in Blank'" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4105,7 +4119,7 @@
 	
 	<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4207,7 +4221,7 @@
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4289,7 +4303,7 @@
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4404,7 +4418,7 @@
 	  <QHotSpot><![CDATA[<QHotSpot name="Enter Hotspot Title" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4513,7 +4527,7 @@
 	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4597,7 +4611,7 @@
     <url label="ISpring Movie" type="Media"/>
     <version label="Version" options="Free,Pro" type="ComboBox" data="Free,Pro" defaultValue="Free" width="100"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4689,7 +4703,7 @@
 
 	<sliderPosition label="Slider Position" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4802,7 +4816,7 @@
       <case><![CDATA[<imgGroup name="Case Name" txt=""></imgGroup>]]></case>
 	</newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4931,7 +4945,7 @@
     <resetImageTip label="Reset Button Tip" type="textInput" language="true"/>
     <toggleScreenTip label="Toggle Button Tip" type="textInput" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5061,7 +5075,7 @@
       <tableCell><![CDATA[<tableCell name="Cell" fieldPos="" cellType="question" text="" showIn="cell" replace="end" required="false" answer="" type="text" qShowIn="cell" qText="" qAfter="true" qAfterInfo="submitted" />]]></tableCell>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5214,7 +5228,7 @@
 		<group><![CDATA[<group name="Enter Group Name" delimiter="" text="" textColour="0xFFFFFF" bgColour="0xFF0000" />]]></group>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5304,7 +5318,7 @@
 		<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 		<trackVideo label="Track Video Progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
 
-	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+	<resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5575,7 +5589,7 @@
       <invClassFeedback><![CDATA[<invClassFeedback name="Enter Feedback Title" class="0" minScore="0" maxScore="50" feedbackTxt="" />]]></invClassFeedback>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5683,7 +5697,7 @@
 
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5786,7 +5800,7 @@
       <jmolOption><![CDATA[<jmolOption name="Enter option label here" script="Enter Jmol script here"/>]]></jmolOption>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5873,7 +5887,7 @@
       <link><![CDATA[<link name="Link Title" text="" url="" urlTxt="" target="new"/>]]></link>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5967,7 +5981,7 @@
       <listItem><![CDATA[<listItem name="Enter Item Title" text=""/>]]></listItem>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6060,7 +6074,7 @@
     <tooltip label="Map Description" type="TextInput"/>
     <link label="Link to Map" type="checkbox" defaultValue="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6145,7 +6159,7 @@
       <overlay><![CDATA[<overlay name="Enter Name" url="entr a kml or geoRSS url"/>]]></overlay>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6250,7 +6264,7 @@
       <option><![CDATA[<option name="Answer" text="" feedback="" correct="false"/>]]></option>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6361,7 +6375,7 @@
 	  <file360><![CDATA[<file360 name="Enter Scene Title" file="" tip="" title="false"/>]]></file360>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6567,7 +6581,7 @@
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
 
-	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+	<resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6926,7 +6940,7 @@
       <matchItem><![CDATA[<matchItem name="Enter Card Label" url=""/>]]></matchItem>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7040,7 +7054,7 @@
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7120,7 +7134,7 @@
 	<copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<copypasteinfo label="Copy and Paste Info" type="TextArea" height="50" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7215,7 +7229,7 @@
     <feedbackBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7307,7 +7321,7 @@
     <zoomBtnTip label="Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
     <zoomBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7400,7 +7414,7 @@
       <navPage><![CDATA[<navPage name="Enter Title Here" text=""/>]]></navPage>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7510,7 +7524,7 @@
     <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
     <htm label="HTML" type="textArea" height="150" optional="true" tooltip="Create your own content to open in the new window"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7624,7 +7638,7 @@
         <opinionClass><![CDATA[<opinionClass title="Class title" name="Class"/>]]></opinionClass>
       </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7771,7 +7785,7 @@
 	  	</audioGroup>
 	</media>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7856,7 +7870,7 @@
 
 	<open label="Open PDF in new tab" type="TextInput" wysiwyg="true" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7960,7 +7974,7 @@
 	  <mpText><![CDATA[<mpText txt="" name="Text" src="" tooltip=""></mpText>]]></mpText>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8147,7 +8161,7 @@
       <question><![CDATA[<question prompt="" name="Question" type="Single Answer" />]]></question>
 	</newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8252,7 +8266,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Raptivity SWF File" type="media"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8397,7 +8411,7 @@
           <feedback><![CDATA[<feedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></feedback>
         </newNodes>
 
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8494,7 +8508,7 @@
 	
 	<appearance label="Feed View" options="Title Only,Title &amp; Snippet" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8586,7 +8600,7 @@
         <feedheader label="RSS Feed Header" type="CheckBox" defaultValue="false" optional="true"/>
     </rssDLLinks>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8697,7 +8711,7 @@
 		<propList><![CDATA[<propList name="List of props in scenario" />]]></propList>
 	</newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8912,7 +8926,7 @@
     <AvgLabel label="Average Graph Label" type="TextInput" wysiwyg="true" language="true"/>
     <PersonalLastLabel label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true"/>
     <PersonalAvgLabel label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true"/>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8995,7 +9009,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9074,7 +9088,7 @@
     <textAfter label="Text after pressing button" type="textarea" wysiwyg="true"/>
     <buttonLbl label="Button label" language="true" type="TextInput" wysiwyg="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9169,7 +9183,7 @@
         </audioGroup>
     </media>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9253,7 +9267,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9350,7 +9364,7 @@
       <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text=""/></nestedTab></topic>]]></topic>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9445,7 +9459,7 @@
 
     <loadingPrompt label="Loading Message" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9544,7 +9558,7 @@
     <textWidth label="Text Width" options="Small,Medium,Large,Full" type="comboBox" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
     <subSuper label="Superscript Support" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated. Sub/Superscripts now work by default."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9646,7 +9660,7 @@
         <correctLabel label="Correct Answer" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Correct Answer"/>
         <FurtherClarificationLabel label="Feedback" type="TextInput" wysiwyg="true" language="true"/>
         <answerLabel label="Answer" type="TextInput" wysiwyg="false" language="true"/>
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9724,7 +9738,7 @@
     <align label="Alignment" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="100"/>
     <interactivity label="Interactivity" options="Off,On" type="ComboBox" data="off,on" defaultValue="off" width="100"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9824,7 +9838,7 @@
 	
     <hidePanel label="Hide Panel" type="checkBox" defaultValue="false" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9965,7 +9979,7 @@
     <suggestedTxtLabel label="Suggested Text Label" type="TextInput" language="true"/>
     <notesTxtLabel label="Notes Text Label" type="TextInput" language="true"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10062,7 +10076,7 @@
       <sentence><![CDATA[<sentence p1="" p2="" hint="" name="Sentence" />]]></sentence>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10157,7 +10171,7 @@
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10252,7 +10266,7 @@
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10335,7 +10349,7 @@
       <thumbnailImage><![CDATA[<thumbnailImage name="Image" text="" align="Top" url="" linktarget="none" link="" tip=""/>]]></thumbnailImage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10444,7 +10458,7 @@
       <timelinedate><![CDATA[<timelinedate name="Enter Item Name" text=""/>]]></timelinedate>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10559,7 +10573,7 @@
 
     <startBtnTxt label="Start Button Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Start" mandatory="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10660,7 +10674,7 @@
     <newNodes>
         <optionXQ><![CDATA[<option answer="" name="Answer" feedback="Feedback for this option" correct="false"/>]]></optionXQ>
     </newNodes>
-<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+<resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10747,7 +10761,7 @@
       <nestedSynch><![CDATA[<nestedSynch text="" synch="0" name="Synch Point" />]]></nestedSynch>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10839,7 +10853,7 @@
       <videoSynchPoint><![CDATA[<videoSynchPoint name="Enter Title Here" text="Content for the pane" align="Top" synch="0"/>]]></videoSynchPoint>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10931,7 +10945,7 @@
     <url label="Article URL" type="textInput"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11025,7 +11039,7 @@
 	<retryBtnTxt label="Retry Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<fillChars label="Alternative Fill Characters" type="TextInput" wysiwyg="false" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11104,7 +11118,7 @@
     <initObject type="TextInput" label="InitObject" optional="true" flashonly="true"/>
 	<errorTxt label="Error Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11187,7 +11201,7 @@
     <launchvideo label="Launch Video Link" type="textInput" divider="true" language="true" deprecated="This property is no longer required"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11269,7 +11283,7 @@
 	<resultsTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
     <apiErrorMesg label="Google Youtube API error message" type="textInput" language="true"/>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" columns="3" colWidths="25,25,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
