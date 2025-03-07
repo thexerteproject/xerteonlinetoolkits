@@ -157,6 +157,7 @@
 	  <slideshow description="This page contains sub-pages where clicking the next and previous buttons changes the information presented."/>
 	  <audioSlideshow description="This page displays content in sync with an audio file. New content is added to the page as the audio plays." prompt="Slide changed"/>
 	  <videoSynch description="This page displays content in sync with a video. New content is added to the page as the video plays." prompt="Content changed"/>
+	  <mediaLesson description="This page displays content in sync with a video or a piece of audio. New content is added to the page as the media plays." prompt="Content added"/>
 	  <list description="This page contains a list of links where each one reveals some related information." click="Click to reveal information"/>
 	  <modelAnswerResults selected="Text selected"/>
 	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
