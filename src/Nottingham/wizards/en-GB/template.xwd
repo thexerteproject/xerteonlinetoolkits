@@ -923,7 +923,7 @@
 
           <graphType label="Graph Type" type="combobox" conditionTrigger="true" condition="interactionType=='score'" data="bar_marks,bar_marks_score,bar_comb_marks,line_own_marks,line_average_marks" options="Bar graph for received marks,Bar graph for average scores,Bar graph for combined received marks, Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_marks" optional="true"/>
 
-          <answerGraphType label="Graph Type" type="combobox" conditionTrigger="true" condition="interactionType=='answer'" data="bar_answers" options="Bar graph for given answers" defaultValue="bar_answers" optional="true"/>
+          <answerGraphType label="Graph Type" type="combobox" condition="interactionType=='answer'" data="bar_answers,test2" options="Bar graph for given answers," defaultValue="bar_answers" optional="true"/>
 
           <groupGraphType label="Graph Type" type="combobox" conditionTrigger="true" condition="interactionType=='grouping' || interactionType=='groupings' || interactionType=='opinionclasses'" data="bar_answers,bar_marks,bar_marks_score,bar_comb_marks,hor_bar_comb_marks,hor_bar_comb_marks_avg,pie_marks,line_own_marks,line_average_marks,polar_area_per_category" options="Bar graph for given answers,Bar graph for received marks,Bar graph for average scores,Bar graph for combined received marks,Horizontal bar graph for combined received marks, Horizontal bar graph with averages,Pie chart for received marks,Line graph for own received marks,Line graph for average marks of others,Polar chart for subject overview" defaultValue="bar_answers" optional="true"/>
 
