@@ -6778,7 +6778,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 
 		// add wcag logo and link if not hidden
 		if (x_params.wcagHide !== 'true') {
-			$p1.before("<a class='wcagLink' target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=214#home'><img class='wcagLogo' src='" + x_templateLocation + "common_html5/wcag2.1AA-blue-v.png' alt='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo") + "' title='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + "'> </a>");
+			$p1.before("<a class='wcagLink' target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=214#home'><img class='wcagLogo' src='" + x_templateLocation + "common_html5/wcag2.2AA-blue.png' alt='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo") + "' title='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + "'> </a>");
 
 			if (x_params.wcagAlt !== undefined) {
 				$(".wcagLogo").attr("alt",x_params.wcagAlt);
