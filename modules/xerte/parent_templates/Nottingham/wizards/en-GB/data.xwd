@@ -315,7 +315,7 @@
 	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro="" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories><chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title"/>]]></chapter><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="" textWidth="narrow" url="" tip="" highlight="false" align="Left"
+	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories><chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title"/>]]></chapter><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="" textWidth="narrow" url="" tip="" highlight="false" hs_showTooltip="true" align="Left"
 	  notFoundMessage="could not be found in this project." />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true" align="Left"
 	  acrossLabel="Across"
 	  downLabel="Down"
@@ -2323,7 +2323,7 @@
     <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	<highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
-	<hs_showTooltip label="Show Tooltip" type="CheckBox" defaultValue="true" tooltip="Show tooltip on hover. When checked, the label text is used as the hotspot tooltip"/>
+	<hs_showTooltip label="Show Tooltip" type="CheckBox" defaultValue="true" tooltip="Show hotspot title as a tooltip on hover" mandatory="true"/>
 
 	<image type="group" label="Image">
 		<url label="File" type="media" placeholder="Select an image"/>
@@ -2438,7 +2438,8 @@
 	<name label="Title" type="TextInput" wysiwyg="false"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
-	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" conditionTrigger="true" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
+	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" conditionTrigger="true" condition="imageFile!=null||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
+	<windowSoundType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" conditionTrigger="true" condition="hotspotSound!=null&amp;&amp;playerType!='auto'" defaultValue="dialog" mandatory="true" width="200"/>
 	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="((imageFile!=null||hotspotPopUp!=null)&amp;&amp;hotspotSound==null&amp;&amp;hotspotMovie==null)&amp;&amp;windowType=='bubble'" defaultValue="false" width="200"/>
     <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="mode=='icon'"/>
 
@@ -2463,7 +2464,7 @@
 
     <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is deprecated. Videos now reset on completion by default."/>
 
-	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked" condition="windowType!='bubble'">
+	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
 		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select an audio file"/>
 		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" conditionTrigger="true" data="player,auto" defaultValue="player" width="200" optional="true"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" condition="playerType!='auto'" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
