@@ -58,6 +58,8 @@ var videoSynch = new function() {
 						});
 			});
 		}
+
+		$('<div id="srInfo" class="sr-only" aria-live="assertive"></div>').insertAfter("#pageVideo");
 	}
 
 	this.setUp = function() {
@@ -136,7 +138,7 @@ var videoSynch = new function() {
 				divString = x_addLineBreaks($this.attr("text")) + imgStr;
 			}
 
-			var $caption = $('<div aria-live="polite" tabindex="0"></div>')
+			var $caption = $('<div tabindex="0"></div>')
 					.data({
 						"synch": $this.attr("synch"),
 						"content": divString
@@ -236,6 +238,13 @@ var videoSynch = new function() {
 							if (pause == "True") {
 								pop.pause();
 							}
+
+							// try to get screen readers to notify user of contents change
+							const slideChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("videoSynch")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("videoSynch").find("audioSlideshow")[0], "prompt") : (x_params.language === "en-GB" ? "Content changed" : undefined);
+							if (slideChgTxt !== undefined) {
+								$("#srInfo").html(slideChgTxt);
+								setTimeout(function() { $("#srInfo").html(''); }, 50);
+							}
 						}
 					} else {
 						$thisCaption
@@ -251,6 +260,13 @@ var videoSynch = new function() {
 							
 							if (pause == "True") {
 								pop.pause();
+							}
+
+							// try to get screen readers to notify user of contents change
+							const slideChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("videoSynch")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("videoSynch").find("audioSlideshow")[0], "prompt") : (x_params.language === "en-GB" ? "Content changed" : undefined);
+							if (slideChgTxt !== undefined) {
+								$("#srInfo").html(slideChgTxt);
+								setTimeout(function() { $("#srInfo").html(''); }, 50);
 							}
 						}
 					} else {
