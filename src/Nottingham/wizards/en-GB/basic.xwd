@@ -147,6 +147,26 @@
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
 
+    <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
+	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
+	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
+	  <resourceShowIn label="Open URL/File in" type="ComboBox" defaultValue="new" options="This window,New window,Lightbox" data="this,new,lightbox" optional="true"/>
+	  <resourceCompletionGroup label="Completion" type="group" optional="true">
+	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+        <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
+	    <resourceWarningGroup label="Warning" type="group" condition="resourceCompletion=='true'" optional="true">
+			<resourceCompletionWarning label="Warn if incomplete" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="resourceCompletion=='true'" optional="true"/>
+			<resourceCompletionWarningTitle label="Title" type="TextInput" defaultValue="Incomplete Resources" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true" />
+			<resourceCompletionWarningTxt label="Text" type="TextArea" height="100" defaultValue="You haven't completed all the supplementary resources. Would you like to proceed or review them first?" placeholder="" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true"/>
+		</resourceWarningGroup>
+	  </resourceCompletionGroup>
+	  <resourceAppearanceGroup label="Button" type="group" optional="true">
+	    <resourceBtn label="Appearance" type="ComboBox" defaultValue="icon" options="Icon only,Icon and text" data="icon,text" optional="true"/>
+	    <resourceIc type="CheckBox" label="Customise Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Resources button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<resourceIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-folder-open" condition="resourceIc=='true'" optional="true"/>
+	  </resourceAppearanceGroup>
+	</resourceGroup>
+
 	<splashScreenGroup label="Video Splash Screen" type="group" optional="true" tooltip="Add a short, full screen 'splash' video that is shown and auto-played when the project first loads">
 	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file"/>
 	  <splashShow label="Show" type="ComboBox" defaultValue="first" options="When project loads on first page only,When project loads on any page" data="first,always" optional="true" tooltip="Determines whether the splash screen is shown everytime the project loads (even if the first page shown is not page one) or only when the first page shown is page one."/>
