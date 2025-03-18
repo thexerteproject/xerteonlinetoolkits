@@ -21,10 +21,25 @@ if(is_user_permitted("useradmin")){
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if ($xerte_toolkits_site->altauthentication != "" && isset($_SESSION['altauth']))
+    if ($authmech->check() && $authmech->canManageUser($jsscript))
     {
-        $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+        $authmech_can_manage_users = true;
+    }
+    else
+    {
+        $authmech_can_manage_users = false;
+    }
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+        if ($altauthmech->check() && $altauthmech->canManageUser($jsscript))
+        {
+            $altauthmech_can_manage_users = true;
+        }
+        else
+        {
+            $altauthmech_can_manage_users = false;
+        }
     }
     // Easy checks first
     $mesg = "";
@@ -34,7 +49,12 @@ if(is_user_permitted("useradmin")){
     }
     if (strlen($mesg) == 0)
     {
-        $mesg = $authmech->delUser(urldecode(x_clean_input($_POST['username'])));
+        if ($authmech_can_manage_users) {
+            $mesg = $authmech->delUser(urldecode(x_clean_input($_POST['username'])));
+        }
+        else if ($altauthmech_can_manage_users) {
+            $mesg = $altauthmech->delUser(urldecode(x_clean_input($_POST['username'])));
+        }
 
     }
     if (strlen($mesg) > 0)
@@ -46,7 +66,12 @@ if(is_user_permitted("useradmin")){
     {
         $finalmesg = "<p style=\"color: green\">" . AUTH_DB_DELUSER_SUCCEEDED . "</p>";
     }
-    $authmech->getUserList(true, $finalmesg);
+    if ($authmech_can_manage_users) {
+        $authmech->getUserList(true, $finalmesg);
+    }
+    else if ($altauthmech_can_manage_users) {
+        $altauthmech->getUserList(true, $finalmesg);
+    }
 }
 
 ?>
