@@ -83,7 +83,12 @@ if(is_user_permitted("useradmin") || $supposed_user == $real_user){
 
     if (strlen($mesg) == 0)
     {
-        $mesg = $authmech->changePassword(urldecode($supposed_user), urldecode($password));
+        if ($authmech_can_manage_users) {
+            $mesg = $authmech->changePassword(urldecode($supposed_user), urldecode($password));
+        }
+        else if ($altauthmech_can_manage_users) {
+            $mesg = $altauthmech->changePassword(urldecode($supposed_user), urldecode($password));
+        }
     }
     if (strlen($mesg) > 0)
     {
