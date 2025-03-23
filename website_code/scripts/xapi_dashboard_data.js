@@ -39,12 +39,95 @@ DashboardState.prototype.clear = function () {
 };
 
 DashboardState.prototype.getStatements = function (q, one, callback, force_xapi=false) {
-  if (this.info.lrs.aggregate && !force_xapi) {
+  if (this.info.lrs.db && callback != null && !force_xapi)
+  {
+    this.getStatementsFromDB(q, one).then(() => callback());
+  }
+  else if (this.info.lrs.aggregate && !force_xapi) {
     this.getStatementsAggregate(q, one, callback);
   } else {
     this.getStatementsxAPI(q, one, callback);
   }
 };
+
+DashboardState.prototype.httpGetStatements = async function(url, query)
+{
+  const auth = btoa(`${lrsUsername}:${lrsPassword}`);
+  try {
+    const result = await $.ajax({
+      url: url,
+      type: "POST",
+      headers: {
+        'X-XERTE-USEDB': 'true',
+        'Authorization': 'Basic ' + auth
+      },
+      data: query,
+      dataType: "json"
+    });
+    return result;
+  }
+  catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+DashboardState.prototype.getStatementsFromDB = async function(q, one)
+{
+  let search = {};
+  let activity = "";
+  if (q['filter_current_users'] != undefined) {
+    if (q['filter_current_users'] == 'true') {
+      const lti_user_list = lti_users.split(',');
+      search['actor'] = lti_user_list;
+    }
+    delete q['filter_current_users'];
+  }
+  if (q['activity'] != undefined && typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && q['activity'].indexOf(lrsExtraInstall['source']) == 0) {
+    search['xapiobjectid'] = [q['activity'], q['activity'].replace(lrsExtraInstall['source'], lrsExtraInstall['extra'])];
+    activity = q['activity'];
+    delete q['activity'];
+  }
+  $.each(q, function(i, value) {
+    search[i] = value;
+  });
+  if (one) {
+    limit=1;
+  } else {
+    limit = 5000;
+  }
+
+  let query = 'statements=1&realtime=0&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
+  this.clear();
+  $this = this;
+  do
+  {
+    const response = await this.httpGetStatements(lrsEndpoint, query);
+    $this.rawData = [...$this.rawData, ...response.statements];
+    $('#loader_text').html(
+        XAPI_DASHBOARD_DATA_RETRIEVE_DATA + " " + Math.round((1 * 100) / 5) + "%"
+    );
+    if (response.more) {
+      query = response.more;
+    }
+    else
+    {
+      query = null;
+    }
+  } while (query != null && query != "");
+  // Transform the statements to the correct activity
+  if (typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && activity.indexOf(lrsExtraInstall['source']) == 0) {
+    for (let i = 0; i < $this.rawData.length; i++) {
+      if ($this.rawData[i].object.id.indexOf(lrsExtraInstall['extra']) == 0) {
+        $this.rawData[i].object.id = activity;
+      }
+    }
+  }
+  $this.rawDatamap = [];
+  for (var i = 0; i < $this.rawData.length; i++)
+    $this.rawDatamap[i] = i;
+}
+
 
 DashboardState.prototype.getStatementsxAPI = function (q, one, callback) {
   //ADL.XAPIWrapper.log.debug = true;
