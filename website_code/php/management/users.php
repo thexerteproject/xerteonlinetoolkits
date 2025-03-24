@@ -63,10 +63,10 @@ if(is_user_permitted("useradmin")){
         echo "<h2>" . USERS_MANAGE_AUTH . "</h2>";
         echo "<div id=\"manage_auth_users\">";
         if ($authmech_can_manage_users) {
-            $authmech->getUserList(true, "xerte");
+            $authmech->getUserList(true, "");
         }
         else if ($altauthmech_can_manage_users) {
-            $altauthmech->getUserList(true, "xerte");
+            $altauthmech->getUserList(true, "");
         }
         echo "</div>";
     }
