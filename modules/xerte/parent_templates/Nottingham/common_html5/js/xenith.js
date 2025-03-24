@@ -62,6 +62,7 @@ var x_languageData  = [],
 		{name: 'help',				defaultIconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
 		{name: 'saveSession',		defaultIconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
 		{name: 'glossary',			defaultIconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
+		{name: 'resource',			defaultIconClass:'fa fa-folder-open',				custom: 'resourceIc',		defaultFA: 'fa fa-folder-open'},			// resources
 		{name: 'intro',				defaultIconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
 		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
 	];
@@ -1463,10 +1464,10 @@ function x_continueSetUp1() {
 					
 					// there are different types of content that might appear in project intro lightbox
 					if (introInfo.type == 'img') {
-
 						lb = $.featherlight({
 							image: introInfo.info.img,
 							afterOpen: function() {
+
 								this.$content.attr('alt', introInfo.info.tip);
 
 								const $holder = this.$content.parent('.featherlight-content');
@@ -1713,12 +1714,14 @@ function x_continueSetUp1() {
 				});
 		}
 
+		XENITH.RESOURCES.init();
 		XENITH.PROGRESSBAR.init();
 
 		// hide page counter
 		if (x_params.pageCounter == "true") {
 			$x_pageNo.remove();
 		}
+
 		XENITH.ACCESSIBILITY.buildBtn();
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
@@ -2513,8 +2516,16 @@ function x_setMaxWidth() {
 }
 
 // function called on page change to remove old page and load new page model
-// If x_currentPage == -1, than do not try to exit tracking of the page
+// check if there are any warnings that need to be given before proceeding
 function x_changePage(x_gotoPage, addHistory) {
+	if (x_currentPage === -1 || XENITH.RESOURCES.checkCompletion(x_gotoPage, addHistory)) {
+		x_changePageApproved(x_gotoPage, addHistory);
+	}
+}
+
+// function called on page change to remove old page and load new page model
+// If x_currentPage == -1, than do not try to exit tracking of the page
+function x_changePageApproved(x_gotoPage, addHistory) {
 	x_gotoPage = Number(x_gotoPage);
 
 	var standAlonePage = x_pageInfo[x_gotoPage].standalone,
@@ -2942,6 +2953,8 @@ function x_changePageStep3() {
 			$x_pageIntroBtn.hide();
 		}
 	}
+
+	XENITH.RESOURCES.showHideBtn();
 
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
@@ -5163,7 +5176,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				.attr("aria-label", $x_glossaryBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.glossaryTarget == "lightbox") {
-						
+
 						$.featherlight($(), {
 							contentFilters: 'ajax',
 							ajax: x_templateLocation + 'models_html5/glossary.html',
@@ -6976,6 +6989,434 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 	self.specialTheme = specialTheme;
 	self.removeBg = removeBg;
 	self.responsiveTxt = responsiveTxt;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** ADDITIONAL RESOURCES *****
+// Adds a button to footer or header bar containing:
+// - List of additional resources associated with the page
+// - These can be links, files or internal Xerte page links
+// - Optional: completion checkboxes (manually triggered by students) & warning if all resources aren't completed
+// ** side bar option?
+// ** theme testing
+// ** header bar height is not always correct
+var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
+	// declare local variables
+	let resources = false;
+	let $x_pageResourcesBtn;
+	let resourcesInfo = [];
+	let trackCompletion = false;
+	let suppressWarning = [];
+	let stopWarning = false;
+
+	// function adds resources button to header / side bar if any pages in the project have some associated resources
+	function init() {
+		for (let i=0; i<x_pages.length; i++) {
+			// has the resources optional property been added to a page & does it contain useful info?
+			if (!(XENITH.PAGEMENU.menuPage && i==0) && x_pages[i].getAttribute("resources") != undefined) {
+				if (x_pages[i].getAttribute("resources").replace(/[|]/g,"").trim() != "") {
+
+					// returns resource type
+					function getResourceType(resource) {
+						if (resource.trim() == "") {
+							// XOT page
+							return "page";
+						} else {
+							resource = resource.toLowerCase();
+							if (resource.endsWith(".mp3")) {
+								// audio
+								return "audio";
+							} else if (resource.endsWith(".png") || resource.endsWith(".jpg") || resource.endsWith(".jpeg") || resource.endsWith(".gif") || resource.endsWith(".svg")) {
+								// image
+								return "image";
+							} else if (resource.endsWith(".doc") || resource.endsWith(".docx")) {
+								// word doc
+								return "file";
+							} else if (resource.endsWith(".pdf")) {
+								// pdf
+								return "filePdf";
+							} else if (resource.endsWith(".mp4") || resource.endsWith(".mov") || resource.endsWith(".wmv") || resource.endsWith(".webm")) {
+								// video
+								return "video";
+							} else if (x_isYouTubeVimeo(resource) !== false) {
+								// youtube or vimeo
+								return "videoEmbed";
+							} else if (resource.startsWith("http")) {
+								// URL
+								return "url";
+							} else {
+								return "other";
+							}
+						}
+					}
+
+					const pageResourceInfo = x_pages[i].getAttribute("resources").split("||");
+					const pageResources = [];
+					for (let j=0; j<pageResourceInfo.length; j++) {
+						const resource = pageResourceInfo[j].split("|");
+						// the resource is either a link, file path (resources[1]) or a Xerte page link (resources[2])
+						if (resource.length === 4 && resource[1].trim() !== "" || resource[2] !== "") {
+							pageResources.push({
+								"title": resource[0],
+								"link": resource[1].trim() !== "" ? resource[1].trim() : resource[2],
+								"type": getResourceType(resource[1]),
+								"description": resource[3].trim(),
+								"complete": false
+							});
+						}
+					}
+
+					if (pageResources.length === 0) {
+						// no useful resource entries found for this page
+						x_pages[i].removeAttribute("resources");
+					} else {
+						resources = true;
+					}
+
+					resourcesInfo.push(pageResources);
+
+				} else {
+					// resources data grid is empty (string only contains | , or whitespace)
+					x_pages[i].removeAttribute("resources");
+					resourcesInfo.push([]);
+				}
+			} else {
+				resourcesInfo.push([]);
+			}
+
+			suppressWarning.push(false);
+		}
+
+		// at least one page has some associated resources
+		if (resources === true) {
+
+			trackCompletion = x_params.resourceCompletion == "true";
+
+			// add the resources button to header bar - this will be hidden until viewing a page with associated resources
+			const resourceIcon = x_btnIcons.filter(function(icon){return icon.name === 'resource';})[0];
+			$x_pageResourcesBtn = $('<button id="x_pageResourcesBtn"></button>').appendTo($('#x_headerBlock h2'));
+
+			let btnLabel = !trackCompletion ? x_getLangInfo(x_languageData.find("resources")[0], "text", "{x} Resources Available") : x_getLangInfo(x_languageData.find("resources")[0], "completeText", "{y}/{x} Resources Complete");
+			btnLabel = btnLabel
+				.replace("{x}", "<span class='totalResourcesNum'></span>")
+				.replace("{y}", "<span class='completedResourcesNum'></span>");
+			btnLabel += " <span class='x_resourcesClickTxt'><span class='sr-only'>" + x_params.dialogTxt + "</span></span>";
+
+			$x_pageResourcesBtn
+				.button({
+					icons: {
+						primary: resourceIcon.iconClass
+					},
+					label: btnLabel,
+					text: x_params.resourceBtn == "text" ? true : false
+				})
+				.click(function() {
+					build();
+				});
+
+			// if no text shown on button, add a circle with no. of resources in it
+			if (x_params.resourceBtn !== "text") {
+				$x_pageResourcesBtn.append("<div class='resourceNumber'><div class='resourceNumberTxt'></div></div>");
+			}
+		}
+	}
+
+	// function builds the resources lightbox when button clicked
+	function build() {
+		const $resourceHolder = $("<div id='x_resources'></div>");
+
+		if (x_params.resourceTitle != undefined && x_params.resourceTitle.trim() != "") {
+			$resourceHolder.append("<h1 id='x_resourceHeader'>" + x_params.resourceTitle + "</h1>");
+		}
+		if (x_params.resourceText != undefined && x_params.resourceText.trim() != "") {
+			$resourceHolder.append("<div id='x_resourceTxt'>" + x_params.resourceText + "</div>");
+		}
+		if (trackCompletion && x_params.resourceCompletionTxt != undefined && x_params.resourceCompletionTxt.trim() != "") {
+			$resourceHolder.append("<div id='x_resourcePercentage'><p>" + x_params.resourceCompletionTxt.replace("{x}", "<span class='resourcePercentage'>" + 0 + "</span>") + "</p></div>");
+		}
+
+		// create a table where the resources will be listed
+		const $resourceTable = $("<table id='x_resourceTable' class='horizontal'></table>").appendTo($resourceHolder);
+		const $tableHeader = $("<thead><tr><th class='titleCell'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "title", "Title") + "</th><th class='descriptionCell'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "description", "Description") + "</th><th class='actionCell'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "actions", "Actions") + "</th></tr></thead>").appendTo($resourceTable);
+
+		// create a column for completion data if it's being tracked
+		if (trackCompletion) {
+			$tableHeader.find("tr").append("<th class='completeCell'><span id='completeCheckLabel'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "complete", "Mark as complete") + "</span></th>");
+		}
+
+		// add a row for each resource
+		const $tableBody = $("<tbody></tbody>").appendTo($resourceTable);
+		const pageResources = resourcesInfo[x_currentPage];
+
+		// returns appropriate Font Awesome icon for resource type
+		function getResourceIcon(type) {
+			if (type == "page") {
+				return "fa-link";
+			} else if (type == "audio") {
+				return "fa-podcast";
+			} else if (type == "image") {
+				return "fa-image";
+			} else if (type == "file" || type == "filePdf") {
+				return "fa-file-lines";
+			} else if (type == "video" || type == "videoEmbed") {
+				return "fa-film";
+			} else if (type == "url") {
+				return "fa-globe";
+			} else {
+				return "fa-file";
+			}
+		}
+
+		const viewBtn = "<button class='resourceViewBtn'></button>";
+		const downloadBtn = "<a class='resourceDownloadBtn' download>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "downloadBtn", "Download resources") + "</a>"
+		for (let i=0; i<pageResources.length; i++) {
+			const thisResource = pageResources[i];
+			// download button is only needed for files uploaded (not URLs or XOT page links)
+			const thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" ? downloadBtn : "";
+
+			// there are different ways the resource may open - this window, new window, lightbox
+			let target = thisResource.type == "page" ? null : downloadBtn === "" ? (x_params.resourceShowIn != undefined ? x_params.resourceShowIn : "_blank") : (x_params.resourceShowFileIn != undefined ? x_params.resourceShowFileIn : "lightbox");
+			let thisViewBtn = viewBtn;
+			if (thisResource.type == "file") { // word doc - can't preview so only have download btn
+				target = null;
+				thisViewBtn = "";
+			}
+
+			const resourceIcon = getResourceIcon(thisResource.type);
+
+			const linkElement = target == "_blank" || target == "_self" ? "a" : "button";
+			const $resourceRow = $("<tr class='resourceRow'><td class='titleCell'><div class='resourceLinkHolder'><i aria-hidden='true' class='resourceIcon fa fa-fw " + resourceIcon + "'></i><" + linkElement + " class='resourceLink'>" + thisResource.title + "</" + linkElement + "></div></td><td class='descriptionCell'>" + thisResource.description + "</td><td class='actionCell'><div class='actionBtnHolder'>" + thisViewBtn + thisDownloadBtn + "</div></td></tr>").appendTo($tableBody);
+			$resourceRow.find(".resourceDownloadBtn").attr("href", thisResource.link);
+			if (trackCompletion) {
+				$resourceRow.append("<td class='completeCell'><input id='resourceComplete" + i + "' name='resourceComplete" + i + "' aria-labelledby='completeCheckLabel' class='resourceComplete' type='checkbox' " + (thisResource.complete ? "checked" : "") + " /></td>");
+			}
+
+			if (target == "_blank" || target == "_self") {
+				// normal link opening in this or new window
+				$resourceRow.find(".resourceLink").attr({
+					"href": thisResource.link,
+					"target": target
+				});
+
+				// add a warning about opening in new window
+				if (target == "_blank") {
+					$resourceRow.find(".resourceLink").append("<span class='sr-only'> " + x_params.newWindowTxt + "</span>");
+				}
+
+			} else if (target == "lightbox") {
+				// opens in a lightbox
+				$resourceRow.find(".resourceLink").click(function() {
+					if ((thisResource.type !== "videoEmbed" && thisDownloadBtn === "") || thisResource.type == "filePdf") {
+						// url or file
+						$.featherlight({iframe: thisResource.link, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+
+					} else if (thisResource.type == "image") {
+						$.featherlight({
+							image: thisResource.link,
+							afterOpen: function () {
+								// add alt text to image
+								this.$content.attr("alt", thisResource.title);
+							}
+						});
+					} else if (thisResource.type == "audio") {
+						const $pageAudio = $('<div id="resourceAudio"></div>')
+							.width($x_mainHolder.width() * 0.8)
+							.css('max-width', '300px');
+
+						$.featherlight($pageAudio);
+
+						$('#resourceAudio')
+							.attr('title', thisResource.title)
+							.mediaPlayer({
+								type: 'audio',
+								source: thisResource.link,
+								width: '100%'
+							});
+
+					} else if (thisResource.type == "video" || thisResource.type == "videoEmbed") {
+						$.featherlight('<div id="resourceVideo"></div>', {afterOpen: function () {
+							this.$content.parent(".featherlight-content").addClass("resourceVideo");
+							if (thisResource.type == "videoEmbed") {
+								this.$content.parent(".featherlight-content").addClass('max youTube');
+							}
+						}});
+
+						$('#resourceVideo')
+							.attr('title', thisResource.title)
+							.mediaPlayer({
+								type: 'video',
+								source: thisResource.link,
+								width: '100%',
+								height: '100%',
+								pageName: 'resourceVideo'
+							});
+					}
+				})
+				// add a warning about opening in lightbox
+				.append("<span class='sr-only'> " + x_params.dialogTxt + "</span>");
+
+			} else {
+				// XOT page link
+				// this will open in same window by default - unless it's a standalone page & it's been set to open in lightbox or new window
+				$resourceRow.find(".resourceLink").click(function() {
+					// don't show warning about incomplete resources on this page change
+					stopWarning = true;
+
+					// close this lightbox before moving page, otherwise standalone pages that should open in lightbox will not work (they will open in whole window)
+					$.featherlight.current().close();
+					x_navigateToPage(false,{type: 'linkID',ID: $(thisResource.link).attr("data-pageID")});
+				});
+			}
+		}
+
+		// set up the download & view buttons
+		$resourceTable.find(".resourceViewBtn").each(function() {
+			$(this).button({
+				icons: {
+					primary: "fa-solid fa-arrow-up-right-from-square"
+				},
+				label: x_getLangInfo(x_languageData.find("resources").find("table")[0], "viewBtn", "Open resource") + ": " + $(this).parents(".resourceRow").find(".resourceLink").text(),
+				text: false
+			}).click(function() {
+				if ($(this).parents(".resourceRow").find(".resourceLink").is("button")) {
+					$(this).parents(".resourceRow").find(".resourceLink").click();
+				} else {
+					// link - manually open
+					window.open($(this).parents(".resourceRow").find(".resourceLink").attr("href"), $(this).parents(".resourceRow").find(".resourceLink").attr("target"));
+				}
+			});
+		});
+
+		$resourceTable.find(".resourceDownloadBtn").each(function() {
+			const $temp = $(this).parents(".resourceRow").find(".resourceLink").clone();
+			$temp.find(".sr-only").remove();
+
+			$(this).button({
+				icons: {
+					primary: "fa-solid fa-download"
+				},
+				label: x_getLangInfo(x_languageData.find("resources").find("table")[0], "downloadBtn", "Download resource") + ": " + $temp.text(),
+				text: false
+			});
+		});
+
+		// set up the complete checkbox - users can manually check to say it's complete
+		if (trackCompletion) {
+			$resourceTable.find(".resourceComplete").change(function () {
+				const resourceIndex = $(this).parents(".resourceRow").index();
+				const checked = $(this).is(":checked");
+				resourcesInfo[x_currentPage][resourceIndex].complete = checked;
+
+				// mark all resources with an identical link (e.g. on other pages) to the same completion status as this
+				for (let i=0; i<resourcesInfo.length; i++) {
+					for (let j=0; j<resourcesInfo[i].length; j++) {
+						if (!(x_currentPage == i && resourceIndex == j) && resourcesInfo[x_currentPage][resourceIndex].link == resourcesInfo[i][j].link) {
+							resourcesInfo[i][j].complete = checked;
+						}
+					}
+				}
+
+				updatePercentage();
+			});
+		}
+
+		// remove the description column if no resources have a description
+		if ($resourceTable.find("td.descriptionCell:empty").length == $resourceTable.find("td.descriptionCell").length) {
+			$resourceTable.find(".descriptionCell").remove();
+		}
+
+		$.featherlight($resourceHolder, { variant: 'lightboxAuto' });
+		updatePercentage();
+	}
+
+	// function updates the percentage of resources completed
+	function updatePercentage() {
+		if (trackCompletion && $("#x_resourcePercentage").length > 0) {
+			let completeCount = 0;
+			for (let i=0; i<resourcesInfo[x_currentPage].length; i++) {
+				if (resourcesInfo[x_currentPage][i].complete) {
+					completeCount++;
+				}
+			}
+			$("#x_resourcePercentage .resourcePercentage").html(Math.floor(completeCount / resourcesInfo[x_currentPage].length * 100));
+			$x_pageResourcesBtn.find(".completedResourcesNum").html(completeCount);
+
+			if (x_params.resourceBtn != "text") {
+				// button has icon only - need to adjust the button title
+				$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
+			}
+		}
+	}
+
+	// function toggles the visibility of the show hide button on each page
+	function showHideBtn() {
+		if (resources == true) {
+			if (resourcesInfo[x_currentPage].length > 0) {
+				$x_pageResourcesBtn.show();
+				// update the no. resources & no. completed resources
+				$x_pageResourcesBtn.find(".totalResourcesNum").html(resourcesInfo[x_currentPage].length);
+				$x_pageResourcesBtn.find(".completedResourcesNum").html(resourcesInfo[x_currentPage].filter((obj) => obj.complete === true).length);
+				$x_pageResourcesBtn.find(".resourceNumberTxt").html(resourcesInfo[x_currentPage].length);
+
+				// button has icon only - need to adjust the button title
+				if (x_params.resourceBtn != "text") {
+					$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
+				}
+			} else {
+				$x_pageResourcesBtn.hide();
+			}
+		}
+	}
+
+	// function checks whether all resources have been completed on leaving a page and shows a warning if required
+	function checkCompletion(x_gotoPage, addHistory) {
+		// if there are resources on this page and the warning for incomplete resources is on, show a warning lightbox on page change if not all resources are complete
+		if (resources == true && resourcesInfo[x_currentPage].length > 0 && x_params.resourceCompletion == "true" && x_params.resourceCompletionWarning === "true" && resourcesInfo[x_currentPage].filter(item => item.complete === false).length > 0 && suppressWarning[x_currentPage] == false && !stopWarning) {
+			const $resourceWarning = $("<div id='x_resources'></div>");
+
+			if (x_params.resourceCompletionWarningTitle != undefined && x_params.resourceCompletionWarningTitle.trim() != "") {
+				$resourceWarning.append("<h1 id='x_resourceHeader'>" + x_params.resourceCompletionWarningTitle + "</h1>");
+			}
+			if (x_params.resourceCompletionWarningTxt != undefined && x_params.resourceCompletionWarningTxt.trim() != "") {
+				$resourceWarning.append("<div id='x_resourceTxt'>" + x_params.resourceCompletionWarningTxt + "</div>");
+			}
+
+			// end-users can suppress the 'you have not viewed all resources' message for current page
+			$resourceWarning.append("<div id='suppressWarningCheck'><input id='suppressWarning' name='suppressWarning' class='suppressWarning' type='checkbox' /><label for='suppressWarning'>" + x_getLangInfo(x_languageData.find("resources").find("warning")[0], "suppress", "Don't show this message again") + "</label></div>");
+			$resourceWarning.find(".suppressWarning").change(function () {
+				suppressWarning.splice(x_currentPage, 1, $(this).is(":checked"));
+			});
+
+			const continueBtn = "<button class='resourceContinueBtn'>" + x_getLangInfo(x_languageData.find("resources").find("warning")[0], "continue", "Continue anyway") + "</button>";
+			const reviewBtn = "<button class='resourceReviewBtn'>" + x_getLangInfo(x_languageData.find("resources").find("warning")[0], "review", "Review the resources") + "</button>";
+			$('<div id="suppressWarningBtnHolder"></div>').appendTo($resourceWarning).append(continueBtn).append(reviewBtn);
+
+			$resourceWarning.find(".resourceContinueBtn").button().click(function() {
+				// continue changing page
+				$.featherlight.current().close();
+				x_changePageApproved(x_gotoPage, addHistory);
+			});
+			$resourceWarning.find(".resourceReviewBtn").button().click(function() {
+				// close this lightbox & show the resources lightbox
+				$.featherlight.current().close();
+				build();
+			});
+
+			$.featherlight($resourceWarning, { variant: 'lightboxAuto' });
+
+		} else {
+			stopWarning = false; // if this is a page link from a resources window then we have suppressed the warning for this page change - turn this off so it will appear if needed in future
+			return true;
+		}
+	}
+
+	// make some public methods
+	self.init = init;
+	self.showHideBtn = showHideBtn;
+	self.checkCompletion = checkCompletion;
 
 	return parent;
 

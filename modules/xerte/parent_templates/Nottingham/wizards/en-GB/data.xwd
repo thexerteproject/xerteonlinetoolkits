@@ -151,7 +151,8 @@
     <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
 	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
 	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
-	  <resourceShowIn label="Open URL/File in" type="ComboBox" defaultValue="new" options="This window,New window,Lightbox" data="this,new,lightbox" optional="true"/>
+	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
 	  <resourceCompletionGroup label="Completion" type="group" optional="true">
 	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
         <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
