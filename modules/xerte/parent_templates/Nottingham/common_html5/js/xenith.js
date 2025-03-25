@@ -7377,7 +7377,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			if (x_params.resourceBtn != "text") {
 				$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
 			}
-		} else {
+		} else if (resources == true) {
 			$x_pageResourcesBtn.hide();
 		}
 	}
