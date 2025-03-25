@@ -304,3 +304,8 @@ table.headerCol.shaded td.header {
 	border-color: #cfcfcf;
 	background-color: #1c1c1c;
 }
+
+/* page resources */
+.resourceLink, .resourceLink:visited, .resourceLink:focus {
+	color: #cfcfcf;
+}

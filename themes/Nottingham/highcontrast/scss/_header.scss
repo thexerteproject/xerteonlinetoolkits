@@ -44,3 +44,23 @@
 #x_headerProgress .progressMarker.complete {
   border-color: $contrastcolor;
 }
+
+/* page resources */
+#x_pageResourcesBtn .resourceNumber {
+  background: $contrastcolor;
+  color: $blackordarkest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: $blackordarkest;
+  color: $whiteorlightest;
+}
+
+.resourceIcon {
+  border: none;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: $mainfontcolour;
+}

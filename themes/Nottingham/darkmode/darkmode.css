@@ -48,6 +48,39 @@
   border-color: #7094DB;
 }
 
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  border: none;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover, #x_pageResourcesBtn.ui-button-icon-only:active, #x_pageResourcesBtn.ui-button-icon-only:focus {
+  color: #7094DB;
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #7094DB;
+  color: #000000;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #ffffff;
+  color: #000000;
+}
+
+#x_resourceTable tr {
+  border-color: #E0E0E0;
+}
+
+.resourceIcon {
+  border: none;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #E0E0E0;
+}
+
 .x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar, .x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
 .x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
 .x_decision_page #overviewHolder .overviewStep,

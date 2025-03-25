@@ -1764,4 +1764,9 @@ var {
   box-shadow: none;
 }
 
+/* page resources */
+#x_resourceTable th {
+  vertical-align: middle;
+}
+
 /*# sourceMappingURL=cesicardiff.css.map */
