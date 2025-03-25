@@ -51,6 +51,26 @@
   border-color: #00FFFF;
 }
 
+/* page resources */
+#x_pageResourcesBtn .resourceNumber {
+  background: #00FFFF;
+  color: #000000;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #000000;
+  color: #ffffff;
+}
+
+.resourceIcon {
+  border: none;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #ffffff;

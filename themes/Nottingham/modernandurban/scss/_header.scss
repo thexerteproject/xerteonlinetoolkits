@@ -41,3 +41,27 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 #x_headerProgress .progressMarker.complete {
   border-color: $brightcolor;
 }
+
+
+/* page resources */
+#x_pageResourcesBtn:not(.ui-button-icon-only) {
+  border: 1px solid $whiteorlightest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $brightcolor;
+  color: $blackordarkest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: $blackordarkest;
+  color: $whiteorlightest;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: $whiteorlightest;
+}

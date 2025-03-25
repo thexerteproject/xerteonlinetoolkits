@@ -59,6 +59,22 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-color: #2196F3;
 }
 
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #f86718;
+  color: #000000;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #bdbdbd;
+  color: #000000;
+}
+
 .x_columnPage_page #textHolder,
 .x_imageSequence_page #controlBar,
 .x_nav_page #pageContents.col #textHolder,
