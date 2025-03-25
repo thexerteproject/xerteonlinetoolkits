@@ -52,7 +52,7 @@ DashboardState.prototype.getStatements = function (q, one, callback, force_xapi=
 
 DashboardState.prototype.httpGetStatements = async function(url, query)
 {
-  const auth = btoa(`${lrsUsername}:${lrsPassword}`);
+  const auth = btoa(this.info.lrs.lrskey + ":" + this.info.lrs.lrssecret);
   try {
     const result = await $.ajax({
       url: url,
@@ -83,8 +83,8 @@ DashboardState.prototype.getStatementsFromDB = async function(q, one)
     }
     delete q['filter_current_users'];
   }
-  if (q['activity'] != undefined && typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && q['activity'].indexOf(lrsExtraInstall['source']) == 0) {
-    search['xapiobjectid'] = [q['activity'], q['activity'].replace(lrsExtraInstall['source'], lrsExtraInstall['extra'])];
+  if (q['activity'] != undefined && typeof this.info.lrs.extra != 'undefined' && this.info.lrs.extra['source'] != undefined > 0 && q['activity'].indexOf(this.info.lrs.extra['source']) == 0) {
+    search['xapiobjectid'] = [q['activity'], q['activity'].replace(this.info.lrs.extra['source'], this.info.lrs.extra['extra'])];
     activity = q['activity'];
     delete q['activity'];
   }
@@ -96,16 +96,17 @@ DashboardState.prototype.getStatementsFromDB = async function(q, one)
   } else {
     limit = 5000;
   }
+  search['unsorted']=1;
 
-  let query = 'statements=1&realtime=0&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
+  let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
   this.clear();
   $this = this;
   do
   {
-    const response = await this.httpGetStatements(lrsEndpoint, query);
+    const response = await this.httpGetStatements(this.info.lrs.lrsendpoint, query);
     $this.rawData = [...$this.rawData, ...response.statements];
     $('#loader_text').html(
-        XAPI_DASHBOARD_DATA_RETRIEVE_DATA + " " + Math.round((1 * 100) / 5) + "%"
+        XAPI_DASHBOARD_DATA_RETRIEVE_DATA + " " + Math.round(($this.rawData.length * 100) / response.nrrecords) + "%"
     );
     if (response.more) {
       query = response.more;
@@ -115,14 +116,24 @@ DashboardState.prototype.getStatementsFromDB = async function(q, one)
       query = null;
     }
   } while (query != null && query != "");
+  $('#loader_text').html(
+        XAPI_DASHBOARD_DATA_PREPARE_GRAPHS
+  );
   // Transform the statements to the correct activity
-  if (typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && activity.indexOf(lrsExtraInstall['source']) == 0) {
+  if (typeof this.info.lrs.extra != 'undefined' && this.info.lrs.extra['extra'] != undefined > 0 && activity.indexOf(this.info.lrs.extra['extra']) == 0) {
     for (let i = 0; i < $this.rawData.length; i++) {
-      if ($this.rawData[i].object.id.indexOf(lrsExtraInstall['extra']) == 0) {
-        $this.rawData[i].object.id = activity;
+      if ($this.rawData[i].object.id.indexOf(this.info.lrs.extra['extra']) == 0) {
+        $this.rawData[i].object.id.replace(this.info.lrs.extra['extra'], this.info.lrs.extra['source']);
       }
     }
   }
+  // Sort statements in descending order
+  $this.rawData.sort((a, b) => {
+      if (a.timestamp < b.timestamp) {
+        return 1;
+      }
+      return -1;
+    });
   $this.rawDatamap = [];
   for (var i = 0; i < $this.rawData.length; i++)
     $this.rawDatamap[i] = i;
