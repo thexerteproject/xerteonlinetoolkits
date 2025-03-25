@@ -6805,6 +6805,11 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 		const $p1 = $colourChangerHolder.find("#p1").html(x_getLangInfo(x_languageData.find("colourChanger").find("selectTxt")[0], "label", "Select a theme for this project") + ":");
 		$colourChangerHolder.find("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Accessibility advice is available in the <a target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=151'>Xerte Online Toolkits guide to accessibility</a>."));
 
+		// add warning that links opens in new window if needed
+		if ($colourChangerHolder.find("#p2").find("a").length > 0 && $colourChangerHolder.find("#p2").find("a").attr("target") == "_blank") {
+			$colourChangerHolder.find("#p2").find("a").append(" <i class='fa fa-solid fa-arrow-up-right-from-square'></i><span class='sr-only'> " + x_params.newWindowTxt + "</span>");
+		}
+
 		// add wcag logo and link if not hidden
 		if (x_params.wcagHide !== 'true') {
 			$p1.before("<a class='wcagLink' target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=214#home'><img class='wcagLogo' src='" + x_templateLocation + "common_html5/wcag2.2AA-blue.png' alt='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo") + "' title='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + "'> </a>");
