@@ -186,7 +186,8 @@
 			<sbToC label="Table of Contents" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbProjectHelp label="Project Help" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbProjectIntro label="Project Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
-			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageResources label="Page Resources" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 		</sideBarBtns>
 		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
 		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>

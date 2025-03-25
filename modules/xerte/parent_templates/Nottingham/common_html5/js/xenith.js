@@ -72,7 +72,7 @@ var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
-	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
+	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_pageResourcesBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
@@ -2941,10 +2941,6 @@ function x_changePageStep3() {
     $("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
-    x_updateCss(false);
-
-	$("#x_pageDiv").show();
-
 	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
 		if (!XENITH.PAGEMENU.isThisMenu() && x_getIntroInfo(x_currentPageXML) != false) {
@@ -2955,6 +2951,10 @@ function x_changePageStep3() {
 	}
 
 	XENITH.RESOURCES.showHideBtn();
+
+    x_updateCss(false);
+
+	$("#x_pageDiv").show();
 
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
@@ -5732,6 +5732,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				}
 
 				// page level buttons (what the button does will change on each page)
+
 				// does at least one page in project have some page info added?
 				if (x_params.sbPageIntro == 'true') {
 					for (let i=0; i<x_pages.length; i++) {
@@ -5746,6 +5747,16 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 								x_sideBarBtns.push('pageIntro');
 								break;
 							}
+						}
+					}
+				}
+
+				// does at least one page in project have some page resources added?
+				if (x_params.sbPageResources == 'true') {
+					for (let i=0; i<x_pages.length; i++) {
+						if (x_pageInfo[i].type != "menu" && x_pages[i].getAttribute("resources") != undefined) {
+							x_sideBarBtns.push('resource');
+							break;
 						}
 					}
 				}
@@ -5905,6 +5916,11 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					}
 					if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
 						$x_pageIntroBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('resource', x_sideBarBtns) != -1) {
+						$x_pageResourcesBtn
 							.appendTo($x_sideBarHolder)
 							.button({text: btnTxt});
 					}
@@ -7000,13 +7016,9 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 // - List of additional resources associated with the page
 // - These can be links, files or internal Xerte page links
 // - Optional: completion checkboxes (manually triggered by students) & warning if all resources aren't completed
-// ** side bar option?
-// ** theme testing
-// ** header bar height is not always correct
 var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 	// declare local variables
 	let resources = false;
-	let $x_pageResourcesBtn;
 	let resourcesInfo = [];
 	let trackCompletion = false;
 	let suppressWarning = [];
@@ -7097,6 +7109,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 
 			// add the resources button to header bar - this will be hidden until viewing a page with associated resources
 			const resourceIcon = x_btnIcons.filter(function(icon){return icon.name === 'resource';})[0];
+			// add resources btn to the header bar - this might be moved to side bar later if that's where it's supposed to be
 			$x_pageResourcesBtn = $('<button id="x_pageResourcesBtn"></button>').appendTo($('#x_headerBlock h2'));
 
 			let btnLabel = !trackCompletion ? x_getLangInfo(x_languageData.find("resources")[0], "text", "{x} Resources Available") : x_getLangInfo(x_languageData.find("resources")[0], "completeText", "{y}/{x} Resources Complete");
@@ -7353,28 +7366,26 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 
 	// function toggles the visibility of the show hide button on each page
 	function showHideBtn() {
-		if (resources == true) {
-			if (resourcesInfo[x_currentPage].length > 0) {
-				$x_pageResourcesBtn.show();
-				// update the no. resources & no. completed resources
-				$x_pageResourcesBtn.find(".totalResourcesNum").html(resourcesInfo[x_currentPage].length);
-				$x_pageResourcesBtn.find(".completedResourcesNum").html(resourcesInfo[x_currentPage].filter((obj) => obj.complete === true).length);
-				$x_pageResourcesBtn.find(".resourceNumberTxt").html(resourcesInfo[x_currentPage].length);
+		if (resources == true && resourcesInfo[x_currentPage].length > 0) {
+			$x_pageResourcesBtn.show();
+			// update the no. resources & no. completed resources
+			$x_pageResourcesBtn.find(".totalResourcesNum").html(resourcesInfo[x_currentPage].length);
+			$x_pageResourcesBtn.find(".completedResourcesNum").html(resourcesInfo[x_currentPage].filter((obj) => obj.complete === true).length);
+			$x_pageResourcesBtn.find(".resourceNumberTxt").html(resourcesInfo[x_currentPage].length);
 
-				// button has icon only - need to adjust the button title
-				if (x_params.resourceBtn != "text") {
-					$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
-				}
-			} else {
-				$x_pageResourcesBtn.hide();
+			// button has icon only - need to adjust the button title
+			if (x_params.resourceBtn != "text") {
+				$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
 			}
+		} else {
+			$x_pageResourcesBtn.hide();
 		}
 	}
 
 	// function checks whether all resources have been completed on leaving a page and shows a warning if required
 	function checkCompletion(x_gotoPage, addHistory) {
 		// if there are resources on this page and the warning for incomplete resources is on, show a warning lightbox on page change if not all resources are complete
-		if (resources == true && resourcesInfo[x_currentPage].length > 0 && x_params.resourceCompletion == "true" && x_params.resourceCompletionWarning === "true" && resourcesInfo[x_currentPage].filter(item => item.complete === false).length > 0 && suppressWarning[x_currentPage] == false && !stopWarning) {
+		if (resources == true && x_gotoPage !== x_currentPage && resourcesInfo[x_currentPage].length > 0 && x_params.resourceCompletion == "true" && x_params.resourceCompletionWarning === "true" && resourcesInfo[x_currentPage].filter(item => item.complete === false).length > 0 && suppressWarning[x_currentPage] == false && !stopWarning) {
 			const $resourceWarning = $("<div id='x_resources'></div>");
 
 			if (x_params.resourceCompletionWarningTitle != undefined && x_params.resourceCompletionWarningTitle.trim() != "") {

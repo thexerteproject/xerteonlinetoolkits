@@ -1704,7 +1704,7 @@ a:focus .wcagLogo {
 	margin: 0 0 5px 10px;
 }
 
-#x_pageResourcesBtn {
+#x_headerBlock #x_pageResourcesBtn {
 	font-size: min(1.5em, 30px);
 }
 

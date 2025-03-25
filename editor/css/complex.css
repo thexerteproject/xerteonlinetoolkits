@@ -780,8 +780,8 @@ td.wizardlabel {
     min-width: 155px;
 }
 
-.wizardgroup .column_table td.wizardlabel {
-	/*min-width: auto;*/
+.wizardgroup .column_table > tbody > tr > td {
+	vertical-align: top;
 }
 
 td.wizardvalue {
