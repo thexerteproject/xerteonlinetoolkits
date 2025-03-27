@@ -1367,7 +1367,7 @@
        document.head.appendChild(script);
      }
      addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
-      if (numLoaded < 6) {
+      if (numLoaded < 7) {
         var fileToLoad;
         if (numLoaded == 0) {
           fileToLoad = x_templateLocation + "common_html5/js/chart.min.js";
@@ -1387,6 +1387,8 @@
           fileToLoad = x_templateLocation + "common_html5/js/jsPDF/jspdf.umd.min.js";
         } else if (numLoaded == 5) {
             fileToLoad = x_templateLocation + "common_html5/js/chartjs-adapter-moment.js";
+        } else if (numLoaded == 6) {
+            fileToLoad = x_templateLocation + "common_html5/js/dashboard-graphs.main.js";
         }
 
         $.getScript(fileToLoad)
@@ -2341,13 +2343,15 @@
                   graphSpace += "<div class='graph'><canvas id='" +
                       escapeUrl(url, type, interactionIndex) +
                       `-graph${i}'></canvas></div>`;
+                  graphSpace += "<div class='graph'><canvas id='" +
+                      escapeUrl(url, type, interactionIndex) +
+                      `-graph${i}-2'></canvas></div>`;
                   graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
                   graphSpace += '</div>';
 
 
                   div.append(graphSpace);
               } else if (
-                  interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks" ||
                   interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks_avg"
               ) {
 
@@ -2359,6 +2363,9 @@
                   graphSpace += "<div class='graph'><div id='" +
                       escapeUrl(url, type, interactionIndex) +
                       `-graph${i}'></div></div>`;
+                  graphSpace += "<div class='graph'><div id='" +
+                      escapeUrl(url, type, interactionIndex) +
+                      `-graph${i}-2'></div></div>`;
                   graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
                   graphSpace += '</div>';
 
@@ -2560,6 +2567,21 @@
               }
 
               let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
+              let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph-2" + currentPeriod;
+
+		      const graph = new DashboardGraphs.BarGraphReceivedMarks({
+                statements: statements,
+                options: {
+                  ctx: ctx2,
+                  graphFitInfoInBar: graphFitInfoInBar,
+                  groupScoreLabel: groupScore,
+                  showAvg: graphShowAvg,
+                  showAvgLine: graphShowAvgLine,
+                  showScore: graphShowScore,
+                  showNumberOfParticipants: interaction.getAttribute("showNrOfParticipants"),
+                }
+              });
+            graph.draw();
 
               //create labels
               let labels = [];
@@ -2585,6 +2607,9 @@
               let barBorderColor = barColors.slice();
               let barScoreColor = new Array(barRange.length);
               let barOwnScore = barSizeData.slice();
+
+              console.log('kaas', 'barRange', barRange);
+              console.log('kaas', 'barSizeData', barSizeData);
 
               if (followBlock == "true") {
                   for (let i = 0; i < statements.length; i++) {
@@ -2662,7 +2687,7 @@
               //convert to percentage and avg
               for (let i = 0; i < barSizeData.length; i++) {
                   if (barSizeData[i] !== 0) {
-                      groupAvg[i] = [groupAvg[i] / barSizeData[i] - 1, groupAvg[i] / Math.max(barSizeData[i], 1)];
+                    groupAvg[i] = [groupAvg[i] / barSizeData[i] - 1, groupAvg[i] / Math.max(barSizeData[i], 1)];
                   } else {
                       groupAvg[i] = [0, 0];
                   }
@@ -2698,6 +2723,7 @@
                   }
               }
 
+              console.log('kaas', 'barSizeData', barSizeData);
               let bardata = {};
               if (graphShowAvgLine == "true" && graphShowAvg == "true") {
                   bardata = {
