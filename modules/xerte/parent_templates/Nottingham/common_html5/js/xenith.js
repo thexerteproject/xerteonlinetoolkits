@@ -2431,7 +2431,12 @@ function x_lookupPage(type, id) {
 	if (type == "chapterID") {
 		return x_checkChapters(type, id);
 	} else {
-		return x_checkPages(type, id, x_pageInfo);
+		const response = x_checkPages(type, id, x_pageInfo);
+		if (!response) {
+			return x_checkChapters(type, id);
+		} else {
+			return response;
+		}
 	}
 }
 
