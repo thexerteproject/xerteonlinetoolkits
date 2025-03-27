@@ -33,6 +33,7 @@
 		this.pageChanged = function() {
 			$img = $("#image");
 			$pageContents = $("#pageContents");
+			$x_body.append('<div id="hotspot_bubble_holder">' + '</div>');
 			
 			$("#pageContents .selected").removeClass("selected");
 			$("#pageContents .highlighted").removeClass("highlighted");
@@ -46,6 +47,10 @@
                 // Keep unselected
                 $("area").mapster('deselect');
             }
+		};
+
+		this.leavePage = function() {
+			$("#hotspot_bubble_holder").remove();
 		};
 		
 		// function called every time the size of the LO is changed
@@ -159,7 +164,7 @@
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 			$('#hsIconHolder').empty();
 			$("#hotspot_bubble_holder").remove();
-			$("#panel").append('<div id="hotspot_bubble_holder">' + '</div>');
+			$x_body.append('<div id="hotspot_bubble_holder">' + '</div>');
 
 			$('#hotspot_bubble_holder').keyup(function(e) {
 				if (e.key === "Escape") {
