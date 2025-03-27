@@ -2573,12 +2573,12 @@
                 statements: statements,
                 options: {
                   ctx: ctx2,
-                  graphFitInfoInBar: graphFitInfoInBar,
+                  graphFitInfoInBar: graphFitInfoInBar == 'true',
                   groupScoreLabel: groupScore,
-                  showAvg: graphShowAvg,
-                  showAvgLine: graphShowAvgLine,
-                  showScore: graphShowScore,
-                  showNumberOfParticipants: interaction.getAttribute("showNrOfParticipants"),
+                  showAvg: graphShowAvg == 'true',
+                  showAvgLine: graphShowAvgLine == 'true',
+                  showScore: graphShowScore == 'true',
+                  showNumberOfParticipants: interaction.getAttribute("showNrOfParticipants") == 'true',
                 }
               });
             graph.draw();
