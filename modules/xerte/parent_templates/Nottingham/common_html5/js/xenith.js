@@ -6268,7 +6268,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				}
 
 			} else if (progressSub == "chapters") {
-				// add a progress marker to indicate the end of each chapter
+				// add a progress marker to the beginning of each chapter - this will be checked when every page in chapter is complete
 				// these might be evenly spaced or spaced in proportion to how many pages are in each chapter
 
 				// create an array of chapters - each item contains an array of page indexes for pages within that chapter
@@ -6309,7 +6309,35 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					let width;
 
 					for (let i=0; i<chapters.length; i++) {
+						let progressMarkerPosition;
 						for (let j=0; j<chapters[i].length; j++) {
+
+							if (extraPagesCopy.length > 0 && j===0) {
+								// before we look at pages within this chapter, there might be pages before this chapter starts that aren't in a chapter at all
+								// add a pbBar for these
+								for (let k=0; k<extraPagesCopy.length; k++) {
+									if (chapters[i][j] > extraPagesCopy[k]) {
+										left = (100 / totalPages * count) + "%";
+										width = (100 / totalPages) + "%";
+
+										$pbBar.clone().addClass("sub page" + extraPagesCopy[k]).appendTo($pbBarContainer)
+											.css("left", left)
+											.width(width)
+											.hide();
+
+										count++;
+
+										if (k+1 === extraPagesCopy.length) {
+											extraPagesCopy.splice(0,k+1);
+										}
+
+									} else {
+										extraPagesCopy.splice(0,k);
+										break;
+									}
+								}
+							}
+
 							// create a progress bar sub-item for every page within the chapter
 
 							// by default, chapters are spaced evenly with pages evenly spaced within each chapter
@@ -6324,29 +6352,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 								count++;
 							}
 
-							if (extraPagesCopy.length > 0 && j===0) {
-								// there might be pages before this chapter starts that aren't in a chapter at all
-								// add a pbBar for these
-								for (let k=0; k<extraPagesCopy.length; k++) {
-									if (chapters[i][j] > extraPagesCopy[k]) {
-										$pbBar.clone().addClass("sub page" + extraPagesCopy[k]).appendTo($pbBarContainer)
-											.css("left", left)
-											.width(width)
-											.hide();
-
-										left = (100 / totalPages * count) + "%";
-										width = (100 / totalPages) + "%";
-										count++;
-
-										if (k+1 === extraPagesCopy.length) {
-											extraPagesCopy.splice(0,k+1);
-										}
-
-									} else {
-										extraPagesCopy.splice(0,k);
-										break;
-									}
-								}
+							// the progress marker for chapter will indicate the 1st page in the chapter - position same as 1st page item
+							if (j==0) {
+								progressMarkerPosition = left;
 							}
 
 							$pbBar.clone().addClass("sub chapter" + i + "Page" + chapters[i][j]).appendTo($pbBarContainer)
@@ -6355,13 +6363,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 								.hide();
 						}
 
-						// create a progress marker at the end of the chapter
+						// create a progress marker at the beginning of the chapter
 						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
-						let left2 = "calc(" +  ((i+1)/chapters.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
-						if (progressBarSpacing == "false") {
-							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
-						}
-						$progressMarker.css("left", left2);
+						$progressMarker.css("left", "calc(" + progressMarkerPosition + " - " + ($progressMarker.outerWidth() / 2) + "px)");
 					}
 
 					if (extraPagesCopy.length > 0) {
