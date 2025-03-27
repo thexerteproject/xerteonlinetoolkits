@@ -6154,6 +6154,8 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	let chaptersCopy; // used to keep track of which pages are still to be viewed (viewed pages are removed from each chapter)
 	let extraPages; // pages outside of chapters
 	let milestones;
+	let completeTxt;
+	let incompleteTxt;
 
 	let $pbHolder;
 	let $pbContainer;
@@ -6240,6 +6242,26 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			}
 		}
 
+		// add the x% COMPLETE text holder to the progress bar
+		if (progressBarPercentage !== false) {
+			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
+
+			if (progressBarPosition == "footer") {
+				$pbTxt.appendTo($pbHolder);
+			} else {
+				$pbTxt.prependTo($pbHolder);
+			}
+
+			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
+			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
+				$pbTxt.css({
+					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
+					"margin-left": -$pbTxt.outerWidth(true)
+				});
+				$pbHolder.css("padding-left", $pbTxt.outerWidth());
+			}
+		}
+
 		$pbContainer = $('<div class="pbContainer"></div>').appendTo($pbHolder);
 		$pbBar = $('<div class="pbPercent pbBar">&nbsp;</div>');
 
@@ -6253,6 +6275,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbBarContainer.appendTo($pbContainer);
 			$pbMarkerContainer.appendTo($pbContainer);
 
+			// progress markers will be button elements if clickable & div elements if not clickable
+			const progressMarkerElement = progressSub !== false && x_params.progressBarSubLink !== "false" ? "button" : "div";
+
 			if (progressSub == "pages") {
 				// add a progress marker to indicate each page
 				// these will always be evenly spaced
@@ -6263,8 +6288,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						.width(100 / (totalPages-1) + "%")
 						.hide();
 
-					const $progressMarker = $('<div class="progressMarker"></div>');
-					$progressMarker.appendTo($pbMarkerContainer).css("left", "calc(" +  (i/(totalPages-1)*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
+					const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
+					$progressMarker
+						.data("title", x_pages[x_lookupPage("linkID", pageDetails[i].linkID)].getAttribute("name"))
+						.appendTo($pbMarkerContainer).css("left", "calc(" +  (i/(totalPages-1)*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
 				}
 
 			} else if (progressSub == "chapters") {
@@ -6274,8 +6301,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				// create an array of chapters - each item contains an array of page indexes for pages within that chapter
 				chapters = [];
 				extraPages = [];
+				let chapterNames = [];
 				for (let i=0; i<x_chapters.length; i++) {
 					chapters.push([]);
+					chapterNames.push(x_chapters[i].name);
 				}
 
 				for (let i = 0; i < x_pages.length; i++) {
@@ -6296,7 +6325,8 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					progressBarSpacing = "false";
 				}
 
-				// remove any chapters that don't contain any pages
+				// remove any chapters that don't contain any pages & also remove these empty chapters from chapterNames
+				chapterNames = chapterNames.filter((_, index) => chapters[index].length > 0);
 				chapters = chapters.filter(subArray => subArray.length > 0);
 
 				// these copies will have items removed as pages are viewed
@@ -6364,8 +6394,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						}
 
 						// create a progress marker at the beginning of the chapter
-						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
-						$progressMarker.css("left", "calc(" + progressMarkerPosition + " - " + ($progressMarker.outerWidth() / 2) + "px)");
+						const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
+						$progressMarker
+							.data("title", chapterNames[i])
+							.appendTo($pbMarkerContainer)
+							.css("left", "calc(" + progressMarkerPosition + " - " + ($progressMarker.outerWidth() / 2) + "px)");
 					}
 
 					if (extraPagesCopy.length > 0) {
@@ -6392,7 +6425,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				// these can be evenly spaced (regardless of how many pages between milestones) or every page can have an equal width
 
 				// create an array of milestones - each containing an array of page indexes for pages leading up to that milestone
+				// the last page in milestones array is the milestone page
 				milestones = [];
+				milestoneTitles = [];
 				extraPages = []; // any pages that fall after the final milestone
 
 				let current = [];
@@ -6403,6 +6438,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						current.push(i - offset);
 						if (x_pages[i].getAttribute("milestone") == "true") {
 							milestones.push(current);
+							milestoneTitles.push(x_pages[i].getAttribute("name"));
 							current = [];
 						} else if (i == x_pages.length-1) {
 							extraPages = current;
@@ -6443,12 +6479,15 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						}
 
 						// create a progress marker at each milestone page (the final page in the array)
-						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
+						const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
 						let left2 = "calc(" +  ((i+1)/milestones.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
 						if (progressBarSpacing == "false") {
 							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
 						}
-						$progressMarker.css("left", left2);
+						$progressMarker
+							.data("title", milestoneTitles[i])
+							.appendTo($pbMarkerContainer)
+							.css("left", left2);
 					}
 
 					if (extraPages.length > 0) {
@@ -6474,14 +6513,36 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 			if (progressSub !== false && x_params.progressBarSubLink !== "false") {
 				// jump to relevant page/chapter/milestone when progress marker is clicked
-				$pbMarkerContainer.find(".progressMarker").button().click(function() {
-					if (progressSub == "pages") {
-						x_navigateToPage(false, {type:'linkID', ID:pageDetails[$(this).index()].linkID});
-					} else if (progressSub == "chapters") {
-						x_navigateToPage(false, {type:'linkID', ID:pageDetails[chapters[$(this).index()][0]].linkID});
-					} else {
-						x_navigateToPage(false, {type:'linkID', ID:pageDetails[milestones[$(this).index()][milestones[$(this).index()].length-1]].linkID});
-					}
+
+				// add explanation for screen readers of what the progress markers do
+				$pbBarContainer.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "markers", "Buttons navigate directly to pages or chapters marked on the progress bar") + "</span>");
+				$pbTxt.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "title", "Progress bar") + "</span>");
+
+				// describe what the progress marker is for
+				const progressSubType = (progressSub == "pages" ? x_getLangInfo(x_languageData.find("progressBar")[0], "page", "Page") : progressSub == "chapters" ? x_getLangInfo(x_languageData.find("progressBar")[0], "chapter", "Chapter") : x_getLangInfo(x_languageData.find("progressBar")[0], "milestone", "Milestone")) + ": ";
+
+				completeTxt = x_getLangInfo(x_languageData.find("progressBar")[0], "complete", "Complete");
+				incompleteTxt = x_getLangInfo(x_languageData.find("progressBar")[0], "incomplete", "Incomplete");
+				completeTxt = completeTxt != "" ? ": " + completeTxt : "";
+				incompleteTxt = incompleteTxt != "" ? " (" + incompleteTxt + ")" : "";
+
+				$pbMarkerContainer.find(".progressMarker").each(function() {
+					$(this).data("title", progressSubType + $('<span>' + $(this).data("title") + '</span>').text()); // clean up text used for progress marker title
+					$(this)
+						.button({
+							label: $(this).data("title") + incompleteTxt,
+							text: false
+						})
+						.attr("title", $(this).data("title") + incompleteTxt)
+						.click(function() {
+							if (progressSub == "pages") {
+								x_navigateToPage(false, {type:'linkID', ID:pageDetails[$(this).index()].linkID});
+							} else if (progressSub == "chapters") {
+								x_navigateToPage(false, {type:'linkID', ID:pageDetails[chapters[$(this).index()][0]].linkID});
+							} else {
+								x_navigateToPage(false, {type:'linkID', ID:pageDetails[milestones[$(this).index()][milestones[$(this).index()].length-1]].linkID});
+							}
+						});
 				});
 
 				$pbHolder.addClass("progressMarkers");
@@ -6493,26 +6554,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 		} else {
 			// original, simple style progress bar
 			$pbBar.appendTo($pbContainer);
-		}
-
-		// add the x% COMPLETE text holder to the progress bar
-		if (progressBarPercentage !== false) {
-			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
-
-			if (progressBarPosition == "footer") {
-				$pbTxt.appendTo($pbHolder);
-			} else {
-				$pbTxt.prependTo($pbHolder);
-			}
-
-			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
-				$pbTxt.css({
-					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
-					"margin-left": -$pbTxt.outerWidth(true)
-				});
-				$pbHolder.css("padding-left", $pbTxt.outerWidth());
-			}
 		}
 	}
 
@@ -6566,7 +6607,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 							if (this.type !== "menu" && this.standalone !== true) {
 								count++;
 								if (this.viewed !== false) {
-									$(".progressMarker:eq(" + count + ")").addClass("complete");
+									$(".progressMarker:eq(" + count + ")")
+										.button({ label: $(".progressMarker:eq(" + count + ")").data("title") + completeTxt })
+										.attr("title", $(".progressMarker:eq(" + count + ")").data("title") + completeTxt)
+										.addClass("complete");
+
 									if (count != 0) { // there's no bar for the first page as the first marker is at the beginning of the progress bar
 										$(".pbBar:eq(" + count + ")").show();
 									}
@@ -6600,7 +6645,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 											if (chaptersCopy[i].length === 0) {
 												// progress marker is shown as complete if chapter array is now empty
-												$(".progressMarker:eq(" + i + ")").addClass("complete");
+												$(".progressMarker:eq(" + i + ")")
+													.button({ label: $(".progressMarker:eq(" + i + ")").data("title") + completeTxt })
+													.attr("title", $(".progressMarker:eq(" + i + ")").data("title") + completeTxt)
+													.addClass("complete");
 											}
 										}
 									}
@@ -6621,7 +6669,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 								if (this.viewed !== false) {
 									$(".pbBar:eq(" + (i - offset) + ")").show();
 									if (x_pages[i].getAttribute('milestone') == "true") {
-										$(".progressMarker:eq(" + milestoneIndex + ")").addClass("complete");
+										$(".progressMarker:eq(" + milestoneIndex + ")")
+											.button({ label: $(".progressMarker:eq(" + milestoneIndex + ")").data("title") + completeTxt })
+											.attr("title", $(".progressMarker:eq(" + milestoneIndex + ")").data("title") + completeTxt)
+											.addClass("complete");
 									}
 								}
 							}

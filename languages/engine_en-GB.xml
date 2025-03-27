@@ -22,7 +22,7 @@
   
   <pageIntroButton label="Page Introduction"/>
   
-  <progressBar label="COMPLETE"/>
+  <progressBar label="COMPLETE" title="Progress bar" markers="Buttons navigate directly to pages or chapters marked on the progress bar" chapter="Chapter" page="Page" milestone="Milestone" complete="Complete" incomplete="Incomplete"/>
   
   <footerTools hide="Hide footer tools" show="Show footer tools"/>
   
@@ -150,8 +150,8 @@
 	  <responsiveTxt label="Responsive text" tip="When responsive text is turned on, the text size will adapt to the size of the screen you are viewing this project on. If you use the browser zoom to increase the text size then you may get a better experience if you turn responsive text off."/>
   </colourChanger>
 
-  <resources label="Resources" text="{x} Resources Available" completeText="{y}/{x} Resources Complete" clickText="Click to View">
-	  <table title="Title" description="Description" actions="Actions" complete="Mark as complete" downloadBtn="Download resources" viewBtn="View resources"/>
+  <resources label="Resources" text="{x} Resources Available" completeText="{y}/{x} Resources Complete">
+	  <table title="Title" description="Description" actions="Actions" complete="Mark as complete" downloadBtn="Download resource" viewBtn="Open resource"/>
 	  <warning suppress="Don't show this message again" continue="Continue anyway" review="Review the resources"/>
   </resources>
 

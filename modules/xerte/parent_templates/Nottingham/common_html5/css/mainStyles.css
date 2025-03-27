@@ -692,7 +692,8 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 #x_headerBlock #x_headerProgress.progressMarkers {
 	padding: 15px 20px 15px;
 }
-#x_headerBlock #x_headerProgress div:not(.pbTxt) {
+#x_headerBlock #x_headerProgress div:not(.pbTxt),
+#x_headerBlock #x_headerProgress .progressMarker {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
