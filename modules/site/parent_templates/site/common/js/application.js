@@ -72,6 +72,18 @@ function init(){
 	});
 
 	loadContent();
+	// Setup beforeunload
+	window.onbeforeunload = XTTerminate;
+
+	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+
+	if (x_params.course != undefined && x_params.course != "") {
+		XTSetOption('course', x_params.course);
+	}
+	if (x_params.module != undefined && x_params.module != "") {
+		XTSetOption('module', x_params.module);
+	}
+
 }
 
 // Create parameters needed by the popcorn library and coming from xenith.js
