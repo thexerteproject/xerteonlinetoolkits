@@ -7049,6 +7049,12 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 
 	function disableBespokeCSS() {
 		$("#customHeaderStyle").prop('disabled', XENITH.ACCESSIBILITY.specialTheme !== false);
+
+		// disable xhibit stylesheets when accessibility theme is in use as otherwise the footer buttons icons are messed up
+		// perhaps we should always do this (not just for xhibit) & possibly also for #lo_css (css added via styles optional property)
+		if (x_params.theme == "xhibit") {
+			$("#lo_sheet_css").prop('disabled', XENITH.ACCESSIBILITY.specialTheme !== false);
+		}
 	}
 
 	// when lightbox is reopened - make sure the correct theme is selected
