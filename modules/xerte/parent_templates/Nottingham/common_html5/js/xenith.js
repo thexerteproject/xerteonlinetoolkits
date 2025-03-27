@@ -5862,9 +5862,9 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				$x_sideBarToggleBtn
 					.button({
 						icons: {primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon},
+						label: x_params.sideBarShow == 'closed' ? openLabel : closeLabel,
 						text: false
 					})
-					.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
 					.click(function () {
 						if ($x_sideBar.data('state') == 'open') {
 							XENITH.SIDEBAR.close();
