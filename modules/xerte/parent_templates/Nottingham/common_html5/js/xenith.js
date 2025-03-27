@@ -6468,7 +6468,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				}
 			}
 
-			if (progressSub !== false) {
+			if (progressSub !== false && x_params.progressBarSubLink !== "false") {
 				// jump to relevant page/chapter/milestone when progress marker is clicked
 				$pbMarkerContainer.find(".progressMarker").button().click(function() {
 					if (progressSub == "pages") {

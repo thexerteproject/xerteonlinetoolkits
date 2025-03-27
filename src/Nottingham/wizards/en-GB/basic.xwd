@@ -81,6 +81,7 @@
 	    <progressBarSubGroup label="Progress Markers" type="group" optional="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" tooltip="Add progress marks to the progress bar, based either on reaching the end of a chapter or viewing a milestone page">
 			<progressSub label="Type" type="ComboBox" options="None,Pages,Chapters,Milestones" data="false,pages,chapters,milestones" defaultValue="false" conditionTrigger="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" optional="true"/>
 			<progressBarSpacing label="Space Evenly" type="CheckBox" defaultValue="false" condition="progressSub!='false'&amp;&amp;progressSub!='pages'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Space progress markers evenly, even if the numbers of pages between them varies. When using chapters as milestones, this will only work if all of the pages within the project are in a chapter."/>
+			<progressBarSubLink label="Navigate on Click" type="CheckBox" defaultValue="true" condition="progressSub!='false'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Determines whether progress markers are links that jump to the specified page / beginning of chapter" />
 		</progressBarSubGroup>
 	</progressBarGroup>
 
