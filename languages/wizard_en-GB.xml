@@ -35,6 +35,7 @@
 	<btnAdvanced label_on="Toggle to advanced mode" tooltip_on="Toggle advanced mode" label_off="Switch off advanced mode" tooltip_off="Toggle off advanced mode"/>
 	<btnMoveUp tooltip="Move Up"/>
 	<btnMoveDown tooltip="Move Down"/>
+	<chkExpandTree label="Expand Pages" tooltip="Expand all pages by default"/>
 	<btnNext tooltip="Next Item"/>
 	<btnPreview label="Play" tooltip="Preview"/>
 	<btnPrev tooltip="Previous Item"/>
