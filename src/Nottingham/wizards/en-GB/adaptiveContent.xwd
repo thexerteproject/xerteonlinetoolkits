@@ -17,6 +17,8 @@
      <listedModeOptions type="group" condition="displayMode=='Listed'" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
          <sortOrder label="Sort Order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list according to this criteria. Only has meaning for 'Listed' display mode" />
      </listedModeOptions>
+     <enableMultiPeriod label="Enable multiple date periods" type="checkbox" defaultValue="false" optional="true" />
+
 
       <newNodes>
         <interaction ><![CDATA[<interaction name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
@@ -158,7 +160,6 @@
              <contextFilter label="Filter on LTI context" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on LTI context, where the LTI context retrieved from the LTI launch or the URL (lti_context_id=id)"/>
              <contextUsersFilter label="Filter on current users" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on the current users to prevent old users from appearing in results"/>
         </group>
-        <enableMultiPeriod label="Enable multiple date periods" type="checkbox" defaultValue="false" optional="true" />
 
       <newNodes>
           <interactionBlock ><![CDATA[<interactionBlock adaptiveContent="" conScoreBetween="0,100" conScoreAnswer="label of answer" conScoreGrouping="" ></interactionBlock>]]></interactionBlock>
