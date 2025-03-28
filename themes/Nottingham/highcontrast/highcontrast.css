@@ -1249,6 +1249,12 @@ a.hotspot, a.hotspot.selected {
   color: #00FFFF;
 }
 
+#hotspot_bubble {
+  color: #ffffff;
+  background: #000000;
+  border-color: #ffffff;
+}
+
 .marker, .panel1 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 0;

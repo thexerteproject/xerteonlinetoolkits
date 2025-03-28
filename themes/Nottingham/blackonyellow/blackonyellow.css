@@ -1101,6 +1101,12 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
   color: #6600FF;
 }
 
+#hotspot_bubble {
+  color: #000000;
+  background: #FFFF99;
+  border-color: #000000;
+}
+
 .marker, .panel1 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 0;

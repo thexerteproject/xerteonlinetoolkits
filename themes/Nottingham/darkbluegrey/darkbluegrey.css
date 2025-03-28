@@ -602,6 +602,12 @@ table.headerCol.shaded td.header {
   color: #ffffff;
 }
 
+#hotspot_bubble {
+  color: #ffffff;
+  background: #3F4957;
+  border-color: #9A9A9A;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #ffffff;

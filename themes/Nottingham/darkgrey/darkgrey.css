@@ -309,3 +309,10 @@ table.headerCol.shaded td.header {
 .resourceLink, .resourceLink:visited, .resourceLink:focus {
 	color: #cfcfcf;
 }
+
+/* hotspot image connector */
+#hotspot_bubble {
+	color: #cfcfcf;
+	background: #1c1c1c;
+	border-color: #1c1c1c;
+}

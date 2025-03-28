@@ -884,6 +884,12 @@ a.hotspot, a.hotspot.selected {
   color: #7094DB;
 }
 
+#hotspot_bubble {
+  color: #E0E0E0;
+  background: #1e1e1e;
+  border-color: #1e1e1e;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #E0E0E0;

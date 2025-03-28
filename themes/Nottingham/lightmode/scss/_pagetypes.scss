@@ -697,3 +697,10 @@ a.hotspot, a.hotspot.selected {
 .x_results_page th {
   color: $mainfontcolour;
 }
+
+//*****hotspot image connector*****/
+#hotspot_bubble {
+  color: $mainfontcolour;
+  background: $panelcolor;
+  border-color: $panelcolor;
+}
