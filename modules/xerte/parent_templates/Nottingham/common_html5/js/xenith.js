@@ -2432,7 +2432,7 @@ function x_lookupPage(type, id) {
 		return x_checkChapters(type, id);
 	} else {
 		const response = x_checkPages(type, id, x_pageInfo);
-		if (!response) {
+		if (response === false) {
 			return x_checkChapters(type, id);
 		} else {
 			return response;
