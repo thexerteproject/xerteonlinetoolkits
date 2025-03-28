@@ -2556,6 +2556,7 @@ var EDITOR = (function ($, parent) {
 		// list of everything at same level or everything at parent's level
 		if (thisTarget != undefined) {
 			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+            // for example, this is used on decision tree page where answers can link to other steps on the same page but not other pages in the project
 			// * makes it include all the children too
 			var children = false;
 			if (thisTarget.indexOf('*') != -1) {
@@ -2619,7 +2620,9 @@ var EDITOR = (function ($, parent) {
                         // Also make sure we only take the text from the name, and not the full HTML
                         const page = [];
                         const prependTxt = child ? "&nbsp;- " : "";
-                        page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(prependTxt + name.value));
+                        let extraTxt = hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '';
+                        extraTxt += lo_data[key].attributes.nodeName == 'chapter' ? "[" + language.chapter.$title + "] " : ''; // **
+                        page.push(extraTxt + getTextFromHTML(prependTxt + name.value));
                         page.push(linkID.value);
                         pages.push(page);
 
@@ -2633,14 +2636,14 @@ var EDITOR = (function ($, parent) {
                     }
                 }
 
-                // get pages inside a chapter (don't list chapters)
+                checkNode(key, true);
+
+                // list pages inside a chapter too
                 if (lo_data[key].attributes.nodeName == "chapter") {
                     const childNode = tree.get_node(key, false);
                     $.each(childNode.children, function(j, key) {
                         checkNode(key, true);
                     });
-                } else {
-                    checkNode(key, true);
                 }
 			});
 		}

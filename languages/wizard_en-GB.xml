@@ -49,6 +49,7 @@
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
 	<calendar tooltip="Select Date"/>
+	<chapter title="CHAPTER"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
 	<hideContent tooltip="This content is hidden"/>
 	<standalonePage tooltip="This is a stand-alone page"/>
