@@ -4,6 +4,10 @@
 		overflow-x: hidden;
 	}
 
+	.x_responsive .titlePageTxt p {
+		font-size: min(3em, 7vmin);
+	}
+
 	.titlePageTxt p {
 		font-size: 1em;
 		padding: 0;

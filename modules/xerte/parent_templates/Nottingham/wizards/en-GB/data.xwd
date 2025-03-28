@@ -10546,7 +10546,7 @@
   </timelinedate><title menu="Text" menuItem="Title Page" hint="A simple page for displaying a title." label="Title Text" placeholder="Enter title here" icon="icTitle" thumb="thumbs/title.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#xertepagetypes" wiki="https://xerte.org.uk/wiki/doku.php?id=text_title_page" type="text" height="100" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100"/>
+    <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100" condition="parent.responsive != 'true'" tooltip="Set the size of the title text. This will only be used when responsive text is turned off."/>
 
     <additionalTxt label="Additional Text" type="TextArea" height="100" optional="true" placeholder="Enter text for the page here" tooltip="Add additional text below the title text"/>
 	<startBtn label="Start Button" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include a 'start' button below the title text that moves the project to the next page"/>

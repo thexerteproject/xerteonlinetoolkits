@@ -247,8 +247,8 @@
         }
 
         this.responsiveTitle = function () {
-            if (XENITH.ACCESSIBILITY.checkResponsiveTxt() && window.innerWidth >= 768) {
-                // responsive text is on & the project isn't showing at a fixed size
+            if (XENITH.ACCESSIBILITY.checkResponsiveTxt()) {
+                // responsive text is on so won't use fixed size set in editor
                 $(".titlePageTxt").css("font-size", "");
             } else {
                 $(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
