@@ -2572,14 +2572,26 @@
 		      const graph = new DashboardGraphs.BarGraphReceivedMarks({
                 statements: statements,
                 options: {
+		          //barColors: barColors.slice(),
+                  averageScoreBarLabel: interaction.getAttribute("avgScoreLabelBarMarks"),
                   ctx: ctx2,
+                  followBlock: followBlock == 'true',
                   graphFitInfoInBar: graphFitInfoInBar == 'true',
-                  groupScoreLabel: groupScore,
+                  groupScoreLabel: interaction.getAttribute("groupScore"),
+                  groupUsersLabel: interaction.getAttribute("groupUserLabel"),
+                  nrOfBars: nrbars,
+                  ownScoreLabel: interaction.getAttribute("ownScoreLabelBarMarks"),
+                  scoreRange: barRange,
                   showAvg: graphShowAvg == 'true',
                   showAvgLine: graphShowAvgLine == 'true',
-                  showScore: graphShowScore == 'true',
                   showNumberOfParticipants: interaction.getAttribute("showNrOfParticipants") == 'true',
-                }
+                  showScore: graphShowScore == 'true',
+                  userScore: score,
+                  userScoreLabel: interaction.getAttribute("userScore"),
+                  userStatement: ownstatements[0],
+                  xAxisLabel: interaction.getAttribute("xAxisLabelBarMarks"),
+                  y2AxisLabel: interaction.getAttribute("y2AxisLabelBarMarks"),
+                  yAxisLabel: interaction.getAttribute("yAxisLabelBarMarks"),                }
               });
             graph.draw();
 
@@ -2607,9 +2619,6 @@
               let barBorderColor = barColors.slice();
               let barScoreColor = new Array(barRange.length);
               let barOwnScore = barSizeData.slice();
-
-              console.log('kaas', 'barRange', barRange);
-              console.log('kaas', 'barSizeData', barSizeData);
 
               if (followBlock == "true") {
                   for (let i = 0; i < statements.length; i++) {
