@@ -1307,8 +1307,19 @@ function x_cssSetUp(param) {
 		case "theme":
 			if (x_params.theme != undefined) {
 				if (!xot_offline) {
-					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js') // most themes won't have this js file
+						.done(function() {
+							x_cssSetUp("themeCss");
+						}).fail(function() {
+							x_cssSetUp("themeCss");
+						});
 				}
+			} else {
+				x_cssSetUp("projectStylesheet");
+			}
+			break;
+		case "themeCss":
+			if (x_params.theme != undefined) {
 				x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
 					x_cssSetUp("responsivetheme");
 				}, false, "theme_css", true);
@@ -2241,7 +2252,8 @@ function x_continueSetUp2() {
 						null,
 						function () {
 							setUpComplete = true;
-
+							// use this function in theme files to execute code after interface has been completely set up
+							try { x_interfaceComplete(); } catch (e){}
 							x_navigateToPage(true, x_startPage);
 						}
 					);
@@ -2262,10 +2274,14 @@ function x_continueSetUp2() {
 		if (callStartPage)
 		{
 			setUpComplete = true;
+			// use this function in theme files to execute code after interface has been completely set up
+			try { x_interfaceComplete(); } catch (e){}
 			x_navigateToPage(true, x_startPage);
 		}
 	} else {
 		setUpComplete = true;
+		// use this function in theme files to execute code after interface has been completely set up
+		try { x_interfaceComplete(); } catch (e){}
 		x_navigateToPage(true, x_startPage);
 	}
 }
