@@ -2732,7 +2732,6 @@
                   }
               }
 
-              console.log('kaas', 'barSizeData', barSizeData);
               let bardata = {};
               if (graphShowAvgLine == "true" && graphShowAvg == "true") {
                   bardata = {
@@ -3990,6 +3989,9 @@
                 graphSpace += "<div class='graph'><canvas id='" +
                     escapeUrl(url, type, interactionIndex) +
                     `-graph${i}'></canvas></div>`;
+                graphSpace += "<div class='graph'><canvas id='" +
+                    escapeUrl(url, type, interactionIndex) +
+                    `-graph${i}-2'></canvas></div>`;
                 graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
                 graphSpace += '</div>';
 
@@ -4055,13 +4057,24 @@
                 if (
                     statements.length > 0 &&
                     statements[0].object.definition != "undefined" &&
-                    statements[0].object.definition.choices != "undfined"
+                    statements[0].object.definition.choices != "undefined"
                 ) {
                     var choices = statements[0].object.definition.choices;
                     for (var i = 0; i < choices.length; i++) {
                         xDomain[i] = choices[i].id;
                     }
                 }
+                const graph = new DashboardGraphs.BarGraphGivenAnswers({
+                  statements: data,
+                  options: {
+                    //barColors: barColors.slice(),
+                    ctx: ctx2,
+                    userAnswer: givenAnswer,
+                    xAxisLabel: interaction.getAttribute("xAxisLabelBarAnswers"),
+                    yAxisLabel: interaction.getAttribute("yAxisLabelBarAnswers"),
+                  }
+                });
+                graph.draw();
 
                 //get used labels and #
                 let labels = {};
@@ -4116,6 +4129,7 @@
                 }
 
                 let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
+                let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph-2" + currentPeriod;
 
                 let labelsNoUnderscore = xDomain.map(label => label.replace(/_/g, ' '));
 
