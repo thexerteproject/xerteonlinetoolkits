@@ -153,6 +153,7 @@
 	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
 	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
 	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceIcons label="Resource Icons" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include an icon next to each resource title to illustrate the type of resource"/>
 	  <resourceCompletionGroup label="Completion" type="group" optional="true">
 	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
         <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>

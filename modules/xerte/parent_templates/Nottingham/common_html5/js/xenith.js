@@ -7146,6 +7146,8 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 							} else if (resource.startsWith("http")) {
 								// URL
 								return "url";
+							} else if (resource.startsWith("<iframe")) {
+								return "iframe";
 							} else {
 								return "other";
 							}
@@ -7263,7 +7265,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 				return "fa-file-lines";
 			} else if (type == "video" || type == "videoEmbed") {
 				return "fa-film";
-			} else if (type == "url") {
+			} else if (type == "url" || type == "iframe") {
 				return "fa-globe";
 			} else {
 				return "fa-file";
@@ -7275,20 +7277,19 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 		for (let i=0; i<pageResources.length; i++) {
 			const thisResource = pageResources[i];
 			// download button is only needed for files uploaded (not URLs or XOT page links)
-			const thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" ? downloadBtn : "";
+			const thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" && thisResource.type !== "iframe" ? downloadBtn : "";
 
 			// there are different ways the resource may open - this window, new window, lightbox
-			let target = thisResource.type == "page" ? null : downloadBtn === "" ? (x_params.resourceShowIn != undefined ? x_params.resourceShowIn : "_blank") : (x_params.resourceShowFileIn != undefined ? x_params.resourceShowFileIn : "lightbox");
+			let target = thisResource.type == "page" ? null : thisResource.type == "iframe" ? "lightbox" : thisDownloadBtn === "" ? (x_params.resourceShowIn != undefined ? x_params.resourceShowIn : "_blank") : (x_params.resourceShowFileIn != undefined ? x_params.resourceShowFileIn : "lightbox");
 			let thisViewBtn = viewBtn;
 			if (thisResource.type == "file") { // word doc - can't preview so only have download btn
 				target = null;
 				thisViewBtn = "";
 			}
-
-			const resourceIcon = getResourceIcon(thisResource.type);
-
-			const linkElement = target == "_blank" || target == "_self" ? "a" : "button";
-			const $resourceRow = $("<tr class='resourceRow'><td class='titleCell'><div class='resourceLinkHolder'><i aria-hidden='true' class='resourceIcon fa fa-fw " + resourceIcon + "'></i><" + linkElement + " class='resourceLink'>" + thisResource.title + "</" + linkElement + "></div></td><td class='descriptionCell'>" + thisResource.description + "</td><td class='actionCell'><div class='actionBtnHolder'>" + thisViewBtn + thisDownloadBtn + "</div></td></tr>").appendTo($tableBody);
+			
+			const resourceIcon = x_params.resourceIcons !== "false" ? "<i aria-hidden='true' class='resourceIcon fa fa-fw " + getResourceIcon(thisResource.type) + "'></i>" : "";
+			const linkElement = target == "_blank" || target == "_self" || thisResource.type == "file" ? "a" : "button";
+			const $resourceRow = $("<tr class='resourceRow'><td class='titleCell'><div class='resourceLinkHolder'>" + resourceIcon + "<" + linkElement + " class='resourceLink'>" + thisResource.title + "</" + linkElement + "></div></td><td class='descriptionCell'>" + thisResource.description + "</td><td class='actionCell'><div class='actionBtnHolder'>" + thisViewBtn + thisDownloadBtn + "</div></td></tr>").appendTo($tableBody);
 			$resourceRow.find(".resourceDownloadBtn").attr("href", thisResource.link);
 			if (trackCompletion) {
 				$resourceRow.append("<td class='completeCell'><input id='resourceComplete" + i + "' name='resourceComplete" + i + "' aria-labelledby='completeCheckLabel' class='resourceComplete' type='checkbox' " + (thisResource.complete ? "checked" : "") + " /></td>");
@@ -7309,7 +7310,12 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			} else if (target == "lightbox") {
 				// opens in a lightbox
 				$resourceRow.find(".resourceLink").click(function() {
-					if ((thisResource.type !== "videoEmbed" && thisDownloadBtn === "") || thisResource.type == "filePdf") {
+					if (thisResource.type == "iframe") {
+						const $iframe = $('<div id="resourceIFrame">' + thisResource.link + '</div>');
+						$iframe.find("iframe").width($x_mainHolder.width()*0.8).height($x_mainHolder.height()*0.8)
+						$.featherlight($iframe);
+
+					} else if ((thisResource.type !== "videoEmbed" && thisDownloadBtn === "") || thisResource.type == "filePdf") {
 						// url or file
 						$.featherlight({iframe: thisResource.link, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
 
@@ -7358,7 +7364,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 				// add a warning about opening in lightbox
 				.append("<span class='sr-only'> " + x_params.dialogTxt + "</span>");
 
-			} else {
+			} else if (thisResource.type == "page") {
 				// XOT page link
 				// this will open in same window by default - unless it's a standalone page & it's been set to open in lightbox or new window
 				$resourceRow.find(".resourceLink").click(function() {
@@ -7369,6 +7375,15 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 					$.featherlight.current().close();
 					x_navigateToPage(false,{type: 'linkID',ID: $(thisResource.link).attr("data-pageID")});
 				});
+
+			} else if (thisResource.type == "file") {
+				// download file
+				$resourceRow.find(".resourceLink")
+					.attr({
+						"href": thisResource.link,
+						"download": ""
+					})
+					.prepend("<span class='sr-only'> " + x_getLangInfo(x_languageData.find("resources").find("table")[0], "downloadBtn", "Download resource") + " </span>");
 			}
 		}
 
