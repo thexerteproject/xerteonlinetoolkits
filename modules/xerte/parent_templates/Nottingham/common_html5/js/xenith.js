@@ -5508,7 +5508,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 					$currentChapter = $chapterItem.clone().appendTo($menuItemHolder);
 
 					let pageNum = "";
-					if (x_params.tocNumbers == "true" && x_params.tocChapterNumbers == "true") {
+					if (x_params.tocChapterNumbers == "true") {
 						tocNum++;
 						subNum = 0;
 						pageNum = tocNum + " ";
@@ -5524,7 +5524,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			const $thisItem = $menuItem.clone().appendTo($menuItemHolder);
 
 			let pageNum = "";
-			if (x_params.tocNumbers == "true") {
+			if (x_params.tocNumbers != "false") {
 				if (x_params.tocChapterNumbers == "true" && $menuItemHolder.hasClass("chapterPageHolder")) {
 					subNum++;
 					pageNum = tocNum + "." + subNum + " ";

@@ -57,8 +57,8 @@
 		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'" tooltip="Tick pages on the table of contents / page menu when they have been viewed"/>
 		<pageTickPostion label="Tick Position" type="ComboBox" data="before,after" options="Before Page Name,After Page Name" defaultValue="after" condition="navigation!='Historic'&amp;&amp;pageTick=='true'" optional="true"/>
 		<tocNumberGroup label="Numbering" type="group" optional="true" tooltip="Number pages and chapters on the table of contents / page menu">
-			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'"/>
-			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'&amp;&amp;tocNumbers=='true'"/>
+			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
+			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="false" condition="navigation!='Historic'"/>
 		</tocNumberGroup>
 		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
 			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
