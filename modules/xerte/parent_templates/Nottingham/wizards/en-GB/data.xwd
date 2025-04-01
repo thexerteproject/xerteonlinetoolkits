@@ -481,7 +481,7 @@
 		initTxtLabel2="Initial text - select text before clicking highlight button"
 		suggestedTxtLabel="A suggested answer"
 		notesTxtLabel="Notes"
-	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
+	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" titleVAlign="200" titleHAlign="center" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
 			 attemptLabel="Attempts remaining"
 			 correctAnswersLabel="Correct answers"
@@ -10556,6 +10556,11 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100" condition="parent.responsive != 'true'" tooltip="Set the size of the title text. This will only be used when responsive text is turned off."/>
 
+    <align type="group" label="Title Alignment" tooltip="The position of the title and any additional text on the page">
+		<titleVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="20,200,400" defaultValue="200" mandatory="true"/>
+		<titleHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" mandatory="true"/>
+  	</align>
+
     <additionalTxt label="Additional Text" type="TextArea" height="100" optional="true" placeholder="Enter text for the page here" tooltip="Add additional text below the title text"/>
 	<startBtn label="Start Button" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include a 'start' button below the title text that moves the project to the next page"/>
 
@@ -10575,11 +10580,6 @@
 		<bgImageVConstrain label="Max Height" type="NumericStepper" min="0" max="500" step="10" defaultValue="" optional="true"/>
 		<bgImageHConstrain label="Max Width" type="NumericStepper" min="0" max="800" step="10" defaultValue="" optional="true"/>
 	</background>
-	
-	<align type="group" label="Title Alignment" optional="true" tooltip="The position of the title on the page">
-		<titleVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="20,200,400" defaultValue="200" optional="true"/>
-		<titleHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
-	</align>
 	
     <titleTextColour label="Title Text Colour" type="ColourPicker" defaultValue="0x016A71" optional="true" deprecated="This property is deprecated. You can change the title's colour in the text toolbar."/>
 	
