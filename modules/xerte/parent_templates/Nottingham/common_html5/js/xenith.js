@@ -5899,11 +5899,13 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					$x_sideBarToggleBtn.addClass("customIconBtn");
 				}
 
-				// add a logo to the top of the side bar
-				if (x_params.sideBarLogo !== undefined && x_params.sideBarLogo !== "") {
-					$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_params.sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
-				} else if (x_sideBarLogo !== "") {
-					$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+				// add a logo to the top of the side bar, unless the interface buttons are small with no text (not enough space)
+				if (sideBarType == "toc" || (x_params.sideBarSize == 'large' || x_params.sideBarBtnTxt == 'true')) {
+					if (x_params.sideBarLogo !== undefined && x_params.sideBarLogo !== "") {
+						$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_params.sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+					} else if (x_sideBarLogo !== "") {
+						$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+					}
 				}
 
 				// add content to sidebar
@@ -6138,7 +6140,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				XENITH.PAGEMENU.tickViewed();
 			}
 		}
-	};
+	}
 
 	// make some public methods
 	self.sideBarType = sideBarType;
