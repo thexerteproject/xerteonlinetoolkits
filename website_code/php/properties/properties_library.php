@@ -785,10 +785,11 @@ function statistics_prepare($template_id, $force=false)
                 {
                     $lrsendpoint['lrsendpoint'] = $row['tsugi_xapi_endpoint'];
                 }
-                $lrsendpoint = CheckLearningLocker($lrsendpoint);
+                $lrsendpoint = CheckLearningLocker($lrsendpoint, true);
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
                 $lrs->aggregate = $lrsendpoint['aggregate'];
+                $lrs->db = $lrsendpoint['db'];
 
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";

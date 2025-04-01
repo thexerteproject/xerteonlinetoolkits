@@ -27,25 +27,47 @@ require("management_library.php");
 require("get_user_roles.php");
 
 if(is_user_permitted("useradmin")){
-    global $authmech;
+    global $authmech, $xerte_toolkits_site;;
     if (!isset($authmech))
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if ($xerte_toolkits_site->altauthentication != "" && !$authmech->canManageUser($jsscript))
+    if ($authmech->check() && $authmech->canManageUser($jsscript))
     {
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+        $authmech_can_manage_users = true;
+    }
+    else
+    {
+        $authmech_can_manage_users = false;
+    }
+
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+        if ($altauthmech->check() && $altauthmech->canManageUser($jsscript))
+        {
+            $altauthmech_can_manage_users = true;
+        }
+        else
+        {
+            $altauthmech_can_manage_users = false;
+        }
     }
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 	echo "<h2>" . MANAGEMENT_MENUBAR_USERS . "</h2>";
 	echo "<div class=\"admin_block\">";
 
-    if ($authmech->check() && $authmech->canManageUser($jsscript))
+    if ($authmech_can_manage_users || $altauthmech_can_manage_users)
     {
         echo "<h2>" . USERS_MANAGE_AUTH . "</h2>";
         echo "<div id=\"manage_auth_users\">";
-        $authmech->getUserList(false, "");
+        if ($authmech_can_manage_users) {
+            $authmech->getUserList(true, "");
+        }
+        else if ($altauthmech_can_manage_users) {
+            $altauthmech->getUserList(true, "");
+        }
         echo "</div>";
     }
     echo "<div id=\"manage_user_roles\">";

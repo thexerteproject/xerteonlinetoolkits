@@ -53,6 +53,29 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-color: #F9BA32;
 }
 
+/* page resources */
+#x_pageResourcesBtn:not(.ui-button-icon-only) {
+  border: 1px solid #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #F9BA32;
+  color: #2F3131;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #2F3131;
+  color: #ffffff;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
+}
+
 .highlight {
   background: #F8F1E5;
 }

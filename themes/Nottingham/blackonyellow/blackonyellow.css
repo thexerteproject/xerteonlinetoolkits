@@ -49,6 +49,52 @@
   border-color: #999900;
 }
 
+/* -- page resource button & lightbox (might be on side bar instead of header bar) -- */
+#x_pageResourcesBtn:hover, #x_pageResourcesBtn:focus, #x_pageResourcesBtn:active {
+  border-color: #FFFF99;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: #FFFF99;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #999900;
+  color: #000000;
+}
+
+#x_resourceTable tr {
+  border-color: #000000;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+#x_resourceTable thead tr {
+  border-top: none !important;
+}
+
+#x_resourceTable tbody tr:last-of-type {
+  border-bottom: none !important;
+}
+
+.resourceIcon {
+  border: none;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #000000;
+}
+
+table#x_resourceTable {
+  border: none !important;
+}
+
+#suppressWarningBtnHolder, #x_resourceTable {
+  margin-bottom: 1em;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #FFFF99;
@@ -1053,6 +1099,12 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 
 .x_results_page .blue {
   color: #6600FF;
+}
+
+#hotspot_bubble {
+  color: #000000;
+  background: #FFFF99;
+  border-color: #000000;
 }
 
 .marker, .panel1 {

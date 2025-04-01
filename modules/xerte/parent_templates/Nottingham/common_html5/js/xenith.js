@@ -62,6 +62,7 @@ var x_languageData  = [],
 		{name: 'help',				defaultIconClass:'x_help',							custom: 'helpIc',			defaultFA: 'fas fa-question'},				// project help file
 		{name: 'saveSession',		defaultIconClass:'x_saveSession',					custom: 'saveSessionIc',	defaultFA: 'fas fa-save'},					// save session
 		{name: 'glossary',			defaultIconClass:'x_glossary',						custom: 'glossaryIc',		defaultFA: 'fas fa-book'},					// glossary
+		{name: 'resource',			defaultIconClass:'fa fa-folder-open',				custom: 'resourceIc',		defaultFA: 'fa fa-folder-open'},			// resources
 		{name: 'intro',				defaultIconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
 		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
 	];
@@ -71,7 +72,7 @@ var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
-	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
+	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_pageResourcesBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
@@ -1306,8 +1307,19 @@ function x_cssSetUp(param) {
 		case "theme":
 			if (x_params.theme != undefined) {
 				if (!xot_offline) {
-					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+					$.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js') // most themes won't have this js file
+						.done(function() {
+							x_cssSetUp("themeCss");
+						}).fail(function() {
+							x_cssSetUp("themeCss");
+						});
 				}
+			} else {
+				x_cssSetUp("projectStylesheet");
+			}
+			break;
+		case "themeCss":
+			if (x_params.theme != undefined) {
 				x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
 					x_cssSetUp("responsivetheme");
 				}, false, "theme_css", true);
@@ -1463,10 +1475,10 @@ function x_continueSetUp1() {
 					
 					// there are different types of content that might appear in project intro lightbox
 					if (introInfo.type == 'img') {
-
 						lb = $.featherlight({
 							image: introInfo.info.img,
 							afterOpen: function() {
+
 								this.$content.attr('alt', introInfo.info.tip);
 
 								const $holder = this.$content.parent('.featherlight-content');
@@ -1713,12 +1725,14 @@ function x_continueSetUp1() {
 				});
 		}
 
+		XENITH.RESOURCES.init();
 		XENITH.PROGRESSBAR.init();
 
 		// hide page counter
 		if (x_params.pageCounter == "true") {
 			$x_pageNo.remove();
 		}
+
 		XENITH.ACCESSIBILITY.buildBtn();
 
 		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
@@ -2238,7 +2252,8 @@ function x_continueSetUp2() {
 						null,
 						function () {
 							setUpComplete = true;
-
+							// use this function in theme files to execute code after interface has been completely set up
+							try { x_interfaceComplete(); } catch (e){}
 							x_navigateToPage(true, x_startPage);
 						}
 					);
@@ -2259,10 +2274,14 @@ function x_continueSetUp2() {
 		if (callStartPage)
 		{
 			setUpComplete = true;
+			// use this function in theme files to execute code after interface has been completely set up
+			try { x_interfaceComplete(); } catch (e){}
 			x_navigateToPage(true, x_startPage);
 		}
 	} else {
 		setUpComplete = true;
+		// use this function in theme files to execute code after interface has been completely set up
+		try { x_interfaceComplete(); } catch (e){}
 		x_navigateToPage(true, x_startPage);
 	}
 }
@@ -2428,7 +2447,12 @@ function x_lookupPage(type, id) {
 	if (type == "chapterID") {
 		return x_checkChapters(type, id);
 	} else {
-		return x_checkPages(type, id, x_pageInfo);
+		const response = x_checkPages(type, id, x_pageInfo);
+		if (response === false) {
+			return x_checkChapters(type, id);
+		} else {
+			return response;
+		}
 	}
 }
 
@@ -2513,8 +2537,16 @@ function x_setMaxWidth() {
 }
 
 // function called on page change to remove old page and load new page model
-// If x_currentPage == -1, than do not try to exit tracking of the page
+// check if there are any warnings that need to be given before proceeding
 function x_changePage(x_gotoPage, addHistory) {
+	if (x_currentPage === -1 || XENITH.RESOURCES.checkCompletion(x_gotoPage, addHistory)) {
+		x_changePageApproved(x_gotoPage, addHistory);
+	}
+}
+
+// function called on page change to remove old page and load new page model
+// If x_currentPage == -1, than do not try to exit tracking of the page
+function x_changePageApproved(x_gotoPage, addHistory) {
 	x_gotoPage = Number(x_gotoPage);
 
 	var standAlonePage = x_pageInfo[x_gotoPage].standalone,
@@ -2777,7 +2809,7 @@ function x_changePageStep2(x_gotoPage) {
 		// add screen reader info for this page type (if exists)
 		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
 		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", undefined) != undefined) {
-			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
+			$x_helperText.html('<div>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ': <p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p></div>');
 		}
 
 		var extraTitle = "";
@@ -2930,10 +2962,6 @@ function x_changePageStep3() {
     $("#x_headerBlock h2 #x_pageTitle").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
-    x_updateCss(false);
-
-	$("#x_pageDiv").show();
-
 	// enable page intro button depending on whether this info exists for the current page
 	if ($x_pageIntroBtn != undefined) {
 		if (!XENITH.PAGEMENU.isThisMenu() && x_getIntroInfo(x_currentPageXML) != false) {
@@ -2942,6 +2970,12 @@ function x_changePageStep3() {
 			$x_pageIntroBtn.hide();
 		}
 	}
+
+	XENITH.RESOURCES.showHideBtn();
+
+    x_updateCss(false);
+
+	$("#x_pageDiv").show();
 
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
@@ -5163,7 +5197,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				.attr("aria-label", $x_glossaryBtn.attr("title") + x_params.dialogTxt)
 				.click(function() {
 					if (x_params.glossaryTarget == "lightbox") {
-						
+
 						$.featherlight($(), {
 							contentFilters: 'ajax',
 							ajax: x_templateLocation + 'models_html5/glossary.html',
@@ -5474,7 +5508,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 					$currentChapter = $chapterItem.clone().appendTo($menuItemHolder);
 
 					let pageNum = "";
-					if (x_params.tocNumbers == "true" && x_params.tocChapterNumbers == "true") {
+					if (x_params.tocChapterNumbers == "true") {
 						tocNum++;
 						subNum = 0;
 						pageNum = tocNum + " ";
@@ -5490,7 +5524,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			const $thisItem = $menuItem.clone().appendTo($menuItemHolder);
 
 			let pageNum = "";
-			if (x_params.tocNumbers == "true") {
+			if (x_params.tocNumbers != "false") {
 				if (x_params.tocChapterNumbers == "true" && $menuItemHolder.hasClass("chapterPageHolder")) {
 					subNum++;
 					pageNum = tocNum + "." + subNum + " ";
@@ -5719,6 +5753,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				}
 
 				// page level buttons (what the button does will change on each page)
+
 				// does at least one page in project have some page info added?
 				if (x_params.sbPageIntro == 'true') {
 					for (let i=0; i<x_pages.length; i++) {
@@ -5733,6 +5768,16 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 								x_sideBarBtns.push('pageIntro');
 								break;
 							}
+						}
+					}
+				}
+
+				// does at least one page in project have some page resources added?
+				if (x_params.sbPageResources == 'true') {
+					for (let i=0; i<x_pages.length; i++) {
+						if (x_pageInfo[i].type != "menu" && x_pages[i].getAttribute("resources") != undefined) {
+							x_sideBarBtns.push('resource');
+							break;
 						}
 					}
 				}
@@ -5838,9 +5883,9 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				$x_sideBarToggleBtn
 					.button({
 						icons: {primary: x_params.sideBarShow == 'closed' ? openIcon : closeIcon},
+						label: x_params.sideBarShow == 'closed' ? openLabel : closeLabel,
 						text: false
 					})
-					.attr("aria-label", $x_sideBarToggleBtn.attr("title"))
 					.click(function () {
 						if ($x_sideBar.data('state') == 'open') {
 							XENITH.SIDEBAR.close();
@@ -5892,6 +5937,11 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					}
 					if ($.inArray('pageIntro', x_sideBarBtns) != -1) {
 						$x_pageIntroBtn
+							.appendTo($x_sideBarHolder)
+							.button({text: btnTxt});
+					}
+					if ($.inArray('resource', x_sideBarBtns) != -1) {
+						$x_pageResourcesBtn
 							.appendTo($x_sideBarHolder)
 							.button({text: btnTxt});
 					}
@@ -6125,6 +6175,8 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	let chaptersCopy; // used to keep track of which pages are still to be viewed (viewed pages are removed from each chapter)
 	let extraPages; // pages outside of chapters
 	let milestones;
+	let completeTxt;
+	let incompleteTxt;
 
 	let $pbHolder;
 	let $pbContainer;
@@ -6211,6 +6263,26 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			}
 		}
 
+		// add the x% COMPLETE text holder to the progress bar
+		if (progressBarPercentage !== false) {
+			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
+
+			if (progressBarPosition == "footer") {
+				$pbTxt.appendTo($pbHolder);
+			} else {
+				$pbTxt.prependTo($pbHolder);
+			}
+
+			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
+			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
+				$pbTxt.css({
+					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
+					"margin-left": -$pbTxt.outerWidth(true)
+				});
+				$pbHolder.css("padding-left", $pbTxt.outerWidth());
+			}
+		}
+
 		$pbContainer = $('<div class="pbContainer"></div>').appendTo($pbHolder);
 		$pbBar = $('<div class="pbPercent pbBar">&nbsp;</div>');
 
@@ -6224,6 +6296,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbBarContainer.appendTo($pbContainer);
 			$pbMarkerContainer.appendTo($pbContainer);
 
+			// progress markers will be button elements if clickable & div elements if not clickable
+			const progressMarkerElement = progressSub !== false && x_params.progressBarSubLink !== "false" ? "button" : "div";
+
 			if (progressSub == "pages") {
 				// add a progress marker to indicate each page
 				// these will always be evenly spaced
@@ -6234,19 +6309,23 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						.width(100 / (totalPages-1) + "%")
 						.hide();
 
-					const $progressMarker = $('<div class="progressMarker"></div>');
-					$progressMarker.appendTo($pbMarkerContainer).css("left", "calc(" +  (i/(totalPages-1)*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
+					const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
+					$progressMarker
+						.data("title", x_pages[x_lookupPage("linkID", pageDetails[i].linkID)].getAttribute("name"))
+						.appendTo($pbMarkerContainer).css("left", "calc(" +  (i/(totalPages-1)*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
 				}
 
 			} else if (progressSub == "chapters") {
-				// add a progress marker to indicate the end of each chapter
+				// add a progress marker to the beginning of each chapter - this will be checked when every page in chapter is complete
 				// these might be evenly spaced or spaced in proportion to how many pages are in each chapter
 
 				// create an array of chapters - each item contains an array of page indexes for pages within that chapter
 				chapters = [];
 				extraPages = [];
+				let chapterNames = [];
 				for (let i=0; i<x_chapters.length; i++) {
 					chapters.push([]);
+					chapterNames.push(x_chapters[i].name);
 				}
 
 				for (let i = 0; i < x_pages.length; i++) {
@@ -6267,7 +6346,8 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					progressBarSpacing = "false";
 				}
 
-				// remove any chapters that don't contain any pages
+				// remove any chapters that don't contain any pages & also remove these empty chapters from chapterNames
+				chapterNames = chapterNames.filter((_, index) => chapters[index].length > 0);
 				chapters = chapters.filter(subArray => subArray.length > 0);
 
 				// these copies will have items removed as pages are viewed
@@ -6280,7 +6360,35 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					let width;
 
 					for (let i=0; i<chapters.length; i++) {
+						let progressMarkerPosition;
 						for (let j=0; j<chapters[i].length; j++) {
+
+							if (extraPagesCopy.length > 0 && j===0) {
+								// before we look at pages within this chapter, there might be pages before this chapter starts that aren't in a chapter at all
+								// add a pbBar for these
+								for (let k=0; k<extraPagesCopy.length; k++) {
+									if (chapters[i][j] > extraPagesCopy[k]) {
+										left = (100 / totalPages * count) + "%";
+										width = (100 / totalPages) + "%";
+
+										$pbBar.clone().addClass("sub page" + extraPagesCopy[k]).appendTo($pbBarContainer)
+											.css("left", left)
+											.width(width)
+											.hide();
+
+										count++;
+
+										if (k+1 === extraPagesCopy.length) {
+											extraPagesCopy.splice(0,k+1);
+										}
+
+									} else {
+										extraPagesCopy.splice(0,k);
+										break;
+									}
+								}
+							}
+
 							// create a progress bar sub-item for every page within the chapter
 
 							// by default, chapters are spaced evenly with pages evenly spaced within each chapter
@@ -6295,29 +6403,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 								count++;
 							}
 
-							if (extraPagesCopy.length > 0 && j===0) {
-								// there might be pages before this chapter starts that aren't in a chapter at all
-								// add a pbBar for these
-								for (let k=0; k<extraPagesCopy.length; k++) {
-									if (chapters[i][j] > extraPagesCopy[k]) {
-										$pbBar.clone().addClass("sub page" + extraPagesCopy[k]).appendTo($pbBarContainer)
-											.css("left", left)
-											.width(width)
-											.hide();
-
-										left = (100 / totalPages * count) + "%";
-										width = (100 / totalPages) + "%";
-										count++;
-
-										if (k+1 === extraPagesCopy.length) {
-											extraPagesCopy.splice(0,k+1);
-										}
-
-									} else {
-										extraPagesCopy.splice(0,k);
-										break;
-									}
-								}
+							// the progress marker for chapter will indicate the 1st page in the chapter - position same as 1st page item
+							if (j==0) {
+								progressMarkerPosition = left;
 							}
 
 							$pbBar.clone().addClass("sub chapter" + i + "Page" + chapters[i][j]).appendTo($pbBarContainer)
@@ -6326,13 +6414,12 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 								.hide();
 						}
 
-						// create a progress marker at the end of the chapter
-						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
-						let left2 = "calc(" +  ((i+1)/chapters.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
-						if (progressBarSpacing == "false") {
-							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
-						}
-						$progressMarker.css("left", left2);
+						// create a progress marker at the beginning of the chapter
+						const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
+						$progressMarker
+							.data("title", chapterNames[i])
+							.appendTo($pbMarkerContainer)
+							.css("left", "calc(" + progressMarkerPosition + " - " + ($progressMarker.outerWidth() / 2) + "px)");
 					}
 
 					if (extraPagesCopy.length > 0) {
@@ -6359,7 +6446,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				// these can be evenly spaced (regardless of how many pages between milestones) or every page can have an equal width
 
 				// create an array of milestones - each containing an array of page indexes for pages leading up to that milestone
+				// the last page in milestones array is the milestone page
 				milestones = [];
+				milestoneTitles = [];
 				extraPages = []; // any pages that fall after the final milestone
 
 				let current = [];
@@ -6370,6 +6459,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						current.push(i - offset);
 						if (x_pages[i].getAttribute("milestone") == "true") {
 							milestones.push(current);
+							milestoneTitles.push(x_pages[i].getAttribute("name"));
 							current = [];
 						} else if (i == x_pages.length-1) {
 							extraPages = current;
@@ -6410,12 +6500,15 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 						}
 
 						// create a progress marker at each milestone page (the final page in the array)
-						const $progressMarker = $('<div class="progressMarker"></div>').appendTo($pbMarkerContainer);
+						const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
 						let left2 = "calc(" +  ((i+1)/milestones.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
 						if (progressBarSpacing == "false") {
 							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
 						}
-						$progressMarker.css("left", left2);
+						$progressMarker
+							.data("title", milestoneTitles[i])
+							.appendTo($pbMarkerContainer)
+							.css("left", left2);
 					}
 
 					if (extraPages.length > 0) {
@@ -6439,16 +6532,38 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				}
 			}
 
-			if (progressSub !== false) {
+			if (progressSub !== false && x_params.progressBarSubLink !== "false") {
 				// jump to relevant page/chapter/milestone when progress marker is clicked
-				$pbMarkerContainer.find(".progressMarker").button().click(function() {
-					if (progressSub == "pages") {
-						x_navigateToPage(false, {type:'linkID', ID:pageDetails[$(this).index()].linkID});
-					} else if (progressSub == "chapters") {
-						x_navigateToPage(false, {type:'linkID', ID:pageDetails[chapters[$(this).index()][0]].linkID});
-					} else {
-						x_navigateToPage(false, {type:'linkID', ID:pageDetails[milestones[$(this).index()][milestones[$(this).index()].length-1]].linkID});
-					}
+
+				// add explanation for screen readers of what the progress markers do
+				$pbBarContainer.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "markers", "Buttons navigate directly to pages or chapters marked on the progress bar") + "</span>");
+				$pbTxt.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "title", "Progress bar") + "</span>");
+
+				// describe what the progress marker is for
+				const progressSubType = (progressSub == "pages" ? x_getLangInfo(x_languageData.find("progressBar")[0], "page", "Page") : progressSub == "chapters" ? x_getLangInfo(x_languageData.find("progressBar")[0], "chapter", "Chapter") : x_getLangInfo(x_languageData.find("progressBar")[0], "milestone", "Milestone")) + ": ";
+
+				completeTxt = x_getLangInfo(x_languageData.find("progressBar")[0], "complete", "Complete");
+				incompleteTxt = x_getLangInfo(x_languageData.find("progressBar")[0], "incomplete", "Incomplete");
+				completeTxt = completeTxt != "" ? ": " + completeTxt : "";
+				incompleteTxt = incompleteTxt != "" ? " (" + incompleteTxt + ")" : "";
+
+				$pbMarkerContainer.find(".progressMarker").each(function() {
+					$(this).data("title", progressSubType + $('<span>' + $(this).data("title") + '</span>').text()); // clean up text used for progress marker title
+					$(this)
+						.button({
+							label: $(this).data("title") + incompleteTxt,
+							text: false
+						})
+						.attr("title", $(this).data("title") + incompleteTxt)
+						.click(function() {
+							if (progressSub == "pages") {
+								x_navigateToPage(false, {type:'linkID', ID:pageDetails[$(this).index()].linkID});
+							} else if (progressSub == "chapters") {
+								x_navigateToPage(false, {type:'linkID', ID:pageDetails[chapters[$(this).index()][0]].linkID});
+							} else {
+								x_navigateToPage(false, {type:'linkID', ID:pageDetails[milestones[$(this).index()][milestones[$(this).index()].length-1]].linkID});
+							}
+						});
 				});
 
 				$pbHolder.addClass("progressMarkers");
@@ -6460,26 +6575,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 		} else {
 			// original, simple style progress bar
 			$pbBar.appendTo($pbContainer);
-		}
-
-		// add the x% COMPLETE text holder to the progress bar
-		if (progressBarPercentage !== false) {
-			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
-
-			if (progressBarPosition == "footer") {
-				$pbTxt.appendTo($pbHolder);
-			} else {
-				$pbTxt.prependTo($pbHolder);
-			}
-
-			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
-				$pbTxt.css({
-					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
-					"margin-left": -$pbTxt.outerWidth(true)
-				});
-				$pbHolder.css("padding-left", $pbTxt.outerWidth());
-			}
 		}
 	}
 
@@ -6533,7 +6628,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 							if (this.type !== "menu" && this.standalone !== true) {
 								count++;
 								if (this.viewed !== false) {
-									$(".progressMarker:eq(" + count + ")").addClass("complete");
+									$(".progressMarker:eq(" + count + ")")
+										.button({ label: $(".progressMarker:eq(" + count + ")").data("title") + completeTxt })
+										.attr("title", $(".progressMarker:eq(" + count + ")").data("title") + completeTxt)
+										.addClass("complete");
+
 									if (count != 0) { // there's no bar for the first page as the first marker is at the beginning of the progress bar
 										$(".pbBar:eq(" + count + ")").show();
 									}
@@ -6567,7 +6666,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 											if (chaptersCopy[i].length === 0) {
 												// progress marker is shown as complete if chapter array is now empty
-												$(".progressMarker:eq(" + i + ")").addClass("complete");
+												$(".progressMarker:eq(" + i + ")")
+													.button({ label: $(".progressMarker:eq(" + i + ")").data("title") + completeTxt })
+													.attr("title", $(".progressMarker:eq(" + i + ")").data("title") + completeTxt)
+													.addClass("complete");
 											}
 										}
 									}
@@ -6588,7 +6690,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 								if (this.viewed !== false) {
 									$(".pbBar:eq(" + (i - offset) + ")").show();
 									if (x_pages[i].getAttribute('milestone') == "true") {
-										$(".progressMarker:eq(" + milestoneIndex + ")").addClass("complete");
+										$(".progressMarker:eq(" + milestoneIndex + ")")
+											.button({ label: $(".progressMarker:eq(" + milestoneIndex + ")").data("title") + completeTxt })
+											.attr("title", $(".progressMarker:eq(" + milestoneIndex + ")").data("title") + completeTxt)
+											.addClass("complete");
 									}
 								}
 							}
@@ -6776,9 +6881,14 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 		const $p1 = $colourChangerHolder.find("#p1").html(x_getLangInfo(x_languageData.find("colourChanger").find("selectTxt")[0], "label", "Select a theme for this project") + ":");
 		$colourChangerHolder.find("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Accessibility advice is available in the <a target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=151'>Xerte Online Toolkits guide to accessibility</a>."));
 
+		// add warning that links opens in new window if needed
+		if ($colourChangerHolder.find("#p2").find("a").length > 0 && $colourChangerHolder.find("#p2").find("a").attr("target") == "_blank") {
+			$colourChangerHolder.find("#p2").find("a").append(" <i class='fa fa-solid fa-arrow-up-right-from-square'></i><span class='sr-only'> " + x_params.newWindowTxt + "</span>");
+		}
+
 		// add wcag logo and link if not hidden
 		if (x_params.wcagHide !== 'true') {
-			$p1.before("<a class='wcagLink' target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=214#home'><img class='wcagLogo' src='" + x_templateLocation + "common_html5/wcag2.1AA-blue-v.png' alt='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo") + "' title='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + "'> </a>");
+			$p1.before("<a class='wcagLink' target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=214#home'><img class='wcagLogo' src='" + x_templateLocation + "common_html5/wcag2.2AA-blue.png' alt='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo") + "' title='" + x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement") + "'> </a>");
 
 			if (x_params.wcagAlt !== undefined) {
 				$(".wcagLogo").attr("alt",x_params.wcagAlt);
@@ -6955,6 +7065,12 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 
 	function disableBespokeCSS() {
 		$("#customHeaderStyle").prop('disabled', XENITH.ACCESSIBILITY.specialTheme !== false);
+
+		// disable xhibit stylesheets when accessibility theme is in use as otherwise the footer buttons icons are messed up
+		// perhaps we should always do this (not just for xhibit) & possibly also for #lo_css (css added via styles optional property)
+		if (x_params.theme == "xhibit") {
+			$("#lo_sheet_css").prop('disabled', XENITH.ACCESSIBILITY.specialTheme !== false);
+		}
 	}
 
 	// when lightbox is reopened - make sure the correct theme is selected
@@ -6976,6 +7092,429 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 	self.specialTheme = specialTheme;
 	self.removeBg = removeBg;
 	self.responsiveTxt = responsiveTxt;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** ADDITIONAL RESOURCES *****
+// Adds a button to footer or header bar containing:
+// - List of additional resources associated with the page
+// - These can be links, files or internal Xerte page links
+// - Optional: completion checkboxes (manually triggered by students) & warning if all resources aren't completed
+var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
+	// declare local variables
+	let resources = false;
+	let resourcesInfo = [];
+	let trackCompletion = false;
+	let suppressWarning = [];
+	let stopWarning = false;
+
+	// function adds resources button to header / side bar if any pages in the project have some associated resources
+	function init() {
+		for (let i=0; i<x_pages.length; i++) {
+			// has the resources optional property been added to a page & does it contain useful info?
+			if (!(XENITH.PAGEMENU.menuPage && i==0) && x_pages[i].getAttribute("resources") != undefined) {
+				if (x_pages[i].getAttribute("resources").replace(/[|]/g,"").trim() != "") {
+
+					// returns resource type
+					function getResourceType(resource) {
+						if (resource.trim() == "") {
+							// XOT page
+							return "page";
+						} else {
+							resource = resource.toLowerCase();
+							if (resource.endsWith(".mp3")) {
+								// audio
+								return "audio";
+							} else if (resource.endsWith(".png") || resource.endsWith(".jpg") || resource.endsWith(".jpeg") || resource.endsWith(".gif") || resource.endsWith(".svg")) {
+								// image
+								return "image";
+							} else if (resource.endsWith(".doc") || resource.endsWith(".docx")) {
+								// word doc
+								return "file";
+							} else if (resource.endsWith(".pdf")) {
+								// pdf
+								return "filePdf";
+							} else if (resource.endsWith(".mp4") || resource.endsWith(".mov") || resource.endsWith(".wmv") || resource.endsWith(".webm")) {
+								// video
+								return "video";
+							} else if (x_isYouTubeVimeo(resource) !== false) {
+								// youtube or vimeo
+								return "videoEmbed";
+							} else if (resource.startsWith("http")) {
+								// URL
+								return "url";
+							} else {
+								return "other";
+							}
+						}
+					}
+
+					const pageResourceInfo = x_pages[i].getAttribute("resources").split("||");
+					const pageResources = [];
+					for (let j=0; j<pageResourceInfo.length; j++) {
+						const resource = pageResourceInfo[j].split("|");
+						// the resource is either a link, file path (resources[1]) or a Xerte page link (resources[2])
+						if (resource.length === 4 && resource[1].trim() !== "" || resource[2] !== "") {
+							pageResources.push({
+								"title": resource[0],
+								"link": resource[1].trim() !== "" ? resource[1].trim() : resource[2],
+								"type": getResourceType(resource[1]),
+								"description": resource[3].trim(),
+								"complete": false
+							});
+						}
+					}
+
+					if (pageResources.length === 0) {
+						// no useful resource entries found for this page
+						x_pages[i].removeAttribute("resources");
+					} else {
+						resources = true;
+					}
+
+					resourcesInfo.push(pageResources);
+
+				} else {
+					// resources data grid is empty (string only contains | , or whitespace)
+					x_pages[i].removeAttribute("resources");
+					resourcesInfo.push([]);
+				}
+			} else {
+				resourcesInfo.push([]);
+			}
+
+			suppressWarning.push(false);
+		}
+
+		// at least one page has some associated resources
+		if (resources === true) {
+
+			trackCompletion = x_params.resourceCompletion == "true";
+
+			// add the resources button to header bar - this will be hidden until viewing a page with associated resources
+			const resourceIcon = x_btnIcons.filter(function(icon){return icon.name === 'resource';})[0];
+			// add resources btn to the header bar - this might be moved to side bar later if that's where it's supposed to be
+			$x_pageResourcesBtn = $('<button id="x_pageResourcesBtn"></button>').appendTo($('#x_headerBlock h2'));
+
+			let btnLabel = !trackCompletion ? x_getLangInfo(x_languageData.find("resources")[0], "text", "{x} Resources Available") : x_getLangInfo(x_languageData.find("resources")[0], "completeText", "{y}/{x} Resources Complete");
+			btnLabel = btnLabel
+				.replace("{x}", "<span class='totalResourcesNum'></span>")
+				.replace("{y}", "<span class='completedResourcesNum'></span>");
+			btnLabel += " <span class='x_resourcesClickTxt'><span class='sr-only'>" + x_params.dialogTxt + "</span></span>";
+
+			$x_pageResourcesBtn
+				.button({
+					icons: {
+						primary: resourceIcon.iconClass
+					},
+					label: btnLabel,
+					text: x_params.resourceBtn == "text" ? true : false
+				})
+				.click(function() {
+					build();
+				});
+
+			// if no text shown on button, add a circle with no. of resources in it
+			if (x_params.resourceBtn !== "text") {
+				$x_pageResourcesBtn.append("<div class='resourceNumber'><div class='resourceNumberTxt'></div></div>");
+			}
+		}
+	}
+
+	// function builds the resources lightbox when button clicked
+	function build() {
+		const $resourceHolder = $("<div id='x_resources'></div>");
+
+		if (x_params.resourceTitle != undefined && x_params.resourceTitle.trim() != "") {
+			$resourceHolder.append("<h1 id='x_resourceHeader'>" + x_params.resourceTitle + "</h1>");
+		}
+		if (x_params.resourceText != undefined && x_params.resourceText.trim() != "") {
+			$resourceHolder.append("<div id='x_resourceTxt'>" + x_params.resourceText + "</div>");
+		}
+		if (trackCompletion && x_params.resourceCompletionTxt != undefined && x_params.resourceCompletionTxt.trim() != "") {
+			$resourceHolder.append("<div id='x_resourcePercentage'><p>" + x_params.resourceCompletionTxt.replace("{x}", "<span class='resourcePercentage'>" + 0 + "</span>") + "</p></div>");
+		}
+
+		// create a table where the resources will be listed
+		const $resourceTable = $("<table id='x_resourceTable' class='horizontal'></table>").appendTo($resourceHolder);
+		const $tableHeader = $("<thead><tr><th class='titleCell'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "title", "Title") + "</th><th class='descriptionCell'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "description", "Description") + "</th><th class='actionCell'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "actions", "Actions") + "</th></tr></thead>").appendTo($resourceTable);
+
+		// create a column for completion data if it's being tracked
+		if (trackCompletion) {
+			$tableHeader.find("tr").append("<th class='completeCell'><span id='completeCheckLabel'>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "complete", "Mark as complete") + "</span></th>");
+		}
+
+		// add a row for each resource
+		const $tableBody = $("<tbody></tbody>").appendTo($resourceTable);
+		const pageResources = resourcesInfo[x_currentPage];
+
+		// returns appropriate Font Awesome icon for resource type
+		function getResourceIcon(type) {
+			if (type == "page") {
+				return "fa-link";
+			} else if (type == "audio") {
+				return "fa-podcast";
+			} else if (type == "image") {
+				return "fa-image";
+			} else if (type == "file" || type == "filePdf") {
+				return "fa-file-lines";
+			} else if (type == "video" || type == "videoEmbed") {
+				return "fa-film";
+			} else if (type == "url") {
+				return "fa-globe";
+			} else {
+				return "fa-file";
+			}
+		}
+
+		const viewBtn = "<button class='resourceViewBtn'></button>";
+		const downloadBtn = "<a class='resourceDownloadBtn' download>" + x_getLangInfo(x_languageData.find("resources").find("table")[0], "downloadBtn", "Download resources") + "</a>"
+		for (let i=0; i<pageResources.length; i++) {
+			const thisResource = pageResources[i];
+			// download button is only needed for files uploaded (not URLs or XOT page links)
+			const thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" ? downloadBtn : "";
+
+			// there are different ways the resource may open - this window, new window, lightbox
+			let target = thisResource.type == "page" ? null : downloadBtn === "" ? (x_params.resourceShowIn != undefined ? x_params.resourceShowIn : "_blank") : (x_params.resourceShowFileIn != undefined ? x_params.resourceShowFileIn : "lightbox");
+			let thisViewBtn = viewBtn;
+			if (thisResource.type == "file") { // word doc - can't preview so only have download btn
+				target = null;
+				thisViewBtn = "";
+			}
+
+			const resourceIcon = getResourceIcon(thisResource.type);
+
+			const linkElement = target == "_blank" || target == "_self" ? "a" : "button";
+			const $resourceRow = $("<tr class='resourceRow'><td class='titleCell'><div class='resourceLinkHolder'><i aria-hidden='true' class='resourceIcon fa fa-fw " + resourceIcon + "'></i><" + linkElement + " class='resourceLink'>" + thisResource.title + "</" + linkElement + "></div></td><td class='descriptionCell'>" + thisResource.description + "</td><td class='actionCell'><div class='actionBtnHolder'>" + thisViewBtn + thisDownloadBtn + "</div></td></tr>").appendTo($tableBody);
+			$resourceRow.find(".resourceDownloadBtn").attr("href", thisResource.link);
+			if (trackCompletion) {
+				$resourceRow.append("<td class='completeCell'><input id='resourceComplete" + i + "' name='resourceComplete" + i + "' aria-labelledby='completeCheckLabel' class='resourceComplete' type='checkbox' " + (thisResource.complete ? "checked" : "") + " /></td>");
+			}
+
+			if (target == "_blank" || target == "_self") {
+				// normal link opening in this or new window
+				$resourceRow.find(".resourceLink").attr({
+					"href": thisResource.link,
+					"target": target
+				});
+
+				// add a warning about opening in new window
+				if (target == "_blank") {
+					$resourceRow.find(".resourceLink").append("<span class='sr-only'> " + x_params.newWindowTxt + "</span>");
+				}
+
+			} else if (target == "lightbox") {
+				// opens in a lightbox
+				$resourceRow.find(".resourceLink").click(function() {
+					if ((thisResource.type !== "videoEmbed" && thisDownloadBtn === "") || thisResource.type == "filePdf") {
+						// url or file
+						$.featherlight({iframe: thisResource.link, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+
+					} else if (thisResource.type == "image") {
+						$.featherlight({
+							image: thisResource.link,
+							afterOpen: function () {
+								// add alt text to image
+								this.$content.attr("alt", thisResource.title);
+							}
+						});
+					} else if (thisResource.type == "audio") {
+						const $pageAudio = $('<div id="resourceAudio"></div>')
+							.width($x_mainHolder.width() * 0.8)
+							.css('max-width', '300px');
+
+						$.featherlight($pageAudio);
+
+						$('#resourceAudio')
+							.attr('title', thisResource.title)
+							.mediaPlayer({
+								type: 'audio',
+								source: thisResource.link,
+								width: '100%'
+							});
+
+					} else if (thisResource.type == "video" || thisResource.type == "videoEmbed") {
+						$.featherlight('<div id="resourceVideo"></div>', {afterOpen: function () {
+							this.$content.parent(".featherlight-content").addClass("resourceVideo");
+							if (thisResource.type == "videoEmbed") {
+								this.$content.parent(".featherlight-content").addClass('max youTube');
+							}
+						}});
+
+						$('#resourceVideo')
+							.attr('title', thisResource.title)
+							.mediaPlayer({
+								type: 'video',
+								source: thisResource.link,
+								width: '100%',
+								height: '100%',
+								pageName: 'resourceVideo'
+							});
+					}
+				})
+				// add a warning about opening in lightbox
+				.append("<span class='sr-only'> " + x_params.dialogTxt + "</span>");
+
+			} else {
+				// XOT page link
+				// this will open in same window by default - unless it's a standalone page & it's been set to open in lightbox or new window
+				$resourceRow.find(".resourceLink").click(function() {
+					// don't show warning about incomplete resources on this page change
+					stopWarning = true;
+
+					// close this lightbox before moving page, otherwise standalone pages that should open in lightbox will not work (they will open in whole window)
+					$.featherlight.current().close();
+					x_navigateToPage(false,{type: 'linkID',ID: $(thisResource.link).attr("data-pageID")});
+				});
+			}
+		}
+
+		// set up the download & view buttons
+		$resourceTable.find(".resourceViewBtn").each(function() {
+			$(this).button({
+				icons: {
+					primary: "fa-solid fa-arrow-up-right-from-square"
+				},
+				label: x_getLangInfo(x_languageData.find("resources").find("table")[0], "viewBtn", "Open resource") + ": " + $(this).parents(".resourceRow").find(".resourceLink").text(),
+				text: false
+			}).click(function() {
+				if ($(this).parents(".resourceRow").find(".resourceLink").is("button")) {
+					$(this).parents(".resourceRow").find(".resourceLink").click();
+				} else {
+					// link - manually open
+					window.open($(this).parents(".resourceRow").find(".resourceLink").attr("href"), $(this).parents(".resourceRow").find(".resourceLink").attr("target"));
+				}
+			});
+		});
+
+		$resourceTable.find(".resourceDownloadBtn").each(function() {
+			const $temp = $(this).parents(".resourceRow").find(".resourceLink").clone();
+			$temp.find(".sr-only").remove();
+
+			$(this).button({
+				icons: {
+					primary: "fa-solid fa-download"
+				},
+				label: x_getLangInfo(x_languageData.find("resources").find("table")[0], "downloadBtn", "Download resource") + ": " + $temp.text(),
+				text: false
+			});
+		});
+
+		// set up the complete checkbox - users can manually check to say it's complete
+		if (trackCompletion) {
+			$resourceTable.find(".resourceComplete").change(function () {
+				const resourceIndex = $(this).parents(".resourceRow").index();
+				const checked = $(this).is(":checked");
+				resourcesInfo[x_currentPage][resourceIndex].complete = checked;
+
+				// mark all resources with an identical link (e.g. on other pages) to the same completion status as this
+				for (let i=0; i<resourcesInfo.length; i++) {
+					for (let j=0; j<resourcesInfo[i].length; j++) {
+						if (!(x_currentPage == i && resourceIndex == j) && resourcesInfo[x_currentPage][resourceIndex].link == resourcesInfo[i][j].link) {
+							resourcesInfo[i][j].complete = checked;
+						}
+					}
+				}
+
+				updatePercentage();
+			});
+		}
+
+		// remove the description column if no resources have a description
+		if ($resourceTable.find("td.descriptionCell:empty").length == $resourceTable.find("td.descriptionCell").length) {
+			$resourceTable.find(".descriptionCell").remove();
+		}
+
+		$.featherlight($resourceHolder, { variant: 'lightboxAuto' });
+		updatePercentage();
+	}
+
+	// function updates the percentage of resources completed
+	function updatePercentage() {
+		if (trackCompletion && $("#x_resourcePercentage").length > 0) {
+			let completeCount = 0;
+			for (let i=0; i<resourcesInfo[x_currentPage].length; i++) {
+				if (resourcesInfo[x_currentPage][i].complete) {
+					completeCount++;
+				}
+			}
+			$("#x_resourcePercentage .resourcePercentage").html(Math.floor(completeCount / resourcesInfo[x_currentPage].length * 100));
+			$x_pageResourcesBtn.find(".completedResourcesNum").html(completeCount);
+
+			if (x_params.resourceBtn != "text") {
+				// button has icon only - need to adjust the button title
+				$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
+			}
+		}
+	}
+
+	// function toggles the visibility of the show hide button on each page
+	function showHideBtn() {
+		if (resources == true && resourcesInfo[x_currentPage].length > 0) {
+			$x_pageResourcesBtn.show();
+			// update the no. resources & no. completed resources
+			$x_pageResourcesBtn.find(".totalResourcesNum").html(resourcesInfo[x_currentPage].length);
+			$x_pageResourcesBtn.find(".completedResourcesNum").html(resourcesInfo[x_currentPage].filter((obj) => obj.complete === true).length);
+			$x_pageResourcesBtn.find(".resourceNumberTxt").html(resourcesInfo[x_currentPage].length);
+
+			// button has icon only - need to adjust the button title
+			if (x_params.resourceBtn != "text") {
+				$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
+			}
+		} else if (resources == true) {
+			$x_pageResourcesBtn.hide();
+		}
+	}
+
+	// function checks whether all resources have been completed on leaving a page and shows a warning if required
+	function checkCompletion(x_gotoPage, addHistory) {
+		// if there are resources on this page and the warning for incomplete resources is on, show a warning lightbox on page change if not all resources are complete
+		if (resources == true && x_gotoPage !== x_currentPage && resourcesInfo[x_currentPage].length > 0 && x_params.resourceCompletion == "true" && x_params.resourceCompletionWarning === "true" && resourcesInfo[x_currentPage].filter(item => item.complete === false).length > 0 && suppressWarning[x_currentPage] == false && !stopWarning) {
+			const $resourceWarning = $("<div id='x_resources'></div>");
+
+			if (x_params.resourceCompletionWarningTitle != undefined && x_params.resourceCompletionWarningTitle.trim() != "") {
+				$resourceWarning.append("<h1 id='x_resourceHeader'>" + x_params.resourceCompletionWarningTitle + "</h1>");
+			}
+			if (x_params.resourceCompletionWarningTxt != undefined && x_params.resourceCompletionWarningTxt.trim() != "") {
+				$resourceWarning.append("<div id='x_resourceTxt'>" + x_params.resourceCompletionWarningTxt + "</div>");
+			}
+
+			// end-users can suppress the 'you have not viewed all resources' message for current page
+			$resourceWarning.append("<div id='suppressWarningCheck'><input id='suppressWarning' name='suppressWarning' class='suppressWarning' type='checkbox' /><label for='suppressWarning'>" + x_getLangInfo(x_languageData.find("resources").find("warning")[0], "suppress", "Don't show this message again") + "</label></div>");
+			$resourceWarning.find(".suppressWarning").change(function () {
+				suppressWarning.splice(x_currentPage, 1, $(this).is(":checked"));
+			});
+
+			const continueBtn = "<button class='resourceContinueBtn'>" + x_getLangInfo(x_languageData.find("resources").find("warning")[0], "continue", "Continue anyway") + "</button>";
+			const reviewBtn = "<button class='resourceReviewBtn'>" + x_getLangInfo(x_languageData.find("resources").find("warning")[0], "review", "Review the resources") + "</button>";
+			$('<div id="suppressWarningBtnHolder"></div>').appendTo($resourceWarning).append(continueBtn).append(reviewBtn);
+
+			$resourceWarning.find(".resourceContinueBtn").button().click(function() {
+				// continue changing page
+				$.featherlight.current().close();
+				x_changePageApproved(x_gotoPage, addHistory);
+			});
+			$resourceWarning.find(".resourceReviewBtn").button().click(function() {
+				// close this lightbox & show the resources lightbox
+				$.featherlight.current().close();
+				build();
+			});
+
+			$.featherlight($resourceWarning, { variant: 'lightboxAuto' });
+
+		} else {
+			stopWarning = false; // if this is a page link from a resources window then we have suppressed the warning for this page change - turn this off so it will appear if needed in future
+			return true;
+		}
+	}
+
+	// make some public methods
+	self.init = init;
+	self.showHideBtn = showHideBtn;
+	self.checkCompletion = checkCompletion;
 
 	return parent;
 

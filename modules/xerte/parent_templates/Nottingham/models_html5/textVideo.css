@@ -22,13 +22,29 @@
 		position: relative;
 		overflow: hidden;
 	}
+
+	#x_pageHolder.full #pageVideo {
+		position: static;
+	}
 	
-	#pageVideo.iframe iframe {
+	#pageVideo.iframe iframe,
+	#x_pageHolder.full #pageVideo iframe {
 		position: absolute;
 		top:0;
 		left: 0;
-		width: 100%;
-		height: 100%;
+		width: 100% !important;
+		height: 100% !important;
+	}
+
+	#x_pageHolder.full #pageVideo:not(.embed):not(.iframe) {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	#x_pageHolder.full {
+		overflow: hidden;
 	}
 	
 	.x_mobile .mobileAlign .panel.inline {

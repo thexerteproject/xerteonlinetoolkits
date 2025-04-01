@@ -48,6 +48,39 @@
   border-color: #7094DB;
 }
 
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  border: none;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover, #x_pageResourcesBtn.ui-button-icon-only:active, #x_pageResourcesBtn.ui-button-icon-only:focus {
+  color: #7094DB;
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #7094DB;
+  color: #000000;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #ffffff;
+  color: #000000;
+}
+
+#x_resourceTable tr {
+  border-color: #E0E0E0;
+}
+
+.resourceIcon {
+  border: none;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #E0E0E0;
+}
+
 .x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar, .x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
 .x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
 .x_decision_page #overviewHolder .overviewStep,
@@ -60,7 +93,7 @@
 .x_mcq_page #feedback h3,
 .x_quiz_page #feedbackGroup h3,
 .x_textCorrection_page h3.fbLabel,
-.x_crossword_page #x_pageDiv #clues-container table th, .x_crossword_page #x_pageDiv #clues th,
+.x_crossword_page #x_pageDiv #clues-container h3, .x_crossword_page #x_pageDiv #clues h3,
 .x_results_page #txtHolder,
 .x_results_page #general_summary + #specific,
 .x_SictTimeline_page #pageContents .tl-text .tl-headline-date, .x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
@@ -849,6 +882,12 @@ a.hotspot, a.hotspot.selected {
 
 .x_results_page .blue {
   color: #7094DB;
+}
+
+#hotspot_bubble {
+  color: #E0E0E0;
+  background: #1e1e1e;
+  border-color: #1e1e1e;
 }
 
 #x_footerBlock {

@@ -780,8 +780,8 @@ td.wizardlabel {
     min-width: 155px;
 }
 
-.wizardgroup .column_table td.wizardlabel {
-	/*min-width: auto;*/
+.wizardgroup .column_table > tbody > tr > td {
+	vertical-align: top;
 }
 
 td.wizardvalue {
@@ -1156,6 +1156,8 @@ div#top_buttons button img {height: 20px!important;}
 div#top_buttons button:last-of-type {margin-right: 0px;}
 
 div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
+#bottom_buttons #up_button, #bottom_buttons #down_button { float: right; }
+#expand_tree { margin-top: .5em; }
 #merge_center label {cursor: pointer; display:block;}
 #merge.xerte_button_dark { background: #f0f0f0; font-size: 1.3em;
 	padding-top: 0px!important;

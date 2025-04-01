@@ -696,7 +696,7 @@
             //Append the OVERLAY PANEL to the main media.
             for(i = 0; i < panelData.length; i++) {
                 if(panelData[i].nodeName == "ivOverlayPanel") {
-                    $('<div class="overlay" id="mydiv"></div>')
+                    $('<div class="overlay" tabindex="0"></div>')
                         .appendTo($('#' + interactiveVideo.panelbaseid + mediaPanelIndex).children(".mainMedia"))
                         .attr("id", interactiveVideo.panelbaseid + i)
                         .hide();
@@ -712,12 +712,30 @@
                     break;
                 }
             }
+
             $("#overlay").on('click', function(e){
                 if(isPlaying) {
                     mp.pause();
                 }
                 else {
                     mp.play();
+                }
+            });
+
+            // escape key will close any open overlay content blocks
+            $(document).on("keydown.pageEvent", function(e) {
+                var charCode = e.charCode || e.keyCode;
+                if (charCode == 27 && $(".contentBlock:visible").length > 0) {
+                    $(".overlay,.overlayGray").hide()
+                }
+            });
+
+            // if content is activated from a hotspot, ensure it can be opened with keyboard only
+            $("#" + interactiveVideo.panelbaseid + i).keypress(function(e) {
+                e.stopPropagation();
+                const charCode = e.charCode || e.keyCode;
+                if ($(this).find("#showHolder:visible").length > 0 && (charCode == 32 || charCode == 13)) {
+                    $(this).find("#showHolder:visible").trigger("click");
                 }
             });
 
@@ -1131,9 +1149,9 @@
                         popcornInstance["sortholder"](pluginAttributes);
                     }
 
-                    // pauses media at synch point if needed
-                    if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
-                        popcornInstance.cue(thisContent.start, function() {
+                    popcornInstance.cue(thisContent.start, function() {
+                        // pauses media at synch point if needed
+                        if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
                             this.pause();
                             // Gray out the background and fix z-index if the media is paused on an overlay panel
                             if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "ivSynchXot")
@@ -1143,8 +1161,19 @@
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 interactiveVideo.exitFullScreen();
                             }
-                        });
-                    }
+                        }
+
+                        // try to get screen readers to notify user of panel contents change
+                        if (thisContent.start != 0) {
+                            const contentChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") : (x_params.language === "en-GB" ? "Content added" : undefined);
+                            if (contentChgTxt !== undefined) {
+                                $("#srInfo").html(contentChgTxt);
+                                setTimeout(function() { $("#srInfo").html(''); }, 50);
+                            }
+
+                            $(".contentBlock:visible").parents(".overlay").focus();
+                        }
+                    });
                 }
             }
 
@@ -1276,5 +1305,6 @@
     <div id="contentCover"></div>
 
     <div id="panelHolder"></div>
+    <div id="srInfo" class="sr-only" aria-live="assertive"></div>
 
 </div>

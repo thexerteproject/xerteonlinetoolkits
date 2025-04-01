@@ -304,3 +304,15 @@ table.headerCol.shaded td.header {
 	border-color: #cfcfcf;
 	background-color: #1c1c1c;
 }
+
+/* page resources */
+.resourceLink, .resourceLink:visited, .resourceLink:focus {
+	color: #cfcfcf;
+}
+
+/* hotspot image connector */
+#hotspot_bubble {
+	color: #cfcfcf;
+	background: #1c1c1c;
+	border-color: #1c1c1c;
+}
