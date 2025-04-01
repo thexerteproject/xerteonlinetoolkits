@@ -152,8 +152,14 @@
     <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
 	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
 	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
-	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
-	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceFilesGroup label="Files" type="group" optional="true">
+		<resourceShowFileIn label="Open in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+		<resourceDownload label="Always Allow Download" type="CheckBox" defaultValue="true" optional="true" tooltip="Determines whether the download file button is shown for some file types. If the file type can not open in the browser then the download button will always show, even if allow download is off"/>
+		<resourceFileExtensions label="File Extensions for Download Only" type="TextInput" optional="true" placeholder="e.g. doc,docx" tooltip="Some files that cannot be viewed in the browser will only have a download option. Add a comma-separated list of additional file types that should always be available for download here (by default, doc, docx, xls, xlsx, ppt, pptx files are already only available for download)"/>
+	  </resourceFilesGroup>
+	  <resourceURLGroup label="URLs" type="group" optional="true">
+		<resourceShowIn label="Open in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  </resourceURLGroup>
 	  <resourceIcons label="Resource Icons" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include an icon next to each resource title to illustrate the type of resource"/>
 	  <resourceCompletionGroup label="Completion" type="group" optional="true">
 	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>

@@ -7118,6 +7118,14 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			if (!(XENITH.PAGEMENU.menuPage && i==0) && x_pages[i].getAttribute("resources") != undefined) {
 				if (x_pages[i].getAttribute("resources").replace(/[|]/g,"").trim() != "") {
 
+					// list of file types that will not be available to view in browser - only download button available
+					let fileExtensions = [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx"];
+					if (x_params.resourceFileExtensions != undefined && x_params.resourceFileExtensions != "") {
+						let tempArray = x_params.resourceFileExtensions.split(",");
+						tempArray = tempArray.map(i => "." + i);
+						fileExtensions = fileExtensions.concat(tempArray);
+					}
+
 					// returns resource type
 					function getResourceType(resource) {
 						if (resource.trim() == "") {
@@ -7125,15 +7133,20 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 							return "page";
 						} else {
 							resource = resource.toLowerCase();
+
+							for (let k=0; k<fileExtensions.length; k++) {
+								if (resource.endsWith(fileExtensions[k])) {
+									// word /excel / ppt doc
+									return "file";
+								}
+							}
+
 							if (resource.endsWith(".mp3")) {
 								// audio
 								return "audio";
 							} else if (resource.endsWith(".png") || resource.endsWith(".jpg") || resource.endsWith(".jpeg") || resource.endsWith(".gif") || resource.endsWith(".svg")) {
 								// image
 								return "image";
-							} else if (resource.endsWith(".doc") || resource.endsWith(".docx")) {
-								// word doc
-								return "file";
 							} else if (resource.endsWith(".pdf")) {
 								// pdf
 								return "filePdf";
@@ -7277,7 +7290,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 		for (let i=0; i<pageResources.length; i++) {
 			const thisResource = pageResources[i];
 			// download button is only needed for files uploaded (not URLs or XOT page links)
-			const thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" && thisResource.type !== "iframe" ? downloadBtn : "";
+			let thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" && thisResource.type !== "iframe" ? downloadBtn : "";
 
 			// there are different ways the resource may open - this window, new window, lightbox
 			let target = thisResource.type == "page" ? null : thisResource.type == "iframe" ? "lightbox" : thisDownloadBtn === "" ? (x_params.resourceShowIn != undefined ? x_params.resourceShowIn : "_blank") : (x_params.resourceShowFileIn != undefined ? x_params.resourceShowFileIn : "lightbox");
@@ -7286,7 +7299,12 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 				target = null;
 				thisViewBtn = "";
 			}
-			
+
+			// author has turned off download file button - only do this if a view file button is available
+			if (thisViewBtn !== "" && x_params.resourceDownload == "false") {
+				thisDownloadBtn = "";
+			}
+
 			const resourceIcon = x_params.resourceIcons !== "false" ? "<i aria-hidden='true' class='resourceIcon fa fa-fw " + getResourceIcon(thisResource.type) + "'></i>" : "";
 			const linkElement = target == "_blank" || target == "_self" || thisResource.type == "file" ? "a" : "button";
 			const $resourceRow = $("<tr class='resourceRow'><td class='titleCell'><div class='resourceLinkHolder'>" + resourceIcon + "<" + linkElement + " class='resourceLink'>" + thisResource.title + "</" + linkElement + "></div></td><td class='descriptionCell'>" + thisResource.description + "</td><td class='actionCell'><div class='actionBtnHolder'>" + thisViewBtn + thisDownloadBtn + "</div></td></tr>").appendTo($tableBody);
