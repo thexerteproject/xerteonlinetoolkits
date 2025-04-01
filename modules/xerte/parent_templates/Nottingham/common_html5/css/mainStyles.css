@@ -1099,6 +1099,7 @@ button.customIconBtn:after {
 #x_introH1.x_introImgH1 {
 	background: inherit;
 	position: absolute;
+	padding-right: 1em;
 }
 
 #x_introStartBtn.x_introImgBtn {
@@ -1166,7 +1167,7 @@ button.customIconBtn:after {
 	position: relative;
 	margin: auto;
 	left: auto;
-	top: -.5em;
+	top: -.8em;
 	font-size: 0.5em;
 }
 
@@ -1664,6 +1665,25 @@ a:focus .wcagLogo {
 #tocMenuLightBox #menuItems {
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+/* make sure ticks are aligned whether ticks are for chapters or pages (inside or outside of chapters) */
+#menuItems .menuItem .viewTick:not(.beforeText),
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	float: right;
+	margin-top: 0.2em;
+}
+
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems > .menuItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems .chapterPageHolder .menuItem .viewTick.beforeText {
+	margin-left: -.1em;
 }
 
 /* accessibility options dialog / lightbox */
