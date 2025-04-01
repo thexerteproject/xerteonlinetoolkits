@@ -8,6 +8,9 @@ class mistralaiApi
         $this->preset_models = $mistralai_preset_models;
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
         $this->xerte_toolkits_site = $xerte_toolkits_site;
+        require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/MistralRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
     }
 
     private function clean_result($answer) {
@@ -50,15 +53,23 @@ class mistralaiApi
         return $resultConform;
     }
 
-    private function generatePrompt($p, $type): string {
+    private function generatePrompt($p, $type, $globalInstructions): string {
         $prompt = '';
-        foreach ($this->preset_models->prompt_list[$type] as $prompt_part){
-            if ($p[$prompt_part] == null){
-                $prompt = $prompt . $prompt_part;
+        foreach ($this->preset_models->prompt_list[$type] as $prompt_part) {
+            if ($p[$prompt_part] == null) {
+                $prompt .= $prompt_part;
             } else {
-                $prompt = $prompt . $p[$prompt_part];
+                $prompt .= $p[$prompt_part];
             }
         }
+
+        // Append global instructions at the end if not empty
+        if (!empty($globalInstructions)) {
+            // Join the array into a single string with a newline between instructions
+            $globalInstructionsStr = implode("\n", $globalInstructions);
+            $prompt .= "\n" . $globalInstructionsStr;
+        }
+
         return $prompt;
     }
 
@@ -124,7 +135,27 @@ class mistralaiApi
         return $xmlString;
     }
 
-    public function ai_request($p, $type){
+    private function processFileForRAG(string $filePath): string {
+        try {
+            $loader = DocumentLoaderFactory::getLoader($filePath);
+            return $loader->load();
+        } catch (Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
+    }
+
+    private function prepareURL($uploadPath){
+        $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
+        $finalPath = realpath($basePath . $uploadPath);
+
+        if ($finalPath === false) {
+            throw new Exception("File does not exist: $finalPath");
+        }
+
+        return $finalPath;
+    }
+
+    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = true){
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
         }
@@ -133,7 +164,177 @@ class mistralaiApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
 
-        $prompt = $this->generatePrompt($p, $type);
+        $prompt = $this->generatePrompt($p, $type, $globalInstructions);
+
+/*        //START: TEST CODE
+        // Configuration
+        $filePath = 'essay.txt';      // Path to your .txt file
+        $chunkSize = 1200;            // Approximate characters per chunk
+        $batchSize = 10;              // Number of chunks to send for embedding at a time
+        $topK = 3;                    // Number of top chunks to retrieve
+        $storageFile = "chunks_embeddings.json"; // Disk storage for embeddings
+
+// ----------------------
+// Step 1: Generator to Read & Chunk File Efficiently
+// ----------------------
+        function streamChunks($filePath, $chunkSize) {
+            $handle = fopen($filePath, "r");
+            if (!$handle) {
+                die("Error opening the file.");
+            }
+
+            $buffer = "";
+            while (($line = fgets($handle)) !== false) {
+                $buffer .= $line;
+                if (strlen($buffer) >= $chunkSize) {
+                    yield substr($buffer, 0, $chunkSize);  // Return chunk immediately
+                    $buffer = substr($buffer, $chunkSize); // Keep remaining text
+                }
+            }
+
+            // If there’s leftover text, yield it as a final chunk
+            if (!empty($buffer)) {
+                yield $buffer;
+            }
+
+            fclose($handle);
+        }
+
+// ----------------------
+// Step 2: Batch Processing Chunks & Storing to Disk
+// ----------------------
+        function getBatchEmbeddings($chunks) {
+            // Dummy embedding function simulating Mistral API response
+            $dim = 128; // Example embedding size
+            $embeddings = [];
+            foreach ($chunks as $chunk) {
+                $vector = [];
+                for ($i = 0; $i < $dim; $i++) {
+                    $vector[] = mt_rand() / mt_getrandmax();
+                }
+                $embeddings[] = $vector;
+            }
+            return $embeddings;
+        }
+
+// Open storage file in write mode
+        $storageHandle = fopen($storageFile, "w");
+        if (!$storageHandle) {
+            die("Error opening storage file.");
+        }
+
+// Process chunks in batches
+        $batch = [];
+        $batchIndex = [];
+        $chunkIndex = 0;
+
+        foreach (streamChunks($filePath, $chunkSize) as $chunk) {
+            $batch[] = $chunk;
+            $batchIndex[] = $chunkIndex;
+
+            // If batch is full or we are at the last chunk, process it
+            if (count($batch) == $batchSize) {
+                $embeddings = getBatchEmbeddings($batch);
+                foreach ($embeddings as $i => $embedding) {
+                    $data = [
+                        "index" => $batchIndex[$i],
+                        "chunk" => $batch[$i],
+                        "embedding" => $embedding
+                    ];
+                    fwrite($storageHandle, json_encode($data) . "\n"); // Write each embedding line by line
+                }
+                $batch = [];
+                $batchIndex = [];
+            }
+            $chunkIndex++;
+        }
+
+// Process any remaining chunks
+        if (!empty($batch)) {
+            $embeddings = getBatchEmbeddings($batch);
+            foreach ($embeddings as $i => $embedding) {
+                $data = [
+                    "index" => $batchIndex[$i],
+                    "chunk" => $batch[$i],
+                    "embedding" => $embedding
+                ];
+                fwrite($storageHandle, json_encode($data) . "\n");
+            }
+        }
+
+        fclose($storageHandle);
+        echo "Chunks processed and stored on disk.\n";
+        //END: TEST CODE
+*/
+        if ($useCorpus){
+            //take context from uploaded file and add it into the prompt.
+            $apiKey = $this->xerte_toolkits_site->mistralai_key;
+
+            $encodingDirectory = $this->prepareURL($baseUrl);
+            $rag = new MistralRAG($apiKey, "txt", $encodingDirectory);
+
+            // Load text data and generate embeddings
+            //$text = file_get_contents("essay.txt");
+
+            // Start memory tracking
+            $startMemory = memory_get_usage(true);
+            $startTime = microtime(true);
+
+            //$text = $this->processFileForRAG("essay.txt");
+            //$text1 = $this->processFileForRAG("xmlTest.xlsx");
+            //$text2 = $this->processFileForRAG("csvTest.csv");
+            //$text3 = $this->processFileForRAG("odtTest.odt");
+            //$text4 = $this->processFileForRAG("docxTest.docx");
+
+            //$rag->processFileChunks("essay.txt");
+            //$rag->processNewEmbeddings();
+            //$rag->generateTfidfPersistent();
+
+            $directory = $this->prepareURL($baseUrl . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . "corpus");
+
+            $rag->processDirectory($directory);
+
+
+            // Get relevant context for a question
+            //$question = "What were the two main things the author worked on before college?";
+            $question = $p['subject'];
+             //$contextOld = $rag->getContextPersistent($question);
+            $contextTEST = $rag->getContextTfIdfPersistent($question);
+            $context = $rag->getWeightedContext($question);
+            //$rag->flushPersistentFiles();
+
+            // End memory tracking
+            $endMemory = memory_get_usage(true);
+            $peakMemory = memory_get_peak_usage(true);
+            $executionTime = microtime(true) - $startTime;
+
+            echo "Start Memory: " . number_format($startMemory / 1024, 2) . " KB\n";
+            echo "End Memory: " . number_format($endMemory / 1024, 2) . " KB\n";
+            echo "Peak Memory: " . number_format($peakMemory / 1024, 2) . " KB\n";
+            echo "Execution Time: " . number_format($executionTime, 5) . " seconds\n";
+
+            $new_messages = array(
+                array(
+                    'role' => 'user',
+                    'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. In the future, please generate the xml based on the context I will provide.',
+                ),
+                array(
+                    'role' => 'assistant',
+                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
+                ),
+                array(
+                    'role' => 'user',
+                    'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here:' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'],
+                ),
+                array(
+                    'role' => 'assistant',
+                    'content' => 'Great! Now that we know the context of the sort of information I am working with, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
+                ),
+            );
+
+            array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+        }
+
 
         $results = array();
 
