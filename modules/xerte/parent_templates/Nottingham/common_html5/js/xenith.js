@@ -6007,10 +6007,6 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				});
 
 				maxW = Math.min(widestBtn + ($x_sideBarHolder.outerWidth(true) - $x_sideBarHolder.width()) + (x_params.sideBarBtnPosition === "side" ? $x_sideBarToggleBtn.outerWidth(true) : 0) + 5, Math.min(absoluteMaxW, $x_window.width() / 2));
-
-				if (XENITH.SIDEBAR.sideBarType == "btns") {
-					$x_sideBarHolder.find('button').width('90%');
-				}
 			}
 
 			if (overlay) {
