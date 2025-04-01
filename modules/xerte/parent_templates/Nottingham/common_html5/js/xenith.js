@@ -5692,6 +5692,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 
 
 // ***** SIDE BAR *****
+// Side bar can contain the table of contents or the interface buttons (normally on footer bar)
 var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	// declare global variables
 	let sideBarType; // what should the sidebar contain? (toc or btns)
@@ -6016,12 +6017,12 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				$x_sideBar.width(maxW);
 				XENITH.SIDEBAR.resize(maxW);
 			} else {
-				$x_sideBar.width(maxW + 'px');
-				XENITH.SIDEBAR.resize(maxW);
+				const tempW = maxW + ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width());
+				$x_sideBar.width(tempW + 'px');
+				XENITH.SIDEBAR.resize(tempW);
 
 				// the text may overlap sidebar - make sure sidebar expands but without text forced to be on a single line
 				if ((x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') || XENITH.SIDEBAR.sideBarType == "toc") {
-
 					let widestBtn = 0;
 					$x_sideBarHolder.find('button').each(function () {
 						widestBtn = Math.max(widestBtn, $(this).outerWidth());
@@ -6056,8 +6057,9 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	function open() {
 		if ($x_sideBar.data('state') == 'closed') {
 			$x_sideBar.data('state', 'open');
+			const tempW = maxW + (!overlay ? $x_sideBarHolder.outerWidth() - $x_sideBarHolder.width() : "");
 
-			XENITH.SIDEBAR.resize(maxW, true, function () {
+			XENITH.SIDEBAR.resize(tempW, true, function () {
 				if (!overlay) {
 					if ($x_sideBar.data('recalculateW') === true) {
 						// the screen was resized when the sidebar was closed - resizing to an appropriate size is delayed until now

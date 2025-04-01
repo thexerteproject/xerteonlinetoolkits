@@ -1505,6 +1505,7 @@ a:focus .wcagLogo {
 	border-radius: 0px;
 	display: block;
 	height: auto !important;
+	width: 100%;
 }
 
 #x_sideBar #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
@@ -1515,6 +1516,7 @@ a:focus .wcagLogo {
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
 	float: left;
+	margin-top: .4em;
 }
 
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
@@ -1523,8 +1525,6 @@ a:focus .wcagLogo {
 }
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button {
-	white-space: nowrap;
-	width: auto;
 	box-sizing: border-box;
 	text-align: left;
 	padding: 1em 5px 1em;
@@ -1699,13 +1699,10 @@ a:focus .wcagLogo {
 /* --RESOURCES-------------------------------------------------------------- */
 
 /* page resources button & lightbox */
-#x_pageResourcesBtn {
+#x_headerBlock #x_pageResourcesBtn {
 	float: right;
 	padding: 0;
 	margin: 0 0 5px 10px;
-}
-
-#x_headerBlock #x_pageResourcesBtn {
 	font-size: min(1.5em, 30px);
 }
 
