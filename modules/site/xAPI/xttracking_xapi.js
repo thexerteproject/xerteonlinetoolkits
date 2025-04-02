@@ -1951,6 +1951,11 @@ async function getStatementsFromDB(q, one)
     $.each(q, function(i, value) {
         search[i] = value;
     });
+    // Reinsert activity if needed
+    if (q['activity'] == undefined && activity.length > 0)
+    {
+        q['activity'] = activity;
+    }
     if (one) {
         limit=1;
     } else {
@@ -2042,7 +2047,6 @@ function getStatements(q, one, callback)
             }
             return statements;
         } else {
-
             ADL.XAPIWrapper.getStatements(search, null,
                 function getmorestatements(err, res, body) {
                     var lastSubmit = null;
@@ -2085,12 +2089,12 @@ function getStatements(q, one, callback)
                     if (body.more && body.more !== "") {
                         ADL.XAPIWrapper.getStatements(null, body.more, getmorestatements);
                     } else {
+
                         callback(statements, search);
                     }
                 }
             );
         }
-
     }
 }
 
