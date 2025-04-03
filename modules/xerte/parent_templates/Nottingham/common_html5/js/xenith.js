@@ -6532,7 +6532,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 				// add explanation for screen readers of what the progress markers do
 				$pbBarContainer.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "markers", "Buttons navigate directly to pages or chapters marked on the progress bar") + "</span>");
-				$pbTxt.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "title", "Progress bar") + "</span>");
+				$("#x_headerProgress").prepend("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "title", "Progress bar") + "</span>");
 
 				// describe what the progress marker is for
 				const progressSubType = (progressSub == "pages" ? x_getLangInfo(x_languageData.find("progressBar")[0], "page", "Page") : progressSub == "chapters" ? x_getLangInfo(x_languageData.find("progressBar")[0], "chapter", "Chapter") : x_getLangInfo(x_languageData.find("progressBar")[0], "milestone", "Milestone")) + ": ";
