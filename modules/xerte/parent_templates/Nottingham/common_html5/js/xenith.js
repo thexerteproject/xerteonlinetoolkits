@@ -6015,7 +6015,8 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				$x_sideBar.width(maxW);
 				XENITH.SIDEBAR.resize(maxW);
 			} else {
-				const tempW = maxW + ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width());
+				const tempW = maxW + ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width()) + (XENITH.SIDEBAR.sideBarType == "btns" ? $x_sideBarHolder.find("button").outerWidth() - $x_sideBarHolder.find("button").width() : 0);
+
 				$x_sideBar.width(tempW + 'px');
 				XENITH.SIDEBAR.resize(tempW);
 
@@ -6029,7 +6030,8 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					if ($x_sideBarHolder.width() < widestBtn) {
 						$x_sideBar.width('min-content');
 						maxW = Math.min(Math.min(absoluteMaxW, $x_window.width() / 2), $x_sideBar.width());
-						XENITH.SIDEBAR.resize(maxW);
+						const tempW = maxW + ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width()) + (XENITH.SIDEBAR.sideBarType == "btns" ? $x_sideBarHolder.find("button").outerWidth() - $x_sideBarHolder.find("button").width() : 0);
+						XENITH.SIDEBAR.resize(tempW);
 					}
 				}
 			}
@@ -6040,8 +6042,6 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 			}
 
 		} else if (resize) {
-			// the sidebar is closed - delay resizing until it later opens
-			$x_sideBar.data('recalculateW', true);
 			XENITH.SIDEBAR.resize();
 		}
 	}
@@ -6055,15 +6055,10 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	function open() {
 		if ($x_sideBar.data('state') == 'closed') {
 			$x_sideBar.data('state', 'open');
-			const tempW = maxW + (!overlay ? $x_sideBarHolder.outerWidth() - $x_sideBarHolder.width() : "");
-
+			const tempW = maxW + (!overlay ? ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width()) + (XENITH.SIDEBAR.sideBarType == "btns" ? $x_sideBarHolder.find("button").outerWidth() - $x_sideBarHolder.find("button").width() : 0) : "");
 			XENITH.SIDEBAR.resize(tempW, true, function () {
 				if (!overlay) {
-					if ($x_sideBar.data('recalculateW') === true) {
-						// the screen was resized when the sidebar was closed - resizing to an appropriate size is delayed until now
-						$x_sideBar.data('recalculateW', false);
-						XENITH.SIDEBAR.setWidth(true);
-					}
+					XENITH.SIDEBAR.setWidth(true);
 					x_updateCss(true, false);
 				}
 			});
