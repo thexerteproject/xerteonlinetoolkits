@@ -6496,14 +6496,14 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 						// create a progress marker at each milestone page (the final page in the array)
 						const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
-						let left2 = "calc(" +  ((i+1)/milestones.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+						let left2 = (i+1)/milestones.length*100;
 						if (progressBarSpacing == "false") {
-							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+							left2 = 100 / totalPages * count;
 						}
 						$progressMarker
 							.data("title", milestoneTitles[i])
 							.appendTo($pbMarkerContainer)
-							.css("left", left2);
+							.css("left", "calc(" +  left2 +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
 					}
 
 					if (extraPages.length > 0) {
