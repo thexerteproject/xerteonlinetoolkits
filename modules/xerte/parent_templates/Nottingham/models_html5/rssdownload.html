@@ -141,9 +141,9 @@
 					//hide or show the feed header based on optional property
 					if (optfeedheader !="false" && optfeedheader !=null) {
 							$pageContents.find("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
+					} else {
+						$pageContents.find("#headerHolder").remove();
 					}
-
-
 
 					$.each(feed.rss.channel.item, function (index, item) {
 						var xertefeed = (typeof item.xertedescription != "undefined");
