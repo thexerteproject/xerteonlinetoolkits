@@ -41,10 +41,9 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $panel = $("#pageContents #mainPanel");
-			if (x_browserInfo.mobile == false) {
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents #mainPanel");
+			$panel.height(x_getAvailableHeight([$panel]));
+
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				this.loadVideo();
 			}
@@ -168,11 +167,21 @@
 				var url = $thisQ.getAttribute("image");
 				if (url != undefined && url != "") {
 					var newString = "";
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figure class="qImgHolder">';
+					} else {
+						newString += '<div class="qImgHolder">';
+					}
 					newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "") {
 						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
 					}
 					newString += ' />';
+					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
+						newString += '<figcaption>' + $thisQ.getAttribute("caption") + '</figcaption></figure>';
+					} else {
+						newString += '</div>';
+					}
 					infoString = newString + infoString;
 				}
 				$("#qTxt").html(x_addLineBreaks(infoString));
@@ -286,7 +295,7 @@
 
 					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 					quiz.checked = false;
-					$('#qNo').attr('tabIndex', 0).focus();
+					$('#qNo').attr('tabIndex', "-1").focus();
 				}
 			}
 		}
@@ -476,6 +485,12 @@
 					}
 				}
 
+				// scroll to the buttonHolder div so there is less chance of feedback being completely off screen
+				// not scrolling to feedback directly so the buttons won't be out of sight
+				$("#mainPanel").animate({
+					scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#buttonHolder").offset().top
+				}, 500);
+
 			} else {
 				$("#checkBtn").button("disable");
 				this.nextQuestion();
@@ -485,6 +500,10 @@
         }
 
 		this.nextQuestion = function() {
+
+			// scroll back to top of panel
+			$("#mainPanel").animate({scrollTop: 0}, 0);
+
 			this.tracked = true;
 			var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
 
@@ -512,7 +531,7 @@
             // last question answered - show results
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
-            var fbTxt = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+            var fbTxt = "<div>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</div>";
 
             var myScore = 0;
             for (var i=0; i<quiz.myProgress.length; i++) {
@@ -622,8 +641,19 @@
 			}
 			
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
-				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ? 'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
-				$textHolder.append('<img class="quizImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
+				var imgString = '';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					imgString += '<figure>';
+				}
+				imgString += '<img class="quizImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"';
+				if (x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "") {
+					imgString += ' alt="' + x_currentPageXML.getAttribute("tip") + '"';
+				}
+				imgString += '>';
+				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+					imgString += '<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption></figure>';
+				}
+				$textHolder.append(imgString);
 			}
 
 			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically, submitBtnTip/nextBtnTip/restartBtnTip attributes also not used
@@ -748,11 +778,11 @@
 
 		<div id="infoHolder" class="right">
 		
-			<div id="mainPanel" class="panel ">
-			
-				<h3 id="qNo" aria-live="polite"></h3>
+			<div id="mainPanel" class="panel" tabindex="0">
 				
 				<fieldset class="noStyle">
+
+					<p id="qNo" aria-live="polite"></p>
 				
 					<span><legend id="qTxt"></legend></span>
 					

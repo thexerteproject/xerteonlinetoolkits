@@ -28,7 +28,30 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+            // resize media
+            if ($(".pageImg img").length > 0) {
+                this.scaleImage();
+            }
+
+            let width = 0;
+            $(".mejs-controls > div").each(function() {
+                width += $(this).width();
+            });
+
+            if ($("#pageAudio").length > 0 && width != $(".pageImg img").width()) {
+                this.loadAudio();
+
+            } else if ($("#pageVideo").length > 0) {
+                if ($(".pageVideo").hasClass("iframe")) {
+                    this.scaleFrame();
+
+                } else if ($(".pageVideo").hasClass("youtubeVimeo")) {
+                    this.scaleFrame();
+
+                } else {
+                    this.resizeVideo();
+                }
+            }
 		}
 		
 		this.init = function() {
@@ -45,16 +68,199 @@
 			var $pageContents = $("#pageContents");
 			
 			if (x_currentPageXML.getAttribute("summary") != undefined && x_currentPageXML.getAttribute("summary") != '') {
-				$pageContents.append("<div class='summaryGroup'><h3>" + summaryHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</div>");
+				$pageContents.append("<div class='summaryGroup'>" + (summaryHeader != '' ? "<h3>" + summaryHeader + "</h3>" : "") + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</div>");
 			}
 			
 			if (x_currentPageXML.getAttribute("nextsteps") != undefined && x_currentPageXML.getAttribute("nextsteps") != '') {
-				$pageContents.append("<div class='summaryGroup'><h3>" + nextstepsHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</div>");
+				$pageContents.append("<div class='summaryGroup'>" + (nextstepsHeader != '' ? "<h3>" + nextstepsHeader + "</h3>" : "") + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</div>");
 			}
-			
-			// call this function in every model once everything's loaded
-			x_pageLoaded();
+
+            // add a panel containing an image, video or audio player to the page
+            if (x_currentPageXML.getAttribute("url") != null && x_currentPageXML.getAttribute("url") != "") {
+                const url = x_currentPageXML.getAttribute("url");
+                const fileExt = url.split('.').pop().toLowerCase();
+                const tip = x_currentPageXML.getAttribute("tip");
+                const audioImg = x_currentPageXML.getAttribute("audioImg");
+                let $mediaHolder;
+
+                if (fileExt == "mp3") {
+                    // audio
+                    $mediaHolder = $('<div id="mediaHolder" class="pageAudio"><div class="panel"><div id="pageAudio"></div></div></div>');
+
+                    // add an accompanying image above the audio player
+                    if (audioImg != null && audioImg != "") {
+                        $mediaHolder.addClass("pageImg");
+
+                        const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
+                        $mediaHolder.find(".panel").prepend('<img'+ alt + '/>');
+                    }
+
+                } else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif" || fileExt == "svg") {
+                    // image
+                    const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
+                    $mediaHolder = $('<div id="mediaHolder" class="pageImg"><div class="panel"><img' + alt + '/></div></div>');
+
+                } else {
+                    $mediaHolder = $('<div id="mediaHolder" class="pageVideo"><div class="panel"><div id="pageVideo"></div></div></div>');
+
+                    if (url.substr(0,7) === "<iframe") {
+                        $mediaHolder.addClass("iframe");
+                    } else if (x_isYouTubeVimeo(url) != false) {
+                        $mediaHolder.addClass("youtubeVimeo");
+                    }
+                }
+
+                if ($mediaHolder != null) {
+                    $pageContents.prepend($mediaHolder);
+
+                    if (x_browserInfo.mobile === false) {
+                        $mediaHolder.addClass("x_floatRight");
+                    }
+
+                    if ($mediaHolder.hasClass("pageImg")) {
+                        // scale image (either image on its own or above audio player)
+                        $mediaHolder.find("img")
+                            .one("load", function() {
+                                summary.scaleImage(true);
+                                summary.loadAudio();
+                                x_pageLoaded();
+
+                            })
+                            .attr("src", $mediaHolder.hasClass("pageAudio") ? audioImg : url)
+                            .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                                if (this.complete) {
+                                    $(this).trigger("load");
+                                }
+                            });
+                    }
+
+                    if ($mediaHolder.hasClass("pageAudio")) {
+                        this.loadAudio();
+                    }
+
+                    if ($mediaHolder.hasClass("pageVideo")) {
+                        $mediaHolder.find("#pageVideo").mediaPlayer({
+                            type: "video",
+                            source: url,
+                            width: "100%",
+                            height: "100%",
+                            title: tip
+                        });
+
+                        if ($mediaHolder.hasClass("iframe")) {
+                            this.scaleFrame();
+                        }
+                    }
+
+                    if (!$mediaHolder.hasClass("pageImg")) {
+                        x_pageLoaded();
+                    }
+
+
+                } else {
+                    x_pageLoaded();
+                }
+
+            } else {
+                x_pageLoaded();
+            }
 		}
+
+        this.getMaxDimensions = function() {
+            const $mediaHolder = $("#mediaHolder")
+            const offset = $("#mediaHolder").hasClass("pageAudio") ? x_audioBarH : 0;
+
+            // max width is 48% of page width or the original width of the image (whichever is smaller)
+            const maxW = ($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($("#mediaHolder .panel").outerWidth(true) - $("#mediaHolder .panel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
+            // max-height is 100% of page height or the original height of the image (whichever is smaller)
+            const maxH = x_getAvailableHeight([$mediaHolder, $mediaHolder.find(".panel")], [offset], true);
+
+            return [maxW, maxH];
+        }
+
+        this.scaleImage = function(firstScale) {
+            const dimensions = this.getMaxDimensions();
+            x_scaleImg($("#mediaHolder img"), dimensions[0], dimensions[1], true, firstScale, false, false);
+        }
+
+        this.scaleFrame = function() {
+            const dimensions = this.getMaxDimensions();
+            const $iframe = $("#pageVideo").find("iframe");
+            let width = dimensions[0] - 5;
+            let height = dimensions[1] - 5;
+
+            if (width/16*9 < height) {
+                height = width / 16 * 9;
+            } else {
+                width = height / 9 * 16;
+            }
+
+            if ($("#mediaHolder").hasClass("iframe")) {
+                $iframe.width(width);
+                $iframe.height(height);
+            } else {
+                $("#mediaHolder .panel").width(width);
+                $("#mediaHolder .panel .mejs-container").width(width);
+                $("#mediaHolder .panel").height(height);
+                $("#mediaHolder .panel .mejs-container").height(height);
+            }
+
+        }
+
+        this.loadAudio = function() {
+            $("#pageAudio").mediaPlayer({
+                type: "audio",
+                source: x_currentPageXML.getAttribute("url"),
+                width: "100%"
+            });
+
+            // manually add a transcript button to the end of the audio bar
+            if (x_currentPageXML.getAttribute("audioTranscript") != null && x_currentPageXML.getAttribute("audioTranscript") != '') {
+                x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute("audioTranscript"));
+            }
+
+        }
+
+        // function receives dimensions of video from mediaPlayer.js to set its max dimensions
+        this.mediaMetadata = function($video, dimensions) {
+            $video.closest('#mediaHolder')
+                .data({
+                    'max-width'	:dimensions[0],
+                    'max-height':dimensions[1]
+                });
+
+            this.resizeVideo();
+        }
+
+        this.resizeVideo = function() {
+            // video is 100% width & height of holder so just resize the holder
+            const $mediaHolder = $('#mediaHolder.pageVideo');
+            let tempW = $mediaHolder.data('max-width');
+            let tempH = $mediaHolder.data('max-height');
+            const dimensions = this.getMaxDimensions();
+
+            if (tempW > dimensions[0]) {
+                const scale = dimensions[0] / tempW;
+                tempW = dimensions[0];
+                tempH = Math.floor(tempH * scale);
+            }
+            if (tempH > dimensions[1]) {
+                const scale = dimensions[1] / tempH;
+                tempH = dimensions[1];
+                tempW = Math.floor(tempW * scale);
+            }
+
+            const prevW = $mediaHolder.find(".panel").width();
+            $mediaHolder.find(".panel").css({
+                'width'	:tempW,
+                'height':tempH
+            });
+
+            if (Math.round(prevW) != Math.round(tempW)) {
+                // force the mediaplayer resize to occur
+                $x_window.resize();
+            }
+        }
 	}
 	
 	summary.init();

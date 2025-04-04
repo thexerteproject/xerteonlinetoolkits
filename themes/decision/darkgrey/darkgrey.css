@@ -4,9 +4,9 @@
   font-family: "Varela Round";
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/varela-round-v19-latin-ext_latin-regular.eot");
+  src: url("fonts/varela-round-v19-latin-ext_latin-regular.eot");
   /* IE9 Compat Modes */
-  src: local(""), url("../fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("../fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg");
+  src: local(""), url("fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg");
   /* Legacy iOS */
 }
 /*define color pallette*/

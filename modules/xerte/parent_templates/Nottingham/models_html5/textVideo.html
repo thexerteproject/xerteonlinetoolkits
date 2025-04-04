@@ -29,47 +29,60 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $pageVideo = $("#pageVideo"),
-					iframeRatio = $pageVideo.data('iframeRatio'),
-					videoDimensions = $pageVideo.data('dimensions');
-			const ratio = iframeRatio[0] / iframeRatio[1];
 
-			// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
-			var iframeMax = x_currentPageXML.getAttribute("iframeMax");
-			if ($.isNumeric(iframeMax)) {
-				iframeMax = Number(iframeMax);
-				iframeMax = Math.max(iframeMax, 0.1);
-				iframeMax = Math.min(iframeMax, 1);
-			} else {
-				iframeMax = 0.6;
+			// transcript needs to be hidden for dimensions to be calculated corrcetly
+			if ($('.transcriptHolder').length > 0 && $('.transcript').is(':visible')) {
+				$('.transcriptBtn').click();
+				$('.transcript').hide();
 			}
 
-			var maxW = x_browserInfo.mobile == true ? 1 : iframeMax,
-					maxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($('.x_floatRight').outerHeight() - $('.x_floatRight').height());
+			var $pageVideo = $("#pageVideo"),
+				ratio = $pageVideo.data('ratio');
 
-			var width = $x_pageDiv.width() * maxW;
+			// max size of video (60% of width by default but can be changed with opt property)
+			let max = 0.6;
+			if (x_currentPageXML.getAttribute("iframeMax") && $.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
+					max = Number(x_currentPageXML.getAttribute("iframeMax"));
+					max = Math.max(max, 0.1);
+					max = Math.min(max, 1);
+			} else if (x_currentPageXML.getAttribute("movieSize")) {
+				// don't default to max 60% width because it's a fixed size
+				max = 1;
+			}
+
+			// max width depends on iframe max but max height is all available space
+			const maxW = x_browserInfo.mobile == true ? 1 : max;
+			const maxH = x_getAvailableHeight([$("#videoHolder")], [$('.transcriptHolder')], true)
+
 			// make sure width of video isn't more than screen width when padding & margin on panel are accounted for
+			var width = $x_pageDiv.width() * maxW;
 			if (width > $x_pageDiv.width() - ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width())) {
 				width -= ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width());
 			}
+
+			// fixed size video - still don't show too large for page
+			if (x_currentPageXML.getAttribute("movieSize")) {
+				let dimensions = $pageVideo.data("dimensions");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					width = width < Number(dimensions[0]) ? width : Number(dimensions[0]);
+				}
+			}
+
+			// height is constrained by aspect ratio
 			var height = (width / ratio);
 
+			// height is too big - make max height and then scale width accordingly
 			if (x_browserInfo.mobile != true && height > maxH) {
 				height = maxH;
 				width = height * ratio;
 			}
-			$pageVideo
-					.width(width)
-					.height(height);
+
+			$pageVideo.width(width).height(height);
 
 			// Race conditions can cause the video to not be the correct size, so use a timeout to make sure it's the right size
 			setTimeout(function () {
 				$(".popcornMedia").each(function (i) {
-					if (videoDimensions) {
-						resizeEmbededMedia($(this), {width: videoDimensions[0], height: videoDimensions[1]}) //popcorn mediaconstructor
-					} else {
-						resizeEmbededMedia($(this), {ratio: ratio}) //popcorn mediaconstructor
-					}
+					resizeEmbededMedia($(this), {width: width, height: height}) //popcorn mediaconstructor
 				});
 			}, 100);
 			
@@ -106,7 +119,13 @@
 			$("#pageVideo").html("");
 			$('.transcriptHolder').remove();
 			// text align
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			if (x_currentPageXML.childNodes.length > 0) {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			}
+			else {
+				$("#textHolder").html("");
+			}
+
 			var $panel = $("#pageContents .panel");
 
 			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
@@ -124,27 +143,31 @@
 			var $pageVideo = $("#pageVideo"),
 				videoSrc = x_fixYouTubeVimeo(x_currentPageXML.getAttribute("url")),
 				ratio = x_currentPageXML.getAttribute("iframeRatio"),
-				iframeRatio = ratio ? ratio : '16:9';
+				iframeRatio = ratio ? ratio : '16:9',
+				videoDimensions;// = [320,240];
+
+			// fixed video size
+			if (x_currentPageXML.getAttribute("movieSize")) {
+				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					videoDimensions = dimensions;
+					iframeRatio = dimensions[0] + ":" + dimensions[1];
+				}
+				$pageVideo.data("dimensions",videoDimensions);
+			}
+
+			// iframe ratio
+			iframeRatio = iframeRatio.split(':');
+			if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+				iframeRatio = [16,9];
+			}
+			$pageVideo.data('ratio', iframeRatio[0] / iframeRatio[1]);
 
 			if (videoSrc.substr(0,7) == "<iframe") {
 				
 				$pageVideo
 					.addClass('iframe')
 					.append(videoSrc);
-
-				iframeRatio = iframeRatio.split(':');
-				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
-					iframeRatio = [16,9];
-				}
-				$pageVideo.data('iframeRatio', iframeRatio);
-				
-				/*
-				setTimeout(function(){
-					// Set the height of the $pageVideo container
-					const height = $pageVideo.width() / iframeRatio[0] * iframeRatio[1];
-					$pageVideo.height(height);
-				}, 250);
-				*/
 				
 				if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != '') {
 
@@ -174,27 +197,11 @@
 				}
 
 			} else {
-				var videoDimensions;// = [320,240];
-				
-				if (x_currentPageXML.getAttribute("movieSize")) {
-					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-					if (dimensions[0] != 0 && dimensions[1] != 0) {
-						videoDimensions = dimensions;
-					}
-				}
-				
+
 				$pageVideo.data({
 					"src"			:videoSrc,
-					"dimensions"	:videoDimensions,
 					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
 				});
-
-				iframeRatio = iframeRatio.split(':');
-				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
-					iframeRatio = [16,9];
-				}
-				$pageVideo.data('iframeRatio', iframeRatio);
-				const ratio = iframeRatio[0] / iframeRatio[1];
 
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
@@ -202,7 +209,7 @@
 					height: videoDimensions ? Number(videoDimensions[1]) : 0,
 					media: x_currentPageXML.getAttribute("url"),
 					autoplay: "false",
-					aspect: ratio,
+					aspect: $pageVideo.data('ratio'),
 					transcript: x_currentPageXML.getAttribute("transcript"),
 					transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
 					audioImage: undefined,
@@ -213,7 +220,7 @@
 				}, true);
 
 				//controls toggle
-				$(".panel.inline.x_floatRight")
+				$("#videoHolder")
 					.mouseover(function(){
 						$(".mejs-controls").show();
 					})
@@ -245,7 +252,7 @@
 <div id="pageContents">
 	
 	<div class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
-		<div class="panel inline">
+		<div id="videoHolder" class="panel inline">
 			<div id="pageVideo"></div>
 		</div>
 	</div>

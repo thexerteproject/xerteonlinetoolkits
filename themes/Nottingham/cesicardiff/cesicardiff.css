@@ -4,60 +4,48 @@
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 300;
-  src: url("fonts/open-sans-v29-latin-ext_latin-300.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-300.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-300.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-300.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-300.svg#OpenSans") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/open-sans-v29-latin-ext_latin-300.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-300.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-300.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-300.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-300.svg#OpenSans") format("svg"); /* Legacy iOS */
 }
 /* open-sans-regular - latin-ext_latin */
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/open-sans-v29-latin-ext_latin-regular.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-regular.svg#OpenSans") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/open-sans-v29-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-regular.svg#OpenSans") format("svg"); /* Legacy iOS */
 }
 /* open-sans-700 - latin-ext_latin */
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 700;
-  src: url("fonts/open-sans-v29-latin-ext_latin-700.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-700.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-700.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-700.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-700.svg#OpenSans") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/open-sans-v29-latin-ext_latin-700.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-700.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-700.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-700.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-700.svg#OpenSans") format("svg"); /* Legacy iOS */
 }
 /* roboto-300 - latin-ext_latin */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 300;
-  src: url("fonts/roboto-v30-latin-ext_latin-300.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v30-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-300.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-300.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-300.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-300.svg#Roboto") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/roboto-v30-latin-ext_latin-300.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v30-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-300.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-300.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-300.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-300.svg#Roboto") format("svg"); /* Legacy iOS */
 }
 /* roboto-regular - latin-ext_latin */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/roboto-v30-latin-ext_latin-regular.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v30-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-regular.svg#Roboto") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/roboto-v30-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v30-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-regular.svg#Roboto") format("svg"); /* Legacy iOS */
 }
 /* roboto-700 - latin-ext_latin */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  src: url("fonts/roboto-v30-latin-ext_latin-700.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v30-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-700.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-700.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-700.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-700.svg#Roboto") format("svg");
-  /* Legacy iOS */
+  src: url("fonts/roboto-v30-latin-ext_latin-700.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v30-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-700.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-700.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-700.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-700.svg#Roboto") format("svg"); /* Legacy iOS */
 }
 /*set background colors*/
 /* default #2196F3;*/
@@ -145,43 +133,43 @@
 }
 
 #x_nextBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f128";
 }
 
 #x_introBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f129";
 }
 
 #x_menuBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c7";
 }
 
 #x_footerBlock button {
@@ -234,8 +222,12 @@
   font-weight: bold;
 }
 
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: #ffffff;
+  color: #000000;
+}
+
+#menuItems .chapterItem a {
   color: #000000;
 }
 
@@ -245,7 +237,7 @@
 }
 
 #menuItems .menuItem.current {
-  border: 2px solid #84849a;
+  border: 2px solid #152c51;
 }
 
 #x_sideBar {
@@ -286,11 +278,28 @@
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #cd0438;
+}
+
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #152c51;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #cd0438;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
   }
-
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -302,21 +311,17 @@
     z-index: 100;
     font-size: 12px;
   }
-
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
-
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
-
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -1032,14 +1037,24 @@ p .panel #iFrame, p .panel iframe {
   font-size: 1.2em;
 }
 
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: #eee;
   font-family: Roboto, sans-serif;
+  border-color: #000000;
 }
 
-#menuItems .menuItem:hover {
+#menuItems .chapterHolder {
+  margin-bottom: 5px;
+}
+
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
   background: white;
   color: black;
+}
+
+.chapterPageHolder {
+  border-color: #000000;
+  background: #eee;
 }
 
 #pageContents {
@@ -1228,7 +1243,7 @@ img {
   /* background: #fff!important; */
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border: 1px solid #555555;
+  border: 1px solid rgb(85, 85, 85);
   /* color: black; */
   border-radius: 4px;
   font-family: "Roboto", sans-serif;
@@ -1329,7 +1344,7 @@ img {
   margin-right: 1px;
 }
 
-.ui-button {
+.ui-button, .chapterHolder .menuItem.ui-button, .chapterHolder .chapterItem {
   border: 1px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -1670,10 +1685,6 @@ var {
     max-width: 1280px !important;
   }
 }
-.pbBar {
-  background-color: #cd0438;
-}
-
 .pbTxt {
   color: #EEE;
 }
@@ -1747,6 +1758,10 @@ var {
 
 #pageContents.mcq .optionTxt {
   font-size: 1.2em;
+}
+
+.x_audioRecord_page .deleteClipBtn {
+  box-shadow: none;
 }
 
 /*# sourceMappingURL=cesicardiff.css.map */

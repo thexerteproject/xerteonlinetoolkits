@@ -1,5 +1,5 @@
-/*start here and set the default values for all the variables*/
-/*start here and set the default values for all the variables*/
+@charset "UTF-8";
+/*start here and set the default values for all the variables*/ /*start here and set the default values for all the variables*/
 /*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
 .panel1 {
   border-radius: 1vmin;
@@ -7,11 +7,13 @@
   padding: 10px;
   font-style: normal;
   background-color: orange;
-  color: black; }
+  color: black;
+}
 
 .panel1 a {
   color: black;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 .panel2 {
   border-radius: 1vmin;
@@ -19,11 +21,13 @@
   padding: 10px;
   font-style: normal;
   background-color: #89C2C0;
-  color: black; }
+  color: black;
+}
 
 .panel2 a {
   color: black;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 .panel3 {
   border-radius: 1vmin;
@@ -31,11 +35,13 @@
   padding: 10px;
   font-style: normal;
   background-color: #999999;
-  color: black; }
+  color: black;
+}
 
 .panel3 a {
   color: black;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 .panel4 {
   border-radius: 1vmin;
@@ -43,11 +49,13 @@
   padding: 10px;
   font-style: normal;
   background-color: #00A1A3;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .panel4 a {
   color: white;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 .panel5 {
   border-radius: 1vmin;
@@ -56,11 +64,13 @@
   font-style: normal;
   background: #4d4d4d;
   color: #ffffff;
-  display: table; }
+  display: table;
+}
 
 .panel5 a {
   color: white;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 .panel6 {
   border-radius: 1vmin;
@@ -68,11 +78,13 @@
   padding: 10px;
   font-style: normal;
   background-color: #D13759;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .panel6 a {
   color: white;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 .highlight1 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -85,7 +97,8 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: orange; }
+  border-color: orange;
+}
 
 .highlight2 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -98,7 +111,8 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #89C2C0; }
+  border-color: #89C2C0;
+}
 
 .highlight3 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -111,7 +125,8 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #999999; }
+  border-color: #999999;
+}
 
 .highlight4 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -124,7 +139,8 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #00A1A3; }
+  border-color: #00A1A3;
+}
 
 .highlight5 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -137,7 +153,8 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #333333; }
+  border-color: #333333;
+}
 
 .highlight6 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -150,16 +167,18 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #D13759; }
+  border-color: #D13759;
+}
 
 blockquote {
   font: 400 14px/24px "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-left: 10px solid;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  quotes: "\201C" "\201D";
+  quotes: "“" "”";
   background: #3b3b3b;
-  border-color: #ccc; }
+  border-color: #ccc;
+}
 
 blockquote:before {
   content: open-quote;
@@ -167,29 +186,34 @@ blockquote:before {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #ccc; }
+  color: #ccc;
+}
 
 blockquote p {
-  display: inline; }
+  display: inline;
+}
 
 blockquote:after {
   content: close-quote;
   font-size: 4rem;
-  line-height: .1em;
-  margin-left: .1em;
-  vertical-align: -.6em;
-  color: #ccc; }
+  line-height: 0.1em;
+  margin-left: 0.1em;
+  vertical-align: -0.6em;
+  color: #ccc;
+}
 
 .bq1 {
-  border-color: orange; }
+  border-color: orange;
+}
 
 .bq1:after {
   content: close-quote;
   font-size: 4rem;
-  line-height: .1em;
-  margin-left: .1em;
-  vertical-align: -.6em;
-  color: orange; }
+  line-height: 0.1em;
+  margin-left: 0.1em;
+  vertical-align: -0.6em;
+  color: orange;
+}
 
 .bq1:before {
   content: open-quote;
@@ -197,18 +221,21 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: orange; }
+  color: orange;
+}
 
 .bq2 {
-  border-color: #89C2C0; }
+  border-color: #89C2C0;
+}
 
 .bq2:after {
   content: close-quote;
   font-size: 4rem;
-  line-height: .1em;
-  margin-left: .1em;
-  vertical-align: -.6em;
-  color: #89C2C0; }
+  line-height: 0.1em;
+  margin-left: 0.1em;
+  vertical-align: -0.6em;
+  color: #89C2C0;
+}
 
 .bq2:before {
   content: open-quote;
@@ -216,18 +243,21 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #89C2C0; }
+  color: #89C2C0;
+}
 
 .bq3 {
-  border-color: #999999; }
+  border-color: #999999;
+}
 
 .bq3:after {
   content: close-quote;
   font-size: 4rem;
-  line-height: .1em;
-  margin-left: .1em;
-  vertical-align: -.6em;
-  color: #999999; }
+  line-height: 0.1em;
+  margin-left: 0.1em;
+  vertical-align: -0.6em;
+  color: #999999;
+}
 
 .bq3:before {
   content: open-quote;
@@ -235,18 +265,21 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #999999; }
+  color: #999999;
+}
 
 .bq4 {
-  border-color: #00A1A3; }
+  border-color: #00A1A3;
+}
 
 .bq4:after {
   content: close-quote;
   font-size: 4rem;
-  line-height: .1em;
-  margin-left: .1em;
-  vertical-align: -.6em;
-  color: #00A1A3; }
+  line-height: 0.1em;
+  margin-left: 0.1em;
+  vertical-align: -0.6em;
+  color: #00A1A3;
+}
 
 .bq4:before {
   content: open-quote;
@@ -254,18 +287,21 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #00A1A3; }
+  color: #00A1A3;
+}
 
 .bq5 {
-  border-color: #4d4d4d; }
+  border-color: #4d4d4d;
+}
 
 .bq5:after {
   content: close-quote;
   font-size: 4rem;
-  line-height: .1em;
-  margin-left: .1em;
-  vertical-align: -.6em;
-  color: #4d4d4d; }
+  line-height: 0.1em;
+  margin-left: 0.1em;
+  vertical-align: -0.6em;
+  color: #4d4d4d;
+}
 
 .bq5:before {
   content: open-quote;
@@ -273,18 +309,21 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #4d4d4d; }
+  color: #4d4d4d;
+}
 
 .bq6 {
-  border-color: #D13759; }
+  border-color: #D13759;
+}
 
 .bq6:after {
   content: close-quote;
   font-size: 4rem;
-  line-height: .1em;
-  margin-left: .1em;
-  vertical-align: -.6em;
-  color: #D13759; }
+  line-height: 0.1em;
+  margin-left: 0.1em;
+  vertical-align: -0.6em;
+  color: #D13759;
+}
 
 .bq6:before {
   content: open-quote;
@@ -292,62 +331,78 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #D13759; }
+  color: #D13759;
+}
 
 .speech-bubble1 {
   background: orange;
-  color: black; }
+  color: black;
+}
 
 .speech-bubble1:after {
-  border-right-color: orange; }
+  border-right-color: orange;
+}
 
 .speech-bubble2 {
   background: #89C2C0;
-  color: black; }
+  color: black;
+}
 
 .speech-bubble2:after {
-  border-left-color: #89C2C0; }
+  border-left-color: #89C2C0;
+}
 
 .speech-bubble3 {
   background: #999999;
-  color: black; }
+  color: black;
+}
 
 .speech-bubble3:after {
-  border-right-color: #999999; }
+  border-right-color: #999999;
+}
 
 .speech-bubble4 {
   background: #00A1A3;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble4:after {
-  border-left-color: #00A1A3; }
+  border-left-color: #00A1A3;
+}
 
 .speech-bubble5 {
   background: #666666;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble5:after {
-  border-top-color: #666666; }
+  border-top-color: #666666;
+}
 
 .speech-bubble6 {
   background: #D13759;
-  color: white; }
+  color: white;
+}
 
 .speech-bubble6:after {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  border-top-color: #D13759; }
+  border-top-color: #D13759;
+}
 
 .speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a {
   color: black !important;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 tt a, samp a, var a, .marker a {
   color: white !important;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 kbd a, var a {
   color: black !important;
-  text-decoration: underline; }
+  text-decoration: underline;
+}
 
 .marker {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -355,7 +410,8 @@ kbd a, var a {
   color: #ccc;
   border-radius: 1vmin;
   display: table;
-  padding: 10px; }
+  padding: 10px;
+}
 
 var {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -364,7 +420,8 @@ var {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 kbd {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -373,7 +430,8 @@ kbd {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 samp {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -382,20 +440,23 @@ samp {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 q {
   border-bottom: 1px solid #ccc;
   border-top: 1px solid #ccc;
   color: #333;
   display: block;
-  padding: 10px; }
+  padding: 10px;
+}
 
 cite {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 tt {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -404,76 +465,87 @@ tt {
   display: table;
   border-radius: 1vmin;
   font-style: normal;
-  padding: 10px; }
+  padding: 10px;
+}
 
 /***** scrollbars *****/
 ::-webkit-scrollbar {
-  width: 12px; }
+  width: 12px;
+}
 
 /* Track */
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   -webkit-border-radius: 10px;
-  border-radius: 10px; }
+  border-radius: 10px;
+}
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.8);
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); }
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
 
 ::-webkit-scrollbar-thumb:window-inactive {
-  background: rgba(255, 255, 255, 0.4); }
+  background: rgba(255, 255, 255, 0.4);
+}
 
-                              /**
- * Licensed to The Apereo Foundation under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership.
+/**
+* Licensed to The Apereo Foundation under one or more contributor license
+* agreements. See the NOTICE file distributed with this work for
+* additional information regarding copyright ownership.
 
- * The Apereo Foundation licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* The Apereo Foundation licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except in
+* compliance with the License. You may obtain a copy of the License at:
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 /* --BODY------------------------------------------------*/
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #ccc;
-  background-color: #333333; }
+  background-color: #333333;
+}
 
 /*--Heading and other text changes---------------------------------------*/
-h1 {
-  color: orange; }
+h1, h2.sectionTitle {
+  color: orange;
+}
 
 h2, h3, h4, h5, h6 {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 a {
-  color: orange; }
+  color: orange;
+}
 
 a:hover {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 /* --JUMBOTRON-------------------------------------------------------------------- */
 .jumbotron {
   color: #ffffff;
-  background: black;
-  /* Old browsers */
+  background: black; /* Old browsers */
   background-color: black;
-  background-image: linear-gradient(3deg, black 0%, #333333 100%); }
+  background-image: linear-gradient(3deg, black 0%, #333333 100%);
+}
 
 .jumbotron h1 {
-  color: orange; }
+  color: orange;
+}
 
 .navbar-inverse .navbar-inner {
   background-color: black;
@@ -484,94 +556,116 @@ a:hover {
   background-image: linear-gradient(to bottom, black, black);
   background-repeat: repeat-x;
   border-color: black;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$blackordarkest', endColorstr='$blackordarkest', GradientType=0); }
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$blackordarkest", endColorstr="$blackordarkest", GradientType=0);
+}
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .navbar-inverse .nav-collapse .nav > li > a, .navbar-inverse .nav-collapse .dropdown-menu a {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a:hover {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .navbar-inverse .nav-collapse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover {
   color: #ffffff;
-  background-color: #666666; }
+  background-color: #666666;
+}
 
 .nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
-  background-color: #666666; }
+  background-color: #666666;
+}
 
 .navbar .nav > li.activePage > a,
 .navbar .nav > li.activePage > a:hover, .navbar .nav > li.activePage > a:hover {
   background-color: #666666;
-  text-decoration: none; }
+  text-decoration: none;
+}
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
   background-color: #333333;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
-  border-radius: 6px; }
+  border-radius: 6px;
+}
 
 .nav-list > li > a, .nav-list .nav-header {
-  text-shadow: none; }
+  text-shadow: none;
+}
 
 .bs-docs-sidenav > li > a {
-  border: 1px solid #333333; }
+  border: 1px solid #333333;
+}
 
 .bs-docs-sidenav > li:first-child > a {
   -webkit-border-radius: 6px 6px 0 0;
   -moz-border-radius: 6px 6px 0 0;
-  border-radius: 6px 6px 0 0; }
+  border-radius: 6px 6px 0 0;
+}
 
 .bs-docs-sidenav > li:last-child > a {
   -webkit-border-radius: 0 0 6px 6px;
   -moz-border-radius: 0 0 6px 6px;
-  border-radius: 0 0 6px 6px; }
+  border-radius: 0 0 6px 6px;
+}
 
 .bs-docs-sidenav > .active > a {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
   -webkit-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
   -moz-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
-  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1); }
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
+}
 
 .bs-docs-sidenav > li > a:hover {
   background-color: black;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .bs-docs-sidenav a:hover .icon-chevron-right {
-  opacity: .5; }
+  opacity: 0.5;
+}
 
 .bs-docs-sidenav .active .icon-chevron-right,
 .bs-docs-sidenav .active a:hover .icon-chevron-right {
-  opacity: 1; }
+  opacity: 1;
+}
 
 .bs-docs-sidenav a:hover .icon-chevron-right {
-  opacity: .5; }
+  opacity: 0.5;
+}
 
 .bs-docs-sidenav .active .icon-chevron-right,
 .bs-docs-sidenav .active a:hover .icon-chevron-right {
-  opacity: 1; }
+  opacity: 1;
+}
 
 .accordion-heading a {
   border-bottom: 0;
   background: #666666;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .accordion-group {
   margin-bottom: 2px;
-  border: none; }
+  border: none;
+}
 
 .table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
-  background-color: #666666; }
+  background-color: #666666;
+}
 
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
   color: #ffffff;
   cursor: default;
   background-color: #666666;
   border: 1px solid #666666;
-  border-bottom-color: transparent; }
+  border-bottom-color: transparent;
+}
 
 /* --PANELS-------------------------------------------------------------- */
 .panel {
@@ -580,7 +674,8 @@ a:hover {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 /* Echo out a label for the example */
 .panel:after {
@@ -591,68 +686,101 @@ a:hover {
   color: #ffffff;
   -webkit-border-radius: 4px 0 4px 0;
   -moz-border-radius: 4px 0 4px 0;
-  border-radius: 4px 0 4px 0; }
+  border-radius: 4px 0 4px 0;
+}
 
 .well {
   background-color: orange;
   border: 1px solid orange;
-  color: black; }
+  color: black;
+}
 
 /* --FOOTER-------------------------------------------------------------- */
 .footer {
   border-top: 1px solid #ffffff;
   background-color: black;
-  background-image: linear-gradient(3deg, black 0%, #333333 100%); }
+  background-image: linear-gradient(3deg, black 0%, #333333 100%);
+}
 
 .footer p {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .alertMsg {
-  color: red; }
+  color: red;
+}
 
 /* --GLOSSARY-------------------------------------------------------------- */
 a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .glossaryTip {
   background-color: orange;
-  color: black; }
+  color: black;
+}
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
   color: #ffffff;
-  background-color: #666666; }
+  background-color: #666666;
+}
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
 .pswdBlock {
   background-color: #000;
-  border-color: #444; }
+  border-color: #444;
+}
 
 .sectionPswdBtn, #pagePswdBtn {
   background-color: orange;
-  color: black; }
+  color: black;
+}
 
 .sectionPswdBtn:active, .sectionPswdBtn:hover, .sectionPswdBtn:focus,
 #pagePswdBtn:active, #pagePswdBtn:hover, #pagePswdBtn:focus {
-  background-color: orange; }
+  background-color: orange;
+}
 
 .pswdError {
-  color: red; }
+  color: red;
+}
 
 /*round back to top button defaults*/
 .top-round {
   color: #ffffff;
-  background: #575757; }
+  background: #575757;
+}
 
 .top-round:hover,
 .top-round:focus {
   background: #4b4b4b;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 /*alternating section changes for this theme*/
 .evenSection {
-  background: #525252; }
+  background: #525252;
+}
 
 .oddSection {
-  background: #3e3c3c; }
+  background: #3e3c3c;
+}
+
+/*lightboxes with dark background*/
+.featherlight .featherlight-content {
+  background: #333333;
+}
+
+#categorySearch .inputGroup:hover {
+  background-color: #666666;
+}
+
+#searchHolder legend {
+  color: #ccc;
+}
+
+#searchResults #noSearchResults {
+  color: red;
+}
 
 /*# sourceMappingURL=blackgrey.css.map */

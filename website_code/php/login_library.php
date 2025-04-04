@@ -123,7 +123,7 @@ function html_headers_lti() {
 END;
 
     echo '<div class="topbar">';
-    echo '<div style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">';
+    echo '<div style="width:50%; height:100%; float:right; position:relative; background-image:url("website_code/images/apereoLogo.png"); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">';
     echo '     <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">';
   //     echo INDEX_LOG_OUT;
     echo '      </a></p>';
@@ -185,7 +185,9 @@ function login_prompt($messages, $xerte_toolkits_site) {
 
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
     {
@@ -224,7 +226,7 @@ function login_prompt($messages, $xerte_toolkits_site) {
     else {
         ?>
         <div
-            style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+            style="width:50%; height:100%; float:right; position:relative; background-image:url('website_code/images/apereoLogo.png'); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
         </div>
     <?php
     }
@@ -291,7 +293,9 @@ function login_form($messages, $xerte_toolkits_site)
 
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
     {
@@ -330,7 +334,7 @@ function login_form($messages, $xerte_toolkits_site)
     else {
         ?>
         <div
-            style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+            style="width:50%; height:100%; float:right; position:relative; background-image:url('website_code/images/apereoLogo.png'); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
         </div>
     <?php
     }
@@ -405,9 +409,12 @@ function login_processing($exit = true) {
   /**
    *  Check to see if anything has been posted to distinguish between log in attempts
    */
-
+  _debug("login_processing: " . $xerte_toolkits_site->authentication_method);
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-
+  // check if already logged in
+  if (isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id'] !== "") {
+    return array(true, array());
+  }
   if ($authmech->needsLogin()) {
    /**
     *  Check if we are logged in
@@ -446,24 +453,32 @@ function login_processing($exit = true) {
     }
 
     if (!empty($_POST['login']) && ($_POST["login"] == $xerte_toolkits_site->admin_username) && (!empty($_POST['password']) && hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) {
-      $errors[] = INDEX_SITE_ADMIN;
+        $_SESSION['toolkits_logon_id'] = "site_administrator";
+        $_SESSION['toolkits_logon_username'] = $xerte_toolkits_site->admin_username;
+        $_SESSION['toolkits_firstname'] = "Admin";
+        $_SESSION['toolkits_surname'] = "User";
+        $success = true;
+        session_regenerate_id(true);
     }
-
-    $success = false;
-    if (empty($errors)) {
-      try {
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-      } catch (InvalidArgumentException $e) {
-        $errors[] = "Invalid authentication choice; check config.php (authentication_method)";
-      }
-      if (empty($errors)) {
-        if ($authmech->check()) {
-          $success = $authmech->login($_POST['login'], $_POST['password']);
+    else {
+        $success = false;
+        if (empty($errors)) {
+            try {
+                $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+            } catch (InvalidArgumentException $e) {
+                $errors[] = "Invalid authentication choice; check config.php (authentication_method)";
+            }
+            if (empty($errors)) {
+                if ($authmech->check()) {
+                    $success = $authmech->login($_POST['login'], $_POST['password']);
+                    if ($success && $xerte_toolkits_site->authentication_method != "Moodle") {
+                        session_regenerate_id(true);
+                    }
+                }
+                $errors = $authmech->getErrors();
+            }
         }
-        $errors = $authmech->getErrors();
-      }
     }
-
 
     if ($exit === true) {
       if (!$success || !empty($errors)) {
@@ -487,43 +502,46 @@ function login_processing($exit = true) {
 function login_processing2($firstname = false, $surname = false, $username = false) {
   global $authmech, $errors,$xerte_toolkits_site;
 
-  if (!isset($_SESSION['toolkits_logon_username']))
-  {
-      $_SESSION['toolkits_firstname'] = $firstname == false ? $authmech->getFirstname() : $firstname;
-      $_SESSION['toolkits_surname'] = $surname == false ? $authmech->getSurname() : $surname;
-      $_SESSION['toolkits_logon_username'] = $username == false ? $authmech->getUsername() : $username;
+  if (!isset($_SESSION['toolkits_logon_id']) || $_SESSION['toolkits_logon_id'] !== "site_administrator") {
+      if (!isset($_SESSION['toolkits_logon_username'])) {
+          $_SESSION['toolkits_firstname'] = $firstname == false ? $authmech->getFirstname() : $firstname;
+          $_SESSION['toolkits_surname'] = $surname == false ? $authmech->getSurname() : $surname;
+          $_SESSION['toolkits_logon_username'] = $username == false ? $authmech->getUsername() : $username;
+      }
+
+      require_once dirname(__FILE__) . '/user_library.php';
+
+
+      /*
+      * Check to see if this is a users' first time on the site
+      */
+
+      if (check_if_first_time($_SESSION['toolkits_logon_username'])) {
+
+          /*
+           *      create the user a new id
+           */
+
+          $_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
+
+          /*
+           *   create a virtual root folder for this user
+           */
+
+          create_a_virtual_root_folder();
+      } else {
+
+          /*
+           * User exists so update the user settings
+           */
+
+          $_SESSION['toolkits_logon_id'] = get_user_id();
+
+          update_user_logon_time();
+      }
   }
-
-  require_once dirname(__FILE__) . '/user_library.php';
-
-  /*
-  * Check to see if this is a users' first time on the site
-  */
-
-  if (check_if_first_time($_SESSION['toolkits_logon_username'])) {
-
-    /*
-     *      create the user a new id
-     */
-
-    $_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
-
-    /*
-     *   create a virtual root folder for this user
-     */
-
-    create_a_virtual_root_folder();
-  } else {
-
-    /*
-     * User exists so update the user settings
-     */
-
-    $_SESSION['toolkits_logon_id'] = get_user_id();
-
-    update_user_logon_time();
-  }
-
   $msg = "User " . $_SESSION['toolkits_logon_username'] . " logged in successfully from " . $_SERVER['REMOTE_ADDR'];
   receive_message($_SESSION['toolkits_logon_username'], "SYSTEM", "LOGINS", "Successful login", $msg);
 }
+
+

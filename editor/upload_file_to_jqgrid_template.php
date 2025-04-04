@@ -11,7 +11,7 @@
 require_once(dirname(__FILE__) . "/../config.php");
 
 // Check for a valid logged in user
-if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin()) {
+if (!isset($_SESSION['toolkits_logon_username']) && !is_user_permitted("projectadmin")) {
     _debug("Session is invalid or expired");
     die('{"status": "error", "message": "Session is invalid or expired"}');
 }
@@ -22,7 +22,7 @@ if ($_FILES["file"]["error"] > 0) {
     $merge = isset($_POST['merge']);
     $file = file($_FILES['fileToUpload']['tmp_name']);
     $result = '';
-    $nr_columns = $_POST['colNum'];
+    $nr_columns = x_clean_input($_POST['colNum'], 'numeric');
 
     //determine separator
     $separator = get_delimiter($file, $nr_columns);
@@ -30,7 +30,7 @@ if ($_FILES["file"]["error"] > 0) {
 
     //if $merge is set then we want to keep the old grid
     if ($merge){
-        $old_grid = json_decode($_POST['old_data'], true);
+        $old_grid = json_decode(x_clean_input($_POST['old_data']), true);
         //drop row indicator
         foreach ($old_grid as $key => $row){
             array_shift($old_grid[$key]);
@@ -41,7 +41,7 @@ if ($_FILES["file"]["error"] > 0) {
     $result = parse_data($result, $csv, $nr_columns);
     $result = substr($result, 0 , -2);
 }
-echo json_encode(array('type' => $_POST["type"], 'csv' => $result, 'gridId' => $_POST["gridId"] ));
+echo json_encode(array('type' => $_POST["type"], 'csv' => $result, 'gridId' => x_clean_input($_POST["gridId"]) ));
 
 function parse_data($csv_parsed, $input, $nr_columns)
 {

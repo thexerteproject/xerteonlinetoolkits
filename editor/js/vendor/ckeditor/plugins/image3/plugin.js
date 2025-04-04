@@ -1000,14 +1000,17 @@
 				if (hasCaption)
 				{
 					// Add width and height to inline style of figure and leave the image alone (it has 100% in width and height, if align is not center)
-					if (align != 'center') {
-                        for (var d in dimensions) {
-                            if (dimensions[d])
-                                if ((dimensions[d]).match(regexPercent)) {
-                                    styles[d] = dimensions[d];
-                                }
-                        }
-                    }
+					//if (align != 'center') { // ** XERTE FIX - when centred % dimensions should still be set on figure
+						for (var d in dimensions) {
+							if (dimensions[d])
+								if ((dimensions[d]).match(regexPercent)) {
+									if (align == 'center') { // ** XERTE FIX
+										el.attributes[d] = dimensions[d];
+									}
+									styles[d] = dimensions[d];
+								}
+						}
+					//}
 				}
 				else
 				{
@@ -1053,6 +1056,10 @@
 				// Update element styles.
 				if ( !alignClasses && !CKEDITOR.tools.isEmpty( styles ) )
 					attrs.style = CKEDITOR.tools.writeCssText( styles );
+
+			// ** XERTE FIX - if image is captioned and alignment is not set, make sure relative widths aren't lost
+			} else if (el.name == 'figure') {
+				attrs.style = CKEDITOR.tools.writeCssText( styles );
 			}
 
 			return el;
@@ -1156,11 +1163,14 @@
         }
 		for ( var d in dimensions ) {
 			if ( dimensions[ d ] )
-				if ((dimensions[d]).match( regexPercent ) && data.align != 'center')
+				// ** XERTE FIX - image should be 100% when center aligned as dimensions will be on figure
+				if ((dimensions[d]).match( regexPercent )/* && data.align != 'center'*/)
 				{
 					image.setAttribute(d, "100%");
-					if (widget.wrapper != null)
+					// ** XERTE FIX - but don't add % dimensions on to parent div when centered
+					if (widget.wrapper != null && data.align != 'center') {
 						styles[d] = dimensions[d];
+					}
 				}
 				else
 				{

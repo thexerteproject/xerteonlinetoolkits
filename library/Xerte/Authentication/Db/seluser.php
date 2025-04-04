@@ -13,7 +13,7 @@ _load_language_file("/library/Xerte/Authentication/Db/adduser.inc");
 
 require(dirname(__FILE__) . "/../../../../website_code/php/user_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     global $authmech, $xerte_toolkits_site;
 
@@ -35,7 +35,7 @@ if(is_user_admin()){
     }
     else
     {
-        $authmech->changeUserSelection($_POST['username']);
+        $authmech->changeUserSelection(x_clean_input($_POST['username']));
     }
 }
 

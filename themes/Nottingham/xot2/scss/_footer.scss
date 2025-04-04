@@ -1,0 +1,273 @@
+#x_footerBlock {
+  font-size:		1em;
+  color:			$blackordarkest;
+  background-image:	none;
+  margin-bottom:1%;
+  background: $whiteorlightest;
+  box-shadow: $interfaceboxshadow;
+}
+body:not(.sb_right):not(.sb_left) #x_footerBlock {
+  width: 100%;
+  border-bottom-left-radius: $largeroundedcorners;
+  border-bottom-right-radius: $largeroundedcorners;
+}
+#x_footerBg {
+  background-image:none;
+}
+#x_pageNo {
+  background:	none;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+/* these buttons will use font awesome icons instead of pngs */
+.ui-button .ui-icon.x_help { background-image: none; }
+.ui-button .ui-icon.x_info { background-image: none; }
+.ui-button .ui-icon.x_home { background-image: none; }
+.ui-button .ui-icon.x_glossary { background-image: none; }
+.ui-button .ui-icon.x_maximise { background-image: none; }
+.ui-button .ui-icon.x_minimise {	background-image: none; }
+.ui-button .ui-icon.x_media { background-image: none; }
+.ui-button .ui-icon.x_next { background-image: none; }
+.ui-button .ui-icon.x_prev {	background-image: none; }
+.ui-button .ui-icon.x_prev_hist { background-image: none; }
+.ui-button .ui-icon.x_colourChanger { background-image: none; }
+.ui-button .ui-icon.x_projectIntro { background-image: none; }
+.ui-button .ui-icon.x_saveSession { background-image: none; }
+
+#x_nextBtn:not(.customIconBtn) .ui-icon:before { content: "\f138"; }
+#x_prevBtn:not(.customIconBtn) .ui-icon:before { content: "\f137"; }
+#x_cssBtn:not(.customIconBtn) .ui-icon:before { content: "\f066"; }
+#x_colourChangerBtn:not(.customIconBtn) .ui-icon:before { content: "\f042"; }
+#x_mediaBtn:not(.customIconBtn) .ui-icon:before { content: "\f16a"; }
+#x_glossaryBtn:not(.customIconBtn) .ui-icon:before { content: "\f02d"; }
+#x_helpBtn:not(.customIconBtn) .ui-icon:before { content: "\f128"; }
+#x_introBtn:not(.customIconBtn) .ui-icon:before { content: "\f129"; }
+#x_menuBtn:not(.x_home):not(.customIconBtn) .ui-icon:before { content: "\f0c9"; }
+#x_menuBtn.x_home:not(.customIconBtn) .ui-icon:before { content: "\f015"; }
+#x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {content: "\f0c7"; }
+
+#x_footerBlock button { color: $blackordarkest; }
+#x_footerBlock button.ui-state-hover { color: $lightestcolor2; }
+#x_footerBlock button.ui-state-focus { color: $lightestcolor2; }
+#x_footerBlock button.ui-state-active { color: $darkestcolor; }
+
+#x_footerBlock button {
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  font-size: 1.9em;
+  width: 1.5em;
+  padding-right: 0;
+  margin-left: 5px;
+}
+#x_footerBlock button span.ui-button-text {
+  display: none;
+}
+#x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
+  padding: 0;
+}
+/*****footer tools chevron*****/
+#x_footerChevron {
+  color: $blackordarkest;
+}
+#x_footerChevron:hover, #x_footerChevron:focus {
+  color: $lightestcolor2;
+}
+
+/*****TOC & other dialogs****/
+.ui-dialog.ui-widget {
+  padding: 0;
+  border: 1px solid $darkestcolor;
+  border-radius: 10px;
+}
+.ui-dialog .ui-widget-header {
+  border: 1px solid $darkestcolor;
+  background: $darkestcolor;
+  color: $whiteorlightest;
+  font-weight: bold;
+  border-radius: 0;
+}
+.ui-dialog .ui-dialog-titlebar button.ui-widget {
+  background: $darkestcolor;
+  border: 0;
+  color: $whiteorlightest;
+}
+.ui-dialog .ui-dialog-titlebar button.ui-widget:hover, .ui-dialog .ui-dialog-titlebar button.ui-widget:focus, .ui-dialog .ui-dialog-titlebar button.ui-widget:active {
+  color: $lightestcolor2;
+  border: 0;
+  padding: 0;
+}
+.ui-dialog .ui-dialog-content {
+  padding: .5em;
+}
+#menuItems .menuItem, #menuItems .chapterItem {
+  color:$blackordarkest;
+  border-radius: 10px;
+  background: $lightgrey;
+}
+#menuItems .menuItem:hover, #menuItems .menuItem:focus, #menuItems .menuItem:active,
+#menuItems .chapterItem:hover, #menuItems .chapterItem:focus, #menuItems .chapterItem:active {
+  background: $midgrey;
+  color:$blackordarkest;
+  border-color: $midgrey;
+}
+#menuItems .menuItem.current {
+  border: 2px solid $blackordarkest;
+}
+#menuItems .chapterHolder .chapterPageHolder .menuItem {
+  border-radius: 0;
+}
+#menuItems .menuItem:last-of-type.current {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+#menuItems .chapterHolder .chapterPageHolder {
+  padding: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+#menuItems .chapterHolder .chapterItem a {
+  background: $midgrey;
+  border-color: $midgrey;
+  color: $blackordarkest;
+  border-radius: inherit;
+
+}
+#menuItems .chapterHolder .chapterItem.ui-state-active {
+  background: $midgrey;
+  border-color: $midgrey;
+}
+#menuItems .chapterHolder .chapterPageHolder.ui-accordion-content-active {
+  padding-top: 5px;
+}
+#menuItems .chapterItem.ui-accordion-header-active {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+table.glossary tr td:first-child {
+  border-right-color: $lightgrey;
+}
+table.glossary tr.shaded {
+  background: $lightgrey
+}
+
+//*****SIDE BAR****/
+#x_sideBar {
+  background-color: $whiteorlightest;
+  color: $blackordarkest;
+}
+#x_sideBarToggleBtn {
+  background-color: $midgrey;
+  color: $blackordarkest;
+}
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+  background-color: $darkergrey;
+  color: $blackordarkest;
+}
+#x_sideBarBtnHolder button {
+  color: $blackordarkest;
+}
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+  color: $blackordarkest;
+  background: $darkergrey;
+}
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+  background: none;
+  border: 2px solid $midgrey;
+}
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+  background: $darkergrey;
+  color: $blackordarkest;
+  border: 2px solid $darkergrey;
+}
+
+#x_pageTimer {
+  background: $midgrey;
+  padding: .5em;
+}
+//******** Smartphones 600px (portrait) change progress bar display-----------/
+@media only screen
+and (max-width:600px) {
+  //show progress bar in mobile portrait mode with this theme
+  //but also reduce font/button sizes to fit//
+  #x_footerProgress {
+    display: block;
+  }
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding: 12px 5px 0 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px;
+  }
+  #x_footerBlock button{
+    font-size: 1.4rem;
+    margin-left: 5px;
+  }
+  #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+    font-size: 1.4rem;
+    margin-left: 5px;
+  }
+  .pbContainer {
+    display:block;
+    margin-top: 1.2em;
+  }
+  .pbTxt {
+    display:block;
+    text-align: center;
+  }
+}
+
+/* progress bar */
+.pbContainer {
+  background-color: $lightgrey;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+
+
+//----------------end of smartphones portrait---------------------------------
+
+
+//******** Smartphones 320px (portrait) change progress bar display-----------/
+@media only screen
+and (max-width:320px) {
+  //show progress bar in mobile portrait mode with this theme
+  //but also reduce font/button sizes to fit//
+  #x_footerProgress {
+    display: block;
+  }
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px;
+  }
+  #x_footerBlock button {
+    font-size: 1.3em;
+    width: 1.1em;
+    margin-left: 5px;
+  }
+  .pbContainer {
+    margin-top: 1.2em;
+  }
+  .pbTxt {
+    text-align: center;
+  }
+}
+//----------------end of smartphones portrait---------------------------------

@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories>
+      <categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories>
     </newNodes>
   </pageWizard>
 
@@ -9,17 +9,19 @@
   <categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#categories" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_categories_page" >
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <text label="Page Text" type="TextArea" height="200"/>
-    <feedback label="Feedback" type="TextArea" height="100"/>
+    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
+    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
 
 	<buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
 	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true" />
+    <incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Complete the exercise." mandatory="true"/>
 
-    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 
     <newNodes>
-      <category><![CDATA[<category name="Enter Category Name Here"/>]]></category>
+      <category><![CDATA[<category name="Enter Category Name"/>]]></category>
     </newNodes>
 
     <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
@@ -50,7 +52,7 @@
     <name label="Category Name" type="TextInput" wysiwyg="true"/>
 
     <newNodes>
-      <item><![CDATA[<item name="Enter Item Text Here"/>]]></item>
+      <item><![CDATA[<item name="Enter Item Text"/>]]></item>
     </newNodes>
 
   </category>

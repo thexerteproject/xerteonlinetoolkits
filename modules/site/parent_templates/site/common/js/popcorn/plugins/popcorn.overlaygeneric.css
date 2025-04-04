@@ -1,0 +1,124 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/* all popcorn plugins that are intended to be used as an overlay must include this.
+   Contains classes for hiding, resizing and multiple ways of continuing */
+
+/* ____GENERAL POPCORN PLUGIN OVERLAY STYLES___ */
+
+
+/* OPTIONAL ELEMENT BUTTON */
+.showHotspot { 
+    position      : absolute;
+    display       : table;
+    height        : auto;
+    width         : auto;
+    float         : left;
+    box-shadow    : none;
+    z-index       : 6; /*always have this higher than the label's */
+    text-align    : center;
+    vertical-align: middle;
+}
+
+.showHotspot::before {
+    display: table-cell;
+    vertical-align: middle;
+}
+.showLabel {
+    position: absolute;
+    display: inline-block;
+    padding: 5px;
+    padding-left: 30px;
+    white-space: nowrap;
+    border-radius: 5px;
+    cursor: pointer;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    top: 28px;
+    left: 30px;
+    /*background-color: #DEDEDE;*/
+}
+
+.tooltip {
+    position: absolute;
+    border-radius: 3px;
+    background-color:rgba(0,0,0,0.7);
+    border-color: rgba(0,0,0,0.7);
+    margin: 0%;
+    color:#EEEEEE;
+    text-align: center;
+    padding: 5px 10px;
+    outline: none;
+    cursor: default;
+    width: max-content;
+}
+
+.tooltip .tipArrow {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-style: solid;
+    border-color:rgba(0,0,0,0.7) transparent transparent transparent;
+    bottom: -20px;
+    left: -10px;
+    margin: 0 50%;
+}
+
+.tooltip .tipArrow.arrowUp {
+    border-color: transparent transparent rgba(0,0,0,0.7) transparent;
+    top: -20px;
+}
+
+#showHolder {
+    cursor: pointer;
+    z-index: 10000;
+    display: inline-block;
+}
+
+div.hotspotIcon {
+    border-style: solid;
+    border-radius: 50%;
+    cursor: pointer;
+}
+    
+div.hotspotIcon span.iconHolder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: table;
+}
+
+
+
+/* QUESTION MENUS 
+    Should have a bg but its set in code easier this way
+    INP add an Active class which handles this?*/
+.qWindow {
+    width: 60%;
+    margin: 5px;
+    z-index: 10;
+    /*background-color: #FE00FE*/
+}
+

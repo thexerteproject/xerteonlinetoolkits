@@ -46,14 +46,15 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             mediaData.media += urlsep + "controls=2&playsinline=1"
         }
         // is it from youtube or vimeo or mediasite?
-        if (mediaData.media.indexOf('youtu') > 0 
+        if (mediaData.media.indexOf('youtu') > 0
          || mediaData.media.indexOf('vimeo') > 0 
          || mediaData.media.indexOf('videos/embed') > 0 // Peertube
          || mediaData.media.indexOf('mediamission') > 0 
          || mediaData.media.indexOf('mediasite') > 0
          || mediaData.media.indexOf('deltion') > 0
          || isMediaSiteVideo(mediaData.media)
-         || isPeertubeVideo(mediaData.media)) {
+         || isPeertubeVideo(mediaData.media)
+         || mediaData.media.indexOf('yuja.com') > 0) {
             popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
             var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
             $videoHolder.attr("aspect", mediaData.aspect);
@@ -135,7 +136,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     
     // add transcript to media panel if required
     if (mediaData.transcript) {
-        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">' 
+        $mediaHolder.append('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">'
             + x_addLineBreaks(mediaData.transcript) + '</div></div>');
         $mediaHolder.find(".transcript").hide();
         $mediaHolder.find(".transcriptBtn")
@@ -143,15 +144,20 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
                 icons:	{secondary:"fa fa-x-btn-hide"},
                 label:	mediaData.transcriptBtnTxt ? mediaData.transcriptBtnTxt : "Transcript"
             })
+            .attr("aria-expanded", false)
             .click(function() {
                 // transcript slides in and out of view on click
                 var $transcript = $(this).next(".transcript");
                 if ($transcript.is(":hidden") == true) {
-                    $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
+                    $(this)
+                        .attr("aria-expanded", true)
+                        .button({icons: {secondary:"fa fa-x-btn-show"}});
                     $transcript.slideDown();
                 } else {
                     $transcript.slideUp();
-                    $(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
+                    $(this)
+                        .attr("aria-expanded", false)
+                        .button({icons: {secondary:"fa fa-x-btn-hide"}});
                 }
             });
         
@@ -258,6 +264,9 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
 // Adds XAPI tracking to the popcornInstance.
 this.addBasicTracking = function(popcornInstance, videoState) {
 
+    if (popcornInstance.isDestroyed) {
+        return;
+    }
     // Broadcast initialized verb for loaded video to xAPI.
     XTVideo(x_currentPage, getTrackingLabel()+videoState.trackinglabel, "", "initialized", videoState, x_currentPageXML.getAttribute("grouping"));
 
@@ -301,6 +310,9 @@ this.addTrackingOnPlay = function(popcornInstance, videoState){
     videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
     videoState.time = time;
+    if (popcornInstance.isDestroyed) {
+        return videoState;
+    }
     XTVideo(x_currentPage, getTrackingLabel()+videoState.trackinglabel, "", "played", videoState, x_currentPageXML.getAttribute("grouping"));
     return videoState;
 }
@@ -312,6 +324,9 @@ this.addTrackingOnPause = function(popcornInstance, videoState){
     addSegment(videoState);
     videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
+    if (popcornInstance.isDestroyed) {
+        return videoState;
+    }
     XTVideo(x_currentPage, getTrackingLabel()+videoState.trackinglabel, "", "paused", videoState, x_currentPageXML.getAttribute("grouping"))
     return videoState;
 }
@@ -323,22 +338,36 @@ this.addTrackingOnSeeked = function(popcornInstance, videoState){
     addSegment(videoState);
     videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
+    if (popcornInstance.isDestroyed) {
+        return videoState;
+    }
     XTVideo(x_currentPage, getTrackingLabel()+videoState.trackinglabel, "", "seeked", videoState, x_currentPageXML.getAttribute("grouping"));
     return videoState;
 }
 
 this.addTrackingOnEnded = function(popcornInstance, videoState){
-    var time = popcornInstance.duration();
-    videoState.duration = popcornInstance.duration();
+    /*// Only send if prevVerb is not pause videoState.time != popcornInstance.duration()
+    if (state.prevVerb == "paused" && videoState.time == popcornInstance.duration()) {
+        return videoState;
+    }
+    */
+    var time = videoState.time;
+    videoState.duration = time;
     videoState.time = time;
     videoState.segment.end = time;
     addSegment(videoState);
     videoState.segment = {start: time, end: -1};
-    XTVideo(x_currentPage, getTrackingLabel()+videoState.trackinglabel+"/"+videoState.trackinglabel, "", "paused", videoState, x_currentPageXML.getAttribute("grouping"));
+    if (popcornInstance.isDestroyed) {
+        return videoState;
+    }
+    XTVideo(x_currentPage, getTrackingLabel()+videoState.trackinglabel, "", "ended", videoState, x_currentPageXML.getAttribute("grouping"));
     return videoState;
 }
 
 this.addTrackingOnLeavePage = function(popcornInstance, videoState) {
+    if (popcornInstance.isDestroyed) {
+        return;
+    }
     // Add the latest segment to the state
     videoState.segment.end = videoState.lastTime || -1;
     addSegment(videoState);

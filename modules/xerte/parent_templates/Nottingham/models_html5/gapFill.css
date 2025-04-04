@@ -3,6 +3,10 @@
 	#pageContents .panel {
 		overflow:	auto;
 	}
+
+	#pageContents #dragDropHolder .panel {
+		overflow-x: hidden;
+	}
 	
 	#textHolder {
 		margin-bottom:	10px;
@@ -12,8 +16,33 @@
 		display:		inline-block;
 		text-align:		center;
 		vertical-align:	middle;
-		padding:		5px;
 		margin:			3px 0 5px 0;
+		cursor: pointer;
+	}
+
+	#targetHolder .target.correct {
+		padding: 0 5px;
+	}
+
+	#targetHolder .target.selected {
+		border: 2px solid green !important;
+	}
+
+	#targetHolder.underline .target.highlight {
+		border-bottom: 1px solid black;
+		border-top: 1px solid transparent;
+		background-image: none;
+	}
+
+	#targetHolder.outline .target.highlight {
+		border: 1px dashed black;
+		background-image: none;
+	}
+
+	#targetHolder.outline:not(.noCompress) .target.ui-droppable-disabled,
+	#targetHolder.bg:not(.noCompress):not(.gapStyle_false) .target.ui-droppable-disabled {
+		padding-left: 5px;
+		padding-right: 5px;
 	}
 	
 	#targetHolder input {
@@ -34,7 +63,7 @@
 	
 	#targetHolder input.incorrect, #targetHolder input[incorrect] {
 		color: 			#EB0000;
-		font-weight:600;
+		/*font-weight:600;*/
 	}
 	
 	#targetHolder .target.incorrect {
@@ -44,8 +73,23 @@
 	}
 	
 	#targetHolder .target.answerShown, #targetHolder input.answerShown {
-		color:			#c36b00;
+		color:			#003399;
 		border-color:	transparent;
+	}
+
+	#targetHolder .target.answerShown {
+		cursor: default;
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+
+	#targetHolder.bg.gapStyle_false .target.answerShown {
+		background: none;
+	}
+
+	#targetHolder.outline.gapStyle_false .target.answerShown,
+	#targetHolder.underline.gapStyle_false .target.answerShown {
+		border-color: transparent;
 	}
 	
 	#targetHolder select {
@@ -65,9 +109,7 @@
 		/*gap fill: drop down show answers styling*/
 		opacity:1.0;
 		font-weight:400;
-		border-color: unset;
-		border-width:2px;
-		border-style:outset;
+		border: none;
 		background:#ffffff;
 		cursor: default;
 		padding:initial !important;
@@ -107,10 +149,10 @@
 	
 	#btnHolder {
 		overflow: auto;
+		float: right;
 	}
 	
 	#submitBtn, #showBtn {
-		float:	right;
 		margin-bottom:	10px;
 	}
 	
@@ -120,21 +162,32 @@
 
 
 /* change styling of correct and disable answers */
-#targetHolder input[readonly].correct, #targetHolder .target.correct, #targetHolder input[correct], #targetHolder select[disabled].correct {
+#targetHolder input[readonly].correct,
+#targetHolder:not(.underline):not(.outline) .target.correct,
+#targetHolder input[correct],
+#targetHolder select[disabled].correct {
 	color:unset;
 	color: green;
 	opacity:1.0;
-	font-weight:400;
-	border-color: unset;
+	/*font-weight:400;*/
+	/*border-color: unset;
 	border-width:2px;
 	border-style:outset;
-	background:#ffffff;
+	background:#ffffff;*/
 	cursor: default;
-	padding:initial !important;
+	/*padding:initial !important;*/
 	caret-color: transparent;
 }
+
+#targetHolder .target.correct {
+	cursor: default;
+}
+
 /* add ticks to correct answers */
-#targetHolder input[readonly].correct+span:before, #targetHolder input[correct]+span:before, #targetHolder .target.correct+span:before, #targetHolder select[disabled].correct+span:before {
+#targetHolder input[readonly].judged.correct+span:before,
+#targetHolder input[correct].judged+span:before,
+#targetHolder .target.correct+span:before,
+#targetHolder select[disabled].correct+span:before {
 	font-family: FontAwesome;
 	content: "\f00c";
 	color: green;
@@ -142,7 +195,9 @@
 }
 
 /*gap fill: show red crosses when incorrect and in tracking mode*/
-#targetHolder select[disabled]+span:before, #targetHolder .target.incorrect+span:before, #pageContents input[readonly]+span:before{
+#targetHolder select[disabled]+span:before,
+#targetHolder .target.incorrect+span:before,
+#pageContents input[readonly].judged.incorrect:not(.answerShown)+span:before{
 	font-family: FontAwesome;
 	content: "\f00d";
 	color: red;
@@ -152,10 +207,11 @@
 /*gap fill: styling of disabled/incorrect responses when in tracking mode*/
 #targetHolder select[disabled], #targetHolder .target.incorrect, #targetHolder input[readonly]{
 	opacity:1.0;
-	font-weight:400;
-	border-color: unset;
+	/*font-weight:400;*/
+	/*border-color: unset;
 	border-width:2px;
-	border-style:outset;
+	border-style:outset;*/
+	border: none;
 	background:#ffffff;
 	cursor: default;
 	padding:initial !important;
@@ -164,4 +220,10 @@
 /*gap fill: remove red crosses when show answers selected*/
 #targetHolder .target.answerShown+span:before, #targetHolder select[disabled].answerShown+span:before, #targetHolder input.answerShown+span:before {
 	content:"";
+}
+
+@media (min-width: 768px) {
+	#x_mainHolder.x_responsive #labelHolder .label {
+		font-size: 2vmin;
+	}
 }

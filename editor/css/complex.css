@@ -27,7 +27,7 @@ div.cke_editable_inline * {
 }
 
 div.cke_editable_inline i.fa {
-	font-family: FontAwesome;
+	font-family: 'Font Awesome 6 Free';
 }
 
 #insert_subnodes {border-top: 1px solid #ccc!important; margin-top: 20px; padding-top: 20px;}
@@ -143,6 +143,7 @@ input.media, input.date
     width: 98%;
     margin: 0px;
 }
+
 
 /*
 *	COMMON LAYOUT PANE FORMATTING
@@ -606,6 +607,10 @@ div.ui-layout-north div.content {
 	padding:0;
 }
 
+.elevated div.ui-layout-north div.content {
+	background-image: url(../img/warning.png);
+}
+
 div.ui-layout-west, div.ui-layout-east {
     background: #b3b3b5;
     padding: 8px 8px 8px 8px;
@@ -680,27 +685,58 @@ select, input, textarea
     padding: 4px;
 }
 
-#mainPanel select,  #mainPanel textarea{
-    /* background: #ececed; */
+#mainPanel select,  #mainPanel textarea {
     background: #fff;
-   /* border-radius: 4px;*/
     border: 1px solid #cdcdcd;
     width: 100%;
     box-sizing: border-box;
 }
 
-#mainPanel form{
-	display: flex;
+#mainPanel .jqgridAddColumnsContainer {
+	float: left;
 }
 
-#mainPanel input[name=fileToUpload]{
-	flex-grow: 1;
+form.csvUpload input[name=fileToUpload] {
+	border: 0;
+	padding: 0;
+	background: none;
+	cursor: pointer;
 }
 
-#mainPanel input[name=merge]{
+#mainPanel input[name=csvUpload],
+form.csvUpload input[type=submit] {
+	background: #EFEFEF;
+	border: 1px solid #767676;
+	border-radius: 2px;
+	padding: 1px 8px;
 	float: right;
-	margin-bottom: 20px;
 }
+
+form.csvUpload input[type=submit] {
+	margin-top: 1em;
+}
+
+#mainPanel input[name=csvUpload]:hover, #mainPanel input[name=csvUpload]:focus, #mainPanel input[name=csvUpload]:active,
+form.csvUpload input[type=submit]:hover, form.csvUpload input[type=submit]:focus, form.csvUpload input[type=submit]:active {
+	background: #E5E5E5;
+	border: 1px solid #4F4F4F;
+}
+
+form.csvUpload .csvMergeInfo {
+	margin-top: 1em;
+	clear: both;
+}
+
+form.csvUpload input[name=merge] {
+	margin-left: 10px;
+}
+
+#mainPanel .xerte_button.grid_col_btns,
+#mainPanel .xerte_button.disabled.grid_col_btns,
+#mainPanel input[name=csvUpload] {
+	font-size: 0.8em;
+}
+
 #mainPanel select.deprecated {
 	width: 95%;
 }
@@ -784,7 +820,7 @@ fieldset.wizardgroup .group_info {
 	padding: 0 15px 15px 15px;
 }
 
-#parameter_checkboxes span {
+#parameter_checkboxes label {
     margin-right: 15px;
 }
 img.optional {
@@ -1269,6 +1305,10 @@ i.tooltipIcon {
 .passwordIcon {
 	margin-right: 5px;
 	color: #444;
+}
+.milestoneIcon {
+	margin-right: 5px;
+	color: #663399;
 }
 .iconEnabled
 {

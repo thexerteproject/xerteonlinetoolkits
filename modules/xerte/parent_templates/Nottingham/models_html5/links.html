@@ -43,8 +43,8 @@
 			
 			// warn that links open in new window (for screen readers)
 			var linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "");
-			linkWarning = linkWarning != "" ? '<span class="ui-helper-hidden-accessible">' + linkWarning + '</span>' : linkWarning;
-			
+			var lbWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "");
+
 			var $linkBlock = $(".linkBlock:first");
 			$(x_currentPageXML).children().each(function(i) {
 				var $thisLink;
@@ -53,34 +53,55 @@
 				} else {
 					$thisLink = $linkHolder;
 				}
-				
-				$thisLink.find("h3")
-					.attr("id", "link" + i)
-					.html(this.getAttribute("name"));
-				
-				$thisLink.find(".info").html(x_addLineBreaks(this.getAttribute("text")));
-				
-				$thisLink.find(".link a")
-					.html(this.getAttribute("url") + linkWarning)
-					.attr({
-						"href" : this.getAttribute("url"),
-						"target" : "_blank",
-						"aria-labelledby" : (linkWarning != "" ? "link" + i + " linkHelper" + i : "link" + i) // the text read by screen reader for link (instead of url)
-						})
-					.find("span.ui-helper-hidden-accessible").attr("id", "linkHelper" + i);
-				
-				// open link in lightbox
+
+				if (this.getAttribute("name") == '') {
+					$thisLink.find("h3").hide();
+				} else {
+					$thisLink.find("h3")
+							.attr("id", "link" + i)
+							.html(this.getAttribute("name"))
+							.show();
+				}
+
+				if (this.getAttribute("text") == '') {
+					$thisLink.find(".info").hide();
+				} else {
+					$thisLink.find(".info")
+							.html(x_addLineBreaks(this.getAttribute("text")))
+							.show();
+				}
+
+				if (this.getAttribute("url") == '') {
+					$thisLink.find(".link").hide();
+				} else {
+					// the text read by screen reader for link (instead of url)
+					// this will be urlTxt (if exists) or name (if exists) or url, followed by the link warning that it opens in new window (if it does)
+					var screenreaderTxt = (this.getAttribute("urlTxt") != undefined && this.getAttribute("urlTxt") != "" ? this.getAttribute("urlTxt") : (this.getAttribute("name") != "" ? this.getAttribute("name") : this.getAttribute("url"))) + (this.getAttribute("target") != "lightbox" ? ": " + linkWarning : ": " + lbWarning);
+
+
+					const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+					$thisLink.find(".link a")
+							.html((this.getAttribute("urlTxt") != undefined && this.getAttribute("urlTxt") != "" ? this.getAttribute("urlTxt") : this.getAttribute("url")) + (this.getAttribute("target") != "lightbox" ? ' ' + faIcon : ''))
+							.attr({
+								"href" : this.getAttribute("url"),
+								"target" : "_blank",
+								"aria-label" : screenreaderTxt
+							});
+
+					$thisLink.find(".link").show();
+				}
+
 				if (this.getAttribute("target") == "lightbox") {
-					$thisLink.find(".link a").attr('data-featherlight', 'iframe');
+					$thisLink.addClass("lb");
 				}
 				
 				if (i % numCols == 0) {
 					$thisLink.addClass("clear");
 				}
 			});
-			
-			
-			
+
+			$(".linkBlock.lb .link a").attr('data-featherlight', 'iframe');
+
 			// set column widths
 			if (x_browserInfo.mobile == false) {
 				var numColumns = Number(x_currentPageXML.getAttribute("cols"));

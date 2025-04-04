@@ -1,11 +1,10 @@
 @import "scss/_allvariables"; /*start here and set the default values for all the variables*/
 @import "scss/_header";
-@import "scss/_pagetypes";
 @import "scss/_footer";
-@import "scss/_animations";
+@import "scss/_pagetypes";
 @import "scss/editorstyles";
-@import "scss/_webkitCustoms";
 @import "scss/_sliders";
+@import "scss/_webkitCustoms";
 /* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
 /*You should not edit the .css files directly or change values directly unless you wish to override something*/
 /*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
@@ -17,7 +16,7 @@ body {
 }
 
 .cke_editable {
-	background: $defaultpagebackground;
+	background: $bodybackgroundcolor;
 }
 /******Fonts******/
 .ui-button .ui-button-text {
@@ -26,7 +25,7 @@ body {
 /*Note: these font-sizes will be ignored when responsive text is on*/
 p{
 	font-size:1.1em;
-	color:$whiteorlightest;
+	color:$mainfontcolour;
 }
 h1 {
 	font-size:	1em;
@@ -41,19 +40,46 @@ h3 {
 	margin:		0;
 }
 
-a{color:$linkcolor;}
-a:hover{color:$linkhover;}
-a:visited{color:$linkvisited;}
+a, .ui-widget-content a {color:$linkcolor;}
+a:visited, .ui-widget-content a:visited {color:$linkvisited;}
+a:hover, .ui-widget-content a:hover {color:$linkhover;}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br, .ui-corner-top, .ui-corner-left, .ui-corner-bl {
+	border-radius: $smallroundedcorners;
+}
+
+input, select, textarea {
+	background: $blackordarkest;
+	border: 1px solid $bordercolor;
+	caret-color: $whiteorlightest;
+	color: $mainfontcolour;
+}
 
 table.glossary tr {
-	background: #000000;
+	background: $panelcolor;
 }
 table.glossary td {
-	background: #000000;
+	background: $panelcolor;
 }
-
-span.x_glossary, span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
-	color: #ffffff;
+table.glossary tr td, table.glossary tr.shaded td {
+	border: 1px solid $bordercolor !important;
+}
+table.glossary tr.shaded td {
+	background: $blackordarkest;
+}
+#x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited {
+	color: $linkcolor;
+}
+#x_pageDiv span.x_glossary:visited {
+	color: $linkvisited;
+}
+#x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
+	color: $linkhover;
+}
+#x_glossaryHover {
+	color: $mainfontcolour;
+	background: $bodybackgroundcolor;
+	border-color: $bordercolor;
 }
 
 #x_mainHolder{
@@ -70,33 +96,89 @@ span.x_glossary, span.x_glossary:link, span.x_glossary:visited, span.x_glossary:
 }
 #infoHolder{
 	border-radius:$mediumroundedcorners;
-	background: $blackordarkest;
+}
+.focusBorder {
+	border-color: $contrastcolor;
 }
 /*****panel all pages with a panel*****/
 .panel {
 	border-radius: $mediumroundedcorners;
-	background:$blackordarkest;
+	background:$panelcolor;
 	box-shadow: none;
-	color:$whiteorlightest;
+	color:$mainfontcolour;
+	border-color: $bordercolor;
 }
 .panelPage{
 	padding:1%;
-	color:$whiteorlightest;
+	color:$mainfontcolour;
 }
 /*****all images*****/
 img {
 	border-radius: $imageroundedcorners;
 }
+.fa-x-cross:before {
+	color: $accent3;
+}
+.fa-x-tick:before {
+	color: $accent1;
+}
+.alertBorder {
+	border-color: $accent3;
+}
 /******lightboxes******/
 .featherlight .featherlight-content {
-	background-color: $defaultpagebackground;
+	background-color: $panelcolor;
+	border: 1px solid $bordercolor;
+	padding-bottom: 10px;
+}
+.featherlight .featherlight-close-icon {
+	margin-top: 2px;
+	margin-right: 2px;
+	background-color: $panelcolor;
+	color: $btntxtcolor;
+	border: 1px solid $bordercolor;
+}
+.featherlight .featherlight-close-icon:hover, .featherlight .featherlight-close-icon:focus, .featherlight .featherlight-close-icon:active {
+	background-color: $contrastcolor;
+	color: $panelcolor;
+	border: 1px solid $contrastcolor;
+}
+//*****media player*****/
+.mejs-container.mejs-audio {
+	border: 1px solid $bordercolor;
+	background: $panelcolor;
+}
+.mejs-container.mejs-audio .mejs-time-total,
+.mejs-container.mejs-audio .mejs-horizontal-volume-total {
+	border: 1px solid $bordercolor;
+	background: $panelcolor;
+}
+.mejs-container.mejs-audio .mejs-time-loaded {
+	border-right: 1px solid $bordercolor;
+	background: $panelcolor;
+	height: 100%;
+	box-sizing: border-box;
+}
+.mejs-container.mejs-audio .mejs-time-current,
+.mejs-container.mejs-audio .mejs-horizontal-volume-current {
+	border-right: 1px solid $bordercolor;
+	background: $bordercolor;
+	box-sizing: border-box;
+}
+.mejs-container.mejs-audio .mejs-time-current {
+	height: 100%;
 }
 /*code snippet*/
 .hljs, .hljs-subst, .hljs-tag .hljs-title, .lisp .hljs-title, .clojure .hljs-built_in, .nginx .hljs-title {
-	color: white;
+	color: $mainfontcolour;
 }
 .hljs {
-	background: #232222;
+	background: $panelcolor;
+	border: 1px solid $bordercolor;
+}
+.panel .hljs {
+	background: $panelcolor;
+	border: 1px solid $bordercolor;
 }
 /******@media changes******/
 @media (min-width: 1366px) {

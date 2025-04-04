@@ -6,7 +6,7 @@ body {
 	font-family:	Arial, sans-serif;
 	color: #cfcfcf;
 }
-a, a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active{
+a, #x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
 	color: #cfcfcf;
 }
 
@@ -198,6 +198,33 @@ background-image: none;
 	color: #1c1c1c;
 }
 
+.x_gapFill_page #targetHolder .highlight {
+	background:#000;
+}
+
+.x_gapFill_page #targetHolder .target.answerShown {
+	color: #888;
+}
+
+.x_gapFill_page #targetHolder.outline .target.highlight {
+	border: 1px dashed #cfcfcf;
+}
+.x_gapFill_page #targetHolder.underline .target.highlight {
+	border-bottom: 1px solid #cfcfcf;
+}
+
+.x_audioRecord_page .deleteClipBtn {
+	color: #cfcfcf;
+}
+
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus, .x_audioRecord_page .deleteClipBtn:active {
+	color: white;
+}
+
+.x_audioRecord_page .clip.highlight {
+	background-color: #000;
+}
+
 
 #x_headerBlock #x_pageIntroBtn {
 	color: #cfcfcf;
@@ -261,5 +288,19 @@ table.headerCol.shaded td.header {
 	color: #1c1c1c;
 }
 
-
-.x_results_page tr.alt td
+/* progress bar */
+.pbContainer {
+	background-color: #1c1c1c;
+	border: 1px solid #cfcfcf;
+}
+#x_footerBlock .pbBar {
+	background-color: #cfcfcf;
+}
+#x_headerProgress .pbContainer {
+	background-color: #cfcfcf;
+	border: none;
+}
+#x_headerProgress .progressMarker {
+	border-color: #cfcfcf;
+	background-color: #1c1c1c;
+}

@@ -23,24 +23,29 @@ _load_language_file("/editor/uploadImage.inc");
 
 
 // Check for a valid logged in user
-if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin()) {
+if (!isset($_SESSION['toolkits_logon_username']) && !is_user_permitted("projectadmin")) {
     _debug("Session is invalid or expired");
     die('{"status": "error", "message": "Session is invalid or expired"}');
 }
 
 
-$mode = ""; if ($_GET["mode"]) $mode = $_GET["mode"];
+$mode = ""; if (isset($_GET["mode"])) $mode = x_clean_input($_GET["mode"]);
 if ($mode != 'record')
 	die('{"status": "error", "message": "Mode not set properly"}');
 
 
-$path = ""; if ($_GET["uploadPath"]) $path = $_GET["uploadPath"];
-$url = ""; if ($_GET["uploadURL"]) $url = $_GET["uploadURL"];
-if ($path == "" || $url == "")
-	die('{"status": "error", "message": "Paths not set properly"}');
+$path = ""; if (isset($_GET["uploadPath"])) $path = x_clean_input($_GET["uploadPath"]);
+$url = ""; if (isset($_GET["uploadURL"])) $url = x_clean_input($_GET["uploadURL"]);
+if ($path == "" || $url == "") {
+    die('{"status": "error", "message": "Paths not set properly"}');
+}
+x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid path specified"}');
 
-$media_path = $path; if ($path != "") $media_path = $path . "/media/";
-$media_url = $url; if ($url != "") $media_url = $url . "/media/";
+$check_url = x_convert_user_area_url_to_path($url);
+x_check_path_traversal($check_url, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid URL specified"}');
+
+$media_path = $path . "/media/";
+$media_url = $url . "/media/";
 
 
 // Define default filename and extension
@@ -49,11 +54,20 @@ $extension = "webm";  //TODO - recognise this from the data sent if no filename/
 
 
 // Check for filename and extension options being sent
-if ($_POST['filename'] && $_POST['extension']) {
-	$filename = $_POST['filename'];
-	$extension = $_POST['extension'];
-}
+if (isset($_POST['filename']) && isset($_POST['extension'])) {
+	$filename = x_clean_input($_POST['filename']);
+	$extension = x_clean_input($_POST['extension']);
 
+    switch($extension) {
+        case "webm":
+        case "mp3":
+        case "ogg":
+        case "wav":
+            break;
+        default:
+            die('{"status": "error", "message": "Invalid extension specified"}');
+    }
+}
 
 // Check if filename already exists, if so add a count until we find a name that is available
 $final = $filename;

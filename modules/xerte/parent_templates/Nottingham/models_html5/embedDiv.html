@@ -34,22 +34,22 @@
 		this.init = function() {
 			var $pageContents = $("#pageContents"),
 				$iFrameHolder = $pageContents;
-			
+
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
 				if (x_currentPageXML.getAttribute("align") != "Right") {
 					$pageContents.html('<div class="splitScreen"><div class="left">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div class="right"></div></div>');
 					$iFrameHolder = $pageContents.find(".right");
-					
+
 					if (x_currentPageXML.getAttribute("windowWidth") == "Small") {
 						$("#pageContents .splitScreen").addClass("large");
 					} else if (x_currentPageXML.getAttribute("windowWidth") == "Large") {
 						$("#pageContents .splitScreen").addClass("small");
 					}
-					
+
 				} else {
 					$pageContents.html('<div class="splitScreen"><div class="left"></div><div class="right">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div></div>');
 					$iFrameHolder = $pageContents.find(".left");
-					
+
 					if (x_currentPageXML.getAttribute("windowWidth") == "Small") {
 						$("#pageContents .splitScreen").addClass("medium");
 					} else if (x_currentPageXML.getAttribute("windowWidth") == "Large") {
@@ -81,13 +81,7 @@
 		}
 		
 		this.calcHeight = function() {
-			var frameHeight;
-			if (x_browserInfo.mobile == false) {
-				frameHeight = $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 3;
-			} else {
-				frameHeight = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-			}
-			return frameHeight;
+			return x_getAvailableHeight([$("#iFrame")], [1], true);
 		}
 	}
 	

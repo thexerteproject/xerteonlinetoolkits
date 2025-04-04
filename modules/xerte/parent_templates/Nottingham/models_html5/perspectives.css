@@ -1,7 +1,6 @@
 /* perspectives.html */
 	
 	#thumbBar {
-		display: inline-block;
 		width: 100%;
 		height: 8em;
 	}
@@ -107,11 +106,14 @@
 		margin: 4px;
 	}
 	
-	#thumbHolder .thumbBox h3 {
+	#thumbHolder .thumbBox .thumbTitle {
 		font-size: 0.8em;
 		text-align: center;
 		overflow: hidden;
 		margin-bottom: 5px;
+		font-weight: bold;
+		padding-top: 0;
+		padding-bottom: 0;
 	}
 	
 	#thumbHolder .thumbBox:link, #thumbHolder .thumbBox:hover, #thumbHolder .thumbBox:active, #thumbHolder .thumbBox:visited {
@@ -123,14 +125,14 @@
 		position: relative;
 	}
 	
-	#thumbHolder .playAll h3 {
+	#thumbHolder .playAll .thumbTitle {
 		font-size: 2em;
 		margin-top: 0.3em;
 		white-space: normal;
 	}
 	
-	#thumbBar.small #thumbHolder .playAll h3 { font-size: 1.2em; margin-top: 0.18em; }
-	#thumbBar.large #thumbHolder .playAll h3 { font-size: 2.8em; margin-top: 0.48em; }
+	#thumbBar.small #thumbHolder .playAll .thumbTitle { font-size: 1.2em; margin-top: 0.18em; }
+	#thumbBar.large #thumbHolder .playAll .thumbTitle { font-size: 2.8em; margin-top: 0.48em; }
 	
 	/* removes controls from thumbnail version of video player */
 	#thumbHolder .thumbMedia .mejs-container .mejs-controls, #thumbHolder .thumbMedia .mejs-container .mejs-layers {

@@ -36,11 +36,9 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$infoHolder.height($panel.height() - x_audioBarH);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
+			$infoHolder.height(x_getAvailableHeight([$panel], [x_audioBarH]));
 			
 			if ($pageContents.data("mediaElement") != undefined) {
 				$pageContents.data("mediaElement").setCurrentTime(0);
@@ -116,18 +114,16 @@
 		}
 		
 		this.createCaptions = function(captionInfo) {
-			var	captions = new Array(),
-				tabIndex = 1;
+			var	captions = new Array();
 			
 			$(captionInfo).each(function() {
 				var	$this = $(this);
 				
-				var $caption = $('<div tabindex="' + tabIndex + '" class="noFocus">' + x_addLineBreaks($this.attr("text")) + '</div>')
+				var $caption = $('<div tabindex="0" class="noFocus">' + x_addLineBreaks($this.attr("text")) + '</div>')
 					.data("synch", $this.attr("synch"));
 				
 				$infoHolder.append($caption);
 				captions.push($caption[0]);
-				tabIndex++;
 			});
 			
 			$pageContents.data("captions", captions);
@@ -215,7 +211,7 @@
 		
 		<div class="right">
 			<div class="panel">
-				<div id="infoHolder">
+				<div id="infoHolder" tabindex="0">
 				</div>
 				<div id="pageAudio"></div>
 			</div>

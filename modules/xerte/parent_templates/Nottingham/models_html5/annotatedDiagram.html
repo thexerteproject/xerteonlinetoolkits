@@ -120,7 +120,9 @@
 			
 			// create links
 			$(x_currentPageXML).children().each(function(i) {
-				var $listItem = $('<a class="listItem" href="#"></a>').appendTo("#listHolder");
+				// deally this should be a button not a link as it's not opening a new page
+				// using role="button" as changing to button tag may cause theme issues with css selectors
+				var $listItem = $('<a class="listItem" href="#" role="button"></a>').appendTo("#listHolder");
 				
 				// create list of links to each hs / hs group
 				$listItem
@@ -180,38 +182,46 @@
 						}
 					});
 			});
-			
-			if (x_currentPageXML.getAttribute("url").split(".")[1].slice(0, -1) != "swf") {
-				
-				$img
-					.data('firstLoad', true)
-					.css({
-						"opacity": 0,
-						"filter": 'alpha(opacity=0)'
-					})
-					.one("load", function() {
-						annotatedDiagram.setUp();
-						
-						// call this function in every model once everything's loaded
-						x_pageLoaded();
-					})
-					.attr({
-						"src": x_evalURL(x_currentPageXML.getAttribute("url")),
-						"alt": x_currentPageXML.getAttribute("tip")
-					})
-					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-						if (this.complete) {
-							setTimeout(function(){ $(this).trigger("load"); }, 1);
-						}
-					});
-				
-				if ($pageContents.data("hsType") == "flex") {
-					$img.attr("usemap", "#hsHolder_map");
+			let url = x_currentPageXML.getAttribute("url").split(".");
+			if (url.length > 1) {
+				if (url[1].slice(0, -1) != "swf") {
+
+					$img
+							.data('firstLoad', true)
+							.css({
+								"opacity": 0,
+								"filter": 'alpha(opacity=0)'
+							})
+							.one("load", function () {
+								annotatedDiagram.setUp();
+
+								// call this function in every model once everything's loaded
+								x_pageLoaded();
+							})
+							.attr({
+								"src": x_evalURL(x_currentPageXML.getAttribute("url")),
+								"alt": x_currentPageXML.getAttribute("tip")
+							})
+							.each(function () { // called if loaded from cache as in some browsers load won't automatically trigger
+								if (this.complete) {
+									setTimeout(function () {
+										$(this).trigger("load");
+									}, 1);
+								}
+							});
+
+					if ($pageContents.data("hsType") == "flex") {
+						$img.attr("usemap", "#hsHolder_map");
+					}
+
+				} else {
+					// have had to add this in I found one old project where a swf was used instead of an image on this page
+					$("#imageHolder").html('<p>Flash files (.swf) are no longer supported</p>');
+					x_pageLoaded();
 				}
-				
-			} else {
-				// have had to add this in I found one old project where a swf was used instead of an image on this page
-				$("#imageHolder").html('<p>Flash files (.swf) are no longer supported</p>');
+			}else{
+				// If no image was selected
+				$("#imageHolder").html('<p>No image selected.</p>');
 				x_pageLoaded();
 			}
 
@@ -258,7 +268,7 @@
 				});
 			
 			if ($pageContents.data("hsType") == "centre" && align == "Left") {
-				$(".listItem").css("minWidth", $x_pageDiv.width() - $panel.outerWidth(true) - 50);
+				$(".listItem").css("minWidth", $x_pageDiv.width() - $panel.outerWidth(true) - parseInt($(".listItem").css('padding-left')) - parseInt($(".listItem").css('padding-right')) - 20);
 			}
 			
 			// now get info about hotspots & create them
@@ -362,7 +372,7 @@
 					coords = [],
 					coords_string = "";
 				
-				$hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="0" />');
+				$hotspot = $('<area class="hotspot" shape="poly" href="#" />');
 				
 				if (hsInfo.getAttribute("mode") == undefined && hsInfo.getAttribute("x") != undefined && hsInfo.getAttribute("y") != undefined && hsInfo.getAttribute("w") != undefined && hsInfo.getAttribute("h") != undefined) {
 					// old way of specifying hotspot: x,y,w,h
@@ -567,8 +577,20 @@
 			var startX = $hs.offset().left - $(context.canvas).offset().left + ($hs.width() / 2);
 			var startY = $hs.offset().top - $(context.canvas).offset().top + ($hs.height() / 2);
 
-			var endX = $("#panel").offset().left - parseInt($panel.css("margin-left")) - parseInt($panel.css("padding-left"));
-			var endY = $("#infoHolder").offset().top;
+			var endX;
+			var endY;
+			if(align === "Top"){
+				var $infoHolder = $("#infoHolder")
+				endX = $infoHolder.offset().left - $(context.canvas).offset().left + ($infoHolder.width() / 2)
+				endY = $infoHolder.offset().top - $(context.canvas).offset().top;
+
+			}else{
+				endX = $("#panel").offset().left - parseInt($panel.css("margin-left")) - parseInt($panel.css("padding-left"));
+				endY = $("#infoHolder").offset().top;
+			}
+
+
+
 
 			context.beginPath();
 			context.moveTo(startX, startY);
@@ -580,6 +602,8 @@
 				context.arc(startX, startY, 2, 0, 2 * Math.PI, false);
 				context.fill();
 			}
+
+
 		}
 		
 		this.resizeCanvas = function() {

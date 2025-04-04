@@ -23,10 +23,11 @@ _load_language_file("/management.inc");
 require("../user_library.php");
 require("management_library.php");
 require("../xwdInspector.php");
+require_once("../themes_library.php");
 
 
 
-if (is_user_admin()) {
+if (is_user_permitted("templateadmin")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 
@@ -43,21 +44,22 @@ if (is_user_admin()) {
     }
     $xwdData->loadTemplateXML($xwd_path);
 
-	echo "<h2>" . MANAGEMENT_MENUBAR_CENTRAL . "</h2>";
+    echo "<h2>" . MANAGEMENT_MENUBAR_CENTRAL . "</h2>";
 
-    echo "<div class=\"admin_block\">" . TEMPLATE_UPDATE_EXPLANATION . "
-    <p><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p></div>";
+//    echo "<div class=\"admin_block\">" . TEMPLATE_UPDATE_EXPLANATION . "
+//    <p><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p></div>";
 
-    echo "<div class=\"admin_block\"><p>" . TEMPLATE_ADD_EXPLANATION .
+    echo "<div class=\"main_admin_block\"><p>" . TEMPLATE_ADD_EXPLANATION .
     "</p>" .
-    "<form action='javascript:template_submit()' method='post' enctype='multipart/form-data' id='form-template-upload'>" .
+    "<form id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
         "<p>
             <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATENAME . "<br>
             <input class='management_input' type='text' name='templateDisplayname'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME . "<br>
             <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION . "<br>
         </p>
-        <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
+        <!--div class=\"management_input\"><p>" . TEMPLATE_UPLOAD_WAIT ."</p-->
+        <button type='button' id='upload-button' onclick='template_submit()' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></div>";
 
     echo "<div class=\"admin_block\"><p>" . TEMPLATE_MANAGE . "</p>";
@@ -95,6 +97,7 @@ if (is_user_admin()) {
 
             $version = explode('"', substr($template_check, $start_point, strpos($template_check, " ", $start_point) - $start_point));
 
+            $version = x_clean_input($version);
             //echo "<p>" . TEMPLATE_VERSION . " " . $version[1] . "</p>";
 
         }
@@ -130,6 +133,12 @@ if (is_user_admin()) {
                 $subpages = array();
                 if ($row['template_sub_pages'] != "") {
                     $template_sub_pages = $row['template_sub_pages'];
+                    $disable_advanced = false;
+                    $pos = strpos($template_sub_pages, "disable_advanced");
+                    if ($pos !== false) {
+                        $template_sub_pages = substr($template_sub_pages, 17); // Get rid of 'disable_advanced,'
+                        $disable_advanced = true;
+                    }
                     $simple_lo_page = false;
                     $pos = strpos($template_sub_pages, "simple_lo_page");
                     if ($pos !== false) {
@@ -143,6 +152,9 @@ if (is_user_admin()) {
                 } else {
                     $allselected = true;
                 }
+                echo "<p>" . TEMPLATE_SUB_PAGES_DISABLE_ADVANCED . "<br><div class='sub_page_selection sub_page_disable_advanced'>";
+                echo "<input class='sub_page_selection_disable_advanced' type='checkbox' " . ($disable_advanced ? "checked" : "") . " id='sub_page_select_disable_advanced_" . $row['template_type_id'] . "' name='select_disable_advanced' >" . TEMPLATE_SUB_PAGES_SELECT_DISABLE_ADVANCED . "</div></p>";
+
                 echo "<p>" . TEMPLATE_SUB_PAGES_TITLEONLY . "<br><div class='sub_page_selection sub_page_title'>";
                 echo "<input class='sub_page_selection_titleonly' type='checkbox' " . ($simple_lo_page ? "checked" : "") . " id='sub_page_select_titleonly_" . $row['template_type_id'] . "' name='select_titleonly' >" . TEMPLATE_SUB_PAGES_SELECT_TITLEONLY . "</div></p>";
 
@@ -167,6 +179,12 @@ if (is_user_admin()) {
                 $subpages = array();
                 if ($row['template_sub_pages'] != "") {
                     $template_sub_pages = $row['template_sub_pages'];
+                    $disable_advanced = false;
+                    $pos = strpos($template_sub_pages, "disable_advanced");
+                    if ($pos !== false) {
+                        $template_sub_pages = substr($template_sub_pages, 17); // Get rid of 'disable_advanced,'
+                        $disable_advanced = true;
+                    }
                     $simple_lo_page = false;
                     $pos = strpos($template_sub_pages, "simple_lo_page");
                     if ($pos !== false) {
@@ -175,6 +193,9 @@ if (is_user_admin()) {
                     }
                     $subpages = explode(",", $template_sub_pages);
                 }
+                echo "<p>" . TEMPLATE_SUB_PAGES_DISABLE_ADVANCED . "<br><div class='sub_page_selection sub_page_disable_advanced'>";
+                echo "<input class='sub_page_selection_disable_advanced' type='checkbox' " . ($disable_advanced ? "checked" : "") . " id='sub_page_select_disable_advanced_" . $row['template_type_id'] . "' name='select_disable_advanced' >" . TEMPLATE_SUB_PAGES_SELECT_DISABLE_ADVANCED . "</div></p>";
+
                 echo "<p>" . TEMPLATE_SUB_PAGES_TITLEONLY . "<br><div class='sub_page_selection sub_page_title'>";
                 echo "<input class='sub_page_selection_titleonly' type='checkbox' " . ($simple_lo_page ? "checked" : "") . " id='sub_page_select_titleonly_" . $row['template_type_id'] . "' name='select_titleonly' >" . TEMPLATE_SUB_PAGES_SELECT_TITLEONLY . "</div></p>";
 
@@ -190,5 +211,4 @@ if (is_user_admin()) {
     management_fail();
 
 }
-?>
 

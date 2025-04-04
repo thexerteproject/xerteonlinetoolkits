@@ -32,7 +32,7 @@ require_once "../folder_library.php";
 
 _load_language_file("/website_code/php/management/check_delete_member.inc");
 
-if(is_user_admin()) {
+if(is_user_permitted("useradmin")) {
 
     $login_id = $_POST['login_id'];
     $group_id = $_POST['group_id'];

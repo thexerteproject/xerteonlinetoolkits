@@ -39,16 +39,25 @@ include "properties_library.php";
 if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
+	
+	publish_display_fail();
+	
+    die();
 }
 
-if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
-        $tutorial_id = $_POST['template_id'];
-
-        publish_display($tutorial_id);
-    }
+if (!isset($_POST['template_id']))
+{
+    die('Invalid template_id');
 }
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
 
-?>
+if(has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id'])||is_user_permitted("projectadmin")) {
+
+    publish_display($template_id);
+
+} else {
+
+    publish_display_fail();
+
+}

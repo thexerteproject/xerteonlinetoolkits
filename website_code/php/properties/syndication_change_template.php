@@ -35,51 +35,59 @@ include "../url_library.php";
 include "properties_library.php";
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if(is_numeric($_POST['tutorial_id'])){
+if (!isset($_POST['tutorial_id']))
+{
+    die('Invalid template_id');
+}
+$template_id = x_clean_input($_POST['tutorial_id'], 'numeric');
 
-    $database_connect_id = database_connect("syndication change template database connect success", "syndication change template database connect failed");
+$database_connect_id = database_connect("syndication change template database connect success", "syndication change template database connect failed");
 
-    if(is_user_creator_or_coauthor($_POST['tutorial_id'])||is_user_admin()){
+if(is_user_creator_or_coauthor($template_id)||s_user_permitted("projectadmin")){
 
-        $query_for_syndication_status = "select syndication from {$prefix}templatesyndication where template_id=?";
-        $params = array($_POST['tutorial_id']);
+    $query_for_syndication_status = "select syndication from {$prefix}templatesyndication where template_id=?";
+    $params = array($template_id);
 
-        $query_for_syndication_response = db_query($query_for_syndication_status, $params);
+    $query_for_syndication_response = db_query($query_for_syndication_status, $params);
 
-        if(sizeof($query_for_syndication_response)==0){
+    if(sizeof($query_for_syndication_response)==0){
 
-            $query_to_change_syndication_status = "INSERT into {$prefix}templatesyndication(template_id,syndication,keywords,description,category,license) VALUES (?,?,?,?,?,?)";
-            $params = array($_POST['tutorial_id'], $_POST['synd'], $_POST['keywords'], $_POST['description'], $_POST['category_value'], $_POST['license_value']);
-
-        }else{
-
-            $query_to_change_syndication_status = "UPDATE {$prefix}templatesyndication SET "
-                    . "syndication = ?, keywords = ?, description = ?, category = ?, license = ? WHERE template_id=?";
-            $params = array($_POST['synd'], $_POST['keywords'], $_POST['description'], $_POST['category_value'], $_POST['license_value'], $_POST['tutorial_id']);
-        }
-
-        $query_to_change_syndication_status_response = db_query($query_to_change_syndication_status, $params);
-
-        /**
-         * Check template is public
-         */
-
-        if(template_access_settings($_POST['tutorial_id'])=="Public"){
-
-            syndication_display($xerte_toolkits_site,true);
-
-        }else{
-
-            syndication_not_public($xerte_toolkits_site);
-
-        }
-
+        $query_to_change_syndication_status = "INSERT into {$prefix}templatesyndication(template_id,syndication,keywords,description,category,license) VALUES (?,?,?,?,?,?)";
+        $params = array($template_id, x_clean_input($_POST['synd']), x_clean_input($_POST['keywords']), x_clean_input($_POST['description']), x_clean_input($_POST['category_value']), x_clean_input($_POST['license_value']));
 
     }else{
 
-        syndication_display_fail();
+        $query_to_change_syndication_status = "UPDATE {$prefix}templatesyndication SET "
+                . "syndication = ?, keywords = ?, description = ?, category = ?, license = ? WHERE template_id=?";
+        $params = array(x_clean_input($_POST['synd']), x_clean_input($_POST['keywords']), x_clean_input($_POST['description']), x_clean_input($_POST['category_value']), x_clean_input($_POST['license_value']), $template_id);
+    }
+
+    $query_to_change_syndication_status_response = db_query($query_to_change_syndication_status, $params);
+
+    // Update templatedetails modify date
+    $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
+    $params = array(date("Y-m-d H:i:s"), $template_id);
+    db_query_one($sql, $params);
+
+    /**
+     * Check template is public
+     */
+
+    if(template_access_settings($template_id)=="Public"){
+
+        syndication_display($xerte_toolkits_site, $template_id,true);
+
+    }else{
+
+        syndication_not_public($xerte_toolkits_site);
 
     }
 
+
+}else{
+
+    syndication_display_fail(true);
+
 }
+
 

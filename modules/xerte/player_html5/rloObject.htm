@@ -48,14 +48,15 @@
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.min.css%VERSION_PARAM%" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.gallery.min.css%VERSION_PARAM%" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/highlight/css/default.css%VERSION_PARAM%" />
-	<link href="%TEMPLATEPATH%common_html5/font-awesome/css/font-awesome.min.css%VERSION_PARAM%" rel="stylesheet">
-    <link href="%TEMPLATEPATH%common_html5/fontawesome-5.6.3/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
-	<link href="%TEMPLATEPATH%common_html5/fontawesome-5.6.3/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
+	<!-- link href="%TEMPLATEPATH%common_html5/font-awesome/css/font-awesome.min.css%VERSION_PARAM%" rel="stylesheet"-->
+    <link href="%TEMPLATEPATH%common_html5/fontawesome-6.6.0/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
+	<link href="%TEMPLATEPATH%common_html5/fontawesome-6.6.0/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
+	<link href="%TEMPLATEPATH%common_html5/fontawesome-6.6.0/css/v5-font-face.min.css%VERSION_PARAM%" rel="stylesheet">
     %OFFLINESCRIPTS%
 
 </head>
 
-<body><a class="skip-link" href="#pageContents">Skip to main content</a>
+<body><a class="skip-link" href="#pageContents"></a>
 	<noscript>This Learning Object requires JavaScript!</noscript>
     <div id="x_embed_overlay" class="embed-overlay-inactive" aria-hidden="true"></div>
 	<div id="x_mainHolder" style="visibility:hidden;">
@@ -121,6 +122,7 @@
 
 	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js%VERSION_PARAM%"></script>
 	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/chart.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/loadjs.min.js%VERSION_PARAM%"></script>
 
 	<!-- load js ai master file at runtime -->
 	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/ai-master.js"></script>
@@ -133,11 +135,13 @@
         var x_projectXML = "%XMLFILE%";
         var x_themePath = "%THEMEPATH%";
         var x_TemplateId = "%TEMPLATEID%";
+		var x_siteUrl = "%SITEURL%";
         var x_youtube_api_key = "%YOUTUBEAPIKEY%";
 		var x_Version = "%VERSION%";
         var x_lastUpdated = new Date("%LASTUPDATED%");
         var x_dateCreated = new Date("%DATECREATED%");
         var x_numPlays = String("%NUMPLAYS%");
+		var x_sideBarLogo = "%SIDEBARLOGO%";
 		var localeoptions = { year: 'numeric', month: 'short', day: 'numeric' };
 		try {
 			var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
@@ -154,6 +158,7 @@
 			dateCreated: x_dateCreatedLocale,
 			numViews: x_numPlays
 		};
+		var token = "%TOKEN%";
 		%PLUGINS%;
 		%EMBED_SUPPORT%
     </script>

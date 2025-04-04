@@ -40,7 +40,7 @@ if (is_numeric($_GET['template_id'])) {
     if (is_template_exportable($_GET['template_id'])) {
         $proceed = true;
     } else {
-        if (is_user_creator_or_coauthor($_GET['template_id']) || is_user_admin()) {
+        if (is_user_creator_or_coauthor($_GET['template_id']) || is_user_permitted("projectadmin")) {
             $proceed = true;
         }
     }

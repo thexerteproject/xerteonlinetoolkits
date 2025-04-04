@@ -39,25 +39,32 @@ include "workspace_library.php";
 /**
  * connect to the database
  */
-workspace_templates_menu();
-
+ 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
 $query_for_rss_templates = "select * from  {$prefix}templatedetails, {$prefix}templaterights, {$prefix}templatesyndication where creator_id= ? "
-. " and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and {$prefix}templaterights.template_id  = {$prefix}templatesyndication.template_id and (role= ? or role=?) AND (rss = ? OR export = ?)";
+. " and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and {$prefix}templaterights.template_id  = {$prefix}templatesyndication.template_id and (role= ? or role=?) AND syndication = ?";
 
-$params = array($_SESSION['toolkits_logon_id'], "creator", "co-author", "true", "true");
+$params = array($_SESSION['toolkits_logon_id'], "creator", "co-author", "true");
 $query_rss_response = db_query($query_for_rss_templates, $params);
 
-workspace_menu_create(80);
+usort($query_rss_response, function($first, $second){
+    return $first['template_id'] > $second['template_id'];
+});
 
-echo "<div style=\"float:left; width:20%; height:20px;\">" . SYNDICATION_TEMPLATE_TERM . "</div>";
+echo "<table class=\"workspaceProjectsTable\">";
+
+echo "<caption>" . SYNDICATION_TEMPLATE_INTRO . "</caption>";
+
+echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th><th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th>";
+
+echo "<th>" . SYNDICATION_TEMPLATE_TERM . "</th></tr>";
 
 foreach($query_rss_response as $row_template_name) { 
 
-    echo "<div style=\"float:left; width:80%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div><div style=\"float:left; width:20%;\">";
+    echo "<tr><td>" . $row_template_name['template_id'] . "</td><td>" . str_replace("_","",$row_template_name['template_name']) . "</td><td>";
 
     if($row_template_name['syndication']){
 
@@ -69,8 +76,8 @@ foreach($query_rss_response as $row_template_name) {
 
     }
 
-    echo "</div>";
+    echo "</td></tr>";
 
 }
 
-echo "</div></div>";
+echo "</table>";

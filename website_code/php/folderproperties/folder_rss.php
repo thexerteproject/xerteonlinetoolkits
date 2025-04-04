@@ -35,10 +35,19 @@ _load_language_file("/website_code/php/folderproperties/folder_rss.inc");
 include "../url_library.php";
 include "../user_library.php";
 
+echo "<h2 class=\"header\">" . FOLDER_RSS_FEEDS . "</h2>";
+
+echo "<div id=\"mainContent\">";
+
 if (!isset($_SESSION['toolkits_logon_username']))
 {
     _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
+	
+	echo "<p>" . FOLDER_RSS_FAIL . "</p>";
+	
+	echo "</div>";
+	
+    die();
 }
 
 //connect to the database
@@ -48,7 +57,8 @@ $parameters = explode("_", $_POST['folder_id']);
 if(count($parameters)!=1){
 
     if(is_numeric($parameters[0])&&is_string($parameters[1])){
-        if (is_user_creator_or_coauthor_folder($parameters[0])||is_user_admin()){
+		
+        if (is_user_creator_or_coauthor_folder($parameters[0])||is_user_permitted("projectadmin")){
 
             $database_connect_id = database_connect("Folder_rss_template.php database connect success", "Folder_rss_template.php database connect failed");
 
@@ -59,10 +69,7 @@ if(count($parameters)!=1){
 
             $row_template_name = db_query_one($query_for_folder_name, $params);
 
-            echo "<p class=\"header\"><span>" . FOLDER_RSS_FEEDS . "</span></p>";
-
-            echo "<p>" . FOLDER_RSS_PUBLIC . "</p>";
-
+            echo "<p>" . FOLDER_RSS_PUBLIC . ":</p>";
 
             $query_for_name = "select firstname, surname from {$prefix}logindetails where login_id=?";
             $params = array($_SESSION['toolkits_logon_id']);
@@ -72,16 +79,25 @@ if(count($parameters)!=1){
 
             if ($xerte_toolkits_site->apache == "true") {
 
-                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . "/\">" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . "/</a></p>";
+                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . "/\">" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . "/</a>" . FOLDER_RSS_LINKS . "</p>";
 
             } else {
 
-                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . "\">" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . "</a></p>";
+                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . "\">" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . "</a>" .  FOLDER_RSS_LINKS . "</p>";
 
             }
         }else{
+			
             echo "<p>" . FOLDER_RSS_FAIL . "</p>";
+			
         }
-    }
+		
+    } else {
+		
+		echo "<p>" . FOLDER_RSS_FAIL . "</p>";
+		
+	}
 
 }
+
+echo "</div>";

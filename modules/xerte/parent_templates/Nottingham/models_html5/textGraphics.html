@@ -24,7 +24,9 @@
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				this.setUpMagnifierEscape();
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -136,7 +138,7 @@
 			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
 				$imgCaption.html(x_currentPageXML.getAttribute("caption"));
 			} else {
-				$imgCaption.remove();
+				$imgCaption.unwrap().remove();
 			}
 			
 			if (hidePanel == "true") {
@@ -261,6 +263,25 @@
 						.attr('alt', x_currentPageXML.getAttribute("tip"))
 						.addClass('x_noLightBox');
 				}
+
+				this.setUpMagnifierEscape();
+			}
+		}
+
+		this.setUpMagnifierEscape = function() {
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				$(document).off(".pageEvent");
+				$(".magnifiedImg").removeClass("escape");
+
+				// escape key will close any open magnifiers
+				$(document).on("keydown.pageEvent", function (e) {
+					// has .pageEvent namespace so it can be removed on page change from xenith.js
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 27 && $(".magnifier").is(":visible") && !$(".magnifiedImg").hasClass("escape")) {
+						$(".magnifiedImg").addClass("escape");
+						$(".magnifier").hide();
+					}
+				});
 			}
 		}
 	}
@@ -274,9 +295,11 @@
 	
 	<div id="imgHolder" class="mobileAlign">
 		<div id="imgInnerDiv" class="panel inline">
-			<img id="pageImg" style="visibility: hidden" />
-			<div id="pageAudio"></div>
-			<p id="imgCaption"></p>
+			<figure>
+				<img id="pageImg"/>
+				<div id="pageAudio"></div>
+				<figcaption id="imgCaption"></figcaption>
+			</figure>
 			<div id="transcriptHolder">
 				<button id="transcriptBtn"/>
 				<div id="transcript"></div>

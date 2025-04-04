@@ -1,10 +1,3 @@
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:96% !important;
-  overflow: hidden;
-}
 //***********************************Media*************************************
 //default highlight if not overriden
 .highlight {
@@ -393,6 +386,13 @@ tr.alt td{
 }
 #general_summary th {
   background: #ffffff;//hide otherwise black line at to of summary table
+}
+//*****audio record page*****/
+.x_audioRecord_page .deleteClipBtn {
+  color: $blackordarkest;
+}
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: $whiteorlightest;
 }
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/

@@ -21,7 +21,7 @@ require_once("config.php");
 
 require $xerte_toolkits_site->php_library_path  . "user_library.php";
 
-if (is_user_admin()) {
+if (is_user_permitted()) {
     $msg = "Admin user (from " . $_SERVER['REMOTE_ADDR'] . ") has logged out";
     receive_message("", "SYSTEM", "MGMT", "Logout", $msg);
 }
@@ -43,5 +43,5 @@ if ($authmech->hasLogout())
     _debug("Single Logout");
     $authmech->logout();
 }
-
+session_regenerate_id(true);
 session_destroy();

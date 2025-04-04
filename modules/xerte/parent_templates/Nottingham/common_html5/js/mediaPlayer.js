@@ -55,17 +55,31 @@
 			if (opts.width == undefined) {
 				opts.width = thisMedia.width();
 			}
-			
+
+		// audio recorded in browser (e.g. on audioRecord page)
+		} else if (opts.type.split("/")[0] == "audio") {
+			opts.height = x_audioBarH;
+			if (opts.width == undefined) {
+				opts.width = thisMedia.width();
+			}
+
 		// video
 		} else {
 			// is it from youtube or vimeo?
-			if (opts.source.indexOf("www.youtube.com") != -1 || opts.source.indexOf("//youtu") != -1) {
+			if (opts.source.substring(0,7) === "<iframe") {
+				uploadedFile = false;
+				mimeType = "video/iframe";
+			} else if (opts.source.indexOf("www.youtube.com") != -1 || opts.source.indexOf("//youtu") != -1) {
 				uploadedFile = false;
 				mimeType = "video/youtube";
 			} else if (opts.source.indexOf("vimeo.com") != -1) {
 				uploadedFile = false;
 				mimeType = "video/vimeo";
+			} else if (opts.source.indexOf("yuja") != -1) {
+				uploadedFile = false;
+				mimeType = "video/mp4";
 			}
+
 		}
 		
 		if (thisMedia.children().length > 0) {
@@ -74,7 +88,7 @@
 		
 		var setUpMedia = function() {
 			
-			if (mimeType != "video/vimeo") { // vimeo not supported by mediaelement.js
+			if (mimeType != "video/vimeo" && mimeType != "video/iframe") { // vimeo not supported by mediaelement.js
 				
 				if (uploadedFile == true) {
 					opts.source = evalURL(opts.source);
@@ -120,10 +134,18 @@
 						} else if (opts.type == "video" && x_mediaText[5].label != "") {
 							$container.find(".mejs-mediaelement").attr("aria-label", x_mediaText[5].label);
 						}
-						
-						if (opts.autoNavigate == "true" && x_pageInfo[x_currentPage].standalone != true && x_normalPages.indexOf(x_currentPage) + 1 != x_normalPages.length) { // go to next page when media played to end
+
+						// go to next page when media played to end or (if splash video) close lightbox when media played to the end
+						if (opts.autoNavigate == "true" && x_pageInfo[x_currentPage].standalone != true && (x_normalPages.indexOf(x_currentPage) + 1 != x_normalPages.length || $(mediaElement).parents(".featherlight-content.splashVideo").length > 0)) {
 							mediaElement.addEventListener("ended", function() {
-								$x_nextBtn.trigger("click");
+								if ($(mediaElement).parents(".featherlight-content.splashVideo").length > 0) {
+									// media shown in lightbox as splash screen - close lightbox but stay on current page
+									$(mediaElement).parents('.mejs-container').css("opacity", 0); // prevent seeing the video jumping back to the beginning as the lightbox fades out
+									$.featherlight.current().close();
+								} else {
+									// move to next page
+									$x_nextBtn.trigger("click");
+								}
 							}, false);
 						}
 						
@@ -171,6 +193,10 @@
 								}, false);
 							}
 						}
+
+						if (opts.muted == "true") {
+							mediaElement.setMuted(true);
+						}
 						
 						if (opts.autoPlay == "true") { // autoplay media (won't work on iOS on 1st load)
 							mediaElement.play();
@@ -190,7 +216,7 @@
 							mediaElement.addEventListener("loadedmetadata", function() {
 								if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
 									mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]);
-								} else if (opts.pageName == "introVideo") { // it's a video from project or page intro
+								} else if (opts.pageName == "introVideo" || opts.pageName == "splashVideo") { // it's a video from project/page intro or a splash video
 									if (mimeType.toLowerCase() === 'video/mp4') {
 										x_introMediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')])
 									}
@@ -217,7 +243,7 @@
 
 				});
 				
-			} else {
+			} else if (mimeType == "video/vimeo") {
 				// VIMEO
 				
 				// set up iframe
@@ -297,8 +323,9 @@
 					if (opts.autoPlay == "true") { // autoplay media
 						post("play");
 					}
-					
-					if (opts.autoNavigate == "true" && x_pageInfo[x_currentPage].standalone != true && x_normalPages.indexOf(x_currentPage) + 1 != x_normalPages.length) { // go to next page when media played to end
+
+					// go to next page when media played to end or (if splash video) close lightbox when media played to the end
+					if (opts.autoNavigate == "true" && x_pageInfo[x_currentPage].standalone != true && (x_normalPages.indexOf(x_currentPage) + 1 != x_normalPages.length || $(mediaElement).parents(".featherlight-content.splashVideo").length > 0)) {
 						post("addEventListener", "finish");
 					}
 					
@@ -320,12 +347,29 @@
 				}
 				
 				function onFinish() {
-					$x_nextBtn.trigger("click");
+					if ($(mediaElement).parents(".featherlight-content.splashVideo").length > 0) {
+						// media shown in lightbox as splash screen - close lightbox but stay on current page
+						$(mediaElement).parents('.mejs-container').css("opacity", 0); // prevent seeing the video jumping back to the beginning as the lightbox fades out
+						$.featherlight.current().close();
+					} else {
+						// move to next page
+						$x_nextBtn.trigger("click");
+					}
 				}
 				
 				// listen for message from the player
 				$(window).off("message");
 				$(window).on("message", onMessageReceived);
+
+			} else {
+				// iframe
+				if (opts.source.indexOf("kaltura") != -1 && opts.autoPlay == "true") {
+					const $temp = $(opts.source);
+					$temp.attr("src", $(opts.source).attr("src") + "&flashvars[autoPlay]=true");
+					opts.source = $("<div>").append($temp).html();
+				}
+
+				thisMedia.append(opts.source);
 			}
 		}
 		

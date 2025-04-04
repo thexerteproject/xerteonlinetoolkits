@@ -32,7 +32,7 @@ require_once("../user_library.php");
 _load_language_file("/website_code/php/language/delete_language.inc");
 
 
-if(!is_user_admin()){
+if(!is_user_permitted("system")){
     management_fail();
 }
 

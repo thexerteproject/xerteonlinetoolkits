@@ -35,3 +35,12 @@
 	color: white;
 	background-color: #A40000;
 }
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: rgb(0, 92, 202);
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: #A40000;
+}

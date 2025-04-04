@@ -1,18 +1,18 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="" imagesize="medium">Enter text for the page here</bleedingImage>]]></bleedingImage>
+      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage>
     </newNodes>  
   </pageWizard>
 
   <!-- Bleeding Image Page=========================================================== -->
-  <bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text"  height="200"  icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#advancedimage" wiki="https://xerte.org.uk/wiki/doku.php?id=media_advanced_image_page" remove="true">
+  <bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text" height="200" placeholder="Enter text for the page here" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#advancedimage" wiki="https://xerte.org.uk/wiki/doku.php?id=media_advanced_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox"  width="100"/>
 	
 	<image type="group" label="Image">
-		<url label="File" type="media" />
+		<url label="File" type="media" placeholder="Select an image" />
 		<imagesize label="Size" options="Small,Medium,Large,Fixed,Full screen" data="small,medium,large,auto,full screen" type="ComboBox"  width="100"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" />
 	</image>
@@ -24,15 +24,17 @@
 	</magnifierGroup>
 	
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the image">
-		<sound label="File" type="media" optional="true"/>
+		<sound label="File" type="media" optional="true" placeholder="Select an audio file"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>	
 	
-	<linkInfo type="group" label="Link" optional="true">
-		<link label="URL" type="textInput" optional="true" defaultValue="Enter Link Address"/>
-		<linkIntro label="Description" type="textInput" optional="true" defaultValue="Enter Link Description"/>	
+	<linkInfo type="group" label="Link" optional="true" deprecated="This property has been deprecated. Links should be added within the page text.">
+		<link label="URL" type="textInput" optional="true" defaultValue="" placeholder="Enter a URL"/>
+		<linkIntro label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter link description for accessibility"/>
 		<linktarget label="Target" type="textInput" width="70" defaultValue="_blank" optional="true" />
 	</linkInfo>
+
+	<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	
 	<addmargin label="Image Margin" type="Checkbox" defaultValue="false"  optional="true"/>
 	

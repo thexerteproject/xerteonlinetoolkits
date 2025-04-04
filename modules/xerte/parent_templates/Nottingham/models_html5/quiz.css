@@ -37,10 +37,14 @@
 		padding-right: 5px;
 	}
 
-	#infoHolder .quizImg {
+	#infoHolder .qImgHolder {
 		padding:	5px;
 		float:		right;
 		max-width:	50%;
+	}
+
+	#infoHolder .quizImg {
+		max-width:	100%;
 		height:		auto;
 	}
 	
@@ -79,6 +83,7 @@
 
 	#qTxt {
 		width: 100%;
+		padding: 0;
 	}
 
 	#feedbackGroup .feedbackBlock {
@@ -87,4 +92,10 @@
 
 	#mainPanel {
 		overflow: auto;
+		position: relative;
+	}
+
+	#qNo {
+		font-weight: bold;
+		padding-top: 0;
 	}

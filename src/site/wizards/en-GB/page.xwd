@@ -7,7 +7,7 @@
 	</pageWizard>
 
   <!--- PAGE PAGE==================================================== -->
-	<page menu="Website" hint="A new page" icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page" deepLink="true">
+	<page menu="Website" hint="Add a new blank page. Pages can contain a number of sections, each containing one or more blocks of content." icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page" deepLink="true">
 
 		<name type="TextInput" label="Page Title" wysiwyg="true"/>
 		<subtitle type="TextInput" label="Page Subtitle" wysiwyg="true"/>
@@ -25,12 +25,12 @@
 		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
 			<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
 			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-			<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
 			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
 		</hideShow>
 
-		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this Section" info="Create a link directly to this section by adding a unique SectionID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs and section IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that section ID's and page ID's are case sensitive.">
+		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this section" info="Create a link directly to this section by adding a unique ID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive.">
             <customLinkID label="Section ID" type="TextInput" optional="true"/>
         </customSectionLinkGroup>
 
@@ -52,17 +52,17 @@
 		<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches"/>
 
 		<newNodes>
-			<xot><![CDATA[<xot name="Title" showTitleFix="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>
-			<pdf><![CDATA[<pdf name="Title" showTitleFix="true" url="Select a PDF File" width="500" height="350" openPDF="Open PDF in new tab"/>]]></pdf>
+			<xot><![CDATA[<xot name="Title" showTitleFix="true" link="" header="false" footer="false"/>]]></xot>
+			<pdf><![CDATA[<pdf name="Title" showTitleFix="true" url="" width="500" height="350" openPDF="Open PDF in new tab"/>]]></pdf>
 			<markup><![CDATA[<markup name="Title" showTitle="true">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
-			<canvas><![CDATA[<canvas name="Title" showTitle="true" id="EnterID" width="500" height="350"/>]]></canvas>
+			<canvas><![CDATA[<canvas name="Title" showTitle="true" id="" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Title">//javascript</script>]]></script>
-			<link><![CDATA[<link name="Title" url="Link URL"/>]]></link>
+			<link><![CDATA[<link name="Enter link text here" url="" target="_self"/>]]></link>
 			<navigator><![CDATA[<navigator name="Title" showTitle="true" type="Tabs"/>]]></navigator>
-			<video><![CDATA[<video name="Title" showTitleFix="true" url="Select a Video"/>]]></video>
-			<audio><![CDATA[<audio name="Title" showTitleFix="true" url="Select a Sound File"/>]]></audio>
-			<image><![CDATA[<image name="Title" showTitleFix="true" url="Select an Image" alt="Enter a Description for Accessibility"/>]]></image>
-			<text><![CDATA[<text name="Title" showTitleFix="true">Enter Text Here</text>]]></text>
+			<video><![CDATA[<video name="Title" showTitleFix="true" url=""/>]]></video>
+			<audio><![CDATA[<audio name="Title" showTitleFix="true" url=""/>]]></audio>
+			<image><![CDATA[<image name="Title" showTitleFix="true" url="" alt=""/>]]></image>
+			<text><![CDATA[<text name="Title" showTitleFix="true"/>]]></text>
 		</newNodes>
 
 	</section>
@@ -70,18 +70,26 @@
 	<link icon="icLink" menuItem="Link" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<url type="TextInput" label="URL"/>
-		
-		<width label="Width" type="textInput" optional="true" default="800"/>
-		<height label="Height" type="textInput" optional="true" default="600"/>
-		<scrollbars type="ComboBox" width="80" options="yes,no" data="yes,no" label="Scrollbars" optional="true"/>
-		<location type="ComboBox" width="80" options="yes,no" data="yes,no" label="Location" optional="true"/>
-		<status type="ComboBox" width="80" options="yes,no" data="yes,no" label="Status" optional="true"/>
-		<titlebar type="ComboBox" width="80" options="yes,no" data="yes,no" label="Titlebar" optional="true"/>
-		<toolbar type="ComboBox" width="80" options="yes,no" data="yes,no" label="Toolbar" optional="true"/>
-		<resizable type="ComboBox" width="80" options="yes,no" data="yes,no" label="Resizable" optional="true"/>
+		<url type="TextInput" label="URL" placeholder="e.g. https://www.xerte.org.uk"/>
+		<target type="ComboBox" label="Open in" data="_blank,_self,lightbox" options="New tab/window,This tab,Lightbox" mandatory="true" defaultValue="_blank"/>
 
-		<windowName type="TextInput" label="Window Name" optional="true"/>
+		<windowName type="TextInput" label="Window Name" optional="true" deprecated="This property is deprecated"/>
+		<width label="Width" type="textInput" optional="true" placeholder="800" deprecated="This property is deprecated"/>
+		<height label="Height" type="textInput" optional="true" placeholder="600" deprecated="This property is deprecated"/>
+		<scrollbars type="ComboBox" width="80" options="yes,no" data="yes,no" label="Scrollbars" optional="true" deprecated="This property is deprecated"/>
+		<location type="ComboBox" width="80" options="yes,no" data="yes,no" label="Location" optional="true" deprecated="This property is deprecated"/>
+		<status type="ComboBox" width="80" options="yes,no" data="yes,no" label="Status" optional="true" deprecated="This property is deprecated"/>
+		<titlebar type="ComboBox" width="80" options="yes,no" data="yes,no" label="Titlebar" optional="true" deprecated="This property is deprecated"/>
+		<toolbar type="ComboBox" width="80" options="yes,no" data="yes,no" label="Toolbar" optional="true" deprecated="This property is deprecated"/>
+		<resizable type="ComboBox" width="80" options="yes,no" data="yes,no" label="Resizable" optional="true" deprecated="This property is deprecated"/>
+
+	    <hideShow type="group" label="Hide/Show Link" optional="true" tooltip="Hide this link completely or hide/show the link between specified dates" info="Hide this link from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+        <hideContent label="Hide link" type="CheckBox" defaultValue="false" optional="true"/>
+        <hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        <hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        </hideShow>
 
 	</link>
 
@@ -90,40 +98,72 @@
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 		
-		<url type="Media" label="HTML File" optional="true" default="Select HTML File"/>
+		<url type="Media" label="HTML File" optional="true" placeholder="Select a HTML File"/>
+
+		<hideShow type="group" label="Hide/Show HTML" optional="true" tooltip="Hide this HTML completely or hide/show the HTML between specified dates" info="Hide this HTML from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                                			<hideContent label="Hide HTML" type="CheckBox" defaultValue="false" optional="true"/>
+                                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                		</hideShow>
 
 	</markup>
 
-	<text icon="icFont" type="text" height="300" menuItem="Text" label="Text" remove="true">
+	<text icon="icFont" type="text" height="300" menuItem="Text" label="Text" remove="true" placeholder="Enter text here">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		
-		<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
+		<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" optional="true"/>
+
+		<hideShow type="group" label="Hide/Show Text" optional="true" tooltip="Hide this text completely or hide/show the text between specified dates" info="Hide this text from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+        			<hideContent label="Hide text" type="CheckBox" defaultValue="false" optional="true"/>
+        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        		</hideShow>
 
 	</text>
 	
 	<pdf icon="icPDF" menuItem="PDF File" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<url type="Media" label="PDF File"/>
+		<url type="Media" label="PDF File" placeholder="Select a PDF file"/>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		<openPDF type="TextInput" label="Open PDF Label" defaultValue="Open PDF in new tab" wysiwyg="true" mandatory="true" language="true"/>
+
+		<hideShow type="group" label="Hide/Show PDF" optional="true" tooltip="Hide this PDF completely or hide/show the PDF between specified dates" info="Hide this text from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                			<hideContent label="Hide PDF" type="CheckBox" defaultValue="false" optional="true"/>
+                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                		</hideShow>
 
 	</pdf>
 
 	<canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<id type="TextInput" label="ID"/>
+		<id type="TextInput" label="Canvas ID" placeholder="Enter ID here" tooltip="The HTML id that will be assigned to the canvas element"/>
 		<width type="TextInput" label="Width"/>
 		<height type="TextInput" label="Height"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 		
-		<class type="TextInput" label="Class" optional="true"/>
-		<style type="TextInput" label="Style" optional="true"/>
+		<class type="TextInput" label="Class" optional="true" tooltip="The names of any CSS classes that will be assigned to the canvas element"/>
+		<style type="TextInput" label="Styles" optional="true" tooltip="CSS styles that will be applied inline to the canvas element"/>
+
+		<hideShow type="group" label="Hide/Show Canvas" optional="true" tooltip="Hide this canvas completely or hide/show the canvas between specified dates" info="Hide this canvas from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                			<hideContent label="Hide canvas" type="CheckBox" defaultValue="false" optional="true"/>
+                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                		</hideShow>
 
 	</canvas>
 
@@ -136,44 +176,80 @@
 	<image icon="icImage" height="250" menuItem="Image" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<url type="Media" label="Image"/>
-		<alt type="TextInput" label="Image Description"/>
+		<imgGroup type="group" label="Image">
+			<url type="Media" label="File" placeholder="Select an image"/>
+			<alt type="TextInput" label="Description" placeholder="Enter a description for accessibility"/>
+		</imgGroup>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
+		<caption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" optional="true" tooltip="Add a caption below the image"/>
+
+		<hideShow type="group" label="Hide/Show Image" optional="true" tooltip="Hide this image completely or hide/show the image between specified dates" info="Hide this image from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide image" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
 
 	</image>
 
 	<audio icon="icSound" height="250" menuItem="Audio" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<url type="Media" label="Sound"/>
+		<url type="Media" label="Sound" placeholder="Select an audio file"/>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
+		<transcript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>
+
+		<hideShow type="group" label="Hide/Show Audio" optional="true" tooltip="Hide this audio completely or hide/show the audio between specified dates" info="Hide this audio from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide audio" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
 
 	</audio>
 
 	<video icon="icFilm" height="250" menuItem="Video" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<url type="Media" label="Video"/>
+		<url type="Media" label="Video" placeholder="Select a video file or enter a URL/embed code"/>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		
-		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" placeholder="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+
+		<hideShow type="group" label="Hide/Show Video" optional="true" tooltip="Hide this video completely or hide/show the video between specified dates" info="Hide this video from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide video" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
 
 	</video>
 
 	<navigator icon="icPages" menuItem="Navigator" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" data="Accordion,Carousel,Pills,Tabs" width="120"/>
+		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" data="Accordion,Carousel,Pills,Tabs" width="120" conditionTrigger="true"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
-		<collapse label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true" tooltip="Collapse all accordion panes initially"/>
+
+		<collapse label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true" tooltip="Collapse all accordion panes initially" condition="type=='Accordion'"/>
 		
-		<autoPlayCarousel type="group" label="Auto-Play (Carousel Only)" optional="true">
-			<autoPlay label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
-			<delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="20" step="1"  width="100" defaultValue="4" optional="true"/>
+		<autoPlayCarousel type="group" label="Auto-Play" optional="true" condition="type=='Carousel'">
+			<autoPlay label="Auto-Play" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="type=='Carousel'"/>
+			<delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="20" step="1"  width="100" defaultValue="4" optional="true" condition="type=='Carousel'&amp;&amp;autoPlay=='true'"/>
 		</autoPlayCarousel>
+		<hideShow type="group" label="Hide/Show Navigator" optional="true" tooltip="Hide this navigator completely or hide/show the navigator between specified dates" info="Hide this navigator from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide navigator" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
 
 		<newNodes>
 
@@ -187,15 +263,19 @@
 
 		<name type="TextInput" label="Pane Title" wysiwyg="true"/>
 
+		<customPaneLinkGroup type="group" label="Pane ID" optional="true" tooltip="Create a customised URL to this pane" info="Create a link directly to this navigator pane by adding a unique ID and then appending #yourPaneID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive.">
+            <customLinkID label="Pane ID" type="TextInput" optional="true"/>
+        </customPaneLinkGroup>
+
 		<newNodes>
 			
-			<xot><![CDATA[<xot name="Title" showTitleFix="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>
-			<pdf><![CDATA[<pdf name="Title" showTitleFix="true" url="Select a PDF File" width="500" height="350"/>]]></pdf>
-			<link><![CDATA[<link name="Title" url="Link URL"/>]]></link>
-			<video><![CDATA[<video name="Title" showTitleFix="true" url="Select a Video"/>]]></video>
-			<audio><![CDATA[<audio name="Title" showTitleFix="true" url="Select a Sound File"/>]]></audio>
-			<image><![CDATA[<image name="Title" showTitleFix="true" url="Select an Image" alt="Enter a Description for Accessibility"/>]]></image>
-			<text><![CDATA[<text name="Title" showTitleFix="true">Enter Text Here</text>]]></text>
+			<xot><![CDATA[<xot name="Title" showTitleFix="true" link="" header="false" footer="false"/>]]></xot>
+			<pdf><![CDATA[<pdf name="Title" showTitleFix="true" url="" width="500" height="350" openPDF="Open PDF in new tab"/>]]></pdf>
+			<link><![CDATA[<link name="Enter link text here" url="" target="_self"/>]]></link>
+			<video><![CDATA[<video name="Title" showTitleFix="true" url=""/>]]></video>
+			<audio><![CDATA[<audio name="Title" showTitleFix="true" url=""/>]]></audio>
+			<image><![CDATA[<image name="Title" showTitleFix="true" url="" alt=""/>]]></image>
+			<text><![CDATA[<text name="Title" showTitleFix="true"/>]]></text>
 
 		</newNodes>
 	</pane>
@@ -203,19 +283,32 @@
 	<xot icon="icXot" menuItem="XOT Project" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<link type="TextInput" label="Xerte Project Link"/>
+		<link type="TextInput" label="Xerte Project Link" placeholder="Enter project URL" tooltip="The project's access setting must not be set to 'private'"/>
 		<header label="Hide Header" type="CheckBox"/>
 		<footer label="Hide Footer" type="CheckBox"/>
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		
-		<pageNum label="Page" type="TextInput" defaultValue="1" optional="true"/>
-		<width label="Width" type="TextInput" defaultValue="100%" optional="true"/>
-		<height label="Height" type="TextInput" defaultValue="600" optional="true"/>
-		<showLink label="Show link" conditionTrigger="true" type="CheckBox" defaultValue="false" optional="true" tooltip="Show a link to open the Xerte object. You can use Embed and Show link at the same time, but this is not recommended." />
-		<showEmbed label="Embed" type="CheckBox" defaultValue="true" optional="true" tooltip="Embed the Xerte object. You can use Embed and Show link at the same time, but this is not recommended." />
-		<displayOptions label="Display options" condition="showLink=='true'" type="ComboBox" data="newwindow,lightbox" options="Open in new window,Open in lightbox" defaultValue="newwindow" optional="true" tooltip="How and where to show the Xerte object if clicking on the link (and if Show link is used)."/>
-		<linkText label="Link text" type="TextArea" wysiwyg="true" condition="showLink=='true'" defaultValue="" optional="true" tooltip="The text or image that is converted to the link to the Xerte object" />
+		<pageNum label="Page" type="TextInput" optional="true" tooltip="Embed a specific page of the project by entering a page number or page ID"/>
+
+		<dimensions label="Dimensions" type="group" optional="true" tooltip="The dimensions of the embedded project">
+			<width label="Width" type="TextInput" placeholder="100%" optional="true"/>
+			<height label="Height" type="TextInput" placeholder="600" optional="true"/>
+		</dimensions>
+
+		<xotLinkGroup type="group" label="Include Link" optional="true" tooltip="Include a link to open the Xerte project in a lightbox or new tab/window">
+			<showLink label="Show Link" type="CheckBox" conditionTrigger="true" defaultValue="true" optional="true" />
+			<linkText label="Link Text" type="TextInput" wysiwyg="true" defaultValue="" condition="showLink=='true'" optional="true" />
+			<displayOptions label="Open in" type="ComboBox" data="newwindow,thiswindow,lightbox" options="New tab/window,This tab,Lightbox" defaultValue="newwindow" condition="showLink=='true'" optional="true"/>
+			<showEmbed label="Embed" type="CheckBox" defaultValue="true" condition="showLink=='true'" optional="true" tooltip="When a link is shown, this option can be used to remove the embedded Xerte project from the page. Both the embedded project and link can both be shown if necessary." />
+		</xotLinkGroup>
+		<hideShow type="group" label="Hide/Show XOT" optional="true" tooltip="Hide this XOT completely or hide/show the XOT between specified dates" info="Hide this XOT from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                                			<hideContent label="Hide XOT" type="CheckBox" defaultValue="false" optional="true"/>
+                                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                		</hideShow>
 
 	</xot>
 

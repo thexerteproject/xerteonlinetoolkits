@@ -39,10 +39,12 @@ require $xerte_toolkits_site->php_library_path  . "display_library.php";
  *  Check the template ID is a number
  */
 
-if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
+if(!isset($_GET['template_id'])) {
     dont_show_template();
     exit(0);
 }
+
+$template_id = x_clean_input($_GET['template_id'], 'numeric');
 
 
 /**
@@ -51,7 +53,7 @@ if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
 
 $query_to_check_data = "select * from {$xerte_toolkits_site->database_table_prefix}additional_sharing where sharing_type=? AND template_id = ?";
 
-$query_for_data_response = db_query_one($query_to_check_data, array('xml', $_GET['template_id']));
+$query_for_data_response = db_query_one($query_to_check_data, array('xml', $template_id));
 /**
  *  Check to see if for this ID a data value is set in additional sharing.
  */
@@ -70,7 +72,7 @@ if(!empty($query_for_data_response)) {
          *  Compare to the host variables
          */
 
-        if(($row_data['extra']==$_SERVER['HTTP_REFERER'])||($row_data['extra']==$_SERVER['REMOTE_ADDR'])){
+        if((strpos($_SERVER['HTTP_REFERER'], $row_data['extra'])===0)||(strpos($_SERVER['REMOTE_ADDR'], $row_data['extra'])===0)){
 
             /**
              *  Fetch and return the XML
@@ -102,7 +104,7 @@ if(!empty($query_for_data_response)) {
 
         $query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-        $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", (int) $_GET['template_id'], $query_for_play_content_strip);
+        $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
 
         $row = db_query_one($query_for_play_content);
 

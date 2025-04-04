@@ -548,13 +548,21 @@ p .panel #iFrame, p .panel iframe {
 #linkHolder p {
 	font-size:1.2em; //OC
 }
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
 	background:#eee;
 	font-family:Roboto, sans-serif;
+	border-color: $blackordarkest;
 }
-#menuItems .menuItem:hover {
+#menuItems .chapterHolder {
+	margin-bottom: 5px;
+}
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
 	background:white;
 	color:black;
+}
+.chapterPageHolder {
+	border-color: $blackordarkest;
+	background: #eee;
 }
 #pageContents {
 	margin:auto;
@@ -802,7 +810,7 @@ img {
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 	margin-right:1px;
 }
-.ui-button {
+.ui-button, .chapterHolder .menuItem.ui-button, .chapterHolder .chapterItem {
 	border:1px solid;
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
@@ -1124,10 +1132,6 @@ var {
 	}
 }
 
-.pbBar {
-	background-color: #cd0438;
-}
-
 .pbTxt {
 	color: #EEE;
 }
@@ -1201,4 +1205,8 @@ var {
 
 #pageContents.mcq .optionTxt {
 	font-size: 1.2em;
+}
+
+.x_audioRecord_page .deleteClipBtn {
+	box-shadow: none;
 }

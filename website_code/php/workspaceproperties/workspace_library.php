@@ -21,25 +21,47 @@
 	_load_language_file("/website_code/php/workspaceproperties/workspace_library.inc");
 
 	function workspace_templates_menu(){
-	
-		echo "<div class=\"menu_holder\"><div class=\"menu_button\"><a href=\"javascript:workspace_templates_template()\">" . WORKSPACE_LIBRARY_MY . "</a></div>";
-		echo "<div class=\"menu_button\"><a href=\"javascript:shared_templates_template()\">" . WORKSPACE_LIBRARY_SHARED . "</a></div>";
-		echo "<div class=\"menu_button\"><a href=\"javascript:public_templates_template()\">" . WORKSPACE_LIBRARY_PUBLIC . "</a></div>";
-		echo "<div class=\"menu_button\"><a href=\"javascript:usage_templates_template()\">" . WORKSPACE_LIBRARY_USAGE . "</a></div>";
-		echo "<div class=\"menu_button\"><a href=\"javascript:rss_templates_template()\">" . WORKSPACE_LIBRARY_RSS . "</div>";
-		echo "<div class=\"menu_button\"><a href=\"javascript:syndication_templates_template()\">" . WORKSPACE_LIBRARY_OPEN . "</a></div>";
-		echo "<div class=\"menu_button\"><a href=\"javascript:peer_templates_template()\">" . WORKSPACE_LIBRARY_PEER . "</a></div>";
-		echo "<div class=\"menu_button\"><a href=\"javascript:xml_templates_template()\">" . WORKSPACE_LIBRARY_XML . "</a></div>";
-		echo "</div>";
+		
+		echo "<h2 class=\"header\">" . WORKSPACE_LIBRARY_MY . "</h2>";
 
+		echo "<div id=\"mainContent\">";
+		
+		echo "<div id=\"panelTabs\" role=\"tabList\" class=\"menu_holder\">";
+		echo "<button id=\"tabMyProjects\" type=\"button\" role=\"tab\" aria-controls=\"panelMyProjects\" aria-selected=\"true\" class=\"menu_button tabSelected\" onclick=\"javascript:my_templates_template(); panelTabClicked('tabMyProjects');\">" . WORKSPACE_LIBRARY_MY . "</button>";
+		echo "<button id=\"tabShared\" type=\"button\" role=\"tab\" aria-controls=\"panelShared\" aria-selected=\"false\" class=\"menu_button\" onclick=\"javascript:shared_templates_template(); panelTabClicked('tabShared');\">" . WORKSPACE_LIBRARY_SHARED . "</button>";
+		echo "<button id=\"tabPublic\" type=\"button\" role=\"tab\" aria-controls=\"panelPublic\" aria-selected=\"false\" class=\"menu_button\" onclick=\"javascript:public_templates_template(); panelTabClicked('tabPublic');\">" . WORKSPACE_LIBRARY_PUBLIC . "</button>";
+		echo "<button id=\"tabUsage\" type=\"button\" role=\"tab\" aria-controls=\"panelUsage\" aria-selected=\"false\" class=\"menu_button\" onclick=\"javascript:usage_templates_template(); panelTabClicked('tabUsage');\">" . WORKSPACE_LIBRARY_USAGE . "</button>";
+		echo "<button id=\"tabPeer\" type=\"button\" role=\"tab\" aria-controls=\"panelPeer\" aria-selected=\"false\" class=\"menu_button\" onclick=\"javascript:peer_templates_template(); panelTabClicked('tabPeer');\">" . WORKSPACE_LIBRARY_PEER . "</button>";
+		echo "<button id=\"tabRss\" type=\"button\" role=\"tab\" aria-controls=\"panelRss\" aria-selected=\"false\" class=\"menu_button\" onclick=\"javascript:rss_templates_template(); panelTabClicked('tabRss');\">" . WORKSPACE_LIBRARY_RSS . "</button>";
+		echo "<button id=\"tabXml\" type=\"button\" role=\"tab\" aria-controls=\"panelXml\" aria-selected=\"false\" class=\"menu_button\" onclick=\"javascript:xml_templates_template(); panelTabClicked('tabXml');\">" . WORKSPACE_LIBRARY_XML . "</button>";
+		echo "</div>";
+		
+		echo "<div id=\"sub_dynamic_area\">";
+		echo "<div id=\"panelMyProjects\" class=\"tabPanel\" role=\"tabpanel\" aria-labelledby=\"tabMyProjects\"></div>";
+		echo "<div id=\"panelShared\" class=\"tabPanel\" role=\"tabpanel\" aria-labelledby=\"tabShared\"></div>";
+		echo "<div id=\"panelPublic\" class=\"tabPanel\" role=\"tabpanel\" aria-labelledby=\"tabPublic\"></div>";
+		echo "<div id=\"panelUsage\" class=\"tabPanel\" role=\"tabpanel\" aria-labelledby=\"tabUsage\"></div>";
+		echo "<div id=\"panelPeer\" class=\"tabPanel\" role=\"tabpanel\" aria-labelledby=\"tabPeer\"></div>";
+		echo "<div id=\"panelRss\" class=\"tabPanel\" role=\"tabpanel\" aria-labelledby=\"tabRss\"></div>";
+		echo "<div id=\"panelXml\" class=\"tabPanel\" role=\"tabpanel\" aria-labelledby=\"tabXml\"></div>";
+		echo "</div>";
+		
+		echo "</div>";
+		
+		echo '<script type="text/javascript">my_templates_template();</script>';
+		
 	}
 	
-	function workspace_menu_create($size){
-	
-		echo "<div style=\"clear:left; margin-left:20px; margin-top:10px; width:90%; float:left;\">";
+	function workspace_fail() {
+		
+		echo "<h2 class=\"header\">" . WORKSPACE_LIBRARY_MY . "</h2>";
 
-		echo "<div style=\"float:left; width:" . $size . "%; height:20px;\">" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</div>";
-	
+		echo "<div id=\"mainContent\">";
+		
+		echo "<p>" . WORKSPACE_LIBRARY_ERROR . "</p>";
+		
+		echo "</div>";
+		
 	}
 
 ?>

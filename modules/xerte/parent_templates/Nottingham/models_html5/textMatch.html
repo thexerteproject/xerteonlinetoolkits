@@ -20,26 +20,14 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textMatch = new function() {
-		var labelTxt1,
-			labelTxt2,
-			labelTxt3,
-			targetTxt1,
-			targetTxt2,
-			numAttempts;
+		const tickTxt = x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct");
+		const crossTxt = x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect");
+
+		let numAttempts;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			numAttempts = 0;
-			$("#labelHolder .label, #targetHolder .hint").remove();
-			$("#labelHolder .audioHolder, #feedback").hide();
-			$("#button").show();
-			
-			$("#targetHolder .target")
-				.data("currentLabel", "")
-				.css("height", "auto");
-
-			this.createLabels();
-			this.sizeChanged();
+			numAttempts = $("#pageContents").data("numAttempts");
 		}
 		
 		// function called every time the size of the LO is changed
@@ -53,7 +41,7 @@
 			
 			$labels.each(function() {
 				var $this = $(this);
-				$this.width($target.find("h3").width() + 5); // + 5 is so drop shadow width is ignored
+				$this.width($target.find(".fixedTxt").width() + 5); // + 5 is so drop shadow width is ignored
 				if ($this.find(".audioHolder").length > 0) {
 					$this.find(".labelTxt").width($this.width() - $("#pageContents").data("audioW"));
 				} else {
@@ -91,15 +79,26 @@
 					// adjust label absolute position on target
 					var $thisTarget = $this.data("currentTarget");
 					$this.css({
-						"top"	:$thisTarget.find("h3").position().top,
-						"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $this.width() + 5
+						"top"	:$thisTarget.find(".fixedTxt").position().top,
+						"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $this.outerWidth() + 5
 					});
 				}
 			});
 		}
 		
 		this.leavePage = function() {
-			if ($(x_currentPageXML).children().length > 0 && this.tracked != true) {
+			$("#pageContents").data("numAttempts", numAttempts);
+
+			// are any labels not on a target?
+			var labelOffTarget = 0;
+			$("#labelHolder .label").each(function() {
+				if ($(this).data("currentTarget") == "") {
+					labelOffTarget++;
+				}
+			});
+			const readyToMark = (XTGetMode() != "normal" && x_currentPageXML.getAttribute('markEnd') != 'true' && labelOffTarget != $("#labelHolder .label").length) || labelOffTarget == 0;
+
+			if ($(x_currentPageXML).children().length > 0 && $("#pageContents").data("tracked") !== true && readyToMark) {
 				this.finishTracking();
 			}
         }
@@ -107,25 +106,10 @@
 		this.init = function() {
 			$("#pageContents").data("audioW", 0);
 			numAttempts = 0;
-			
-			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
-			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
-			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
-			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
-			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
-			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
-			
+
 			$("#textHolder")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
 				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
-			
-			var feedbackTxt = x_currentPageXML.getAttribute("correctMessage");
-			if (feedbackTxt == undefined) {
-				feedbackTxt = "Correct answers are shown.";
-			}
-			var $feedback = $("#feedback")
-				.html(x_addLineBreaks(feedbackTxt))
-				.hide();
 			
 			// submitBtnWidth attribute not used as button will be sized automatically
 			var buttonLabel = x_currentPageXML.getAttribute("submitBtnTxt");
@@ -133,133 +117,151 @@
 				buttonLabel = "Submit";
 			}
 			
-			var $button = $("#button")
+			$("#button")
 				.button({
 					label:	buttonLabel
 				})
 				.click(function() { // mark labels and show feedback
 					var maxAttempts = x_currentPageXML.getAttribute("maxAttempts") ? x_currentPageXML.getAttribute("maxAttempts") : 3,
 						allCorrect = true;
-					
-					
+
 					$("#dragDropHolder .tick, #targetHolder .hint").remove();
 					$("#labelHolder .audioHolder").hide();
 					
 					// are any labels not on a target?
-					var labelOffTarget = false;
+					var labelOffTarget = 0;
 					$("#labelHolder .label").each(function() {
 						if ($(this).data("currentTarget") == "") {
-							labelOffTarget = true;
+							labelOffTarget++;
 						}
 					});
-					if(!labelOffTarget)
-					{
+
+					// only count attempts when submitted after all labels placed
+					if(labelOffTarget == 0) {
 						numAttempts++;
 					}
-					if(XTGetMode() != "normal" && x_currentPageXML.getAttribute('markEnd') === 'false' ){
+
+					// mark exercise now - either because it's complete or it doesn't matter that it's not complete as tracking & mark at end are both off
+					if((XTGetMode() != "normal" && x_currentPageXML.getAttribute('markEnd') != 'true' && labelOffTarget != $("#labelHolder .label").length) || labelOffTarget == 0){
+						let correctShownTxt = "";
+
+						$("#labelHolder .label").each(function() {
+							const $this = $(this);
+							const $currentTarget = $this.data("currentTarget");
+							const $temp = $this.clone();
+							$temp.find(".sr-only,.audioHolder").remove();
+
+							if ($this.data("target").is($currentTarget)) {
+								// correct - show tick
+								$this.addClass("correct");
+								$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible"> ' + tickTxt + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
+								$this.find(".audioHolder").show();
+
+								// change title of target so screen readers know it's filled correctly
+								$currentTarget.attr("title", $currentTarget.data("title") + ": " + $temp.text() + " (" + tickTxt + ")");
+								
+							} else {
+								// incorrect or not all labels placed on targets
+								allCorrect = false;
+
+								if (XTGetMode() == "normal" || x_currentPageXML.getAttribute('markEnd') == 'true') {
+									// tracked or set to mark at end - show cross
+									$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible"> ' + crossTxt + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
+
+									// change title of target so screen readers know it's filled incorrectly
+									$currentTarget.attr("title", $currentTarget.data("title") + ": " + $temp.text() + " (" + crossTxt + ")");
+
+								} else {
+									// move label back to top & show hint if needed
+									if ($currentTarget != "") {
+										var $prevTarget = $currentTarget;
+
+										if (labelOffTarget > 0) {
+											$this.hide();
+										}
+
+										$this
+												.css({
+													"top"	:"auto",
+													"left"	:"auto"
+												})
+												.data("currentTarget", "")
+												.find(".audioHolder").hide();
+
+										$prevTarget
+												.attr("title", $prevTarget.data("title"))
+												.data("currentLabel", "");
+
+										if (numAttempts >= maxAttempts) {
+											if ($prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
+												$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
+											} else {
+												correctShownTxt = x_currentPageXML.getAttribute("correctMessage") != undefined && x_currentPageXML.getAttribute("correctMessage") != "" ? "<p>" + x_currentPageXML.getAttribute("correctMessage") + "</p>" : "";
+												$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
+											}
+										}
+									}
+								}
+							}
+
+							// disable labels & their targets if placed correctly or if tracking is on
+							if ($this.data("target").is($currentTarget) || XTGetMode() == "normal") {
+								$this
+									.draggable("disable")
+									.off("click keypress focusin focusout");
+
+								$currentTarget
+									.droppable("disable")
+									.off("click keypress focusin focusout");
+							}
+						});
+
+						// calculate score
+						var correct = 0;
+
 						$("#labelHolder .label").each(function() {
 							var $this = $(this);
 							if ($this.data("target").is($this.data("currentTarget"))) {
-								// correct - show tick
-								$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
-								$this.find(".audioHolder").show();
-								
-							} else{							
-								// incorrect - remove label and show hint
-								if ($this.data("currentTarget") != "") {
-									var $prevTarget = $this.data("currentTarget");
-									
-									if (labelOffTarget == true) {
-										$this.hide();
-									} else {
-										labelOffTarget = true;
-									}
-									
-									$this
-										.css({
-											"top"	:"auto",
-											"left"	:"auto"
-											})
-										.data("currentTarget", "")
-										.attr("tabindex", Number($this.attr("id").replace("label","")) + 2)
-										.find(".audioHolder").hide();
-									
-									$prevTarget.data("currentLabel", "");
-									
-									if (numAttempts >= maxAttempts) {
-                                        if ($prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
-                                            $prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
-                                        } else {
-                                            $prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
-                                        }
-                                    }
-								}
-								allCorrect = false;
+								correct++;
 							}
 						});
-						
-					}
-					else{
-						if (!labelOffTarget){
-                            textMatch.finishTracking();
-							$("#labelHolder .label").each(function() {
-								var $this = $(this);
-								if ($this.data("target").is($this.data("currentTarget"))) {
-									// correct - show tick
-									$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
-									$this.find(".audioHolder").show();								
-								} else{	
-									$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
-								}
-							});
-						}
-						else{					
-							$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));	
-						}
-						$("#feedback").show();
-					}
-					
-					var correct = 0;
-					
-					$("#labelHolder .label").each(function() {
-						var $this = $(this);
-						if ($this.data("target").is($this.data("currentTarget"))) {
-							correct++;
-						} 
-					});			
-					
-					allCorrect = correct == $("#labelHolder .label").length;
-					
-					if(!labelOffTarget || (XTGetMode() != "normal" && x_currentPageXML.getAttribute('markEnd') === 'false')){
-						
+
 						var wrongFeedback, scoreFeedback;
-						
-						if(XTGetMode() != "normal" && x_currentPageXML.getAttribute('markEnd') === 'false'){
+						if(XTGetMode() != "normal"){
 							wrongFeedback = x_currentPageXML.getAttribute("allWrong");
 							scoreFeedback = x_currentPageXML.getAttribute("score");
 						}
 						else{
 							wrongFeedback = x_currentPageXML.getAttribute("allWrongTracking");
-							scoreFeedback =	x_currentPageXML.getAttribute("scoreTracking");	
-							$(this).hide();
+							scoreFeedback =	x_currentPageXML.getAttribute("scoreTracking");
 						}
-							
-						
-						if (allCorrect == false && numAttempts >= maxAttempts) {
-                            $feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-						} else if (allCorrect == true) {
-							$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-							$(this).hide();
-						} else if (correct == 0){
-							$feedback.html(wrongFeedback != undefined ? wrongFeedback : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-						} else {
-							$feedback.html(scoreFeedback != undefined ? scoreFeedback.replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+
+						if (correct == 0){
+							// all incorrect feedback
+							$("#feedback").html((wrongFeedback != undefined ? "<p>" + wrongFeedback + "</p>" : "") + correctShownTxt);
+						} else if (allCorrect == false) {
+							// some incorrect feedback
+							$("#feedback").html((scoreFeedback != undefined ? "<p>" + scoreFeedback.replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) + "</p>" : "") + correctShownTxt);
 						}
-						$("#feedback").show();						
+
+						// show main feedback if completed or max attempts reached
+						if (allCorrect == true || numAttempts >= maxAttempts || XTGetMode() == "normal") {
+							$("#feedback").append("<div class='mainFb'>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</div>");
+						}
+
+						textMatch.finishTracking();
+
+						// everything's disabled - remove the submit button
+						if ($("#labelHolder .label:not(.ui-draggable-disabled)").length == 0) {
+							$("#button").hide();
+						}
+
+					// exercise is incomplete - prompt to complete before marking
+					} else {
+						$("#feedback").html(x_currentPageXML.getAttribute("incomplete") != undefined ? "<p>" + x_currentPageXML.getAttribute("incomplete") + "</p>" : "");
 					}
 					
 					x_pageContentsUpdated();
-					
 				});
 				
 			
@@ -276,16 +278,18 @@
 					} else {
 						$thisTarget = $firstTarget;
 					}
-					
+
+					const titleTxt = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for") + " '" + this.getAttribute("name") + "' (" + (i + 1) + ")";
 					$thisTarget
-						.attr("title", targetTxt1 + " '" + this.getAttribute("name") + " " + (i + 1) + "'")
+						.attr("title", titleTxt)
 						.data({
 							"hint"	:this.getAttribute("hint"),
 							"name"	:this.getAttribute("name"),
 							"correct":this.getAttribute("p2"),
-							"id"	:i
+							"id"	:i,
+							"title"	:titleTxt
 							})
-						.find("h3").html(x_addLineBreaks(this.getAttribute("p1")));
+						.find(".fixedTxt").html(x_addLineBreaks(this.getAttribute("p1")));
 						
 					labels.push({text:this.getAttribute("p2"), correct:$thisTarget, audio:this.getAttribute("audioFeedback"), transcript:this.getAttribute("audioTranscript")});
 				});
@@ -306,51 +310,31 @@
 				.focusin(function(e) {
 					if ($(e.target).hasClass("target")) {
 						$(this).addClass("highlightDark");
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$(this).attr("title", targetTxt1 + " '" + $(this).data("name") + " " + ($(this).index() + 1) + "' - " + targetTxt2);
-						}
 					}
 					})
 				.focusout(function() {
-					var $pageContents = $("#pageContents");
-					$(this)
-						.removeClass("highlightDark")
-						.attr("title", targetTxt1 + " '" + $(this).data("name") + " " + ($(this).index() + 1) + "'");
+					$(this).removeClass("highlightDark");
 					})
 				.keypress(function(e) {
 					if ($(e.target).hasClass("target")) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32) {
-							var $selectedLabel = $("#pageContents").data("selectedLabel");
-							if ($selectedLabel != undefined && $selectedLabel != "") {
-								textMatch.dropLabel($(this), $selectedLabel); // target, label
-							}
+							$(this).click();
 						}
 					}
-					})
+				})
+				.click(function() {
+					var $selectedLabel = $("#pageContents").data("selectedLabel");
+					if ($selectedLabel != undefined && $selectedLabel != "") {
+						textMatch.dropLabel($(this), $selectedLabel); // target, label
+					}
+				})
 				.data("currentLabel", "");
-			
-			// set tab index for targets - leaving space between them for a label to be put on it
-			var tabIndex = 1;
-			tabIndex += $pageContents.data("labels").length;
-			$targetHolder.find(".target").each(function(i) {
-				tabIndex++;
-				var $this = $(this);
-				$this.attr({
-					"tabindex"	:tabIndex,
-					"title"		:targetTxt1 + " '" + $this.data("name") + " " + ($this.index() + 1) + "'"
-				});
-				tabIndex++;
-			});
-			$button.attr("tabindex", tabIndex + 1);
-			$feedback.attr("tabindex", tabIndex + 2);
 			
 			this.createLabels();
 			this.sizeChanged();
 			this.initTracking();
 			x_pageLoaded();
-			
 		}
 		
 		
@@ -359,9 +343,10 @@
 			var l_options = [],
 				l_answers = [],
 				l_feedbacks = [],
-            l_correct = 0,
-            l_total = 0;
-			this.tracked = true;
+				l_correct = 0,
+				l_total = 0;
+
+			$("#pageContents").data("tracked", true);
 
 			$("#labelHolder .label").each(function(i) {
             	var $this = $(this);
@@ -376,14 +361,20 @@
 				}else{
 					l_placeholder = "";
 				}
-        		var l_draglabel	= $this.find("div").text().trim(); 
+
+				var l_draglabel	= $this.find("div.labelTxt").clone();
+				l_draglabel.find('.sr-only,.audioHolder,.tick').remove();
+				l_draglabel = l_draglabel.text().trim();
+
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
                 l_options.push(l_option);
 				l_answers.push(l_draglabel + "-->" + l_placeholder);
-				l_feedbacks.push($("#feedback").text());
 				if ($this.data("target").is($this.data("currentTarget"))) {
+					l_feedbacks.push("correct");
 					l_correct++;
+				} else {
+					l_feedbacks.push("incorrect");
 				}
 			});
             var result = {
@@ -391,24 +382,18 @@
                 score: (l_correct * 100.0)/l_total
             };
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-
-            if(XTGetMode() == "normal" && x_currentPageXML.getAttribute('markEnd') !== 'false'){
-	            $("#dragDropHolder .label")
-				.draggable("disable");
-            }
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total, x_currentPageXML.getAttribute("trackinglabel"));
 		}
 
 		
 		this.initTracking = function(){
-			
-			this.weighting = 1.0;
+			 let weighting = 1.0;
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
             {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+                weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
             
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+            XTSetPageType(x_currentPage, 'numeric', 1, weighting);
             var correctOptions 		= [];
             var correctAnswers 		= [];
             var correctFeedbacks 	= [];
@@ -434,12 +419,9 @@
 			}
             XTEnterInteraction(x_currentPage, 0, 'match', label, correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("grouping"));
 		}
-		
-		
+
 		this.createLabels = function() {
 			// randomise order and create labels
-			
-			
 			var $pageContents = $("#pageContents"),
 				labels = [],
 				tempLabels = $pageContents.data("labels").slice(0),
@@ -451,7 +433,7 @@
 				tempLabels.splice(labelNum, 1);
 			}
 			for (i=0; i<labels.length; i++) {
-				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '"><div class="labelTxt">' + x_addLineBreaks(labels[i].text) + '</div></div>');
+				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="0"><div class="labelTxt"><span class="sr-only">' + x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item") + '</span>' + x_addLineBreaks(labels[i].text) + '</div></div>');
 				
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("target", labels[i].correct);
@@ -468,11 +450,16 @@
 							type		:"audio",
 							source		:labels[i].audio,
 							width		:25
-						});
+						})
 					
 					// manually add a transcript button to the end of the audio bar
 					if (labels[i].transcript != undefined && labels[i].transcript != '') {
 						x_addAudioTranscript($thisLabel.find('.labelTxt').find('.audioHolder'), labels[i].transcript);
+
+						// stop clicks on transcript button from triggering the start of moving labels & resetting feedback
+						$(".audioTranscriptBtn").click(function(e) {
+							e.stopPropagation();
+						});
 					}
 					
 					$thisLabel.addClass('audioFB');
@@ -492,64 +479,51 @@
 						// remove any focus/selection highlights made by tabbing to labels/targets
 						var $pageContents = $("#pageContents");
 						if ($("#labelHolder .label.focus").length > 0) {
-							$("#labelHolder .label.focus").attr("title", labelTxt1);
+							$("#labelHolder .label.focus").removeAttr("aria-label");
 						} else if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel").attr("title", labelTxt1);
+							$pageContents.data("selectedLabel").removeAttr("aria-label");
 							$pageContents.data("selectedLabel", "");
-						}
-						var targetInFocus = $("#targetHolder .target.highlightDark");
-						if (targetInFocus.length > 0) {
-							targetInFocus.attr("title", targetTxt1 + " '" + targetInFocus.data("name") + " " + (targetInFocus.index() + 1) + "'");
 						}
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
 						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
 						
-						$("#feedback").hide();
-						$("#dragDropHolder .tick, #targetHolder .hint").remove();
-						$("#labelHolder .audioHolder").hide();
-						
-						$("#button").show();
+						$("#feedback").empty();
+						$("#dragDropHolder .label:not(.correct) .tick, #targetHolder .hint").remove();
+						$("#labelHolder .label:not(.correct) .audioHolder").hide();
 					}
 					})
 				// set up events used when keyboard rather than mouse is used
-				// these highlight selected labels / targets and set the title attr which the screen readers will use
 				.focusin(function() {
-					var $this = $(this);
-					if ($this.is($pageContents.data("selectedLabel")) == false) {
-						$this
-							.addClass("focus")
-							.attr("title", labelTxt1 + " - " + labelTxt3);
-					}
+					$(this).addClass("focus");
 					})
 				.focusout(function() {
-					var $this = $(this);
-					$this.removeClass("focus");
-					if ($this.is($pageContents.data("selectedLabel")) == false) {
-						$this.attr("title", labelTxt1);
-					}
+					$(this).removeClass("focus");
 					})
 				.keypress(function(e) {
 					var charCode = e.charCode || e.keyCode;
 					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel")
-								.removeClass("selected")
-								.attr("title", labelTxt1);
-						}
-						var $this = $(this);
-						$this
-							.removeClass("focus")
-							.addClass("selected")
-							.attr("title", labelTxt1 + ' - ' + labelTxt2);
-						$pageContents.data("selectedLabel", $this);
-						
-						$("#dragDropHolder .tick, #targetHolder .hint").remove();
-						$("#labelHolder .audioHolder, #feedback").hide();
-						$("#button").show();
+						$(this).click();
 					}
-					})
+				})
+				.click(function() {
+					var $pageContents = $("#pageContents");
+					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+						$pageContents.data("selectedLabel")
+							.removeClass("selected")
+							.removeAttr("aria-label");
+					}
+					var $this = $(this);
+					$this
+						.removeClass("focus")
+						.addClass("selected")
+						.attr("aria-label", x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected"));
+					$pageContents.data("selectedLabel", $this);
+
+					$("#dragDropHolder .label:not(.correct) .tick, #targetHolder .hint").remove();
+					$("#labelHolder .label:not(.correct) .audioHolder").hide();
+					$("#feedback").empty();
+				})
 				.css("position", "absolute")
 				.data("currentTarget", "")
 				.disableSelection();
@@ -562,10 +536,15 @@
 			
 			// label hasn't been dropped on target it was already on
 			if ((prevLabel == "" || prevLabel.is($thisLabel) == false) && (prevTarget == "" || prevTarget.is($thisTarget) == false)) {
-				$thisTarget.data("currentLabel", $thisLabel);
-				$thisLabel
-					.data("currentTarget", $thisTarget)
-					.attr("tabindex", $thisTarget.attr("tabindex") + 1);
+				// change target title text so screen readers know which label is placed on target
+				const $temp = $thisLabel.clone();
+				$temp.find(".sr-only,.audioHolder").remove();
+
+				$thisTarget
+					.data("currentLabel", $thisLabel)
+					.attr("title", $thisTarget.data("title") + ": " + $temp.text());
+
+				$thisLabel.data("currentTarget", $thisTarget);
 				
 				// if there's already a label on the target, move it off
 				if (prevLabel != "") {
@@ -575,8 +554,9 @@
 							"left"	:"auto"
 							})
 						.data("currentTarget", "")
-						.attr("tabindex", Number(prevLabel.attr("id").replace("label","")) + 2);
-					
+						.removeClass("onTarget");
+
+					// as displaced label will move to top, hide and labels that were previously showing here
 					$("#dragDropHolder .label").each(function() {
 						if ($(this).data("currentTarget") == "" && $(this).is(prevLabel) == false) {
 							$(this).hide();
@@ -592,22 +572,25 @@
 							return false;
 						}
 					});
+
+				// if this label was already on a target - reset the target it's been moved off
 				} else {
-					prevTarget.data("currentLabel", "");
+					prevTarget
+						.attr("title", prevTarget.data("title"))
+						.data("currentLabel", "");
 				}
 				
 				$("#pageContents").data("selectedLabel", "");
 			}
-			
-			$thisTarget.attr("title", targetTxt1 + " '" + $thisTarget.data("name") + " " + ($thisTarget.index() + 1) + "'");
-			
+
 			$thisLabel
-				.attr("title", labelTxt1)
+				.removeAttr("aria-label")
 				.removeClass("selected")
 				.css({
-					"top"	:$thisTarget.find("h3").position().top + $("div#x_pageHolder").scrollTop(),
-					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.width() + 5
-				});
+					"top"	:$thisTarget.find(".fixedTxt").position().top + $("div#x_pageHolder").scrollTop(),
+					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.outerWidth() + 5
+				})
+				.addClass("onTarget");
 		}
 	}
 	
@@ -618,15 +601,15 @@
 
 <div id="pageContents">
 
-	<div id="textHolder" tabindex="1"></div>
+	<div id="textHolder"></div>
 
 	<div id="dragDropHolder">
 
 		<div id="labelHolder"></div>
 
 		<div id="targetHolder">
-			<div class="target highlight">
-				<h3></h3>
+			<div class="target highlight" tabindex="0">
+				<div class="fixedTxt" aria-hidden="true"></div>
 			</div>
 		</div>
 
@@ -634,6 +617,6 @@
 
 	<button id="button"></button>
 
-	<div><p id="feedback"></p></div>
+	<div id="feedback" aria-live="polite"></div>
 
 </div>

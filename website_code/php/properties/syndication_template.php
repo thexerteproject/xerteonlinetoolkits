@@ -35,20 +35,22 @@ include "../user_library.php";
 include "../url_library.php";
 include "properties_library.php";
 
-if(!is_numeric($_POST['tutorial_id'])){
-    syndication_display_fail();
-    exit(0);
+if (!isset($_POST['tutorial_id']))
+{
+    die('Invalid template_id');
 }
-if(!is_user_creator_or_coauthor((int) $_POST['tutorial_id']) && !is_user_admin()){
-    syndication_display_fail();
+$template_id = x_clean_input($_POST['tutorial_id'], 'numeric');
+
+if(!is_user_creator_or_coauthor($template_id) && !is_user_permitted("projectadmin")){
+    syndication_display_fail(true);
     exit(0);
 }
 
 /**
  * Check template is public
  */
-if(template_access_settings((int) $_POST['tutorial_id']) == "Public") {
-    syndication_display($xerte_toolkits_site,false);
+if(template_access_settings($template_id) == "Public") {
+    syndication_display($xerte_toolkits_site, $template_id, false);
 }
 else{
     syndication_not_public($xerte_toolkits_site);

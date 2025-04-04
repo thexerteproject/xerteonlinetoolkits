@@ -1,0 +1,5 @@
+name: lightmode
+display name: Accessibility: Light Mode
+description: A light mode theme that is available for all users via the accessibility options menu
+enabled: yes
+preview: lightmode.jpg

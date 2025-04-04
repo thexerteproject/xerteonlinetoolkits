@@ -1,10 +1,3 @@
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:96% !important;
-  overflow: hidden;
-}
 //***********************************Media*************************************
 //default highlight if not overriden
 .highlight {
@@ -493,6 +486,16 @@ div#shorturltodisplay a{
 .x_results_page tr .far.fa-circle.blue {
   color: #010101 !important;
   border-radius: 12px;
+}
+//*****audio record page*****/
+.x_audioRecord_page .deleteClipBtn {
+  color: $blackordarkest;
+}
+.x_audioRecord_page .clip.highlight {
+  background-color: green;
+}
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: $whiteorlightest;
 }
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/

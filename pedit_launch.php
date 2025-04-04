@@ -68,7 +68,7 @@ global $xapi_enabled;
 global $x_embed;
 global $x_embed_activated;
 
-if (!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
+if (!isset($_GET['template_id'])) {
 
     /*
      * Was not numeric, so display error message
@@ -100,154 +100,152 @@ function decrypt($decrypt) {
     return $decrypted;
 }
 
-$id = $_GET['template_id'];
-if (is_numeric($id))
+$id = x_clean_input($_GET['template_id'], 'numeric');
+
+if (!isset($_REQUEST['param']))
 {
-
-    if (!isset($_REQUEST['param']))
-    {
-        $xerte_toolkits_site->xapi_user->first_name = "Guest";
-        $xerte_toolkits_site->xapi_user->last_name = "User";
-        $xerte_toolkits_site->xapi_user->email = "info@example.com";
-        $xerte_toolkits_site->xapi_user->displayname = "Guest User";
-    }
-    else
-    {
-        $decoded = decrypt($_REQUEST['param']);
-        _debug("Decoded param: " . print_r($decoded, true));
-
-        $temp = explode('&', $decoded);
-        foreach ($temp as $param)
-        {
-            $keyvalue = explode('=', $param);
-            $params[$keyvalue[0]] = $keyvalue[1];
-        }
-
-        _debug("Decoded param array: " . print_r($params, true));
-
-        $client = new SoapClient($pedit_config->soapUrl);
-
-        $soapresult = $client->GetSystemUserByActorId(array(
-            'sKey' => $pedit_config->soapKey,
-            'iActorID' => $params['actor']
-        ));
-
-        _debug("System user by actor is (" . $params['actor'] . "): " . print_r($soapresult, true));
-
-        $userxml = $soapresult->GetSystemUserByActorIdResult;
-        $user = simplexml_load_string($userxml);
-        $members = $user->xpath('//member');
-
-        $xerte_toolkits_site->xapi_user = new stdClass();
-        $xerte_toolkits_site->xapi_user->first_name = (string) $members[0]['firstName'];
-        if (strlen($members[0]['middleName']) > 0)
-        {
-            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName'];
-        }
-        else {
-            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['lastName'];
-        }
-        $xerte_toolkits_site->xapi_user->email = (string)$members[0]['emailAddressPrivate'];
-        $xerte_toolkits_site->xapi_user->displayname = $xerte_toolkits_site->xapi_user->first_name . ' ' . $xerte_toolkits_site->xapi_user->last_name;
-
-        // Get goup information
-        $soapresult = $client->GetPageInformation(array(
-            'sKey' => $pedit_config->soapKey,
-            'iPageID' => $params['pageid']
-        ));
-        _debug("Page information is (" . $params['pageid'] . "): " . print_r($soapresult, true));
-        $pageinfoxml = xmlRemoveNamespace($soapresult->GetPageInformationResult);
-        $pageinfo = simplexml_load_string($pageinfoxml);
-
-        $classinfopart = $pageinfo->xpath('/*/DSPartContentFull[Class]');
-        if (count($classinfopart)) {
-            $classinfo=$classinfopart[0]->Class;
-            $keywords = $classinfopart[0]->keywords;
-            $metadata = (string)$classinfo[0]['ingress'];
-            if (trim($metadata) != "") {
-                $pos = strpos($metadata, '(');
-                if ($pos !== false) {
-                    $metadata_groep = substr($metadata, 0, $pos);
-                    $metadata_groep = trim($metadata_groep);
-                } else {
-                    $metadata_groep = trim($metadata);
-                }
-                $xerte_toolkits_site->group = $metadata_groep;
-                $groupssource = "metadata " . $metadata;
-            }
-            for($k=0; $k<count($keywords); $k++)
-            {
-                $keywordxml = $keywords[$k];
-                $keyword = (string)$keywordxml->keyword;
-                if (stripos($keyword, 'groep=') !== false)
-                {
-                    $groeparr = explode('=', $keyword);
-                    if (count($groeparr) == 2)
-                    {
-                        $xerte_toolkits_site->group = $groeparr[1];
-                        $groupssource = "keyword " . $keyword;
-                    }
-                }
-            }
-            if (isset($xerte_toolkits_site->group))
-                _debug("groupsinformation is set to " . $xerte_toolkits_site->group . " based on " . $groupssource);
-        }
-    }
-    $pedit_enabled = true;
-    $xapi_enabled = true;
-    if (isset($_REQUEST['group']) && !isset($xerte_toolkits_site->group))
-    {
-        $xerte_toolkits_site->group = $_REQUEST['group'];
-    }
-    if (isset($_REQUEST['course'])) {
-        $xerte_toolkits_site->course = $_REQUEST['course'];
-    }
-    if (isset($_REQUEST['module'])) {
-        $xerte_toolkits_site->module = $_REQUEST['module'];
-    }
-
-    // Get LRS endpoint and see if xAPI is enabled
-    $prefix = $xerte_toolkits_site->database_table_prefix;
-    $q = "select * from {$prefix}templatedetails where template_id=?";
-    $params = array($id);
-    $row = db_query_one($q, $params);
-    if ($row === false)
-    {
-        die("template_id not found");
-    }
-    if ($row['tsugi_xapi_enabled'] != '1')
-    {
-        die("Xapi is not enabled");
-    }
-    if ($row['tsugi_xapi_useglobal'])
-    {
-        $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
-        $globalrow = db_query_one($q);
-        $lrs = array('lrsendpoint' => $globalrow['LRS_Endpoint'],
-            'lrskey' => $globalrow['LRS_Key'],
-            'lrssecret' => $globalrow['LRS_Secret'],
-        );
-    }
-    else{
-        $lrs = array('lrsendpoint' => $row['tsugi_xapi_endpoint'],
-            'lrskey' => $row['tsugi_xapi_key'],
-            'lrssecret' => $row['tsugi_xapi_secret'],
-        );
-    }
-    $lrs = CheckLearningLocker($lrs);
-    $_SESSION['XAPI_PROXY'] = $lrs;
-
-    // Set studentid mode
-    $xerte_toolkits_site->xapi_user->studentidmode = $row['tsugi_xapi_student_id_mode'];
-
-    if ($_GET['x_embed'] === 'true') {
-        $x_embed = true;
-        if ($_GET['activated'] !== 'true') {
-            $xapi_enabled = false;
-            $x_embed_activated = false;
-        } else {
-            $x_embed_activated = true;
-        }
-    }
-    require(dirname(__FILE__) . "/play.php");
+    $xerte_toolkits_site->xapi_user->first_name = "Guest";
+    $xerte_toolkits_site->xapi_user->last_name = "User";
+    $xerte_toolkits_site->xapi_user->email = "info@example.com";
+    $xerte_toolkits_site->xapi_user->displayname = "Guest User";
 }
+else
+{
+    $decoded = decrypt(x_clean_input($_REQUEST['param']));
+    _debug("Decoded param: " . print_r($decoded, true));
+
+    $temp = explode('&', $decoded);
+    foreach ($temp as $param)
+    {
+        $keyvalue = explode('=', $param);
+        $params[$keyvalue[0]] = $keyvalue[1];
+    }
+
+    _debug("Decoded param array: " . print_r($params, true));
+
+    $client = new SoapClient($pedit_config->soapUrl);
+
+    $soapresult = $client->GetSystemUserByActorId(array(
+        'sKey' => $pedit_config->soapKey,
+        'iActorID' => $params['actor']
+    ));
+
+    _debug("System user by actor is (" . $params['actor'] . "): " . print_r($soapresult, true));
+
+    $userxml = $soapresult->GetSystemUserByActorIdResult;
+    $user = simplexml_load_string($userxml);
+    $members = $user->xpath('//member');
+
+    $xerte_toolkits_site->xapi_user = new stdClass();
+    $xerte_toolkits_site->xapi_user->first_name = str_replace("'", "\'", (string) $members[0]['firstName']);
+    if (strlen($members[0]['middleName']) > 0)
+    {
+        $xerte_toolkits_site->xapi_user->last_name = str_replace("'", "\'", (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName']);
+    }
+    else {
+        $xerte_toolkits_site->xapi_user->last_name = str_replace("'", "\'", (string)$members[0]['lastName']);
+    }
+    $xerte_toolkits_site->xapi_user->email = (string)$members[0]['emailAddressPrivate'];
+    $xerte_toolkits_site->xapi_user->displayname = $xerte_toolkits_site->xapi_user->first_name . ' ' . $xerte_toolkits_site->xapi_user->last_name;
+
+    // Get goup information
+    $soapresult = $client->GetPageInformation(array(
+        'sKey' => $pedit_config->soapKey,
+        'iPageID' => $params['pageid']
+    ));
+    _debug("Page information is (" . $params['pageid'] . "): " . print_r($soapresult, true));
+    $pageinfoxml = xmlRemoveNamespace($soapresult->GetPageInformationResult);
+    $pageinfo = simplexml_load_string($pageinfoxml);
+
+    $classinfopart = $pageinfo->xpath('/*/DSPartContentFull[Class]');
+    if (count($classinfopart)) {
+        $classinfo=$classinfopart[0]->Class;
+        $keywords = $classinfopart[0]->keywords;
+        $metadata = (string)$classinfo[0]['ingress'];
+        if (trim($metadata) != "") {
+            $pos = strpos($metadata, '(');
+            if ($pos !== false) {
+                $metadata_groep = substr($metadata, 0, $pos);
+                $metadata_groep = trim($metadata_groep);
+            } else {
+                $metadata_groep = trim($metadata);
+            }
+            $xerte_toolkits_site->group = $metadata_groep;
+            $groupssource = "metadata " . $metadata;
+        }
+        for($k=0; $k<count($keywords); $k++)
+        {
+            $keywordxml = $keywords[$k];
+            $keyword = (string)$keywordxml->keyword;
+            if (stripos($keyword, 'groep=') !== false)
+            {
+                $groeparr = explode('=', $keyword);
+                if (count($groeparr) == 2)
+                {
+                    $xerte_toolkits_site->group = $groeparr[1];
+                    $groupssource = "keyword " . $keyword;
+                }
+            }
+        }
+        if (isset($xerte_toolkits_site->group))
+            _debug("groupsinformation is set to " . $xerte_toolkits_site->group . " based on " . $groupssource);
+    }
+}
+$pedit_enabled = true;
+$xapi_enabled = true;
+if (isset($_REQUEST['group']) && !isset($xerte_toolkits_site->group))
+{
+    $xerte_toolkits_site->group = x_clean_input($_REQUEST['group']);
+}
+if (isset($_REQUEST['course'])) {
+    $xerte_toolkits_site->course = x_clean_input($_REQUEST['course']);
+}
+if (isset($_REQUEST['module'])) {
+    $xerte_toolkits_site->module = x_clean_input($_REQUEST['module']);
+}
+
+// Get LRS endpoint and see if xAPI is enabled
+$prefix = $xerte_toolkits_site->database_table_prefix;
+$q = "select * from {$prefix}templatedetails where template_id=?";
+$params = array($id);
+$row = db_query_one($q, $params);
+if ($row === false)
+{
+    die("template_id not found");
+}
+if ($row['tsugi_xapi_enabled'] != '1')
+{
+    die("Xapi is not enabled");
+}
+if ($row['tsugi_xapi_useglobal'])
+{
+    $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
+    $globalrow = db_query_one($q);
+    $lrs = array('lrsendpoint' => $globalrow['LRS_Endpoint'],
+        'lrskey' => $globalrow['LRS_Key'],
+        'lrssecret' => $globalrow['LRS_Secret'],
+    );
+}
+else{
+    $lrs = array('lrsendpoint' => $row['tsugi_xapi_endpoint'],
+        'lrskey' => $row['tsugi_xapi_key'],
+        'lrssecret' => $row['tsugi_xapi_secret'],
+    );
+}
+$lrs = CheckLearningLocker($lrs);
+$_SESSION['XAPI_PROXY'] = $lrs;
+
+// Set studentid mode
+$xerte_toolkits_site->xapi_user->studentidmode = $row['tsugi_xapi_student_id_mode'];
+
+if ($_GET['x_embed'] === 'true') {
+    $x_embed = true;
+    if ($_GET['activated'] !== 'true') {
+        $xapi_enabled = false;
+        $x_embed_activated = false;
+    } else {
+        $x_embed_activated = true;
+    }
+}
+require(dirname(__FILE__) . "/play.php");
+

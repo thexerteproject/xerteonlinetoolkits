@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
+      <decision><![CDATA[<decision name="Enter Page Title" text="" panelWidth="Medium" firstStep="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" yourAnswerString="Your answer" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
     </newNodes>
   </pageWizard>
 
@@ -9,9 +9,9 @@
   <decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#decisiontree" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_decision_tree_page" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
-	<text label="Intro Text" type="TextArea" height="100"/>
+	<text label="Intro Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
-	<firstStep label="First Step ID" type="TextInput"/>
+	<firstStep label="First Step ID" type="TextInput" placeholder="e.g. Q1"/>
 	<overview label="Show Final Overview" type="CheckBox" defaultValue="true" mandatory="true"/>
 	
 	<copy label="Copy Overview Option" type="CheckBox" optional="true" defaultValue="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
@@ -23,6 +23,7 @@
 	<fwdBtn label="Forward Button" type="TextInput" wysiwyg="true" language="true"/>
 	<copyBtn label="Copy Button" type="TextInput" wysiwyg="true" language="true"/>
 	<copyShortcutTxt label="Copy Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<yourAnswerString label="Your Answer Label" type="TextInput" language="true" mandatory="true"/>
 	<posAnswerString label="Other Answers Label" type="TextInput" wysiwyg="true" language="true"/>
 	<fromRangeString label="Slider Range Label" type="TextInput" wysiwyg="true" language="true"/>
 	<resultString label="Solution Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -53,10 +54,10 @@
     </QFGroup>
 
 	<newNodes>
-		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
-		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text="Enter text here"/>]]></infoStep>
-		<sliderStep><![CDATA[<sliderStep name="e.g. Q1" text="Enter question here" unit="e.g. £" min="0" max="100" step="1" value="0"/>]]></sliderStep>
-		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="Enter question here" format="radio"/>]]></mcqStep>
+		<resultStep><![CDATA[<resultStep name="e.g. R1" text="" destinationBtn="Continue"/>]]></resultStep>
+		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text=""/>]]></infoStep>
+		<sliderStep><![CDATA[<sliderStep name="e.g. Q1" text="" unit="e.g. £" min="0" max="100" step="1" value="0"/>]]></sliderStep>
+		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="" format="radio"/>]]></mcqStep>
 	</newNodes>
 	
   </decision>
@@ -64,14 +65,14 @@
   <mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
 	
 	<name label="Unique ID" type="TextInput"/>
-	<text label="Question" type="TextArea" height="100"/>
+	<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
 	<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 
 	<newNodes>
-		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" targetNew=""/>]]></mcqStepOption>
+		<mcqStepOption><![CDATA[<mcqStepOption name="Answer" targetNew=""/>]]></mcqStepOption>
 	</newNodes>
 	
   </mcqStep>
@@ -89,7 +90,7 @@
 
   <sliderStep icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
 	<name label="Unique ID" type="TextInput"/>
-	<text label="Question" type="TextArea" height="100"/>
+	<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
 	<unit label="Unit of answer" type="TextInput" wysiwyg="true"/>
 	<min label="Minimum value" type="TextInput"/>
 	<max label="Maximum value" type="TextInput"/>
@@ -120,7 +121,7 @@
 
   <infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
 	<name label="Unique ID" type="TextInput"/>
-	<text label="Text" type="TextArea" height="100"/>
+	<text label="Text" type="TextArea" height="100" placeholder="Enter text here"/>
 	<target label="Target ID" type="TextInput" optional="true" deprecated="This property has been deprecated. Use the Target ID drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
 	<targetNew label="Target ID" type="pageList" listTarget="0" defaultValue="" mandatory="true"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
@@ -132,7 +133,7 @@
 
   <resultStep icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
 	<name label="Unique ID" type="TextInput"/>
-	<text label="Text" type="TextArea" height="100"/>
+	<text label="Text" type="TextArea" height="100" placeholder="Enter result text here"/>
 	
 	<collate label="Compile Stored Results" type="CheckBox" optional="true" tooltip="Include Stored Result Text (optional property) from steps in the result."/>
 	<destination label="Go to Page ID" type="pageList" optional="true" tooltip="Adds a button link to a page of your choice."/>

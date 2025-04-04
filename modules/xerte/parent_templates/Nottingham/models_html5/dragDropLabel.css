@@ -61,8 +61,10 @@
         left:		0;
     }
 
-    #targetHolder .target {
-        position:	absolute;
+    #pageContents #targetHolder .target {
+        position: absolute;
+        cursor: pointer;
+        padding: 0 !important;
     }
 
     #targetHolder .target.border {

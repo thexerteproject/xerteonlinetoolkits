@@ -165,22 +165,17 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
-function require_auth() {
-    global $xerte_toolkits_site;
 
-    header('Cache-Control: no-cache, must-revalidate, max-age=0');
-    $has_supplied_credentials = !(empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']));
-    $is_not_authenticated = (
-        !$has_supplied_credentials ||
-        $_SERVER['PHP_AUTH_USER'] != $xerte_toolkits_site->admin_username ||
-        hash('sha256',$_SERVER['PHP_AUTH_PW'])   != $xerte_toolkits_site->admin_password);
-    if ($is_not_authenticated) {
-        header('WWW-Authenticate: Basic realm="Setup TSUGI for ' . $xerte_toolkits_site->site_title . '"');
-        header('HTTP/1.0 401 Unauthorized');
-        echo '{"error" : "You do not have permission to continue"}';
-        exit;
+$_SESSION['elevated'] = true;
+if (!isset($_SESSION['toolkits_logon_id'])) {
+    unset($_SESSION['elevated']);
+    $url = "setuptsugi";
+    $_SESSION['adminTo'] = $url;
+    if (isset($_GET['altauth'])) {
+        $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
     }
-    return true;
+    header("location: {$xerte_toolkits_site->site_url}");
+    exit();
 }
 
 // Authentication
@@ -191,7 +186,7 @@ if (is_user_admin()){
 }
 else
 {
-    $full_access = require_auth();
+    die("access denied!");
 }
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -294,6 +289,8 @@ $_SESSION['admin'] = true;
 
             function preflightchecks($mode)
             {
+		global $branch;
+
                 echo "<br>Running pre-flight checks<br>\n";
                 flush();
                 // Check OS
@@ -307,12 +304,27 @@ $_SESSION['admin'] = true;
 
                 // Check PHP version
                 $phpversion = phpversion();
-                if ($phpversion < "7.2.0" || $phpversion >= "8.1.0")
+                if ($phpversion < "7.2.0")
                 {
-                    echo "<span style='color:#F41F15;'>Your PHP version (". $phpversion . ") is not supported by TSUGI. Please update to a PHP version 7.4 or higher but lower than PHP 8.1.</span> <br>\n";
+                    echo "<span style='color:#F41F15;'>Your PHP version (". $phpversion . ") is not supported by TSUGI. Please update to a PHP version 7.2 or higher. </span> <br>\n";
                     echo "Aborting!";
                     exit(-1);
                 }
+		else if ($phpversion < "8.0")
+		{
+			echo "Your PHP version is ". $phpversion . ". Using branch php-72-x.<br>";
+			$branch = "php-72-x";
+		}
+		else if ($phpversion < "8.1")
+		{
+			echo "Your PHP version is ". $phpversion . ". Using branch php-80-x.<br>";
+			$branch = "php-80-x";
+		}
+		else
+		{
+			$branch = "master";
+		}
+		flush();
                 // Check zip extension
                 $zipextension = phpversion("zip");
                 if ($zipextension === false)
@@ -331,6 +343,7 @@ $_SESSION['admin'] = true;
                     exit(-1);
                 }
                 echo "<span style='color:#099E12;'>All pre-flight checks are Ok!</span> <br>\n";
+		flush();
             }
 
             function backup()
@@ -385,18 +398,20 @@ $_SESSION['admin'] = true;
                 {
                     echo "<span style='color:#099E12;'>Existing TSUGI folder has been removed</span><br> \n";
                 }
+		flush();
             }
             
             function install()
             {
-                global $xerte_toolkits_site;
+                global $xerte_toolkits_site, $branch;
 
                 // Download Tsugi bestanden
                 echo "<br>Download the TSUGI installer package<br>\n";
-                flush();
+		flush();
+                global $xerte_toolkits_site;
                 //$url = "https://github.com/$u/$repo/archive/master.zip";
-                $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/master.zip";
-                $tsugizip = __DIR__.'/../import/tsugi-master.zip';
+                $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
+                $tsugizip = __DIR__."/../import/tsugi-{$branch}.zip";
                 $ch = curl_init();
                 $f = fopen($tsugizip, 'w+');
                 $opt = [
@@ -428,21 +443,23 @@ $_SESSION['admin'] = true;
                     $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/.");
                     if ($res === false)
                     {
-                        echo "<span style='color:#F41F15;'>Failed to extract " . $tsugizip . ": " . $zip->getStatusString() . "</span><br>\n";
+                        echo "<span style='color:#F41F15;'>Failed to extract " . $tsugizip . ": " . x_clean_input($zip->getStatusString()) . "</span><br>\n";
                         echo "Aborting!<br>";
                         exit(-1);
                     }
                     $res = $zip->close();
                     echo "<span style='color:#099E12;'>TSUGI package successfully extracted</span><br>\n";
+		    flush();
                 } else {
                     echo "<span style='color:#F41F15;'>Couldn't open $tsugizip!</span><br>\n";
                     echo "Aborting!";
                     exit(-1);
                 }
 
-                rename($xerte_toolkits_site->root_file_path . "tsugi-master", $xerte_toolkits_site->root_file_path . "tsugi");
+                rename($xerte_toolkits_site->root_file_path . "tsugi-{$branch}", $xerte_toolkits_site->root_file_path . "tsugi");
 
                 echo "<span style='color:#099E12;'>TSUGI package successfully installed</span><br>\n";
+		flush();
 
             }
             
@@ -471,6 +488,7 @@ $_SESSION['admin'] = true;
                 {
                     echo "<span style='color:#099E12;'>config.php has been copied!</span> <br>\n";
                 }
+		flush();
             }
 
             function copy_config_template()
@@ -498,6 +516,7 @@ $_SESSION['admin'] = true;
                     }
                     $upgrade_log .= "</div></div>";
                     echo $upgrade_log;
+		    flush();
                 }
             }
             

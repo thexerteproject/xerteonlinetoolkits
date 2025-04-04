@@ -1,0 +1,222 @@
+<script type="text/javascript">
+	var imageCompare = new function() {
+		this.position = 50;
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.position = 50;
+			this.updatePosition();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(firstLoad = false) {
+
+			// set the width & height for the images - 100% minus any padding on the panel
+			$("#img1, #img2").css({
+				"width": "calc(100% - " + (parseInt($(".image_holder").css("padding-right")) + parseInt($(".image_holder").css("padding-right"))) + "px)",
+				"height": "calc(100% - " + (parseInt($(".image_holder").css("padding-top")) + parseInt($(".image_holder").css("padding-bottom"))) + "px)"
+			});
+
+			let mobileHeightComp = 0;
+			if(x_browserInfo.mobile){
+				mobileHeightComp = $("#x_headerBlock").height();
+			}
+			$("#x_pageHolder").css("top", mobileHeightComp);
+			let pageDiv = $("#x_pageDiv") ;
+			let paddingInline = pageDiv.innerWidth() - pageDiv.width(); // padding left and right
+			let paddingBlock = pageDiv.innerHeight() - pageDiv.height(); // padding top and bottom
+			let pageHeight = $("#x_pageHolder").innerHeight() - mobileHeightComp - (paddingBlock*2);
+			let pageWidth = $("#x_pageHolder").innerWidth() - (paddingInline*2);
+			let maxImageWidth = pageWidth - 20;
+			let maxImageheight = pageHeight - 20;
+			let holder = $(".holder");
+			const sizePercentage = parseInt(x_currentPageXML.getAttribute("imageSize"))/100;
+			if(sizePercentage !== 1){
+				holder.css("left", paddingInline/2);
+				pageHeight -= 10;
+				holder.addClass("sized");
+				let textElem = $(".text");
+				let textSize = 1.0-sizePercentage;
+				let holderPaddingTop = (holder.innerHeight() - holder.height())/2 
+				if(this.textPosition == "top"){
+					holder.width(pageWidth);
+					holder.height(pageHeight*sizePercentage);
+					maxImageheight = (pageHeight*sizePercentage) - 20;
+					holder.css("margin-top", pageHeight*textSize + holderPaddingTop + 20)
+					textElem.width(pageWidth);
+					textElem.height(pageHeight*textSize)
+				}else{
+					holder.width(pageWidth*sizePercentage);
+					holder.height(pageHeight);
+					maxImageWidth = (pageWidth*sizePercentage) - 20;
+					holder.css("margin-left", pageWidth*textSize + holderPaddingTop)
+					textElem.width(pageWidth*textSize);
+					textElem.height(pageHeight)
+				}
+			}else {
+				holder.css("right", "auto");
+				holder.width(pageWidth);
+				holder.height(pageHeight);
+				maxImageWidth += 20;
+				maxImageheight += 20;
+			}
+
+			x_scaleImg($(".image_holder"), maxImageWidth, maxImageheight, null, firstLoad, true);
+		}
+
+		// updates the ui with the position in javascript
+		this.updatePosition = function() {
+			let img2Elem = $("#img2");
+			let slider = $("#slider");
+			if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
+				img2Elem.css("clip-path", "inset("+ this.position + "% -50% -50% -50%)");
+				slider.css("top", this.position + "%");
+			}else {
+				img2Elem.css("clip-path", "inset(-50% -50% -50% "+ this.position + "%)");
+				slider.css("left", this.position + "%");
+			}
+		}
+		
+		this.init = function() {
+			let loadedimgs = 0;
+
+			let img1Url = x_currentPageXML.getAttribute("url1");
+			let img2Url = x_currentPageXML.getAttribute("url2");
+			let text = x_currentPageXML.getAttribute("text");
+			this.textPosition = x_currentPageXML.getAttribute("textPosition");
+		
+			let textElem = $(".text");
+			if(parseInt(x_currentPageXML.getAttribute("imageSize"))/100 !== 1){
+				$(".holder").addClass("sized");
+				textElem.html(text);
+			}else {
+				textElem.remove();
+			}
+
+			let img1Elem = $("#img1")[0];
+			let img2Elem = $("#img2")[0];
+
+			// set the width & height for the images - 100% minus any padding on the panel
+			$("#img1, #img2").css({
+				"width": "calc(100% - " + (parseInt($(".image_holder").css("padding-right")) + parseInt($(".image_holder").css("padding-right"))) + "px)",
+				"height": "calc(100% - " + (parseInt($(".image_holder").css("padding-top")) + parseInt($(".image_holder").css("padding-bottom"))) + "px)"
+			});
+
+			let slider = $("#slider");
+			const slideHint = x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") : (x_params.language === "en-GB" ? "Image slider" : undefined);
+			if (slideHint != undefined) {
+				slider.attr("aria-label", slideHint);
+			}
+
+			// use of temporary images to ensure all images are load and fullsize with loaded to get original aspectratio
+			let tempImg1 = new Image();
+			let tempImg2 = new Image();
+
+			let onImageLoad = () => { 
+				loadedimgs++;
+				if(loadedimgs == 2){
+					let minHeight =  Math.min(tempImg1.height, tempImg2.height);
+					let minWidth = Math.min(tempImg1.width, tempImg2.width);
+					$(".image_holder").width(minWidth);
+					$(".image_holder").height(minHeight);
+					this.sizeChanged(true);
+ 				}
+			};
+
+			tempImg1.onload = onImageLoad;
+			tempImg2.onload = onImageLoad;
+
+			if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
+				$("#slider, #slider_handle").addClass("vertical");
+			} else {
+				$("#slider, #slider_handle").addClass("horizontal");
+			}
+
+			let prevEvent;
+			slider.on("mousedown touchstart", function(event) {
+				event.preventDefault();
+				$(this).data("dragging", true);
+				prevEvent = event;
+				$(".image_holder").css("cursor", "move");
+			});
+			
+			//this on the image holder because then you don't have to move slowly and stay on the slider
+			$(".image_holder").on("mousemove touchmove", (event) => {
+ 				if(!slider.data("dragging")) return;
+				event.preventDefault();
+				let deltaPosition;
+				if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
+					let screenY = event.screenY != null? event.screenY : event.originalEvent.touches[0].screenY;
+					let prevScreenY = prevEvent.screenY != null? prevEvent.screenY : prevEvent.originalEvent.touches[0].screenY;
+					deltaPosition = 100 / $(".image_holder").height() * (screenY-prevScreenY);
+				}else{
+					let screenX = event.screenX != null? event.screenX : event.originalEvent.touches[0].screenX;
+					let prevScreenX = prevEvent.screenX != null? prevEvent.screenX : prevEvent.originalEvent.touches[0].screenX;
+					deltaPosition = 100 / $(".image_holder").width() * (screenX-prevScreenX);
+				}
+				this.position = Math.min(100, Math.max(this.position + deltaPosition, 0));
+				this.updatePosition();
+				prevEvent = event;
+			});
+
+			$("body").on("mouseup touchend", function() {
+				slider.data("dragging", false);
+				$(".image_holder").css("cursor", "default");
+			});
+
+			slider.on("keyup", (event) =>{
+				let delta = 0;
+				if (event.which == 36) { // home
+					this.position = 0;
+				} else if (event.which == 35) { // end
+					this.position = 100;
+				} else {
+					if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
+						if (event.which == 40) {// down arrow
+							delta = 5
+						} else if (event.which == 38) {// up arrow
+							delta = -5;
+						}
+					} else {
+						if (event.which == 39) {// right arrow
+							delta = 5
+						} else if (event.which == 37) {// left arrow
+							delta = -5;
+						}
+					}
+					this.position = Math.min(100, Math.max(this.position + delta, 0));
+				}
+				this.updatePosition();
+			});
+			
+			tempImg1.src = img1Url;
+			tempImg2.src = img2Url;
+			img1Elem.src = img1Url;
+			img2Elem.src = img2Url;
+			img1Elem.alt = x_currentPageXML.getAttribute("tip1");
+			img2Elem.alt = x_currentPageXML.getAttribute("tip2");
+
+			this.updatePosition();
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	}
+	
+	imageCompare.init();
+	
+</script>
+
+<div id="pageContents">
+	<div class="text">
+	</div>
+	<div class="holder">
+		<div class="image_holder panel">
+			<img class="image x_noLightBox" id="img1" alt="" src="" />
+			<img class="image x_noLightBox" id="img2" alt="" src="" />
+			<div id="slider" tabindex="0">
+				<div id="slider_handle"></div>
+			</div>
+		</div>
+	</div>
+</div>

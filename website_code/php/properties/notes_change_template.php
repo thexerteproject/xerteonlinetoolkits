@@ -40,7 +40,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
         $database_id = database_connect("notes change template database connect success", "notes change template database connect failed");
         $prefix = $xerte_toolkits_site->database_table_prefix;
         $query = "update {$prefix}templaterights SET notes = ?  WHERE template_id = ?";

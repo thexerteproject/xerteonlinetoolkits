@@ -1,39 +1,66 @@
 //*define color pallette*/
 
-$brightcolor:#C4551F;//professionalengagement
-$accent1: #418545;//digitalresources
-$contrastcolor:#4078C0;//digitalpedagogyteachingandlearning
-$accent2: #278384;//digitalassessment
-$darkestcolor: #603784;//empoweringlearners
-$accent3:#D13759;//facilitatinglearners:#983265
-$lightestcolor:#FFFF99;
-$whiteorlightest:#ffffff;
-$blackordarkest:#000000;
+$yellow: #FFFF99;
+$midlightyellow: darken($yellow, 15%);
+$midyellow: darken($yellow, 35%);
+$darkyellow: darken($yellow, 50%);
+$darkestyellow: darken($yellow, 65%);
+$blackordarkest: #000000;
+$contrastcolor: #FFFF00;
 
-/*set background colors*/
-$bodybackgroundcolor:#FFFF99;
-$defaultpagebackground:$lightestcolor;
-$progressBarColor: #2196F3; /* default #2196F3;*/
+$accent1: darken(#33CC33,20%);
+$accent2: darken(#00FFFF,20%);
+$accent3: darken(#FF0000,20%);
+$accent4: #FF9900;
+$accent5: #6600FF;
+$accent6: darken(#FFFF00,10%);
+
+$green: $accent1;
+$red: $accent3;
+$blue: $accent5;
+
+$bodybackgroundcolor: $yellow;
+$defaultpagebackground: $yellow;
+$headerbackgroundcolor: $blackordarkest;
+$footerbackgroundcolor: $blackordarkest;
+$panelcolor: $yellow;
+$bordercolor: $blackordarkest;
+
+$mainfontcolour: $blackordarkest;
+$headerfontcolor: $yellow;
+$headerhoverfontcolor: $midyellow;
+$footerfontcolor: $yellow;
+$footerhoverfontcolor: $midyellow;
+
+$linkcolor: $mainfontcolour;
+$linkvisited: $mainfontcolour;
+$linkhover: $darkestyellow;
+
+$btnbackgroundcolor: $yellow;
+$btntxtcolor: $blackordarkest;
+$btnhoverbackgroundcolor: $blackordarkest;
+$btnhovertxtcolor: $yellow;
+
+$iconBtn: $blackordarkest;
+$iconHoverBtn: $darkestyellow;
+
+$thumbSelect: $darkyellow;
+
+$labelhovercolor: $blackordarkest;
+$labelfonthovercolor: $yellow;
+
+$progressBarColor: $yellow;
+$progressBarColorHeader: $darkyellow;
 
 /*set font family*/
 $mainfonts: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
 $secondaryfonts:Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-/*define font colors to match the background colors*/
-$mainfontcolour: $blackordarkest;
-$fontcolorfordarkestcolor:#ffffff;
-$fontcolorforlightestcolor:#000000;
-$fontcolorfobrightcolor:#ffffff;
-$fontcolorforcontrastcolor:#ffffff;
-$linkcolor:blue;
-$linkvisited: #00006f;
-$linkhover: #00006f;
-
 /*define rounded corner and other sizes*/
-$largeroundedcorners: 3px;/*6vmin;*/
-$mediumroundedcorners: 3px;/*2vmin;*/
-$smallroundedcorners: 3px;/*1vmin;*/
-$imageroundedcorners: none;/*2vmin;*/
+$largeroundedcorners: 0;
+$mediumroundedcorners: 0;
+$smallroundedcorners: 0;
+$imageroundedcorners: none;
 $contentmargin: 2%;
-$interfaceboxshadow:none; /*3px 3px 5px grey*/
-$defaultpagepadding:2%;
+$interfaceboxshadow: none;
+$defaultpagepadding: 2%;

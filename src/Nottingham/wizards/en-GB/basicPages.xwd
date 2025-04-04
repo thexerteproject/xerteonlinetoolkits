@@ -1,34 +1,34 @@
 <commonNodes>
 	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page">
-		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
-		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true"/>    
+		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
+		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
 		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
 	</narrate>
 	
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled."/>
 	
-	<navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here.">
+	<navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this page" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here.">
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns>
 	
-	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
-		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times by leaving the 'From' &amp; 'Until' fields empty or specify a date (and optional time) in the 'From' &amp; 'Until' fields to specify when it should be available.">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideOnDate!=''&amp;&amp;hideOnDate!=undefined"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideUntilDate!=''&amp;&amp;hideUntilDate!=undefined"/>
 	</hideShow>
 	
-	<linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links">
-		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
-		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
-		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	<linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu / table of contents so it can only be accessed via Xerte page links">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPage=='true'" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing this page. This may be desirable when viewing the page in a lightbox."/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPage=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing this page. This is likely to be desirable when viewing the page in a lightbox."/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup>
 
     <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Assistance with image searching for Xerte content" optional="true">
@@ -58,19 +58,21 @@
 	<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard (centred),Vault,Keypad" optional="true" defaultValue="standard" tooltip="Customise the appearance of the access code information on the page. The access code must be numeric when 'keypad' is used." />
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
-		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
 	</passwordGroup>
 	
 	<introGroup type="group" label="Introduction" optional="true" tooltip="Add a Page Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the page first loads.">
 		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this page"/>
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
-		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
-		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
+		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
+		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
-		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
+		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
 		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
 		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Start" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
@@ -82,12 +84,12 @@
 		<pageID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup>
 		
-	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="false" optional="true"/>
-	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
+	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true"/>
+	<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="parent.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
 	<styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page"/>
 
-	<tracking type="group" label="Tracking" optional="true">
-        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use (instead of page number) as tracking identifier"/>
         <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
 	</tracking>
 
@@ -96,36 +98,38 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts>
 
-	<background type="group" label="Background" optional="true" tooltip="Add a background image to this page">
-		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
-		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
-		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
-		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	<background type="group" label="Background" optional="true" tooltip="Add a background image to this page. This will override any background image added at project level.">
+		<bgImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit (cover),Show whole image (contain)" data="fill,cover,contain" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, 'Crop to fit' will crop the image to fit without distorting it and 'Show whole image' will display the complete scaled image without distorting it. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="0" max="100" step="10" defaultValue="30" optional="true" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale" />
 	</background>
 	
 	<pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero">
-		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
-		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true" />
-		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" condition="showTimer=='true'" optional="true" />
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up" condition="showTimer=='true'"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining" condition="showTimer=='true'"/>
 	</pageTimer>
 	
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project."/>
 	
-	<variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property">
-		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
-		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	<variables type="group" label="Variables" condition="parent.variables!=undefined" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property">
+		<varConfirm label="Submit Message" type="TextInput" condition="parent.variables!=undefined" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" condition="parent.variables!=undefined" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
 	</variables>
 	
 	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only">
-		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" condition="lightbox=='true'" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup>
 
 	<pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page.">
-    <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
-    <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
+		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
+		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup>
+
+	<milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar"/>
 	
 </commonNodes>

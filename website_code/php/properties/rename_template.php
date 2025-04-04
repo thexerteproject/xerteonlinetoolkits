@@ -41,33 +41,35 @@ if (!isset($_SESSION['toolkits_logon_id']))
     die("Session is invalid or expired");
 }
 
-if(is_numeric($_POST['template_id'])){
+if (!isset($_POST['template_id']) || !isset($_POST['template_name']))
+{
+    die("Invalid paramaters");
+}
 
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
-        $tutorial_id = (int)$_POST['template_id'];
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
+$template_name = x_clean_input($_POST['template_name']);
 
-        $prefix = $xerte_toolkits_site->database_table_prefix;
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")) {
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        $database_id = database_connect("Template rename database connect success", "Template rename database connect failed");
 
-        $query = "update {$prefix}templatedetails SET template_name = ? WHERE template_id = ?";
-        $params = array(htmlspecialchars(str_replace(" ", "_", $_POST['template_name'])), $_POST['template_id']);
+    $query = "update {$prefix}templatedetails SET template_name = ? WHERE template_id = ?";
+    $params = array(str_replace(" ", "_", $template_name), $template_id);
 
-        if (db_query($query, $params)) {
+    if (db_query($query, $params)) {
 
-            $query_for_names = "select template_name, date_created, date_modified from {$prefix}templatedetails where template_id=?";
-            $params = array($tutorial_id);
+        $query_for_names = "select template_name, date_created, date_modified from {$prefix}templatedetails where template_id=?";
+        $params = array($template_id);
 
-            $row = db_query_one($query_for_names, $params);
+        $row = db_query_one($query_for_names, $params);
 
-            echo "~~**~~" . $_POST['template_name'] . "~~**~~";
+        echo "~~**~~" . $template_name . "~~**~~";
 
-            properties_display($xerte_toolkits_site, $tutorial_id, true, "name");
+        properties_display($xerte_toolkits_site, $template_id, true, "name");
 
-        } else {
-            echo "~~**~~ ~~**~~";
+    } else {
+        echo "~~**~~ ~~**~~";
 
-            properties_display($xerte_toolkits_site, $tutorial_id, false, "name");
-        }
+        properties_display($xerte_toolkits_site, $template_id, false, "name");
     }
 }

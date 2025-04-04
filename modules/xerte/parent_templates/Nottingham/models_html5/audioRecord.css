@@ -1,0 +1,95 @@
+#pageContents .panel {
+	overflow: auto;
+}
+
+#panelTop {
+	border-bottom: 1px solid #ccc;
+	padding: 0 0 .5em;
+	margin: 0 0 .5em;
+	overflow: auto;
+}
+
+#count {
+	float: left;
+	font-weight: bold;
+}
+
+#btnHolder {
+	float: right;
+}
+
+#panelContent {
+	clear: both;
+}
+
+#prompt {
+	margin-bottom: .5em;
+}
+
+#audioHolder {
+	width: 100%;
+	margin-bottom:	.5em;
+}
+
+#recBtn.recording .ui-icon, #recBtn.recording .ui-button-text {
+	color: darkred;
+}
+
+#recBtn .ui-icon {
+	height: auto;
+}
+
+#downloadBtn.ui-button-icon-only .ui-icon.fa {
+	margin-left: -20%;
+	margin-top: -20%;
+}
+
+#recordedClips {
+	margin-top: .5em;
+}
+
+#recordedClips .clip {
+	border-top: 1px solid #ccc;
+	padding: .5em 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#recordedClips .clip .deleteClipBtn {
+	float: left;
+	background: none;
+	border: none;
+	width: 1.2em;
+	height: 1.2em;
+}
+
+#recordedClips .clip .clipTitle {
+	float: left;
+	font-weight: bold;
+	padding-top: 0;
+}
+
+#recordedClips .clip:not(.noTitle) .clipPlayer {
+	clear: both;
+}
+
+#recordedClips .clip.noTitle .clipPlayer {
+	margin-left: 1.25em;
+}
+
+#feedbackTxt {
+	padding-top: .5em;
+	border-top: 1px solid #ccc;
+}
+
+#feedbackTxt + #audioHolder {
+	margin-top: .5em;
+}
+
+#errorMsg {
+	overflow: auto;
+}
+
+#errorMsg button {
+	float: right;
+}

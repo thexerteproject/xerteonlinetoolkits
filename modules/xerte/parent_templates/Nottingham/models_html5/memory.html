@@ -37,6 +37,8 @@
 		}
 		
 		this.init = function() {
+
+			$("#pageContents").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
 			
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
 				$('#pageContents').prepend('<div id="txtHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div>');
@@ -80,7 +82,12 @@
 				.hide();
 			
 			this.createCards();
-			
+
+			// crop images to fill cards (default is to stretch)
+			if (x_currentPageXML.getAttribute("imgFit") == "cover") {
+				$("#cardHolder").addClass("bgImgCover");
+			}
+
 			if (x_browserInfo.mobile == true) {
 				$("#pageContents").height($("#cardTopHolder").height());
 			}
@@ -117,7 +124,7 @@
 				// create top of cards
 				$('<div class="card"></div>')
 					.css("background-image", 'url("' + cardbackurl + '")')
-					.attr("tabindex", i+1)
+					.attr("tabindex", "0")
 					.appendTo($cardTopHolder)
 					.click(function() {
 						var $this = $(this);
@@ -130,23 +137,28 @@
 						} else { // 2nd card revealed - does it match?
 							if ($this.is($pageContents.data("currentCard")) == false) {
 								$this.animate({opacity: 0}, 500);
-								var $card1 = $($cardBottomHolder.children()[$this.index()]),
-									$card2 = $($cardBottomHolder.children()[$pageContents.data("currentCard").index()]);
-								
-								if (parseInt($card1.data("match")) == parseInt($card2.data("match"))) { // match - short delay and then add label to image card
+								var $card1B = $($cardBottomHolder.children()[$this.index()]),
+									$card2B = $($cardBottomHolder.children()[$pageContents.data("currentCard").index()]),
+									$card1T = $this,
+									$card2T = $pageContents.data("currentCard");
+
+								if (parseInt($card1B.data("match")) == parseInt($card2B.data("match"))) { // match - short delay and then add label to image card
 									$this.add($pageContents.data("currentCard")).addClass("correct");
 									
 									clearInterval(x_timer);
 									x_timer =  setInterval(function() {
-										if ($card1.find(".answer").length == 0) {
-											$card2.find(".answer .imgLabel").css("background-image", $card1.css("background-image"));
-											$card1.animate({opacity: 0}, 500);
+										if ($card1B.find(".answer").length == 0) {
+											$card2B.find(".answer .imgLabel").css("background-image", $card1B.css("background-image"));
+											$card1B.animate({opacity: 0}, 500);
 										} else {
-											$card1.find(".answer .imgLabel").css("background-image", $card2.css("background-image"));
-											$card2.animate({opacity: 0}, 500);
+											$card1B.find(".answer .imgLabel").css("background-image", $card2B.css("background-image"));
+											$card2B.animate({opacity: 0}, 500);
 										}
-										$card1.add($card2).find(".answer").animate({opacity: 1}, 500);
-										
+										$card1B.add($card2B).find(".answer").animate({opacity: 1}, 500);
+
+										$card1T.removeAttr("tabindex");
+										$card2T.removeAttr("tabindex");
+
 										if ($pageContents.find(".correct").length == $pageContents.data("cardData").length) { // all matched
 											$("#button").show();
 										}

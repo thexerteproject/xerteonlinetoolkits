@@ -37,12 +37,17 @@ _load_language_file("/workspaceproperties.inc");
 
 <link href="website_code/styles/workspacemanagement_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
-<link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />
+<!--<link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />-->
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 <link rel="stylesheet" href="editor/css/jquery-ui.css">
 <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+<!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css" -->
+<!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
+
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
     {
@@ -79,7 +84,7 @@ Start the page and once loaded set the default option
 
 -->
 
-<body onload="tab_highlight('1');my_properties_template()">
+<body onload="my_properties_template()">
 
 <!--
 
@@ -87,103 +92,57 @@ Hidden Iframe to allow for ajax file uploads
 
 -->
 
-<iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
-<!--- error widget -->
-<div id="errorpopup" title="<?PHP echo PHP_ERROR; ?>" style="display:none"></div>
-
-<div class="properties_main">
-    <div class="main_area">
-        <div>
-                    <span id="title">
-                        <img src="website_code/images/folder_workspace.gif"
-                             style="vertical-align:middle; padding-left:10px;"/>
-                        <?PHP echo WORKSPACE_PROPERTIES_DISPLAY_TITLE; ?>
-                    </span>
-        </div>
-        <div id="data_area">
-
-            <!--
-
-                Dynamic area is the DIV used by the AJAX queries (The right hand side area of the properties panel.
-
-            -->
-
-            <div id="dynamic_area">
-            </div>
-
-            <!--
-
-                Set up the three menu tabs
-
-                Structure
-
-                tab1-1 is the small part to the right of the main tab, this is used to deal with the border round the main section
-                tab1 is the actual tab with the text in it
-
-            -->
-
-            <div id="menu_tabs">
-                <div class="tab_spacer" style="height:35px;">
-                </div>
-                <div id="tab1-1" class="tab_right_pad" style="height:38px;">
-                </div>
-                <div id="tab1" class="tab" style="width:146px; height:38px;">
-                    <p onclick="javascript:tab_highlight('1');my_properties_template()">
-                        <?PHP echo "<i class=\"fa fa-user\"></i>&nbsp;" . WORKSPACE_PROPERTIES_TAB_DETAILS; ?>
-                    </p>
-                </div>
-                <div class="tab_spacer">
-                </div>
-                <div id="tab2-1" class="tab_right_pad" style="height:38px;">
-                </div>
-                <div id="tab2" class="tab" style="width:146px; height:38px;">
-                    <p onclick="javascript:tab_highlight('2'); workspace_templates_template()">
-                        <?PHP echo "<i class=\"fa fa-info-circle\"></i>&nbsp;" . WORKSPACE_PROPERTIES_TAB_PROJECTS; ?>
-                    </p>
-                </div>
-                <div class="tab_spacer">
-                </div>
-                <div id="tab3-1" class="tab_right_pad" style="height:38px;">
-                </div>
-                <div id="tab3" class="tab" style="width:146px; height:38px;">
-                    <p onclick="javascript:tab_highlight('3'); folder_rss_templates_template()">
-                        <?PHP echo "<i class=\"fa fa-rss\"></i>&nbsp;" . WORKSPACE_PROPERTIES_TAB_FEEDS; ?>
-                    </p>
-                </div>
-                <div class="tab_spacer">
-                </div>
-                <div id="tab4-1" class="tab_right_pad" style="height:38px;">
-                </div>
-                <div id="tab4" class="tab" style="width:146px; height:38px;">
-                    <p onclick="javascript:tab_highlight('4');import_templates_template()">
-                        <?PHP echo "<i class=\"fa fa-upload\"></i>&nbsp;" . WORKSPACE_PROPERTIES_TAB_IMPORT; ?>
-                    </p>
-                </div>
-                <div class="tab_spacer">
-                </div>
-                <div id="tab5-1" class="tab_right_pad" style="height:38px;">
-                </div>
-                <div id="tab5" class="tab" style="width:146px; height:38px;">
-                    <p onclick="javascript:tab_highlight('5');api_template()">
-                        <?PHP echo "<i class=\"fa fa-file-code-o\"></i>&nbsp;" . WORKSPACE_PROPERTIES_TAB_API; ?>
-                    </p>
-                </div>
-                <div class="tab_spacer">
-                </div>
-                <!--
-
-                    Last spacer given sufficient height to fill the rest of the border for the right hand panel
-
-                -->
-
-                <div class="tab_spacer" style="height:275px;">
-                </div>
-            </div>
-        </div>
-        <div style="clear:both;"></div>
-    </div>
-    <div style="clear:both;"></div>
-</div>
-
+	<iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
+	<!--- error widget -->
+	<div id="errorpopup" title="<?PHP echo PHP_ERROR; ?>" style="display:none"></div>
+	
+	<div class="properties_main">
+		<div class="main_area">
+			<div id="title">
+				<h1><i class="fa fa-gear xerte-icon"></i><?php echo WORKSPACE_PROPERTIES_DISPLAY_TITLE; ?></h1>
+			</div>
+			<div id="data_area">
+				
+				<div id="menu_tabs">
+					
+					<div id="tabs" role="tablist">
+						
+						<button id="tabProp" type="button" role="tab" aria-controls="panelProp" aria-selected="true" class="tabSelected" onclick="javascript:my_properties_template(); tabClicked('tabProp');">
+							<i class="fa fa-user fa-fw xerte-icon"></i>&nbsp;<?PHP echo WORKSPACE_PROPERTIES_TAB_DETAILS; ?>
+						</button>
+						
+						<button id="tabProjects" type="button" role="tab" aria-controls="panelProjects" aria-selected="false" onclick="javascript:workspace_templates_template(); tabClicked('tabProjects');">
+							<i class="fa fa-file-text fa-fw xerte-icon"></i>&nbsp;<?PHP echo WORKSPACE_PROPERTIES_TAB_PROJECTS; ?>
+						</button>
+						
+						<button id="tabRss" type="button" role="tab" aria-controls="panelRss" aria-selected="false" onclick="javascript:folder_rss_templates_template(); tabClicked('tabRss');">
+							<i class="fa fa-rss fa-fw xerte-icon"></i>&nbsp;<?PHP echo WORKSPACE_PROPERTIES_TAB_FEEDS; ?>
+						</button>
+						
+						<button id="tabImport" type="button" role="tab" aria-controls="panelImport" aria-selected="false" onclick="javascript:import_templates_template(<?PHP echo $_SESSION['toolkits_logon_id']; ?>); tabClicked('tabImport');">
+							<i class="fa fa-file-import fa-fw xerte-icon"></i>&nbsp;<?PHP echo WORKSPACE_PROPERTIES_TAB_IMPORT; ?>
+						</button>
+						
+						<button id="tabApi" type="button" role="tab" aria-controls="panelApi" aria-selected="false" onclick="javascript:api_template(); tabClicked('tabApi');">
+							<i class="fa fa-layer-group fa-fw xerte-icon"></i>&nbsp;<?PHP echo WORKSPACE_PROPERTIES_TAB_API; ?>
+						</button>
+					
+					</div>
+					
+					<div id="dynamic_area">
+						
+						<div id="panelProp" class="tabPanel" role="tabpanel" aria-labelledby="tabProp"></div>
+						<div id="panelProjects" class="tabPanel" role="tabpanel" aria-labelledby="tabProjects"></div>
+						<div id="panelRss" class="tabPanel" role="tabpanel" aria-labelledby="tabRss"></div>
+						<div id="panelImport" class="tabPanel" role="tabpanel" aria-labelledby="tabImport"></div>
+						<div id="panelApi" class="tabPanel" role="tabpanel" aria-labelledby="tabApi"></div>
+						
+					</div>
+				
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+	</div>
 </body>
 </html>

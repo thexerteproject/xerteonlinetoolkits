@@ -1,6 +1,7 @@
 /* interactiveText.html */
 
-	h3 {
+	h3, #qNum {
+		font-weight: bold;
 		padding: 5px;
 	}
 
@@ -61,7 +62,7 @@
 	#pageContents #feedbackTxt{
 		padding-top: 10px;
 		padding-left: 5px;
-		font-size: 2.5vmin;
+		font-size: 1em;
 	}
 
 	#pageContents table {
@@ -85,6 +86,15 @@
 
 	#questionHolder {
 		border-top: 1px solid #ccc;
+	}
+
+	#btnHolder {
+		margin-top: 0;
+		padding-left: 0;
+	}
+
+	#btnHolder li {
+		display: inline-block;
 	}
 
 	#btnHolder button {
@@ -151,4 +161,14 @@
 		text-decoration:none;
 		margin-left:	0.5em;
 	}
+
+	p.fb {
+		display: inline-block;
+	}
+
+@media (min-width: 768px) {
+	#x_mainHolder.x_responsive #pageContents #feedbackTxt {
+		font-size: 2.5vmin;
+	}
+}
 

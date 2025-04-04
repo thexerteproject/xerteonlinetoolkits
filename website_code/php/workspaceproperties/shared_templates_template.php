@@ -39,7 +39,6 @@ include "workspace_library.php";
  * connect to the database
  */
 
-workspace_templates_menu();
 $prefix =  $xerte_toolkits_site->database_table_prefix;
 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
@@ -52,15 +51,30 @@ $params = array($_SESSION['toolkits_logon_id']);
 
 $query_shared_response = db_query($query_for_shared_templates, $params);
 
-workspace_menu_create(80);
+usort($query_shared_response, function($first, $second){
+    return $first['template_id'] > $second['template_id'];
+});
 
-echo "<div style=\"float:left; width:20%; height:20px;\">" . SHARED_TEMPLATE_CREATOR . "</div>";
+echo "<table class=\"workspaceProjectsTable\">";
+
+echo "<caption>" . SHARED_TEMPLATE_INTRO . "</caption>";
+
+echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th><th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th><th>" . SHARED_TEMPLATE_CREATOR . "</th></tr>";
 
 foreach($query_shared_response as $row_template_name) {
+	
+	$path = $xerte_toolkits_site->site_url . "preview.php?template_id=";
 
-    echo "<div style=\"float:left; width:80%; overflow:hidden;\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
-    echo "<div style=\"float:left; width:20%; overflow:hidden;\">" . $row_template_name['firstname'] . " " . $row_template_name['surname'] . "</div>";
+    echo "<tr><td>" . $row_template_name['template_id'] . "</td>";
+	
+	echo "<td><a href=\"" . $path . $row_template_name['template_id'] . "\" target=\"_blank\">";
+	
+	echo str_replace("_"," ",$row_template_name['template_name']);
+	
+	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td>";
+
+	echo "<td>" . $row_template_name['firstname'] . " " . $row_template_name['surname'] . "</td></tr>";
 
 }
 
-echo "</div></div>";
+echo "</table>";

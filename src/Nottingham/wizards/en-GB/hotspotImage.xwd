@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="" interactivity="Show Me" highlight="false" align="Left"
+      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="" url="" tip="" interactivity="Show Me" highlight="false" align="Left"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotspotImage>
@@ -12,24 +12,27 @@
   <hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotimage" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_hotspot_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	
 	<image type="group" label="Image">
-		<url label="File" type="media"/>
+		<url label="File" type="media" placeholder="Select an image"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
-    
-    <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
-    <hsAppearance type="group" label="Hotspot Highlight Appearance" optional="true" tooltip="Set colours of hotspots">
-        <hicol label="Stroke Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
-        <hs_strokeOpacity label="Stroke Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
-        <hs_strokeWidth label="Stroke Width" type="TextInput" optional="true" defaultValue="2" tooltip="Width of the edges of the hotspot" />
-        <hs_fill label="Fill Hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot" />
-        <hs_fillColor label="Fill Colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
-        <hs_fillOpacity label="Fill Opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
-        <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
-	</hsAppearance>
+
+	<hsAppearance type="group" label="Hotspot Appearance" optional="true" tooltip="Customise the appearance of the hotspots">
+        <hsStroke type="group" label="Stroke" optional="true" tooltip="Options relating to the line around the hotspot borders">
+            <hicol label="Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the stroke line"/>
+            <hs_strokeOpacity label="Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the stroke line"/>
+            <hs_strokeWidth label="Width" type="TextInput" optional="true" defaultValue="1" tooltip="The width of the stroke line" />
+        </hsStroke>
+        <hsFill type="group" label="Fill" optional="true" tooltip="Options relating to the hotspot backgrounds">
+            <hs_fill label="Fill Hotspot" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="Fill the hotspot with a background colour when hotspot is selected" />
+            <hs_fillColor label="Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" condition="hs_fill=='true'" tooltip="The colour of the hotspot background"/>
+            <hs_fillOpacity label="Opacity" type="TextInput" optional="true" defaultValue="1" condition="hs_fill=='true'" tooltip="The opacity (a decimal number between 0 and 1) of hotspot background"/>
+        </hsFill>
+        <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover. When checked, the label text is used as the hotspot tooltip"/>
+    </hsAppearance>
+
 	<interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" tooltip="Include forward and back buttons to highlight the hotspots in order (Show Me) or hotspots must be found by exploring the image itself (Click Explore)" width="100"/>
 	
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -41,22 +44,22 @@
     </QFGroup>
 
     <newNodes>
-	  <flexhotspot><![CDATA[<flexhotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
+	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 
   </hotspotImage>
 
   <!-- HOTSPOT================================== -->
-  <hotspot type="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
-    <name label="Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250" />
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
+  <hotspot label="Edit Hotspot" menuItem="Hotspot" type="hotSpot"  icon="icLayers" remove="true">
+    <name label="Drag Label" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="250" placeholder="Enter a description for the hotspot"/>
+  	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
   </hotspot>
   
   <flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250" />
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
+    <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot"/>
+  	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
   </flexhotspot>
 
   <!-- HOTSPOTQ================================== -->
