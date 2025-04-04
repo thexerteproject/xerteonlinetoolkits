@@ -438,7 +438,7 @@
 	  />]]></opinion><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals=""
 	  audienceHeader="Target Audience" audience=""
 	  prereqHeader="Pre-requisites" prereq=""
-	  howtoHeader="How to use this resource" howto=""/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="" judge="true" showfeedback="true" feedback=""
+	  howtoHeader="How to use this resource" howto=""/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" thumbH="small" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="" judge="true" showfeedback="true" feedback=""
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
@@ -7959,6 +7959,7 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></pdf><perspectives menu="Navigators" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips alongside related text." icon="icUser" thumb="thumbs/perspectives.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multipleperspectives" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_multiple_perpectives_page" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <thumbH label="Thumbnail Size" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" mandatory="true"/>
 
     <backBtnTip label="Scroll Back Tip" type="TextInput" language="true"/>
     <nextBtnTip label="Scroll Forward Tip" type="TextInput" language="true"/>
@@ -7970,7 +7971,6 @@
 	<thumbs type="group" label="Thumbnail Bar" optional="true">
 		<thumbPos label="Position" type="ComboBox" options="Top,Bottom,Grid" data="top,bottom,grid" conditionTrigger="true" defaultValue="top" width="200" optional="true"/>
 		<target label="Display In" type="ComboBox" data="page,lightbox" options="Page,Lightbox" defaultValue="page" conditionTrigger="true" condition="thumbPos=='grid'" optional="true" mandatory="true" tooltip="When the thumbnails are shown in a grid, select whether the information is shown in the main page or in a lightbox"/>
-		<thumbH label="Height" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" width="200" optional="true"/>
 		<thumbType label="Type" type="ComboBox" options="Image and Caption,Image and Number,Image Only" data="both,imgNum,image" defaultValue="both" width="200" optional="true"/>
 		<thumbBorder label="Border" type="Checkbox" defaultValue="true" optional="true"/>
 		<highlight label="Highlight Current" type="Checkbox" defaultValue="false" optional="true"/>

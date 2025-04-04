@@ -124,15 +124,30 @@
 		overflow: hidden;
 		position: relative;
 	}
-	
+
 	#thumbHolder .playAll .thumbTitle {
 		font-size: 2em;
-		margin-top: 0.3em;
 		white-space: normal;
+		display: grid;
+		align-content: center;
+		height: 100%;
+		box-sizing: border-box;
+		margin: 0;
+	}
+
+	.thumbMedia i.fa {
+		font-size: 2em;
+	}
+
+	.thumbMedia.faIcon {
+		display: grid;
+		align-content: center;
+		height: 100%;
+		margin-top: -1em;
 	}
 	
-	#thumbBar.small #thumbHolder .playAll .thumbTitle { font-size: 1.2em; margin-top: 0.18em; }
-	#thumbBar.large #thumbHolder .playAll .thumbTitle { font-size: 2.8em; margin-top: 0.48em; }
+	#thumbBar.small #thumbHolder .playAll .thumbTitle, #thumbBar.small #thumbHolder .thumbMedia i.fa { font-size: 1.2em; }
+	#thumbBar.large #thumbHolder .playAll .thumbTitle, #thumbBar.large #thumbHolder .thumbMedia i.fa { font-size: 2.8em; }
 	
 	/* removes controls from thumbnail version of video player */
 	#thumbHolder .thumbMedia .mejs-container .mejs-controls, #thumbHolder .thumbMedia .mejs-container .mejs-layers {
