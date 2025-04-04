@@ -48,40 +48,38 @@ if(empty($_SESSION['toolkits_logon_id'])) {
  * get the root folder for this user
  */
 
-$prefix = $xerte_toolkits_site->database_table_prefix;
+$folder_id = x_clean_input($_POST['folder_id'], 'numeric');
+$parentfolder_id = x_clean_input($_POST['parentfolder_id']);
+$parentnode_type = x_clean_input($_POST['parentnode_type']);
+$src_folder_name = x_clean_input($_POST['folder_name']);
+if(is_user_creator_or_coauthor_folder($folder_id)) {
 
-if(is_numeric($_POST['folder_id'])){
-    $folder_id = $_POST['folder_id'];
+    if ($parentfolder_id == "workspace") {
 
-    if(is_user_creator_or_coauthor_folder($folder_id)) {
+        $parentfolder_id = get_user_root_folder();
 
-        if ($_POST['parentfolder_id'] == "workspace") {
+    } else {
 
-            $parentfolder_id = get_user_root_folder();
-
-        } else {
-
-            $parentfolder_id = $_POST['parentfolder_id'];
-
-        }
-
-        //check if user is creator of parentfolder, if not the new folder should be placed in their workspace directly
-        if ($_POST['parentnode_type'] == 'group' || !is_user_creator_folder($parentfolder_id)) {
-            $parentfolder_id = get_user_root_folder();
-        }
-
-        $folder_name = COPY_OF . $_POST['folder_name'];
-        $messages = copy_folder($folder_id, $parentfolder_id, $folder_name, $_POST['folder_name']);
-        echo $messages;
+        $parentfolder_id = x_clean_input($_POST['parentfolder_id'], 'numeric');
     }
-    else
-    {
-        echo DUPLICATE_FOLDER_NOT_CREATOR;
+
+    //check if user is creator of parentfolder, if not the new folder should be placed in their workspace directly
+    if ($parentnode_type == 'group' || !is_user_creator_folder($parentfolder_id)) {
+        $parentfolder_id = get_user_root_folder();
     }
+
+    $folder_name = COPY_OF . $src_folder_name;
+    $messages = copy_folder($folder_id, $parentfolder_id, $folder_name, $src_folder_name);
+    echo $messages;
+}
+else
+{
+    echo DUPLICATE_FOLDER_NOT_CREATOR;
 }
 
 function copy_folder($folder_id, $parentfolder_id, $folder_name, $org_folder_name){
     global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $messages = "";
     // Check all templates within the folder
@@ -162,7 +160,7 @@ function copy_folder($folder_id, $parentfolder_id, $folder_name, $org_folder_nam
         }
 
         //Get all folders in this folder:
-        $sql = "SELECT folder_id, folder_name FROM {$prefix}folderdetails where folder_parent = ? ORDER BY folder_id ASC";
+        $sql = "SELECT folder_id, folder_name FROM {$prefix}folderrights where folder_parent = ? ORDER BY folder_id ASC";
 
         $folders = db_query($sql, array($folder_id));
 

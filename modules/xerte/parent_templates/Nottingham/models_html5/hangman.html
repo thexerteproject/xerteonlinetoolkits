@@ -24,7 +24,9 @@
 		var words,
 			currentWord,
 			attemptCount,
-			qNoTxt;
+			qNoTxt,
+			imgDimensions = [245,197],
+			imgScale = 1;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -36,14 +38,30 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var	$panel = $("#pageContents .panel"),
-					$footerInfo = $("#footerInfo");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - $footerInfo.height() - parseInt($footerInfo.css("padding-top")) * 2 - 5);
+				const $panel = $("#pageContents .panel");
+				$panel.height(x_getAvailableHeight([$panel], [$("#footerInfo")]));
+
+				if ($panel.width() >= imgDimensions[0]) {
+					imgScale = 1;
+				} else {
+					imgScale = $panel.width()/imgDimensions[0];
+				}
+
+				const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
+				$("#img")
+					.width(imgDimensions[0]*imgScale)
+					.height(imgDimensions[1]*imgScale)
+					.css({
+						"background-size": bgSize[0] + 'px ' + bgSize[1] + 'px',
+						"background-position": -(bgSize[0]/11) * attemptCount + "px 0px"
+					});
 			}
 		}
 
 		this.init = function() {
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			$(".panel").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
 
 			var nextBtnTxt = x_currentPageXML.getAttribute("nextBtnTxt");
 			if (nextBtnTxt == undefined) {
@@ -60,7 +78,6 @@
 					hangman.loadWord();
 				});
 
-
 			// need hidden input for touchscreen otherwise you can't access keyboard to enter letters
 			if (x_browserInfo.touchScreen == true) {
 				var $input = $("<input/>")
@@ -71,10 +88,9 @@
 					$input.focus();
 				});
 			}
-			
-			this.createQuiz();
 
 			this.sizeChanged();
+			this.createQuiz();
 			x_pageLoaded();
 		}
 
@@ -113,10 +129,16 @@
 
 			// reset divs
 			$clue.add($letters).add($qCount).empty();
-			$img.css({
-				"background-image"		:'url("' + x_templateLocation + 'common_html5/hangman.png' + '")',
-				"background-position"	:-245 * attemptCount + "px 0px"
-			});
+
+			const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
+			$img
+				.width(imgDimensions[0]*imgScale)
+				.height(imgDimensions[1]*imgScale)
+				.css({
+					"background-image": 'url("' + x_templateLocation + 'common_html5/hangman.png' + '")',
+					"background-size": bgSize[0] + 'px' + bgSize[1] + 'px',
+					"background-position": -(bgSize[0]/11) * attemptCount + "px 0px"
+				});
 
 			$nextBtn.hide();
 
@@ -124,15 +146,29 @@
 				$holderDiv = $clue,
 				space = thisWord.indexOf(" ");
 
-			if (space != -1) {
+			// if guesses are restricted to just letters and/or numbers then we don't replace other characters with dashes (they won't need to be guessed)
+			const restrict = x_currentPageXML.getAttribute("restrict") != undefined ? x_currentPageXML.getAttribute("restrict") : "all";
+			let validChar;
+			const regex = restrict == "letter" ? /^[A-Za-z]+$/ : /^[A-Za-z0-9]*$/;
+
+			if (restrict != "all") {
+				validChar = regex.test(thisWord.replace(/\s/g,''));
+			} else {
+				validChar = true;
+			}
+
+			if (space != -1 || validChar === false) {
 				$holderDiv = $('<div class="subWord"></div>').appendTo($clue);
 			}
 
 			for (var i=0; i<thisWord.length; i++) {
-				if (thisWord[i] == " ") {
+				if (thisWord[i] == " ") { // add spaces
 					$holderDiv.parent().append('<div class="space"></div>');
 					$holderDiv = $('<div class="subWord"></div>').appendTo($holderDiv.parent());
-				} else {
+				} else if (restrict != "all" && regex.test(thisWord[i]) === false) { // add characters that are restricted from guesses (they will be shown from beginning)
+					$holderDiv.parent().append('<div class="space">' + thisWord[i] + '</div>');
+					$holderDiv = $('<div class="subWord"></div>').appendTo($holderDiv.parent());
+				} else { // add dashes for the letters to be guessed
 					$('<div class="dash"></div>').appendTo($holderDiv);
 				}
 			}
@@ -141,69 +177,84 @@
 
 			$(document).on("keypress.pageEvent", function(e) { // has .pageEvent namespace so it can be removed on page change from xenith.js
 
+				const charCode = e.charCode || e.keyCode;
+				const char = String.fromCharCode(charCode).toLowerCase();
 
-				var charCode = e.charCode || e.keyCode;
-				var char = String.fromCharCode(charCode).toLowerCase();
-				var specialCharacters = false
+				// ignore non-character key presses e.g. tab
+				if ($.trim(char) != "") {
 
-				for(var i = 0; i < thisWord.length; i++){
-					if(	char.localeCompare(thisWord.charAt(i), x_params.language, {sensitivity: "base"}) === 0){
-						specialCharacters = true
+					// are guesses restricted to just letters and/or numbers?
+					const restrict = x_currentPageXML.getAttribute("restrict") != undefined ? x_currentPageXML.getAttribute("restrict") : "all";
+					let valid;
+
+					if (restrict != "all") {
+						const regex = restrict == "letter" ? /^[A-Za-z]+$/ : /^[A-Za-z0-9]*$/;
+						valid = regex.test(String.fromCharCode(charCode));
+					} else {
+						valid = true;
 					}
-				}
 
+					if (valid) {
+						let specialCharacters = false
 
-				if ($.trim(char) != "") { // ignore non-character key presses e.g. tab
-					if (thisWord.indexOf(char) != -1 || specialCharacters === true) { // correct
-						var startIndex = thisWord.indexOf(char);
-						while (startIndex > -1) {
-							$($clue.find(".dash, .space")[startIndex]).html(char);
-							startIndex = thisWord.indexOf(char, startIndex + 1);
-						}
-
-						for(var i = 0; i < thisWord.length; i++){
-							if(	char.localeCompare(thisWord.charAt(i), x_params.language, {sensitivity: "base"}) === 0){
-								$($clue.find(".dash, .space")[i]).html(thisWord.charAt(i));
+						for (let i = 0; i < thisWord.length; i++) {
+							if (char.localeCompare(thisWord.charAt(i), x_params.language, {sensitivity: "base"}) === 0) {
+								specialCharacters = true
 							}
 						}
 
-
-						// has the word been completed?
-						if ($clue.find(".dash").filter(function() {return $(this).html() == "";}).length == 0) {
-							if (currentWord < words.length - 1) {
-								$nextBtn.show();
+						if (thisWord.indexOf(char) != -1 || specialCharacters === true) { // correct
+							let startIndex = thisWord.indexOf(char);
+							while (startIndex > -1) {
+								$($clue.find(".dash, .space")[startIndex]).html(char);
+								startIndex = thisWord.indexOf(char, startIndex + 1);
 							}
-							$(this).off("keypress.pageEvent");
-							$x_pageHolder.off("touchend.pageEvent");
-							$("#textHolder input").val("").blur();
-						}
 
-					} else { // incorrect
-						if ($letters.html().indexOf(char) == -1) { // new guess
-							attemptCount++;
-
-							if (attemptCount != 1) {
-								$letters.html($letters.html() + " " + char);
-							} else {
-								$letters.html(char);
+							for (let i = 0; i < thisWord.length; i++) {
+								if (char.localeCompare(thisWord.charAt(i), x_params.language, {sensitivity: "base"}) === 0) {
+									$($clue.find(".dash, .space")[i]).html(thisWord.charAt(i));
+								}
 							}
-							$img.css("background-position", -245 * attemptCount + "px 0px");
 
-							// max no. wrong attempts reached?
-							if (attemptCount == 10) {
+							// has the word been completed?
+							if ($clue.find(".dash").filter(function () { return $(this).html() == ""; }).length == 0) {
 								if (currentWord < words.length - 1) {
 									$nextBtn.show();
 								}
-
 								$(this).off("keypress.pageEvent");
 								$x_pageHolder.off("touchend.pageEvent");
 								$("#textHolder input").val("").blur();
+							}
 
-								$clue.find(".dash, .space").each(function(i) {
-									if ($(this).hasClass("dash")) {
-										$(this).html(thisWord[i]);
+						} else { // incorrect
+							if ($letters.html().indexOf(char) == -1) { // new guess
+								attemptCount++;
+
+								if (attemptCount != 1) {
+									$letters.html($letters.html() + " " + char);
+								} else {
+									$letters.html(char);
+								}
+
+								const bgSize = [imgDimensions[0] * imgScale * 11, imgDimensions[1] * imgScale];
+								$img.css("background-position", -(bgSize[0] / 11) * attemptCount + "px 0px");
+
+								// max no. wrong attempts reached?
+								if (attemptCount == 10) {
+									if (currentWord < words.length - 1) {
+										$nextBtn.show();
 									}
-								});
+
+									$(this).off("keypress.pageEvent");
+									$x_pageHolder.off("touchend.pageEvent");
+									$("#textHolder input").val("").blur();
+
+									$clue.find(".dash, .space").each(function (i) {
+										if ($(this).hasClass("dash")) {
+											$(this).html(thisWord[i]);
+										}
+									});
+								}
 							}
 						}
 					}
@@ -213,7 +264,12 @@
 			if (x_browserInfo.mobile === true && x_browserInfo.touchScreen === true) {
 				const div = document.getElementById("alphabet");
 				div.innerHTML = '';
-				const alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+				const alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+				const numbers = ["0","1","2","3","4","5","6","7","8","9"];
+				if (x_currentPageXML.getAttribute("restrict") != "letter") {
+					$.merge(alphabet,numbers);
+				}
+
 				alphabet.forEach(letter =>{
 					var specialCharacters = false
 
@@ -289,8 +345,6 @@
 					button.appendChild(text);
 					div.appendChild(button)
 				})
-
-
 			}
 		}
 	}
@@ -304,7 +358,7 @@
 
 	<div class="splitScreen small">
 
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 
 		<div id="infoHolder" class="right">
 			<div class="panel centerAlign">

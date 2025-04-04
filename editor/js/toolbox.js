@@ -229,10 +229,10 @@ var EDITOR = (function ($, parent) {
                 }
             case "hidden":
                 if (enabled) {
-                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + tooltip + '"></i>';
                 }
 			case "advanced":
                 if (enabled) {
@@ -255,6 +255,13 @@ var EDITOR = (function ($, parent) {
                 else {
                     return '<i class="passwordIcon iconDisabled fa fa-lock " id="' + key + '_password" title ="' + language.passwordPage.$tooltip + '"></i>';
                 }
+            case "milestone":
+                if (enabled) {
+                    return '<i class="milestoneIcon iconEnabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="milestoneIcon iconDisabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
         }
     },
 
@@ -263,9 +270,11 @@ var EDITOR = (function ($, parent) {
         // Get icon states
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+        var hiddenContentState = ($("#"+key+"_hidden.iconEnabled").length > 0);
 		var passwordState = ($("#"+key+"_password.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
+        var milestoneState = ($("#"+key+"_milestone.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
 		var level;
@@ -277,6 +286,10 @@ var EDITOR = (function ($, parent) {
                 break;
             case "hidden":
                 if (hiddenState != enabled)
+                    change = true;
+                break;
+            case "hiddenContent":
+                if (hiddenContentState != enabled)
                     change = true;
                 break;
 			case "password":
@@ -291,6 +304,10 @@ var EDITOR = (function ($, parent) {
                 if (unmarkState != enabled)
                     change = true;
                 break;
+            case "milestone":
+                if (milestoneState != enabled)
+                    change = true;
+                break;
             case "text":
                 change = true;
                 break;
@@ -303,12 +320,17 @@ var EDITOR = (function ($, parent) {
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
 				level = $("#" + key + '_deprecated').hasClass('deprecatedLevel_low') ? 'low' : undefined;
+            } else if (item == "hidden") {
+                tooltip = language.hidePage.$tooltip;
+            } else if (item == "hiddenContent") {
+                tooltip = language.hideContent.$tooltip;
             }
             var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [item == "deprecated" ? enabled : deprecatedState, level], tooltip);
-            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" || item == "hiddenContent" ? enabled : hiddenState), tooltip);
 			var passwordIcon = getExtraTreeIcon(key, "password", (item == "password" ? enabled : passwordState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
+            var milestoneIcon = getExtraTreeIcon(key, "milestone", (item == "milestone" ? enabled : milestoneState));
             var nodetext;
             if (item == "text")
             {
@@ -317,7 +339,7 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
@@ -328,7 +350,6 @@ var EDITOR = (function ($, parent) {
 
     // Recursive function to traverse the xml and build
     build_lo_data = function (xmlData, parent_id) {
-
         // First lets generate a unique key
         var key = parent.tree.generate_lo_key();
         if (parent_id == null)
@@ -375,10 +396,11 @@ var EDITOR = (function ($, parent) {
                 attributes[key] = makeAbsolute(attributes[key]);
             }
         });
+
+        // cdata-section
         lo_data[key] = {};
         lo_data[key]['attributes'] = attributes;
-        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
-        {
+        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4) {
             lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
 
 			if (!alreadyUpgraded)
@@ -402,13 +424,14 @@ var EDITOR = (function ($, parent) {
         }
 
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
-        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true" || xmlData[0].getAttribute("hideContent") == "true", xmlData[0].getAttribute("hidePage") == "true" ? language.hidePage.$tooltip : language.hideContent.$tooltip);
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
-        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
+        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
 		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") != undefined && xmlData[0].getAttribute("milestone") != '');
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -525,6 +548,46 @@ var EDITOR = (function ($, parent) {
                     return null;
                 }
                 break;
+            case "CallExpression":
+                if (ctree.callee.name != '') {
+                    let func = ctree.callee.name + '(';
+                    for(let i = 0; i < ctree.arguments.length; i++) {
+                        if (i > 0) {
+                            func += ', ';
+                        }
+                        switch (ctree.arguments[i].type)
+                        {
+                            case "Literal":
+                                func += ctree.arguments[i].raw;
+                                break;
+                            case "Identifier":
+                                var attrs = lo_data[key]['attributes'];
+                                if (typeof attrs[ctree.name] != "undefined") {
+                                    func += attrs[ctree.name];
+                                } else {
+                                    try {
+                                        var value = eval(ctree.name);
+                                        func += value;
+                                    }
+                                    catch (e){
+                                        return false;
+                                    }
+                                }
+                                break;
+                            default:
+                                func += evaluateConditionExpression(ctree.arguments[i], key);
+                                break;
+                        }
+                    }
+                    func += ')';
+                    try {
+                        return eval(func);
+                    }
+                    catch (e) {
+                        return false;
+                    }
+                }
+                break;
             case "Identifier":
                 var attrs = lo_data[key]['attributes'];
                 if (typeof attrs[ctree.name] != "undefined") {
@@ -537,10 +600,36 @@ var EDITOR = (function ($, parent) {
                     catch (e){};
                     return null;
                 }
+            case "UnaryExpression":
+                if (ctree.operator == '!') {
+                    return !evaluateConditionExpression(ctree.argument, key);
+                } else {
+                    return null;
+                }
             default:
                 // Unexpected node parsed
                 return null;
         }
+    },
+
+    // This function behaves the same as the php function is_user_permitted (of user_library.php)
+    // Assumes that the javascript variable roles is an array that contains all the assigned roles of the current user
+    // This function is used in conditions of xwd files, so DO NOT REMOVE
+    hasrole = function(role)
+    {
+        if (typeof roles == 'undefined')
+        {
+            return false;
+        }
+        if (roles.includes(role))
+        {
+            return true;
+        }
+        if (roles.includes('super'))
+        {
+            return true;
+        }
+        return false;
     },
 
     evaluateCondition = function(condition, key)
@@ -663,7 +752,7 @@ var EDITOR = (function ($, parent) {
                         .addClass("wizardvalue")
                         .append($('<div>')
                             .addClass("wizardvalue_inner")
-                            .append(displayDataType(value, options, name, key))));
+                            .append(displayDataType(value, options, name, key, label))));
             }
 
 
@@ -688,11 +777,18 @@ var EDITOR = (function ($, parent) {
 			group.addClass("wizarddeprecated");
 
 			legend
-				.append($('<img>')
+				.append($('<i>')
 				.attr('id', 'deprbtn_' + name)
-				.attr('src', 'editor/img/deprecated.png')
+				.addClass('fa')
+				.addClass('fa-exclamation-triangle')
+				.addClass("xerte-icon")
 				.attr('title', options.deprecated)
-				.addClass("deprecated"));
+				.height(14)
+				.addClass("deprecated deprecatedIcon"));
+			
+			if (options.optional == 'true') {
+				group.addClass("wizardoptional");
+			}
 
 			if (options.optional == 'true' && options.group == undefined) { // nested groups don't have delete btn
 				legend
@@ -753,7 +849,7 @@ var EDITOR = (function ($, parent) {
 		}
 
 		if (options.group == undefined) { // nested groups aren't collapsible
-			$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+			$('<i class="minMaxIcon fa fa-caret-down"></i>').appendTo(legend.find('.legend_label'));
 			
 			legend.find('.legend_label').click(function() {
 				var $icon = $(this).find('i.minMaxIcon');
@@ -769,7 +865,7 @@ var EDITOR = (function ($, parent) {
 					});
 
 				} else {
-					$fieldset.find('.table_holder').slideDown(400);
+					$fieldset.find('.table_holder').slideDown(400, resizeDataGrids);
 
 					$icon
 						.removeClass('fa-caret-down')
@@ -802,6 +898,12 @@ var EDITOR = (function ($, parent) {
 		
 		if (options.group == undefined) {
 			$(id).append(tr);
+
+            // collapse optional property groups initially on wizard load unless expand groups box is checked (they will be expanded when just added)
+            if (group.hasClass('wizardoptional') && !$('#groups_cb').prop('checked')) {
+                group.addClass('collapsed');
+                group.find('.table_holder').slideUp(0);
+            }
 		} else {
 			$('#groupTable_' + options.group).append(tr);
 		}
@@ -868,25 +970,20 @@ var EDITOR = (function ($, parent) {
         var key = parent.tree.getSelectedNodeKeys();
 
 		for (var i=0; i<toDelete.length; i++) {
-			if (toDelete[i] == "hidePage") {
+			if (toDelete[i] == "hidePage" || toDelete[i] == "hideContent") {
 			    changeNodeStatus(key, "hidden", false);
-                //var hiddenIcon = $("#" + key + "_hidden");
-                //if (hiddenIcon) {
-                //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
-                //}
 			}
 			if (toDelete[i] == "password") {
 			    changeNodeStatus(key, "password", false);
 			}
-			if (toDelete[i] == "linkPage") {
+			if (toDelete[i] == "linkPage" || toDelete[i] == "linkPageChapter") {
 			    changeNodeStatus(key, "standalone", false);
 			}
+            if (toDelete[i] == "milestone") {
+                changeNodeStatus(key, "milestone", false);
+            }
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
-                //var unmarkIcon = $("#" + key + "_unmark");
-                //if (unmarkIcon) {
-                //    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
-                //}
             }
 
 			if (toDelete[i] in lo_data[key]["attributes"])
@@ -921,10 +1018,8 @@ var EDITOR = (function ($, parent) {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
 
-		// unlike hidePage, linkPage is initially set to true so tree icon should show immediately
-		if (name == "linkPage") {
-            changeNodeStatus(key, "standalone", defaultvalue == "true");
-        }
+        // update tree icon if necessary
+        changeTreeNodeStatus(key, name, defaultvalue);
 
 		// Enable the optional parameter button
 		$('#insert_opt_' + name)
@@ -1477,15 +1572,15 @@ var EDITOR = (function ($, parent) {
     stripP = function (val) {
         if (val.indexOf('<p>') == 0)
         {
-            var strippedValue = val.substr(3);
+            var strippedValue = val.substring(3);
             if (strippedValue.lastIndexOf('</p>') != strippedValue.length - 4)
             {
                 // Strip extra newline
-                strippedValue = strippedValue.substr(0, strippedValue.length-5);
+                strippedValue = strippedValue.substring(0, strippedValue.length-5);
             }
             else
             {
-                strippedValue = strippedValue.substr(0, strippedValue.length-4);
+                strippedValue = strippedValue.substring(0, strippedValue.length-4);
             }
             return strippedValue.trim();
         }
@@ -1553,9 +1648,9 @@ var EDITOR = (function ($, parent) {
                     uploadAudioUrl : 'editor/uploadAudio.php?mode=record&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    extraPlugins : 'sourcedialog,image3,fontawesome,rubytext',
-                    /*extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',*/
-                    language : language.$code.substr(0,2)//,
+                    //extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
+                    extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
+                    language : language.$code.substr(0,2),
 					//editorplaceholder: options.options.placeholder
                 });
             }
@@ -1618,7 +1713,6 @@ var EDITOR = (function ($, parent) {
         jqGridsColSel = {};
 
         $.each(datagrids, function(i, options){
-
 			var thisGrid = this;
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
@@ -1901,7 +1995,7 @@ var EDITOR = (function ($, parent) {
                     var button = $('<button>')
                         .attr('id', value.id)
                         .attr('title', value.tooltip)
-                        .addClass("xerte_button")
+                        .addClass("xerte_button grid_col_btns")
                         .prop('disabled', value.disabled)
                         .addClass(value.disabled ? 'disabled' : 'enabled')
                         .click({ id: id, key: key, name: name }, function(evt){
@@ -1929,20 +2023,23 @@ var EDITOR = (function ($, parent) {
 				});
 
 				$(window).on("resizeEnd", function() {
-					$("#mainPanel .ui-jqgrid").hide();
-					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-					$("#mainPanel .ui-jqgrid").show();
-					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                    resizeDataGrids();
 				});
 				
 				// make sure datagrid is correct width when first loaded
-				$("#mainPanel .ui-jqgrid").hide();
-				var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-				$("#mainPanel .ui-jqgrid").show();
-				$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                resizeDataGrids();
 
 				jqGridSetUp == true;
 			}
+        });
+    },
+
+    resizeDataGrids = function() {
+        $("#mainPanel .ui-jqgrid").each(function() {
+            $(this).hide();
+            var newWidth = $(this).parent().width();
+            $(this).show();
+            $(this).find("table").jqGrid("setGridWidth", newWidth, true);
         });
     },
 
@@ -1990,54 +2087,37 @@ var EDITOR = (function ($, parent) {
 		}
 	},
 
+    changeTreeNodeStatus = function(key, name, value)
+    {
+        // Get the node name
+        if (name == "hidePage") {
+            changeNodeStatus(key, "hidden", value == "true");
+        }
+
+        if (name == "hideContent") {
+            changeNodeStatus(key, "hiddenContent", value == "true");
+        }
+
+        if (name == "password") {
+            changeNodeStatus(key, "password", value != "");
+        }
+
+        if (name == "linkPage" || name == "linkPageChapter") {
+            changeNodeStatus(key, "standalone", value == "true");
+        }
+
+        if (name == "milestone") {
+            changeNodeStatus(key, "milestone", value != "");
+        }
+
+        if (name == "unmarkForCompletion") {
+            changeNodeStatus(key, "unmark", value == "true");
+        }
+    },
 
     setAttributeValue = function (key, names, values)
     {
-        // Get the node name
-        if (names[0] == "hidePage") {
-            changeNodeStatus(key, "hidden", values[0] == "true");
-            /*
-            var hiddenIcon = $("#" + key + "_hidden");
-            if (hiddenIcon) {
-                if (values[0] == "true") {
-                    hiddenIcon.switchClass('iconDisabled', 'iconEnabled');
-                    $("#" + key).addClass("hiddenNode");
-                    //$("#" + key + " .jstree-anchor").each(function (i, v) {
-                    //   $(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
-                    //});
-                }
-                else {
-                    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
-                    $("#" + key).removeClass("hiddenNode");
-                    //$("#" + key + " .hidden").contents().unwrap();
-                }
-            }
-            */
-        }
-
-		if (names[0] == "password") {
-            changeNodeStatus(key, "password", values[0] != "");
-        }
-		
-		if (names[0] == "linkPage") {
-            changeNodeStatus(key, "standalone", values[0] == "true");
-        }
-
-        if (names[0] == "unmarkForCompletion") {
-            changeNodeStatus(key, "unmark", values[0] == "true");
-            /*
-            var unmarkIcon = $("#" + key + "_unmark");
-            if (unmarkIcon) {
-                if (values[0] == "true") {
-                    unmarkIcon.switchClass('iconDisabled', 'iconEnabled');
-                    $("#" + key).addClass("unmarkNode");
-                } else {
-                    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
-                    $("#" + key).removeClass("unmarkNode");
-                }
-            }
-            */
-        }
+        changeTreeNodeStatus(key, names[0], values[0]);
 
         var node_name = lo_data[key]['attributes'].nodeName;
 
@@ -2355,66 +2435,7 @@ var EDITOR = (function ($, parent) {
     },
 
     editDrawing = function(id, key, name, value){
-        //console.log('Edit drawing: ' + id + ': ' + key + ', ' +  name);
-        window.XOT = {};
-        window.XOT.callBack = function(key, name, xmldata) {
-            // Actions with url parameter here
-            //console.log('Save drawing file: ' + key + ', ' + name);
-            setAttributeValue(key, [name], [xmldata]);
-            // Refresh form, otherwise the value passed by the Edit button to the drawingEditor when the button is paused again
-            parent.tree.showNodeData(key);
-        };
-        window.XOT.close = function()
-        {
-            window.XOT = null;
-        };
-        // Make a form with hidden fields we want to post
-        var drawingForm = $('<form>')
-            .attr('id', 'form_'+ key)
-            .attr('target', 'Drawing Editor')
-            .attr('method', 'POST')
-            .attr('action', 'drawingjs.php');
-
-        var input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'rlofile')
-            .attr('value', rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES")));
-
-        drawingForm.append(input);
-
-        input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'data')
-            .attr('value', value);
-        drawingForm.append(input);
-
-        input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'key')
-            .attr('value', key);
-        drawingForm.append(input);
-
-        input = $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'name')
-            .attr('value', name);
-
-        drawingForm.append(input);
-
-        // Add the form to body
-        $('body').append(drawingForm);
-
-        var de = window.open('', 'Drawing Editor', "height=710, width=800");
-
-        if (de)
-        {
-            drawingForm.submit();
-        }
-        else
-        {
-            alert("You must allow popups for the drawing editor to work!");
-        }
-        $('#' + 'form_'+ key).remove();
+        alert("The flash based drawing editor is discontinued!");
     },
 
     /**
@@ -2428,13 +2449,11 @@ var EDITOR = (function ($, parent) {
      */
 	getPageList = function(thisKey, thisTarget)
 	{
-
 		var tree = $.jstree.reference("#treeview");
 		var pages=[];
 
 		// list of everything at same level or everything at parent's level
 		if (thisTarget != undefined) {
-			
 			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
 			// * makes it include all the children too
 			var children = false;
@@ -2449,8 +2468,8 @@ var EDITOR = (function ($, parent) {
 			$.each(lo_node.children, function(i, key){
 				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-				var hidden = lo_data[key]['attributes'].hidePage;
-				
+				var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
+
 				if (linkID.found && linkID.value != "") {
 					var page = [];
 					// Also make sure we only take the text from the name, and not the full HTML
@@ -2464,7 +2483,7 @@ var EDITOR = (function ($, parent) {
 						$.each(childNode.children, function(i, key){
 							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-							var hidden = lo_data[key]['attributes'].hidePage;
+							var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 							
 							if (linkID.found && linkID.value != "") {
 								var page = [];
@@ -2490,37 +2509,38 @@ var EDITOR = (function ($, parent) {
 			var lo_node = tree.get_node("treeroot", false);
 			
 			$.each(lo_node.children, function(i, key){
-					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-					var hidden = lo_data[key]['attributes'].hidePage;
-					
-					if (linkID.found && linkID.value != "")
-					{
-						
-						var page = [];
-						// Also make sure we only take the text from the name, and not the full HTML
-						page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-						page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-						pages.push(page);
+                function checkNode(key, checkChildren, child) {
+                    const name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                    const linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                    const hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 
-						// Now we do the children (if deeplinking is allowed)
-						if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-							var childNode = tree.get_node(key, false);
-							$.each(childNode.children, function(i, key){
-								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-								{
-									var page = [];
-									// Also make sure we only take the text from the name, and not the full HTML
-									page.push(getTextFromHTML("&nbsp;- "+name.value));
-									page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-									pages.push(page);
-								}
-							});
-						}
-					}
+                    if (linkID.found && linkID.value != "") {
+                        // Also make sure we only take the text from the name, and not the full HTML
+                        const page = [];
+                        const prependTxt = child ? "&nbsp;- " : "";
+                        page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(prependTxt + name.value));
+                        page.push(linkID.value);
+                        pages.push(page);
+
+                        // Now we do the children (if deeplinking is allowed)
+                        if (checkChildren && wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+                            const childNode = tree.get_node(key, false);
+                            $.each(childNode.children, function(k, key){
+                                checkNode(key, false, true);
+                            });
+                        }
+                    }
+                }
+
+                // get pages inside a chapter (don't list chapters)
+                if (lo_data[key].attributes.nodeName == "chapter") {
+                    const childNode = tree.get_node(key, false);
+                    $.each(childNode.children, function(j, key) {
+                        checkNode(key, true);
+                    });
+                } else {
+                    checkNode(key, true);
+                }
 			});
 		}
 		
@@ -2615,7 +2635,6 @@ var EDITOR = (function ($, parent) {
         // Draw Hotspot on the wizard page as preview on the thumbnail image
         // Always treat hotspot as a polygon
         // Step 0. Find image, set scale and wrap with overlayWrapper
-
         var img =  html.find('img');
 
         var natWidth = img[0].naturalWidth;
@@ -2641,40 +2660,63 @@ var EDITOR = (function ($, parent) {
                 });
         });
 
-        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp)});
-        // Step 2. Create polygon in appropriate scale
-        var scaledpoints = [];
-        // Old way of specifying hotspot: x,y,w,h
-        if (forceRectangle || (hsattrs.mode == undefined && hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
-            // create polygon, start with topleft
-            scaledpoints[0] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y)};
-            scaledpoints[1] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y)};
-            scaledpoints[2] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
-            scaledpoints[3] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
-        }
-        if (scaledpoints.length == 4 || (hsattrs.points != undefined && hsattrs.mode != undefined)) {
-            if (scaledpoints.length != 4) {
-                scaledpoints = JSON.parse(hsattrs['points']);
-            }
-            if (scaledpoints.length > 0) {
-                for (var i in scaledpoints) {
-                    scaledpoints[i].x *= scale;
-                    scaledpoints[i].y *= scale;
-                }
-                var poly = new fabric.Polygon(scaledpoints, {
-                    fill: 'rgba(255,0,0,0.5)',
-                    selectable: false,
-                    objectCaching: false,
+        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp, hspattrs.nodeName)});
 
-                    evented:false
-                });
-                // Step 3. Draw Polygon
-                canvas.add(poly);
+        if (hsattrs.mode != undefined && hsattrs.mode == 'icon' && hsattrs.shape != undefined){
+            var icon_shape = JSON.parse(hsattrs.shape);
+            canvasWidth = $('#wizard_hscanvas_' + id).width()
+            canvasHeight = $('#wizard_hscanvas_' + id).height()
+
+            var icon_preview = new fabric.Circle({
+                radius: icon_shape.radius/100 * canvasWidth,
+                left: icon_shape.centerX/100 * canvasWidth,
+                top: icon_shape.centerY/100 * canvasHeight,
+                originX: 'center',
+                originY: 'center',
+                fill: 'rgba(255,0,0,0.5)',
+                selectable: false,
+                objectCaching: false,
+                evented: false
+            });
+            canvas.add(icon_preview)
+        } else {
+            // Step 2. Create polygon in appropriate scale
+            var scaledpoints = [];
+            // Old way of specifying hotspot: x,y,w,h
+            if (forceRectangle || (hsattrs.mode == undefined && hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
+                // create polygon, start with topleft
+                scaledpoints[0] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y)};
+                scaledpoints[1] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y)};
+                scaledpoints[2] = {
+                    x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w),
+                    y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)
+                };
+                scaledpoints[3] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
+            }
+            if (scaledpoints.length == 4 || (hsattrs.points != undefined && hsattrs.mode != undefined)) {
+                if (scaledpoints.length != 4) {
+                    scaledpoints = JSON.parse(hsattrs['points']);
+                }
+                if (scaledpoints.length > 0) {
+                    for (var i in scaledpoints) {
+                        scaledpoints[i].x *= scale;
+                        scaledpoints[i].y *= scale;
+                    }
+                    var poly = new fabric.Polygon(scaledpoints, {
+                        fill: 'rgba(255,0,0,0.5)',
+                        selectable: false,
+                        objectCaching: false,
+
+                        evented: false
+                    });
+                    // Step 3. Draw Polygon
+                    canvas.add(poly);
+                }
             }
         }
     };
 
-    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle, lp){
+    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle, lp, iconEnabled){
 	    var shape = "rectangle";
 	    var scale;
 	    var isDown = false;
@@ -2683,19 +2725,23 @@ var EDITOR = (function ($, parent) {
         var pointArray = null;
         var lineArray = null;
         var hs = null;
-
 	    var edit_img = $("<div></div>");
         //.css("background", "url(" + url + ")")
         edit_img.attr('id', 'outer_img_' + id)
             .addClass("hotspotEditor");
         edit_img.data("id", id);
-        edit_img.append('<div class="hsbutton_holder" id="hsbutton_holder_'+ id + '">' +
+        var tmpbuttonholder = '<div class="hsbutton_holder" id="hsbutton_holder_'+ id + '">' +
             '<button id="rectangle_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Rectangle + '"><i class="fas fa-2x fa-vector-square"></i></button>' +
-            '<button id="poly_'+ id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Polygon + '"><i class="fas fa-2x fa-draw-polygon"></i></button>' +
-            '<button id="reset_'+ id + '" class="hseditModeButton firstoption" title="' + language.editHotspot.Buttons.Reset + '" disabled><i class="fas fa-2x fa-undo-alt"></i></button>' +
-            '<button id="' + id + '_cancel" name="cancel" class="hseditModeButton" title="' + language.Alert.cancellabel + '" style="float:right"><i class="fas fa-2x fa-window-close"></i></button>' +
-            '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
-            '</div>');
+            '<button id="poly_'+ id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Polygon + '"><i class="fas fa-2x fa-draw-polygon"></i></button>';
+
+        if (iconEnabled != '' & iconEnabled == 'connectorHotspotImage'){
+            tmpbuttonholder += '<button id="icon_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Icon + '"><i class="fas fa-2x fa-info-circle"></i></button>';
+        }
+        tmpbuttonholder += '<button id="reset_'+ id + '" class="hseditModeButton firstoption" title="' + language.editHotspot.Buttons.Reset + '" disabled><i class="fas fa-2x fa-undo-alt"></i></button>' +
+            '<button id="' + id + '_cancel" name="cancel" class="hseditModeButton" title="' + language.Alert.cancellabel + '" style="float:right"><i class="fas fa-2x fa-xmark"></i></button>' +
+            '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check"></i></button>' +
+            '</div>';
+        edit_img.append(tmpbuttonholder);
 
         edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
@@ -2789,10 +2835,17 @@ var EDITOR = (function ($, parent) {
                     case "rectangle":
                         $("#rectangle_" + id).addClass("selected");
                         $("#poly_" + id).removeClass("selected");
+                        $("#icon_" + id).removeClass("selected");
                         break;
                     case "polygon":
                         $("#poly_" + id).addClass("selected");
                         $("#rectangle_" + id).removeClass("selected");
+                        $("#icon_" + id).removeClass("selected");
+                        break;
+                    case "icon":
+                        $("#icon_" + id).addClass("selected");
+                        $("#rectangle_" + id).removeClass("selected");
+                        $("#poly_" + id).removeClass("selected");
                         break;
                 }
             };
@@ -2878,6 +2931,54 @@ var EDITOR = (function ($, parent) {
                             enableReset();
                         }
                         break;
+                    case "icon":
+                        if (hsattrs.shape != undefined) {
+                            var icon = JSON.parse(hsattrs.shape);
+                            //calculate size in comparison to canvas
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+
+                            hs = new fabric.Circle({
+                                radius: icon.radius/100 * canvasWidth,
+                                left: icon.centerX/100 * canvasWidth,
+                                top: icon.centerY/100 * canvasHeight,
+                                originX: 'center',
+                                originY: 'center',
+                                fill: 'rgba(255,0,0,0.5)',
+                                selectable: true,
+                                borderColor: 'yellow',
+                                objectCaching: false,
+                                angle: icon.angle,
+
+                            });
+
+                            // tempIcon = new fabric.IText('\uf0c2', {
+                            //     fill: 'white',
+                            //     left: icon.centerX/100 * canvasWidth,
+                            //     top: icon.centerY/100 * canvasHeight,
+                            //     originX: 'center',
+                            //     originY: 'center',
+                            //     fontFamily:'FontAwesome',
+                            //     objectCaching: false,
+                            //     selectable: false,
+                            // })
+                            //hs = new fabric.Group([bg, tempIcon])
+                            hs.setControlsVisibility({
+                                mb: false,
+                                ml: false,
+                                mr: false,
+                                mt: false,
+                            })
+                        }
+                        setDrawingModeButtonState(icon);
+                        if (hs == null) {
+                            disableReset();
+                        }
+                        else {
+                            enableReset();
+                        }
+                        break;
+
                 }
                 if (hs != null) {
                     // Step 3. Draw Polygon
@@ -2904,6 +3005,9 @@ var EDITOR = (function ($, parent) {
                             break;
                         case "polygon":
                             instructions += "<li>" + language.editHotspot.Instructions.polygon + "</li>";
+                            break;
+                        case "icon":
+                            instructions += "<li>" + language.editHotspot.Instructions.icon + "</li>";
                             break;
                     }
                 }
@@ -2991,6 +3095,22 @@ var EDITOR = (function ($, parent) {
                             setAttributeValue(key, ["points", "mode", "shape"], ['[]', shape, '{}']);
                         }
                         break;
+                    case "icon":
+                        if (hs != null) {
+                            var icon = {}
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+                            icon.centerX = (hs.left / canvasWidth) * 100;
+                            icon.centerY = (hs.top / canvasHeight) * 100;
+                            icon.radius = (hs.getRadiusY() / canvasWidth) * 100;
+                            icon.angle = hs.angle;
+
+                            setAttributeValue(key, ["points", "mode", "shape"], [JSON.stringify(icon), shape, JSON.stringify(icon)]);
+                        }
+                        else {
+                                setAttributeValue(key, ["points", "mode", "shape"], ['[]', shape, '{}']);
+                            }
+                            break;
                 }
 
 
@@ -3059,6 +3179,27 @@ var EDITOR = (function ($, parent) {
                 disableReset();
             };
 
+            var iconbutton = $('.hotspotEditor #icon_'+id);
+            iconbutton.click(function (event) {
+                if (shape != "icon") {
+                    switchToIconMode();
+                }
+
+            });
+
+            var switchToIconMode = function()
+            {
+                shape = "icon";
+                setDrawingModeButtonState(shape);
+                canvas.set({selection: false});
+                canvas.remove(hs);
+                canvas.renderAll();
+                hs = null;
+                setIconHandlers();
+                disableReset();
+
+            };
+
             // Reset handler
             var resetbutton = $('.hotspotEditor  #reset_'+id);
             resetbutton.click(function (event){
@@ -3070,6 +3211,10 @@ var EDITOR = (function ($, parent) {
                         break;
                     case "polygon":
                         switchToPolygonMode();
+                        disableReset();
+                        break;
+                    case "icon":
+                        switchToIconMode();
                         disableReset();
                         break;
                 }
@@ -3086,7 +3231,6 @@ var EDITOR = (function ($, parent) {
                 resetbutton.prop("disabled", true);
                 setInstructions(false);
             };
-
             var setRectangleHandlers = function()
             {
                 canvas.off('mouse:down');
@@ -3157,7 +3301,6 @@ var EDITOR = (function ($, parent) {
                 canvas.renderAll();
                 enableReset();
             };
-
             var setPolygonHandlers = function()
             {
                 canvas.off('mouse:down');
@@ -3287,7 +3430,6 @@ var EDITOR = (function ($, parent) {
                 }
                 canvas.renderAll();
             };
-
             var generatePolygon  = function(pointArray){
                 var points = new Array();
                 $.each(pointArray,function(index,point){
@@ -3324,6 +3466,43 @@ var EDITOR = (function ($, parent) {
                 enableReset();
             };
 
+            var setIconHandlers = function()
+            {
+                canvas.off('mouse:down');
+                canvas.off('mouse:move');
+                canvas.off('mouse:up');
+                canvas.on('mouse:up', function(opt) {
+                    IconMouseUp(opt)
+                });
+            };
+
+            var IconMouseUp = function(o)
+            {
+                var pointer = canvas.getPointer(o.e);
+
+                hs = new fabric.Circle({
+                    radius: 80,
+                    left: Math.abs(pointer.x),
+                    top: Math.abs(pointer.y),
+                    originX: 'center',
+                    originY: 'center',
+                    fill: 'rgba(255,0,0,0.5)',
+                    selectable: true,
+                    borderColor: 'yellow',
+                });
+                hs.setControlsVisibility({
+                    mb: false,
+                    ml: false,
+                    mr: false,
+                    mt: false,
+                })
+
+                canvas.off('mouse:up');
+                canvas.set({selection: (forceRectangle ? true : false)});
+                canvas.add(hs);
+                canvas.renderAll();
+                enableReset();
+            };
 
             hs = initShape();
         }
@@ -3728,7 +3907,7 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key, true);
     };
 
-    displayDataType = function (value, options, name, key) {
+    displayDataType = function (value, options, name, key, label) {
 		var html;
 
 		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
@@ -3740,7 +3919,7 @@ var EDITOR = (function ($, parent) {
 				html = $('<input>')
 					.attr('id', id)
 					.attr('type',  "checkbox")
-					.prop('checked', value && value == 'true')
+					.prop('checked', value && (value == 'true' || value == '1'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
 						cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
 						if (event.data.trigger)
@@ -3767,6 +3946,9 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
 				var s_options = options.options.split(',');
+                for (var i=0; i<s_options.length; i++) {
+                    s_options[i] = decodeURIComponent(s_options[i].replace(/%%/g, '%'));
+                }
 				var s_data = [];
 				if (options.data)
 				{
@@ -3809,30 +3991,30 @@ var EDITOR = (function ($, parent) {
 			case 'script':
 			case 'html':
             case 'textarea':
-				var id = "textarea_" + form_id_offset;
-				var textvalue = "";
+                var id = "textarea_" + form_id_offset;
+                var textvalue = "";
+                form_id_offset++;
 
-				form_id_offset++;
-
-				// Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
-                const lcvalue=value.toLowerCase();
-				if (lcvalue.indexOf('<textarea') == -1
+                // Set the value after initialisation of ckeditor in case of use of textarea, pre and code tags
+                // if value is in cdata and placeholder is used, the empty value will be undefined - change this to empty string
+                const lcvalue = value == undefined && options.placeholder != undefined ? '' : value.toLowerCase();
+                if (lcvalue.indexOf('<textarea') == -1
                     && lcvalue.indexOf('<pre>') == -1
                     && lcvalue.indexOf('<code>') == -1)
-				    textvalue = value;
+                    textvalue = value == undefined && options.placeholder != undefined ? '' : value;
 
-				var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-				if (options.height) textarea += "height:" + options.height + "px";
-				textarea += "\">" + textvalue + "</textarea>";
-				$textarea = $(textarea);
+                var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                if (options.height) textarea += "height:" + options.height + "px";
+                textarea += "\">" + textvalue + "</textarea>";
+                $textarea = $(textarea);
 
-				if (textvalue.length == 0) $textarea.data('afterckeditor', value);
+                if (textvalue.length == 0) $textarea.data('afterckeditor', value);
 
-				html = $('<div>')
-					.attr('style', 'width:100%')
-					.append($textarea);
+                html = $('<div>')
+                    .attr('style', 'width:100%')
+                    .append($textarea);
 
-				textareas_options.push({id: id, key: key, name: name, options: options});
+                textareas_options.push({id: id, key: key, name: name, options: options});
 				break;
 			case 'numericstepper':
 				var min = Number(options.min);
@@ -3897,7 +4079,31 @@ var EDITOR = (function ($, parent) {
 									this.value = min;
 								}
 							}
-						});
+						})
+                        .blur({id:id, key:key, name:name, trigger:conditionTrigger}, function(event) {
+                            if ((isNaN(max) || this.value <= max) && (isNaN(min) || this.value >= min)) {
+                                if (this.value == '') {
+                                    if (isNaN(max) || isNaN(min)) {
+                                        this.value = 0;
+                                    } else {
+                                        this.value = (min + max) / 2; // choose midpoint for NaN
+                                    }
+                                }
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                if (event.data.trigger)
+                                {
+                                    triggerRedrawPage(event.data.key);
+                                }
+                            }
+                            else { // set to max or min if out of range
+                                if (this.value > max) {
+                                    this.value = max;
+                                } else {
+                                    this.value = min;
+                                }
+                            }
+                        });
+
 				}
 				break;
 			case 'pagelist':
@@ -4477,7 +4683,7 @@ var EDITOR = (function ($, parent) {
                             $(this).css({width: '100%'});
                             drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle, lp);
                         }).click(function(){
-                            editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp);
+                            editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp, hspattrs.nodeName);
                         });
                 }
                 else
@@ -4597,6 +4803,7 @@ var EDITOR = (function ($, parent) {
 					.append($('<input>')
 						.attr('type', "text")
 						.attr('id', id)
+                        .attr('placeholder', options.placeholder)
 						.addClass('media')
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
@@ -4653,34 +4860,44 @@ var EDITOR = (function ($, parent) {
 						.attr('id', id + '_addcolumns')
 						.addClass('jqgridAddColumnsContainer'));
 
-                var form_id = "excel_upload_" + name;
-                excel_form = $("<form method='post' enctype='multipart/form-data' id =" + form_id + "></form>")
-                excel_form.append('<input type="file" name="fileToUpload" id="fileToUpload_' + name +'" accept=".csv" required>');
-                excel_form.append('<input type="submit" value="' + language.UploadCSV.UploadCSVBtn.$label + '">');
-                excel_form.append('<input type="hidden" name="colNum" value=' + options.columns + '>');
-                excel_form.append('<input type="hidden" name="type" value=' + name + '>');
-                excel_form.append('<input type="hidden" name="gridId" value=' + id + '>');
+                // add button below grid - when clicked a lightbox opens where you can upload a CSV containing data for the grid
+                $('<input type="button" name="csvUpload" value="' + language.UploadCSV.UploadCSVBtn.$label + '">')
+                    .click(function() { csvUploadLb(name, id); })
+                    .appendTo(html);
 
+                function csvUploadLb(name, id) {
+                    var $excel_form =
+                        $(`<div><h3>${label}: ${language.UploadCSV.UploadCSVBtn.$label}</h3>
+                    <form method="post" enctype="multipart/form-data" id="excel_upload_${name}" class="csvUpload">
+                    <input type="file" name="fileToUpload" id="fileToUpload_${name}" accept=".csv" required>
+                    <div class="csvMergeInfo">${language.UploadCSV.mergeOld.$label}<input type="checkbox" name="merge" value="Merge" id="csv_merge_${name}"></div>
+                    <input type="submit" value="${language.UploadCSV.UploadCSVBtn.$label}">
+                    <input type="hidden" name="colNum" value="${options.columns}">
+                    <input type="hidden" name="type" value="${name}">
+                    <input type="hidden" name="gridId" value="${id}">
+                    </form></div>`);
 
-                html.append(excel_form);
-                var checkbox_id = "csv_merge_" + name;
-                html.append(language.UploadCSV.mergeOld.$label + '<input type="checkbox" name="merge" value="Merge" id =' + checkbox_id + '>');
-                //called if user has uploaded a file to populate a grid
-                html.find('#excel_upload_' + name).submit(function (e){
-                    e.preventDefault();
-                    var grid_id = '#' + id + '_jqgrid';
-                    var current_grid_data = JSON.stringify($(grid_id).jqGrid("getRowData"))
-                    var form_data = new FormData(this);
-                    if ($('#csv_merge_categoryInfo').is(":checked")) {
-                        form_data.append("merge", "Merge");
-                    }
-                    form_data.append('old_data', current_grid_data)
-                    upload_file(form_data);
-                })
+                    $.featherlight($excel_form, {
+                        afterOpen: function (e) {
+                            // called if user has uploaded a file to populate a grid
+                            this.$content.find('#excel_upload_' + name).submit(function (e) {
+                                e.preventDefault();
+                                var grid_id = '#' + id + '_jqgrid';
+                                var current_grid_data = JSON.stringify($(grid_id).jqGrid("getRowData"))
+                                var form_data = new FormData(this);
+                                if ($('#csv_merge_glossary').is(":checked")) {
+                                    form_data.append("merge", "Merge");
+                                }
+                                form_data.append('old_data', current_grid_data);
+                                upload_file(form_data);
+                            });
+                        }
+                    });
+                }
 
                 function upload_file(form_data){
                     var conf = false;
-                    $('#csv_merge_categoryInfo').is(":checked") ? conf = confirm(language.UploadCSV.Info2.$label) : conf = confirm(language.UploadCSV.Info.$label);
+                    $('#csv_merge_glossary').is(":checked") ? conf = confirm(language.UploadCSV.Info2.$label) : conf = confirm(language.UploadCSV.Info.$label);
 
                     if(conf) {
                         $.ajax({
@@ -4698,14 +4915,15 @@ var EDITOR = (function ($, parent) {
                                 var rows = readyLocalJgGridData(key, return_data.type);
                                 $(gridId).jqGrid('setGridParam', {data: rows});
                                 $(gridId).trigger('reloadGrid');
+                                $.featherlight.current().close();
                             },
                             error: () => {
                                 // error message here.
                             }
-
                         });
                     }
                 }
+
                 //return xml
 				datagrids.push({id: id, key: key, name: name, options: options});
 				break;
@@ -4820,7 +5038,7 @@ var EDITOR = (function ($, parent) {
 								.css('top', $('body').height() * 0.05);
 						}, 10);
 					});
-				
+
 				iconpickers.push({id: id + '_btn', iconList: options.iconList});
 				
 				break;
@@ -5932,9 +6150,14 @@ var EDITOR = (function ($, parent) {
 					html = $('<div>')
 						.attr('id', id)
 						.addClass('inlinewysiwyg')
-						.attr('contenteditable', 'true')
-						.append('<p>' + value + '</p>');
+						.attr('contenteditable', 'true');
 
+                    // Do not always add a paragraph tag if the value already starts with a <p tag (with for example a class attribute)
+                    if (value.indexOf('<p') === 0) {
+                        html = html.append(value);
+                    } else {
+                        html = html.append('<p>' + value + '</p>');
+                    }
 					textinputs_options.push({id: id, key: key, name: name, options: options});
 				}
 				else {
@@ -6004,6 +6227,7 @@ var EDITOR = (function ($, parent) {
 	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
     my.convertTreeSelect = convertTreeSelect;
+    my.resizeDataGrids = resizeDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;

@@ -27,7 +27,7 @@ require_once('page_header.php'); ?>
 
 <?php echo "<h3>Site formatting settings - Customising the first login page</h3><p>Please see <a href=\"page1.gif\" target=\"new\">this screen shot</a> for guidance.";
 
-echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $xot_setup->getProtocol() . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea><p><b>WARNING:</b> If you are installing this via localhost on a server, but wish to provide this service from a URL hosted on this server, please remove localhost from the above textarea and replace it with a url</p>";
+echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $xot_setup->getProtocol() . x_clean_input($_SERVER['HTTP_HOST']) . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea><p><b>WARNING:</b> If you are installing this via localhost on a server, but wish to provide this service from a URL hosted on this server, please remove localhost from the above textarea and replace it with a url</p>";
 
 echo "<p>The site title is (This is the HTML title tag content) <textarea name=\"site_title\">Welcome to Xerte Online Toolkits</textarea></p>";
 
@@ -66,9 +66,9 @@ echo "<p>The PHP session name (you do not need to change this unless integrating
     </p>";
 echo "<p>The integration config path (for use if integrating with other systems is)<textarea name=\"integration_config_path\"></textarea></p>";
 
-echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['account'] . "</textarea></p>";
+echo "<p>The admin username is <textarea name=\"admin_username\">" . x_clean_input($_POST['account']) . "</textarea></p>";
 
-echo "<p>The admin password is <textarea name=\"admin_password\">" . $_POST['password'] . "</textarea></p>";
+echo "<p>The admin password is <textarea name=\"admin_password\">" . x_clean_input($_POST['password']) . "</textarea></p>";
 
 if (function_exists('mime_content_type')) {
     echo "<p>Whether the file MIME type check should be enabled for imported files<textarea name=\"enable_mime_check\">false</textarea></p>";

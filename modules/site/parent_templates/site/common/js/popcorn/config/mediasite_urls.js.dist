@@ -1,0 +1,5 @@
+// Fill the array with all url's that should be recognised as n embedded mediasite video
+
+x_mediasite_urls = [
+    // "https://media.windesheim.nl",
+];

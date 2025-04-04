@@ -28,10 +28,8 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 		}
 		
 		this.init = function() {
@@ -53,8 +51,9 @@
 			if (copyTxt == undefined) {
 				copyTxt = "Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.";
 			}
-			
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue) + '<hr/><div id="copyTxt"><p>' + copyTxt + '</p></div><button id="copyBtn">' + copyBtnLabel + '</button>');
+
+			var cdata = x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
+			$("#textHolder").html(cdata + '<hr/><div id="copyTxt"><p>' + copyTxt + '</p></div><button id="copyBtn">' + copyBtnLabel + '</button>');
 			
 			$("#copyBtn")
 				.button({
@@ -101,7 +100,7 @@
 		<div id="textHolder" class="left"></div>
 		
 		<div id="infoHolder" class="right">
-			<div class="panel">
+			<div class="panel" tabindex="0">
 				<div id="panelTxt"></div>
 			</div>
 		</div>

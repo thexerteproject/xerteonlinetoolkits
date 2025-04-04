@@ -36,7 +36,7 @@
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
-			$pageContents.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+            $pageContents.html(x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			// ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
 
             if (x_currentPageXML.getAttribute("textWidth") == "300") {

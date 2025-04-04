@@ -1,11 +1,3 @@
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:98% !important;
-  overflow: hidden;
-}
-
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
   color: $darkestcolor;
 }
@@ -426,6 +418,16 @@ div#shorturltodisplay a{
 }
 .x_results_page #general_summary th {
   background: #ffffff;//hide otherwise black line at to of summary table
+}
+//*****audio record page*****/
+.x_audioRecord_page .deleteClipBtn {
+  color: $blackordarkest;
+}
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus, .x_audioRecord_page .deleteClipBtn:active {
+  color: $blackordarkest;
+}
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: $whiteorlightest;
 }
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/

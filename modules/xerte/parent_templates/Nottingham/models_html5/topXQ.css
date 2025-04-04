@@ -12,10 +12,8 @@
     float:      right;
 }
 #pageContents #feedback {
-    clear:		both;
 }
 #pageContents #result {
-    clear:		both;
     padding-top: 1em;
 }
 #correctAnswer {
@@ -34,12 +32,16 @@
 }
 
 #attempts{
-    margin-top: 10%;
     padding-bottom: 0;
 }
 
 .titleQuestion{
     padding-bottom: 1em;
+    font-weight: bold;
+}
+
+.titleQuestion #question p:first-child {
+    padding-top: 0;
 }
 
 #mainFeedback{

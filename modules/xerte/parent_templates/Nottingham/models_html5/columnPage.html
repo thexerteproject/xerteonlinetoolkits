@@ -92,11 +92,19 @@
 						newString += '<div class="jsHolder"><div class="customHTMLHolder"></div></div>';
 						
 					} else {
-						newString += '<div class="pageImg"><img style="visibility: hidden"  ';
+						newString += '<div class="pageImg">';
+						if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+							newString += '<figure>';
+						}
+						newString += '<img style="visibility: hidden"  ';
 						if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 							newString += 'alt="' + this.getAttribute("tip") + '" ';
 						}
-						newString += ' /></div>';
+						newString += ' />';
+						if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+							newString += '<figcaption>' + this.getAttribute("caption") + '</figcaption></figure>';
+						}
+						newString += '</div>';
 					}
 					if (this.getAttribute("align") == "Top") {
 						infoString += newString;

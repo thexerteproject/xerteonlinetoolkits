@@ -31,3 +31,12 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 	color: black;
 	background-color: #117BAD;
 }
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: $bodybackgroundcolor;
+  background-color: $blackordarkest;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $contrastcolor;
+}

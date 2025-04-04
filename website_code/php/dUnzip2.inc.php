@@ -141,15 +141,15 @@ class dUnzip2{
 					if(!$kkk && $kkk=1){
 						echo "<tr style='background: #AAD'>";
 						foreach($item as $fieldName=>$value)
-							echo "<td>$fieldName</td>";
+							echo "<td>". x_clean_input($fieldName) . "</td>";
 						echo '</tr>';
 					}
 					echo "<tr style='background: #CCF'>";
 					foreach($item as $fieldName=>$value){
 						if($fieldName == 'lastmod_datetime')
-							echo "<td title='$fieldName' nowrap='nowrap'>".date("d/m/Y H:i:s", $value)."</td>";
+							echo "<td title='$fieldName' nowrap='nowrap'>".date("d/m/Y H:i:s",  x_clean_input($value))."</td>";
 						else
-							echo "<td title='$fieldName' nowrap='nowrap'>$value</td>";
+							echo "<td title='$fieldName' nowrap='nowrap'>" . x_clean_input($value) . "</td>";
 					}
 					echo "</tr>";
 				}
@@ -163,8 +163,8 @@ class dUnzip2{
 				echo "<tr style='background: #DAA'><td colspan='2'>dUnzip - End of file</td></tr>";
 				foreach($this->endOfCentral as $field=>$value){
 					echo "<tr>";
-					echo "<td style='background: #FCC'>$field</td>";
-					echo "<td style='background: #FDD'>$value</td>";
+					echo "<td style='background: #FCC'>" . x_clean_input($field) . "</td>";
+					echo "<td style='background: #FDD'>" . x_clean_input($value) . "</td>";
 					echo "</tr>";
 				}
 				echo "</table>";

@@ -416,7 +416,7 @@ function is_user_creator_or_coauthor($template_id){
 function get_implicit_role($template_id, $login_id){
     global $xerte_toolkits_site;
     //find out in what folder this template is:
-    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =?";
+    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =? and role='creator'";
     $row = db_query_one($query, array($template_id));
 
     if (!is_null($row['folder'])){
@@ -433,7 +433,7 @@ function get_implicit_group_role($template_id, $login_id)
 {
     global $xerte_toolkits_site;
     //find out in what folder this template is:
-    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =?";
+    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =? and role='creator'";
     $row = db_query_one($query, array($template_id));
     if (!is_null($row['folder'])) {
         return get_implicit_folder_group_role($login_id, $row['folder']);

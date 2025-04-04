@@ -21,6 +21,11 @@
 	border: 2px solid green;
 }
 
+#dragDropHolder .label.ui-state-disabled.ui-draggable-disabled,
+#targetHolder .target.ui-state-disabled.ui-droppable-disabled {
+	opacity: 1;
+}
+
 #dragDropHolder .labelTxt {
 	position: relative;
 	float: left;
@@ -64,10 +69,12 @@
 	padding: 1%;
 	margin-top: 10px;
 	margin-bottom: 10px;
+	cursor: pointer;
 }
 
-#targetHolder h3 {
+#targetHolder .fixedTxt {
 	width: 48%;
+	font-weight: bold;
 }
 
 #targetHolder .hint {

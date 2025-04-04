@@ -1,0 +1,33 @@
+<wizard menus="Media">
+  <pageWizard remove="true" duplicate="false">
+	<newNodes>
+	  <imageCompare><![CDATA[<imageCompare name="Enter Page Title" text="" url1="" tip1="" url2="" tip2="" textPosition="top" imageSize="60"/>]]></imageCompare>
+	</newNodes>
+  </pageWizard>
+
+  <!-- COMPARE IMAGE INTERACTION============================= -->
+  <imageCompare menu="Media" menuItem="Compare Images" hint="An interaction allowing you to compare two images." icon="icImageCompare" thumb="thumbs/imageCompare.jpg" example="https://xot.xerte.org.uk/play_116#imagecompare"
+ wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_compare_page" remove="true">
+
+	<name label="Page Title" type="TextInput" wysiwyg="true"/>
+	
+	<text label="Text" type="TextArea" wysiwyg="true" placeholder="Enter text for the page here" condition="imageSize!='100'"/>
+	<textPosition label="Align Text" type="ComboBox" condition="imageSize!='100'" options="Top,Left" data="top,left" />
+
+	<imageSize label="Image Size" type="ComboBox" options="Small,Medium,Large,Full Screen" data="40,60,80,100" defaultValue="60" conditionTrigger="true" />
+	
+	<image1 type="group" label="Image 1">
+		<url1 label="File" type="media" placeholder="Select an image"/>
+		<tip1 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
+	</image1>
+	
+	<image2 type="group" label="Image 2">
+		<url2 label="File" type="media" placeholder="Select an image"/>
+		<tip2 label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
+	</image2>
+
+	<sliderPosition label="Slider Position" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" optional="true" />
+
+  </imageCompare>
+
+</wizard>

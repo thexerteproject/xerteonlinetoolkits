@@ -40,22 +40,33 @@ include "properties_library.php";
 if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
+	
+	peer_display_fail(false);
+	
+	die();
 }
 
 if(is_numeric($_POST['template_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")) {
         $database_id = database_connect("peer template database connect success", "peer template change database connect failed");
 
-        if (is_user_creator_or_coauthor($_POST['template_id']) || is_user_admin()) {
+        if (is_user_creator_or_coauthor($_POST['template_id']) || is_user_permitted("projectadmin")) {
 
             peer_display($xerte_toolkits_site, false, $_POST['template_id']);
 
         } else {
 
-            peer_display_fail();
+            peer_display_fail(true);
 
         }
-    }
+    } else {
+
+		peer_display_fail(true);
+
+	}
+
+} else {
+
+	peer_display_fail(false);
 
 }

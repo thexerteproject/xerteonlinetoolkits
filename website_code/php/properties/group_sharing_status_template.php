@@ -44,7 +44,7 @@ if(!is_numeric($template_id)){
 }
 
 
-if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
     echo "<p>" . SHARING_FAIL . "</p>";
     exit(0);
 }
@@ -148,7 +148,7 @@ foreach($query_sharing_rows as $row) {
 
 }
 
-//if(!is_user_creator($_POST['template_id'])&&!is_user_admin()){
+//if(!is_user_creator($_POST['template_id'])&&!is_user_permitted("projectadmin")){
 //
 //    echo "<p><a href=\"javascript:group_delete_sharing_template('" . $template_id . "','" . $_SESSION['toolkits_logon_id'] . "',true)\">" . SHARING_STOP . "</a></p>";
 //

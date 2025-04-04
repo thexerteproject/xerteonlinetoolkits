@@ -48,10 +48,10 @@
 		};
 		
 		this.setPanelSize = function(firstLoad) {
-			this.$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt(this.$panel.css("padding-top")) * 2 - 5);
-			
 			var $btnHolder = $("#btnHolder");
-			$("#flickrHolder").height(this.$panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+
+			this.$panel.height(x_getAvailableHeight([this.$panel], [], true));
+			$("#flickrHolder").height(this.$panel.height() - $btnHolder.outerHeight(true));
 			
 			if (firstLoad == 1) {
 				$btnHolder.hide();
@@ -60,7 +60,7 @@
 		
 		this.setMaxSizes = function() {
 			this.maxImageWidth = $("#flickrHolder").width();
-			this.maxImageHeight = $("#flickrHolder").height() - $("#headerHolder").height() - $("#licenseHolder").height() - 10;
+			this.maxImageHeight = $("#flickrHolder").height() - $("#headerHolder").outerHeight(true) - $("#licenseHolder").outerHeight(true) - 10;
 		}
 		
 		
@@ -256,7 +256,7 @@
 			var ccInfo = data.photo.title._content;
 			ccInfo += ' © ' + data.photo.owner.realname + ', ' + data.photo.dates.taken.split('-')[0] + '<br />';
 			ccInfo += '<a href="' + ccLicenses[data.photo.license-1].url;
-			ccInfo += '" target="_blank">' + ccLicenses[data.photo.license-1].desc + '</a>';
+			ccInfo += '" target="_blank">' + ccLicenses[data.photo.license-1].desc + ' <i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i></a>';
 			x_pageInfo[x_currentPage].savedData.pictureInfo = ccInfo;
 
 			var url =  "https://api.flickr.com/services/rest/";
@@ -310,8 +310,8 @@
 			}
             imageTxt = imageTxt.replace("{i}", x_pageInfo[x_currentPage].savedData.pictureIndex + 1);
             imageTxt = imageTxt.replace("{n}", x_pageInfo[x_currentPage].savedData.pictureFeed.length);
-            $("#headerHolder").html(imageTxt);
-            $("#licenseHolder").html(info);
+            $("#headerHolder").html('<p>' + imageTxt + '</p>');
+            $("#licenseHolder").html('<p>' + info + '</p>');
 			$("#btnHolder").show();
             
 			this.setMaxSizes();
@@ -334,7 +334,7 @@
 
 		this.proceed = function(newValue) {
 			if (newValue != x_pageInfo[x_currentPage].savedData.pictureIndex) {
-				$('#headerHolder').html(x_getLangInfo(x_languageData.find("loading")[0], "label", "Loading..."));
+				$('#headerHolder').html('<p>' + x_getLangInfo(x_languageData.find("loading")[0], "label", "Loading...") + '</p>');
 				x_pageInfo[x_currentPage].savedData.pictureIndex = newValue;
 				this.getPictureInfo();
 			}
@@ -350,7 +350,7 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1">
+		<div id="textHolder" class="left">
 			
 		</div>
 		
@@ -359,7 +359,7 @@
 				
 				<div id="flickrHolder">
 					<div id="container">
-						<div id="headerHolder">
+						<div id="headerHolder" aria-live="polite">
 						</div>
 						<div id="pictureHolder">
 							<div id="loadingSpinner"><div class="spinner"></div><p></p></div>

@@ -17,10 +17,10 @@
 	<capitalise label="Force Capitalisation" type="CheckBox" defaultValue="false" mandatory="true" tooltip="Force the letters entered in the crossword to appear capitalised"/>
 	
 	<textGroup type="group" label="Page Text" optional="true">
-		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="100" optional="true"/>
+		<text label="Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="100" optional="true"/>
 		<textPos label="Position" options="Top,Above Clues" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
 	</textGroup>
-	<feedback label="Feedback" type="TextArea" defaultValue="Enter feedback text here" wysiwyg="true" height="100" optional="true"/>
+	<feedback label="Feedback" type="TextArea" defaultValue="" placeholder="Enter feedback text here" wysiwyg="true" height="100" optional="true"/>
     <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
 	
 	<acrossLabel label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
@@ -50,14 +50,14 @@
     </QFGroup>
 
     <newNodes>
-      <wordAndHint><![CDATA[<wordAndHint name="Label" text="Enter clue here" wordAnswer="Enter word here"/>]]></wordAndHint>
+      <wordAndHint><![CDATA[<wordAndHint name="Label" text="" wordAnswer=""/>]]></wordAndHint>
     </newNodes>
   </crossword>
 
   <wordAndHint menuItem="Word" icon="icBullet">
-	<wordAnswer label="Word" type="TextInput" wysiwyg="false" tooltip="The word (answer) that will appear in the crossword"/>
-    <text label="Hint" type="TextArea" height="50" tooltip="The clue for the word"/>
-	<name label="Label" type="TextInput" mandatory="true" defaultValue="Label" wysiwyg="false"/>
+	<wordAnswer label="Word" type="TextInput" wysiwyg="false" placeholder="Enter word here" tooltip="The word (answer) that will appear in the crossword"/>
+    <text label="Hint" type="TextArea" height="50" placeholder="Enter clue here" tooltip="The clue for the word"/>
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Label" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make words easier to locate for editing at a later date."/>
   </wordAndHint>
 
 </wizard>

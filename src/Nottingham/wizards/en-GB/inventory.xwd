@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+      <inventory><![CDATA[<inventory name="Enter Page Title" instructions="" feedback="" order="random" align="left" panelWidth="Medium" classes="" scoreType="absolute" chartHide="false" chartTitle="" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -13,16 +13,20 @@
   <!-- INVENTORY =============================== -->
   <inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#inventory" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_inventory_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <instructions label="Instructions" type="textArea" height="100"/>
-    <feedback label="Inventory Feedback" type="textArea" height="100"/>
+    <instructions label="Page Text" type="textArea" height="100" placeholder="Enter text for the page here"/>
+    <feedback label="Feedback" type="textArea" height="100" placeholder="Enter feedback text"/>
     <order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <align label="Align Text" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox"  data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
-	<classes label="Classes (max 10)" type="TextInput" />
+	<classes label="Classes" type="TextInput" tooltip="A comma-separated list of classes that answer options will score against. A maximum of ten classes can be created." placeholder="e.g. class1,class2,class3"/>
 	<scoreType label="Score Type" options="Absolute,Individual Percent,Relative Percent" type="comboBox" data="absolute,individual percent,relative percent" defaultValue="absolute" width="120"/>
-    <chartTitle label="Chart Title" type="TextInput" wysiwyg="true"/>
-    <chartType label="Chart Type" options="Bar,Pie,Line" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120"/>	
-    <chartColour label="Colour" type="colourPicker"/>	
+
+	<chart type="group" label="Chart Options">
+        <chartHide label="Hide Chart" type="CheckBox" defaultValue="false" conditionTrigger="true" mandatory="true"/>
+        <chartTitle label="Title" type="TextInput" wysiwyg="true" condition="chartHide!='true'"/>
+        <chartType label="Type" options="Bar,Pie,Line" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120" condition="chartHide!='true'"/>
+        <chartColour label="Colour" type="colourPicker" condition="chartHide!='true'"/>
+    </chart>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
@@ -62,34 +66,46 @@
     </QFGroup>
 
     <newNodes>
-      <invQuestion><![CDATA[<invQuestion name="Question" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
+      <invQuestion><![CDATA[<invQuestion name="Question" prompt="" type="Single Answer" questionFeedback="no" />]]></invQuestion>
+      <invClassFeedback><![CDATA[<invClassFeedback name="Enter Feedback Title" class="0" minScore="0" maxScore="50" feedbackTxt="" />]]></invClassFeedback>
     </newNodes>
 	
   </inventory>
 
-  <invQuestion menuItem="Question" remove="true">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" />
-    <prompt label="Question" type="TextArea" height="100"/>
+  <invQuestion menuItem="Question" remove="true" icon="icComment">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make questions easier to locate for editing at a later date." />
+    <prompt label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
 
 	<imgInfo type="group" label="Image" optional="true">
-		<image label="Image" type="Media" optional="true" defaultValue="Select an Image"/>
+		<image label="Image" type="Media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tip label="Image Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 
     <newNodes>
-      <invOption><![CDATA[<invOption name="Answer" text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
+      <invOption><![CDATA[<invOption name="Answer" text="" class="0" feedback=""   weight="1"/>]]></invOption>
     </newNodes>
 
   </invQuestion>
 
   <invOption menuItem="Option" icon="icBullet" remove="true">
-    <text label="Answer" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" />
-    <class label="Classification" options="0,1,2,3,4,5,6,7,8,9" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>
-    <feedback label="Feedback" type="TextArea" height="100"/>
+    <text label="Answer" type="TextArea" height="100" placeholder="Enter an answer option here"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
+    <class label="Class" options="1,2,3,4,5,6,7,8,9,10" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100" />
+    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter the feedback for this option"/>
 	<weight label="Weight or Score" options="0,1,2,3,4,5" type="ComboBox" data="0,1,2,3,4,5" defaultValue="1" width="100"/>
   </invOption>
+
+  <invClassFeedback menuItem="Tailored Feedback" icon="icTranscript2" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <feedbackTxt label="Text" type="TextArea" height="200" placeholder="Enter tailored feedback here" tooltip="The feedback text and title will be shown when the parameters below are met for the specified class"/>
+    <class label="Class" options="1,2,3,4,5,6,7,8,9,10" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>
+    <score type="group" label="Score" tooltip="The maximum and minimum (rounded down) score values for this class used to determine whether the feedback will be shown. The score type for this page will determine whether these values are from the total points scored or a percentage.">
+      <minScore label="Minimum value" defaultValue="0" type="TextInput"/>
+      <maxScore label="Maximum value" defaultValue="50" type="TextInput"/>
+    </score>
+  </invClassFeedback>
 
 </wizard>

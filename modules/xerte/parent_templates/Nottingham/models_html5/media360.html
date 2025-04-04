@@ -63,14 +63,9 @@
 				if (window.$.featherlight.current() != null && firstLoad != true) {
 					window.$.featherlight.current().close();
 				}
-				
-				var $panel = $("#pageContents .panel");
-				
-				if (x_browserInfo.mobile == false) {
-					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				} else {
-					$panel.height($x_mobileScroll.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				}
+
+				const $panel = $("#pageContents .panel");
+				$panel.height(x_getAvailableHeight([$panel], [], true));
 				
 				if (thisPannellum != undefined) {
 					thisPannellum.resize();
@@ -91,14 +86,13 @@
 			var filePath = x_templateLocation + 'common_html5/js/pannellum/';
 			
 			x_insertCSS(filePath + 'pannellum.css');
-			
-			$.getScript(filePath + 'pannellum.js')
-				.done(function(script, textStatus) {
+			loadjs.path(filePath);
+			loadjs(['pannellum.js'], {
+				success: function() {
 					media360.begin();
-				})
-				.fail(function( jqxhr, settings, exception ) {
-					console.log("Failed to load pannellum files: " + exception);
-				});
+				}
+			});
+			
 		}
 		
 		this.begin = function() {
@@ -257,11 +251,11 @@
 								unlockCase: this.getAttribute('unlockCase') != undefined ? this.getAttribute('unlockCase') : 'true'
 							};
 						}
-						
+
 						var thisHs = {
-							'pitch': this.getAttribute('p'),
-							'yaw': this.getAttribute('y'),
-							
+                                                        'pitch': this.getAttribute('p'),
+                                                        'yaw': this.getAttribute('y'),
+
 							'cssClass': 'hotspot360Icon',
 							'clickHandlerFunc': media360.hsClicked,
 							'createTooltipFunc': media360.hsCreated,
@@ -282,7 +276,7 @@
 								colour2: colour2
 							}
 						};
-						
+
 						// load another scene
 						if (this.getAttribute('scene') != undefined && this.getAttribute('scene') != '') {
 							thisHs.clickHandlerArgs = {
@@ -308,10 +302,12 @@
 						// open image in lightbox
 						} else if (this.getAttribute('imageFile') != undefined && this.getAttribute('imageFile') != '') {
 							var tip = this.getAttribute('imageTip') != undefined && this.getAttribute('imageTip') != '' ? this.getAttribute('imageTip') : '';
+							var caption = this.getAttribute('imageCaption') != undefined && this.getAttribute('imageCaption') != '' ? this.getAttribute('imageCaption') : '';
 							thisHs.clickHandlerArgs = {
 								type: 'lightbox',
 								img: this.getAttribute('imageFile'),
-								tip: tip
+								tip: tip,
+								caption: caption
 							};
 							
 						// open audio player in lightbox (or auto-play audio)
@@ -432,14 +428,14 @@
 						
 						// set up menu of links to scenes
 						if (x_currentPageXML.getAttribute('sceneMenu') == 'true') {
-							
+
 							// create a scene menu containing links to open each unhidden scene
 							var $sceneMenu = $('<div id="sceneLinkHolder"></div>');
 							
 							for(var key in scenes) {
 								if (scenes[key].menuTitle != undefined) {
 									var $thisSceneLink = $('<button class="sceneLink">' + scenes[key].menuTitle + '</button>');
-									
+
 									$thisSceneLink
 										.attr('id', key + 'Link')
 										.data('sceneId', key)
@@ -447,6 +443,8 @@
 										.click(function() {
 											$sceneMenu.hide();
 											thisPannellum.loadScene($(this).data('sceneId'));
+											$sceneMenu.find(".sr-only").remove();
+											$(this).append('<span class="sr-only">: ' + x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected") + '</span>');
 										})
 										.keydown(function(e){
 											// trigger click when focused & enter key pressed
@@ -460,7 +458,7 @@
 										});
 								}
 							}
-							
+
 							$sceneMenu.hide();
 							
 							// clone the full screen menu & use as menu btn
@@ -469,6 +467,7 @@
 							$menuBtn
 								.removeClass('fullScreen')
 								.addClass('sceneMenu')
+								.attr('aria-label', x_currentPageXML.getAttribute('sceneMenuTxt') != undefined ? x_currentPageXML.getAttribute('sceneMenuTxt') : "Scene menu")
 								.insertAfter('.pnlm-panorama-info')
 								.append($sceneMenu)
 								.hover(
@@ -498,6 +497,8 @@
 								});
 							
 							$('.pnlm-panorama-info').addClass('indent');
+
+							$("#" + thisPannellum.getScene() + "Link").append('<span class="sr-only">: ' + x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected") + '</span>');
 						}
 					}
 					
@@ -723,7 +724,7 @@
 			
 			if (args.lockInfo != false) {
 				// hide locked hotspot (not clickable)
-				if (args.lockInfo.lockHide == 'true') {
+				if (args.lockInfo.hide == 'true') {
 					$hotspotDiv.addClass('lockHide');
 				}
 				
@@ -783,7 +784,16 @@
 					if (args.type == 'lightbox') {
 						// content to open in lightbox
 						if (args.img != undefined) {
-							$.featherlight({image: args.img, afterOpen: function(e) { if (args.tip != '') { this.$content.attr('alt', args.tip); } } });
+							$.featherlight({image: args.img, afterOpen: function(e) {
+								if (args.tip != '') {
+									this.$content.attr('alt', args.tip);
+								}
+								if (args.caption != '') {
+									var $img = $(this.$content[0]);
+									$img.wrap('<figure></figure>');
+									$img.parent('figure').append('<figcaption>' + args.caption + '</figcaption>');
+								}
+							} });
 						} else if (args.iframe != undefined) {
 							$.featherlight({iframe: args.iframe, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
 						} else if (args.sound != undefined) {
@@ -868,6 +878,8 @@
 						}
 						
 						thisPannellum.loadScene(args.scene, initPitch, initYaw);
+						$(".sceneLink .sr-only").remove();
+						$("#" + args.scene + "Link").append('<span class="sr-only">: ' + x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected") + '</span>');
 					}
 				}
 				

@@ -27,18 +27,17 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 		};
+
 		this.init = function() {
 			this.begin();
 		};
 
 		this.loadfeed = function () {
 			var rssproxyurl = (typeof x_rssproxyURL != 'undefined') ? x_rssproxyURL : 'rss_proxy.php';
-			var rssproxyurl = rssproxyurl + "?rss=" + encodeURIComponent(rssURL) + "&format=" + "json";
+			var rssproxyurl = rssproxyurl + "?rss=" + encodeURIComponent(rssURL) + "&format=json&sesskey=" + token;
 			$.get(rssproxyurl, function(data, status, xhr) {
 				$("#loadingSpinner").hide();
 				if (status == 'success')
@@ -109,7 +108,8 @@
 						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
 						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
 						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
-						resultsString += '<div class="s"><a target="_blank" href="' + item.link + '">'+ item.title + '</a><br><br>';
+						const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+						resultsString += '<div class="s"><a target="_blank" href="' + item.link + '">'+ item.title + ' ' + faIcon + '</a><br><br>';
 
 
 						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
@@ -148,7 +148,7 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div id="rssHolder" class="right">
 			<div class="panel">

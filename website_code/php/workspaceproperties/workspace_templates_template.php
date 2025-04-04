@@ -37,24 +37,12 @@ include "workspace_library.php";
  * connect to the database
  */
 
-workspace_templates_menu();
+if($_SESSION['toolkits_logon_id']) {
 
-$database_connect_id = database_connect("workspace_template.php connect success","workspace_template.php connect failed");
-
-$prefix =  $xerte_toolkits_site->database_table_prefix ;
-
-$query_for_created_templates = "select * from {$prefix}templatedetails where creator_id= ? ORDER BY date_created DESC";
-
-$params = array($_SESSION['toolkits_logon_id']);
-
-$query_created_response = db_query($query_for_created_templates, $params);
-
-workspace_menu_create(100);
-
-foreach($query_created_response as $row_template_name) {
-    echo "<div style=\"float:left; width:100%; clear:left\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
-
+	workspace_templates_menu(); // sets up tabs and panels for all options
+	
+} else {
+	
+	workspace_fail();
+	
 }
-
-echo "</div></div></div>";
-

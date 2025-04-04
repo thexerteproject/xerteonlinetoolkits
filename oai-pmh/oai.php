@@ -1,4 +1,22 @@
 <?php
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 require_once('oaiserver.php');
 require_once('../config.php');
@@ -7,9 +25,7 @@ if (!file_exists("oai_config.php"))
     die("oai-pmh is not available");
 }
 require_once('oai_config.php');
-require_once('xerteobjects.php');
-
-//require $xerte_toolkits_site->php_library_path  . "template_library.php";
+require_once(__DIR__ . "/../website_code/php/template_library.php");
 
 /**
  * Identifier settings. It needs to have proper values to reflect the settings of the data provider.
@@ -175,7 +191,7 @@ function getSingleTemplate($metadataPrefix,$template_id) {
     if (!$response_template) {
         throw new OAIException('idDoesNotExist');
     }
-    $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]["owner_username"],$response_template[0]["template_type"],$response_template[0]['owner']);
+    $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]['template_name'],$response_template[0]["owner_username"],$response_template[0]["template_type"],$response_template[0]['owner']);
     $response_record = call_user_func(makeRecordFromTemplate,$metadataPrefix,$response_template[0], $tempMetaData);
 
     return $response_record;
@@ -248,7 +264,7 @@ function getTemplates($metadataPrefix,$from,$until) {
         $needle_key = array_search($currentTemplate['template_id'], array_column($publish_status, 'template_id'));
         if ($needle_key !== false){
             if (strcmp($publish_status[$needle_key]['status'], "published") == 0) {
-                $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
+                $tempMetaData = call_user_func('get_meta_data',$currentTemplate['template_id'],$currentTemplate['template_name'],$currentTemplate["owner_username"],$currentTemplate["template_type"], $currentTemplate['owner']);
                 if($tempMetaData->domain != 'unknown' and $tempMetaData->level != "unknown" and $tempMetaData->oaiPmhAgree){
                     $currentRecord = call_user_func('makeRecordFromTemplate',$metadataPrefix,$currentTemplate, $tempMetaData);
                     $tmpRecords[] = $currentRecord;
@@ -276,18 +292,57 @@ function getTemplates($metadataPrefix,$from,$until) {
 
     //$response->templates = $tmpTemplates;
     //$response->count = count($tmpTemplates);
-
+    // Add the templates the have been really deleted as well
+    $deleted = getDeletedTemplates($metadataPrefix,$from,$until);
+    foreach($deleted as $d)
+    {
+        $record = array('identifier' => ($xerte_toolkits_site->site_url . $d['template_id']),
+            'datestamp' => date($d['timestamp']),
+            'modified' => date($d['timestamp']),
+            'deleted' => true);
+        $tmpRecords[] = $record;
+    }
 
     return $tmpRecords;
 };
 
+function getDeletedTemplates($metadataPrefix,$from,$until)
+{
+    // Get the ids of all the records that have been deleted but have been published before
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    // Get all the unique ids of the templates that have been deleted from oai_publix and do that not exist anymore in template_details
+    if ($until != null && $until != "")
+    {
+        $q = "select template_id, timestamp from {$prefix}oai_publish op 
+                where op.status = 'deleted' 
+                and op.template_id not in (select template_id from {$prefix}templatedetails td where op.template_id = td.template_id and td.access_to_whom = 'Public')
+                and audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish op2 where status='deleted' and timestamp < ? group by op2.template_id)";
+        $params = array($until);
+    }
+    else {
+        $q = "select template_id, timestamp from {$prefix}oai_publish op 
+                where op.status = 'deleted' 
+                and op.template_id not in (select template_id from {$prefix}templatedetails td where op.template_id = td.template_id and td.access_to_whom = 'Public')
+                and audith_id IN (SELECT max(audith_id) from {$xerte_toolkits_site->database_table_prefix}oai_publish op2 where status='deleted' group by op2.template_id)";
+        $params = array();
+    }
+    if ($from != null && $from != "")
+    {
+        $q = $q . " and op.timestamp >= ?";
+        $params[] = $from;
+    }
+    $deleted_templates = db_query($q, $params);
+    return $deleted_templates;
+}
 function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
     global $xerte_toolkits_site;
 
     if($metadataPrefix == "lom_ims") {
 
         //get first publish time.
-        $q = "select timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id = ? and status = ? group by timestamp limit 1";
+        $q = "select timestamp from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id = ? and status = ? order by timestamp asc limit 1";
         $params = array($template['template_id'], "published");
         $first_publish_time = db_query_one($q, $params);
 
@@ -323,7 +378,7 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                 'lifecycle' => array(
                     'author' => $metadata->author,
                     'publisher' => $metadata->publisher,
-                    'publishdate' => $first_publish_time["timestamp"],
+                    'publishdate' => date($first_publish_time["timestamp"]),
                 ),
                 'rights' => array(
                     'rights' => $metadata->rights,

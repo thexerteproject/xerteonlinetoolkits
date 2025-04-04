@@ -41,7 +41,7 @@ if (!isset($_SESSION['toolkits_logon_id']))
 }
 
 if(is_numeric($_POST['template_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
         $search = $_POST['search_string'];
 
         $tutorial_id = (int)$_POST['template_id'];
@@ -68,16 +68,21 @@ if(is_numeric($_POST['template_id'])){
             $query_names_response = db_query($query_for_names, $params);
 
             if (sizeof($query_names_response) != 0 || sizeof($query_groups_response)!=0) {
+				
+				echo "<ul class=\"share_form_results\">";
+				
                 foreach($query_groups_response as $row){
 
-                    echo "<p>" . $row['group_name'] .  " - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['group_id'] . "', group=true)\"><i class=\"fas fa-users\"></i>&nbsp;" . NAME_SELECT_CLICK_GROUP . "</button></p>";
+                    echo "<li>" . $row['group_name'] .  " <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['group_id'] . "', group=true)\"><i class=\"fas fa-plus\"></i>&nbsp;" . NAME_SELECT_CLICK_GROUP . "<span class=\"sr-only\"> (" .  $row['group_name'] . ")</span></button></li>";
 
                 }
                 foreach ($query_names_response as $row) {
 
-                    echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ")  - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_CLICK . "</button></p>";
+                    echo "<li>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ") <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\"><i class=\"fa fa-plus\"></i>&nbsp;" . NAME_SELECT_CLICK . "<span class=\"sr-only\"> (" .  $row['firstname'] . " " . $row['surname'] . " - " . $row['username'] . ")</span></button></li>";
 
                 }
+				
+				echo "</ul>";
 
             } else {
 

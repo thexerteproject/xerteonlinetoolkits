@@ -1,0 +1,59 @@
+//*define color pallette*/
+
+$whiteorlightest: #ffffff;
+$blackordarkest: #000000;
+$dark1: #121212;
+$dark2: #1e1e1e;
+$dark3: #333333;
+$dark4: #383838;
+$dark5: #4d4d4d;
+
+$mainDark: $dark1;
+$mainlight: #E0E0E0;
+
+$contrastcolor:#7094DB;
+
+$btntxtcolor: $whiteorlightest;
+$selectedbutton: $dark5;
+
+$lightbtncolor: $whiteorlightest;
+$lightbtntxt: $blackordarkest;
+$lightbtnselected: $contrastcolor;
+
+$accent1: #418545;
+$accent2: #278384;
+$accent3:#D13759;
+$accent4:#C4551F;
+$accent5:#603784;
+$accent6:$contrastcolor;
+
+
+/*set background colors*/
+$bodybackgroundcolor:$mainDark;
+$defaultpagebackground:$mainDark;
+$progressBarColor: $contrastcolor; /* default #2196F3;*/
+$panelcolor: $dark2;
+$lighterpanel: $dark3;
+$lightestpanel: $dark4;
+
+/*set font family*/
+$mainfonts: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$secondaryfonts:Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+/*define font colors to match the background colors*/
+$mainfontcolour: $mainlight;
+$fontcolorforlightestcolor:$blackordarkest;
+$fontcolorfobrightcolor:#ffffff;
+$fontcolorforcontrastcolor:#ffffff;
+$linkcolor: $mainfontcolour;
+$linkvisited: $mainfontcolour;
+$linkhover: $contrastcolor;
+
+/*define rounded corner and other sizes*/
+$largeroundedcorners: 0;/*6vmin;*/
+$mediumroundedcorners: 0;/*2vmin;*/
+$smallroundedcorners: 0;/*1vmin;*/
+$imageroundedcorners: none;/*2vmin;*/
+$contentmargin: 2%;
+$interfaceboxshadow:none;
+$defaultpagepadding:2%;

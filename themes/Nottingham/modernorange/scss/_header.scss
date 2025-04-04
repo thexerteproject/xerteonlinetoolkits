@@ -33,3 +33,11 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 	background-color: $brightcolor;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: $contrastcolor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $lightestcolor;
+}

@@ -74,7 +74,7 @@
 			$('.spinnerHolder').append('<div class="spinner"></div>')
 
 			var imgMaxW = Math.round($x_pageHolder.width());
-			var imgMaxH = Math.round($x_pageHolder.height());
+			var imgMaxH = Math.round(x_getAvailableHeight([], [], true));
 
 			$('.spinnerHolder').css({
 				'background-color' : 'grey',
@@ -230,8 +230,7 @@
 				language:lan
 			}
 
-			var pageHeight = $('#x_pageHolder').height();
-			$('#timeline-embed').css('height', pageHeight-70);
+			$('#timeline-embed').css('height', x_getAvailableHeight());
 
 			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
 
@@ -306,7 +305,9 @@
 				})
 				 SictTimeline.resizeImg();
 				$('.spinnerHolder').remove();
-				$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
+				if (img[0] != undefined) {
+					$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
+				}
 				$('.tl-text-content')[0].innerHTML = x_currentPageXML.getAttribute("text");
 			}, 3000);
 
@@ -321,129 +322,91 @@
 				// TODO mobile implementation
 			}else{
 
-				var pageHeight = $('#x_pageHolder').height();
-				$('#timeline-embed').css('height', pageHeight-70);
+				const pageHeight = x_getAvailableHeight();
+				$('#timeline-embed').css('height', pageHeight);
 
 				var storyslider = pageHeight*0.60
 				$(".tl-storyslider").css({
 					"max-height":storyslider+"px"
 				})
 
-				var $pageContents = $('#timeline-embed');
-				var $slideContent = $('.tl-slide-content');
-
-				var imgMaxW, imgMaxH;
-				var pageHeight = $pageContents.height();
-				var pageWidth = $pageContents.width();
-				var pageMarginRight = $x_mainHolder.css("margin-right");
-				pageMarginRight = parseInt( pageMarginRight.slice(0,  pageMarginRight.length - 2));
-				var pageMarginLeft = $x_mainHolder.css("marginLeft");
-				pageMarginLeft = parseInt( pageMarginLeft.slice(0,  pageMarginLeft.length - 2));
-				var header = $x_headerBlock.height();
-				var footer = $x_footerBlock.height();
-
-
-				var totalPageWidth = pageWidth + pageMarginLeft + pageMarginRight
-
-				if( pageMarginRight !== 0 && pageMarginLeft !==0 && footer !== 0){
-					var footerHeight = $x_footerBlock.height();
-					var footerMarginHeight = $('#x_footerBlock').css('marginBottom')
-					footerMarginHeight = parseInt( footerMarginHeight.slice(0,  footerMarginHeight.length - 2));
-
-					footerHeight+= footerMarginHeight
-					if(header === 0){
-						footerHeight+= 96
-					}
-
-					var top = pageHeight -  footerHeight
-					//$(".tl-timenav").css("top", top)
-				}else{
-					//$(".tl-timenav").css("top", "auto")
-				}
-
-				imgMaxW = Math.round($slideContent.width() * 0.50 - 20);
-				imgMaxH = Math.round($pageContents.height() - 50);
-
-				var big;
-				var normal;
-				var small;
-				var arrow;
-				var imgH;
-
-				//img = document.getElementsByClassName("tl-media-item")
-				img = $('.tl-media-item');
 				items = $('.tl-slide');
+				var $item = items.eq(counter);
+				var $pageContents = $('#timeline-embed');
+				var $slideContent = $item.find('.tl-slide-content');
+				img = $item.find('.tl-media-item');
 
-				big = imgMaxH*0.7
-				normal = imgMaxH*0.6
-				small = imgMaxH*0.4
-				arrow = small*0.5
-				imgH = normal*1.6
+				var imgMaxW = Math.round($slideContent.width() * 0.50 - 20);
+				var imgMaxH = Math.round(pageHeight - 50);
+
+				var big = imgMaxH*0.7;
+				var normal = imgMaxH*0.6;
+				var small = imgMaxH*0.4;
 
 				big = big.toString()
 				normal = normal.toString()
 				small = small.toString()
-				arrow = arrow.toString()
-				imgH = imgH.toString()
 
-				var className = items.eq(counter).attr('class')
+				var className = $item.attr('class')
 
-				var imgPath = items.eq(counter).find('img')[0]
-				if(imgPath !== undefined){
-					imgPath = imgPath.src
-				}
+				var imgPath = img
+				if(img.length > 0){
+					imgPath = imgPath[0].src
+					if(imgPath !== "" && imgPath !== undefined){
+						$(".tl-storyslider").css("height", big+"px");
+						$item.find(".tl-media-content-container").css("height", small+"px");
+						$item.find(".tl-media").css("height", small+"px");
+						$item.find(".tl-media-content").css("height", normal+"px");
+						img.css("max-width", imgMaxW + "px");
 
-				if(imgPath !== "" && imgPath !== undefined){
-					//$("#timeline-embed").css("height", "unset")
-					$(".tl-storyslider").css("height", big+"px");
-					$(".tl-media-content-container").css("height", small+"px");
-					$(".tl-media").css("height", small+"px");
-					$(".tl-media-content").css("height", normal+"px");
-					$(".tl-media-item").css("max-width", imgMaxW + "px");
+						$item.find('img').css({
+							"max-height": normal +"px",
+							"max-width": imgMaxW +"px"
+						});
 
-					items.eq(counter).find('img').css({
-						"max-height": normal +"px",
-						"max-width": imgMaxW +"px"
-					});
-
-					var margT = items.eq(counter).find('img').css('margin-left')
-					var margB = items.eq(counter).find('img').css('marginBottom')
-					margB = parseInt( margB.slice(0,  margB.length - 2));
-					margB *= 0.66
-					margB.toString()
-					$('.tl-caption').css("marginLeft", margT)
-					//$('.tl-caption').css("width", "100px")
-					$('.tl-caption').css("margin-top", "-" + margB+"px")
+						var margT = img.css('margin-left')
+						var margB = img.css('marginBottom')
+						margB = parseInt( margB.slice(0,  margB.length - 2));
+						margB *= 0.66
+						margB.toString()
+						$item.find('div.tl-caption').each(function() {
+							$(this).after('<figcaption class="tl-caption">' + $(this).html() + '</figcaption>');
+							$(this).parents('.tl-media-content-container').wrap('<figure></figure>');
+							$(this).remove();
+						});
+						$item.find('.tl-caption').css("marginLeft", margT)
+						$item.find('.tl-caption').css("margin-top", "-" + margB+"px")
+					}
 				}
 
 				if(className === "tl-slide tl-slide-media-only"){
-					$('.tl-slide-content').css({
+					$item.find('.tl-slide-content').css({
 						"display": "flex",
 						"flex-direction" : 'row-reverse'
 					})
 
-					items.eq(counter).find('iframe').css({
+					$item.find('iframe').css({
 						"max-height": normal +"px"
 					})
 
-					$(".tl-media").css("height", normal+"px")
-					$(".tl-media-item").css("max-height", normal+"px")
-					$(".tl-text").css({
+					$item.find(".tl-media").css("height", normal+"px")
+					$item.find(".tl-media-item").css("max-height", normal+"px")
+					$item.find(".tl-text").css({
 						"display": "flex",
 						"align-items": "center",
 						"padding-left": "4%"
 					})
 				} else {
-					$('.tl-slide-content').css({
+					$slideContent.css({
 						"display": "",
 						"flex-direction" : ''
 					})
 
-					items.eq(counter).find('iframe').css({
+					$item.find('iframe').css({
 						"max-height": ""
 					})
 
-					$(".tl-text").css({
+					$item.find(".tl-text").css({
 						"display": "",
 						"align-items": "",
 						"padding-left": "4%"

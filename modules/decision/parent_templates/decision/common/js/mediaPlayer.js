@@ -98,6 +98,7 @@
 					uploadedFile = false;
 					mimeType = "video/vimeo";
 				}
+			
 			}
 			
 			if (thisMedia.children().length > 0) {

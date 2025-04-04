@@ -27,12 +27,15 @@ $_POST['mysql']         = "mysql";
 $xot_setup->database    = new SetupDatabase($_POST, $_SESSION);
 $xerte_toolkits_site    = $xot_setup->database->getSettings();
 
+$account = x_clean_input($_POST['account']);
+$accountpw = x_clean_input($_POST['accountpw']);
+
 // Create a PDO instance to represent a connection to the database.
 $connection = $xot_setup->database->connect();
 
 if (!$connection) { ?>
 
-    <p>Sorry, the attempt to connect to MySQL on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>. 
+    <p>Sorry, the attempt to connect to MySQL on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $account; ?>.
     
     <?php if ($connection->errorInfo() != ""): ?>
         MySQL reports the following error -</p>
@@ -68,14 +71,15 @@ if ($success)
 
     if (!$success)
     {
-?>
-       <p>Sorry, the attempt to insert and delete records in MySQL on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>.</p>
 
-        <p>The account <?php echo $_POST['account']; ?> exists, but does not have enough privileges to access database <?php echo $_SESSION['DATABASE_NAME'];?></p>
+?>
+       <p>Sorry, the attempt to insert and delete records in MySQL on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $account; ?>.</p>
+
+        <p>The account <?php echo $account; ?> exists, but does not have enough privileges to access database <?php echo $_SESSION['DATABASE_NAME'];?></p>
 <?php
         // Remove record as DBA
-        $xerte_toolkits_site->database_username = $_POST['account'];
-        $xerte_toolkits_site->database_password = $_POST['accountpw'];
+        $xerte_toolkits_site->database_username = $account;
+        $xerte_toolkits_site->database_password = $accountpw;
         $res = db_query("delete from " . $_SESSION['DATABASE_PREFIX'] . "sitedetails where site_id=999");
     }
 }
@@ -129,8 +133,8 @@ else
         <input type="hidden" name="database_name" value="<?php echo $_SESSION['DATABASE_NAME'];?>"/>
         <input type="hidden" name="database_prefix" value="<?php echo $_SESSION['DATABASE_PREFIX'];?>"/>
         <input type="hidden" name="database_created" value="1" />
-        <input type="hidden" name="account" value="<?php echo $_POST['account'];?>"/>
-        <input type="hidden" name="accountpw" value="<?php echo $_POST['accountpw'];?>"/>
+        <input type="hidden" name="account" value="<?php echo $account;?>"/>
+        <input type="hidden" name="accountpw" value="<?php echo $accountpw;?>"/>
         <button type="submit">Previous</button>
     </form>
 

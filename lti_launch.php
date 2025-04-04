@@ -37,6 +37,7 @@ global $xerte_toolkits_site;
 global $x_embed;
 global $x_embed_activated;
 
+_debug("SERVER: " . print_r($_SERVER, true));
 _debug("LTI launch request: " . print_r($_POST, true));
 
 if (isset($_GET["template_id"])) {
@@ -52,7 +53,10 @@ if(is_numeric($id) || $id == null)
 {
 	$tsugi_enabled = true;
 	$lti_enabled = true;
-    $LAUNCH = LTIX::requireData();
+    _debug("Start launch");
+    $LAUNCH = LTIX::requireData(LTIX::USER);
+
+    _debug("LTI launch: " . print_r($LAUNCH, true));
 
     if (method_exists($LAUNCH, 'isLTIAdvantage'))
     {
@@ -64,6 +68,14 @@ if(is_numeric($id) || $id == null)
     if ($islti13) {
         $msg = array();
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
+        //DONE: get all emails of current users add to array
+        // https://gitlab.tor.nl/xerte-dashboard/dashboard/-/blob/master/index.php line 80
+	    _debug('LTI 1.3 names and roles result: ' . print_r($nrps, true));
+        $xerte_toolkits_site->lti_users = array();
+        foreach ($nrps->members as $i => $member){
+            if ($member->status == 'Active' && in_array('Learner', $member->roles))
+            $xerte_toolkits_site->lti_users[] = sha1('mailto:'.$member->email);
+        }
     }
 
     if ($id == null)
@@ -79,6 +91,10 @@ if(is_numeric($id) || $id == null)
 
     _debug("LTI user: " . print_r($USER, true));
     $xerte_toolkits_site->lti_user = $USER;
+    if (!isset($xerte_toolkits_site->lti_user->email))
+    {
+        $xerte_toolkits_site->lti_user->email = $xerte_toolkits_site->lti_user->id . '@test.com';
+    }
 
     $group = $LAUNCH->ltiParameter('group');
     if ($group === false)
@@ -119,18 +135,28 @@ if(is_numeric($id) || $id == null)
     {
         $xerte_toolkits_site->module = $module;
     }
-    $lticontextid = $LAUNCH->ltiParameter('context_id');
-    if ($lticontextid === false)
+    if (isset($LAUNCH->context->context_id))
     {
-        $lticontextid = $LAUNCH->ltiCustomGet('context_id');
+        $lticontextid = $LAUNCH->context->context_id;
+	    _debug('Context id set from context->context_id');
     }
-    if ($lticontextid===false && isset($_REQUEST['context_id']))
-    {
-        $lticontextid = $_REQUEST['context_id'];
-    }
-    if ($lticontextid === false)
-    {
-        $lticontextid = $LAUNCH->context->id;
+    else {
+        $lticontextid = $LAUNCH->ltiParameter('context_id');
+        if ($lticontextid !== false) {
+            _debug('Context id set from parameter');
+        }
+        if ($lticontextid === false) {
+            $lticontextid = $LAUNCH->ltiCustomGet('context_id');
+            _debug('Context id set from custom parameter');
+        }
+        if ($lticontextid === false && isset($_REQUEST['context_id'])) {
+            $lticontextid = $_REQUEST['context_id'];
+            _debug('Context id set from request');
+        }
+        if ($lticontextid === false) {
+            $lticontextid = $LAUNCH->context->id;
+            _debug('Context id set from context->id');
+        }
     }
     if ($lticontextid !== false)
     {
@@ -183,7 +209,7 @@ if(is_numeric($id) || $id == null)
         $_SESSION['XAPI_PROXY'] = $lrs;
     }
 
-    if ($_GET['x_embed'] === 'true') {
+    if (isset($_GET['x_embed']) && $_GET['x_embed'] === 'true') {
         $x_embed = true;
         if ($_GET['activated'] !== 'true') {
             $lti_enabled = false;
@@ -195,4 +221,4 @@ if(is_numeric($id) || $id == null)
     }
     require("play.php");
 }
-?>
+

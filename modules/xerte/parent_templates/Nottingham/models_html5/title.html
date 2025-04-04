@@ -17,12 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var title = new function() {
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
+        // function called every time the page is viewed after it has initially loaded
+        this.pageChanged = function () {
+            this.responsiveTitle();
+
             if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined || x_currentPageXML.getAttribute("hideIcon") != undefined) {
                 if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined && x_currentPageXML.getAttribute("hideTitleTxt") == "true") {
                     $x_headerBlock.addClass('hideTitleTxt');
@@ -41,96 +42,340 @@
             } else {
                 $x_headerBlock.removeClass('hideTitleTxt hideTitleIcon');
             }
-		}
-		
-		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-			if (x_params.responsive == "true" && x_fillWindow == true) {
-				this.responsiveTitle();
-			} else {
-				$(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
-			}
-		}
-		
-		this.init = function() {
-			var $pageContents = $("#pageContents");
 
-			if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined || x_currentPageXML.getAttribute("hideIcon") != undefined) {
-				if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined && x_currentPageXML.getAttribute("hideTitleTxt") == "true") {
-					$x_headerBlock.addClass('hideTitleTxt');
-				} else {
+            this.position();
+        }
+
+        this.leavePage = function() {
+            $x_pageDiv.width("auto");
+            $x_pageDiv.height("auto");
+        }
+
+        // function called every time the size of the LO is changed
+        this.sizeChanged = function () {
+            this.responsiveTitle();
+
+            // resize media
+            if ($(".pageImg img").length > 0) {
+                this.scaleImage();
+            }
+
+            let width = 0;
+            $(".mejs-controls > div").each(function() {
+                width += $(this).width();
+            });
+
+            if ($("#pageAudio").length > 0 && width != $(".pageImg img").width()) {
+                this.loadAudio();
+
+            } else if ($("#pageVideo").length > 0) {
+                if ($(".pageVideo").hasClass("iframe")) {
+                    this.scaleFrame();
+
+                } else if ($(".pageVideo").hasClass("youtubeVimeo")) {
+                    this.scaleFrame();
+
+                } else {
+                    this.resizeVideo();
+                }
+            }
+
+            this.position();
+        }
+
+        this.init = function () {
+            const $pageContents = $("#pageContents");
+            const $titlePageTxt = $(".titlePageTxt");
+
+            if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined || x_currentPageXML.getAttribute("hideIcon") != undefined) {
+                if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined && x_currentPageXML.getAttribute("hideTitleTxt") == "true") {
+                    $x_headerBlock.addClass('hideTitleTxt');
+                } else {
                     $x_headerBlock.removeClass('hideTitleTxt');
                 }
-				
-				if (x_currentPageXML.getAttribute("hideIcon") != undefined && x_currentPageXML.getAttribute("hideIcon") == "true") {
-					$x_headerBlock.addClass('hideTitleIcon');
-				} else {
+
+                if (x_currentPageXML.getAttribute("hideIcon") != undefined && x_currentPageXML.getAttribute("hideIcon") == "true") {
+                    $x_headerBlock.addClass('hideTitleIcon');
+                } else {
                     $x_headerBlock.removeClass('hideTitleIcon');
                 }
-				
-				// make sure anything that's already calculated height assuming header is there is recalculated
-				x_updateCss2(false);
-			} else {
+
+                // make sure anything that's already calculated height assuming header is there is recalculated
+                x_updateCss2(false);
+            } else {
                 $x_headerBlock.removeClass('hideTitleTxt hideTitleIcon');
             }
-			
-			if (x_currentPageXML.childNodes[0] != undefined && x_currentPageXML.childNodes[0].nodeValue != "" && x_currentPageXML.childNodes[0].nodeValue != undefined) {
-				$pageContents.html(x_currentPageXML.childNodes[0].nodeValue);
-			}
-			
-			if (x_params.responsive == "true" && x_params.displayMode != "default" && !$.isArray(x_params.displayMode)) {
-				this.responsiveTitle();
-			} else {
-				$(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
-			}
-			
-			if (x_currentPageXML.getAttribute("titleTextColour") != undefined) {
-				$pageContents.css("color", x_currentPageXML.getAttribute("titleTextColour").replace("0x","#"));
-			}
-			
-			if (x_currentPageXML.getAttribute("titleHAlign") != undefined) {
-				$pageContents.addClass(x_currentPageXML.getAttribute("titleHAlign") + "Align");
-			} else {
-				$pageContents.addClass("centerAlign");
-			}
-			
-			var titleAlign = x_currentPageXML.getAttribute("titleVAlign");
-			if (x_browserInfo.mobile == true) {
-				$pageContents.css({
-					"position"		:"inherit",
-					"margin-left"	:0
-				});
-			} else {
-				if (titleAlign == 200 || titleAlign == undefined) { // middle
-					$pageContents.css({
-						"top"			:"50%",
-						"margin-top"	:0 - Math.round($pageContents.height() / 2)
-					})
-				} else if (titleAlign == 400) { // bottom
-					$pageContents.css({
-						"top"			:"100%",
-						"margin-top"	:0 - $pageContents.height()
-					})
-				}
-			}
-			
-			x_pageLoaded();
-		}
-		
-		this.responsiveTitle = function() {
-			if (window.innerWidth >= 768 && x_fillWindow == true) {
-				$(".titlePageTxt").css("font-size", "");
-			} else {
-				$(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
-			}
-		}
-	}
+
+            if (x_currentPageXML.childNodes[0] != undefined && x_currentPageXML.childNodes[0].nodeValue != "" && x_currentPageXML.childNodes[0].nodeValue != undefined) {
+                $titlePageTxt.html(x_currentPageXML.childNodes[0].nodeValue);
+            }
+
+            if (x_currentPageXML.getAttribute("additionalTxt") != undefined && x_currentPageXML.getAttribute("additionalTxt") !== "") {
+                $('<div id="extraText">' + x_currentPageXML.getAttribute("additionalTxt") + '</div>').appendTo($("#txtHolder"));
+            }
+
+            // add a start button that moves to next page
+            // except if next buttons are disabled or hidden or if this is a standalone page
+            if (x_currentPageXML.getAttribute("startBtn") === "true" && $.inArray(x_currentPage, x_normalPages) !== -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+                $('<button id="titleStartBtn"></button>')
+                    .appendTo($("#txtHolder"))
+                    .button({label: x_currentPageXML.getAttribute("startBtnTxt") !== null ? x_currentPageXML.getAttribute("startBtnTxt") : "Start"})
+                    .click(function () {
+                        x_changePage(x_normalPages[$.inArray(x_currentPage, x_normalPages) + 1]);
+                    });
+            }
+
+            let triggerLoad = true;
+            // add a panel containing an image, video or audio player to the page
+            if (x_currentPageXML.getAttribute("url") != null && x_currentPageXML.getAttribute("url") != "") {
+                const url = x_currentPageXML.getAttribute("url");
+                const fileExt = url.split('.').pop().toLowerCase();
+                const tip = x_currentPageXML.getAttribute("tip");
+                const audioImg = x_currentPageXML.getAttribute("audioImg");
+                let $mediaHolder;
+
+                if (fileExt == "mp3") {
+                    // audio
+                    $mediaHolder = $('<div id="mediaHolder" class="pageAudio"><div class="panel"><div id="pageAudio"></div></div></div>');
+
+                    // add an accompanying image above the audio player
+                    if (audioImg != null && audioImg != "") {
+                        $mediaHolder.addClass("pageImg");
+
+                        const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
+                        $mediaHolder.find(".panel").prepend('<img' + alt + '/>');
+                    }
+
+                } else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif" || fileExt == "svg") {
+                    // image
+                    const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
+                    $mediaHolder = $('<div id="mediaHolder" class="pageImg"><div class="panel"><img' + alt + '/></div></div>');
+
+                } else {
+                    $mediaHolder = $('<div id="mediaHolder" class="pageVideo"><div class="panel"><div id="pageVideo"></div></div></div>');
+
+                    if (url.substr(0,7) === "<iframe") {
+                        $mediaHolder.addClass("iframe");
+                    } else if (x_isYouTubeVimeo(url) != false) {
+                        $mediaHolder.addClass("youtubeVimeo");
+                    }
+                }
+
+                if ($mediaHolder != null) {
+                    $pageContents.addClass("media");
+
+                    triggerLoad = false;
+
+                    if (x_browserInfo.mobile === false) {
+                        $mediaHolder.addClass("x_floatRight");
+                    }
+
+                    $pageContents.append($mediaHolder);
+
+                    if ($mediaHolder.hasClass("pageImg")) {
+                        // scale image (either image on its own or above audio player)
+                        $mediaHolder.find("img")
+                            .one("load", function() {
+                                title.scaleImage(true);
+                                title.loadAudio();
+                                title.position();
+                                x_pageLoaded();
+                            })
+                            .attr("src", $mediaHolder.hasClass("pageAudio") ? audioImg : url)
+                            .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                                if (this.complete) {
+                                    $(this).trigger("load");
+                                }
+                            });
+                    }
+
+                    if ($mediaHolder.hasClass("pageAudio")) {
+                        this.loadAudio();
+                    }
+
+                    if ($mediaHolder.hasClass("pageVideo")) {
+                        $mediaHolder.find("#pageVideo").mediaPlayer({
+                            type: "video",
+                            source: url,
+                            width: "100%",
+                            height: "100%",
+                            title: tip
+                        });
+
+                        if ($mediaHolder.hasClass("iframe") || $mediaHolder.hasClass("youtubeVimeo")) {
+                            this.scaleFrame();
+                        }
+                    }
+
+                    if (!$mediaHolder.hasClass("pageImg")) {
+                        x_pageLoaded();
+                    }
+
+                } else {
+                    x_pageLoaded();
+                }
+
+            }
+
+            this.responsiveTitle();
+
+            if (x_currentPageXML.getAttribute("titleTextColour") != undefined) {
+                $titlePageTxt.css("color", x_currentPageXML.getAttribute("titleTextColour").replace("0x", "#"));
+            }
+
+            // horizontal alignment
+            if (x_currentPageXML.getAttribute("titleHAlign") != undefined) {
+                $pageContents.addClass(x_currentPageXML.getAttribute("titleHAlign") + "Align");
+            } else {
+                $pageContents.addClass("centerAlign");
+            }
+
+            // vertical alignment
+            const titleAlign = x_currentPageXML.getAttribute("titleVAlign");
+            if (titleAlign == 200 || titleAlign == undefined) { // middle
+                $pageContents.addClass("middleAlign");
+            } else if (titleAlign == 400) { // bottom
+                $pageContents.addClass("bottomAlign");
+            } else { // top
+                $pageContents.addClass("topAlign");
+            }
+
+            if (triggerLoad == true) {
+                this.position();
+                x_pageLoaded();
+            }
+        }
+
+        this.responsiveTitle = function () {
+            if (XENITH.ACCESSIBILITY.checkResponsiveTxt() && window.innerWidth >= 768) {
+                // responsive text is on & the project isn't showing at a fixed size
+                $(".titlePageTxt").css("font-size", "");
+            } else {
+                $(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
+            }
+        }
+
+        this.position = function () {
+            $x_pageDiv
+                .removeClass("autoLayout")
+                .width($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()))
+                .height(x_getAvailableHeight([], []));
+
+            if (x_browserInfo.mobile == true) {
+                // mobile view so title is always positioned at top
+                $("#pageContents").css("position", "inherit");
+
+            } else {
+                if ($("#txtHolder").outerHeight() > $x_pageDiv.height() || $("#mediaHolder").outerHeight() > $x_pageDiv.height()) {
+                    // the titles are more than 100% of available space - position at top with auto heights so it scrolls correctly
+                    $x_pageDiv.addClass("autoLayout");
+                }
+            }
+        }
+
+        this.getMaxDimensions = function() {
+            const $mediaHolder = $("#mediaHolder")
+            const offset = $("#mediaHolder").hasClass("pageAudio") ? x_audioBarH : 0;
+
+            // max width is 48% of page width or the original width of the image (whichever is smaller)
+            const maxW = ($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($("#mediaHolder .panel").outerWidth(true) - $("#mediaHolder .panel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
+            // max-height is 100% of page height or the original height of the image (whichever is smaller)
+            const maxH = x_getAvailableHeight([$mediaHolder, $mediaHolder.find(".panel")], [offset], true);
+
+            return [maxW, maxH];
+        }
+
+        this.scaleImage = function(firstScale) {
+            const dimensions = this.getMaxDimensions();
+            x_scaleImg($("#mediaHolder img"), dimensions[0], dimensions[1], true, firstScale, false, false);
+        }
+
+        this.scaleFrame = function() {
+            const dimensions = this.getMaxDimensions();
+            const $iframe = $("#pageVideo").find("iframe");
+            let width = dimensions[0] - 5;
+            let height = dimensions[1] - 5;
+
+            if (width/16*9 < height) {
+                height = width / 16 * 9;
+            } else {
+                width = height / 9 * 16;
+            }
+
+            if ($("#mediaHolder").hasClass("iframe")) {
+                $iframe.width(width);
+                $iframe.height(height);
+            } else {
+                $("#mediaHolder .panel").width(width);
+                $("#mediaHolder .panel .mejs-container").width(width);
+                $("#mediaHolder .panel").height(height);
+                $("#mediaHolder .panel .mejs-container").height(height);
+            }
+
+        }
+
+        this.loadAudio = function() {
+            $("#pageAudio").mediaPlayer({
+                type: "audio",
+                source: x_currentPageXML.getAttribute("url"),
+                width: "100%"
+            });
+
+            // manually add a transcript button to the end of the audio bar
+            if (x_currentPageXML.getAttribute("audioTranscript") != null && x_currentPageXML.getAttribute("audioTranscript") != '') {
+                x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute("audioTranscript"));
+            }
+
+        }
+
+        // function receives dimensions of video from mediaPlayer.js to set its max dimensions
+        this.mediaMetadata = function($video, dimensions) {
+            $video.closest('#mediaHolder')
+                .data({
+                    'max-width'	:dimensions[0],
+                    'max-height':dimensions[1]
+                });
+
+            this.resizeVideo();
+        }
+
+        this.resizeVideo = function() {
+            // video is 100% width & height of holder so just resize the holder
+            const $mediaHolder = $('#mediaHolder.pageVideo');
+            let tempW = $mediaHolder.data('max-width');
+            let tempH = $mediaHolder.data('max-height');
+            const dimensions = this.getMaxDimensions();
+
+            if (tempW > dimensions[0]) {
+                const scale = dimensions[0] / tempW;
+                tempW = dimensions[0];
+                tempH = Math.floor(tempH * scale);
+            }
+            if (tempH > dimensions[1]) {
+                const scale = dimensions[1] / tempH;
+                tempH = dimensions[1];
+                tempW = Math.floor(tempW * scale);
+            }
+
+            const prevW = $mediaHolder.find(".panel").width();
+            $mediaHolder.find(".panel").css({
+                'width'	:tempW,
+                'height':tempH
+            });
+
+            if (Math.round(prevW) != Math.round(tempW)) {
+                // force the mediaplayer resize to occur
+                $x_window.resize();
+            }
+        }
+    }
 	
 	title.init();
 	
 </script>
 
-
-<div id="pageContents" class="titlePageTxt">
-
+<div id="pageContents">
+    <div id="txtHolder">
+        <div class="titlePageTxt"></div>
+    </div>
 </div>

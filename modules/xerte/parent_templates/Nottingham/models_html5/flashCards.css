@@ -103,10 +103,12 @@
 		overflow: auto;
 		backface-visibility: hidden;
 		margin: 1em 1em 0;
-		height: 100%;
+		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
+
 	}
 	
-	#cards.hideOverflow .cardInner {
+	#cards.hideOverflow .cardInner,
+	#cards .panel.hideOverflow .cardInner {
 		overflow: hidden;
 	}
 	
@@ -195,7 +197,7 @@
 	}
 	
 	.mediaHolder img {
-		max-width: 100%;
+		max-width: 100%; 
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
 	}
@@ -203,4 +205,12 @@
 	.ui-effects-wrapper {
 		overflow: visible !important;
 	}
-	
+	.flex {
+		display: flex;
+		flex-direction: column;
+		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
+	}
+
+	.card .front, .card .back {
+		box-sizing: border-box;
+	}

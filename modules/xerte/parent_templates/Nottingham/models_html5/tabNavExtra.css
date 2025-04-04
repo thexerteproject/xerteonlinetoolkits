@@ -49,4 +49,9 @@
 	#txtHolder {
 		margin-bottom: 1em;
 	}
+
+	.nestedNavBtnHolder {
+		float: right;
+		margin: 1em 0 0 1em;
+	}
 	

@@ -26,7 +26,7 @@ body {
     background-color: $lightestcolor;
 }
 /*--Heading and other text changes---------------------------------------*/
-h1 {
+h1, h2.sectionTitle {
     color:$brightcolor;
     font-weight:400;
 }

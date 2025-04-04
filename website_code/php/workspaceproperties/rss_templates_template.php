@@ -40,51 +40,91 @@ include "workspace_library.php";
  * connect to the database
  */
 
-workspace_templates_menu();
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-$query_for_rss_templates = "select * from {$prefix}templatedetails, {$prefix}templaterights, "
+$query_for_rss_templates = "select * from {$prefix}templatedetails, "
 . "{$prefix}templatesyndication where creator_id= ? and "
-. "{$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and "
-. "{$prefix}templaterights.template_id  = {$prefix}templatesyndication.template_id "
-. "and (role=? or role=?) and (rss= ? or export = ? )" ;
+. "{$prefix}templatedetails.template_id  = {$prefix}templatesyndication.template_id "
+. "and (rss= ? or export = ? or syndication = ?)" ;
 
-$params = array($_SESSION['toolkits_logon_id'], 'creator', 'co-author', 'true', 'true');
+$params = array($_SESSION['toolkits_logon_id'], 'true', 'true', 'true');
 $query_rss_response = db_query($query_for_rss_templates, $params);
 
-workspace_menu_create(70);
+usort($query_rss_response, function($first, $second){
+    return $first['template_id'] > $second['template_id'];
+});
 
-echo "<div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_RSS . "</div><div style=\"float:left; position:relative; width:10%; height:20px;\">" . RSS_WORKSPACE_EXPORT . "</div>";
+echo "<table class=\"workspaceProjectsTable\">";
+
+echo "<caption>" . RSS_WORKSPACE_INTRO . "</caption>";
+
+echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th><th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th>";
+
+echo "<th>" . RSS_WORKSPACE_RSS . "</th><th>" . RSS_WORKSPACE_EXPORT . "</th><th>" . RSS_WORKSPACE_OPEN . "</th><th>" . RSS_WORKSPACE_OPEN_CATEGORY . "</th></tr>";
+
+$path = $xerte_toolkits_site->site_url . "preview.php?template_id=";
 
 foreach($query_rss_response as $row_template_name) {
 
-    echo "<div style=\"float:left; position:relative; width:70%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div><div style=\"float:left; position:relative; width:15%;\">";
+    echo "<tr><td>" . $row_template_name['template_id'] . "</td>";
+	
+	echo "<td><a href=\"" . $path . $row_template_name['template_id'] . "\" target=\"_blank\">";
+	
+	echo str_replace("_"," ",$row_template_name['template_name']);
+	
+	
+	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td><td class=\"iconCell\">";
 
-    if($row_template_name['rss']){
+    if($row_template_name['rss'] == "true"){
 
-        echo " " . RSS_WORKSPACE_ON . " ";
-
-    }else{
-
-        echo " " . RSS_WORKSPACE_OFF . " ";
-
-    }
-
-    echo "</div><div style=\"float:left; position:relative; width:10%;\">";
-    if($row_template_name['export']){
-
-        echo " " . RSS_WORKSPACE_ON . " ";
+        echo "<i class=\"fa fa-check\"></i><span class=\"sr-only\">" . RSS_WORKSPACE_ON . "</span>";
 
     }else{
 
-        echo " " . RSS_WORKSPACE_OFF . " ";
+		echo "<i class=\"fa fa-times\"></i><span class=\"sr-only\">" . RSS_WORKSPACE_OFF . "</span>";
 
     }
 
-    echo "</div>";
+    echo "</td><td class=\"iconCell\">";
+	
+    if($row_template_name['export'] == "true"){
+
+		echo "<i class=\"fa fa-check\"></i><span class=\"sr-only\">" . RSS_WORKSPACE_ON . "</span>";
+
+    }else{
+
+		echo "<i class=\"fa fa-times\"></i><span class=\"sr-only\">" . RSS_WORKSPACE_OFF . "</span>";
+
+    }
+
+    echo "</td><td class=\"iconCell\">";
+	
+	if($row_template_name['syndication'] == "true"){
+
+		echo "<i class=\"fa fa-check\"></i><span class=\"sr-only\">" . RSS_WORKSPACE_ON . "</span>";
+
+    }else{
+
+		echo "<i class=\"fa fa-times\"></i><span class=\"sr-only\">" . RSS_WORKSPACE_OFF . "</span>";
+
+    }
+	
+	echo "</td><td>";
+	
+	if($row_template_name['syndication'] == "true"){
+
+        echo " " . $row_template_name['category'] . " ";
+
+    }else{
+
+        echo "-";
+
+    }
+	
+	echo "</td></tr>";
 
 }
 
-echo "</div></div>";
+echo "</table>";

@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram>
+      <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram>
     </newNodes>
   </pageWizard>
 
@@ -9,11 +9,11 @@
   <annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#annotateddiagram" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_annotated_diagram" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <text label="Page Text" type="TextArea" height="250" />
+    <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
 	<align label="Text Align" type="ComboBox"  options="Left,Right,Bottom" data="Left,Right,Top" defaultValue="Left" width="100"/>
 
 	<image type="group" label="Image">
-		<url label="File" type="media" />
+		<url label="File" type="media" placeholder="Select an image"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" />
 		<panelWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" mandatory="true" width="100"/>
 	</image>
@@ -32,8 +32,8 @@
     </QFGroup>
 
     <newNodes>
-      <hotspotGroup><![CDATA[<hotspotGroup name="Enter Hotspot Group Title Here" text="Description for the hotspot"/>]]></hotspotGroup>
-	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
+      <hotspotGroup><![CDATA[<hotspotGroup name="Enter Hotspot Group Title" text=""/>]]></hotspotGroup>
+	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 	
   </annotatedDiagram>
@@ -42,7 +42,7 @@
   <hotspotGroup menuItem="Hotspot Group" icon="icGroup" remove="true">
 
     <name label="Group Title" type="TextInput" wysiwyg="true" />
-    <text label="Text" type="TextArea" height="250" />
+    <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot" />
 
     <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
@@ -50,25 +50,21 @@
     </QFGroup>
 
     <newNodes>
-	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
+	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 
   </hotspotGroup>
 
-
-
   <!-- HOTSPOT================================ -->
   <hotspot label="Edit Hotspot" menuItem="Hotspot" type="hotSpot"  icon="icLayers" remove="true">
-
     <name label="Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250" />
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
-
+    <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot"/>
+  	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
   </hotspot>
   
   <flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250" />
+    <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
   </flexhotspot>
   

@@ -4,12 +4,9 @@
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/roboto-v29-latin-ext_latin-regular.eot");
-  /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v29-latin-ext_latin-regular.svg#Roboto") format("svg");
-  /* Legacy iOS */
-}
-/*set background colors*/
+  src: url("fonts/roboto-v29-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v29-latin-ext_latin-regular.svg#Roboto") format("svg"); /* Legacy iOS */
+} /*set background colors*/
 /* default #2196F3;*/
 /*set font family*/
 /*define font colors to match the background colors*/
@@ -50,9 +47,14 @@
   background-color: #C4551F;
 }
 
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #BFBFBF;
+  background-color: white;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #2196F3;
 }
 
 .highlight {
@@ -88,7 +90,8 @@
   color: #ffffff;
 }
 
-.ui-accordion .ui-accordion-header a {
+.ui-accordion .ui-accordion-header a,
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
   border-radius: 3px;
   color: #ffffff !important;
   background: #84849a;
@@ -99,6 +102,10 @@
   background: #3c3c49 !important;
   border-radius: 3px;
   color: #000000;
+}
+
+.ui-accordion.chapterHolder .ui-state-active a, .ui-accordion.chapterHolder .ui-state-active a:link, .ui-accordion.chapterHolder .ui-state-active a:visited {
+  background: #84849a !important;
 }
 
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {
@@ -515,6 +522,22 @@ div#shorturltodisplay a {
   background: #ffffff;
 }
 
+.x_audioRecord_page .deleteClipBtn {
+  color: #000000;
+}
+
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus, .x_audioRecord_page .deleteClipBtn:active {
+  color: #1a1a1a;
+}
+
+.x_audioRecord_page .clip.highlight {
+  background-color: #d8d8df;
+}
+
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   .tick, img.result {
     width: 2.5vmin;
@@ -618,43 +641,43 @@ table.headerCol.shaded td.header {
 }
 
 #x_nextBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f138";
 }
 
 #x_prevBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f137";
 }
 
 #x_cssBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f066";
 }
 
 #x_colourChangerBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f042";
 }
 
 #x_mediaBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f16a";
 }
 
 #x_glossaryBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f02d";
 }
 
 #x_helpBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f128";
 }
 
 #x_introBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f129";
 }
 
 #x_menuBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c9";
 }
 
 #x_saveSessionBtn:not(.customIconBtn) .ui-icon:before {
-  content: "";
+  content: "\f0c7";
 }
 
 #x_footerBlock button {
@@ -707,18 +730,26 @@ table.headerCol.shaded td.header {
   font-weight: bold;
 }
 
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: #ffffff;
   color: #000000;
 }
 
-#menuItems .menuItem:hover {
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
   background: #a0a0b1;
   color: #ffffff;
 }
 
-#menuItems .menuItem.current {
-  border: 2px solid #84849a;
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+  border: 1px solid #84849a;
+}
+
+.chapterPageHolder.ui-accordion-content {
+  background: #ffffff;
+}
+
+#menuItems .chapterPageHolder .menuItem {
+  border: 1px solid transparent;
 }
 
 #x_sideBar {
@@ -757,11 +788,15 @@ table.headerCol.shaded td.header {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #BFBFBF;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
   }
-
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -773,21 +808,17 @@ table.headerCol.shaded td.header {
     z-index: 100;
     font-size: 12px;
   }
-
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /* font-size: 1em;
+     width: 1em;*/
     margin-left: 5px;
   }
-
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
-
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -1357,8 +1388,7 @@ a:visited {
   background: #ffffff;
   border-top-right-radius: 3px;
   border-bottom-left-radius: 3px;
-  border: none !important;
-  /*remove this to restore the default border*/
+  border: none !important; /*remove this to restore the default border*/
 }
 
 #x_pageDiv {

@@ -327,3 +327,35 @@ function get_all_folders_shared_with_group($group)
 
     return $rows;
 }
+
+//this functions directly removes a directory and all its children. Use with care.
+function rrmdir($src) {
+    if ($src != "") {
+        $dir = opendir($src);
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                $full = $src . '/' . $file;
+                if (is_dir($full)) {
+                    rrmdir($full);
+                } else {
+                    unlink($full);
+                }
+            }
+        }
+        closedir($dir);
+        rmdir($src);
+    }
+}
+
+function deleteZip($dir, $templateName)
+{
+    $files = glob($dir . '*');
+
+    foreach($files as $file)
+    {
+        if(strpos($file, $templateName . ".zip") !== false)
+        {
+            unlink($file);
+        }
+    }
+}

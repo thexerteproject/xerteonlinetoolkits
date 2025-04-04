@@ -4,7 +4,7 @@
   
 		<name type="TextInput" label="Learning Object Title"/>
 		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
-		<themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
+		<themeurl type="CheckBox" label="Disable Theme URL" defaultValue="true" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 		<language type="LanguageList" label="Language" width="170" mandatory="true" defaultValue=""/>
 		
 		<searchGroup type="group" label="Search" optional="true" tooltip="Add the ability to search for relevant sections within a project" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/81-xerteproject-site/media/Bootstrap%20Search%20Documentation.pdf' target='_blank'&gt;Bootstrap Search Guide&lt;/a&gt;&lt;/u&gt; for help setting up and using the search functionality">
@@ -26,119 +26,168 @@
 		<glossaryGroup type="group" label="Glossary" optional="true">
 			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" optional="true" wysiwyg="false,true"/>
 			<glossaryHover label="Show Definition on Hover" type="Checkbox" defaultValue="true" optional="true"/>
-			<glossaryPage type="ComboBox" data="none,first,last" options="None,First Page,Last Page" optional="true" label="Glossary Page" defaultValue="none" width="175"/>
-			<glossaryMenu type="ComboBox" data="both,menu,headings,neither" options="Menu and Headings,Menu Only,Headings Only,No Menu or Headings" optional="true" label="Glossary Page Navigation" defaultValue="both" width="175"/>
+			<glossaryPage label="Glossary Page" type="ComboBox" data="none,first,last" conditionTrigger="true" options="None,First Page,Last Page" optional="true" defaultValue="none" width="175"/>
+			<glossaryPageGroup label="Glossary Page Information" type="group" condition="glossaryPage!='none'" optional="true">
+				<glossaryTitle label="Title" type="TextInput" defaultValue="Glossary" optional="true" condition="glossaryPage!='none'" />
+				<glossaryMenu label="Navigation" type="ComboBox" data="both,menu,headings,neither" options="Menu and Headings,Menu Only,Headings Only,No Menu or Headings" optional="true" defaultValue="both" width="175" condition="glossaryPage!='none'"/>
+				<glossaryPageID label="Page ID" type="TextInput" condition="glossaryPage!='none'" optional="true" tooltip="Create a customised URL to the glossary page" defaultValue=""/>
+				<glossaryHeaderGroup type="group" label="Page Header" optional="true" condition="glossaryPage!='none'">
+					<glossaryHeaderTitleAlign label="Title Position" type="ComboBox" optional="true" condition="glossaryPage!='none'" data="left,center,right" options="Left,Centre,Right" defaultValue="center" tooltip="The horizontal alignment of the title" />
+					<glossaryImgGroup type="group" label="Image" optional="true" condition="glossaryPage!='none'">
+					  <glossaryHeaderImage label="File" type="media" optional="true" condition="glossaryPage!='none'" />
+					  <glossaryHeaderPos label="Position" type="ComboBox" data="left,center,right" condition="glossaryPage!='none'" options="Left,Centre,Right" optional="true" defaultValue="left" width="175"/>
+					  <glossaryHeaderRepeat label="Repeat" conditionTrigger="true" type="ComboBox" condition="glossaryPage!='none'" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" defaultValue="repeat" width="175"/>
+					  <glossaryHeaderSize label="Size" type="ComboBox" data="not-set,auto,contain,cover" options="Do not set,Auto,Contain,Cover" optional="true" condition="glossaryPage!='none'&amp;&amp;headerRepeat=='no-repeat'" defaultValue="not-set" width="175" tooltip="Set the background image size options" />
+					</glossaryImgGroup>
+				  <glossaryHeaderColours label="Customise Colours" type="group" optional="true" condition="glossaryPage!='none'">
+					  <glossaryHeaderColour label="Background" type="ColourPicker" optional="true" condition="glossaryPage!='none'" defaultVlaue=""/>
+					  <glossaryHeaderTextColour label="Text" type="ColourPicker" optional="true" condition="glossaryPage!='none'" defaultValue=""/>
+				  </glossaryHeaderColours>
+				  <glossrayBannerGroup type="group" label="Bar/Banner Appearance" optional="true" condition="glossaryPage!='none'">
+					  <glossaryHeaderBanner label="Header Style" type="ComboBox" conditionTrigger="true" condition="glossaryPage!='none'" data="fullscreen,fixedheight" options="Banner,Bar" optional="true" defaultValue="fixedheight" width="175" tooltip="Determines whether the header is shown as a bar at the top of the screen (default) or as full screen banner when the page is opened"/>
+					  <glossaryBannerCollapse label="Collapse to Bar on Scroll" type="CheckBox" conditionTrigger='true' condition="glossaryPage!='none'&amp;&amp;glossaryHeaderBanner=='fullscreen'" optional="true" defaultValue="true" tooltip="Collapse the banner to a bar when scrolling down"  />
+					  <glossaryHeaderHeightGroup type="group" label="Bar Height" optional="true" condition="glossaryPage!='none'&amp;&amp;(glossaryHeaderBanner=='fixedheight'||glossaryBannerCollapse=='true')">
+						  <glossaryBannerFixedHeight label="Fix Height" type="CheckBox" conditionTrigger='true' condition="glossaryPage!='none'&amp;&amp;(glossaryHeaderBanner=='fixedheight'||glossaryBannerCollapse=='true')"  optional="true" defaultValue="false" tooltip="By default, the height of the header bar is based on the space needed to show the bar's contents. Check this box to enable a fixed height to be set instead."  />
+						  <glossaryBannerHeight label="Height (%)" type="NumericStepper" condition="glossaryPage!='none'&amp;&amp;glossaryBannerFixedHeight=='true'&amp;&amp;(glossaryHeaderBanner=='fixedheight'||glossaryBannerCollapse=='true')" min="10" max="100" step="1" width="100" optional="true" defaultValue="20" tooltip="The height (in %) of the fixed height bar"/>
+					  </glossaryHeaderHeightGroup>
+					  <glossaryBannerFullScrollGroup label="Scroll Down Hint" type="group" optional="true" condition="glossaryPage!='none'&amp;&amp;glossaryHeaderBanner=='fullscreen'">
+						  <glossaryBannerFullScrolldownInfo label="Add Hint" type="CheckBox" conditionTrigger="true" condition="glossaryPage!='none'&amp;&amp;glossaryHeaderBanner=='fullscreen'" optional="true" defaultValue="true" tooltip="Show an arrow and text, prompting users to scroll down, when the banner is full screen" />
+						  <glossaryBannerFullScrolldownText label="Scroll Down Text" type="TextInput" wysiwyg="true" condition="glossaryPage!='none'&amp;&amp;glossaryHeaderBanner=='fullscreen'&amp;&amp;glossaryBannerFullScrolldownInfo=='true'" optional="true" defaultValue="" tooltip="Leave blank to use the default scroll down text or add your own text here to replace it" />
+					  </glossaryBannerFullScrollGroup>
+					  <glossaryHeaderTopMargin label="Title Vertical Position (%)" type="NumericStepper" condition="glossaryPage!='none'&amp;&amp;glossaryHeaderBanner=='fullscreen'" min="2" max="60" step="1" defaultValue="20" optional="true" tooltip="The position of the titles as a percentage from the top of the full screen banner"/>
+				  </glossrayBannerGroup>
+				</glossaryHeaderGroup>
+			</glossaryPageGroup>
 		</glossaryGroup>
 		
 		<headerGroup type="group" label="Header" optional="true">
-			<header type="Media" optional="true" label="Image"/>
-			<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
-			<headerRepeat conditionTrigger="true" type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
-		    <headerSize type="ComboBox" data="not-set,auto,contain,cover" options="Do not set,Auto,Contain,Cover" optional="true" label="Image Size" condition="headerRepeat=='no-repeat'" defaultValue="not-set" width="175" tooltip="Set the background image size options" />
-			<headerTitleAlign type="ComboBox" optional="true" label="Title Position" data="left,center,right" options="Left,Center,Right" defaultValue="center" tooltip="The horizontal alignment of the title" />
-			<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
-			<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
-			<logoR type="Media" optional="true" label="Logo (Right)"/>
-			<logoRAlt label="Logo Right Alt text" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true" mandatory="true"/>
-			<logoL type="Media" optional="true" label="Logo (Left)"/>
-			<logoLAlt label="Logo Left Alt text" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true" mandatory="true"/>
-			<logoRHide label="Hide Default Logo (Right)" type="Checkbox" defaultValue="false" optional="true"/>
-			<logoLHide label="Hide Default Logo (Left)" type="Checkbox" defaultValue="false" optional="true"/>
-            <headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+			<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
+			<headerTitleAlign type="ComboBox" optional="true" label="Title Position" data="left,center,right" options="Left,Centre,Right" defaultValue="center" tooltip="The horizontal alignment of the title" condition="headerHide!='true'"/>
+			<headerImg type="group" label="Image" optional="true" condition="headerHide!='true'">
+				<header type="Media" optional="true" label="File" placeholder="Select an image" condition="headerHide!='true'"/>
+				<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Position" defaultValue="left" width="175" condition="headerHide!='true'"/>
+				<headerRepeat conditionTrigger="true" type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Repeat" defaultValue="repeat" width="175" condition="headerHide!='true'"/>
+				<headerSize type="ComboBox" data="not-set,auto,contain,cover" options="Do not set,Auto,Contain,Cover" optional="true" label="Size" condition="headerRepeat=='no-repeat'&amp;&amp;headerHide!='true'" defaultValue="not-set" width="175" tooltip="Set the background image size options" />
+			</headerImg>
+			<headerColours type="group" label="Customise Colours" optional="true" condition="headerHide!='true'">
+				<headerColour type="ColourPicker" optional="true" label="Background Colour" condition="headerHide!='true'"/>
+				<headerTextColour type="ColourPicker" optional="true" label="Text Colour" condition="headerHide!='true'"/>
+			</headerColours>
+			<headerLogoR type="group" label="Right Logo" optional="true" condition="headerHide!='true'">
+				<logoRHide label="Hide Default Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true" condition="headerHide!='true'"/>
+				<logoR type="Media" optional="true" label="File" placeholder="Select an image" condition="logoRHide!='true'&amp;&amp;headerHide!='true'"/>
+				<logoRAlt label="Description" type="TextInput" placeholder="Enter a description for accessibility" optional="true" mandatory="true" condition="logoRHide!='true'&amp;&amp;headerHide!='true'"/>
+			</headerLogoR>
+			<headerLogoL type="group" label="Left Logo" optional="true" condition="headerHide!='true'">
+				<logoLHide label="Hide Default Logo" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true" condition="headerHide!='true'"/>
+				<logoL type="Media" optional="true" label="File" placeholder="Select an image" condition="logoLHide!='true'&amp;&amp;headerHide!='true'"/>
+				<logoLAlt label="Description" type="TextInput" placeholder="Enter a description for accessibility" optional="true" mandatory="true" condition="logoLHide!='true'&amp;&amp;headerHide!='true'"/>
+			</headerLogoL>
 		</headerGroup>
         
         <navbarGroup type="group" label="Navigation Bar" optional="true">
-			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175"/>
-			<navbarColour type="ColourPicker" optional="true" label="Background Colour"/>
-			<navbarTextColour type="ColourPicker" optional="true" label="Text Colour"/>
-            <navbarTextHoverColour type="ColourPicker" optional="true" label="Text Hover Colour"/>
-            <navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true"/>
+			<navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
+			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175" condition="navbarHide!='true'"/>
+			<navBarColours type="group" label="Customise Colours" optional="true" condition="navbarHide!='true'">
+				<navbarColour type="ColourPicker" optional="true" label="Background" condition="navbarHide!='true'"/>
+				<navbarTextColour type="ColourPicker" optional="true" label="Text" condition="navbarHide!='true'"/>
+				<navbarTextHoverColour type="ColourPicker" optional="true" label="Text Hover" condition="navbarHide!='true'"/>
+			</navBarColours>
 		</navbarGroup>
 		
-		<socialGroup type="group" label="Social" optional="true" info="Select below which social media options you wish to enable (check) or disable (uncheck). Removing this group will enable them all unless that is disabled sitewide." tooltip="Hide all of the Social icons or check/uncheck specific icons.">
-			<hidesocial label="Hide all Social icons" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
+		<socialGroup type="group" label="Social Icons" optional="true" deprecated="Social icons are currently unavailable" info="Select below which social media options you wish to enable (check) or disable (uncheck). Removing this group will enable them all unless that is disabled sitewide." tooltip="Hide all of the Social icons or check/uncheck specific icons." condition="footerHide!='true'">
+			<hidesocial label="Hide All Social Icons" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true" condition="footerHide!='true'"/>
 			<socialBtnsGroup type="group" label="Buttons" cols="3" optional="true">
-				<facebook label="Facebook" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<twitter label="Twitter" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<google label="Google+" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<linkedin label="Linkedin" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<pinterest label="Pinterest" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<email label="Email" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<yammer label="Yammer" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
-				<addthis label="AddThis" type="Checkbox" defaultValue="true" condition="hidesocial=='false'" optional="true"/>
+				<facebook label="Facebook" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<twitter label="Twitter" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<google label="Google+" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<linkedin label="Linkedin" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<pinterest label="Pinterest" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<email label="Email" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<yammer label="Yammer" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+				<addthis label="AddThis" type="Checkbox" defaultValue="true" condition="hidesocial=='false'&amp;&amp;footerHide!='true'" optional="true"/>
 			</socialBtnsGroup>
 		</socialGroup>
 		
         <footerGroup type="group" label="Footer" optional="true">
-            <footerHide label="Hide Footer" type="Checkbox" defaultValue="false" optional="true"/>
-            <customFooter type="TextArea" height="60" label="Custom Footer Content" optional="true"/>
-			<footerPos type="ComboBox" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175"/>
-            <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
+            <footerHide label="Hide Footer" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
+            <customFooter type="TextArea" height="60" label="Custom Footer Content" optional="true" condition="footerHide!='true'"/>
+			<footerPos type="ComboBox" deprecated="Social icons are currently unavailable" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175" condition="footerHide!='true'"/>
+            <footerColour type="ColourPicker" optional="true" label="Footer Background Colour" condition="footerHide!='true'"/>
 		</footerGroup>
 
-		<wcagGroup type="group" label="Accessilibity logo and link" optional="true" tooltip="Hide the accessilibity logo and link or change the link.">
-			<wcagHide label="Hide the Accessibility logo and link" type="Checkbox" conditionTrigger='true' defaultValue="false" optional="true"/>
-			<wcagAlt label="Accessilibity logo alt text" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'" optional="true"/>
-			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
-			<wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true" />
+		<wcagGroup type="group" label="Accessibility Logo &amp; Link" optional="true" tooltip="Hide the accessilibity logo and link or change the link." condition="footerHide!='true'">
+			<wcagHide label="Hide Logo &amp; Link" type="Checkbox" conditionTrigger='true' defaultValue="false" optional="true" condition="footerHide!='true'"/>
+			<wcagAlt label="Logo Description" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true" placeholder="Enter a description for accessibility"/>
+			<wcagLinkTitle label="Link Tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true"/>
+			<wcagLink type="Media" label="Accessibility Statement" placeholder="Select a file or enter a URL" tooltip="Enter a URL or select a file to link to your own accessibility statement. Leave empty to link to the community's accessibility statement on xerte.org.uk." condition="wcagHide=='false'&amp;&amp;footerHide!='true'" optional="true" />
+			<wcagTarget type="ComboBox" label="Open in" data="_blank,_self,lightbox" options="New tab/window,This tab,Lightbox" optional="true" defaultValue="_blank"/>
 		</wcagGroup>
 
-		<meta type="group" label="Meta data" optional="true">
+		<meta type="group" label="Metadata" optional="true">
 		    <explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
-			<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
-			<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+			<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create metadata in SCORM objects. This is also stored in xAPI events."/>
+			<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create metadata in SCORM objects. This is also stored in xAPI events."/>
 			<metaCategory label="Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object (i.e. Maths), stored in xAPI events, to be used for categorising in xAPI reports"/>
 			<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" />
 			<metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
 			<metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
-			<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
+			<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optional="true" tooltip="Whether the author name is included in the metadata record when publishing the metadata as oai-pmh (optional functionality)"/>
 			<metaEducation type="EducationLevelList" label="Education level" defaultValue="" optional="true" tooltip="The level of the eduction."/>
-			<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optional="true" tooltip="The thumbnail to publish with the metadata" />
+			<metaThumbnail type="media" label="Thumbnail" defaultValue="" placeholder="Select an image" optional="true" tooltip="The thumbnail to publish with the metadata" />
 			<oaiPmhAgree label="Assent" extraCheckBoxLabel="I agree to share this project through oai-pmh and I confirm that there are no copyrighted materials used in this project." type="CheckBox" optional="true" defaultValue="false" tooltip="The project will only be shared if checked" condition="oai_pmh_available" />
 		</meta>
 
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
-		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
-		<stylesheet type="Media" optional="true" label="Stylesheet"/>
-		<styles type="script" height="200" optional="true" label="Styles"/>
-		<script type="script" height="200" optional="true" label="Script" defaultValue="// JavaScript / jQuery"/>
-		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
+		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="" rendererOptions="none" defaultValue="" tooltip="Enter JavaScript library URLs in the table with each URL on a new row"/>
+		<stylesheet type="Media" optional="true" label="Stylesheet" tooltip="Upload a CSS file to customise this project" placeholder="Select a CSS file"/>
+		<styles type="script" height="200" optional="true" label="Styles" tooltip="Add bespoke CSS to this project"/>
+		<script type="script" height="200" optional="true" label="Script" defaultValue="// JavaScript / jQuery" tooltip="Add JavaScript to this project. The code will run after the project interface has been set up but before any pages have been loaded."/>
+		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true" tooltip="Show additional information (e.g. hidden pages) when the project is previewed to assist in the editing process. No author support information will appear when a public link to the project is viewed."/>
 		
 		<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for the whole project. A lightbox property is also available on each page.">
-			<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+			<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true" conditionTrigger="true"/>
+			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" condition="lightbox!='false'" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 		</lightboxGroup>
-		
-		<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
 		
 		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
 			<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
+			<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true" tooltip="Specify the character used as the decimal separator when numeric variables are used"/>
 		</varGroup>
 		
 		<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
 
 				<alternatingSections type="CheckBox" label="Alternating Sections" defaultValue="false" optional="true" tooltip="Enable alternating sections on all pages. When enabled, extra padding, round corners and a subtle change of background colour shows for odd and even sections. Note: if you are using a custom theme the default background colours may not be suitable. These can be changed using .oddSection and .evenSection styles."/>
 		
-		<topBtnGroup type="group" label="Back to Top button" optional="true" tooltip="Hide or change the Back to Top button">
-			<topBtnHide label="Hide Button" type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Hide the Back to Top button on all pages"/>
-			<topBtnRound label="Button Appearance" type="ComboBox" options="'Top' text,Circle with up arrow" data="false,true" defaultValue="false" condition="topBtnHide=='false'" conditionTrigger="true" optional="true" tooltip="Change the appearance of the back to top button"/>
-			<topBtnRoundColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Circle Background Colour" tooltip="Change the default colour of the circle (optional)"/>
-			<topBtnRoundHoverColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Circle Hover and Focus Colour" tooltip="Change the default hover and focus colour of the circle (optional)"/>
-			<topBtnRoundIconColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Up Arrow Colour" tooltip="Change the default colour of the Up Arrow (optional)"/>   
+		<topBtnGroup type="group" label="Back to Top Button" optional="true" tooltip="Hide or change the Back to Top button">
+			<topBtnHide label="Hide Buttons" type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Hide the Back to Top buttons on all pages"/>
+			<topBtnRound label="Appearance" type="ComboBox" options="'Top' text,Circle with up arrow" data="false,true" defaultValue="false" condition="topBtnHide=='false'" conditionTrigger="true" optional="true" tooltip="Change the appearance of the back to top button"/>
+			<topBtnColourGroup type="group" label="Customise Colours" optional="true">
+				<topBtnRoundColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Background" tooltip="Change the default colour of the circle (optional)"/>
+				<topBtnRoundHoverColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Hover and Focus" tooltip="Change the default hover and focus colour of the circle (optional)"/>
+				<topBtnRoundIconColour type="ColourPicker" optional="true" condition="topBtnHide=='false'&amp;&amp;topBtnRound=='true'" label="Arrow" tooltip="Change the default colour of the Up Arrow (optional)"/>
+			</topBtnColourGroup>
 		</topBtnGroup>
 
-		<twittercard type="group" label="Twitter card" optional="true">
-        		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter." />
-        		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
-        		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
-        		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
-        		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
-        		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
-        		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
-        		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
-        	</twittercard>
+		<twittercard type="group" label="Twitter Card" optional="true" tooltip="Enable a Twitter card for when a public link to this project is shared via Twitter." >
+            <tcoption label="Enable Twitter Card" type="CheckBox" conditionTrigger="true" defaultValue="true" optional="true"/>
+			<tcRequired type="group" label="Required" optional="true" condition="tcoption!='false'">
+				<tcmode optional="true" label="Card Mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail." condition="tcoption!='false'"/>
+				<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card." condition="tcoption!='false'"/>
+				<tcimageGroup type="group" label="Image" optional="true" condition="tcoption!='false'" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this project is tweeted." >
+					<tcimage optional="true" type="media" label="File" defaultValue="" placeholder="Select an Image" condition="tcoption!='false'"/>
+					<tcimagealt optional="true" type="TextInput" label="Description" defaultValue="" placeholder="Enter a description for accessibility" condition="tcoption!='false'"/>
+				</tcimageGroup>
+			</tcRequired>
+
+			<tcOptional type="group" label="Optional" optional="true" condition="tcoption!='false'">
+				<tcsite optional="true" label="Site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation" condition="tcoption!='false'"/>
+				<tccreator optional="true" label="Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername" condition="tcoption!='false'"/>
+				<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card." condition="tcoption!='false'"/>
+			</tcOptional>
+        </twittercard>
 		
 		<newNodes>
 		</newNodes>

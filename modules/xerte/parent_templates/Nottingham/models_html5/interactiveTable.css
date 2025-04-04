@@ -1,0 +1,154 @@
+/* interactiveTable.html */
+	
+#tableHolder.x_floatLeft {
+    margin: 0 1em 1em 0;
+}
+
+#tableHolder.x_floatRight {
+    margin: 0 0 1em 1em;
+}
+
+#textHolder + #tableHolder {
+    margin-top: 1em;
+}
+
+#tableHolder {
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+}
+
+#tableHolder.small {
+    min-width: 40%;
+    max-width: 100%;
+}
+
+#tableHolder.medium {
+    min-width: 60%;
+    max-width: 100%;
+}
+
+#tableHolder.large {
+    min-width: 80%;
+    max-width: 100%;
+}
+
+#tableHolder.full {
+    min-width: 100%;
+    max-width: 100%;
+}
+
+#tableHolder table {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+#tableHolder caption {
+    margin-bottom: .5em;
+    text-align: left;
+}
+
+#tableHolder table.header.shaded tbody tr th {
+    background: #f2f2f2;
+}
+
+#tableHolder table.footer tbody tr:last-child {
+    font-weight: inherit;
+}
+
+#tableHolder table.footer.shaded tbody tr:last-child {
+    background: inherit;
+}
+
+#tableHolder table.footer.shaded tbody tr:last-child.shaded {
+    background: #E3FFD6;
+}
+
+#tableHolder table.horizontal tfoot tr:first-child {
+    border-top: 1px solid #333333;
+}
+
+#tableHolder #mainFb {
+    margin-top: .5em;
+}
+
+#tableHolder .infoIcon, #tableHolder .questionIcon {
+    position: relative;
+    padding: .1em;
+}
+
+#tableHolder .infoIcon.marginLeft, #tableHolder .questionIcon.marginLeft {
+    margin-left: .5em;
+    float: right;
+}
+
+#tableHolder button.questionIcon .tickCross, #tableHolder button.infoIcon .tickCross {
+    position: absolute;
+    left: 0;
+}
+
+#tableHolder .questionCell {
+    position: relative;
+}
+
+#tableHolder .questionCell input, #tableHolder .questionCell select {
+    font-size: inherit;
+    font-size: .8em;
+}
+
+#tableSubmit {
+    margin-top: .5em;
+}
+
+/* ** remove this? - are there some changes in mainStyles that make this unnecessary? */
+
+@media (min-width: 768px) {
+    .x_responsive #lbForm input, .x_responsive #lbForm select {
+        font-size: 2.5vmin;
+    }
+}
+
+#tableHolder .questionCell button.qSubmit {
+    margin-left: .5em;
+}
+
+#tableHolder .questionCell.unanswered select {
+    border-width: 2px;
+}
+
+#tableHolder .questionCell.unanswered select, #tableHolder .questionCell.unanswered input,
+#lbForm.unanswered select, #lbForm.unanswered input {
+    border: 2px solid #FF0000;
+    border-radius: 3px;
+}
+
+#tableHolder .afterSubmit {
+    position: absolute;
+    left: 10px;
+}
+
+#tableHolder .afterSubmit s {
+    color: #FF0000;
+}
+
+#tableHolder .tickCross {
+    visibility: hidden;
+    float: right;
+}
+
+#tableHolder .infoCell .infoTxt {
+    display: inline-block;
+}
+
+#tableHolder .infoCell .infoTxt p {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#tableHolder .infoCell .infoTxt p:first-of-type {
+    padding-top: 0;
+}
+
+#tableHolder .infoCell .infoTxt p:last-of-type {
+    padding-bottom: 0;
+}

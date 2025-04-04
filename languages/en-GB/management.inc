@@ -39,12 +39,16 @@
 	define("MANAGEMENT_LOGON_FAIL","Sorry that password combination was not correct");
 	
 	define("MANAGEMENT_LOGOUT","Log out");
-	
+
+	define("MANAGEMENT_TOWORKSPACE","Workspace");
+
 	define("MANAGEMENT_TITLE","Site Administration");
 	
 	define("MANAGEMENT_MENUBAR_SITE","Site");
 	
-	define("MANAGEMENT_MENUBAR_CENTRAL","Central templates");
+	define("MANAGEMENT_MENUBAR_CENTRAL","Templates");
+
+	define("MANAGEMENT_MENUBAR_THEMES","Themes");
 	
 	define("MANAGEMENT_MENUBAR_USERS","Users");
 
@@ -72,5 +76,7 @@
 	
 	define("MANAGEMENT_MENUBAR_SAVE","Save");
 
-	
-?>
+	define("MANAGEMENT_NEW_ROLES_ADDED_LOGIN_AS_ADMIN", "<h1>Admin roles</h1><p>New admin roles have been implemented and you don't have any admin role assigned to you. To assign roles to existing users you need to login as admin.</p><p>To login using the original admin credentials, please click the following link: <a href='index.php?login=admin'>Login as admin</a></p>");
+
+    define("MANAGEMENT_TO_TSUGI_ADMIN", "LTI/TSUGI Admin Panel");
+

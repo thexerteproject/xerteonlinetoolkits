@@ -18,12 +18,15 @@
  * limitations under the License.
  */
 require(dirname(__FILE__) . "/module_functions.php");
-
+require_once(dirname(__FILE__) .  '/../../website_code/php/config/popcorn.php');
 //Function show_template
 //
 // (pl)
 // Set up the preview window for a xerte piece
+
+//popcorn bestanden toevoegen
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
+require(dirname(__FILE__) .  '/../../website_code/php/user_library.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
@@ -77,6 +80,12 @@ function fix_filelocation_path($path, $replacement) {
     return $path;
 }
 
+function escape_javascript($string)
+{
+    return str_replace(array("\r", "\n"), array('\r', '\n'), addslashes($string));
+}
+
+
 function show_template($row, $xapi_enabled=false){
     global $xerte_toolkits_site;
     global $youtube_api_key;
@@ -89,6 +98,8 @@ function show_template($row, $xapi_enabled=false){
 
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile, true);
+
+    _load_language_file("/modules/site/preview.inc");
 
     if (strlen($xmlFixer->getName()) > 0)
     {
@@ -106,7 +117,6 @@ function show_template($row, $xapi_enabled=false){
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 
-    _load_language_file("/modules/site/preview.inc");
 
     $version = getVersion();
 
@@ -141,7 +151,7 @@ function show_template($row, $xapi_enabled=false){
     $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
     $page_content = str_replace("%TITLE%", $title , $page_content);
     $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
-    $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
+    $page_content = str_replace("%TEMPLATEID%", $row['template_id'], $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
@@ -187,11 +197,26 @@ function show_template($row, $xapi_enabled=false){
             $tracking .= "  var lti13Endpoint = '" .  (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("lti13_launch.php") . "&tsugisession=1&" : "lti13_launch.php?") . "';\n";
             $tracking .= "  var peditEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("pedit_launch.php") . "&tsugisession=1&" : "pedit_launch.php?") . "';\n";
             $tracking .= "  var xapiEndpoint = '" . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
-
+            if (isset($_SESSION['XAPI_PROXY'])){
+                if ($_SESSION['XAPI_PROXY']['db']) {
+                    $tracking .= "  var lrsUseDb = true;\n";
+                }
+                else
+                {
+                    $tracking .= "  var lrsUseDb = false;\n";
+                }
+                if ($_SESSION['XAPI_PROXY']['extra_install'] && $_SESSION['XAPI_PROXY']['extra_install'] != "") {
+                    $tracking .= "  var lrsExtraInstall = " . json_encode($_SESSION['XAPI_PROXY']['extra_install']) . ";\n";
+                }
+            }
+            else
+            {
+                $tracking .= "  var lrsUseDb = false;\n";
+            }
             if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                 _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                 $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
-                $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
+                $tracking .= "   var fullusername = '" . escape_javascript($xerte_toolkits_site->lti_user->displayname) . "';\n";
                 $xapi_student_id_mode = $row['tsugi_xapi_student_id_mode'];
                 if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs)) {
                     if ($xapi_student_id_mode == 0 || $xapi_student_id_mode == 2)
@@ -212,7 +237,7 @@ function show_template($row, $xapi_enabled=false){
                     // actor is set
                     _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
-                    $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                    $tracking .= "   var fullusername = '" . escape_javascript($xerte_toolkits_site->xapi_user->displayname) . "';\n";
                     if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs))
                     {
                         $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
@@ -228,23 +253,23 @@ function show_template($row, $xapi_enabled=false){
             }
             if (isset($xerte_toolkits_site->group))
             {
-                $tracking .= "   var groupname = '" . str_replace("'", "\'", $xerte_toolkits_site->group) . "';\n";
+                $tracking .= "   var groupname = '" . escape_javascript($xerte_toolkits_site->group) . "';\n";
             }
             if (isset($xerte_toolkits_site->course))
             {
-                $tracking .= "   var coursename = '" . str_replace("'", "\'", $xerte_toolkits_site->course) . "';\n";
+                $tracking .= "   var coursename = '" . escape_javascript($xerte_toolkits_site->course) . "';\n";
             }
             if (isset($xerte_toolkits_site->module))
             {
-                $tracking .= "   var modulename = '" . str_replace("'", "\'", $xerte_toolkits_site->module) . "';\n";
+                $tracking .= "   var modulename = '" . escape_javascript($xerte_toolkits_site->module) . "';\n";
             }
             if (isset($xerte_toolkits_site->lti_context_id))
             {
-                $tracking .= "   var lti_context_id = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_id) . "';\n";
+                $tracking .= "   var lti_context_id = '" . escape_javascript($xerte_toolkits_site->lti_context_id) . "';\n";
             }
             if (isset($xerte_toolkits_site->lti_context_name))
             {
-                $tracking .= "   var lti_context_name = '" . str_replace("'", "\'", $xerte_toolkits_site->lti_context_name) . "';\n";
+                $tracking .= "   var lti_context_name = '" . escape_javascript($xerte_toolkits_site->lti_context_name) . "';\n";
             }
         }
         $tracking .= "</script>\n";
@@ -303,6 +328,10 @@ function show_template($row, $xapi_enabled=false){
     }else{
         $page_content = str_replace("%TWITTERCARD%", "", $page_content);
     }
+
+    // Check popcorn mediasite and peertube config files
+    $popcorn_config = popcorn_config($template_path . "common/", $version);
+    $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
 
     echo $page_content;
 

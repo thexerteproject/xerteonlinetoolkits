@@ -36,7 +36,12 @@
         var classtitles = [];
         var numUserSubmits = 0;
         var xertelo = interaction.getAttribute('xertelo');
+        if (xertelo==null || xertelo == "") {
+            xertelo = x_TemplateId;
+        }
+        var radarData = interaction.getAttribute('opinionRadarData');
         var textSize = Math.round(interaction.getAttribute("labelFontSize"));
+        var groupedData = [];
 
         if (textSize == null || textSize == 0) textSize = 12;
 
@@ -46,420 +51,482 @@
             return;
         }
 
-        if (showall_only === "true")
-        {
+        if (showall_only === "true") {
             showall_only = true;
         }
-        if (showall_only === "false")
-        {
+        if (showall_only === "false") {
             showall_only = false;
         }
-        importData.forEach(function(obj)
-        {
-            if (objlabel == null) {
-                objlabel = obj.graph.label;
+        if (radarData === 'personal'|| radarData === null) {
+            importData.forEach(function (obj) {
+                if (objlabel == null) {
+                    objlabel = obj.graph.label;
+                }
+
+                for (var i = 0; i < obj.graph.classvalues.length; i++) {
+                    if (mean_all[i] == null) {
+                        mean_all[i] = obj.graph.classvalues[i];
+                    } else {
+                        mean_all[i] += obj.graph.classvalues[i];
+                    }
+
+                    if (classnames[i] == null) {
+                        classnames[i] = x_GetTrackingTextFromHTML(obj.graph.classnames[i], obj.graph.classnames[i]);
+                    }
+                    if (classtitles[i] == null) {
+                        if (
+                            typeof obj.graph.classtitles != "undefined" &&
+                            typeof obj.graph.classtitles[i] != "undefined" &&
+                            obj.graph.classtitles[i] != ""
+                        ) {
+                            classtitles[i] = x_GetTrackingTextFromHTML(obj.graph.classtitles[i], obj.graph.classtitles[i]);
+                        } else {
+                            classtitles[i] = classnames[i];
+                        }
+                    }
+                }
+
+                if (matchActor(obj, xertelo)) {
+                    if (obj.timestamp > latest_ts) {
+                        latest_ts = obj.timestamp;
+                        latest = obj;
+                    }
+
+                    for (var i = 0; i < obj.graph.classvalues.length; i++) {
+                        if (mean[i] == null) {
+                            mean[i] = obj.graph.classvalues[i];
+                        } else {
+                            mean[i] += obj.graph.classvalues[i];
+                        }
+                    }
+
+                    numUserSubmits++;
+                }
+            });
+
+            for (var x = 0; x < mean_all.length; x++) {
+                if (mean_all[x] != null) {
+                    mean_all[x] = Math.round((mean_all[x] * 10) / numSubmits) / 10;
+                }
+                if (mean[x] != null) {
+                    mean[x] = Math.round((mean[x] * 10) / numUserSubmits) / 10;
+                }
             }
-
-            for (var i = 0; i < obj.graph.classvalues.length; i++) {
-                if (mean_all[i] == null) {
-                    mean_all[i] = obj.graph.classvalues[i];
+        }
+        else {
+            // Prepare grouped datasets
+            importData.forEach(function (obj) {
+                for (var i = 0; i < obj.graph.classvalues.length; i++) {
+                    if (classnames[i] == null) {
+                        classnames[i] = x_GetTrackingTextFromHTML(obj.graph.classnames[i], obj.graph.classnames[i]);
+                    }
+                    if (classtitles[i] == null) {
+                        if (
+                            typeof obj.graph.classtitles != "undefined" &&
+                            typeof obj.graph.classtitles[i] != "undefined" &&
+                            obj.graph.classtitles[i] != ""
+                        ) {
+                            classtitles[i] = x_GetTrackingTextFromHTML(obj.graph.classtitles[i], obj.graph.classtitles[i]);
+                        } else {
+                            classtitles[i] = classnames[i];
+                        }
+                    }
                 }
-                else
+                const actor = getActor(obj, xertelo);
+                if (groupedData[actor.key] == undefined) {
+                    groupedData[actor.key] = {
+                        'actor': actor,
+                        'attempts': [],
+                    };
+                }
+                groupedData[actor.key].actor = mergeActor(groupedData[actor.key].actor, actor);
+                groupedData[actor.key].attempts.push(obj);
+            });
+            Object.keys(groupedData).forEach(function(key)
+            {
+                const user = groupedData[key];
+                const obj = user.attempts[0];
+                for (var i = 0; i < obj.graph.classvalues.length; i++) {
+                    if (mean_all[i] == null) {
+                        mean_all[i] = obj.graph.classvalues[i];
+                    } else {
+                        mean_all[i] += obj.graph.classvalues[i];
+                    }
+                }
+            });
+            const numUsers = Object.keys(groupedData).length;
+            for (var x = 0; x < mean_all.length; x++) {
+                if (mean_all[x] != null) {
+                    mean_all[x] = Math.round((mean_all[x] * 10) / numUsers) / 10;
+                }
+            }
+        }
+
+        function hexToRgb(hex, opa) {
+            var bigint = parseInt(hex, 16);
+            var r = (bigint >> 16) & 255;
+            var g = (bigint >> 8) & 255;
+            var b = bigint & 255;
+
+            return "rgba(" + r + ", " + g + ", " + b + ", " + opa + ")";
+        }
+
+        var ctx = $('#' + identifier + ' .graph-container canvas');
+        var bgColourIn = "0xff0000";
+        if (interaction.getAttribute("colour") != null) {
+            bgColourIn = interaction.getAttribute("colour");
+        }
+        var bgColour = hexToRgb(bgColourIn.substring(bgColourIn.length - 6), 0.5);
+        var lnColour = hexToRgb(bgColourIn.substring(bgColourIn.length - 6), 1);
+
+        var pavgbgColourIn = "0x0000ff";
+        if (interaction.getAttribute("colourPersonalAvg") != null) {
+            pavgbgColourIn = interaction.getAttribute("colourPersonalAvg");
+        }
+        var pavgbgColour = hexToRgb(
+            pavgbgColourIn.substring(pavgbgColourIn.length - 6),
+            0.5
+        );
+        var pavglnColour = hexToRgb(
+            pavgbgColourIn.substring(pavgbgColourIn.length - 6),
+            1
+        );
+
+        var avgbgColourIn = "0x00ff00";
+        if (interaction.getAttribute("colourAvg") != null) {
+            avgbgColourIn = interaction.getAttribute("colourAvg");
+        }
+        var avgbgColour = hexToRgb(
+            avgbgColourIn.substring(avgbgColourIn.length - 6),
+            0.5
+        );
+        var avglnColour = hexToRgb(
+            avgbgColourIn.substring(avgbgColourIn.length - 6),
+            1
+        );
+
+        var avgAllLabelText = interaction.getAttribute("avgAllLabelText");
+        if (avgAllLabelText == undefined) {
+            avgAllLabelText = "Avg. of all attempts";
+        }
+
+        var personalLabelText = interaction.getAttribute("personalLabelText");
+        if (personalLabelText == undefined) {
+            personalLabelText = "Your last attempt";
+        }
+
+        var personalAvgLabelText = interaction.getAttribute("personalAvgLabelText");
+        if (personalAvgLabelText == undefined) {
+            personalAvgLabelText = "Avg. of your attempts";
+        }
+
+        var groupAverageLabelText = interaction.getAttribute("groupAverageLabelText");
+        if (groupAverageLabelText == undefined) {
+            groupAverageLabelText = "Group Average";
+        }
+
+        var datasets = [];
+        if (showall_only || (latest == null && radarData !== 'group')) {
+            // Only show mean_all
+            datasets = [
                 {
-                    mean_all[i] += obj.graph.classvalues[i];
-                }
-
-        if (classnames[i] == null) {
-          classnames[i] = x_GetTrackingTextFromHTML(obj.graph.classnames[i], obj.graph.classnames[i]);
-        }
-        if (classtitles[i] == null) {
-          if (
-            typeof obj.graph.classtitles != "undefined" &&
-            typeof obj.graph.classtitles[i] != "undefined" &&
-            obj.graph.classtitles[i] != ""
-          ) {
-            classtitles[i] = x_GetTrackingTextFromHTML(obj.graph.classtitles[i], obj.graph.classtitles[i]);
-          } else {
-            classtitles[i] = classnames[i];
-          }
-        }
-      }
-
-      // Check what method is used for identification.
-      var matchactor = false;
-      switch (studentidmode) {
-        case 0:
-        case 2:
-          if (obj.actor.mbox == userEMail) {
-            matchactor = true;
-          }
-          break;
-        case 1:
-          if (obj.actor.mbox_sha1sum == mboxsha1) {
-            matchactor = true;
-          }
-          break;
-        case 3:
-          if (obj.actor.account != undefined &&
-              obj.actor.account.name == groupname) {
-            matchactor = true;
-          }
-          break;
-      }
-      if (!matchactor &&
-        xertelo == x_TemplateId &&
-        obj.context != undefined &&
-        obj.context.extensions != undefined &&
-        obj.context.extensions["http://xerte.org.uk/sessionId"] != undefined &&
-        obj.context.extensions["http://xerte.org.uk/sessionId"] ==
-          state.sessionId) {
-        matchactor = true;
-      }
-
-      if (matchactor) {
-        if (obj.timestamp > latest_ts) {
-          latest_ts = obj.timestamp;
-          latest = obj;
-        }
-
-        for (var i = 0; i < obj.graph.classvalues.length; i++) {
-          if (mean[i] == null) {
-            mean[i] = obj.graph.classvalues[i];
-          } else {
-            mean[i] += obj.graph.classvalues[i];
-          }
-        }
-
-        numUserSubmits++;
-      }
-    });
-
-    for (var x = 0; x < mean_all.length; x++) {
-      if (mean_all[x] != null) {
-        mean_all[x] = Math.round((mean_all[x] * 10) / numSubmits) / 10;
-      }
-      if (mean[x] != null) {
-        mean[x] = Math.round((mean[x] * 10) / numUserSubmits) / 10;
-      }
-    }
-
-    function hexToRgb(hex, opa) {
-      var bigint = parseInt(hex, 16);
-      var r = (bigint >> 16) & 255;
-      var g = (bigint >> 8) & 255;
-      var b = bigint & 255;
-
-      return "rgba(" + r + ", " + g + ", " + b + ", " + opa + ")";
-    }
-
-    var ctx = $('#' + identifier + ' .graph-container canvas');
-    var bgColourIn = "0xff0000";
-    if (interaction.getAttribute("colour") != null) {
-      bgColourIn = interaction.getAttribute("colour");
-    }
-    var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
-    var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
-
-    var pavgbgColourIn = "0x0000ff";
-    if (interaction.getAttribute("colourPersonalAvg") != null) {
-      pavgbgColourIn = interaction.getAttribute("colourPersonalAvg");
-    }
-    var pavgbgColour = hexToRgb(
-      pavgbgColourIn.substr(pavgbgColourIn.length - 6),
-      0.5
-    );
-    var pavglnColour = hexToRgb(
-      pavgbgColourIn.substr(pavgbgColourIn.length - 6),
-      1
-    );
-
-    var avgbgColourIn = "0x00ff00";
-    if (interaction.getAttribute("colourAvg") != null) {
-      avgbgColourIn = interaction.getAttribute("colourAvg");
-    }
-    var avgbgColour = hexToRgb(
-      avgbgColourIn.substr(avgbgColourIn.length - 6),
-      0.5
-    );
-    var avglnColour = hexToRgb(
-      avgbgColourIn.substr(avgbgColourIn.length - 6),
-      1
-    );
-
-    var avgAllLabelText = interaction.getAttribute("avgAllLabelText");
-    if (avgAllLabelText == undefined) {
-      avgAllLabelText = "Avg. of all attempts";
-    }
-
-    var personalLabelText = interaction.getAttribute("personalLabelText");
-    if (personalLabelText == undefined) {
-      personalLabelText = "Your last attempt";
-    }
-
-    var personalAvgLabelText = interaction.getAttribute("personalAvgLabelText");
-    if (personalAvgLabelText == undefined) {
-      personalAvgLabelText = "Avg. of your attempts";
-    }
-
-    var groupAverageLabelText = interaction.getAttribute("groupAverageLabelText");
-    if (groupAverageLabelText == undefined) {
-        groupAverageLabelText = "Group Average";
-    }
-
-    var datasets = [];
-    if (showall_only || latest == null) {
-      // Only show mean_all
-      datasets = [
-        {
-          label: avgAllLabelText,
-          data: mean_all,
-          backgroundColor: avgbgColour,
-          borderColor: avglnColour,
-        },
-      ];
-    } else {
-      datasets = [
-        {
-          label: personalLabelText,
-          data: latest.graph.classvalues,
-          backgroundColor: bgColour,
-          borderColor: lnColour,
-        },
-      ];
-      if (numUserSubmits > 1) {
-        datasets.push({
-          label: personalAvgLabelText,
-          data: mean,
-          backgroundColor: pavgbgColour,
-          borderColor: pavglnColour,
-        });
-      }
-      datasets.push({
-        label: avgAllLabelText,
-        data: mean_all,
-        backgroundColor: avgbgColour,
-        borderColor: avglnColour,
-      });
-    }
-
-    if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
-      // Show mean_all and latest
-      var myRadarChart = new Chart(ctx, {
-        type: "radar",
-        data: {
-          labels: classtitles,
-          datasets: datasets,
-        },
-        options: {
-          scales: {
-            r: {
-              beginAtZero: true,
-              max: 100,
-              pointLabels: {
-                  font: {
-                      size: textSize
-                  },
-              },
-              ticks: {
-                  font: {
-                      size: textSize - 4
-                  },
-              }
-            },
-          },
-          legend: {
-            labels: {
-              font: {
-                  size: textSize
-              },
-            },
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-        },
-      });
-    } else if (interaction.getAttribute('opinionGraphType') == 'hor_bar_comb_marks_avg') {
-      let passingGrade = x_params.trackingPassed;
-      if (passingGrade == null) {
-        passingGrade = "55";
-      } else {
-        if (passingGrade.indexOf("%") >= 0) {
-          passingGrade = parseInt(passingGrade) + "";
-        } else if (
-          parsefloat(passingGrade) >= 0 &&
-          parsefloat(passingGrade) <= 1
-        ) {
-          passingGrade = parseFloat(passingGrade) * 100.0 + "";
-        }
-      }
-      let ctx = "#" + identifier + "-graph";
-
-      let labelCounter = 0;
-      let data = [];
-      if (datasets.length < 2)
-      {
-          var insufficientDataText = interaction.getAttribute("insufficientDataText");
-          if (insufficientDataText == undefined) {
-              insufficientDataText = "There is insufficient data for this graph";
-          }
-          $(ctx).parent().append('<p><em>' + insufficientDataText + '</em></p>');
-      }
-      else {
-          const avgDataSet = datasets.length - 1;
-
-          datasets[0].data.forEach((val, key) => {
-              data.push({
-                  x: classtitles[key],
-                  y: Math.round(val, 2),
-                  goals: [
-                      {
-                          name: groupAverageLabelText,
-                          value: datasets[avgDataSet].data[key],
-                          strokeWidth: 5,
-                          strokeColor: "#775DD0",
-                      },
-                  ],
-              });
-              labelCounter += 1;
-          });
-          let colors = [
-              "#FF6384",
-              "#4BC0C0",
-              "#FFCD56",
-              "#C9CBCF",
-              "#36A2EB",
-              "#B284BE",
-          ];
-          if (interaction.getAttribute('graphColorScale') != null && interaction.getAttribute('graphColorScale') != "") {
-              colors = interaction.getAttribute('graphColorScale').split(",");
-          }
-          var options = {
-              series: [
-                  {
-                      data,
-                  },
-              ],
-              chart: {
-                  toolbar: {
-                      show: false,
-                  },
-                  height: 350,
-                  type: "bar",
-              },
-              plotOptions: {
-                  bar: {
-                      horizontal: true,
-                      distributed: true,
-                  },
-              },
-              colors: colors,
-              dataLabels: {
-                  formatter: function (val, opt) {
-                      const goals =
-                          opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
-                              .goals;
-
-                      if (goals && goals.length) {
-                          return `${val}%`;
-                      }
-                      return val;
-                  },
-                  style: {
-                      fontSize: textSize + 'px',
-                  }
-              },
-              legend: {
-                  show: true,
-                  showForSingleSeries: true,
-                  customLegendItems: [groupAverageLabelText],
-                  markers: {
-                      fillColors: ["#775DD0"],
-                  },
-                  style: {
-                      fontSize: textSize + 'px',
-                  }
-              },
-              xaxis: {
-                  position: 'bottom',
-                  labels: {
-                      offsetY: 1,
-                      style: {
-                          fontSize: textSize + 'px',
-                      },
-                  },
-              },
-              yaxis: {
-                  labels: {
-                      style: {
-                          fontSize: textSize + 'px',
-                      },
-                  },
-              },
-          };
-          var chart = new ApexCharts(
-              document.querySelector(`${ctx}`),
-              options
-          );
-          chart.render();
-          $(ctx + ' svg text').css('font-size', textSize + 'px');
-      }
-    }
-  };
-
-  function hasToRetrieveAll(interaction) {
-    var dashboardMode = x_currentPageXML.getAttribute("dashboardMode");
-    if (dashboardMode == undefined) {
-      dashboardMode = "false";
-    }
-    if (dashboardMode == "true") {
-      return true;
-    } else {
-      if (
-        (interaction.getAttribute("interactionType") !== "open" &&
-            (interaction.getAttribute("interactionType") !== "opinion"
-             || interaction.getAttribute("opinionClass") == undefined))
-      ) {
-        if (interaction.getAttribute("graph") === "true") {
-          return (
-            interaction.getAttribute("graphType") === "bar_answers" ||
-            interaction.getAttribute("graphType") === "bar_marks" ||
-            interaction.getAttribute("graphType") === "line_average_marks"
-          );
+                    label: avgAllLabelText,
+                    data: mean_all,
+                    backgroundColor: avgbgColour,
+                    borderColor: avglnColour,
+                },
+            ];
         } else {
-          return false;
+            if (radarData === 'personal'|| radarData === null) {
+                datasets = [
+                    {
+                        label: personalLabelText,
+                        data: latest.graph.classvalues,
+                        backgroundColor: bgColour,
+                        borderColor: lnColour,
+                    },
+                ];
+                if (numUserSubmits > 1) {
+                    datasets.push({
+                        label: personalAvgLabelText,
+                        data: mean,
+                        backgroundColor: pavgbgColour,
+                        borderColor: pavglnColour,
+                    });
+                }
+                datasets.push({
+                    label: avgAllLabelText,
+                    data: mean_all,
+                    backgroundColor: avgbgColour,
+                    borderColor: avglnColour,
+                });
+            }
+            else {
+                let colors = [
+                    "#FF6384",
+                    "#4BC0C0",
+                    "#FFCD56",
+                    "#C9CBCF",
+                    "#36A2EB",
+                    "#B284BE",
+                ];
+                if (interaction.getAttribute('graphColorScale') != null && interaction.getAttribute('graphColorScale') != "") {
+                    colors = interaction.getAttribute('graphColorScale').split(",");
+                }
+                let colorIndex=0;
+                for (var user in groupedData) {
+                    let bgColour = hexToRgb(colors[colorIndex].substring(colors[colorIndex].length - 6), 0.5);
+                    let lnColour = hexToRgb(colors[colorIndex].substring(colors[colorIndex].length - 6), 1);
+                    datasets.push({
+                        label: (groupedData[user].actor.name != undefined ? groupedData[user].actor.name : substring(groupedData[user].actor.mbox, 7)),
+                        data: groupedData[user].attempts[0].graph.classvalues,
+                        backgroundColor: bgColour,
+                        borderColor: lnColour,
+                    });
+                    colorIndex++;
+                    if (colorIndex >= colors.length) {
+                        colorIndex = 0;
+                    }
+                }
+                datasets.push({
+                    label: groupAverageLabelText,
+                    data: mean_all,
+                    backgroundColor: avgbgColour,
+                    borderColor: avglnColour,
+                });
+            }
         }
-      } else {
-        return true;
-      }
-    }
-  }
+        if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
+            // Show mean_all and latest
+            var myRadarChart = new Chart(ctx, {
+                type: "radar",
+                data: {
+                    labels: classtitles,
+                    datasets: datasets,
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            pointLabels: {
+                                font: {
+                                    size: textSize
+                                },
+                            },
+                            ticks: {
+                                font: {
+                                    size: textSize - 4
+                                },
+                            }
+                        },
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                size: textSize
+                            },
+                        },
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                },
+            });
+        } else if (interaction.getAttribute('opinionGraphType') == 'hor_bar_comb_marks_avg') {
+            let passingGrade = x_params.trackingPassed;
+            if (passingGrade == null) {
+                passingGrade = "55";
+            } else {
+                if (passingGrade.indexOf("%") >= 0) {
+                    passingGrade = parseInt(passingGrade) + "";
+                } else if (
+                    parsefloat(passingGrade) >= 0 &&
+                    parsefloat(passingGrade) <= 1
+                ) {
+                    passingGrade = parseFloat(passingGrade) * 100.0 + "";
+                }
+            }
+            let ctx = "#" + identifier + "-graph";
 
-  function escapeUrl(url, type, interactionIndex) {
-    return (
-      url.replace(/[^A-Za-z0-9]/g, "_") + "_" + type + "_" + interactionIndex
-    );
-  }
+            let labelCounter = 0;
+            let data = [];
+            if (showall_only)
+            {
+                var notWorkingInDashboardMode = interaction.getAttribute("notWorkingInDashboardMode");
+                if (notWorkingInDashboardMode == undefined) {
+                    notWorkingInDashboardMode = "This graph does not work in dashboard mode";
+                }
+                $(ctx).parent().append('<p><em>' + notWorkingInDashboardMode + '</em></p>');
+            }
+            else if (datasets.length < 2) {
+                var insufficientDataText = interaction.getAttribute("insufficientDataText");
+                if (insufficientDataText == undefined) {
+                    insufficientDataText = "There is insufficient data for this graph";
+                }
+                $(ctx).parent().append('<p><em>' + insufficientDataText + '</em></p>');
+            } else {
+                const avgDataSet = datasets.length - 1;
+
+                datasets[0].data.forEach((val, key) => {
+                    data.push({
+                        x: classtitles[key],
+                        y: Math.round(val, 2),
+                        goals: [
+                            {
+                                name: groupAverageLabelText,
+                                value: datasets[avgDataSet].data[key],
+                                strokeWidth: 5,
+                                strokeColor: "#775DD0",
+                            },
+                        ],
+                    });
+                    labelCounter += 1;
+                });
+                let colors = [
+                    "#FF6384",
+                    "#4BC0C0",
+                    "#FFCD56",
+                    "#C9CBCF",
+                    "#36A2EB",
+                    "#B284BE",
+                ];
+                if (interaction.getAttribute('graphColorScale') != null && interaction.getAttribute('graphColorScale') != "") {
+                    colors = interaction.getAttribute('graphColorScale').split(",");
+                }
+                var options = {
+                    series: [
+                        {
+                            data,
+                        },
+                    ],
+                    chart: {
+                        toolbar: {
+                            show: false,
+                        },
+                        height: 350,
+                        type: "bar",
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            distributed: true,
+                        },
+                    },
+                    colors: colors,
+                    dataLabels: {
+                        formatter: function (val, opt) {
+                            const goals =
+                                opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
+                                    .goals;
+
+                            if (goals && goals.length) {
+                                return `${val}%`;
+                            }
+                            return val;
+                        },
+                        style: {
+                            fontSize: textSize + 'px',
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        showForSingleSeries: true,
+                        customLegendItems: [groupAverageLabelText],
+                        markers: {
+                            fillColors: ["#775DD0"],
+                        },
+                        style: {
+                            fontSize: textSize + 'px',
+                        }
+                    },
+                    xaxis: {
+                        position: 'bottom',
+                        labels: {
+                            offsetY: 1,
+                            style: {
+                                fontSize: textSize + 'px',
+                            },
+                        },
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                fontSize: textSize + 'px',
+                            },
+                        },
+                    },
+                };
+                var chart = new ApexCharts(
+                    document.querySelector(`${ctx}`),
+                    options
+                );
+                chart.render();
+                $(ctx + ' svg text').css('font-size', textSize + 'px');
+            }
+        }
+    };
+
+    function hasToRetrieveAll(interaction) {
+        var dashboardMode = x_currentPageXML.getAttribute("dashboardMode");
+        if (dashboardMode == undefined) {
+            dashboardMode = "false";
+        }
+        if (dashboardMode == "true") {
+            return true;
+        } else {
+            if (
+                (interaction.getAttribute("interactionType") !== "open" &&
+                    (interaction.getAttribute("interactionType") !== "opinion"
+                        || interaction.getAttribute("opinionClass") !== null))
+            ) {
+                if (interaction.getAttribute("graph") === "true") {
+                    if (interaction.getAttribute("actualGraphType") != null) {
+                        return (
+                            interaction.getAttribute("actualGraphType") === "bar_answers" ||
+                            interaction.getAttribute("actualGraphType") === "bar_marks" ||
+                            interaction.getAttribute("actualGraphType") === "line_average_marks" ||
+                            interaction.getAttribute("actualGraphType") === "bar_marks_score"
+                        );
+                    } else {
+                        return (
+                            interaction.getAttribute("graphType") === "bar_answers" ||
+                            interaction.getAttribute("graphType") === "bar_marks" ||
+                            interaction.getAttribute("graphType") === "line_average_marks" ||
+                            interaction.getAttribute("graphType") === "bar_marks_score"
+                        );
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        }
+    }
+
+    function escapeUrl(url, type, interactionIndex) {
+        return (
+            url.replace(/[^A-Za-z0-9]/g, "_") + "_" + type + "_" + interactionIndex
+        );
+    }
 
     function matchActor(statement, xertelo)
     {
-        switch (studentidmode) {
-            case 0:
-            case 2:
-                if (statement.actor.mbox == 'mailto:' + username) {
-                    return true;
-                }
-                break;
-            case 1:
-                if (statement.actor.mbox_sha1sum == mboxsha1) {
-                    return true;
-                }
-                break;
-            case 3:
-                if (statement.actor.account != undefined
-                            && statement.actor.account.name == groupname) {
-                    return true;
-                }
-                break;
+
+        if (statement.actor != undefined  ) {
+            if (statement.actor.mbox != undefined && typeof username != 'undefined'
+                && statement.actor.mbox == 'mailto:' + username) {
+                return true;
+            }
+            if (statement.actor.mbox_sha1sum != undefined && typeof mboxsha1 != 'undefined'
+                && statement.actor.mbox_sha1sum == mboxsha1) {
+                return true;
+            }
+            if (statement.actor.account != undefined
+                && statement.actor.account.name != undefined && typeof groupname != 'undefined'
+                && statement.actor.account.name == groupname) {
+                return true;
+            }
         }
         if (xertelo != undefined && xertelo == x_TemplateId
             && statement.context != undefined
@@ -472,131 +539,269 @@
         return false;
     }
 
-  function filterOwnStatements(data, xertelo) {
-    var statements = [];
-    for (var i = 0; i < data.length; i++) {
-      if (matchActor(data[i], xertelo)) {
-        statements.push(data[i]);
-      }
+    function getActor(statement, xertelo) {
+        if (statement.actor != undefined) {
+            let actor = {};
+            if (statement.actor.name != undefined) {
+                actor.name = statement.actor.name;
+            }
+            if (statement.actor.mbox != undefined) {
+                actor.mbox = statement.actor.mbox;
+                actor.mbox_sha1sum = toSHA1(statement.actor.mbox);
+                actor.key = actor.mbox_sha1sum;
+            }
+            if (statement.actor.mbox_sha1sum != undefined) {
+                actor.mbox_sha1sum = statement.actor.mbox_sha1sum;
+                actor.key = actor.mbox_sha1sum;
+            }
+            if (statement.actor.account != undefined
+                && statement.actor.account.name != undefined) {
+                actor.groupname = statement.actor.account.name;
+                if (actor.key == undefined) {
+                    actor.key = actor.groupname;
+                }
+            }
+            return actor;
+        }
+        return false;
     }
-    return statements;
-  }
 
-  function queryStatements(endpoint, mode, query, interactionIndex, handler) {
-    search = mode + "=" + JSON.stringify(query);
+    function mergeActor(actor1, actor2)
+    {
+        if (actor2.name != undefined) {
+            actor1.name = actor2.name;
+        }
+        if (actor2.mbox != undefined) {
+            actor1.mbox = actor2.mbox;
+            actor1.mbox_sha1sum = toSHA1(actor2.mbox);
+            actor1.key = actor1.mbox_sha1sum;
+        }
+        if (actor2.mbox_sha1sum != undefined) {
+            actor1.mbox_sha1sum = actor2.mbox_sha1sum;
+            actor1.key = actor1.mbox_sha1sum;
+        }
+        if (actor2.groupname != undefined) {
+            actor1.groupname = actor2.groupname;
+            if (actor1.key == undefined) {
+                actor1.key = actor1.groupname;
+            }
+        }
+        return actor1;
+    }
 
-    var statements = [];
-    url = endpoint + "?first=1000&" + search;
-    requestJSON(url, function (data) {
-      statements = data.edges.map(function (s) {
-        return s.node.statement;
-      });
-      requestMoreStatement(url, data, statements, interactionIndex, handler);
-    });
-  }
+    function filterOwnStatements(data, xertelo) {
+        var statements = [];
+        for (var i = 0; i < data.length; i++) {
+            if (matchActor(data[i], xertelo)) {
+                statements.push(data[i]);
+            }
+        }
+        return statements;
+    }
 
-  function requestMoreStatement(
+    function queryStatements(endpoint, mode, query, interactionIndex, handler) {
+        search = mode + "=" + JSON.stringify(query);
+
+        var statements = [];
+        url = endpoint + "?first=1000&" + search;
+        requestJSON(url, function (data) {
+            statements = data.edges.map(function (s) {
+                return s.node.statement;
+            });
+            requestMoreStatement(url, data, statements, interactionIndex, handler);
+        });
+    }
+
+    function requestMoreStatement(
     endpoint,
     data,
     statements,
     interactionIndex,
     doneHandler
   ) {
-    if (data.pageInfo.hasNextPage) {
-      requestJSON(
-        endpoint + "&first=1000&after=" + data.pageInfo.endCursor,
-        function (res) {
-          statements = statements.concat(
-            res.edges.map(function (s) {
-              return s.node.statement;
-            })
-          );
-          requestMoreStatement(
-            endpoint,
-            res,
-            statements,
-            interactionIndex,
-            doneHandler
-          );
-        }
-      );
-    } else {
-      doneHandler(statements, interactionIndex);
-    }
-  }
-
-  function requestJSON(url, handler) {
-    $.ajax({
-      type: "GET",
-      url: url,
-      success: handler,
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader(
-          "Authorization",
-          "Basic " + toBase64(lrsUsername + ":" + lrsPassword)
-        );
-      },
-    });
-  }
-
-  function verifyInteraction(interaction) {
-    errors = [];
-    if (interaction.getAttribute("interactionType") == "score") {
-      for (var ci = 0; ci < interaction.children.length; ci++) {
-        c = interaction.children[ci];
-        if (!c.hasAttribute("conScoreBetween")) {
-          errors.push("No score between given.");
+        if (data.pageInfo.hasNextPage) {
+            requestJSON(
+                endpoint + "&first=1000&after=" + data.pageInfo.endCursor,
+                function (res) {
+                    statements = statements.concat(
+                        res.edges.map(function (s) {
+                            return s.node.statement;
+                        })
+                    );
+                    requestMoreStatement(
+                        endpoint,
+                        res,
+                        statements,
+                        interactionIndex,
+                        doneHandler
+                    );
+                }
+            );
         } else {
-          values = c.getAttribute("conScoreBetween").split(",");
-          if (values.length != 2) {
-            errors.push("Invalid pattern for score between.");
-          }
+            doneHandler(statements, interactionIndex);
         }
-      }
     }
-    if (interaction.getAttribute("interactionType") == "answer") {
-      for (var ci = 0; ci < interaction.children.length; ci++) {
-        c = interaction.children[ci];
-        if (!c.hasAttribute("conScoreAnswer")) {
-          errors.push("No answer given.");
+
+    function requestJSON(url, handler) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: handler,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(
+                    "Authorization",
+                    "Basic " + toBase64(lrsUsername + ":" + lrsPassword)
+                );
+            },
+        });
+    }
+
+    function verifyInteraction(interaction) {
+        errors = [];
+        if (interaction.getAttribute("interactionType") == "score") {
+            for (var ci = 0; ci < interaction.children.length; ci++) {
+                c = interaction.children[ci];
+                if (!c.hasAttribute("conScoreBetween")) {
+                    errors.push("No score between given.");
+                } else {
+                    values = c.getAttribute("conScoreBetween").split(",");
+                    if (values.length != 2) {
+                        errors.push("Invalid pattern for score between.");
+                    }
+                }
+            }
         }
-      }
+        if (interaction.getAttribute("interactionType") == "answer") {
+            for (var ci = 0; ci < interaction.children.length; ci++) {
+                c = interaction.children[ci];
+                if (!c.hasAttribute("conScoreAnswer") && c.getAttribute("adaptiveContent") !== "" ) {
+                    errors.push("Interaction block is missing result label.");
+                }
+            }
+        }
+        return errors;
     }
-    return errors;
-  }
 
-  function getUrl(xerteurl, xertelo, xertelabel, opinionClass) {
-    var url = xerteurl + xertelo;
-    if (xertelabel != undefined && xertelabel != "") {
-      url += "/" + xertelabel.replace(/ /g, "_");
+    function getUrl(xerteurl, xertelo, xertelabel, opinionClass) {
+        if (xerteurl == null || xerteurl == '') {
+            var url = x_siteUrl + xertelo;
+        } else {
+            var url = xerteurl + xertelo;
+        }
+        if (xertelabel != undefined && xertelabel != "") {
+            url += "/" + xertelabel.replace(/ /g, "_");
+        }
+        if (opinionClass != undefined && opinionClass != "") {
+            url += "/" + opinionClass.replace(/ /g, "_");
+        }
+        return url;
     }
-    if (opinionClass != undefined && opinionClass != "") {
-      url += "/" + opinionClass.replace(/ /g, "_");
-    }
-    return url;
-  }
 
-  function getGroupingLabel(statement) {
-    // statements DO have context.contextActivities.grouping[0].id defined (see above)
-    // Check context.contextActivities.grouping[0].definition.name['en-US']
-    if (
-      statement.context.contextActivities.grouping[0].definition != undefined &&
-      statement.context.contextActivities.grouping[0].definition.name !=
-        undefined &&
-      statement.context.contextActivities.grouping[0].definition.name[
-        "en-US"
-      ] != undefined
-    ) {
-      return statement.context.contextActivities.grouping[0].definition.name[
-        "en-US"
-      ];
-    } else {
-      let id = statement.context.contextActivities.grouping[0].id;
-      let pos = id.lastIndexOf("/");
-      let group = id.substr(pos + 1);
-      return group.replace(/_/g, " ");
+    function getGroupingLabel(statement) {
+        // statements DO have context.contextActivities.grouping[0].id defined (see above)
+        // Check context.contextActivities.grouping[0].definition.name['en-US']
+        if (
+            statement.context.contextActivities.grouping[0].definition != undefined &&
+            statement.context.contextActivities.grouping[0].definition.name !=
+            undefined &&
+            statement.context.contextActivities.grouping[0].definition.name[
+                "en-US"
+                ] != undefined
+        ) {
+            return statement.context.contextActivities.grouping[0].definition.name[
+                "en-US"
+                ];
+        } else {
+            let id = statement.context.contextActivities.grouping[0].id;
+            let pos = id.lastIndexOf("/");
+            let group = id.substr(pos + 1);
+            return group.replace(/_/g, " ");
+        }
     }
-  }
+
+    function filterRelevantStatements(statements, type) {
+        if (type == "all") {
+            return statements
+        }
+        var groupedData = {};
+        statements.forEach(function (statement, i) {
+            var participant = {
+                'attemptkeys': [],
+                'attempts': [],
+            };
+
+            if (statement.actor.mbox != undefined) {
+                var key = statement.actor.mbox.substr(7).trim();
+                if (groupedData[key] == undefined) {
+                    participant['key'] = key;
+                    groupedData[key] = participant;
+                }
+            } else if (statement.actor.mbox_sha1sum != undefined) {
+                var key = statement.actor.mbox_sha1sum;
+                if (groupedData[key] == undefined) {
+                    participant['key'] = key;
+                    groupedData[key] = participant;
+                }
+            } else {
+                // Key is group, session_id (if group is available), otherwise just session
+                var group = (statement.actor.group != undefined ? statement.actor.group.name : 'global');
+                if (statement.context != undefined &&
+                    statement.context.extensions != undefined &&
+                    statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
+                    var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                    if (key == undefined) {
+                        key = statement.context.extensions[site_url + "sessionId"];
+                    }
+                    if (key != undefined) {
+                        key = group + ' ' + key;
+                        if (groupedData[key] == undefined) {
+                            participant['key'] = key;
+                            groupedData[key] = participant;
+                        }
+                    }
+                }
+            }
+            if (key != undefined) {
+                if (statement.context != undefined &&
+                    statement.context.extensions != undefined &&
+                    statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
+                    var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                    if (!groupedData[key]['attemptkeys'].includes(attemptkey)) {
+                        groupedData[key]['attempts'][attemptkey] = {
+                            'key': attemptkey,
+                            'statements' : []
+                        };
+                        groupedData[key]['attemptkeys'].push(attemptkey)
+                    }
+                    groupedData[key]['attempts'][attemptkey]['statements'].push(statement)
+                }
+            }
+        });
+        var statements = [];
+        for (var user in groupedData) {
+            for (var attempt in groupedData[user].attempts) {
+                if (type == "first") {
+                    statements.push(groupedData[user].attempts[attempt].statements[groupedData[user].attempts[attempt].statements.length-1])
+                } else if (type == "last") {
+                    statements.push(groupedData[user].attempts[attempt].statements[0])
+                } else if (type == 'best') {
+                    //todo check if correct
+                    var bestAttempt = null;
+                    for (var i = 0; i < groupedData[user].attempts[attempt].statements.length; i++) {
+                        if (bestAttempt != null) {
+                            if (bestAttempt.result.score.raw < groupedData[user].attempts[attempt].statements[i].result.score.raw) {
+                                bestAttempt = groupedData[user].attempts[attempt].statements[i]
+                            }
+                        } else {
+                            bestAttempt = groupedData[user].attempts[attempt].statements[i]
+                        }
+                    }
+                    statements.push(bestAttempt)
+                }
+            }
+        }
+        return statements
+    }
 
   function getStatements(
     xerteurl,
@@ -632,21 +837,6 @@
     }
 
     if (!retrieveAll) {
-      /*
-            switch(studentidmode) {
-                case 0:
-                case 2:
-                    q['statement.actor.mbox'] = 'mailto:' + username;
-                    break;
-                case 1:
-                    q['statement.actor.mbox_sha1summbox'] = mboxsha1;
-                    break;
-                case 3:
-                    q['statement.actor.objectType'] = 'Group';
-                    q['statement.actor.account.name'] = groupname;
-                    break;
-            }
-            */
       if (typeof actor != "undefined") {
         //actor.account.homePage = xerteurl + xertelo;
         q["agent"] = JSON.stringify(actor);
@@ -676,7 +866,13 @@
       var date = moment(endDate).add(1, "days").toISOString();
       q["until"] = date;
     }
-
+      let current_users = interaction.getAttribute("contextUsersFilter")
+      if (current_users == 'true') {
+          q["filter_current_users"] = current_users;
+      } else {
+          q["filter_current_users"] = 'false';
+      }
+      //debugger
     /*
         queryStatements(
             lrsEndpoint + '/api/connection/statement',
@@ -709,6 +905,19 @@
           url = data[0].object.id;
         }
         interaction = $(x_currentPageXML).children()[interactionIndex];
+        var sessionStatementUsed = interaction.getAttribute("sessionStatementUsed");
+        if (sessionStatementUsed == undefined) {
+            sessionStatementUsed = "all";
+        }
+        // You can only do this if you have a very targeted query
+        // If type is grouping, groupings  or opinionclasses, we should NOT filter the data on sessions
+        if (type != "grouping" && type != "groupings" && type != "opinionclasses") {
+            data = filterRelevantStatements(data, sessionStatementUsed);
+        }
+        if (type == "open" && adaptiveContent.dashboardMode !== "true"){
+            data = filterOwnStatements(data, xertelo)
+        }
+
         if (
           data.length >= 1 &&
           (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)
@@ -932,7 +1141,7 @@
           div.append("No data found");
         }
       } else {
-        handler(data);
+        handler(data, interaction, url, type, interactionIndex, fullWidth);
       }
     });
   }
@@ -961,7 +1170,7 @@
        document.head.appendChild(script);
      }
      addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
-      if (numLoaded < 5) {
+      if (numLoaded < 6) {
         var fileToLoad;
         if (numLoaded == 0) {
           fileToLoad = x_templateLocation + "common_html5/js/chart.min.js";
@@ -978,7 +1187,9 @@
         } else if (numLoaded == 3) {
           fileToLoad = x_templateLocation + "common_html5/js/apexcharts.min.js";
         } else if (numLoaded == 4) {
-          fileToLoad = x_templateLocation + "common_html5/js/jsPDF/jspdf.min.js";
+          fileToLoad = x_templateLocation + "common_html5/js/jsPDF/jspdf.umd.min.js";
+        } else if (numLoaded == 5) {
+            fileToLoad = x_templateLocation + "common_html5/js/chartjs-adapter-moment.js";
         }
 
         $.getScript(fileToLoad)
@@ -1049,7 +1260,6 @@
     };
 
     this.init = function () {
-      debugger;
       var loadFiles = true;
       for (var i = 0; i < x_pageInfo.length; i++) {
         if (
@@ -1086,7 +1296,13 @@
       fullWidth
     ) {
       xerteurl = interaction.getAttribute("xerteurl");
+      if (xerteurl == null || xerteurl == "") {
+        xerteurl = x_siteUrl;
+      }
       xertelo = interaction.getAttribute("xertelo");
+      if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId;
+      }
       xertelabel = interaction.getAttribute("label");
       xertegrouping = interaction.getAttribute("grouping");
       name = interaction.getAttribute("name");
@@ -1183,6 +1399,7 @@
       if (summaryDiv == '') {
           graphContainer = '<div class="graph-container graph-container-wide"></div>';
         }
+
       let adviceDiv = '<div class="advice">' +
           adviceHeader +
           '<div class="message"></div>' +
@@ -1224,7 +1441,33 @@
                 "</div><div class='score'></div><div class='message'></div>",
             );
             */
-      if (interactionType == "score") {
+        debugger
+
+        //establish needed graphType from [graphType,answerGraphType,groupGraphType]
+        // problem this breaks backwards compatibility.
+        // so check for deprecated combos in graphType/interactionType combos first
+        // if found use deprecated combos if not deprecated find new option
+        const score_deprecated_graph_types = ["bar_answers", "hor_bar_comb_marks", "hor_bar_comb_marks_avg", "pie_marks", "polar_area_per_category"];
+
+        if (interactionType == "answer"){
+            if (interaction.getAttribute("answerGraphType") != null) {
+                //only non deprecated answer interaction graph type.
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("answerGraphType"));
+            } else {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("graphType"));
+            }
+        }else if (interactionType == "grouping" || interactionType == "groupings" || interactionType == "opinionclasses") {
+            if ( interaction.getAttribute("groupGraphType") != null) {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("groupGraphType"));
+            } else {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("graphType"));
+            }
+        }else if (interactionType == "score") {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("graphType"));
+        }
+
+        debugger
+        if (interactionType == "score") {
         var verb = "http://adlnet.gov/expapi/verbs/scored";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -1397,7 +1640,6 @@
         }
       } else if (interactionType == "opinionclasses") {
         // check open question special options
-        debugger;
         var verb = "http://adlnet.gov/expapi/verbs/answered";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -1464,18 +1706,65 @@
       if (IncorrectText == undefined) {
         IncorrectText = "Incorrect";
       }
+      var xerteurl = interaction.getAttribute("xerteurl");
+      if (xerteurl == null || xerteurl == "") {
+        xerteurl = x_siteUrl;
+      }
       var xertelo = interaction.getAttribute("xertelo");
+      if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId;
+      }
       var ownstatements = filterOwnStatements(data, xertelo);
-      var statements = data;
-      xerteurl = interaction.getAttribute("xerteurl");
-      xertelabel = interaction.getAttribute("label");
-      name = interaction.getAttribute("name");
-      interactionType = interaction.getAttribute("interactionType");
-      opinionClass = interaction.getAttribute("opinionClass");
+
       var nrbars = interaction.getAttribute("graphNrDataPoints");
       if (nrbars == undefined) {
         nrbars = 10;
       }
+      var followBlock = interaction.getAttribute("graphFollowBlock");
+      if (followBlock == undefined) {
+          followBlock = false;
+      }
+      var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
+      if (graphFitInfoInBar == undefined) {
+          graphFitInfoInBar = false;
+      }
+      var graphShowAvg = interaction.getAttribute("graphShowAvg");
+      if (graphShowAvg == undefined) {
+          graphShowAvg = false;
+      }
+      var graphShowScore = interaction.getAttribute("graphShowScore");
+      if (graphShowScore == undefined) {
+          graphShowScore = false;
+      }
+      var graphShowAvgLine = interaction.getAttribute("graphShowAvgBar");
+      if (graphShowAvgLine == undefined) {
+          graphShowAvgLine = false;
+      }
+
+      var barName = [];
+      var barNameValue = [];
+      var barRange = [];
+      var barColors = [
+          "#FF6384",
+          "#4BC0C0",
+          "#FFCD56",
+          "#C9CBCF",
+          "#36A2EB",
+          "#B284BE",
+      ];
+      for (let i = 0; i < interaction.children.length; i++) {
+            if (interaction.childNodes[i].getAttribute("blockName") != null && interaction.childNodes[i].getAttribute("blockName") != "") {
+                barName.push(interaction.childNodes[i].getAttribute("blockName"));
+            }
+
+            barNameValue.push(interaction.childNodes[i].getAttribute("conScoreBetween"));
+          let tempstr = interaction.childNodes[i].getAttribute("conScoreBetween").split(",");
+          barRange.push([parseInt(tempstr[0]), parseInt(tempstr[1])]);
+          if (interaction.childNodes[i].getAttribute("blockColor") != null && interaction.childNodes[i].getAttribute("blockColor") != "") {
+              barColors[i] = interaction.childNodes[i].getAttribute("blockColor").replace("0x","#");
+          }
+      }
+      var statements = data;
       if (statements.length > 0) {
         if (statements[0].extensions !== undefined) {
           let numQuestions =
@@ -1578,14 +1867,16 @@
         ) {
           let visitedGroups = {};
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           const sortObject = (obj) =>
             Object.keys(obj)
@@ -1638,15 +1929,41 @@
           ) {
             block = interaction.children[blockIndex];
             scoreRange = block.getAttribute("conScoreBetween");
+            let showOtherBlockContent = interaction.getAttribute("showOtherBlockContent");
+              if (showOtherBlockContent == undefined){
+                  showOtherBlockContent = 'false'
+              }
             range = scoreRange.split(",");
             if (range.length == 2) {
               lowerBound = range[0];
               upperBound = range[1];
-              if (score >= lowerBound && score <= upperBound) {
-                $(
-                  "#" + escapeUrl(url, type, interactionIndex) + " .message"
-                ).html(block.getAttribute("adaptiveContent"));
-              }
+              // if (score >= lowerBound && score <= upperBound) {
+              //   $(
+              //     "#" + escapeUrl(url, type, interactionIndex) + " .message"
+              //   ).html(block.getAttribute("adaptiveContent"));
+              // }
+                let blockName = block.getAttribute("blockName")
+                if (blockName == undefined){
+                    blockName = block.getAttribute("conScoreBetween")
+                }
+
+                if (score >= lowerBound && (score < upperBound || score>=100 && upperBound == 100)) {
+                  $("#" + escapeUrl(url, type, interactionIndex) + " .message").prepend('<button type="button" class="feedback">' + blockName + '</button>\n' +
+                      '<div class="collapsibleContent block' + blockIndex + '" style="display: block; margin-bottom: 25px">' + block.getAttribute("adaptiveContent") + '</div>');
+                } else if (showOtherBlockContent == 'true'){
+                    $("#" + escapeUrl(url, type, interactionIndex) + " .message").append('<button type="button" class="collapsible">' + blockName + '</button>\n' +
+                         '<div class="collapsibleContent block' + blockIndex + '">' + block.getAttribute("adaptiveContent") + '</div>');
+
+                    $("#" + escapeUrl(url, type, interactionIndex) + " .message").children("button").slice(-1).on('click', function () {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
             }
           }
         }
@@ -1683,9 +2000,14 @@
           "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
         );
         if (
-          interaction.getAttribute("graphType") == "pie_marks" ||
-          interaction.getAttribute("graphType") == "bar_comb_marks" ||
-          interaction.getAttribute("graphType") == "polar_area_per_category"
+            interaction.getAttribute("actualGraphType") == "pie_marks" ||
+            interaction.getAttribute("actualGraphType") == "bar_comb_marks" ||
+            interaction.getAttribute("actualGraphType") == "polar_area_per_category" ||
+            interaction.getAttribute("actualGraphType") == "bar_marks" ||
+            interaction.getAttribute("actualGraphType") == "bar_marks_score" ||
+            interaction.getAttribute("actualGraphType") == "bar_answers" ||
+            interaction.getAttribute("actualGraphType") == "line_average_marks" ||
+            interaction.getAttribute("actualGraphType") == "line_own_marks"
         ) {
           div.append(
             "<div class='graph'><canvas id='" +
@@ -1693,8 +2015,8 @@
               "-graph'></canvas></div>"
           );
         } else if (
-          interaction.getAttribute("graphType") == "hor_bar_comb_marks" ||
-          interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
+          interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks" ||
+          interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks_avg"
         ) {
           div.append(
             "<div class='graph'><div id='" +
@@ -1724,85 +2046,658 @@
               "</div>"
           );
         }
+        if (interaction.getAttribute("actualGraphType") == "bar_answers") {
+            //duplicate from interaction type answer
+            //no longer an option from score
+            //still here for backwards compatability
+            //use bar_answers in drawAnswer() for uptodate features
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+            var xAxisLabelBarAnswers = interaction.getAttribute(
+              "xAxisLabelBarAnswers"
+            );
+            var yAxisLabelBarAnswers = interaction.getAttribute(
+              "yAxisLabelBarAnswers"
+            );
+            if (xAxisLabelBarAnswers == undefined)
+              xAxisLabelBarAnswers = "Answers given";
+            if (yAxisLabelBarAnswers == undefined)
+                yAxisLabelBarAnswers = "Percentage of answers";
 
-        if (interaction.getAttribute("graphType") == "bar_answers") {
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
-          var xAxisLabelBarAnswers = interaction.getAttribute(
-            "xAxisLabelBarAnswers"
-          );
-          var yAxisLabelBarAnswers = interaction.getAttribute(
-            "yAxisLabelBarAnswers"
-          );
-          if (xAxisLabelBarAnswers == undefined)
-            xAxisLabelBarAnswers = "Answers given";
-          if (yAxisLabelBarAnswers == undefined)
-            yAxisLabelBarAnswers = "Number of answers";
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.response",
-            aggregate: ADL.count(),
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
-              chart.yDomain([0, 100]);
-              chart.yAxis.axisLabel(yAxisLabelBarAnswers);
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(450);
-              }
-              chart.height(300);
-            },
-          });
-          chart.draw();
-        } else if (interaction.getAttribute("graphType") == "bar_marks") {
-          var xAxisLabelBarMarks =
-            interaction.getAttribute("xAxisLabelBarMarks");
-          var yAxisLabelBarMarks =
-            interaction.getAttribute("yAxisLabelBarMarks");
-          if (xAxisLabelBarMarks == undefined)
-            xAxisLabelBarMarks = "Score Range [%]";
-          if (yAxisLabelBarMarks == undefined)
-            yAxisLabelBarMarks = "% of Group";
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: {
-              start: 0.0,
-              end: 100.0,
-              increment: Math.ceil(100 / nrbars),
-            },
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
-              chart.yAxis.axisLabel(yAxisLabelBarMarks);
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(450);
-              }
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
-        } else if (interaction.getAttribute("graphType") == "bar_comb_marks") {
+            //get labels and #
+            let labels = {};
+            let barBorderColor = barColors.slice();
+
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.response)) {
+                    labels[statements[i].result.response] = 1;
+                } else {
+                    labels[statements[i].result.response] += 1;
+                }
+                if (statements[i] == ownstatements[0]) {
+                    barBorderColor[Object.keys(labels).indexOf(statements[i].result.response)] = "#484848";
+                }
+            }
+
+            Object.keys(labels).forEach(function (key) {
+                labels[key] = labels[key] / statements.length * 100
+            });
+
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "data",
+                        data: Object.values(labels),
+                        backgroundColor: barColors,
+                        borderColor: barBorderColor,
+                        borderWidth: 5,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                            ticks: {
+                                autoSkip: false,
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var dash = new ADL.XAPIDashboard();
+          // dash.addStatements(data);
+
+          // var xAxisLabelBarAnswers = interaction.getAttribute(
+          //   "xAxisLabelBarAnswers"
+          // );
+          // var yAxisLabelBarAnswers = interaction.getAttribute(
+          //   "yAxisLabelBarAnswers"
+          // );
+          // if (xAxisLabelBarAnswers == undefined)
+          //   xAxisLabelBarAnswers = "Answers given";
+          // if (yAxisLabelBarAnswers == undefined)
+          //   yAxisLabelBarAnswers = "Number of answers";
+
+          // var chart = dash.createBarChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.response",
+          //   aggregate: ADL.count(),
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
+          //     chart.yDomain([0, 100]);
+          //     chart.yAxis.axisLabel(yAxisLabelBarAnswers);
+          //     if (fullWidth) {
+          //       chart.width(700);
+          //     } else {
+          //       chart.width(450);
+          //     }
+          //     chart.height(300);
+          //   },
+          // });
+          // chart.draw();
+        } else if (interaction.getAttribute("actualGraphType") == "bar_marks") {
+            let xAxisLabelBarMarks =
+                interaction.getAttribute("xAxisLabelBarMarks");
+            let yAxisLabelBarMarks =
+                interaction.getAttribute("yAxisLabelBarMarks");
+            let y2AxisLabelBarMarks =
+                interaction.getAttribute("y2AxisLabelBarMarks");
+            let avgScoreLabelBarMarks =
+                interaction.getAttribute("avgScoreLabelBarMarks");
+            let ownScoreLabelBarMarks =
+                interaction.getAttribute("ownScoreLabelBarMarks");
+            let groupUserLabel = interaction.getAttribute("groupUserLabel");
+            let groupScore = interaction.getAttribute("groupScore");
+            let userScore = interaction.getAttribute("userScore");
+            if (xAxisLabelBarMarks == undefined)
+                xAxisLabelBarMarks = "Score Range [%]";
+            if (yAxisLabelBarMarks == undefined)
+                yAxisLabelBarMarks = "% of Group";
+            if (y2AxisLabelBarMarks == undefined)
+                y2AxisLabelBarMarks = "Score [%]";
+            if (avgScoreLabelBarMarks == undefined)
+                avgScoreLabelBarMarks = "Average in this group";
+            if (ownScoreLabelBarMarks == undefined)
+                ownScoreLabelBarMarks = "Your score";
+            if (groupUserLabel == undefined)
+                groupUserLabel = "participants in group";
+            if (groupScore == undefined){
+                groupScore = "avg score";
+            }
+            if (userScore == undefined){
+                userScore = "User score";
+            }
+
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
+            //create labels
+            let labels = [];
+            if (followBlock == "true") {
+                for (let i = 0; i < barNameValue.length; i++) {
+                    labels.push([barNameValue[i].replace(",", "-")])
+                }
+            } else {
+                for (let i = 0; i < 100; i = i + Math.ceil(100 / nrbars)) {
+                    let temp = ""
+                    labels.push([temp + i + "-" + (i + Math.ceil(100 / nrbars))])
+                }
+            }
+            for (let i = 0; i < barName.length; i++) {
+                labels[i] = [barName[i]];
+            }
+
+            //calculate to what group the answers belong
+            let barSizeData = new Array(barRange.length).fill(0);
+            let groupAvg = new Array(barRange.length).fill(0);
+            let tempTotal = 0;
+            let ownUserScore = [];
+            let barBorderColor = barColors.slice();
+            let barScoreColor = new Array(barRange.length);
+            let barOwnScore = barSizeData.slice();
+
+            if (followBlock == "true") {
+                for (let i = 0; i < statements.length; i++) {
+                    //check what bar contains 100 (might not be the last)
+                    if (statements[i].result.score.raw == 100) {
+                        for (let k = 0; k < barRange.length; k++) {
+                            if (barRange[k][1] == 100) {
+                                barSizeData[k] += 1;
+                                groupAvg[k] += statements[i].result.score.raw;
+                                tempTotal += 1;
+                                if (statements[i] == ownstatements[0]) {
+                                    barBorderColor[k] = "#484848";
+                                    barScoreColor[k] = "#000000";
+                                    barOwnScore[k] = [score - 1, score];
+                                    ownUserScore = [k, score];
+                                }
+                            }
+                        }
+                    } else {
+                        for (let j = 0; j < barRange.length; j++) {
+                            if (statements[i].result.score.raw >= barRange[j][0] && statements[i].result.score.raw < barRange[j][1]) {
+                                barSizeData[j] += 1;
+                                groupAvg[j] += statements[i].result.score.raw;
+                                tempTotal += 1;
+                                if (statements[i] == ownstatements[0]) {
+                                    barBorderColor[j] = "#484848";
+                                    barScoreColor[j] = "#000000";
+                                    barOwnScore[j] = [score - 1, score];
+                                    ownUserScore = [j, score];
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                //as we are not following the block settings we should allocate more room for bars
+                barSizeData = new Array(Number(nrbars)).fill(0);
+                groupAvg = barSizeData.slice();
+                barOwnScore = barSizeData.slice();
+                for (let i = 0; i < statements.length; i++) {
+                    let ind = Math.floor(statements[i].result.score.raw / Math.ceil(100 / nrbars));
+                    if (ind >= Number(nrbars))
+                    {
+                        ind = Number(nrbars) - 1;
+                    }
+                    barSizeData[ind] += 1;
+                    groupAvg[ind] += statements[i].result.score.raw;
+                    tempTotal += 1;
+                    if (statements[i] == ownstatements[0]) {
+                        barBorderColor[ind] = "#484848";
+                        barScoreColor[ind] = "#000000";
+                        barOwnScore[ind] = [score - 1, score];
+                        ownUserScore = [ind, score];
+                    }
+                }
+            }
+
+            //add block avg to labels
+            if (graphShowAvg == "true" || graphShowScore == "true") {
+                for (let i = 0; i < labels.length; i++) {
+                    if (graphShowAvg == "true") {
+                        labels[i].push(groupScore + ": " + (groupAvg[i] / Math.max(barSizeData[i], 1)).toFixed(2))
+                        }
+                    if (graphShowScore == "true" && i == ownUserScore[0]) {
+                        labels[i].push(userScore + ": " + ownUserScore[1])
+                    }
+                }
+            }
+
+            //add # users per group
+            if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                for (let i = 0; i < labels.length; i++) {
+                    labels[i].push(barSizeData[i] + " " + groupUserLabel);
+                }
+            }
+            //convert to percentage and avg
+            for (let i = 0; i < barSizeData.length; i++) {
+                if (barSizeData[i] !== 0) {
+                    groupAvg[i] = [groupAvg[i] / barSizeData[i] - 1, groupAvg[i] / Math.max(barSizeData[i], 1)];
+                } else {
+                    groupAvg[i] = [0, 0];
+                }
+                if (tempTotal !== 0) {
+                    barSizeData[i] = barSizeData[i] / tempTotal * 100;
+                } else {
+                    barSizeData[i] = 0;
+                }
+            }
+
+
+            //scale to fit in bar
+            if (graphFitInfoInBar == "true") {
+                for (let i = 0; i < barSizeData.length; i++) {
+                    if (followBlock == "true") {
+                        //use plus one to prevent out of bounds
+                        groupAvg[i][0] = ((groupAvg[i][1] - barRange[i][0]) / (barRange[i][1] - barRange[i][0])) * barSizeData[i];
+                        groupAvg[i][1] = groupAvg[i][0] + 1;
+                        if (barOwnScore[i] !== 0) {
+                            barOwnScore[i][0] = ((barOwnScore[i][1] - barRange[i][0]) / (barRange[i][1] - barRange[i][0])) * barSizeData[i];
+                            barOwnScore[i][1] = barOwnScore[i][0] + 1;
+                        }
+                    } else {
+
+                        let step = Math.ceil(100 / nrbars);
+                        groupAvg[i][0] = ((groupAvg[i][1] - i * step) / ((i + 1) * step - i * step)) * barSizeData[i];
+                        groupAvg[i][1] = groupAvg[i][0] + 1;
+                        if (barOwnScore[i] !== 0) {
+                            barOwnScore[i][0] = ((barOwnScore[i][1] - i * step) / ((i + 1) * step - i * step)) * barSizeData[i];
+                            barOwnScore[i][1] = barOwnScore[i][0] + 1;
+                        }
+                    }
+                }
+            }
+
+            let bardata = {};
+            if (graphShowAvgLine == "true" && graphShowAvg == "true") {
+                bardata = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            type: "bar",
+                            label: ownScoreLabelBarMarks,
+                            data: barOwnScore,
+                            backgroundColor: barScoreColor,
+                            yID: "id1",
+                        },
+                        {
+                            type: "bar",
+                            label: avgScoreLabelBarMarks,
+                            data: groupAvg,
+                            backgroundColor: "#8f4e4e",
+                            yID: "id1",
+                        },
+                        {
+                            type: "bar",
+                            label: "My First dataset",
+                            data: barSizeData,
+                            backgroundColor: barColors,
+                            borderWidth: 5,
+                            borderColor: barBorderColor,
+                            yID: "id1",
+                        },
+                    ],
+                };
+            } else {
+                bardata = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            type: "bar",
+                            label: "My First dataset",
+                            data: barSizeData,
+                            backgroundColor: barColors,
+                            borderWidth: 5,
+                            borderColor: barBorderColor,
+                            yID: "id1",
+                        },
+                    ],
+                };
+            }
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    events: [],
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        y2: {
+                            display: (!graphFitInfoInBar),
+                            title: {
+                                display: true,
+                                text: y2AxisLabelBarMarks,
+                                beginAtZero: true,
+                            },
+                            position: "right",
+                            min: 0,
+                            max: 100,
+                            id: "id2",
+                        },
+                        x: {
+                            title: {
+                                display: !(barName.length > 0),
+                                text: xAxisLabelBarMarks
+                            },
+                            stacked: true,
+                            ticks: {
+                                autoSkip: false,
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                },
+            });
+
+
+            //   var dash = new ADL.XAPIDashboard();
+            //   dash.addStatements(data);
+            //   data.map(function (x) {
+            //       x.result.score.raw;
+            //       return x;
+            //   });
+            //
+            // var chart = dash.createBarChart({
+            //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+            //   groupBy: "result.score.raw",
+            //   aggregate: ADL.count(),
+            //   range: {
+            //    start: 0.0,
+            //    end: 100.0,
+            //   increment: Math.ceil(100 / nrbars),
+            //   },
+            //   post: function (d) {
+            //     d.contents.map(function (el) {
+            //       el.out *= (1 / data.length) * 100;
+            //     });
+            //   },
+            //
+            //   customize: function (chart) {
+            //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
+            //     chart.yAxis.axisLabel(yAxisLabelBarMarks);
+            //     if (fullWidth) {
+            //       chart.width(700);
+            //     } else {
+            //       chart.width(450);
+            //     }
+            //     chart.height(300);
+            //     chart.yDomain([0, 100]);
+            //   },
+            // });
+            // chart.draw();
+        } else if (interaction.getAttribute("actualGraphType") == "bar_marks_score") {
+
+            let yAxisLabelBarScore =
+                interaction.getAttribute("yAxisLabelBarScore");
+            let groupUserLabel = interaction.getAttribute("groupUserLabel");
+            let groupScore = interaction.getAttribute("groupScore");
+            let userScore = interaction.getAttribute("userScore");
+            if (yAxisLabelBarScore == undefined)
+                yAxisLabelBarScore = "Average score of all attempts";
+            if (groupUserLabel == undefined)
+                groupUserLabel = "participants in level";
+            if (groupScore == undefined){
+                groupScore = "avg score";
+            }
+            if (userScore == undefined){
+                userScore = "User score";
+            }
+
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+            //create labels
+            let labels = [];
+            if (followBlock == "true") {
+                for (let i = 0; i < barNameValue.length; i++) {
+                    labels.push([barNameValue[i].replace(",", "-")])
+                }
+            } else {
+                for (let i = 0; i < 100; i = i + Math.ceil(100 / nrbars)) {
+                    let temp = ""
+                    labels.push([temp + i + "-" + (i + Math.ceil(100 / nrbars))])
+                }
+            }
+
+            for (let i = 0; i < barName.length; i++) {
+                    labels[i] = [barName[i]];
+            }
+
+            //calculate to what group the answers belong
+            let barSizeData = new Array(barRange.length).fill(0);
+            let barBorderColor = barColors.slice();
+            let groupAvg = new Array(barRange.length).fill(0);
+            let barOwnScore = barSizeData.slice();
+            let ownScore,ownScoreIndex = 0;
+
+            if (followBlock == 'true') {
+                for (let i = 0; i < statements.length; i++) {
+                    //check what bar contains 100 (might not be the last)
+                    if (statements[i].result.score.raw == 100) {
+                        for (let k = 0; k < barRange.length; k++) {
+                            if (barRange[k][1] == 100) {
+                                barSizeData[k] += 1;
+                                groupAvg[k] += statements[i].result.score.raw;
+                                if (statements[i] == ownstatements[0]) {
+                                    barBorderColor[k] = "#484848";
+                                    barOwnScore[k] = score;
+                                    ownScore = score;
+                                    ownScoreIndex = k;
+                                }
+                            }
+                        }
+                    } else {
+                        for (let j = 0; j < barRange.length; j++) {
+                            if (statements[i].result.score.raw >= barRange[j][0] && statements[i].result.score.raw < barRange[j][1]) {
+                                barSizeData[j] += 1;
+                                groupAvg[j] += statements[i].result.score.raw;
+
+                                if (statements[i] == ownstatements[0]) {
+                                    barBorderColor[j] = "#484848";
+                                    barOwnScore[j] = score;
+                                    ownScore = score;
+                                    ownScoreIndex = j;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                //as we are not following the block settings we should allocate more room for bars
+                barSizeData = new Array(Number(nrbars)).fill(0);
+                groupAvg = barSizeData.slice();
+
+                for (let i = 0; i < statements.length; i++) {
+                    let ind = Math.floor(statements[i].result.score.raw / Math.ceil(100 / nrbars));
+                    if (ind >= Number(nrbars))
+                    {
+                        ind = Number(nrbars) - 1;
+                    }
+                    barSizeData[ind] += 1;
+                    groupAvg[ind] += statements[i].result.score.raw;
+                    if (statements[i] == ownstatements[0]) {
+                        barBorderColor[ind] = "#484848";
+                        barOwnScore[ind] = score;
+                        ownScore = score;
+                        ownScoreIndex = ind;
+                    }
+                }
+            }
+
+            for (let i = 0; i < barSizeData.length; i++) {
+                if (barSizeData[i] !== 0) {
+
+                    groupAvg[i] = groupAvg[i] / barSizeData[i];
+                } else {
+                    groupAvg[i] = 0;
+                }
+            }
+
+            const newShade = (hexColor, magnitude) => {
+                hexColor = hexColor.replace(`#`, ``);
+                if (hexColor.length === 6) {
+                    const decimalColor = parseInt(hexColor, 16);
+                    let r = (decimalColor >> 16) + magnitude;
+                    r > 255 && (r = 255);
+                    r < 0 && (r = 0);
+                    let g = (decimalColor & 0x0000ff) + magnitude;
+                    g > 255 && (g = 255);
+                    g < 0 && (g = 0);
+                    let b = ((decimalColor >> 8) & 0x00ff) + magnitude;
+                    b > 255 && (b = 255);
+                    b < 0 && (b = 0);
+                    return `#${(g | (b << 8) | (r << 16)).toString(16)}`;
+                } else {
+                    return hexColor;
+                }
+            };
+            let offBarColors = barColors.slice();
+            for (let i = 0; i < barOwnScore.length; i++) {
+                if (barOwnScore[i] != 0) {
+                    offBarColors = newShade(barColors[i], 40)
+                }
+            }
+            //add block avg to labels
+            for (let i = 0; i < labels.length; i++) {
+                labels[i].push(groupScore + ": " + groupAvg[i].toFixed(2))
+                if (i == ownScoreIndex){
+                    labels[i].push(userScore + ": " + ownScore)
+                }
+            }
+
+            //add # users per group
+            if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                for (let i = 0; i < labels.length; i++) {
+                    labels[i].push(barSizeData[i] + " " + groupUserLabel);
+                }
+            }
+
+            let bardata = {
+                labels: labels,
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "Score",
+                        data: barOwnScore,
+                        backgroundColor: offBarColors,
+                        barPercentage: (ownScore > groupAvg[ownScoreIndex]) ? 0.96:0.90,
+                        yID: "id1",
+                        order: 2,
+                    },
+                    {
+                        type: "bar",
+                        label: "data",
+                        data: groupAvg,
+                        backgroundColor: barColors,
+                        borderWidth: 5,
+                        barPercentage: 0.96,
+                        borderColor: barBorderColor,
+                        yID: "id1",
+                        order: (ownScore > groupAvg[ownScoreIndex]) ? 1:3,
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarScore,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            stacked: (ownScore != groupAvg[ownScoreIndex] || ownScore == 0),
+                            ticks: {
+                                autoSkip: false,
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+        } else if (interaction.getAttribute("actualGraphType") == "bar_comb_marks") {
           let passingGrade = x_params.trackingPassed;
           if (passingGrade == null) {
             passingGrade = "55";
@@ -1895,7 +2790,11 @@
             },
             options: options,
           });
-        } else if (interaction.getAttribute("graphType") == "pie_marks") {
+
+        } else if (interaction.getAttribute("actualGraphType") == "pie_marks") {
+            //only works via groupings
+            //no longer an option from score
+            //still here as grouping relies on score for features
           var correctLabel = interaction.getAttribute("correctLabel");
           var incorrectLabel = interaction.getAttribute("incorrectLabel");
           if (correctLabel == undefined) correctLabel = "Correct";
@@ -1923,7 +2822,7 @@
               }
             }
           } else {
-            if (statements[0].result.extensions !== undefined) {
+            if (statements.length > 0 && statements[0].result.extensions !== undefined) {
               let correctQuestionScores =
                 statements[0].result.extensions[
                   "http://xerte.org.uk/result/grouping/scores"
@@ -1964,7 +2863,7 @@
             options: options,
           });
         } else if (
-          interaction.getAttribute("graphType") == "line_average_marks"
+          interaction.getAttribute("actualGraphType") == "line_average_marks"
         ) {
           var xAxisLabelLineAvgMarks = interaction.getAttribute(
             "xAxisLabelLineAvgMarks"
@@ -1976,43 +2875,113 @@
             xAxisLabelLineAvgMarks = "Score Range [%]";
           if (yAxisLabelLineAvgMarks == undefined)
             yAxisLabelLineAvgMarks = "% of Group";
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
 
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: {
-              start: 0.0,
-              end: 100.0,
-              increment: Math.ceil(100 / nrbars),
-            },
-            rangeLabel: "start",
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelLineAvgMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(450);
-              }
-              chart.tooltips(false);
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
-        } else if (interaction.getAttribute("graphType") == "line_own_marks") {
+         //  var dash = new ADL.XAPIDashboard();
+         // dash.addStatements(data);
+         //  data.map(function (x) {
+         //    x.result.score.raw;
+         //    return x;
+         //  });
+            //get labels and #
+            let labels = {};
+
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.score.raw)) {
+                    labels[statements[i].result.score.raw] = 1;
+                } else {
+                    labels[statements[i].result.score.raw] += 1;
+                }
+            }
+
+            Object.keys(labels).forEach(function (key) {
+                labels[key] = labels[key] / statements.length * 100
+            });
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        backgroundColor: barColors,
+                        borderColor: barColors,
+                        data: Object.values(labels),
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+            //
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.score.raw",
+          //   aggregate: ADL.count(),
+          //   range: {
+          //     start: 0.0,
+          //     end: 100.0,
+          //     increment: Math.ceil(100 / nrbars),
+          //   },
+          //   rangeLabel: "start",
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelLineAvgMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
+          //     if (fullWidth) {
+          //       chart.width(700);
+          //     } else {
+          //       chart.width(450);
+          //     }
+          //     chart.tooltips(false);
+          //     chart.height(300);
+          //     chart.yDomain([0, 100]);
+          //   },
+          // });
+          // chart.draw();
+        } else if (interaction.getAttribute("actualGraphType") == "line_own_marks") {
           var xAxisLabelLineOwnMarks = interaction.getAttribute(
             "xAxisLabelLineOwnMarks"
           );
@@ -2023,13 +2992,13 @@
             xAxisLabelLineOwnMarks = "Date";
           if (yAxisLabelLineOwnMarks == undefined)
             yAxisLabelLineOwnMarks = "Grade [0-10]";
-          var dash = new ADL.XAPIDashboard();
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+          // var dash = new ADL.XAPIDashboard();
+          // data.map(function (x) {
+          //   x.result.score.raw;
+          //   return x;
+          // });
 
-          dash.addStatements(statements);
+          //dash.addStatements(statements);
           end = new Date();
           begin = end;
           for (statement in statements) {
@@ -2042,42 +3011,121 @@
           }
 
           begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000);
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "timestamp",
-            range: {
-              start: begin.toISOString(),
-              end: end.toISOString(),
-              increment: 1000 * 60 * 15,
-            },
-            aggregate: ADL.average("result.score.raw"),
-            rangeLabel: "start",
-            customize: function (chart) {
-              if (fullWidth) {
-                chart.width(700);
-              } else {
-                chart.width(700);
-              }
-              chart.height(300);
-              chart.tooltips(false);
-              chart.yDomain([0, 10]);
-              chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
-              chart.xAxis.tickFormat(function (label) {
-                return d3.time.format("%b %d")(new Date(label));
-              });
-            },
-            post: function (data) {
-              data.contents.map(function (el) {
-                el.out = el.out / 10;
-                el.in = Date.parse(el.in);
-              });
-            },
-          });
-          chart.draw();
+
+            let dataSet = [];
+            for (let i = 0; i < statements.length; i++) {
+                let temp = {};
+                temp["x"] = statements[i].timestamp;
+                temp["y"] = statements[i].result.score.raw/10;
+                dataSet.push(temp)
+            }
+
+            let bardata = {
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        data: dataSet,
+                        borderColor: barColors,
+                        backgroundColor: barColors,
+                    },
+                ],
+            };
+
+          let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxis: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                 stepSize: 2
+                            }
+                        },
+                        xAxes: {
+                            type: "time",
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'll'
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Date'
+                            },
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            min: begin,
+                            max: end,
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "timestamp",
+          //   range: {
+          //     start: begin.toISOString(),
+          //     end: end.toISOString(),
+          //     increment: 1000 * 60 * 15,
+          //   },
+          //   aggregate: ADL.average("result.score.raw"),
+          //   rangeLabel: "start",
+          //   customize: function (chart) {
+          //     if (fullWidth) {
+          //       chart.width(700);
+          //     } else {
+          //       chart.width(700);
+          //     }
+          //     chart.height(300);
+          //     chart.tooltips(false);
+          //     chart.yDomain([0, 10]);
+          //     chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
+          //     chart.xAxis.tickFormat(function (label) {
+          //       return d3.time.format("%b %d")(new Date(label));
+          //     });
+          //   },
+          //   post: function (data) {
+          //     data.contents.map(function (el) {
+          //       el.out = el.out / 10;
+          //       el.in = Date.parse(el.in);
+          //     });
+          //   },
+          // });
+          // chart.draw();
         } else if (
-          interaction.getAttribute("graphType") == "polar_area_per_category"
+          interaction.getAttribute("actualGraphType") == "polar_area_per_category"
         ) {
+            //only works via groupings
+            //no longer an option from score
+            //still here as grouping relies on score for features
           let backgroundColors = [
             "#FF6384",
             "#4BC0C0",
@@ -2086,48 +3134,101 @@
             "#36A2EB",
             "#B284BE",
           ];
-          if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "") {
-            backgroundColors = interaction.getAttribute("graphColorScale").split(",");
+            //quick check if we use simple colors or specific color/group pairs
+            // under the assumption that only one of the systems is used
+            let namedBackgroundColors = false;
+          if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "" && !interaction.getAttribute("graphColorScale").includes(":")) {
+              backgroundColors = interaction.getAttribute("graphColorScale").split(",");
+          } else if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != ""){
+              backgroundColors = [];
+              let groupColorPairs = interaction.getAttribute("graphColorScale").split(",")
+              for (key of groupColorPairs){
+                  let keyValue = key.split(":")
+                  backgroundColors[keyValue[0]] = keyValue[1];
+                  namedBackgroundColors = true;
+              }
           }
-          let visitedGroups = {};
+          let visitedGroups = [];
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
+          }
+          if (namedBackgroundColors && Object.keys(visitedGroups).length == Object.keys(backgroundColors).length){
+              // Order the keys in visitedGroups to match the order of backgroundColors
+              let newVisitedGroups = [];
+              let matched = true;
+              for (let i = 0; i < Object.keys(backgroundColors).length; i++){
+                  let key = Object.keys(backgroundColors)[i];
+                  if (typeof(visitedGroups[key]) == 'undefined'){
+                      matched = false;
+                      break;
+                  }
+                  newVisitedGroups[key] = visitedGroups[key];
+              }
+              if (matched) {
+                  visitedGroups = newVisitedGroups;
+              }
           }
           let labelCounter = 0;
           let legendLabels = [];
           for (key in visitedGroups) {
             legendLabels.push({
               text: key,
-              fillStyle: backgroundColors[labelCounter],
+              fillStyle: typeof(backgroundColors[key]) == 'undefined' ? backgroundColors[labelCounter] : backgroundColors[key],
             });
             labelCounter += 1;
           }
           labelCounter = 0;
           let questions = statements.map(
-            (statement) =>
-              statement.result.extensions[
-                "http://xerte.org.uk/result/grouping/scores"
-              ]
+            (statement) => ({
+                question : statement.result.extensions[
+                    "http://xerte.org.uk/result/grouping/scores"
+                    ],
+                groupName : statement.context.contextActivities.grouping[0]
+                    .definition.name["en-US"]
+                    })
           );
+          // Arrange questions in the same order as visitedGroups
+          let newQuestions = [];
+          for (key in visitedGroups) {
+              for (let i = 0; i < questions.length; i++) {
+                  if (questions[i].groupName == key) {
+                      newQuestions.push(questions[i]);
+                      break;
+                  }
+              }
+          }
+          questions = newQuestions;
           let labels = [];
           let backgroundColor = [];
           let dataValues = [];
           for (let index in questions) {
-            let questionsGroup = questions[index];
+            let questionsGroup = questions[index]["question"];
+            let groupName = questions[index]["groupName"]
             for (let index in questionsGroup) {
               let singleQuestion = questionsGroup[index];
               labels.push(singleQuestion[0][0]);
               dataValues.push(singleQuestion[1]);
-              if (labelCounter < backgroundColors.length) {
-                backgroundColor.push(backgroundColors[labelCounter]);
-              }
+              //again differentiate between simple colors and color/group pairs
+                if (!namedBackgroundColors) {
+                    if (labelCounter < backgroundColors.length) {
+                        backgroundColor.push(backgroundColors[labelCounter]);
+                    }
+                }else {
+                    if (labelCounter < Object.keys(backgroundColors).length){
+                        if (typeof(backgroundColors[groupName]) !== 'undefined'){
+                         backgroundColor.push(backgroundColors[groupName])
+                         }
+                    }
+                }
             }
             labelCounter += 1;
           }
@@ -2164,8 +3265,11 @@
             },
           });
         } else if (
-          interaction.getAttribute("graphType") == "hor_bar_comb_marks"
+          interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks"
         ) {
+            //only works via groupings
+            //no longer an option from score
+            //still here as grouping relies on score for features
           let passingGrade = x_params.trackingPassed;
           if (passingGrade == null) {
             passingGrade = "55";
@@ -2180,17 +3284,18 @@
             }
           }
           let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
-
           let visitedGroups = {};
           for (let statement in statements) {
-            let group =
-              statements[statement].context.contextActivities.grouping[0]
-                .definition.name["en-US"];
-            if (!(group in visitedGroups)) {
-              visitedGroups[group] = [statements[statement].result.score.raw];
-            } else {
-              visitedGroups[group].push(statements[statement].result.score.raw);
-            }
+              if (typeof statements[statement].context.contextActivities.grouping !== 'undefined') {
+                  let group =
+                      statements[statement].context.contextActivities.grouping[0]
+                          .definition.name["en-US"];
+                  if (!(group in visitedGroups)) {
+                      visitedGroups[group] = [statements[statement].result.score.raw];
+                  } else {
+                      visitedGroups[group].push(statements[statement].result.score.raw);
+                  }
+              }
           }
           let labelCounter = 0;
           let data = [];
@@ -2281,22 +3386,39 @@
     ) {
       // remove loader
       $("#interaction_load_" + interactionIndex).remove();
-
       var answerLabelText = interaction.getAttribute("answerText");
       if (answerLabelText == undefined) {
-        answerLabelText = "Your answer is {0}";
+        answerLabelText = "Your answer is: {0}";
       }
 
       var nrParticipantsText = interaction.getAttribute("NrParticipantsText");
       if (nrParticipantsText == undefined) {
-        nrParticipantsText = "The number of participants is {0}";
+        nrParticipantsText = "The number of participants is: {0}";
       }
       var nrbars = interaction.getAttribute("graphNrDataPoints");
       if (nrbars == undefined) {
         nrbars = 10;
       }
       var xertelo = interaction.getAttribute("xertelo");
+        if (xertelo == "") {
+            xertelo = x_TemplateId
+        }
       var statements = filterOwnStatements(data, xertelo);
+
+        var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
+        if (graphFitInfoInBar == undefined) {
+            graphFitInfoInBar = false;
+        }
+
+        var barColors = [
+            "#FF6384",
+            "#4BC0C0",
+            "#FFCD56",
+            "#C9CBCF",
+            "#36A2EB",
+            "#B284BE",
+        ];
+
       if (statements.length > 0) {
         var givenAnswer = statements[0].result.response;
         if (interaction.getAttribute("showScore") == "true") {
@@ -2346,11 +3468,16 @@
         div = $(
           "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
         );
-        div.append(
-          "<div class='graph'><svg id='" +
-          escapeUrl(url, type, interactionIndex) +
-          "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
-        );
+        // div.append(
+        //   "<div class='graph'><svg id='" +
+        //   escapeUrl(url, type, interactionIndex) +
+        //   "-graph' width='700' height='300' viewBox='0 0 700 300'></svg></div>"
+        // );
+          div.append(
+              "<div class='graph'><canvas id='" +
+              escapeUrl(url, type, interactionIndex) +
+              "-graph'></canvas></div>"
+          );
         if (showExplanation == "true" && Explanation != "") {
             var textSize = Math.round(interaction.getAttribute("labelFontSize"));
             if (textSize == null || textSize == 0) textSize = 12;
@@ -2361,7 +3488,13 @@
               "</div>"
           );
         }
-        if (interaction.getAttribute("graphType") == "bar_answers") {
+        if (interaction.getAttribute("actualGraphType") == "bar_answers") {
+
+            var xertelo = interaction.getAttribute("xertelo");
+            if (xertelo == "") {
+                xertelo = x_TemplateId
+            }
+            var ownstatements = filterOwnStatements(data, xertelo);
           // Check if data has responses with multiple answers
           var multipleAnswers = false;
           data.forEach(function(s){
@@ -2372,23 +3505,31 @@
           if (multipleAnswers)
           {
             // Create pseudo dataset with statement for each answer
-            var dataset = [];
+            var answer_dataset = [];
             data.forEach(function(s){
               const answers = s.result.response.split('[,]');
               answers.forEach(function(a){
                 // clone statement
                 var statement = JSON.parse(JSON.stringify(s));
-                statement.result.response = a;
-                dataset.push(statement);
+                  statement.result.response = a;
+                  answer_dataset.push(statement);
               });
             });
           }
-          var dash = new ADL.XAPIDashboard();
-          if (!multipleAnswers) {
-            dash.addStatements(data);
-          } else {
-            dash.addStatements(dataset);
+          else
+          {
+              answer_dataset = data;
           }
+
+          //var dash = new ADL.XAPIDashboard();
+          //if (!multipleAnswers) {
+          //  dash.addStatements(data);
+          //} else {
+          //  dash.addStatements(dataset);
+          //}
+
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
           var xAxisLabelBarAnswers = interaction.getAttribute(
             "xAxisLabelBarAnswers"
           );
@@ -2398,42 +3539,156 @@
           if (xAxisLabelBarAnswers == undefined)
             xAxisLabelBarAnswers = "Answers given";
           if (yAxisLabelBarAnswers == undefined)
-            yAxisLabelBarAnswers = "Number of answers";
+            yAxisLabelBarAnswers = "Percentage of answers";
           var xDomain = [];
           if (
-            data.length > 0 &&
-            data[0].object.definition != "undefined" &&
-            data[0].object.definition.choices != "undfined"
+            statements.length > 0 &&
+            statements[0].object.definition != "undefined" &&
+            statements[0].object.definition.choices != "undfined"
           ) {
-            var choices = data[0].object.definition.choices;
+            var choices = statements[0].object.definition.choices;
             for (var i = 0; i < choices.length; i++) {
               xDomain[i] = choices[i].id;
             }
           }
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.response",
-            aggregate: ADL.count(),
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
-              chart.yDomain([0, 100]);
-              if (xDomain.length > 0) {
-                chart.xDomain(xDomain);
-              }
-              chart.yAxis.axisLabel(yAxisLabelBarAnswers);
-              chart.width(700);
-              chart.height(300);
-            },
-          });
-          chart.draw();
-        } else if (interaction.getAttribute("graphType") == "bar_marks") {
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
+
+            //get used labels and #
+            let labels = {};
+            let barBorderColor = barColors.slice();
+            if (!multipleAnswers) {
+                //todo fix
+                for (let i = 0; i < answer_dataset.length; i++) {
+                    if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
+                        labels[answer_dataset[i].result.response] = 1;
+                    } else {
+                        labels[answer_dataset[i].result.response] += 1;
+                    }
+                    if (answer_dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
+                    }
+                }
+            } else {
+                for (let i = 0; i < answer_dataset.length; i++) {
+                    if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
+                        labels[answer_dataset[i].result.response] = 1;
+                    } else {
+                        labels[answer_dataset[i].result.response] += 1;
+                    }
+                    if (answer_dataset[i].result.response == givenAnswer) {
+                        barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
+                    }
+                }
+            }
+            var barData = [];
+            let totalActualResponseCounter = 0;
+            //match used labels and # to xDomain
+            if (xDomain.length == 0) {
+                xDomain = Object.keys(labels);
+                barData = Object.values(labels);
+                totalActualResponseCounter = barData.length;
+            } else {
+                barData = new Array(xDomain.length).fill(0);
+                for (let i = 0; i < xDomain.length; i++) {
+                    if (labels[xDomain[i]] !== undefined){
+                        barData[i] = labels[xDomain[i]];
+                        totalActualResponseCounter += labels[xDomain[i]];
+                    }
+                }
+            }
+            debugger
+            if (!multipleAnswers) {
+                for (let i = 0; i < barData.length; i++) {
+                    barData[i] = barData[i] / totalActualResponseCounter * 100;
+                }
+            } else {
+                for (let i = 0; i < barData.length; i++) {
+                    barData[i] = barData[i] / data.length * 100;
+                }
+            }
+
+            let bardata = {
+                labels: xDomain,
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "data",
+                        data: barData,
+                        borderWidth: 5,
+                        backgroundColor: barColors,
+                        borderColor: barBorderColor,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelBarAnswers,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createBarChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.response",
+          //   aggregate: ADL.count(),
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
+          //     chart.yDomain([0, 100]);
+          //     if (xDomain.length > 0) {
+          //       chart.xDomain(xDomain);
+          //     }
+          //     chart.yAxis.axisLabel(yAxisLabelBarAnswers);
+          //     chart.width(700);
+          //     chart.height(300);
+          //   },
+          // });
+          // chart.draw();
+        } else if (interaction.getAttribute("actualGraphType") == "bar_marks") {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
+
+          //var dash = new ADL.XAPIDashboard();
+          //dash.addStatements(data);
           var xAxisLabelBarMarks =
             interaction.getAttribute("xAxisLabelBarMarks");
           var yAxisLabelBarMarks =
@@ -2442,39 +3697,110 @@
             xAxisLabelBarMarks = "Score Range [%]";
           if (yAxisLabelBarMarks == undefined)
             yAxisLabelBarMarks = "% of Group";
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+          // data.map(function (x) {
+          //   x.result.score.raw;
+          //   return x;
+          // });
 
-          var chart = dash.createBarChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: {
-              start: 0.0,
-              end: 100.0,
-              increment: Math.ceil(100 / nrbars),
-            },
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
-              chart.yAxis.axisLabel(yAxisLabelBarMarks);
-              chart.width(700);
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
+            //get used labels and #
+            let labels = {};
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.score.raw)) {
+                    labels[statements[i].result.score.raw] = 1;
+                } else {
+                    labels[statements[i].result.score.raw] += 1;
+                }
+            }
+            Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
+
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "data",
+                        data: Object.values(labels),
+                        borderWidth: 5,
+                        backgroundColor: barColors,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelBarMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelBarMarks,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createBarChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.score.raw",
+          //   aggregate: ADL.count(),
+          //   range: {
+          //     start: 0.0,
+          //     end: 100.0,
+          //     increment: Math.ceil(100 / nrbars),
+          //   },
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelBarMarks);
+          //     chart.width(700);
+          //     chart.height(300);
+          //     chart.yDomain([0, 100]);
+          //   },
+          // });
+          // chart.draw();
         } else if (
-          interaction.getAttribute("graphType") == "line_average_marks"
+          interaction.getAttribute("actualGraphType") == "line_average_marks"
         ) {
-          var dash = new ADL.XAPIDashboard();
-          dash.addStatements(data);
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
+
+          //var dash = new ADL.XAPIDashboard();
+          //dash.addStatements(data);
           var xAxisLabelLineAvgMarks = interaction.getAttribute(
             "xAxisLabelLineAvgMarks"
           );
@@ -2485,33 +3811,103 @@
             xAxisLabelLineAvgMarks = "Score Range [%]";
           if (yAxisLabelLineAvgMarks == undefined)
             yAxisLabelLineAvgMarks = "% of Group";
-          data.map(function (x) {
-            x.result.score.raw;
-            return x;
-          });
+          // data.map(function (x) {
+          //   x.result.score.raw;
+          //   return x;
+          // });
 
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "result.score.raw",
-            aggregate: ADL.count(),
-            range: { start: 0.0, end: 100, increment: Math.ceil(100 / nrbars) },
-            rangeLabel: "start",
-            post: function (d) {
-              d.contents.map(function (el) {
-                el.out *= (1 / data.length) * 100;
-              });
-            },
-            customize: function (chart) {
-              chart.xAxis.rotateLabels(45).axisLabel(yAxisLabelLineAvgMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
-              chart.width(700);
-              chart.tooltips(false);
-              chart.height(300);
-              chart.yDomain([0, 100]);
-            },
-          });
-          chart.draw();
-        } else if (interaction.getAttribute("graphType") == "line_own_marks") {
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
+            let labels = {};
+
+            for (let i = 0; i < statements.length; i++) {
+                if (!labels.hasOwnProperty(statements[i].result.score.raw)) {
+                    labels[statements[i].result.score.raw] = 1;
+                } else {
+                    labels[statements[i].result.score.raw] += 1;
+                }
+            }
+            Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
+
+            let bardata = {
+                labels: Object.keys(labels),
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        data: Object.values(labels),
+                        backgroundColor: barColors,
+                        borderColor: barColors,
+                        yID: "id1",
+                    },
+                ],
+            };
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 100,
+                            id: "id1",
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineAvgMarks,
+                                beginAtZero: true,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "result.score.raw",
+          //   aggregate: ADL.count(),
+          //   range: { start: 0.0, end: 100, increment: Math.ceil(100 / nrbars) },
+          //   rangeLabel: "start",
+          //   post: function (d) {
+          //     d.contents.map(function (el) {
+          //       el.out *= (1 / data.length) * 100;
+          //     });
+          //   },
+          //   customize: function (chart) {
+          //     chart.xAxis.rotateLabels(45).axisLabel(yAxisLabelLineAvgMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
+          //     chart.width(700);
+          //     chart.tooltips(false);
+          //     chart.height(300);
+          //     chart.yDomain([0, 100]);
+          //   },
+          // });
+          // chart.draw();
+        } else if (interaction.getAttribute("actualGraphType") == "line_own_marks") {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
           var xAxisLabelLineOwnMarks = interaction.getAttribute(
             "xAxisLabelLineOwnMarks"
           );
@@ -2522,13 +3918,13 @@
             xAxisLabelLineOwnMarks = "Date";
           if (yAxisLabelLineOwnMarks == undefined)
             yAxisLabelLineOwnMarks = "Grade [0-10]";
-          var dash = new ADL.XAPIDashboard();
-          data.map(function (x) {
-            x.result.score.raw /= 10;
-            return x;
-          });
+          //var dash = new ADL.XAPIDashboard();
+          // data.map(function (x) {
+          //   x.result.score.raw /= 10;
+          //   return x;
+          // });
 
-          dash.addStatements(statements);
+          //dash.addStatements(statements);
           end = new Date();
           begin = end;
           for (statement in statements) {
@@ -2541,34 +3937,115 @@
           }
 
           begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000);
-          var chart = dash.createLineChart({
-            container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
-            groupBy: "timestamp",
-            range: {
-              start: begin.toISOString(),
-              end: end.toISOString(),
-              increment: 1000 * 60 * 15,
-            },
-            aggregate: ADL.average("result.score.raw"),
-            rangeLabel: "start",
-            customize: function (chart) {
-              chart.width(700);
-              chart.height(300);
-              chart.tooltips(false);
-              chart.yDomain([0, 10]);
-              chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
-              chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
-              chart.xAxis.tickFormat(function (label) {
-                return d3.time.format("%b %d")(new Date(label));
-              });
-            },
-            post: function (data) {
-              data.contents.map(function (el) {
-                el.in = Date.parse(el.in);
-              });
-            },
-          });
-          chart.draw();
+
+            let dataSet = [];
+            for (let i = 0; i < statements.length; i++) {
+                let temp = {};
+                temp["x"] = statements[i].timestamp;
+                temp["y"] = statements[i].result.score.raw/10;
+                dataSet.push(temp)
+            }
+            dataSet.push({x:end.toISOString(), y:0});
+            dataSet.unshift({x:begin.toISOString(), y:0});
+            //ensure dates are in order
+            dataSet.sort(function( a, b ) {
+                if ( a.x < b.x ){
+                    return -1;
+                }
+                if ( a.x > b.x ){
+                    return 1;
+                }
+                return 0;
+            })
+
+
+            let bardata = {
+                datasets: [
+                    {
+                        type: "line",
+                        label: "data",
+                        data: dataSet,
+                        backgroundColor: barColors,
+                        borderColor: barColors,
+                        spanGaps: false,
+                    },
+                ],
+            };
+            let ctx = escapeUrl(url, type, interactionIndex) + "-graph";
+
+            new Chart(ctx, {
+                data: bardata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: yAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            position: "left",
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabelLineOwnMarks,
+                                beginAtZero: true,
+                            },
+                            type: 'time',
+                            min: begin,
+                            max: end,
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                filter: function (item, chart) {
+                                    // Logic to remove a particular legend item goes here
+                                    return !item.text.includes('My First dataset');
+                                }
+                            }
+                        }
+                    },
+                    events: ['click']
+                },
+            });
+
+          // var chart = dash.createLineChart({
+          //   container: "#" + escapeUrl(url, type, interactionIndex) + "-graph",
+          //   groupBy: "timestamp",
+          //   range: {
+          //     start: begin.toISOString(),
+          //     end: end.toISOString(),
+          //     increment: 1000 * 60 * 15,
+          //   },
+          //   aggregate: ADL.average("result.score.raw"),
+          //   rangeLabel: "start",
+          //   customize: function (chart) {
+          //     chart.width(700);
+          //     chart.height(300);
+          //     chart.tooltips(false);
+          //     chart.yDomain([0, 10]);
+          //     chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
+          //     chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
+          //     chart.xAxis.tickFormat(function (label) {
+          //       return d3.time.format("%b %d")(new Date(label));
+          //     });
+          //   },
+          //   post: function (data) {
+          //     data.contents.map(function (el) {
+          //       el.in = Date.parse(el.in);
+          //     });
+          //   },
+          // });
+          // chart.draw();
         }
       }
     };
@@ -2629,7 +4106,6 @@
       jsonData = jsonData.filter(function (x) {
         return x != undefined;
       });
-      debugger;
       div = $(
         "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
       );
@@ -3040,12 +4516,18 @@
           });
           continue;
         }
-        xerteurl = interaction.getAttribute("xerteurl");
-        xertelo = interaction.getAttribute("xertelo");
-        xertelabel = interaction.getAttribute("label");
-        name = interaction.getAttribute("name");
-        interactionType = interaction.getAttribute("interactionType");
-        opinionClass = interaction.getAttribute("opinionClass");
+        var xerteurl = interaction.getAttribute("xerteurl");
+        if (xerteurl == null || xerteurl == "") {
+          xerteurl = x_siteUrl;
+        }
+        var xertelo = interaction.getAttribute("xertelo");
+        if (xertelo == null || xertelo == "") {
+            xertelo = x_TemplateId;
+        }
+        var xertelabel = interaction.getAttribute("label");
+        var name = interaction.getAttribute("name");
+        var interactionType = interaction.getAttribute("interactionType");
+        var opinionClass = interaction.getAttribute("opinionClass");
         if (opinionClass == undefined) {
           opinionClass = null;
         }
@@ -3393,7 +4875,6 @@
             $("p").css("font-size", "14px");
             $("ul").css("font-size", "14px");
             adaptiveContent.sizeChanged();
-            debugger;
 
             await new Promise(resolve => setTimeout(resolve, 1500));
             let opt = {
@@ -3518,16 +4999,22 @@
           });
           continue;
         }
-        xerteurl = interaction.getAttribute("xerteurl");
-        xertelo = interaction.getAttribute("xertelo");
-        xertelabel = interaction.getAttribute("label");
-        name = interaction.getAttribute("name");
-        interactionType = interaction.getAttribute("interactionType");
-        opinionClass = interaction.getAttribute("opinionClass");
+        var xerteurl = interaction.getAttribute("xerteurl");
+        if (xerteurl == null || xerteurl == "") {
+          xerteurl = x_siteUrl;
+        }
+        var xertelo = interaction.getAttribute("xertelo")
+        if (xertelo == null || xertelo == "") {
+          xertelo = x_TemplateId
+        }
+        var xertelabel = interaction.getAttribute("label");
+        var name = interaction.getAttribute("name");
+        var interactionType = interaction.getAttribute("interactionType");
+        var opinionClass = interaction.getAttribute("opinionClass");
         if (opinionClass == undefined) {
           opinionClass = "";
         }
-        group = interaction.getAttribute("groupFromUrl");
+        var group = interaction.getAttribute("groupFromUrl");
         if (group == undefined) {
           group = "";
         } else {
@@ -3547,10 +5034,7 @@
         }
         filter_context_id = (interaction.getAttribute("contextFilter") == 'true'? true : false);
 
-        url = xerteurl + xertelo + "/" + xertelabel;
-        if (opinionClass != "") {
-          url += "/" + opinionClass;
-        }
+        url = getUrl(xerteurl, xertelo, xertelabel, opinionClass)
         this.drawBlock("#adaptiveContent", interaction, interactionIndex, true);
       }
 

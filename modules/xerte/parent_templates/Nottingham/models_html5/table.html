@@ -46,12 +46,7 @@
 			var $pageContents = $("#pageContents"),
 				$textHolder = $("#textHolder"),
 				$panel = $("#pageContents .panel");
-			
-			if ($tableInfo[0].getAttribute("name") != "") {
-				$pageContents.find("#tableName").html("<p>" + $tableInfo[0].getAttribute("name") + "</p>");
-			} else {
-				$pageContents.find("#tableName").remove();
-			}
+
 			if ($tableInfo[0].getAttribute("caption") != "" && $tableInfo[0].getAttribute("caption") != undefined) {
 				$pageContents.find("#footnote").html("<p>" + $tableInfo[0].getAttribute("caption") + "</p>");
 			} else {
@@ -121,6 +116,17 @@
 			} else {
 				table.makeTable($tableInfo[0].getAttribute("data").split("||"), false);
 			}
+
+			// add caption &/or summary to table
+			if ($tableInfo[0].getAttribute("name") != "" || ($tableInfo[0].getAttribute("alt") != undefined && $tableInfo[0].getAttribute("alt") != "")) {
+				const $caption = $("<caption id='tableName'></caption>").prependTo($table);
+				if ($tableInfo[0].getAttribute("name") != "") {
+					$caption.append($tableInfo[0].getAttribute("name"));
+				}
+				if ($tableInfo[0].getAttribute("alt") != undefined && $tableInfo[0].getAttribute("alt") != "") {
+					$caption.append("<span class='sr-only'>" + $tableInfo[0].getAttribute("alt") + "</span>");
+				}
+			}
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
@@ -166,10 +172,6 @@
 			}
 			$table.html(tableString);
 			
-			if ($tableInfo[0].getAttribute("alt") != undefined) {
-				$table.attr("summary", $tableInfo[0].getAttribute("alt"));
-			}
-			
 			if ($tableInfo[0].getAttribute("shade") == "true") {
 				$table.find('tbody').children().each(function(i) {
 					var $this = $(this);
@@ -192,7 +194,6 @@
 	
 	<div id="tableHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
 		<div class="panel inline">
-			<div id="tableName"></div>
 			<table id="table"></table>
 			<div id="footnote"></div>
 		</div>

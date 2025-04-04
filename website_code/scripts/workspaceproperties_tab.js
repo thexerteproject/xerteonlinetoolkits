@@ -52,9 +52,19 @@ function workspace_ajax_send_prepare(url){
 	 * @author Patrick Lockley
 	 */
 
-function workspace_properties_stateChanged(response){
+function workspace_properties_stateChanged(response, tabId){
 	if(response!=""){
-		document.getElementById('dynamic_area').innerHTML = response;
+		$("#dynamic_area .tabPanel").empty().hide();
+		
+		$("#" + tabId).html(response).show();
+	}
+}
+
+function workspace_properties_projects_stateChanged(response, tabId){
+	if(response!=""){
+		$("#sub_dynamic_area .tabPanel").empty().hide();
+		
+		$("#" + tabId).html(response).show();
 	}
 }
 
@@ -75,7 +85,26 @@ function workspace_templates_template(){
 		 }
 	 })
 	 .done(function(response){
-		 workspace_properties_stateChanged(response);
+		 workspace_properties_stateChanged(response, 'panelProjects');
+	 });
+}
+
+ /**
+	 * 
+	 * Function shared templates template
+ 	 * This function displays the shared templates
+	 */
+
+function my_templates_template(){
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/workspaceproperties/my_templates_template.php",
+		 data: {
+			 details: 'null'
+		 }
+	 })
+	 .done(function(response){
+		 workspace_properties_projects_stateChanged(response, 'panelMyProjects');
 	 });
 }
 
@@ -96,7 +125,7 @@ function shared_templates_template(){
 		 }
 	 })
 	 .done(function(response){
-		 workspace_properties_stateChanged(response);
+		 workspace_properties_projects_stateChanged(response, 'panelShared');
 	 });
 }
 
@@ -117,7 +146,7 @@ function public_templates_template(){
 		 }
 	 })
 	 .done(function(response){
-		 workspace_properties_stateChanged(response);
+		 workspace_properties_projects_stateChanged(response, 'panelPublic');
 	 });
 }
 
@@ -138,7 +167,7 @@ function usage_templates_template(){
 		 }
 	 })
 	 .done(function(response){
-		 workspace_properties_stateChanged(response);
+		 workspace_properties_projects_stateChanged(response, 'panelUsage');
 	 });
 }
 
@@ -159,7 +188,7 @@ function rss_templates_template(){
 		 }
 	 })
 	 .done(function(response){
-		 workspace_properties_stateChanged(response);
+		 workspace_properties_projects_stateChanged(response, 'panelRss');
 	 });
 }
 
@@ -180,7 +209,7 @@ function syndication_templates_template(){
 		}
 	})
 	.done(function(response){
-		workspace_properties_stateChanged(response);
+		workspace_properties_projects_stateChanged(response, 'panelOpen');
 	});
 }
 
@@ -201,7 +230,7 @@ function peer_templates_template(){
 		}
 	})
 	.done(function(response){
-		workspace_properties_stateChanged(response);
+		workspace_properties_projects_stateChanged(response, 'panelPeer');
 	});
 }
 
@@ -222,7 +251,7 @@ function xml_templates_template(){
 		}
 	})
 	.done(function(response){
-		workspace_properties_stateChanged(response);
+		workspace_properties_projects_stateChanged(response, 'panelXml');
 	});
 }
 
@@ -243,7 +272,7 @@ function my_properties_template(){
 		}
 	})
 	.done(function(response){
-		workspace_properties_stateChanged(response);
+		workspace_properties_stateChanged(response, 'panelProp');
 	});
 }
 
@@ -264,7 +293,7 @@ function folder_rss_templates_template(){
 		}
 	})
 	.done(function(response){
-		workspace_properties_stateChanged(response);
+		workspace_properties_stateChanged(response, 'panelRss');
 	});
 }
 
@@ -276,9 +305,16 @@ function folder_rss_templates_template(){
 	 * @author Patrick Lockley
 	 */
 
-function import_templates_template(){
-
-	document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_IMPORT + '</span></p><p><form target="upload_iframe" method="post" onsubmit="javascript:iframe_check_initialise(1);" enctype="multipart/form-data" id="importpopup" name="importform" action="website_code/php/import/import.php" ><input name="filenameuploaded" type="file" /><br /><br />' + WORKSPACE_NEW_PROJECTNAME + '<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><br /><span id="namewrong"></span><br /><button id="submitbutton" type="submit" name="submitBtn" onclick="javascript:load_button_spinner(this);" class="xerte_button"><i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD + '</button></form></p>';
+function import_templates_template(toolkits_logon_id){
+	
+	var panelHtml;
+	if (toolkits_logon_id) {
+		panelHtml = '<h2 class="header">' + WORKSPACE_IMPORT + '</h2><div id="mainContent"><p>' + WORKSPACE_INSTRUCTIONS + '</p><form target="upload_iframe" method="post" onsubmit="javascript:iframe_check_initialise(1);" enctype="multipart/form-data" id="importpopup" name="importform" action="website_code/php/import/import.php" ><label class="block" for="templatename">' + WORKSPACE_NEW_PROJECTNAME + ':</label><input id="templatename" name="templatename" type="text" onkeyup="new_template_name()" /><div id="namewrong"></div><div><div id="filenameuploaded_container"><input name="filenameuploaded" id="filenameuploaded" type="file" /></div><button id="submitbutton" type="submit" name="submitBtn" onclick="javascript:load_button_spinner(this);" class="xerte_button"><i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD + '</button></div></form></div>';
+	} else {
+		panelHtml = '<h2 class="header">' + WORKSPACE_IMPORT + '</h2><div id="mainContent"><p>' + WORKSPACE_ERROR + '</p></div>';
+	}
+	
+	workspace_properties_stateChanged(panelHtml, 'panelImport');
 
 }
 
@@ -299,7 +335,14 @@ function api_template(){
 		}
 	})
 	.done(function(response){
-		workspace_properties_stateChanged(response);
+		workspace_properties_stateChanged(response, 'panelApi');
 	});
 
+}
+
+function panelTabClicked(tab){
+	$("#panelTabs button:not(#" + tab + ")").attr("aria-selected", "false");
+	$("#panelTabs button:not(#" + tab + ")").removeClass("tabSelected");
+	$("#panelTabs button#" + tab).attr("aria-selected", "true");
+	$("#panelTabs button#" + tab).addClass("tabSelected");
 }

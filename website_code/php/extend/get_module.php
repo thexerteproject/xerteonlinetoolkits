@@ -25,7 +25,9 @@ if(is_user_admin()){
 
 	_load_language_file("/extend.inc");
 
-	$url = str_replace("github","codeload.github",$_POST['url']) . "/zip/master";
+    $url = x_clean_input($_POST['url']);
+
+	$url = str_replace("github","codeload.github",$url) . "/zip/master";
 	
 	// set URL and other appropriate options
 	$ch = curl_init();
@@ -48,6 +50,8 @@ if(is_user_admin()){
 	$zip = new ZipArchive();
 	
 	$data = $zip->open($file);
+
+    x_check_zip($data);
 	
 	$extract_files = array();
 	$language_files = array();
@@ -66,7 +70,7 @@ if(is_user_admin()){
 		
 		}else{
 		
-			$zip->renameIndex($i,str_replace($_POST['name'] . "-master/","",$zip->getNameIndex($i)));
+			$zip->renameIndex($i,str_replace( x_clean_input($_POST['name']) . "-master/","",$zip->getNameIndex($i)));
 			array_push($extract_files, $zip->getNameIndex($i));
 		
 		}
@@ -80,8 +84,8 @@ if(is_user_admin()){
 	$zip->extractTo($xerte_toolkits_site->root_file_path . "modules/" , $extract_files);
 	$zip->extractTo($xerte_toolkits_site->root_file_path . "languages/" , $language_files);
 	
-	echo "<p>" . $_POST['name'] . "  " . EXTEND_INSTALLED . " : <a onclick='module_activate(\"" . str_replace("XOT-","",$_POST['name']) . "\")'>" . EXTEND_ACTIVATE . "</a></p>";
-	echo "<p><a onclick='list_modules(\"" . str_replace("XOT-","",$_POST['name']) . "\")'>" . EXTEND_LIST . "</a></p>";
+	echo "<p>" . $_POST['name'] . "  " . EXTEND_INSTALLED . " : <a onclick='module_activate(\"" . str_replace("XOT-","",x_clean_input($_POST['name'])) . "\")'>" . EXTEND_ACTIVATE . "</a></p>";
+	echo "<p><a onclick='list_modules(\"" . str_replace("XOT-","",x_clean_input($_POST['name'])) . "\")'>" . EXTEND_LIST . "</a></p>";
 	
 }
 

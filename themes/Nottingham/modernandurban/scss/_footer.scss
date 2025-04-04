@@ -83,16 +83,36 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 }
 #menuItems .menuItem {
   background: $lightestcolor;
-  color: $blackordarkest;
 }
 #menuItems .menuItem:hover {
-  background: $contrastcolor;
+  background: $darkestcolor;
+  color:$whiteorlightest;
+}
+#menuItems .menuItem .ui-button-text{
+  color:$fontcolorforlightestcolor;
+}
+#menuItems .menuItem:hover .ui-button-text{
   color:$whiteorlightest;
 }
 #menuItems .menuItem.current {
-  border: 2px solid $defaultpagebackground;
+  border-color: transparent;
+  background-color: $brightcolor;
 }
-
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
+  color: $whiteorlightest !important;
+  border-color: $contrastcolor;
+  background-color: $contrastcolor;
+}
+.chapterItem.ui-state-active a {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.ui-accordion .chapterPageHolder.ui-accordion-content {
+  background-color: $contrastcolor;
+  border: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 //*****SIDE BAR****/
 
 #x_sideBar {
@@ -134,6 +154,14 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 	color: $whiteorlightest;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+.pbBar {
+  background-color: $brightcolor;
+}
+
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen
 and (max-width :500px) {
@@ -154,8 +182,8 @@ and (max-width :500px) {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -164,7 +192,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

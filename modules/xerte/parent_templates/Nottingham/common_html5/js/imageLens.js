@@ -4,7 +4,7 @@
 */
 (function ($) {
     $.fn.imageLens = function (options) {
-		
+
         var defaults = {
             lensSize	:100,
             borderSize	:2,
@@ -22,7 +22,7 @@
 			
         return this.each(function () {
             obj = $(this);
-			
+
             var offset = $(this).offset();
 			
             // Creating lens
@@ -32,7 +32,7 @@
             // Calculating actual size of image
             var imageSrc = options.imageSrc ? options.imageSrc : $(this).attr("src");
             var imageTag = "<img class='magnifiedImg' style='display:none;' src='" + imageSrc + "' />";
-			
+
             var widthRatio = 0;
             var heightRatio = 0;
 			
@@ -59,22 +59,25 @@
             $(this).mousemove(setPosition);
 			
             function setPosition(e) {
-				
-                var leftPos = parseInt(e.pageX - offset.left);
-                var topPos = parseInt(e.pageY - offset.top);
+                var leftPos = e.pageX - offset.left;
+                var topPos = e.pageY - offset.top;
 				
                 if (leftPos < 0 || topPos < 0 || leftPos > obj.width() || topPos > obj.height()) {
                     target.hide();
+                    $(".magnifiedImg").removeClass("escape");
                 }
-                else {
+                else if (!$(".magnifiedImg").hasClass("escape")) {
                     target.show();
 					
                     leftPos = String(((e.pageX - offset.left) * widthRatio - target.width() / 2) * (-1));
                     topPos = String(((e.pageY - offset.top) * heightRatio - target.height() / 2) * (-1));
                     target.css({ backgroundPosition: leftPos + 'px ' + topPos + 'px' });
+
+                    const offsetLeft = parseInt($x_mainHolder.css("padding-left")) + parseInt($x_mainHolder.css("margin-left"));
+                    const offsetTop = parseInt($x_mainHolder.css("padding-top")) + parseInt($x_mainHolder.css("margin-top"));
 					
-                    leftPos = String(e.pageX - (target.width() / 2));
-                    topPos = String(e.pageY - (target.height() / 2) - $x_headerBlock.height());
+                    leftPos = String(e.pageX - (target.width() / 2) - offsetLeft);
+                    topPos = String(e.pageY - (target.height() / 2) - $x_headerBlock.height() - offsetTop);
                     target.css({ left: leftPos + 'px', top: topPos + 'px' });
                 }
             }

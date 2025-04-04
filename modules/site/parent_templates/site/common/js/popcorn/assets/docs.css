@@ -1,0 +1,103 @@
+
+html, body { position: relative; }
+    
+.toc 
+{
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    /* float: right; */
+    background: white;
+    border: 1px black solid;
+    padding: 0 .5em;
+}
+
+#generated-toc .hidden { display: none; }
+#generated-toc #toggle-container { float: right; }
+
+.anchor { display: none; }
+
+.callout-box 
+{
+    clear: right;
+    float: right;
+    margin: 1em;
+    border: 1px #ccc solid;
+    background: #ddf;
+    padding: .5em 1em;
+    max-width: 30%;
+    min-width: 15%;
+}
+
+.callout-box-caption {
+    text-align: center;
+    font-weight: bold;
+
+}
+
+
+h4 { 
+    color: #555;
+    font-style: italic;
+}
+
+dt {
+    margin-top: .5em;
+}
+
+dt:first-child {
+    margin-top: auto;
+}
+
+dt, .function {
+    font-family: monospace;
+    color: #1C711C;
+    font-weight: bold;
+}
+
+.required:after {
+    color: #900;
+    content: '(required)';
+}
+
+.parameter {
+    color: #417F6D   ;
+}
+
+.type {
+    font-weight: lighter;
+    color: #154095;
+}
+.type:before {
+    content: ':';
+}
+
+dl dl .type:before { 
+    content: '(';
+}
+dl dl .type:after { 
+    content: ')';
+}
+
+.json-obj {
+    margin-left: 2em;
+}
+.json-obj:before {
+    display: block;
+    margin-left: -1.5em;
+    font-family: monospace;
+    content: '{';
+}
+.json-obj:after {
+    display: block;
+    margin-left: -1.5em;
+    font-family: monospace;
+    content: '}';
+}
+
+.footer {
+    margin-top: 3em;
+    border-top: 1px #ccc solid;
+    padding-top: 1em;
+    font-size: smaller;
+}

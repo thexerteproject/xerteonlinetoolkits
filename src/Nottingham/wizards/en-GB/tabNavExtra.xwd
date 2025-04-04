@@ -1,7 +1,7 @@
 <wizard menus="Navigators">
   <pageWizard remove="true" duplicate="false">
     <newNodes>    
-      <tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" panelWidth="Large"/>]]></tabNavExtra>
+      <tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" panelWidth="Large" nextBtn="Next" prevBtn="Previous"/>]]></tabNavExtra>
     </newNodes>  	  
   </pageWizard>
 
@@ -12,10 +12,17 @@
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox"  data="Small,Medium,Large" defaultValue="Large" width="100" mandatory="true"/>
 
-	<txtGroup type="group" label="Page Text" optional="true">
-		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+	<txtGroup type="group" label="Page Text" optional="true" tooltip="Add introductory text, either at the top of the page or above the topic list.">
+		<text label="Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
 		<textPos label="Position" options="Top,Above Topic List" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
 	</txtGroup>
+
+	<nestedPageNav type="group" label="Nested Page Navigation" optional="true" tooltip="By default, when a tab contains more than one nested page, a list of page title links is shown to allow navigation between them.">
+	    <autoNumber label="Auto-Number Links" type="CheckBox" optional="true" defaultValue="false" condition="nextBtns=='false'||(nextBtns=='true'&amp;&amp;hideBreadcrumbs=='false')" tooltip="Use automatically generated numbers for page links, instead of the page title text."/>
+	    <nextBtns label="Include Navigation Buttons" type="CheckBox" optional="true" defaultValue="false" conditionTrigger="true" tooltip="Add navigation (next / previous) buttons when a tab contains more than one nested page."/>
+	    <hideBreadcrumbs label="Hide Title Links" type="CheckBox" optional="true" defaultValue="false" conditionTrigger="true" condition="nextBtns!='false'" tooltip="Hide nested page links when navigation buttons are shown."/>
+	</nestedPageNav>
+
 
     <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfTopic label="Number of Topics" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
@@ -23,11 +30,14 @@
       <qfNestedPage label="Number of Pages per Tab" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
-	
+
 	<rememberTab label="Stay on Current Tab" type="CheckBox" optional="true" tooltip="Display the currently viewed tab when changing between topics containing tabs of the same name"/>
-	
+
+	<nextBtn label="Next Button Label" type="TextInput" wysiwyg="true" defaultValue="Next" mandatory="true" language="true"/>
+	<prevBtn label="Previous Button Label" type="TextInput" wysiwyg="true" defaultValue="Previous" mandatory="true" language="true"/>
+
     <newNodes>
-      <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text="Content for the pane"/></nestedTab></topic>]]></topic>
+      <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text=""/></nestedTab></topic>]]></topic>
     </newNodes>
 
   </tabNavExtra>
@@ -37,7 +47,7 @@
     <name label="Topic Name" type="TextInput" wysiwyg="true"/>
 
     <newNodes>
-      <nestedTab><![CDATA[<nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text="Content for the pane"/></nestedTab>]]></nestedTab>
+      <nestedTab><![CDATA[<nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text=""/></nestedTab>]]></nestedTab>
     </newNodes>
 
   </topic>
@@ -64,21 +74,22 @@
    </AIGroup>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="Nested Page Name" text="Content for the pane"/>]]></nestedPage>
+      <nestedPage><![CDATA[<nestedPage name="Nested Page Name" text=""/>]]></nestedPage>
     </newNodes>
 
-  </nestedTab>  
-  
+  </nestedTab>
+
   <nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true" />
-    <text label="Text" type="TextArea" height="250" />
+    <text label="Text" type="TextArea" height="250" placeholder="Enter text for the nested page here"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	
-	<imgInfo type="group" label="Image" optional="true" tooltip="An image to display above the text">
-		<url label="Image" type="media"  optional="true" defaultValue="Select an Image"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for Accessibility"/>
-	</imgInfo>
+    <imgInfo type="group" label="Image" optional="true">
+      <url label="Image" type="media"  optional="true" defaultValue="" placeholder="Select an image"/>
+      <tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+      <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+    </imgInfo>
 
     <AIGroup type="group" label="AI" optional="true">
          <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
@@ -98,9 +109,9 @@
     </AIGroup>
 	
     <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true" deprecated="This property is deprecated"/>
-	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
-	<synch label="Synch Point" type="TextInput"/><!-- for backwards compatibility with templates that used to use nestedPage -->
+    <movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
+    <synch label="Synch Point" type="TextInput"/><!-- for backwards compatibility with templates that used to use nestedPage -->
 
-  </nestedPage>  
+  </nestedPage>
   
   </wizard>

@@ -24,7 +24,7 @@ _load_language_file("/website_code/php/management/error_list.inc");
 require("../user_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("system")){
 
 	$path = $xerte_toolkits_site->error_log_path;
 

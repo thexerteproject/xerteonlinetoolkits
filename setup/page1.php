@@ -40,31 +40,31 @@ require_once('page_header.php'); ?>
 
 		<div class="form_field">
 			<label>Database Host</label>
-			<input type="text" size="100" name="host" id="host" value="<?php if ( isset($_POST['host']) ) { echo $_POST['host']; } else { echo 'localhost'; }?>" />
+			<input type="text" size="100" name="host" id="host" value="<?php if ( isset($_POST['host']) ) { echo x_clean_input($_POST['host']); } else { echo 'localhost'; }?>" />
 			<span class="form_help">Enter the name of the host for the database.</span>
 		</div>
 
 		<div class="form_field">
 			<label>Database Username</label>
-			<input type="text" size="100" name="username"  id="username" value="<?php if ( isset($_POST['username']) ) { echo $_POST['username'];} else { echo 'root'; } ?>" />
+			<input type="text" size="100" name="username"  id="username" value="<?php if ( isset($_POST['username']) ) { echo x_clean_input($_POST['username']);} else { echo 'root'; } ?>" />
 			<span class="form_help">Enter the username for a MySQL account that has Create and Insert rights on this host from this location.</span>
 		</div>
 
 		<div class="form_field">
 			<label>Database Name</label>
-			<input type="text" size="100" name="database_name" value="<?php if ( isset($_POST['database_name']) ) { echo $_POST['database_name']; } else { echo 'toolkits_data'; } ?>" placeholder="" />
+			<input type="text" size="100" name="database_name" value="<?php if ( isset($_POST['database_name']) ) { echo x_clean_input($_POST['database_name']); } else { echo 'toolkits_data'; } ?>" placeholder="" />
 			<span class="form_help">Enter the name of the database if it already exists, or enter the name for a new database that you would like to be created by the installer.</span>
 		</div>
 
 		<div class="form_field">
 			<label>Database Password</label>
-			<input type="password" size="100" name="password" value="<?php if ( isset($_POST['password']) ) { echo $_POST['password']; }?>" />
+			<input type="password" size="100" name="password" value="<?php if ( isset($_POST['password']) ) { echo x_clean_input($_POST['password']); }?>" />
 			<span class="form_help">Enter the MySQL password for the MySQL username used above.</span>
 		</div>
 
 		<div class="form_field">
 			<label>Database Prefix</label>
-			<input type="text" size="100" name="database_prefix" value="<?php if ( isset($_POST['database_prefix']) ) { echo $_POST['database_prefix']; }?>" />
+			<input type="text" size="100" name="database_prefix" value="<?php if ( isset($_POST['database_prefix']) ) { echo x_clean_input($_POST['database_prefix']); }?>" />
 			<span class="form_help">Optional - If you would like to prefix the tables installed with a word (to help house keeping), enter that word here.</span>
 		</div>
 

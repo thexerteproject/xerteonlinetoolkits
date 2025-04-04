@@ -18,6 +18,7 @@ if (!CKEDITOR.ui.dialog.button.prototype.toggle) {
 //http://ckeditor.com/forums/CKEditor-3.x/getSelection-getNative-returns-object-Object
 CKEDITOR.editor.prototype.getSelectedHtml = function()
 {
+		debugger;
    var selection = this.getSelection();
    if( selection )
    {
@@ -70,6 +71,7 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
 						// Called by the main setupContent method call on dialog initialization
 						setup: function(element) {
+							debugger;
 							if (element) {
 								var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
 								if (attr && attr.indexOf('(')) {
@@ -82,8 +84,13 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
 						// Called by the main commitContent method call on dialog confirmation.
 						commit: function( element ) {
+							debugger;
 							element.setAttribute('href', '#');
-							element.setAttribute('onclick', 'x_navigateToPage(false,{type:\'linkID\',ID:\'' + this.getValue() + '\'}); return false;');
+							if(element.getAttribute('onclick')){
+									element.setAttribute('onclick', 'x_navigateToPage(false,{type:\'linkID\',ID:\'' + this.getValue() + '\'}); return false;');
+							}else {
+									element.setAttribute('data-cke-pa-onclick', 'x_navigateToPage(false,{type:\'linkID\',ID:\'' + this.getValue() + '\'}); return false;');
+							}
 						}
 					},
 				]
@@ -92,6 +99,7 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
 		// Invoked when the dialog is loaded.
 		onShow: function() {
+			debugger;
 			// Hide OK button
 			this.getButton('ok').toggle(false);
 
@@ -125,6 +133,7 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
 		// This method is invoked once a user clicks the OK button, confirming the dialog.
 		onOk: function() {
+							debugger;
 
 			// The context of this function is the dialog object itself.
 			// http://docs.ckeditor.com/#!/api/CKEDITOR.dialog

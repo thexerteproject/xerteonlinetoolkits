@@ -98,133 +98,118 @@ if (!isset($_SESSION['toolkits_logon_id']))
  * Check id is numeric
  */
 
-if(is_numeric($_POST['tutorial_id'])){
+$tutorial_id = x_clean_input($_POST['tutorial_id'], "numeric");
+$action = x_clean_input($_POST['action'], "string");
+if(is_user_creator_or_coauthor($tutorial_id)||is_user_permitted("projectadmin")) {
 
-    if(is_user_creator_or_coauthor($_POST['tutorial_id'])||is_user_admin()){
-        $tutorial_id = (int)$_POST['tutorial_id'];
+    $user_id = x_clean_input($_POST['user_id'], "numeric");
 
-        $user_id = (int)$_POST['user_id'];
+    /**
+     * Giving a copy, or giving it away
+     */
+
+    if ($action == "give") {
 
         /**
-         * Giving a copy, or giving it away
+         * Giving it away
          */
 
-        if ($_POST['action'] == "give") {
+        $database_id = database_connect("gift sharing database connect success", "gift sharing database connect failed");
 
-            /**
-             * Giving it away
-             */
+        $prefix = $xerte_toolkits_site->database_table_prefix;
 
-            $database_id = database_connect("gift sharing database connect success", "gift sharing database connect failed");
+        $query_for_rename = "select * from {$prefix}logindetails, {$prefix}templatedetails, {$prefix}originaltemplatesdetails "
+            . "where {$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id and"
+            . " template_id = ? and "
+            . " login_id = creator_id";
 
-            $prefix = $xerte_toolkits_site->database_table_prefix;
-
-            $query_for_rename = "select * from {$prefix}logindetails, {$prefix}templatedetails, {$prefix}originaltemplatesdetails "
-                . "where {$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id and"
-                . " template_id = ? and "
-                . " login_id = creator_id";
-
-            $row_rename = db_query_one($query_for_rename, array($tutorial_id));
+        $row_rename = db_query_one($query_for_rename, array($tutorial_id));
 
 
-            /**
-             * Update the database
-             */
+        /**
+         * Update the database
+         */
 
-            $query_to_gift = "update {$prefix}templatedetails set creator_id = ? WHERE template_id = ?";
-            $params = array($user_id, $tutorial_id);
+        $query_to_gift = "update {$prefix}templatedetails set creator_id = ? WHERE template_id = ?";
+        $params = array($user_id, $tutorial_id);
 
-            $ok = db_query($query_to_gift, $params);
+        $ok = db_query($query_to_gift, $params);
 
-            $root_folder = get_user_root_folder_by_id($user_id);
+        $root_folder = get_user_root_folder_id_by_id($user_id);
 
-            $query_to_gift = "update {$prefix}templaterights set user_id =  ?, folder = ? WHERE template_id = ?";
-            $params = array($user_id, $root_folder, $tutorial_id);
+        $query_to_gift = "update {$prefix}templaterights set user_id =  ?, folder = ? WHERE template_id = ?";
+        $params = array($user_id, $root_folder, $tutorial_id);
 
-            db_query($query_to_gift, $params);
-
-
-            $query_for_new_login = "select username from {$prefix}logindetails where login_id= ? ";
-
-            $row_new_login = db_query_one($query_for_new_login, array($user_id));
+        db_query($query_to_gift, $params);
 
 
-            $base_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
+        $query_for_new_login = "select username from {$prefix}logindetails where login_id= ? ";
 
-            /**
-             * Rename the folder where the template is
-             */
-
-            rename($base_path . $tutorial_id . "-" . $row_rename['username'] . "-" . $row_rename['template_name'] . "/", $base_path . $tutorial_id . "-" . $row_new_login['username'] . "-" . $row_rename['template_name'] . "/");
-
-            echo "<p>" . GIFT_RESPONSE_FAIL . "</p>";
-
-        } else {
-
-            /**
-             * Giving away a duplicate
-             */
-            $prefix = $xerte_toolkits_site->database_table_prefix;
-
-            $database_id = database_connect("Template sharing rights database connect success", "Template sharing rights database connect failed");
-
-            $query_for_currentdetails = "select *,{$prefix}templatedetails.template_name AS actual_name FROM "
-                . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where "
-                . "template_id= ? AND {$prefix}originaltemplatesdetails.template_type_id = {$prefix}templatedetails.template_type_id";
-
-            $params = array($tutorial_id);
-
-            $row_currentdetails = db_query_one($query_for_currentdetails, $params);
-
-            $creation_query = "INSERT INTO {$prefix}templatedetails "
-                . "(creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom,extra_flags) "
-                . " VALUES (?,?,?,?,?,?,?,?,?)";
-            $params = array($user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'), 0, "Private", $row_currentdetails['extra_flags']);
-
-            $new_template_id = db_query($creation_query, $params);
-
-            $query_for_currentrights = "select * from {$prefix}templaterights where template_id = ?";
-            $params = array($tutorial_id);
-
-            $row_currentrights = db_query_one($query_for_currentdetails, $params);
-
-            $root_folder = get_user_root_folder_by_id($user_id);
-
-            $create_rights_query = "INSERT INTO {$prefix}templaterights (template_id, user_id, role,folder,notes) VALUES (?,?,?,?,?)";
-            $params = array($new_template_id, $user_id, "creator", $root_folder, '');
-
-            db_query($create_rights_query, $params);
-
-            $query_for_new_login = "select firstname, surname, username from {$prefix}logindetails where login_id= ?";
-            $params = array($user_id);
+        $row_new_login = db_query_one($query_for_new_login, array($user_id));
 
 
-            $row_new_login = db_query_one($query_for_new_login, $params);
+        $base_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
 
-            /*
-            $new_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short .
-                $new_template_id . "-" . $row_new_login['username'] . "-" . $row_currentdetails['template_name'] . "/";
+        /**
+         * Rename the folder where the template is
+         */
 
-            mkdir($new_directory);
+        rename($base_path . $tutorial_id . "-" . $row_rename['username'] . "-" . $row_rename['template_name'] . "/", $base_path . $tutorial_id . "-" . $row_new_login['username'] . "-" . $row_rename['template_name'] . "/");
 
-            chmod($new_directory, 0777);
+        echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . GIFT_RESPONSE_FAIL . "</p>";
 
-            mkdir($new_directory . "media/");
+    } else {
 
-            chmod($new_directory . "media/", 0777);
+        /**
+         * Giving away a duplicate
+         */
+        $prefix = $xerte_toolkits_site->database_table_prefix;
 
-            $current_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $tutorial_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_currentdetails['template_name'] . "/";
+        $database_id = database_connect("Template sharing rights database connect success", "Template sharing rights database connect failed");
 
-            copy_loop($current_directory, $new_directory);
-            */
-            duplicate_template($row_currentdetails['template_framework'], $new_template_id, $tutorial_id, $row_currentdetails['template_name']);
+        $query_for_currentdetails = "select *, td.template_name AS actual_name, ld.firstname, ld.surname FROM "
+            . "{$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd, {$prefix}logindetails ld where "
+            . "td.template_id= ? AND otd.template_type_id = td.template_type_id and td.creator_id = ld.login_id";
 
-            echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
+        $params = array($tutorial_id);
 
-        }
+        $row_currentdetails = db_query_one($query_for_currentdetails, $params);
+
+        // Add original template_id and original username to template_name
+        $new_name = $row_currentdetails['actual_name'] . "_" . $tutorial_id . "_" . $row_currentdetails['firstname'] . "_" . $row_currentdetails['surname'];
+
+        $creation_query = "INSERT INTO {$prefix}templatedetails "
+            . "(creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom,extra_flags) "
+            . " VALUES (?,?,?,?,?,?,?,?,?)";
+        $params = array($user_id, $row_currentdetails['template_type_id'], $new_name, date('Y-m-d'), date('Y-m-d'), date('Y-m-d'), 0, "Private", $row_currentdetails['extra_flags']);
+
+        $new_template_id = db_query($creation_query, $params);
+
+        $query_for_currentrights = "select * from {$prefix}templaterights where template_id = ?";
+        $params = array($tutorial_id);
+
+        $row_currentrights = db_query_one($query_for_currentdetails, $params);
+
+        $root_folder = get_user_root_folder_id_by_id($user_id);
+
+        $create_rights_query = "INSERT INTO {$prefix}templaterights (template_id, user_id, role,folder,notes) VALUES (?,?,?,?,?)";
+        $params = array($new_template_id, $user_id, "creator", $root_folder, '');
+
+        db_query($create_rights_query, $params);
+
+        $query_for_new_login = "select firstname, surname, username from {$prefix}logindetails where login_id= ?";
+        $params = array($user_id);
+
+
+        $row_new_login = db_query_one($query_for_new_login, $params);
+
+        duplicate_template($row_currentdetails['template_framework'], $new_template_id, $tutorial_id, $row_currentdetails['template_name']);
+
+        echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p>";
+
     }
-
 }
+
 
 function duplicate_template($template_framework, $new_template_id, $org_template_id, $original_template_name){
     switch($template_framework){

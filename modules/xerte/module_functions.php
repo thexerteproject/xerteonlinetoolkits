@@ -30,37 +30,31 @@ require_once(dirname(__FILE__) . '/../../config.php');
 
 function display_property_engines($change,$msgtype){
 
-	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";
+	echo "<fieldset id=\"engineFS\" class='plainFS'><legend>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</legend>";
+	
 	$template = strtolower(get_template_type($_POST['template_id']));
 
     if (get_default_engine($_POST['template_id']) == 'flash')
     {
-    	echo "<p>";
-        if ($template != "xerte_rss") {
-        	echo "<img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br />";
+		if ($template != "xerte_rss") {
+			echo "<div><input type=\"radio\" id=\"javascript\" name=\"engine\" value=\"javascript\" onclick=\"javascript:default_engine_toggle()\"><label for=\"javascript\">" . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</label></div>";
+        	echo "<div><input checked type=\"radio\" id=\"flash\" name=\"engine\" value=\"flash\" onclick=\"javascript:default_engine_toggle()\"><label for=\"flash\">" . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</label></div>";
+		} else {
+			echo "<div><input checked type=\"radio\" id=\"flash\" name=\"engine\" value=\"flash\" ><label for=\"flash\">" . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</label></div>";
 		}
-        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\"";
-        if ($template != "xerte_rss") {
-        	echo " onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\"";
-        }
-        echo "/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH;
-		echo "</p>";
     }
     else
     {
-    	echo "<p>";
-        echo "<img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br />";
-        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH;
-		echo "</p>";
+		echo "<div><input checked type=\"radio\" id=\"javascript\" name=\"engine\" value=\"javascript\" onclick=\"javascript:default_engine_toggle()\"><label for=\"javascript\">" . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</label></div>";
+		echo "<div><input type=\"radio\" id=\"flash\" name=\"engine\" value=\"flash\" onclick=\"javascript:default_engine_toggle()\"><label for=\"flash\">" . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</label></div>";
+    }
+	
+	if($change && $msgtype=="engine"){
+        echo "<p aria-live='polite' class=\"alert_msg\"><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED . "</p>";
     }
 	
 	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_WARNING  . "</p>";
-	
-    if($change && $msgtype=="engine"){
-
-        echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED . "</p>";
-
-    }
+	echo "</fieldset>";
 
 }
 
@@ -89,22 +83,33 @@ function process_logos($LO_icon_path, $theme_path, $template_path, $page_content
     return $page_content = str_replace("%LOGO%", '<img class="x_icon" src="" alt="" />' , $page_content);
 }
 
+function process_sidebar_logo($theme_path, $page_content) {
+    $extensions = array('svg',  'png', 'jpg', 'gif');
+
+    // check the theme logo
+    foreach($extensions as $ext) {
+        if (file_exists($theme_path . '/logo_sidebar.' . $ext)) {
+            return str_replace("%SIDEBARLOGO%", $theme_path . '/logo_sidebar.'. $ext, $page_content);
+        }
+    }
+
+    return $page_content = str_replace("%SIDEBARLOGO%", '' , $page_content);
+}
+
 function display_publish_engine(){
-    echo "<p><b>" . PROPERTIES_LIBRARY_PUBLISH_ENGINE  . "</b><br>";
-    echo PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";
+	
+	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE . " ";
 
     if (get_default_engine($_POST['template_id']) == 'flash')
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:publish_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
-        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:publish_engine_toggle('flash', 'flash', 'javascript')\"/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+		echo PROPERTIES_LIBRARY_DEFAULT_FLASH;
     }
     else
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:publish_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
-        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:publish_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+		echo PROPERTIES_LIBRARY_DEFAULT_HTML5;
     }
 	
-	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_WARNING  . "</p>";
+	echo "</p>";
 }
 
 function dont_show_template($optional=''){

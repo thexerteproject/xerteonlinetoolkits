@@ -33,9 +33,9 @@
         $tree = array();
         foreach ($query_response as $data){
             if (!is_null($data) or $data !== false) {
-                $child[id] = $data["category_id"];
-                $child[name] = $data["category_name"];
-                $child[children] = array();
+                $child['id'] = $data["category_id"];
+                $child['name'] = $data["category_name"];
+                $child['children'] = array();
                 if (is_null($data["parent_id"])) {
                     $tree[$child["id"]] = $child;
                 } else {
@@ -85,9 +85,9 @@
         $tree = array();
         foreach ($query_response as $data){
             if (!is_null($data) or $data !== false) {
-                $child[id] = $data["educationlevel_id"];
-                $child[name] = $data["educationlevel_name"];
-                $child[children] = array();
+                $child['id'] = $data["educationlevel_id"];
+                $child['name'] = $data["educationlevel_name"];
+                $child['children'] = array();
                 if (is_null($data["parent_id"])) {
                     $tree[$child["id"]] = $child;
                 } else {
@@ -242,7 +242,7 @@
 
 			foreach($query_response as $row) {
 
-				echo "<p>" . $row['template_name'];
+				echo "<p>" . $row['template_name'] . " (" . $row['template_id'] . ")";
 
 				if($row['rss'] == "true") {
 
@@ -367,7 +367,11 @@
         echo "<ul>";
         foreach($codes as $code)
         {
-            echo "<li>" . $langs[$code];
+	        $version = "";
+            if($langs[$code]->version != ""){
+                $version = " " . $langs[$code]->version;
+            }
+            echo "<li>" . $langs[$code]->name . $version;
             if ($code != "en-GB")
             {
                 echo " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_language('" . $code .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></li>";

@@ -1,8 +1,8 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <media360><![CDATA[<media360 name="Enter Page Title" text="Enter text for the page here" size="large" position="right"
-	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle" 
+      <media360><![CDATA[<media360 name="Enter Page Title" text="" size="large" position="right"
+	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle"  sceneMenuTxt="Scene menu"
 	  pageError="Destination page not found"
 	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
 	  />]]></media360>
@@ -13,7 +13,7 @@
   <media360 menu="Media" menuItem="360&#176; Image" hint="An interaction allowing you to mark up a 360&#176; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" wiki="https://xerte.org.uk/wiki/doku.php?id=media_360_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
 	<size label="Image Size" options="Small,Medium,Large,Full" type="ComboBox"  data="small,medium,large,full" width="200"/>
 	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="right" width="100"/>
 	
@@ -30,6 +30,7 @@
 	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
 	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
 	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true"/>
+	<sceneMenuTxt label="Scene Menu" type="TextInput" wysiwyg="true" language="true" defaultValue="Scene menu" mandatory="true"/>
 	<lockLabel label="Password Label" type="TextInput" wysiwyg="true" language="true"/>
 	<lockSubmit label="Password Submit" type="TextInput" wysiwyg="true" language="true"/>
 	<lockPswdWrong label="Wrong Password" type="TextInput" wysiwyg="true" language="true"/>
@@ -53,7 +54,7 @@
     </AIGroup>
 	
     <newNodes>
-	  <file360><![CDATA[<file360 name="Enter Scene Title" file="Select an Image" tip="" title="false"/>]]></file360>
+	  <file360><![CDATA[<file360 name="Enter Scene Title" file="" tip="" title="false"/>]]></file360>
     </newNodes>
 
   </media360>
@@ -63,13 +64,10 @@
   <file360 menuItem="Scene" duplicate="true" remove="true">
   
 	<name label="Title" type="TextInput" wysiwyg="true"/>
-  
 	<title label="Show Title" type="CheckBox" defaultValue="false"/>
-	
-	
   
     <media type="group" label="Image" condition="cubemapcb!='true'">
-		<file label="File" type="media" condition="cubemapcb!='true'"/>
+		<file label="File" type="media" condition="cubemapcb!='true'" placeholder="Select an image"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" condition="cubemapcb!='true'"/>
 	</media>
 	
@@ -135,35 +133,36 @@
 	<hotspotPopUp label="Text" type="TextArea" height="200" optional="true" tooltip="Show text/HTML when hotspot clicked"/>
 	
 	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
-		<imageFile label="File" type="media" optional="true" defaultValue="Select an Image"/>
+		<imageFile label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<imageTip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<imageCaption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
 	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
-		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an MP3 File"/>
+		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select an audio file"/>
 		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" data="player,auto" defaultValue="player" conditionTrigger="true" width="200" optional="true"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" condition="playerType!='auto'" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+
+		<optSound type="group" label="Optional Sound Properties" optional="true">
+            <soundStart label="Start Time" type="textInput" defaultValue="" optional="true" tooltip="Play from the time entered (in seconds). By default the audio will play from the beginning"/>
+            <soundEnd label="End Time" type="textInput" defaultValue="" optional="true" tooltip="Play until the time entered (in seconds). By default the audio will play until the end"/>
+		</optSound>
 	</sound>
 	
-	<soundTiming type="group" label="Sound Start &amp; End Times" condition="hotspotSound!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole audio will play">
-		<soundStart label="Start Time" type="textInput" defaultValue="" optional="true"/>
-		<soundEnd label="End Time" type="textInput" defaultValue="" optional="true"/>
-	</soundTiming>
-	
 	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
-		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select a Video"/>
+		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select a video file or enter a URL/embed code"/>
 		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+
+		<optVideo type="group" label="Optional Video Properties" optional="true">
+            <startFrame label="Start Time" type="textInput" defaultValue="" optional="true" tooltip="Play from the time entered (in seconds). By default the video will play from the beginning"/>
+            <endFrame label="End Time" type="textInput" defaultValue="" optional="true" tooltip="Play until the time entered (in seconds). By default the video will play until the end"/>
+		</optVideo>
 	</video>
-	
-	<videoTiming type="group" label="Video Start &amp; End Times" condition="hotspotMovie!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole video will play">
-		<startFrame label="Start Time" type="textInput" defaultValue="" optional="true"/>
-		<endFrame label="End Time" type="textInput" defaultValue="" optional="true"/>
-	</videoTiming>
-	
+
 	<destination label="Move to Page" type="pageList" defaultValue="" optional="true" tooltip="Go to another page in this project when hotspot clicked. Select the page from the list"/>
 	
 	<externalPage type="group" label="External Page" optional="true" tooltip="Go to an external website (or open it in a lightbox) when hotspot clicked">
-		<url label="URL" type="TextInput" defaultValue="" optional="true"/>
+		<url label="URL" type="TextInput" defaultValue="" optional="true" placeholder="Enter a URL"/>
 		<urlAction label="Action" conditionTrigger="true" optional="true" options="Navigate to Page,Open in Lightbox" type="ComboBox" data="open,lightbox" defaultValue="open" width="200"/>
 		<urlTarget label="Target" condition="urlAction=='open'" optional="true" options="New Window/Tab,This Window" type="ComboBox" data="new,this" defaultValue="new" width="200"/>
 	</externalPage>

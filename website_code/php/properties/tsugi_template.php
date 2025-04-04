@@ -42,13 +42,13 @@
 
 
 	if(is_numeric($id)){
-		if(is_user_creator_or_coauthor($id)||is_user_admin()){
+		if(is_user_creator_or_coauthor($id)||is_user_permitted("projectadmin")){
 
             $database_id = database_connect("template database connect success","template change database connect failed");
             $template_id = $id;
             $safe_template_id = (int)$id;
             $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.template_name as name, td.access_to_whom, td.extra_flags,";
-            $query_for_preview_content .= "td.tsugi_published, td.tsugi_usetsugikey, td.tsugi_manage_key_id, td.tsugi_privatekeyonly, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links";
+            $query_for_preview_content .= "td.tsugi_published, td.tsugi_usetsugikey, td.tsugi_manage_key_id, td.tsugi_privatekeyonly, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.tsugi_publish_in_store, td.tsugi_publish_dashboard_in_store, td.dashboard_allowed_links";
             $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
             $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=? and (role='creator' || role='co-author')";
 
@@ -74,6 +74,8 @@
             $lti_def->xapi_password = "";
             $lti_def->dashboard_urls = "";
             $lti_def->xapi_student_id_mode = 0; // e-mail address
+            $lti_def->tsugi_publish_in_store = $row['tsugi_publish_in_store'];
+            $lti_def->tsugi_publish_dashboard_in_store = 0;
             if ($tsugi_installed) {
                 if ($lti_def->published == 1) {
                     $PDOX = LTIX::getConnection();
@@ -93,6 +95,7 @@
                 $lti_def->xapi_username = $row["tsugi_xapi_key"];
                 $lti_def->xapi_password = $row["tsugi_xapi_secret"];
                 $lti_def->xapi_student_id_mode = $row["tsugi_xapi_student_id_mode"];
+                $lti_def->tsugi_publish_dashboard_in_store = $row['tsugi_publish_dashboard_in_store'];
                 $lti_def->dashboard_urls = $row["dashboard_allowed_links"];
                 if ($lti_def->published != 1)
                 {
@@ -109,13 +112,13 @@
 
 		}
 		else{
-		    tsugi_display_fail();
+		    tsugi_display_fail(true);
         }
 
 	}
     else
     {
-        tsugi_display_fail();
+        tsugi_display_fail(false);
     }
 
 ?>
