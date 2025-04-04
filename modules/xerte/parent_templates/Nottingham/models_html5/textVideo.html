@@ -187,7 +187,7 @@
 					.addClass('iframe')
 					.append(videoSrc);
 
-				if (!x_currentPageXML.getAttribute("full") != "true") {
+				if (x_currentPageXML.getAttribute("full") != "true") {
 					if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != '') {
 						// add a transcript
 						$transcriptHolder = $('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">'
