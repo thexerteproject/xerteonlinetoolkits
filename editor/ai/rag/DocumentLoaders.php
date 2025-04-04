@@ -1,4 +1,6 @@
 <?php
+require '../../vendor/autoload.php';
+use Smalot\PdfParser\Parser;
 
 interface DocumentLoader {
     public function load(): string;
@@ -195,6 +197,60 @@ class XlsxLoader implements DocumentLoader {
     }
 }
 
+class PptxLoader implements DocumentLoader {
+    private string $filePath;
+
+    public function __construct(string $filePath) {
+        $this->filePath = $filePath;
+    }
+
+    public function load(): string {
+        if (!file_exists($this->filePath)) {
+            return '';
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($this->filePath) !== TRUE) {
+            return '';
+        }
+
+        $output_text = "";
+        $slide_number = 1;
+        // Loop through slide files: ppt/slides/slide1.xml, slide2.xml, etc.
+        while (($xml_index = $zip->locateName("ppt/slides/slide{$slide_number}.xml")) !== false) {
+            $xml_data = $zip->getFromIndex($xml_index);
+            $dom = new DOMDocument();
+            // Load XML with flags to suppress warnings and handle entities.
+            $loaded = $dom->loadXML($xml_data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+            if ($loaded) {
+                // Extract text by stripping the XML tags.
+                $output_text .= strip_tags($dom->saveXML()) . "\n";
+            }
+            $slide_number++;
+        }
+        $zip->close();
+        return trim($output_text);
+    }
+}
+
+class PdfLoader implements DocumentLoader {
+    private string $filePath;
+
+    public function __construct(string $filePath) {
+        $this->filePath = $filePath;
+    }
+
+    public function load(): string {
+        if (!file_exists($this->filePath)) return '';
+
+        $parser = new Parser();
+        $pdf = $parser->parseFile($this->filePath);
+        $text = $pdf->getText();
+
+        return $text;
+    }
+}
+
 class DocumentLoaderFactory {
     public static function getLoader(string $filePath): DocumentLoader {
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
@@ -207,6 +263,8 @@ class DocumentLoaderFactory {
             'docx'  => new DocxLoader($filePath),
             'odt'  => new OdtLoader($filePath),
             'xlsx'  => new XlsxLoader($filePath),
+            'pptx'  => new PptxLoader($filePath),
+            'pdf'  => new PdfLoader($filePath),
             default => throw new Exception("Unsupported file type: $extension"),
         };
     }

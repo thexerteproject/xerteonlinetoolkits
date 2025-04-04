@@ -1,6 +1,10 @@
 <?php
 
-abstract class BaseRAG {
+namespace rag;
+use DocumentLoaderFactory;
+
+abstract class BaseRAG
+{
     protected $fileType;
     protected $chunkSize;
     protected $encodingDirectory;
@@ -9,11 +13,13 @@ abstract class BaseRAG {
     protected $idfFile;
     protected $corpusFile;
     protected $tfidfFile;
-    public function __construct($chunkSize = 2048, $fileType, $encodingDirectory) {
+
+    public function __construct($chunkSize = 2048, $fileType, $encodingDirectory)
+    {
         $this->chunkSize = $chunkSize;
         require_once(str_replace('\\', '/', __DIR__) . "/TextSplitter.php");
         $this->fileType = $fileType;
-        require_once (str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
+        require_once(str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
 
         // Ensure the base directory exists
         if (!is_dir($encodingDirectory)) {
@@ -46,13 +52,14 @@ abstract class BaseRAG {
      *
      * @param string $directory The directory containing the corpus files.
      */
-    public function processDirectory($directory) {
+    public function processDirectory($directory)
+    {
         // Get all files in the directory (ignoring . and ..)
-        $files = array_filter(scandir($directory), function($item) use ($directory) {
+        $files = array_filter(scandir($directory), function ($item) use ($directory) {
             return is_file($directory . '/' . $item);
         });
 
-        if (!empty($files)){
+        if (!empty($files)) {
             // Process each file individually.
             foreach ($files as $file) {
                 $filePath = rtrim($directory, '/') . '/' . $file;
@@ -77,7 +84,8 @@ abstract class BaseRAG {
      * @param string $autoAdd Determines whether file should be added to corpus if not present (default: false).
      * @return bool Returns true if the file was already processed; false otherwise.
      */
-    protected function updateGlobalCorpus($fileName, $autoAdd = false) {
+    protected function updateGlobalCorpus($fileName, $autoAdd = false)
+    {
         $corpus = ["files" => []];
         if (file_exists($this->corpusFile)) {
             $content = file_get_contents($this->corpusFile);
@@ -85,7 +93,7 @@ abstract class BaseRAG {
         }
         if (!in_array($fileName, $corpus['files'])) {
             $corpus['files'][] = $fileName;
-            if ($autoAdd){
+            if ($autoAdd) {
                 file_put_contents($this->corpusFile, json_encode($corpus));
             }
             return false; // File was not previously processed.
@@ -105,12 +113,13 @@ abstract class BaseRAG {
      *
      * @param string $filePath The path to the file.
      */
-    public function processFileChunks($filePath) {
+    public function processFileChunks($filePath)
+    {
         $fileName = basename($filePath);
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 
         // Define supported file types.
-        $supported = ['txt', 'text', 'html', 'htm', 'csv', 'xml', 'docx', 'odt', 'xlsx', 'md', 'markdown'];
+        $supported = ['txt', 'text', 'html', 'htm', 'csv', 'xml', 'docx', 'odt', 'pptx' ,'xlsx', 'md', 'markdown', 'pdf'];
         if (!in_array($extension, $supported)) {
             echo "Skipping unsupported file type: {$fileName}\n";
             return;
@@ -142,8 +151,8 @@ abstract class BaseRAG {
                 while (strlen($buffer) >= $this->chunkSize) {
                     $chunkText = substr($buffer, 0, $this->chunkSize);
                     $data = [
-                        'id'    => $fileName . '-' . $chunkIndex++,
-                        'file'  => $fileName,
+                        'id' => $fileName . '-' . $chunkIndex++,
+                        'file' => $fileName,
                         'chunk' => $chunkText
                     ];
                     fwrite($outHandle, json_encode($data) . "\n");
@@ -152,8 +161,8 @@ abstract class BaseRAG {
             }
             if (strlen($buffer) > 0) {
                 $data = [
-                    'id'    => $fileName . '-' . $chunkIndex++,
-                    'file'  => $fileName,
+                    'id' => $fileName . '-' . $chunkIndex++,
+                    'file' => $fileName,
                     'chunk' => $buffer
                 ];
                 fwrite($outHandle, json_encode($data) . "\n");
@@ -175,8 +184,8 @@ abstract class BaseRAG {
             $chunkIndex = time();
             foreach ($chunksArr as $chunk) {
                 $data = [
-                    'id'    => $fileName . '-' . $chunkIndex++,
-                    'file'  => $fileName,
+                    'id' => $fileName . '-' . $chunkIndex++,
+                    'file' => $fileName,
                     'chunk' => $chunk
                 ];
                 if (($encoded = json_encode($data, JSON_INVALID_UTF8_SUBSTITUTE)) === false) {
@@ -199,7 +208,8 @@ abstract class BaseRAG {
      *
      * @param array $filePaths Array of file paths to process.
      */
-    public function processMultipleFilesChunks(array $filePaths) {
+    public function processMultipleFilesChunks(array $filePaths)
+    {
         foreach ($filePaths as $filePath) {
             $this->processFileChunks($filePath);
         }
@@ -215,7 +225,8 @@ abstract class BaseRAG {
      *
      * @param int $batchSize Number of chunks to process in a single batch (default: 10).
      */
-    public function processNewEmbeddings($batchSize = 10) {
+    public function processNewEmbeddings($batchSize = 10)
+    {
         $newChunks = [];
         $existingFiles = [];
         // If embeddings file exists, gather list of files already embedded.
@@ -261,33 +272,30 @@ abstract class BaseRAG {
             fclose($outHandle);
             //echo ("Processed embeddings for new chunks.\n");
         } else {
-            echo ("No new chunks found for embeddings.\n");
+            echo("No new chunks found for embeddings.\n");
         }
     }
 
     /**
      * Helper method: given a batch of chunk data, compute embeddings and write results.
      */
-    private function processEmbeddingBatch($batch, $outHandle) {
+    private function processEmbeddingBatch($batch, $outHandle)
+    {
         // Extract the chunk texts for this batch
-        $texts = array_map(function($data) {
+        $texts = array_map(function ($data) {
             return $data['chunk'];
         }, $batch);
         $embeddingsBatch = $this->getEmbeddings($texts);
         // Write each embedding along with its chunk metadata
         foreach ($batch as $index => $chunkData) {
             $result = [
-                'id'        => $chunkData['id'],
-                'file'      => $chunkData['file'],
+                'id' => $chunkData['id'],
+                'file' => $chunkData['file'],
                 'embedding' => $embeddingsBatch[$index]
             ];
             fwrite($outHandle, json_encode($result) . "\n");
         }
     }
-
-    /* ============================
-       EXISTING / MODIFIED FUNCTIONS
-       ============================ */
 
     /**
      * generateTfidfPersistent
@@ -298,7 +306,8 @@ abstract class BaseRAG {
      * and the TF-IDF vectors are saved to tfidf_embeddings.json.
      *
      */
-    public function generateTfidfPersistent() {
+    public function generateTfidfPersistent()
+    {
         $df = [];
         $totalDocs = 0;
         $chunks = [];
@@ -336,7 +345,7 @@ abstract class BaseRAG {
         }
         $idfData = [
             'files' => $corpus['files'] ?? [],
-            'idf'   => $idf
+            'idf' => $idf
         ];
         file_put_contents($this->idfFile, json_encode($idfData));
 
@@ -352,8 +361,8 @@ abstract class BaseRAG {
                 $tfidf[$token] = $freq * ($idf[$token] ?? 0);
             }
             $result = [
-                'id'    => $chunkData['id'],
-                'file'  => $chunkData['file'],
+                'id' => $chunkData['id'],
+                'file' => $chunkData['file'],
                 'tfidf' => $tfidf
             ];
             fwrite($outHandle, json_encode($result) . "\n");
@@ -372,7 +381,8 @@ abstract class BaseRAG {
      * @param int $topK Number of top results to return (default: 2).
      * @return array The top matching chunks.
      */
-    public function getContextPersistent($question, $topK = 2) {
+    public function getContextPersistent($question, $topK = 2)
+    {
         $questionEmbedding = $this->getEmbedding($question);
         $similarities = [];
 
@@ -422,7 +432,8 @@ abstract class BaseRAG {
      * @param int $topK Number of top results to return (default: 2).
      * @return array The top matching chunks.
      */
-    public function getContextTfIdfPersistent($question, $topK = 2) {
+    public function getContextTfIdfPersistent($question, $topK = 2)
+    {
         // Load the precomputed global IDF dictionary from file.
         $idfHandle = fopen($this->idfFile, 'r');
         if (!$idfHandle) {
@@ -478,7 +489,6 @@ abstract class BaseRAG {
         }
         return $results;
     }
-
 
 
     /**
@@ -552,7 +562,8 @@ abstract class BaseRAG {
      * @param int $topK Number of top results to return (default: 2).
      * @return array The top matching chunks with their similarity scores.
      */
-    public function getContextCosineTfIdf($question, $topK = 2) {
+    public function getContextCosineTfIdf($question, $topK = 2)
+    {
         // Load the precomputed global IDF dictionary from file.
         $idfHandle = fopen($this->idfFile, 'r');
         if (!$idfHandle) {
@@ -609,7 +620,7 @@ abstract class BaseRAG {
         $results = [];
         foreach ($topIds as $id) {
             $results[] = [
-                'id'    => $id,
+                'id' => $id,
                 'chunk' => $chunksMap[$id] ?? "",
                 'score' => $similarities[$id]
             ];
@@ -626,7 +637,8 @@ abstract class BaseRAG {
      * @param array $vec2 The second vector.
      * @return float The cosine similarity.
      */
-    protected function cosineSimilarity($vec1, $vec2) {
+    protected function cosineSimilarity($vec1, $vec2)
+    {
         $dotProduct = 0;
         $norm1 = 0;
         $norm2 = 0;
@@ -647,7 +659,8 @@ abstract class BaseRAG {
      * @param array $vec2 The second associative vector.
      * @return float The cosine similarity.
      */
-    protected function cosineSimilarityAssoc($vec1, $vec2) {
+    protected function cosineSimilarityAssoc($vec1, $vec2)
+    {
         $dotProduct = 0;
         foreach ($vec1 as $token => $val) {
             if (isset($vec2[$token])) {
@@ -673,7 +686,8 @@ abstract class BaseRAG {
      * @param string $text The input text.
      * @return array An array of tokens.
      */
-    protected function tokenize($text) {
+    protected function tokenize($text)
+    {
         $text = strtolower($text);
         return preg_split('/\W+/', $text, -1, PREG_SPLIT_NO_EMPTY);
     }
@@ -686,7 +700,8 @@ abstract class BaseRAG {
      * @param string $text The input text.
      * @return array Associative array of token frequencies.
      */
-    protected function computeTf($text) {
+    protected function computeTf($text)
+    {
         $tokens = $this->tokenize($text);
         $tf = [];
         $total = count($tokens);
@@ -710,7 +725,8 @@ abstract class BaseRAG {
      * @param array $vec2 Second numeric vector.
      * @return float Similarity score between 0 and 1.
      */
-    protected function euclideanSimilarity(array $vec1, array $vec2): float {
+    protected function euclideanSimilarity(array $vec1, array $vec2): float
+    {
         $sum = 0;
         $n = count($vec1);
         for ($i = 0; $i < $n; $i++) {
@@ -731,7 +747,8 @@ abstract class BaseRAG {
      * @param int $topK Number of top results to return (default: 2).
      * @return array Array of candidates with keys: id, chunk, score.
      */
-    public function getContextEuclidean($question, $topK = 2) {
+    public function getContextEuclidean($question, $topK = 2)
+    {
         $questionEmbedding = $this->getEmbedding($question);
         $similarities = [];
 
@@ -769,7 +786,7 @@ abstract class BaseRAG {
         $results = [];
         foreach ($topIds as $id) {
             $results[] = [
-                'id'    => $id,
+                'id' => $id,
                 'chunk' => $chunksMap[$id] ?? "",
                 'score' => $similarities[$id]
             ];
@@ -788,7 +805,8 @@ abstract class BaseRAG {
      * @param int $topK Number of top results to return (default: 2).
      * @return array Array of candidates with keys: id, chunk, score.
      */
-    public function getContextEuclideanTfIdf($question, $topK = 2) {
+    public function getContextEuclideanTfIdf($question, $topK = 2)
+    {
         // Load the precomputed global IDF dictionary.
         $idfHandle = fopen($this->idfFile, 'r');
         if (!$idfHandle) {
@@ -846,7 +864,7 @@ abstract class BaseRAG {
         $results = [];
         foreach ($topIds as $id) {
             $results[] = [
-                'id'    => $id,
+                'id' => $id,
                 'chunk' => $chunksMap[$id] ?? "",
                 'score' => $similarities[$id]
             ];
@@ -862,7 +880,8 @@ abstract class BaseRAG {
      * @param array $vec2 Second associative vector.
      * @return float Similarity score between 0 and 1.
      */
-    protected function euclideanSimilarityAssoc(array $vec1, array $vec2): float {
+    protected function euclideanSimilarityAssoc(array $vec1, array $vec2): float
+    {
         $allKeys = array_unique(array_merge(array_keys($vec1), array_keys($vec2)));
         $sum = 0;
         foreach ($allKeys as $key) {
@@ -897,14 +916,15 @@ abstract class BaseRAG {
      * @param float $overlap Percentage of previous and following chunk to include in retrieval (default: 0.5).
      * @return array Array of top chunks with combined weighted scores.
      */
-    public function getWeightedContext($question, $weights = null, $topK = 3, $overlap = 0.5) {
+    public function getWeightedContext($question, $weights = null, $topK = 3, $overlap = 0.5)
+    {
         // Set default weights if not provided.
         if (!$weights) {
             $weights = [
-                'embedding_cosine'    => 0.3,
+                'embedding_cosine' => 0.3,
                 'embedding_euclidean' => 0.2,
-                'tfidf_cosine'        => 0.3,
-                'tfidf_euclidean'     => 0.2
+                'tfidf_cosine' => 0.3,
+                'tfidf_euclidean' => 0.2
             ];
         }
 
@@ -917,7 +937,7 @@ abstract class BaseRAG {
         // Merge candidates by chunk id.
         $merged = [];
         // Helper to merge one candidate list.
-        $mergeCandidates = function($candidates, $scoreKey) use (&$merged) {
+        $mergeCandidates = function ($candidates, $scoreKey) use (&$merged) {
             foreach ($candidates as $item) {
                 $id = $item['id'];
                 if (!isset($merged[$id])) {
@@ -943,16 +963,16 @@ abstract class BaseRAG {
         // Compute a combined weighted score for each candidate.
         foreach ($merged as $id => &$item) {
             $item['combined_score'] =
-                $weights['embedding_cosine']    * $item['embedding_cosine'] +
+                $weights['embedding_cosine'] * $item['embedding_cosine'] +
                 $weights['embedding_euclidean'] * $item['embedding_euclidean'] +
-                $weights['tfidf_cosine']        * $item['tfidf_cosine'] +
-                $weights['tfidf_euclidean']     * $item['tfidf_euclidean'];
+                $weights['tfidf_cosine'] * $item['tfidf_cosine'] +
+                $weights['tfidf_euclidean'] * $item['tfidf_euclidean'];
         }
         unset($item);
 
         // Sort merged results by combined_score descending.
         $mergedCandidates = array_values($merged);
-        usort($mergedCandidates, function($a, $b) {
+        usort($mergedCandidates, function ($a, $b) {
             return $b['combined_score'] <=> $a['combined_score'];
         });
 
@@ -973,7 +993,7 @@ abstract class BaseRAG {
         }
         // Sort each file's chunks by id.
         foreach ($chunksGrouped as $file => &$chunksArr) {
-            usort($chunksArr, function($a, $b) {
+            usort($chunksArr, function ($a, $b) {
                 return $a['id'] <=> $b['id'];
             });
         }
@@ -1028,7 +1048,8 @@ abstract class BaseRAG {
      *
      * @return void
      */
-    public function flushPersistentFiles(): void {
+    public function flushPersistentFiles(): void
+    {
         $files = [
             $this->chunksFile,
             $this->embeddingsFile,

@@ -1,15 +1,20 @@
 <?php
 
-class MistralRAG extends BaseRAG {
+namespace rag;
+
+class MistralRAG extends BaseRAG
+{
     private $apiKey;
 
-    public function __construct($apiKey, $fileType, $encodingDirectory, $chunkSize = 2048,) {
+    public function __construct($apiKey, $fileType, $encodingDirectory, $chunkSize = 2048,)
+    {
         parent::__construct($chunkSize, $fileType, $encodingDirectory);
         $this->apiKey = $apiKey;
     }
 
     /*Retrieve an embedding for a single piece of text*/
-    protected function getEmbedding($text) {
+    protected function getEmbedding($text)
+    {
         $url = "https://api.mistral.ai/v1/embeddings";
         $data = json_encode(["model" => "mistral-embed", "input" => $text]);
 

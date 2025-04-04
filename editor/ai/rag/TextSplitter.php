@@ -2,7 +2,7 @@
 /**
  * Split a text string into chunks based on file type, preserving text integrity.
  *
- * TextSplitter functions as a utility for BaseRAG.
+ * TextSplitter functions as a utility for rag\BaseRAG.
  *
  * @param string $text     The input text content.
  * @param string $fileType The type/format of the content (e.g. 'txt', 'html', 'xml', 'json', 'md').

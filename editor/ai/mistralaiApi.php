@@ -1,5 +1,7 @@
 <?php
 
+use rag\MistralRAG;
+
 class mistralaiApi
 {
     //constructor must be like this when adding new api
@@ -8,9 +10,9 @@ class mistralaiApi
         $this->preset_models = $mistralai_preset_models;
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
         $this->xerte_toolkits_site = $xerte_toolkits_site;
-        require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/MistralRAG.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/transcribe/AITranscribe.php");
     }
 
     private function clean_result($answer) {
@@ -155,7 +157,7 @@ class mistralaiApi
         return $finalPath;
     }
 
-    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = true){
+    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = false, $useTranscription = false){
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
         }
@@ -166,106 +168,13 @@ class mistralaiApi
 
         $prompt = $this->generatePrompt($p, $type, $globalInstructions);
 
-/*        //START: TEST CODE
-        // Configuration
-        $filePath = 'essay.txt';      // Path to your .txt file
-        $chunkSize = 1200;            // Approximate characters per chunk
-        $batchSize = 10;              // Number of chunks to send for embedding at a time
-        $topK = 3;                    // Number of top chunks to retrieve
-        $storageFile = "chunks_embeddings.json"; // Disk storage for embeddings
-
-// ----------------------
-// Step 1: Generator to Read & Chunk File Efficiently
-// ----------------------
-        function streamChunks($filePath, $chunkSize) {
-            $handle = fopen($filePath, "r");
-            if (!$handle) {
-                die("Error opening the file.");
-            }
-
-            $buffer = "";
-            while (($line = fgets($handle)) !== false) {
-                $buffer .= $line;
-                if (strlen($buffer) >= $chunkSize) {
-                    yield substr($buffer, 0, $chunkSize);  // Return chunk immediately
-                    $buffer = substr($buffer, $chunkSize); // Keep remaining text
-                }
-            }
-
-            // If there’s leftover text, yield it as a final chunk
-            if (!empty($buffer)) {
-                yield $buffer;
-            }
-
-            fclose($handle);
+        if ($useTranscription){
+            $apiTranscribeKey = $this->xerte_toolkits_site->openAI_key;
+            $transcriber = new OpenAITranscribe($apiTranscribeKey);
+            $file = $this->prepareURL($baseUrl . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . "audioTest" . DIRECTORY_SEPARATOR . "BouwenPeditTest.mp3");
+            $transcription = $transcriber->transcribeAudioTimestamped($file);
         }
 
-// ----------------------
-// Step 2: Batch Processing Chunks & Storing to Disk
-// ----------------------
-        function getBatchEmbeddings($chunks) {
-            // Dummy embedding function simulating Mistral API response
-            $dim = 128; // Example embedding size
-            $embeddings = [];
-            foreach ($chunks as $chunk) {
-                $vector = [];
-                for ($i = 0; $i < $dim; $i++) {
-                    $vector[] = mt_rand() / mt_getrandmax();
-                }
-                $embeddings[] = $vector;
-            }
-            return $embeddings;
-        }
-
-// Open storage file in write mode
-        $storageHandle = fopen($storageFile, "w");
-        if (!$storageHandle) {
-            die("Error opening storage file.");
-        }
-
-// Process chunks in batches
-        $batch = [];
-        $batchIndex = [];
-        $chunkIndex = 0;
-
-        foreach (streamChunks($filePath, $chunkSize) as $chunk) {
-            $batch[] = $chunk;
-            $batchIndex[] = $chunkIndex;
-
-            // If batch is full or we are at the last chunk, process it
-            if (count($batch) == $batchSize) {
-                $embeddings = getBatchEmbeddings($batch);
-                foreach ($embeddings as $i => $embedding) {
-                    $data = [
-                        "index" => $batchIndex[$i],
-                        "chunk" => $batch[$i],
-                        "embedding" => $embedding
-                    ];
-                    fwrite($storageHandle, json_encode($data) . "\n"); // Write each embedding line by line
-                }
-                $batch = [];
-                $batchIndex = [];
-            }
-            $chunkIndex++;
-        }
-
-// Process any remaining chunks
-        if (!empty($batch)) {
-            $embeddings = getBatchEmbeddings($batch);
-            foreach ($embeddings as $i => $embedding) {
-                $data = [
-                    "index" => $batchIndex[$i],
-                    "chunk" => $batch[$i],
-                    "embedding" => $embedding
-                ];
-                fwrite($storageHandle, json_encode($data) . "\n");
-            }
-        }
-
-        fclose($storageHandle);
-        echo "Chunks processed and stored on disk.\n";
-        //END: TEST CODE
-*/
         if ($useCorpus){
             //take context from uploaded file and add it into the prompt.
             $apiKey = $this->xerte_toolkits_site->mistralai_key;
@@ -273,22 +182,9 @@ class mistralaiApi
             $encodingDirectory = $this->prepareURL($baseUrl);
             $rag = new MistralRAG($apiKey, "txt", $encodingDirectory);
 
-            // Load text data and generate embeddings
-            //$text = file_get_contents("essay.txt");
-
             // Start memory tracking
             $startMemory = memory_get_usage(true);
             $startTime = microtime(true);
-
-            //$text = $this->processFileForRAG("essay.txt");
-            //$text1 = $this->processFileForRAG("xmlTest.xlsx");
-            //$text2 = $this->processFileForRAG("csvTest.csv");
-            //$text3 = $this->processFileForRAG("odtTest.odt");
-            //$text4 = $this->processFileForRAG("docxTest.docx");
-
-            //$rag->processFileChunks("essay.txt");
-            //$rag->processNewEmbeddings();
-            //$rag->generateTfidfPersistent();
 
             $directory = $this->prepareURL($baseUrl . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . "corpus");
 
@@ -296,10 +192,7 @@ class mistralaiApi
 
 
             // Get relevant context for a question
-            //$question = "What were the two main things the author worked on before college?";
             $question = $p['subject'];
-             //$contextOld = $rag->getContextPersistent($question);
-            $contextTEST = $rag->getContextTfIdfPersistent($question);
             $context = $rag->getWeightedContext($question);
             //$rag->flushPersistentFiles();
 
@@ -334,7 +227,6 @@ class mistralaiApi
 
             array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
         }
-
 
         $results = array();
 
