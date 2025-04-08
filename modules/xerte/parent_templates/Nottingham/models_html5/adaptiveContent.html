@@ -565,15 +565,24 @@
         let period1 = x_currentPageXML.getAttribute("period1");
         let period2 = x_currentPageXML.getAttribute("period2");
         if (period0 !== null) {
-            periods.push(period0.split(','));
+            periods.push([
+                period0.split(',')[0].split('T')[0],
+                period0.split(',')[1].split('T')[0]
+            ]);
         } else {
             periods.push(["01-01-0000","05-05-2000"]);
         }
-        if (period1 !== null) {
-            periods.push(period1.split(','));
+        if (period1 !== null && period1 !== 'false') {
+            periods.push([
+                period1.split(',')[0].split('T')[0],
+                period1.split(',')[1].split('T')[0]
+            ]);
         }
-        if (period2 !== null) {
-            periods.push(period2.split(','));
+        if (period2 !== null && period2 !== 'false') {
+            periods.push([
+                period2.split(',')[0].split('T')[0],
+                period2.split(',')[1].split('T')[0]
+            ]);
         }
         return periods;
     }
@@ -581,7 +590,7 @@
   //split statements into periods if needed
   function splitStatementsPerPeriod(statements, periods, MultiPeriod){
         let periodStatements = [[],[],[]];
-        if (MultiPeriod === 'true'){
+        if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always'){
             for (let statement in statements) {
                 let statementTime = statements[statement].timestamp.split('T')[0];
                 for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
@@ -832,6 +841,18 @@
         return statements
     }
 
+    //stores the static periods if a form we can use in the acp.
+    function StorePeriodDates(x_currentPageXML) {
+        debugger
+        x_currentPageXML.setAttribute('period0', [x_currentPageXML.getAttribute('period0Date'), x_currentPageXML.getAttribute('period0UntilDate')]);
+        if (typeof(x_currentPageXML.getAttribute('period1')) !== 'undefined' && x_currentPageXML.getAttribute('period1') === 'true') {
+            x_currentPageXML.setAttribute('period1', [x_currentPageXML.getAttribute('period1Date'), x_currentPageXML.getAttribute('period1UntilDate')]);
+        }
+        if (typeof(x_currentPageXML.getAttribute('period2')) !== 'undefined' && x_currentPageXML.getAttribute('period2') === 'true') {
+            x_currentPageXML.setAttribute('period2', [x_currentPageXML.getAttribute('period2Date'), x_currentPageXML.getAttribute('period2UntilDate')]);
+        }
+    }
+
     //verifies if the rangeSelector has been filled in correctly
     //returns the ranges
     function verifyPeriodFields(e) {
@@ -893,8 +914,8 @@
             for (let i = 0; i < periods.length; i++) {
                 x_currentPageXML.setAttribute(`period${i}`, periods[i]);
             }
-            //should call setupAcpInteractions
-            //currentAcpInstance.drawBlock("#adaptiveContent", interaction, interactionIndex, true);
+            //todo need alternative method to do this for dynamic acp.
+            //prob new mode that reinitiates the blocks?
             currentPage.setupAcpInteractions(interactions);
         }
     }
@@ -1443,6 +1464,9 @@
     this.setupAcpInteractions = function (
         interactions,
     ) {
+        //todo remove existing blocks if they exists.
+        debugger
+        $('#adaptiveContent').empty();
         for (
             var interactionIndex = 0;
             interactionIndex < interactions.length;
@@ -1538,17 +1562,17 @@
       if (nrParticipantsText == undefined) {
         nrParticipantsText = "The number of participants is {0}";
       }
-        //todo remove multiPeriodEnabled check from interaction
-      var MultiPeriod = x_currentPageXML.getAttribute("enableMultiPeriod");
+      var MultiPeriod = x_currentPageXML.getAttribute("multiPeriodVersion");
       if (MultiPeriod == undefined) {
-          MultiPeriod = "false";
+          MultiPeriod = "off";
       }
       var nrPeriods = 1;
-      if (MultiPeriod === "true") {
+      //todo also use for dynamic/static for static store in below attributes, should work
+      if (MultiPeriod === "dynamic_always" || MultiPeriod === "static") {
           nrPeriods = 0;
           if (x_currentPageXML.getAttribute("period0") !== null) nrPeriods += 1;
-          if (x_currentPageXML.getAttribute("period1") !== null) nrPeriods += 1;
-          if (x_currentPageXML.getAttribute("period2") !== null) nrPeriods += 1;
+          if (x_currentPageXML.getAttribute("period1") !== null && x_currentPageXML.getAttribute("period1") !== 'false') nrPeriods += 1;
+          if (x_currentPageXML.getAttribute("period2") !== null && x_currentPageXML.getAttribute("period2") !== 'false') nrPeriods += 1;
       }
 
 
@@ -1630,7 +1654,7 @@
       if (summaryDiv == '') {
           graphContainer = '<div class="graph-container graph-container-wide"></div>';
         }
-    debugger
+
       let adviceDiv = '<div class="advice">' +
           adviceHeader +
           '<div class="message"></div>' +
@@ -1949,9 +1973,9 @@
       if (graphShowAvgLine == undefined) {
           graphShowAvgLine = false;
       }
-      var MultiPeriod = x_currentPageXML.getAttribute("enableMultiPeriod");
+      var MultiPeriod = x_currentPageXML.getAttribute("multiPeriodVersion");
       if (MultiPeriod == undefined) {
-          MultiPeriod = "false";
+          MultiPeriod = "off";
       }
       var periods = getPeriods();
 
@@ -1984,7 +2008,8 @@
       var periodStatements = splitStatementsPerPeriod(statements, periods, MultiPeriod);
 
       //build own statements for all periods for later use
-        if (MultiPeriod === 'true') {
+        //todo rework
+        if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
             var ownstatementsPeriods = [];
             for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
                 ownstatementsPeriods.push(filterOwnStatements(periodStatements[currentPeriod], xertelo));
@@ -1993,7 +2018,8 @@
 
         for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
             score = 0;
-            if (MultiPeriod === 'true') {
+            //todo rework
+            if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                 statements = periodStatements[currentPeriod];
                 ownstatements = ownstatementsPeriods[currentPeriod];
             }
@@ -2208,13 +2234,14 @@
             }
         }
         //maintain proper statements state
-        if (MultiPeriod === 'true') {
+        //todo rework
+        if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
             statements = periodStatements[0];
         }
 
       if (interaction.getAttribute("showNrOfParticipants") == "true") {
           for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
-              if (MultiPeriod === 'true') {
+              if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                   statements = periodStatements[currentPeriod];
               }
               let sessionIds = statements.map(
@@ -2230,7 +2257,7 @@
               ).append("<li>" + txt + "</li>");
           }
           //maintain proper statements state
-          if (MultiPeriod === 'true') {
+          if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
               statements = periodStatements[0];
           }
       }
@@ -2325,7 +2352,7 @@
 
           //todo bad indent to prevent huge git change. add indent when done
           for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
-              if (MultiPeriod === 'true'){
+              if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always'){
                   statements = periodStatements[currentPeriod];
                   ownstatements = ownstatementsPeriods[currentPeriod];
               }
@@ -3761,9 +3788,9 @@
         if (xertelo == "") {
             xertelo = x_TemplateId
         }
-        var MultiPeriod = x_currentPageXML.getAttribute("enableMultiPeriod");
+        var MultiPeriod = x_currentPageXML.getAttribute("multiPeriodVersion");
         if (MultiPeriod == undefined) {
-            MultiPeriod = "false";
+            MultiPeriod = "off";
         }
 
         var periods = getPeriods();
@@ -3776,7 +3803,7 @@
         var periodStatements = splitStatementsPerPeriod(statements, periods, MultiPeriod);
 
         //build own statements for all periods for later use
-        if (MultiPeriod === 'true') {
+        if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
             var ownstatementsPeriods = [];
             for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
                 ownstatementsPeriods.push(filterOwnStatements(periodStatements[currentPeriod], xertelo));
@@ -3797,7 +3824,7 @@
             "#B284BE",
         ];
         for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
-            if (MultiPeriod === 'true') {
+            if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                 statements = periodStatements[currentPeriod];
                 ownstatements = ownstatementsPeriods[currentPeriod];
             }
@@ -3840,7 +3867,7 @@
             }
         }
         //reset statements state
-        if (MultiPeriod === 'true') {
+        if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
             statements = periodStatements[0];
         }
 
@@ -3906,7 +3933,7 @@
 
 
             for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
-                if (MultiPeriod === 'true') {
+                if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                     statements = periodStatements[currentPeriod];
                     ownstatements = ownstatementsPeriods[currentPeriod];
                 }
@@ -4478,9 +4505,9 @@
         ExplanationPanelWidth = "40%";
       }
 
-      var MultiPeriod = x_currentPageXML.getAttribute("enableMultiPeriod");
+      var MultiPeriod = x_currentPageXML.getAttribute("multiPeriodVersion");
       if (MultiPeriod == undefined) {
-          MultiPeriod = "false";
+          MultiPeriod = "off";
       }
 
       var periods = getPeriods();
@@ -4491,7 +4518,7 @@
         var identifier = escapeUrl(url, type, interactionIndex) + "-graph0";
 
         //build own statements for all periods for later use
-        if (MultiPeriod === 'true') {
+        if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
             var ownstatementsPeriods = [];
             for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
                 ownstatementsPeriods.push(filterOwnStatements(periodStatements[currentPeriod], xertelo));
@@ -4505,7 +4532,7 @@
             let graphSpace = "";
             for (let i = 0; i < periods.length; i++) {
                 //add period labels above graph if needed
-                if (MultiPeriod === 'true') {
+                if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                     graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                 }
                 graphSpace += "<fieldset class='noStyle'><canvas aria-live='polite' id='" +
@@ -4518,7 +4545,7 @@
             let graphSpace = ""
             for (let i = 0; i < periods.length; i++) {
                 //add period labels above graph if needed
-                if (MultiPeriod === 'true') {
+                if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                     graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                 }
                 graphSpace += "<div class='graph'><div id='" +
@@ -4539,7 +4566,7 @@
         }
 
         for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
-            if (MultiPeriod === 'true') {
+            if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                 statements = periodStatements[currentPeriod];
             }
             if (interaction.getAttribute("showNrOfParticipants") == "true") {
@@ -4611,9 +4638,9 @@
         sortOrder = interaction.getAttribute("sortOrder");
       }
 
-      var MultiPeriod = x_currentPageXML.getAttribute("enableMultiPeriod");
+      var MultiPeriod = x_currentPageXML.getAttribute("multiPeriodVersion");
       if (MultiPeriod == undefined) {
-          MultiPeriod = "false";
+          MultiPeriod = "off";
       }
 
       var statements = data;
@@ -4624,7 +4651,7 @@
       var html = "";
 
       for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
-          if (MultiPeriod === 'true') {
+          if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
               statements = periodStatements[currentPeriod];
           }
           var allAnswers = [];
@@ -5242,193 +5269,210 @@
     };
 
     this.setUpUnlisted = function () {
-      if (x_currentPageXML.getAttribute('disableprinting') !== 'true') {
+        debugger
+      if (x_currentPageXML.getAttribute('disableprinting') !== 'true' || x_currentPageXML.getAttribute('multiPeriodVersion') === 'dynamic') {
         $("#adaptiveContentMain").append(
-            '<div id="button-placeholder"><button id="printBtn" hidden></button></div>'
+            '<div id="button-placeholder"><button id="periodBtn" hidden></button><button id="printBtn" hidden></button></div>'
         );
-
-        $("#printBtn")
-        .button({
-          label: 'print'
-        })
-        .click(async function() {
-            $("#adaptiveContentMain").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
-            let filename = 'xerte-adaptive-content.pdf';
-            if (x_currentPageXML.getAttribute('name') != null) {
-                filename = $("<div>").html(x_currentPageXML.getAttribute('name')).text().replace('\/ ', '_') + '.pdf';
-            }
-            if (x_params['ic'] != null) {
-                logoimg = x_params['ic'];
-                // Determine the type of image and set the correct header
-                if (logoimg.indexOf('.png') > -1) {
-                    logoImgType = 'PNG';
-                } else if (logoimg.indexOf('.jpg') > -1) {
-                    logoImgType = 'JPEG';
-                } else if (logoimg.indexOf('.gif') > -1) {
-                    logoImgType = 'GIF';
-                } else if (logoimg.indexOf('.svg') > -1) {
-                    logoImgType = 'SVG';
-                }
-                else {
-                    logoImgType = '';
-                }
-                logoImg = new Image();
-                logoImg.src = logoimg;
-                //logo = '<img class="print-logo" src="' + logoimg + '" style="float:right; height: 20px; margin-top: -40px; padding-right:80px; margin-right:80px;">';
-            }
-            else
-            {
-                logoImg = '';
-            }
-            let pageTitle = $("<div>").html(x_currentPageXML.getAttribute('name')).text();
-          /*  $("#adaptiveContent").addClass("hide-screen");
+        if (x_currentPageXML.getAttribute('disableprinting') !== 'true') {
+            $("#printBtn")
+                .button({
+                    label: 'print'
+                })
+                .click(async function () {
+                    $("#adaptiveContentMain").prepend("<div id='print-overlay'><img id='print-overlay-spinner' src='" + x_templateLocation + "common_html5/loading16.gif'></div>");
+                    let filename = 'xerte-adaptive-content.pdf';
+                    if (x_currentPageXML.getAttribute('name') != null) {
+                        filename = $("<div>").html(x_currentPageXML.getAttribute('name')).text().replace('\/ ', '_') + '.pdf';
+                    }
+                    if (x_params['ic'] != null) {
+                        logoimg = x_params['ic'];
+                        // Determine the type of image and set the correct header
+                        if (logoimg.indexOf('.png') > -1) {
+                            logoImgType = 'PNG';
+                        } else if (logoimg.indexOf('.jpg') > -1) {
+                            logoImgType = 'JPEG';
+                        } else if (logoimg.indexOf('.gif') > -1) {
+                            logoImgType = 'GIF';
+                        } else if (logoimg.indexOf('.svg') > -1) {
+                            logoImgType = 'SVG';
+                        } else {
+                            logoImgType = '';
+                        }
+                        logoImg = new Image();
+                        logoImg.src = logoimg;
+                        //logo = '<img class="print-logo" src="' + logoimg + '" style="float:right; height: 20px; margin-top: -40px; padding-right:80px; margin-right:80px;">';
+                    } else {
+                        logoImg = '';
+                    }
+                    let pageTitle = $("<div>").html(x_currentPageXML.getAttribute('name')).text();
+                    /*  $("#adaptiveContent").addClass("hide-screen");
             $(".hide-screen").css("background-color", "black");
             $(".hide-screen").css("z-index", "999");*/
-            var canvasWidthHeights = [];
+                    var canvasWidthHeights = [];
 
-            $(".html2pdf__page-break").each(function (index){
-                canvasWidthHeights.push({width: $(this).children().eq(2).children().eq(1).children().eq(0).children().width(), height: $(this).children().eq(2).children().eq(1).children().eq(0).children().height(), parentHeight: $(this).height()})
-                $(this).find('.summary-container').addClass('container-print');
-                if($(this).find('.graph-container').find('.panel').length > 0){
-                    $(this).find('.graph-container').find('.noStyle').addClass("graph-panel");
-                }else{
-                    $(this).find('.graph-container').find('.noStyle').addClass("graph-no-panel");
-                }
-            })
+                    $(".html2pdf__page-break").each(function (index) {
+                        canvasWidthHeights.push({
+                            width: $(this).children().eq(2).children().eq(1).children().eq(0).children().width(),
+                            height: $(this).children().eq(2).children().eq(1).children().eq(0).children().height(),
+                            parentHeight: $(this).height()
+                        })
+                        $(this).find('.summary-container').addClass('container-print');
+                        if ($(this).find('.graph-container').find('.panel').length > 0) {
+                            $(this).find('.graph-container').find('.noStyle').addClass("graph-panel");
+                        } else {
+                            $(this).find('.graph-container').find('.noStyle').addClass("graph-no-panel");
+                        }
+                    })
 
-            $(".graph-container .panel").addClass("panel-legend");
-            $(".graph-container .panel").removeClass("panel");
-            $(".panel-legend").css("padding-left", "0px");
-            //$(".panel-legend").css("width", "90px");
-            $(".panel-legend").css("height", "90px");
-
-
-            $("#adaptiveContent .panel").addClass("panel-print");
-            $("#adaptiveContent .panel").removeClass("panel");
-            $(".panel-print").css("width", "794px");
-            //$(".panel-print").css("height", "210px");
-            $(".panel-print").css("padding", "79.4px");
-            //$(".panel-print").prepend(
-            //    `<div class="print-title" style="font-size: 20px"><div style="width:500px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>` + logo + `</div>`
-            //);
-
-            $("#adaptiveContent .advice").addClass("advice-print");
-            $("#adaptiveContent .advice").removeClass("advice");
-            $(".advice-print").css("width", "635px");
+                    $(".graph-container .panel").addClass("panel-legend");
+                    $(".graph-container .panel").removeClass("panel");
+                    $(".panel-legend").css("padding-left", "0px");
+                    //$(".panel-legend").css("width", "90px");
+                    $(".panel-legend").css("height", "90px");
 
 
-           /* $(".graph-container").css("float", "unset");*/
-            $(".graph-container").css("width", "635px");
-            //$(".graph-container").css("height", "365px");
-            $(".graph-panel canvas").css("min-width", "400px");
-            $(".graph-panel canvas").css("min-height", "270px");
-            $(".graph-panel canvas").css("max-width", "535px");
-            $(".graph-panel canvas").css("max-height", "365px");
-            $(".graph-panel").css({
-                'width' : '535px',
-                //'height' : '295px'
-            });
-            $(".graph-no-panel").css("width", "635px");
-            $(".introduction").css("width", "635px");
-            $("p").css("font-size", "14px");
-            $("ul").css("font-size", "14px");
-            adaptiveContent.sizeChanged();
+                    $("#adaptiveContent .panel").addClass("panel-print");
+                    $("#adaptiveContent .panel").removeClass("panel");
+                    $(".panel-print").css("width", "794px");
+                    //$(".panel-print").css("height", "210px");
+                    $(".panel-print").css("padding", "79.4px");
+                    //$(".panel-print").prepend(
+                    //    `<div class="print-title" style="font-size: 20px"><div style="width:500px"><h1>${x_currentPageXML.getAttribute("name")}</h1></div>` + logo + `</div>`
+                    //);
 
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            let opt = {
-                filename: filename,
-                margin: [10, 0, 10, 0],
-                pagebreak: {
-                    mode: ['css', 'legacy'],
-                    avoid: [ 'p', 'li', 'table', 'thead', 'tfoot', 'tbody', 'tr', 'th', 'td', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
-                },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-              };
-            html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
+                    $("#adaptiveContent .advice").addClass("advice-print");
+                    $("#adaptiveContent .advice").removeClass("advice");
+                    $(".advice-print").css("width", "635px");
 
 
+                    /* $(".graph-container").css("float", "unset");*/
+                    $(".graph-container").css("width", "635px");
+                    //$(".graph-container").css("height", "365px");
+                    $(".graph-panel canvas").css("min-width", "400px");
+                    $(".graph-panel canvas").css("min-height", "270px");
+                    $(".graph-panel canvas").css("max-width", "535px");
+                    $(".graph-panel canvas").css("max-height", "365px");
+                    $(".graph-panel").css({
+                        'width': '535px',
+                        //'height' : '295px'
+                    });
+                    $(".graph-no-panel").css("width", "635px");
+                    $(".introduction").css("width", "635px");
+                    $("p").css("font-size", "14px");
+                    $("ul").css("font-size", "14px");
+                    adaptiveContent.sizeChanged();
 
-                $(".graph-container .panel-legend").addClass("panel");
-                $(".graph-container .panel-legend").removeClass("panel-legend");
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    let opt = {
+                        filename: filename,
+                        margin: [10, 0, 10, 0],
+                        pagebreak: {
+                            mode: ['css', 'legacy'],
+                            avoid: ['p', 'li', 'table', 'thead', 'tfoot', 'tbody', 'tr', 'th', 'td', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+                        },
+                        html2canvas: {scale: 2},
+                        jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'}
+                    };
+                    html2pdf().set(opt).from($("#adaptiveContent")[0]).toPdf().get('pdf').then(function (pdf) {
 
-                $("#print-title").remove();
-              /*  $("#adaptiveContent .panel").css({'padding' : "0", 'padding-bottom' : "20px"});*/
-                $(".panel-print").css("padding", "");
-                $("#adaptiveContent .panel-print").addClass("panel");
-                $("#adaptiveContent .panel").removeClass("panel-print");
-                $(".panel").css("width", "");
-                $(".panel").css("height", "");
 
-                $("#adaptiveContent .advice-print").addClass("advice");
-                $("#adaptiveContent .advice-print").removeClass("advice-print");
-                $(".advice").css("width", "");
-                $(".advice").css("padding", "");
+                        $(".graph-container .panel-legend").addClass("panel");
+                        $(".graph-container .panel-legend").removeClass("panel-legend");
 
-                $(".graph-panel canvas").css("min-width", "");
-                $(".graph-panel canvas").css("min-height", "");
-                $(".graph-panel canvas").css("max-width", "");
-                $(".graph-panel canvas").css("max-height", "");
-                $(".graph-panel").css("width", "").removeClass("graph-panel");
-                $(".graph-no-panel").css("width", "").removeClass("graph-no-panel");
+                        $("#print-title").remove();
+                        /*  $("#adaptiveContent .panel").css({'padding' : "0", 'padding-bottom' : "20px"});*/
+                        $(".panel-print").css("padding", "");
+                        $("#adaptiveContent .panel-print").addClass("panel");
+                        $("#adaptiveContent .panel").removeClass("panel-print");
+                        $(".panel").css("width", "");
+                        $(".panel").css("height", "");
 
-                $(".graph-container").css("width", "");
-                $(".graph-container").css("float", "");
+                        $("#adaptiveContent .advice-print").addClass("advice");
+                        $("#adaptiveContent .advice-print").removeClass("advice-print");
+                        $(".advice").css("width", "");
+                        $(".advice").css("padding", "");
 
-                $(".graph").css("width", "");
+                        $(".graph-panel canvas").css("min-width", "");
+                        $(".graph-panel canvas").css("min-height", "");
+                        $(".graph-panel canvas").css("max-width", "");
+                        $(".graph-panel canvas").css("max-height", "");
+                        $(".graph-panel").css("width", "").removeClass("graph-panel");
+                        $(".graph-no-panel").css("width", "").removeClass("graph-no-panel");
 
-                $(".introduction").css("width", "");
+                        $(".graph-container").css("width", "");
+                        $(".graph-container").css("float", "");
 
-                $("p").css("font-size", "");
-                $("ul").css("font-size", "");
-                $(".panel .legend p").css("font-size", "");
+                        $(".graph").css("width", "");
 
-                $(".html2pdf__page-break").each(function (index){
-                    $(this).css({'height' : canvasWidthHeights[index].parentHeight, 'padding' : "20px"})
-                    $(this).find('.graph').css({'width': canvasWidthHeights[index].width, 'height' : canvasWidthHeights[index].height})
-                    $(this).find('.container-print').removeClass('container-print');
-                    if($(this).find('.graph-container').find('.graph-panel').length > 0){
-                        $(this).find('.graph-container').find('.graph-panel').removeClass("graph-panel")
-                        $(this).find('.graph-container').find('.graph-panel').children().css({'width': canvasWidthHeights[index].width, 'height' : canvasWidthHeights[index].height})
+                        $(".introduction").css("width", "");
 
-                    }else{
-                        $(this).find('.graph-container').find('.graph-no-panel').removeClass("graph-no-panel")
-                    }
-                })
-                $("#print-overlay").remove();
-                $(".print-title").remove();
+                        $("p").css("font-size", "");
+                        $("ul").css("font-size", "");
+                        $(".panel .legend p").css("font-size", "");
 
-                // Add the page header and footer
-                const totalPages = pdf.internal.getNumberOfPages();
+                        $(".html2pdf__page-break").each(function (index) {
+                            $(this).css({'height': canvasWidthHeights[index].parentHeight, 'padding': "20px"})
+                            $(this).find('.graph').css({
+                                'width': canvasWidthHeights[index].width,
+                                'height': canvasWidthHeights[index].height
+                            })
+                            $(this).find('.container-print').removeClass('container-print');
+                            if ($(this).find('.graph-container').find('.graph-panel').length > 0) {
+                                $(this).find('.graph-container').find('.graph-panel').removeClass("graph-panel")
+                                $(this).find('.graph-container').find('.graph-panel').children().css({
+                                    'width': canvasWidthHeights[index].width,
+                                    'height': canvasWidthHeights[index].height
+                                })
 
-                for (let i = 1; i <= totalPages; i++) {
-                    // set footer to every page
-                    pdf.setPage(i);
-                    // set footer font
-                    pdf.setFontSize(12);  //12pt
+                            } else {
+                                $(this).find('.graph-container').find('.graph-no-panel').removeClass("graph-no-panel")
+                            }
+                        })
+                        $("#print-overlay").remove();
+                        $(".print-title").remove();
 
-                    // Set title in the header
-                    pdf.text(21, 14, pageTitle);
-                    // Add Logo to the right of the header
-                    if (logoImg != '')
-                    {
-                        const imgWidth = logoImg.naturalWidth;
-                        const imgHeight = logoImg.naturalHeight;
-                        const imgRatio = imgWidth / imgHeight;
-                        const logoHeight = 5.3;  //mm = 20px
-                        const logoWidth = logoHeight * imgRatio;
-                        pdf.addImage(logoImg, logoImgType, pdf.internal.pageSize.getWidth() - logoWidth - 21, 10, logoWidth, logoHeight);
-                    }
-                    // Add the footer text
-                    // this example gets internal pageSize just as an example to locate your text near the borders in case you want to do something like "Page 3 out of 4"
-                    const pagenr = x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "") + " " + (i) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "-") + " " + totalPages
-                    const textwidth = pdf.getTextWidth(pagenr);
-                    pdf.setFontSize(10);  //10pt
-                    pdf.text(pdf.internal.pageSize.getWidth() - textwidth - 21, pdf.internal.pageSize.getHeight() - 7, pagenr);
+                        // Add the page header and footer
+                        const totalPages = pdf.internal.getNumberOfPages();
 
-                }
-            }).save();
-        });
+                        for (let i = 1; i <= totalPages; i++) {
+                            // set footer to every page
+                            pdf.setPage(i);
+                            // set footer font
+                            pdf.setFontSize(12);  //12pt
+
+                            // Set title in the header
+                            pdf.text(21, 14, pageTitle);
+                            // Add Logo to the right of the header
+                            if (logoImg != '') {
+                                const imgWidth = logoImg.naturalWidth;
+                                const imgHeight = logoImg.naturalHeight;
+                                const imgRatio = imgWidth / imgHeight;
+                                const logoHeight = 5.3;  //mm = 20px
+                                const logoWidth = logoHeight * imgRatio;
+                                pdf.addImage(logoImg, logoImgType, pdf.internal.pageSize.getWidth() - logoWidth - 21, 10, logoWidth, logoHeight);
+                            }
+                            // Add the footer text
+                            // this example gets internal pageSize just as an example to locate your text near the borders in case you want to do something like "Page 3 out of 4"
+                            const pagenr = x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "") + " " + (i) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "-") + " " + totalPages
+                            const textwidth = pdf.getTextWidth(pagenr);
+                            pdf.setFontSize(10);  //10pt
+                            pdf.text(pdf.internal.pageSize.getWidth() - textwidth - 21, pdf.internal.pageSize.getHeight() - 7, pagenr);
+
+                        }
+                    }).save();
+                });
+        }
+        if (x_currentPageXML.getAttribute('multiPeriodVersion') === 'dynamic') {
+            $("#periodBtn").button({
+                label: 'Compare periods'
+            }).click( function () {
+                let currentPage = this;
+                x_currentPageXML.setAttribute('multiPeriodVersion', 'dynamic_always');
+                open_period_range_selector($(x_currentPageXML).children(), adaptiveContent);
+                });
+        }
+
       }
       $("#adaptiveContentMain").append(
           '<div id="introductionText"></div><div id="adaptiveContent"></div>'
@@ -5441,15 +5485,17 @@
 
       x_pageLoaded();
 
-      var multiPeriodEnabled = x_currentPageXML.getAttribute("enableMultiPeriod");
+      var multiPeriodEnabled = x_currentPageXML.getAttribute("multiPeriodVersion");
       if (multiPeriodEnabled == undefined) {
-          multiPeriodEnabled = "false";
+          multiPeriodEnabled = "off";
       }
-      debugger
-      if (multiPeriodEnabled == "true") {
+      if (multiPeriodEnabled == "dynamic_always") {
           let currentPage = this;
           open_period_range_selector(interactions, currentPage)
-      } else {
+      } else if (multiPeriodEnabled == "static") {
+          StorePeriodDates(x_currentPageXML);
+          this.setupAcpInteractions(interactions);
+      }else {
           this.setupAcpInteractions(interactions);
       }
 

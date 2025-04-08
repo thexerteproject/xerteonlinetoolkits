@@ -17,8 +17,18 @@
      <listedModeOptions type="group" condition="displayMode=='Listed'" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
          <sortOrder label="Sort Order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list according to this criteria. Only has meaning for 'Listed' display mode" />
      </listedModeOptions>
-     <enableMultiPeriod label="Enable multiple date periods" type="checkbox" defaultValue="false" optional="true" />
+     <periodGroup type="group" optional="true" label="Options for period usage">
+        <multiPeriodVersion label="Select period version" type="combobox" conditionTrigger="true" options="Disabled,Static periods,Dynamic periods(on demand),Dynamic periods(always)" data="off,static,dynamic,dynamic_always" defaultValue="off" optional="true" />
+        <period0Date label="From" type="DateField" defaultValue="" optional="true" allowBlank="false" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <period0UntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="false" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <period1 label="Use second period" type="CheckBox" defaultValue="true" optional="true" condition="multiPeriodVersion=='static'"/>
+        <period1Date label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <period1UntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <period2 label="Use third period" type="CheckBox" defaultValue="true" optional="true" condition="multiPeriodVersion=='static'"/>
+        <period2Date label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <period2UntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 
+     </periodGroup>
 
       <newNodes>
         <interaction ><![CDATA[<interaction name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
