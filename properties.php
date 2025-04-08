@@ -25,6 +25,12 @@ require_once(dirname(__FILE__) . "/website_code/php/properties/properties_librar
 _load_language_file("/properties.inc");
 $version = getVersion();
 
+$body_class = "";
+if ($xerte_toolkits_site->rights == 'elevated')
+{
+    $body_class = ' class="elevated"';
+}
+
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -100,7 +106,7 @@ $version = getVersion();
     
     -->
 
-    <body onload="javascript:properties_template();" onunload="javascript:parent.window.opener.refresh_workspace()">
+    <body onload="javascript:properties_template();" onunload="javascript:parent.window.opener.refresh_workspace()" <?php echo $body_class; ?> >
 
         <!--
         

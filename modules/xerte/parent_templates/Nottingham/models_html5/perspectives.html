@@ -17,19 +17,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	
 	var perspectives = new function() {
-		var videoState,
-			popcornInstances;
-
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			// refresh media if the current info showing is audio/video
-			if ($("#mainInfoHolder #pageVideo:not('.iframe')").length > 0) {
-				$("#mainInfoHolder #pageVideo:not('.iframe')").html("");
+			if ($("#mainInfoHolder #pageVideo:not(.iframe)").length > 0) {
+				$("#mainInfoHolder #pageVideo:not(.iframe)").html("");
 				this.loadVideo($("#pageVideo"), $("#mainInfoHolder #pageVideo"));
 			} else if ($("#mainInfoHolder #pageAudio").length > 0) {
 				this.loadAudio($("#mainInfoHolder #pageAudio"));
@@ -46,7 +43,6 @@
 						var maxImgSize = [$this.width(), $this.height() - $this.find(".thumbTitle").height() - 5];
 						if ($this.find(".thumbMedia img").length > 0) {
 							x_scaleImg($this.find(".thumbMedia img")[0], maxImgSize[0], maxImgSize[1], true, false, false, true);
-						} else if ($this.find(".thumbMedia video").length > 0) {
 						}
 					});
 				}
@@ -55,7 +51,13 @@
 				
 				// trigger load of main content again so everything will rescale
 				if ($("#mainInfoHolder").data("index") != "undefined") {
-					$("#thumbHolder .thumbBox").filter(function() { return $(this).data("index") == $("#mainInfoHolder").data("index")}).trigger("click");
+					if (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") == "lightbox") {
+						if (parent.window.$.featherlight.current()) {
+							parent.window.$.featherlight.current().close();
+						}
+					} else {
+						$("#thumbHolder .thumbBox").filter(function() { return $(this).data("index") == $("#mainInfoHolder").data("index")}).trigger("click");
+					}
 				}
 
 				$(".popcornmedia .embed").each(function(){
@@ -121,15 +123,24 @@
 			if (x_currentPageXML.getAttribute("thumbPos") == "bottom" && x_browserInfo.mobile != true) {
 				$mainInfoHolder.after($thumbBar);
 			} else if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
+				if (x_currentPageXML.getAttribute("target") != "lightbox") {
+					$thumbHolder.attr("role", "list");
+					$mainInfoHolder.attr({
+						"role": "region",
+						"tabindex": "0"
+					});
+				} else {
+					$mainInfoHolder.removeAttr("role");
+				}
+				$mainInfoHolder.hide();
 				$thumbBar.addClass("grid");
 				$("#prevBtn, #nextBtn").remove();
-				$mainInfoHolder.hide();
 			}
 			
 			$("#prevBtn")
 				.button({
 					icons: {primary: 'fa fa-x-prev-circle'},
-					label: x_currentPageXML.getAttribute("backBtnTip") == undefined ? "Back" : x_currentPageXML.getAttribute("backBtnTip"),
+					label: x_currentPageXML.getAttribute("backBtnTip") == undefined ? "Scroll Back" : x_currentPageXML.getAttribute("backBtnTip"),
 					text: false
 				})
 				.click(function() {
@@ -148,7 +159,7 @@
 			$("#nextBtn")
 				.button({
 					icons: {primary: 'fa fa-x-next-circle'},
-					label: x_currentPageXML.getAttribute("nextBtnTip") == undefined ? "Forward" : x_currentPageXML.getAttribute("nextBtnTip"),
+					label: x_currentPageXML.getAttribute("nextBtnTip") == undefined ? "Scroll Forward" : x_currentPageXML.getAttribute("nextBtnTip"),
 					text: false
 				})
 				.click(function() {
@@ -167,18 +178,28 @@
 			$("#prevBtn, #nextBtn").hide();
 			
 			if (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") != "lightbox") {
+				// this should really be a button element rather than div with role=button but it's done that way as it might mess up theme css selectors if I change the element now
 				$gridBack
 					.prepend(x_currentPageXML.getAttribute("backGrid") == undefined ? "Back" : x_currentPageXML.getAttribute("backGrid"))
 					.click(function() {
 						if ($("#mainInfoHolder video").length > 0) {
 							$("#mainInfoHolder video")[0].player.pause();
 						}
-						
-						$("#thumbBar .current").removeClass("current");
+
+						const index = $("#mainInfoHolder").data("index");
 						
 						$("#mainInfoHolder")
 							.data("index", "undefined")
-							.fadeOut(400, function() { $thumbBar.fadeIn(400); });
+							.fadeOut(400, function() {
+								$thumbBar.fadeIn(400);
+								$thumbBar.find(".thumbBox:not(.playAll):eq(" + index + ")").focus();
+							});
+					})
+					.keypress(function(e) {
+						var charCode = e.charCode || e.keyCode;
+						if (charCode == 32 || charCode == 13) {
+							$(this).trigger("click");
+						}
 					});
 			} else {
 				$gridBack.hide();
@@ -212,21 +233,42 @@
 			let videos = 0;
 			$(x_currentPageXML).children().each(function(i) {
 				if ((this.getAttribute("src") != undefined && this.getAttribute("src") != "") || this.nodeName == "mpText") {
-					var	$thisThumb = $(newThumb);
+					const $thisThumb = $(newThumb);
+					const $thisThumbTitle = $thisThumb.find(".thumbTitle");
 					$thumbHolder.append($thisThumb);
 					$thisThumb.data("index", i);
+					$thisThumb.attr({
+						"id": "thumb" + i,
+						"aria-labelledby": "thumbTitle" + i
+					});
+
+					if (x_currentPageXML.getAttribute("thumbPos") != "grid") {
+						$thisThumb.attr({
+							"role": "tab",
+							"tabindex": "-1",
+							"aria-controls": "mainTxt",
+							"aria-selected": "false"
+						});
+					} else {
+						$thisThumb.attr("role", "listitem");
+					}
+
+					$thisThumbTitle.attr("id", "thumbTitle" + i);
 					
 					if (thumbType == "both" || thumbType == "image" || thumbType == "imgNum") {
 						var $thisThumbMedia = $thisThumb.find(".thumbMedia");
 						
-						var maxImgSize = [$thisThumb.width(), $thisThumb.height() - $thisThumb.find(".thumbTitle").height() - 5];
+						var maxImgSize = [$thisThumb.width(), $thisThumb.height() - $thisThumbTitle.height() - 5];
 						
 						if (thumbType == "both") {
-							$thisThumb.find(".thumbTitle").html(this.getAttribute("name"));
+							$thisThumbTitle.html(this.getAttribute("name"));
 						} else if (thumbType == "imgNum") {
-							$thisThumb.find(".thumbTitle").html($thisThumb.index() + adjustIndex);
+							$thisThumbTitle.html($thisThumb.index() + adjustIndex);
 						} else {
-							$thisThumb.find(".thumbTitle").remove();
+							// the title won't be visible but we still need one to label the thumbnail so we'll just use a number
+							$thisThumbTitle
+								.html($thisThumb.index() + adjustIndex)
+								.addClass("sr-only");
 							maxImgSize = [$thisThumb.width(), $thisThumb.height()];
 						}
 						
@@ -268,7 +310,7 @@
 								$thisVideo
 									.data({
 										"src": this.getAttribute("src"),
-										"dimensions": [$thisThumb.width(), $thisThumb.height() - $thisThumb.find(".thumbTitle").height() - 5],
+										"dimensions": [$thisThumb.width(), $thisThumb.height() - $thisThumbTitle.height() - 5],
 										"trackMedia": false,
 										"trackinglabel": (this.getAttribute('trackinglabel') ? this.getAttribute('trackinglabel') : videos + ""),
 									})
@@ -289,7 +331,7 @@
 					// only text to appear on thumbnail - removed caption/number only options in xwd as they don't look great
 					} else {
 						$thisThumb.find(".thumbMedia").remove();
-						$thisThumb.find(".thumbTitle").html(thumbType == "caption" ? this.getAttribute("name") : $thisThumb.index() + adjustIndex);
+						$thisThumbTitle.html(thumbType == "caption" ? this.getAttribute("name") : $thisThumb.index() + adjustIndex);
 					}
 				}
 			});
@@ -302,7 +344,6 @@
 			// set up thumbnail click events - fadeOut old mainInfo and fadeIn new contents
 			$("#thumbHolder .thumbBox:not(.playAll)")
 				.click(function(e, playAll) {
-
 					e.preventDefault();
 					
 					var $this = $(this);
@@ -331,25 +372,32 @@
 					var	thisData = $(x_currentPageXML).children()[$mainInfoHolder.data("index")];
 					
 					// media scaled by % of screen width (mobile devices always as large as possible regardless of width selected as layout is different)
-					var mediaW = thisData.getAttribute("mediaW"),
-						$media;
+					var mediaW = thisData.getAttribute("mediaW");
 					mediaW = x_browserInfo.mobile == true ? 0.8 : mediaW == "Small" ? 0.2 : mediaW == "Large" ? 0.6 : mediaW == "Full" ? 0.8 : 0.4;
+					if (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") == "lightbox") {
+						mediaW = 0.9;
+					}
 					
-					if (chgInfo == true) {
-						$("#thumbHolder .current").removeClass("current");
-						
+					if (chgInfo == true || (x_currentPageXML.getAttribute("thumbPos") == "grid" && x_currentPageXML.getAttribute("target") == "lightbox")) {
+						if (x_currentPageXML.getAttribute("thumbPos") != "grid") {
+							$("#thumbHolder .current")
+								.attr("tabindex", "-1")
+								.removeClass("current")
+								.removeAttr("aria-selected");
+						}
+
 						var showNew = function() {
 							$mediaPanel.width("auto");
-							
+
 							$mainInfoHolder.css({ // change the way the div's hidden so I can get its dimensions
 								"visibility": "hidden",
 								"display": "inherit"
 							});
-							
+
 							perspectives.setInfoHolderHeight();
-							
+
 							$mainTxt.html("");
-							
+
 							if (thisData.nodeName == "mpText") { // text
 								$mediaPanel.hide();
 							} else {
@@ -360,44 +408,44 @@
 							if (thisData.nodeName == "image") {
 								$mediaPanel.html('<img id="pageImage" alt="' + $this.find("img").attr("alt") + '" class="centre" />');
 								var maxW = $mainInfoHolder.width() * mediaW,
-									maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - 5;
-								
+										maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - 5;
+
 								perspectives.loadImage($mediaPanel.find("#pageImage"), [maxW, maxH], x_evalURL(thisData.getAttribute("src")), playAll);
-								
+
 							} else if (thisData.nodeName == "sound") {
 								var src = x_templateLocation + "common_html5/sound.jpg",
-									alt = this.getAttribute("tooltip") != undefined ? this.getAttribute("tooltip") : x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
-								
+										alt = thisData.getAttribute("tooltip") != undefined ? thisData.getAttribute("tooltip") : x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
+
 								if (thisData.getAttribute("img") != undefined && thisData.getAttribute("img") != "") {
 									src = x_evalURL(thisData.getAttribute("img"));
 								}
-								
+
 								$mediaPanel.html('<img id="audioImage" alt="' + alt + '" class="centre" /><div id="pageAudio"></div>');
 								var maxW = $mainInfoHolder.width() * mediaW,
-									maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - x_audioBarH - 5;
-								
+										maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - x_audioBarH - 5;
+
 								perspectives.loadImage($mediaPanel.find("#audioImage"), [maxW, maxH], src, false,
-									function() {
-										var $thisAudio = $mediaPanel.find("#pageAudio");
-										$thisAudio.data({
-											"src": thisData.getAttribute("src"),
-											"width": $mediaPanel.find("#audioImage").width(),
-											"transcript": thisData.getAttribute('transcript') != undefined && thisData.getAttribute('transcript') != '' ? thisData.getAttribute('transcript') : false
+										function () {
+											var $thisAudio = $mediaPanel.find("#pageAudio");
+											$thisAudio.data({
+												"src": thisData.getAttribute("src"),
+												"width": $mediaPanel.find("#audioImage").width(),
+												"transcript": thisData.getAttribute('transcript') != undefined && thisData.getAttribute('transcript') != '' ? thisData.getAttribute('transcript') : false
+											});
+											perspectives.loadAudio($thisAudio, playAll);
 										});
-										perspectives.loadAudio($thisAudio, playAll);
-									});
-								
+
 							} else if (thisData.nodeName == "movie") { // movie
 								var videoTip = $this.find(".thumbMedia").data("videoTip");
-								
-								if (thisData.getAttribute("src").substr(0,7) == "<iframe") {
+
+								if (thisData.getAttribute("src").substr(0, 7) == "<iframe") {
 									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '" class="iframe">' + thisData.getAttribute("src") + '</div>');
-									
+
 								} else {
 									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '"></div>');
 									var $thisVideo = $mediaPanel.find("#pageVideo"),
-										videoDimensions = ["100%", "100%"];
-									
+											videoDimensions = ["100%", "100%"];
+
 									if (thisData.getAttribute("movieSize") != "" && thisData.getAttribute("movieSize") != undefined) {
 										var dimensions = thisData.getAttribute("movieSize").split(",");
 										if (dimensions[0] != 0 && dimensions[1] != 0) {
@@ -405,11 +453,11 @@
 											$thisVideo.data("width", "fixed");
 										}
 									}
-									
+
 									if ($thisVideo.data("width") != "fixed") {
 										$mediaPanel.width((mediaW * 100) + "%");
 									}
-									
+
 									$thisVideo.data({
 										"src": thisData.getAttribute("src"),
 										"dimensions": videoDimensions,
@@ -423,14 +471,13 @@
 								if (playAll) perspectives.playAll("text");
 							}
 
-
 							// position image / text correctly
 							$mediaPanel.removeClass("full x_floatLeft x_floatRight");
 							$mainInfoHolder.removeClass("centerAlign");
-							
+
 							if (thisData.getAttribute("mediaW") != "Full") {
 								if (thisData.nodeName !== "mpText") {
-									if (thisData.getAttribute("align") == "Top" || thisData.getAttribute("align") == "Bottom" ||  x_browserInfo.mobile == true) {
+									if (thisData.getAttribute("align") == "Top" || thisData.getAttribute("align") == "Bottom" || x_browserInfo.mobile == true) {
 										$mainInfoHolder.addClass("centerAlign");
 
 									} else if (thisData.getAttribute("align") == "Left") {
@@ -446,7 +493,7 @@
 										$mainTxt.insertBefore($mediaPanel);
 									}
 								}
-								
+
 								// get text for page (incl. links etc.)
 								var pageLink = "";
 								if (thisData.getAttribute("pageLink") != undefined && thisData.getAttribute("pageLink") != "") {
@@ -462,14 +509,14 @@
 										pageLink = '<p><a href="#" onclick="x_navigateToPage(false, {type:\'linkID\', ID:\'' + thisData.getAttribute("pageLink") + '\'}); return false;">' + linkTxt + '</a></p>';
 									}
 								}
-								
-								$mainTxt.html('<h3>' + thisData.getAttribute("name") + '</h3><p>' + x_addLineBreaks(thisData.getAttribute("txt")) + '</p>' + pageLink);
-								
+
+								$mainTxt.html('<h3>' + thisData.getAttribute("name") + '</h3><div>' + x_addLineBreaks(thisData.getAttribute("txt")) + '</div>' + pageLink);
+
 							} else {
 								$mediaPanel
-									.insertBefore($mainTxt)
-									.addClass("full");
-								
+										.insertBefore($mainTxt)
+										.addClass("full");
+
 								$mainInfoHolder.addClass("centerAlign");
 							}
 
@@ -484,16 +531,38 @@
 								$.featherlight($clone, {});
 							} else {
 								$mainInfoHolder.fadeIn();
+
+								if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
+									if ($("#thumbHolder .thumbBox").length > 2 || ($("#thumbHolder .thumbBox").length == 1 && x_currentPageXML.getAttribute("playAll") == "true")) {
+										$mainInfoHolder.focus();
+									}
+								}
+
+								if (x_currentPageXML.getAttribute("highlight") == "true" && (x_currentPageXML.getAttribute("thumbPos") != "grid" || x_currentPageXML.getAttribute("target") != "lightbox")) {
+									if (x_currentPageXML.getAttribute("thumbPos") != "grid") {
+										// removing selection from previously selected should already have been done but when there's a deep link that might not be the case - double check there's nothing already selected
+										$("#thumbHolder .current")
+											.attr("tabindex", "-1")
+											.removeClass("current")
+											.removeAttr("aria-selected");
+
+										$this
+											.addClass("current")
+											.attr({
+												"aria-selected": "true",
+												"tabindex": "0"
+											});
+									}
+
+									if (!$mainInfoHolder.hasClass("noThumbs")) {
+										$mainInfoHolder.attr("aria-labelledby", $this.find(".thumbTitle").attr("id"));
+									}
+								}
+
+								x_pageContentsUpdated();
 							}
-							
-							if (x_currentPageXML.getAttribute("highlight") == "true") {
-								$("#thumbHolder .current").removeClass("current");
-								$this.addClass("current");
-							}
-							
-							x_pageContentsUpdated();
 						}
-						
+
 						if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
 							if (x_currentPageXML.getAttribute("target") != "lightbox") {
 								$thumbBar.fadeOut(400, showNew);
@@ -555,17 +624,46 @@
 						$(this).trigger("click");
 					}
 				});
-			
+
 			if (x_currentPageXML.getAttribute("thumbPos") != "grid") {
+				$("#thumbHolder .thumbBox:not(.playAll)")
+					.keydown(function (e) {
+						// only the current thumb can be tabbed to - then use arrow keys to move focus between the other thumbs
+						// this is the same as the way tabs work and it means if it's a long list of thumbnails, you don't have to tab through them all to get to the content
+						const charCode = e.charCode || e.keyCode;
+						if (charCode == 37 || charCode == 38) {
+							// left/up arrow key - focus on previous thumb
+							if ($(this).prevAll(".thumbBox:not(.playAll)").length != 0) {
+								$(this).prevAll(".thumbBox:not(.playAll)").first().focus();
+							} else {
+								$(this).parent().find(".thumbBox:eq(" + ($(this).parent().find(".thumbBox").length - 1) + ")").focus();
+							}
+						} else if (charCode == 39 || charCode == 40) {
+							// right/down arrow key - focus on next thumb
+							if ($(this).nextAll(".thumbBox:not(.playAll)").length != 0) {
+								$(this).nextAll(".thumbBox:not(.playAll)").first().focus();
+							} else {
+								$(this).parent().find(".thumbBox:not(.playAll)").first().focus();
+							}
+						}
+					});
+
 				$("#thumbHolder .thumbBox:eq(" + (0 - (adjustIndex - 1)) + ")").trigger("click");
 			}
 			
 			if ($("#thumbHolder .thumbBox").length == 1 || ($("#thumbHolder .thumbBox").length == 2 && x_currentPageXML.getAttribute("playAll") == "true")) {
+				$thumbBar.find(".thumbBox:not(.playAll)").click();
+				$mainInfoHolder.find("#gridBack").remove();
 				$thumbBar
 					.hide()
 					.addClass("hidden");
-				
-				$mainInfoHolder.addClass("noThumbs");
+
+				$mainInfoHolder
+					.addClass("noThumbs")
+					.removeAttr("role tabindex");
+
+				$thumbHolder.removeAttr("role");
+
 			} else {
 				this.checkIfBtnsNeeded();
 			}
@@ -576,7 +674,6 @@
 			
 			x_pageLoaded();
 		}
-		
 
 		this.addEvents = function(popcornInstance) {
 			popcornInstance.on( "ended", function() {
@@ -704,15 +801,11 @@
 		}
 		
 		this.setInfoHolderHeight = function() {
-			var $mainInfoHolder = $("#mainInfoHolder");
-			var maxH;
-			if (x_browserInfo.mobile != true) {
-				maxH = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (x_currentPageXML.getAttribute("thumbPos") == "grid" ? 0 : $("#thumbBar").height()) - parseInt($mainInfoHolder.css("margin-top")) - parseInt($mainInfoHolder.css("margin-bottom")) - 5;
-			} else {
-				maxH = $(window).height();
-			}
+			const $mainInfoHolder = $("#mainInfoHolder");
+			const offset = x_currentPageXML.getAttribute("thumbPos") !== "grid" ? [$("#thumbBar")] : [];
+			const maxH = x_getAvailableHeight([$mainInfoHolder], offset, true);
 			$mainInfoHolder.data("height", maxH);
-			if (x_currentPageXML.getAttribute("thumbPos") != "grid" && $("#thumbHolder .thumbBox").length > 1 && x_browserInfo.mobile != true) {
+			if (!$mainInfoHolder.hasClass("noThumbs") && x_currentPageXML.getAttribute("thumbPos") != "grid" && $("#thumbHolder .thumbBox").length > 1 && x_browserInfo.mobile != true) {
 				$mainInfoHolder.height(maxH);
 			}
 		}
@@ -760,11 +853,11 @@
 	<div id="thumbBar">
 		<button id="prevBtn"/>
 		<button id="nextBtn"/>
-		<div id="thumbHolder"></div>
+		<div id="thumbHolder" role="tablist"></div>
 	</div>
 	
-	<div id="mainInfoHolder">
-		<div id="gridBack"><span class="fa fa-x-prev-circle"></span></div>
+	<div id="mainInfoHolder" role="tabpanel">
+		<div id="gridBack" role="button" tabindex="0"><span class="fa fa-x-prev-circle"></span></div>
 		<div id="mediaPanel" class="panel inline x_floatLeft"></div>
 		<div id="mainTxt"></div>
 	</div>

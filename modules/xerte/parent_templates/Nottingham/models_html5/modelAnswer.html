@@ -32,20 +32,18 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
+
+			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
-				if ($(".panelImg img").length > 0) {
-					var totalHeight = 0;
-					$panel.children().each(function() {
-						totalHeight = totalHeight + $(this).outerHeight(true);
-					});
-					totalHeight -= $(".panelImg img").height();
-					var maxH = Math.max($panel.innerHeight() - totalHeight, 100);
-					$(".panelImg img").css("max-height", maxH);
-				}
+				var totalHeight = 0;
+				$panel.children().each(function() {
+					totalHeight = totalHeight + $(this).outerHeight(true);
+				});
+				totalHeight -= $(".panelImg img").height();
+				var maxH = Math.max($panel.innerHeight() - totalHeight, 100);
+				$(".panelImg img").css("max-height", maxH);
 			}
 		};
 

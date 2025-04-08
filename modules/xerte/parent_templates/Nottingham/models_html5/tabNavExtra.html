@@ -58,15 +58,13 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			const $infoHolder = $("#pageContents .infoHolder");
+			$infoHolder.height(x_getAvailableHeight([$infoHolder], [$('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0]));
+
 			if (x_browserInfo.mobile == false) {
-				var	$infoHolder = $("#pageContents .infoHolder"),
-					$paneHolder = $("#pageContents .paneHolder"),
-					txtH = $('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0;
-				
-				$infoHolder.height($x_pageHolder.height() - ($infoHolder.outerHeight(true) - $infoHolder.height()) - txtH - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()));
 				$infoHolder.tabs("refresh");
-				
-				$paneHolder.height($infoHolder.height() - $("#pageContents .tabList:visible").height() - ($paneHolder.outerHeight(true) - $paneHolder.height()));
+				const $paneHolder = $("#pageContents .paneHolder");
+				$paneHolder.height(x_getAvailableHeight([$infoHolder, $paneHolder], [($('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0), $("#pageContents .tabList:visible")]));
 			}
 
 			if ($pageContents.data("count") != 0) {
@@ -123,9 +121,12 @@
 						$thisTopic = $topic;
 						$thisInfoHolder = $infoHolder;
 					}
+
+					$thisInfoHolder.attr("aria-labelledby", "topic" + i);
 					
 					$thisTopic
 						.data("index", i)
+						.attr("id", "topic" + i)
 						.html(this.getAttribute("name"))
 						.click(function(e) {
 							e.preventDefault();
@@ -134,13 +135,18 @@
 							
 							if ($this != $("#pageContents .topic.highlight")) {
 								$(".customHTMLHolder").detach();
-								$("#pageContents .topic.highlight").removeClass("highlight");
+								$("#pageContents .topic.highlight")
+									.removeAttr("aria-current")
+									.removeClass("highlight");
+
 								$("#pageContents .infoHolder").hide();
-								$this.addClass("highlight");
+								$this
+									.attr("aria-current", "true")
+									.addClass("highlight");
 								
 								var $thisHolder = $("#pageContents .infoHolder:eq(" + $this.data("index") + ")");
 								$thisHolder.show();
-								
+
 								if (x_currentPageXML.getAttribute("rememberTab") == "true") {
 									// auto select same tab / nested page as that viewed in previous topic
 									var $currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
@@ -172,7 +178,10 @@
 							}
 						});
 				});
-			$topic.addClass("highlight");
+
+			$topic
+				.attr("aria-current", "true")
+				.addClass("highlight");
 			
 			// __CREATE TABS__
 			$(x_currentPageXML).children()
@@ -343,7 +352,7 @@
 										.find('.nestedPrevBtn').button('disable');
 							}
 
-							$link.addClass('selected');
+							$link.addClass('selected').attr("aria-current", "true");
 						});
 				});
 			
@@ -427,8 +436,8 @@
 			if (currentIndex != newIndex) {
 				$(".customHTMLHolder").detach();
 				if ($currentPaneHolder.find('.paneList').length > 0) {
-					$currentPaneHolder.find('.paneList a.selected').removeClass("selected");
-					$currentPaneHolder.find('.paneList a:eq(' + newIndex + ')').addClass("selected");
+					$currentPaneHolder.find('.paneList a.selected').removeClass("selected").removeAttr("aria-current");
+					$currentPaneHolder.find('.paneList a:eq(' + newIndex + ')').addClass("selected").attr("aria-current","true");
 					$pageContents.data("currentPane", $currentPaneHolder.find('.paneList a:eq(' + newIndex + ')').html());
 				} else {
 					$pageContents.data("currentPane", undefined);
@@ -509,21 +518,21 @@
 	
 	<div class="splitScreen">
 		
-		<div id="topicHolder" class="left">
-			<a class="topic" href="#" role="button"></a>
+		<div id="topicHolder" class="left" role="list">
+			<a class="topic" href="#" role="listitem"></a>
 		</div>
 		
 		<div class="right">
 			<div>
-				<div class="infoHolder">
+				<div class="infoHolder" role="region">
 					<ul class="tabList">
 						<li class="tabHeader">
 							<a></a>
 						</li>
 					</ul>
 					<div class="paneHolder">
-						<div class="paneList">
-							<a href="#" role="button"></a>
+						<div class="paneList" role="list">
+							<a href="#" role="listitem"></a>
 						</div>
 						<div class="paneInfo" tabindex="0"></div>
 					</div>

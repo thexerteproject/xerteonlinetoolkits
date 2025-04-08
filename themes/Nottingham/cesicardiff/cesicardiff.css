@@ -278,6 +278,24 @@
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #cd0438;
+}
+
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #152c51;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #cd0438;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -294,8 +312,8 @@
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -304,7 +322,6 @@
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -1668,10 +1685,6 @@ var {
     max-width: 1280px !important;
   }
 }
-.pbBar {
-  background-color: #cd0438;
-}
-
 .pbTxt {
   color: #EEE;
 }
@@ -1749,6 +1762,11 @@ var {
 
 .x_audioRecord_page .deleteClipBtn {
   box-shadow: none;
+}
+
+/* page resources */
+#x_resourceTable th {
+  vertical-align: middle;
 }
 
 /*# sourceMappingURL=cesicardiff.css.map */

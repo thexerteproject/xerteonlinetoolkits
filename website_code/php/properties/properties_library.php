@@ -135,7 +135,7 @@ function properties_display($xerte_toolkits_site, $template_id, $change, $msgtyp
 
         echo "<br/><a target=\"new\" href='" . $xerte_toolkits_site->site_url .
                 url_return("play", $template_id) . "'>" .
-                $xerte_toolkits_site->site_url . url_return("play", $template_id) . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a></p>";
+                $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a>" .  PROPERTIES_LIBRARY_PROJECT_LINKS . "</p>";
 
 		$template = explode("_", get_template_type($template_id));
 
@@ -248,7 +248,7 @@ function publish_display($template_id)
 		
 		if($template_access!="Private"){
 		
-			echo "<p>" . PUBLISH_WEB_ADDRESS . ": <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "'>" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . PUBLISH_LINKS . "</a></p>";
+			echo "<p>" . PUBLISH_WEB_ADDRESS . ": <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "'>" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "</a>" . PUBLISH_LINKS . "</p>";
 		
 			if(!is_template_rss($template_id)){
 
@@ -371,7 +371,7 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
 	
 	if(!empty($row)) {
 		
-		echo "<p>" . PROPERTIES_LIBRARY_PEER_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . PROPERTIES_LIBRARY_PEER_LINKS . "</a></p>";
+		echo "<p>" . PROPERTIES_LIBRARY_PEER_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . "</a>" . PROPERTIES_LIBRARY_PEER_LINKS . "</p>";
 		
 	}
 	
@@ -448,7 +448,7 @@ function syndication_display($xerte_toolkits_site, $template_id, $change){
     
 	echo "<div id=\"mainContent\">";
 
-    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_EXPLAINED . ": <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . PROPERTIES_LIBRARY_SYNDICATION_LINKS . "</a></p>";
+    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_EXPLAINED . ": <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "</a>" .  PROPERTIES_LIBRARY_SYNDICATION_LINKS . "</p>";
 
     $prefix =  $xerte_toolkits_site->database_table_prefix;
 
@@ -785,10 +785,11 @@ function statistics_prepare($template_id, $force=false)
                 {
                     $lrsendpoint['lrsendpoint'] = $row['tsugi_xapi_endpoint'];
                 }
-                $lrsendpoint = CheckLearningLocker($lrsendpoint);
+                $lrsendpoint = CheckLearningLocker($lrsendpoint, true);
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
                 $lrs->aggregate = $lrsendpoint['aggregate'];
+                $lrs->db = $lrsendpoint['db'];
 
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";
@@ -1072,7 +1073,6 @@ function sharing_info($template_id)
         if (!$found)
         {
             // Add $row to $query_shared_folder_users
-            $index = count($query_shared_folder_users);
             $query_shared_folder_users[] = $row;
             if ($row['role'] == "creator") {
                 // Change the role of the user to co-author
@@ -1940,11 +1940,11 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 	
 	echo "<h3>" . PROPERTIES_LIBRARY_RSS_FEEDS . ":</h3>";
 
-    echo "<p>" . PROPERTIES_LIBRARY_RSS_SITE_LINK . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS",null)  . "\">" . $xerte_toolkits_site->site_url . url_return("RSS",null) . PROPERTIES_LIBRARY_RSS_LINKS . "</a>";
+    echo "<p>" . PROPERTIES_LIBRARY_RSS_SITE_LINK . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS",null)  . "\">" . $xerte_toolkits_site->site_url . url_return("RSS",null) . "</a>" . PROPERTIES_LIBRARY_RSS_LINKS;
 	
 	echo "<br/>" . PROPERTIES_LIBRARY_RSS_SITE_DESCRIPTION . "</p>";
 	
-	echo "<p>" . PROPERTIES_LIBRARY_RSS_PERSONAL . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", ($row_name['firstname'] . "_" . $row_name['surname'])) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_user", $row_name['firstname'] . "_" . $row_name['surname']) . PROPERTIES_LIBRARY_RSS_LINKS . "</a>. ";
+	echo "<p>" . PROPERTIES_LIBRARY_RSS_PERSONAL . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", ($row_name['firstname'] . "_" . $row_name['surname'])) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_user", $row_name['firstname'] . "_" . $row_name['surname']) . "</a>" . PROPERTIES_LIBRARY_RSS_LINKS . ".";
 	
 	echo "<br/>" . PROPERTIES_LIBRARY_RSS_MINE . "</p>";
 
@@ -2009,7 +2009,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 			<label for="pubChk"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label>
 		</div>
 		<div id="publish" class="publish <?php echo($lti_def->published ? "" : "disabled"); ?>">
-            <input type="checkbox" <?php echo($lti_def->tsugi_published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
+            <input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
             <label for="tsugi_publish_in_store"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH_IN_STORE; ?></label><br>
 			<input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>>
 			<label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><br>
@@ -2129,10 +2129,10 @@ function tsugi_display($id, $lti_def, $mesg = "")
     if($lti_def->published)
     {
         echo "<p class='lti_launch_url'>" . PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . " " . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
         echo "</p>";
 		echo "<p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . " target='_blank'>" . $lti_def->url13 . " " . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . " target='_blank'>" . $lti_def->url13 . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     else if ($lti_def->xapi_enabled)
@@ -2140,7 +2140,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 		// Show xapionly url
 		echo "<p class='lti_launch_url'>";
 		echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . " " . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     ?>

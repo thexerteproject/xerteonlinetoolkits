@@ -157,6 +157,7 @@ function _include_javascript_file($file_path) {
     $parpos = strpos($file_path, "?");
     if ($parpos !== false)
     {
+        $url_param=substr($file_path, $parpos);
         $file_path = substr($file_path, 0, $parpos);
     }
     if (isset($_GET['language']) && is_dir($languages . x_clean_input($_GET['language']))) {
@@ -192,7 +193,7 @@ function _include_javascript_file($file_path) {
     _debug($real_file_path);
     _debug($en_gb_file_path);
     if (file_exists(dirname(__FILE__) . "/" . $en_gb_file_path)) {
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $en_gb_file_path . "\"></script>";
+        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $en_gb_file_path . $url_param . "\"></script>";
     } else {
         // stuff will break at this point.
         //die("Where was $real_file_path?");
@@ -202,7 +203,7 @@ function _include_javascript_file($file_path) {
 
     if ($language != "en-GB") {
         if (file_exists(dirname(__FILE__) . "/" . $real_file_path)) {
-            echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $real_file_path . "\"></script>";
+            echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $real_file_path . $url_param . "\"></script>";
         } else {
             // stuff will break at this point.
             //die("Where was $real_file_path?");
@@ -211,7 +212,7 @@ function _include_javascript_file($file_path) {
             }
         }
     }
-    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $file_path . "\"></script>";
+    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $file_path . $url_param . "\"></script>";
     return true;
 }
 
@@ -375,6 +376,9 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if ($expected_path != null) {
+            $expected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
+        }
     }
     else
     {
@@ -391,7 +395,7 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     }
     if ($expected_path != null) {
         // Check whether path is as expected
-        if (strpos($path, $expected_path) !== 0) {
+        if (strpos($rpath, $expected_path) !== 0) {
             _debug($mesg);
             die($mesg);
         }
@@ -404,6 +408,9 @@ function x_check_path_traversal_newpath($path, $expected_path=null, $message=nul
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if ($expected_path != null) {
+            $expected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
+        }
     }
     else
     {
@@ -419,7 +426,7 @@ function x_check_path_traversal_newpath($path, $expected_path=null, $message=nul
     }
     if ($expected_path != null) {
         // Check whether path is as expected
-        if (strpos($path, $expected_path) !== 0) {
+        if (strpos($rpath, $expected_path) !== 0) {
             _debug($mesg);
             die($mesg);
         }

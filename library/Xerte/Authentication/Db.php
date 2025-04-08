@@ -76,7 +76,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         $x = db_query("select 1 from {$xerte_toolkits_site->database_table_prefix}user");
         if ($x === false) {
             // Create the user table
-            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
+            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(100) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
             if (empty($x))
             {
                 _debug("Failed: Does the user table exist?");
@@ -133,10 +133,10 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
                 $sql = "show columns from {$xerte_toolkits_site->database_table_prefix}user where field='password'";
                 $res = db_query_one($sql);
 
-                if ($res['Type'] != 'varchar(60)')
+                if ($res['Type'] != 'varchar(100)')
                 {
                     // Update password field to new length
-                    $sql = "alter table {$xerte_toolkits_site->database_table_prefix}user modify password varchar(60)";
+                    $sql = "alter table {$xerte_toolkits_site->database_table_prefix}user modify password varchar(100)";
                     $res = db_query($sql);
                     if ($res === false)
                     {
@@ -193,7 +193,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
             $first = true;
             foreach($result as $row_users){
                 if ($first) {
-                    echo "<p><option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                    echo "<option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
                     $username = $row_users['username'];
                     $firstname = $row_users['firstname'];
                     $surname = $row_users['surname'];
@@ -201,7 +201,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
                     $first = false;
             	}
                 else {
-                    echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                    echo "<option value=\"" . $row_users['username'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
                 }
             }
 

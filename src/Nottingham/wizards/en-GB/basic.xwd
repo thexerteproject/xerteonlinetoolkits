@@ -49,13 +49,17 @@
 			<homeLabel label="Tooltip" type="TextInput" defaultValue="Home" condition="navigation=='Historic'" optional="true"/>
 			<homeIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-home" condition="navIcons=='true'&amp;&amp;navigation=='Historic'" optional="true"/>
 		</homeGroup>
+		<pageCounter label="Hide Page Counter" type="CheckBox" defaultValue="false" condition="navigation!='Historic'&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" optional="true"/>
 	</navGroup>
 	
 	<toc type="group" label="Table of Contents" optional="true" tooltip="Customise the appearance of the table of contents / page menu">
-		<tocTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="navigation=='Linear'||navigation=='LinearWithHistoric'||navigation==undefined" optional="true" tooltip="Determines where the table of contents opens"/>
+		<tocTarget label="Display In" type="ComboBox" data="dialog,lightbox" options="Dialog,Lightbox" defaultValue="dialog" condition="(navigation=='Linear'||navigation=='LinearWithHistoric'||navigation==undefined)&amp;&amp;(sideBar!='true'||sideBarTocList!='true')" optional="true" tooltip="Determines where the table of contents opens. This will be overridden if table of contents list is set to display in a side bar, via the 'Side Bar' optional property group."/>
 		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'" tooltip="Tick pages on the table of contents / page menu when they have been viewed"/>
 		<pageTickPostion label="Tick Position" type="ComboBox" data="before,after" options="Before Page Name,After Page Name" defaultValue="after" condition="navigation!='Historic'&amp;&amp;pageTick=='true'" optional="true"/>
-		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'" tooltip="Number pages shown on the table of contents / page menu"/>
+		<tocNumberGroup label="Numbering" type="group" optional="true" tooltip="Number pages and chapters on the table of contents / page menu">
+			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
+			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="false" condition="navigation!='Historic'"/>
+		</tocNumberGroup>
 		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
 			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
 			<menuImageAlt label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuImageProperties=='Use Panel'" optional="true"/>
@@ -68,8 +72,19 @@
 		<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" condition="(navigation=='Historic'||homePageLink!='false')&amp;&amp;navigation!='Menu'&amp;&amp;navigation!='Menu with Page Controls'" tooltip="Select which page is classed as the home page (linked to from project title or home button when navigation is set to 'Historic'). The first page will be the home page if no page selected here."/>
 	</homePageGroup>
 
-	<progressBar optional="true" type="ComboBox" options="Show progress bar,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress Bar" defaultValue="pBar" width="100" tooltip="Add a progress bar (indicating the percentage completed) to the footer bar"/>
-	
+    <progressBar label="Progress Bar" optional="true" type="ComboBox" options="Show progress bar,Show progress bar and hide page counter" data="pBar,pBarNoCounter" defaultValue="pBar" width="100" tooltip="Add a progress bar (indicating the percentage completed) to the footer bar" deprecated="This property is deprecated. Use the new Progress Bar optional property instead"/>
+
+    <progressBarGroup label="Progress Bar" type="group" optional="true" tooltip="Add a progress bar (indicating the percentage viewed)">
+		<progressBarType label="Position" type="ComboBox" options="Header bar (above titles),Header bar (between titles),Header bar (below titles),Footer bar" data="header1,header3,header2,true" defaultValue="header1" conditionTrigger="true" optional="true"/>
+		<progressBarPercentage label="Include Percentage" type="Checkbox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<progressBarTxt label="Percentage Text" type="TextInput" defaultValue="{x}% complete" condition="progressBarPercentage=='true'" optional="true" tooltip="The text shown alongside the progress bar, where {x} will be replaced by the percentage completed"/>
+	    <progressBarSubGroup label="Progress Markers" type="group" optional="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" tooltip="Add progress marks to the progress bar, based either on reaching the end of a chapter or viewing a milestone page">
+			<progressSub label="Type" type="ComboBox" options="None,Pages,Chapters,Milestones" data="false,pages,chapters,milestones" defaultValue="false" conditionTrigger="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" optional="true"/>
+			<progressBarSpacing label="Space Evenly" type="CheckBox" defaultValue="false" condition="progressSub!='false'&amp;&amp;progressSub!='pages'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Space progress markers evenly, even if the numbers of pages between them varies. When using chapters as milestones, this will only work if all of the pages within the project are in a chapter."/>
+			<progressBarSubLink label="Navigate on Click" type="CheckBox" defaultValue="true" condition="progressSub!='false'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Determines whether progress markers are links that jump to the specified page / beginning of chapter" />
+		</progressBarSubGroup>
+	</progressBarGroup>
+
 	<footerToolsGroup type="group" label="Footer Tools" optional="true" tooltip="The footer tools are the buttons that normally appear on the bottom left of your project, such as Assessibility Options and Glossary. These options allow you to set the initial visibility state of these buttons and customise the show/hide footer tools button.">
 		<footerTools type="ComboBox" label="Default State" options="Hidden,Visible,Visible (Remove show/hide button)" data="hideFooterTools,showFooterTools,none" conditionTrigger="true" defaultValue="showFooterTools" width="100" optional="true"/>
 		<footerToolIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="footerTools!='none'" optional="true" tooltip="Override the default icons used on the show / hide footer tools button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
@@ -104,7 +119,7 @@
 		<helpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
 		<helpIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-question" condition="helpIc=='true'" optional="true"/>
 	</helpGroup>
-	
+
 	<introGroup type="group" label="Project Introduction" optional="true" tooltip="Add a Project Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the project first loads.">
 		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this project"/>
 		<intro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
@@ -133,33 +148,67 @@
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
 
-	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing buttons which would normally be found on the footer bar.">
+    <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
+	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
+	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
+	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceCompletionGroup label="Completion" type="group" optional="true">
+	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+        <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
+	    <resourceWarningGroup label="Warning" type="group" condition="resourceCompletion=='true'" optional="true">
+			<resourceCompletionWarning label="Warn if incomplete" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="resourceCompletion=='true'" optional="true"/>
+			<resourceCompletionWarningTitle label="Title" type="TextInput" defaultValue="Incomplete Resources" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true" />
+			<resourceCompletionWarningTxt label="Text" type="TextArea" height="100" defaultValue="You haven't completed all the supplementary resources. Would you like to proceed or review them first?" placeholder="" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true"/>
+		</resourceWarningGroup>
+	  </resourceCompletionGroup>
+	  <resourceAppearanceGroup label="Button" type="group" optional="true">
+	    <resourceBtn label="Appearance" type="ComboBox" defaultValue="icon" options="Icon only,Icon and text" data="icon,text" optional="true"/>
+	    <resourceIc type="CheckBox" label="Customise Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Resources button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<resourceIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-folder-open" condition="resourceIc=='true'" optional="true"/>
+	  </resourceAppearanceGroup>
+	</resourceGroup>
+
+	<splashScreenGroup label="Video Splash Screen" type="group" optional="true" tooltip="Add a short, full screen 'splash' video that is shown and auto-played when the project first loads">
+	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file"/>
+	  <splashShow label="Show" type="ComboBox" defaultValue="first" options="When project loads on first page only,When project loads on any page" data="first,always" optional="true" tooltip="Determines whether the splash screen is shown everytime the project loads (even if the first page shown is not page one) or only when the first page shown is page one."/>
+	  <splashBg type="ColourPicker" label="Background Colour" defaultValue="" optional="true"/>
+	</splashScreenGroup>
+	
+	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing either the table of contents or the buttons which would normally be found on the footer bar.">
 		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
 		<sideBarShow type="ComboBox" label="Default State" defaultValue="open" options="Open,Closed" data="open,closed" condition="sideBar!='false'" optional="true"/>
-		<sideBarBtns type="group" label="Side Bar Buttons" condition="sideBar!='false'" cols="2" optional="true">
-			<sbGlossary label="Glossary" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
-			<sbAccessibility label="Accessibility" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
-			<sbToC label="Table of Contents" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
-			<sbProjectHelp label="Project Help" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
-			<sbProjectIntro label="Project Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
-			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'" optional="true"/>
+		<sideBarTocList label="Display" type="ComboBox" options="Table of Contents,Interface Buttons" data="true,btns" defaultValue="true" conditionTrigger="true" condition="sideBar!='false'" optional="true" tooltip="Determines whether the table of contents links or the interface buttons will be shown in the side bar"/>
+		<sideBarBtns type="group" label="Side Bar Buttons" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" cols="2" optional="true">
+			<sbGlossary label="Glossary" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbAccessibility label="Accessibility" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbToC label="Table of Contents" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbProjectHelp label="Project Help" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbProjectIntro label="Project Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageResources label="Page Resources" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 		</sideBarBtns>
-		<sideBarBtnTxt type="CheckBox" label="Display Button Title" defaultValue="true" condition="sideBar!='false'" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
-		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'" optional="true"/>
-		<sideBarHideShowGroup type="group" label="Show / Hide Side Bar Buttons" optional="true">
+		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
+		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+		<sideBarHideShowGroup type="group" label="Show / Hide Side Bar Buttons" optional="true" condition="sideBar!='false'">
+			<sideBarBtnPosition label="Position" type="ComboBox" options="Top,Side" data="top,side" defaultValue="side" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
 			<sideBarBtnIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="sideBar!='false'" optional="true" tooltip="Override the default icons used on the show / hide side bar button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
-			<sideBarHideGroup type="group" label="Hide Side Bar" optional="true">
+			<sideBarHideGroup type="group" label="Hide Side Bar" optional="true" condition="sideBar!='false'">
 				<sideBarHideLabel label="Tooltip" type="TextInput" defaultValue="Hide side bar" condition="sideBar!='false'" optional="true"/>
 				<sideBarHideLeftIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-left" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='left'" optional="true"/>
 				<sideBarHideRightIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-right" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='right'" optional="true"/>
 			</sideBarHideGroup>
-			<sideBarShowGroup type="group" label="Show Side Bar" optional="true">
+			<sideBarShowGroup type="group" label="Show Side Bar" optional="true" condition="sideBar!='false'">
 				<sideBarShowLabel label="Tooltip" type="TextInput" defaultValue="Show side bar" condition="sideBar!='false'" optional="true"/>
 				<sideBarShowLeftIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-right" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='left'" optional="true"/>
 				<sideBarShowRightIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-angle-double-left" condition="sideBar!='false'&amp;&amp;sideBarBtnIcons=='true'&amp;&amp;sideBarPosition=='right'" optional="true"/>
 			</sideBarShowGroup>
 		</sideBarHideShowGroup>
+		<sideBarLogoGroup type="group" label="Optional: Logo" optional="true" tooltip="Add a logo image to the top of the side bar">
+			<sideBarLogo optional="true" type="media" label="Image" condition="sideBar!='false'" defaultValue="" tooltip="Upload an image to use as the side bar logo" placeholder="Select an image"/>
+			<sideBarTip optional="true" type="TextInput" label="Description" condition="sideBar!='false'" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
+		</sideBarLogoGroup>
 	</sideBarGroup>
 	
 	<icon type="group" label="Header Icon/Logo" optional="true" tooltip="Add, hide or customise the logo image shown on the header bar">

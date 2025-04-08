@@ -72,6 +72,18 @@ function init(){
 	});
 
 	loadContent();
+	// Setup beforeunload
+	window.onbeforeunload = XTTerminate;
+
+	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+
+	if (x_params.course != undefined && x_params.course != "") {
+		XTSetOption('course', x_params.course);
+	}
+	if (x_params.module != undefined && x_params.module != "") {
+		XTSetOption('module', x_params.module);
+	}
+
 }
 
 // Create parameters needed by the popcorn library and coming from xenith.js
@@ -295,7 +307,7 @@ function loadContent(){
 		// if resize has changed the way the page menu is displayed - make sure any page links in collapsed menu are properly hidden (from keyboard access & screen readers)
 		if (!$('#pageNavBtn').is(':visible')) {
 			$("#nav").show();
-		} else if ($("#pageNavBtn").attr("aria-expanded") == "false") {
+		} else {
 			$("#pageNavBtn").attr("aria-expanded", false);
 			$("#nav").hide();
 		}
@@ -1181,13 +1193,11 @@ function setup() {
 			$jumbotron.css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
 		}
 		if ($(data).find('learningObject').attr('headerSize') != undefined && $(data).find('learningObject').attr('headerSize') != "not-set") {
-			$jumbotron.css('background-size', $(data).find('learningObject').attr('headersize'));
+			$jumbotron.css('background-size', $(data).find('learningObject').attr('headerSize'));
 		}
 		if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '' && $(data).find('learningObject').attr('headerTextColour') != '0x') {
 			$jumbotron.find('#pageTitle, #pageSubTitle').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		}
-
-
 	}
 
 	// store initial header css as it might be needed later if page level header optional property is used
@@ -1930,7 +1940,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 }
 
 function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
-
 	if (authorSupport == true && page.attr('passwordPass') == 'true') {
 		$('#pageSubTitle').append(' <span class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('pageSupport') != null ? languageData.find("password")[0].getAttribute('pageSupport') : 'In live projects, an access code must be entered to view this page') + ': ' + pswds + '</span>');
 	}
@@ -2134,12 +2143,24 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 			var sectionInfo = $(thisSection).attr('customLinkID') != undefined && $(thisSection).attr('customLinkID') != '' ? $(thisSection).attr('customLinkID') : pageHash + 'section' + (sectionIndex+1);
 
-			section.append( '<h3 id="' + sectionInfo + 'content' + (itemIndex+1) + '" class="contentTitle">' + $(this).attr('name') + '</h3>');
+//only show section titles based on the hide/show conditions
+			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if ($(this).attr('showTitle') !== false) {
+					section.append('<h3 id="' + sectionInfo + 'content' + (itemIndex + 1) + '" class="contentTitle">' + $(this).attr('name') + '</h3>');
+				}
+			}
 		}
 
-		if (this.nodeName == 'text'){
-
-			section.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
+		if (this.nodeName == 'text') {
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				section.append($(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>');
+				if(authorSupport == true){
+				var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+				section.append(hideContentMessage);
+				}
+			}
 		}
 
 		if (this.nodeName == 'script'){
@@ -2148,120 +2169,187 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		}
 
 		if (this.nodeName == 'markup'){
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if ($(this).attr('url') != undefined) {
 
-			if ( $(this).attr('url') != undefined ){
+					section.append($('<div/>').load($(this).attr('url')));
 
-				section.append( $('<div/>').load( $(this).attr('url') ));
+				} else {
 
-			} else {
-
-				section.append( $(this).text() );
+					section.append($(this).text());
+				}
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
 			}
 
 		}
 
 		if (this.nodeName == 'link'){
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
 
-			const $this = $(this);
-			const url = $this.attr('url');
+				const $this = $(this);
+				const url = $this.attr('url');
 
-			let target="target='_blank'";
-			let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
-			if ($this.attr('target') == 'lightbox') {
-				target="data-featherlight='iframe'";
-				linkWarning = "";
-			} else if ($this.attr('target') == '_self') {
-				target="target='_self'";
-				linkWarning = "";
+				let target = "target='_blank'";
+				let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+				if ($this.attr('target') == 'lightbox') {
+					target = "data-featherlight='iframe'";
+					linkWarning = "";
+				} else if ($this.attr('target') == '_self') {
+					target = "target='_self'";
+					linkWarning = "";
+				}
+				const linkText = $this.attr('name') != undefined && $this.attr('name') != "" ? $this.attr('name') : url;
+				section.append("<p><a href='" + url + "' " + target + ">" + linkText + linkWarning + "</a></p>");
+				section.append(hideContentMessage);
 			}
-			const linkText = $this.attr('name') != undefined && $this.attr('name') != "" ? $this.attr('name') : url;
-			section.append("<p><a href='" + url + "' " + target + ">" + linkText + linkWarning + "</a></p>");
 		}
 
 		if (this.nodeName == 'canvas'){
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
+				var style;
 
-			var style;
+				if ($(this).attr('style') != undefined) {
 
-			if ( $(this).attr('style') != undefined){
+					style = ' style="' + $(this).attr('style') + '" ';
 
-				style = ' style="' + $(this).attr('style') + '" ';
+				} else {
 
-			} else {
+					style = '';
 
-				style = '';
+				}
 
+				var cls;
+
+				if ($(this).attr('class') != undefined) {
+
+					cls = ' class="' + $(this).attr('class') + '" ';
+
+				} else {
+
+					cls = '';
+
+				}
+
+				section.append('<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
+				section.append(hideContentMessage);
 			}
-
-			var cls;
-
-			if ( $(this).attr('class') != undefined){
-
-				cls = ' class="' + $(this).attr('class') + '" ';
-
-			} else {
-
-				cls = '';
-
-			}
-
-			section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
-
 		}
 
 		if (this.nodeName == 'image'){
-			if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
-				section.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
-			} else {
-				section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
+
+				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+					section.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+				} else {
+					section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				}
+				section.append(hideContentMessage);
 			}
 		}
 
 		if (this.nodeName == 'audio'){
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
+				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+				section.append($audio);
+				$audio.wrap('<p></p>');
 
-			const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
-			section.append($audio);
-			$audio.wrap('<p></p>');
-
-			// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
-			if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
-				$audio.data("transcript", $(this).attr('transcript'));
+				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+					$audio.data("transcript", $(this).attr('transcript'));
+				}
+				section.append(hideContentMessage);
 			}
 		}
 
 		if (this.nodeName == 'video'){
-			var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
-			section.append('<p>' + videoInfo[0] + '</p>');
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
+				section.append(hideContentMessage);
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
+				section.append('<p>' + videoInfo[0] + '</p>');
 
-			if (videoInfo[1] != undefined) {
-				section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				if (videoInfo[1] != undefined) {
+					section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
 			}
 		}
 
-		if (this.nodeName == 'pdf'){
-			section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
-			section.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+		if (this.nodeName == 'pdf') {
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
+				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+				section.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+				section.append(hideContentMessage);
+			}
 		}
 
 		if (this.nodeName == 'xot'){
-			section.append(loadXotContent($(this)));
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
+				section.append(loadXotContent($(this)));
+				section.append(hideContentMessage);
+			}
 		}
 
 		if (this.nodeName == 'navigator'){
+			var hideContent = checkHiddenContent($(this), 'Content');
+			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
 
-			if ($(this).attr('type') == 'Tabs'){
-				makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
-			}
+				if ($(this).attr('type') == 'Tabs') {
+					makeNav($(this), section, 'tabs', sectionIndex, itemIndex);
+				}
 
-			if ($(this).attr('type') == 'Accordion'){
-				makeAccordion( $(this), section, sectionIndex, itemIndex );
-			}
+				if ($(this).attr('type') == 'Accordion') {
+					makeAccordion($(this), section, sectionIndex, itemIndex);
+				}
 
-			if ($(this).attr('type') == 'Pills'){
-				makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
-			}
+				if ($(this).attr('type') == 'Pills') {
+					makeNav($(this), section, 'pills', sectionIndex, itemIndex);
+				}
 
-			if ($(this).attr('type') == 'Carousel'){
-				makeCarousel(  $(this), section, sectionIndex, itemIndex );
+				if ($(this).attr('type') == 'Carousel') {
+					makeCarousel($(this), section, sectionIndex, itemIndex);
+				}
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					section.append(hideContentMessage);
+				}
 			}
 		}
 	});
@@ -2403,6 +2491,7 @@ function passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAl
 						// correct password - remember this so it doesn't need to be re-entered on return to page
 						page.attr('passwordPass', true);
 						$('#mainContent').empty();
+
 						loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
 					} else {
 						$section.find('.pswdError').html($section.find('.pswdError').data('error'));
@@ -2540,7 +2629,7 @@ window.onhashchange = function() {
 		tempSection,
 		tempContent;
 
-	if (pageSectionInfo != false) {
+	if (pageSectionInfo != false && pageSectionInfo != "skipLink") {
 		tempPage = pageSectionInfo[0];
 		tempSection = pageSectionInfo[1];
 		tempContent = pageSectionInfo[2];
@@ -2548,10 +2637,13 @@ window.onhashchange = function() {
 		parseContent({ type: "check", id: tempPage }, tempSection, tempContent, false);
 	}
 
-    var listID = Number(location.href.substr(location.href.length-1,1));
-	if (!isNaN(listID)) {
-		setTimeout("updateMenu(" + listID + ")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+	if (location.href.lastIndexOf("section") != -1) {
+		var listID = Number(location.href.substr(location.href.lastIndexOf("section")+7));
+		if (!isNaN(listID)) {
+			setTimeout("updateMenu(" + listID + ")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+		}
 	}
+
 }
 
 // update the highlighting of the section menu on click (not auto highlight done when scrolling)
@@ -2559,10 +2651,8 @@ function updateMenu(listID) {
 	if (!$.isNumeric(listID)) {
 		listID = 1;
 	}
-	
     var navUL = document.getElementById("toc");
     navLists = navUL.getElementsByTagName('li');
-	
     for (i=0; i<navLists.length; i++) {
         if (i == listID-1) {
             navLists[i].className = "active";
@@ -2986,64 +3076,108 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'text'){
-				inner.append( $(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>' );
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					inner.append($(this).text()[0] == '<' ? $(this).text() : '<p>' + $(this).text() + '</p>');
+					if(authorSupport == true){
+						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						inner.append(hideContentMessage);
+					}
+				}
 			}
 
 			if (this.nodeName == 'image'){
-				if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
-					inner.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
-				} else {
-					inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					if ($(this).attr('caption') != undefined && $(this).attr('caption') != '') {
+						inner.append('<figure class="img-polaroid"><img src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/><figcaption>' + $(this).attr('caption') + '</figcaption></figure>');
+					} else {
+						inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+					}
+					if(authorSupport == true){
+						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						inner.append(hideContentMessage);
+					}
 				}
 			}
 
 			if (this.nodeName == 'audio'){
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+					inner.append($audio);
+					$audio.wrap('<p></p>');
 
-				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
-				inner.append($audio);
-				$audio.wrap('<p></p>');
-
-				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
-				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
-					$audio.data("transcript", $(this).attr('transcript'));
+					// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
+					if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
+						$audio.data("transcript", $(this).attr('transcript'));
+					}
+					if(authorSupport == true){
+						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						inner.append(hideContentMessage);
+					}
 				}
 			}
 
 			if (this.nodeName == 'video'){
-				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
-				inner.append('<p>' + videoInfo[0] + '</p>');
-
-				if (videoInfo[1] != undefined) {
-					inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					if(authorSupport == true){
+						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						inner.append(hideContentMessage);
+					}
+					var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+					inner.append('<p>' + videoInfo[0] + '</p>');
+					if (videoInfo[1] != undefined) {
+						inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+					}
 				}
 			}
 
-			if (this.nodeName == 'link'){
+			if (this.nodeName == 'link') {
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					var url = $(this).attr('url');
+					var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime();
+					var options = '';
+					options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+					options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+					options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+					options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+					options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+					options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+					options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+					options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
 
-				var url = $(this).attr('url');
-				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-				var options = '';
-				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
-
-				inner.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
-
+					inner.append('<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>');
+					if(authorSupport == true){
+						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						inner.append(hideContentMessage);
+					}
+				}
 			}
 
 			if (this.nodeName == 'pdf'){
-				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
-				inner.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
-
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+					inner.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+					if(authorSupport == true){
+						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						inner.append(hideContentMessage);
+					}
+				}
 			}
 
-			if (this.nodeName == 'xot'){
-				inner.append(loadXotContent($(this)));
+			if (this.nodeName == 'xot') {
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					inner.append(loadXotContent($(this)));
+				}
+				if(authorSupport == true){
+					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					inner.append(hideContentMessage);
+				}
 			}
 		});
 
@@ -3322,6 +3456,12 @@ function loadXotContent($this) {
 
 }
 
+function checkHiddenContent(element, type)
+{
+	return checkIfHidden(element.attr('hideContent'), element.attr('hideOnDate'), element.attr('hideOnTime'), element.attr('hideUntilDate'), element.attr('hideUntilTime'), type);
+}
+
+
 var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hideUntilTime, type) {
 	hidePage = hidePage == "true" ? true : false;
 
@@ -3464,8 +3604,8 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 		infoString = infoString
 			.replace('{from}', langData != undefined && langData.getAttribute('from') != "" && langData.getAttribute('from') != null ? langData.getAttribute('from') : 'Hide from')
 			.replace('{until}', langData != undefined && langData.getAttribute('until') != "" && langData.getAttribute('until') != null ? langData.getAttribute('until') : 'Hide until')
-			.replace('{hidden}', langData != undefined && langData.getAttribute('hidden') != "" && langData.getAttribute('hidden') != null ? langData.getAttribute('hidden') : 'This page is currently hidden in live projects')
-			.replace('{shown}', langData != undefined && langData.getAttribute('shown') != "" && langData.getAttribute('shown') != null ? langData.getAttribute('shown') : 'This page is currently shown in live projects');
+			.replace('{hidden}', langData != undefined && langData.getAttribute('hidden') != "" && langData.getAttribute('hidden') != null ? langData.getAttribute('hidden') : 'This is currently hidden in live projects')
+			.replace('{shown}', langData != undefined && langData.getAttribute('shown') != "" && langData.getAttribute('shown') != null ? langData.getAttribute('shown') : 'This is currently shown in live projects');
 
 		return [hidePage, infoString];
 

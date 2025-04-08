@@ -50,9 +50,34 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #D5D6D2;
 }
 
-.titlePageTxt {
-  width: 98% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #2f2E33;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #3A5199;
+}
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  border: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #3A5199;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #418545;
+  color: #ffffff;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
 }
 
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
@@ -577,8 +602,13 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   background: none;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
 .pbBar {
-  background-color: #2196F3;
+  background-color: #3A5199;
 }
 
 /* these buttons will use font awesome icons instead of pngs */
@@ -817,8 +847,8 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -827,7 +857,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

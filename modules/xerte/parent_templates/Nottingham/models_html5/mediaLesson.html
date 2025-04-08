@@ -88,31 +88,30 @@
 			if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0) {
 				numTileH = $("#panelHolder .top .panel.tileH").length;
 			}
-			
-			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseFloat($panelHolder.find(".panel.tileH").css("margin-right"));
-			
-			$panelHolder.find(".panel.tileH")
-				.width(Math.floor(($x_pageDiv.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2 + zoomCorrection);
-			
-			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
-			
-			$panelHolder.find(".panel.tileV")
-				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseFloat($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseFloat($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2)
-				.css('width', '');
 
-			var infoHolderHeight = 0;
-			if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
-				var infoHolderHeight = $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2
+			if ($panelHolder.find(".panel").length == 1) {
+				$panelHolder.find(".panel")
+						.width(Math.floor($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($panelHolder.find(".panel").outerWidth(true) - $panelHolder.find(".panel").width())))
+						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".panel")])));
+
+			} else {
+				$panelHolder.find(".panel.tileH")
+						.width(Math.floor(($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - (($panelHolder.find(".panel.tileH").outerWidth(true) - $panelHolder.find(".panel.tileH").width()) * (numTileH-1)) - ($panelHolder.find(".panel.tileH").outerWidth() - $panelHolder.find(".panel.tileH").width())) / numTileH))
+						.css('height', '');
+
+				$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
+
+				$panelHolder.find(".panel.tileV")
+						.height(Math.floor((x_getAvailableHeight() - (($panelHolder.find(".panel.tileV").outerHeight(true) - $panelHolder.find(".panel.tileV").height()) * (numTileV-1)) - ($panelHolder.find(".panel.tileV").outerHeight() - $panelHolder.find(".panel.tileV").height())) / numTileV))
+						.css('width', '');
+
+				$panelHolder.find(".panel.fullH")
+						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".panel.fullH")])));
+
+				$panelHolder.find(".panel.halfH")
+						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".panel.halfH")], [$panelHolder.find(".panel.halfH").outerHeight() - $panelHolder.find(".panel.halfH").height()]) / 2));
 			}
 
-			$panelHolder.find(".panel.fullH")
-				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - 
-					(parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2 
-					+ infoHolderHeight) - 5);
-
-			$panelHolder.find(".panel.halfH")
-				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
-			
 			$x_pageHolder.css("overflow", curroverflow);
 			
 			this.resizeMedia();
@@ -150,7 +149,7 @@
 				$popcornMedia.children().each(function(i, e){
 					$(this).css("max-height", $(this).parent().css("max-height"));
 				});
-				
+
 				if ($this.width() != $popcornMedia.width() && triggerResize == true) {
 					triggerResize = false;
 					$x_window.resize();
@@ -519,17 +518,17 @@
 				}
 				// name and id all other panels
 				else{
-                    $('<div class="panel">' + title + '</div>')
+                    $('<div class="panel" tabindex="0">' + title + '</div>')
                         .appendTo($panelHolder)
                         .attr("id", mediaLesson.panelbaseid + i);
 				}
 			}
 			// layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
-			if (panelLayout == "tileH") {
-				$panelHolder.find(".panel").addClass("tileH fullH");
-				
-			} else if (panelLayout == "tileV") {
+			if ((panelLayout == "tileV" && panelData.length) > 1 || x_browserInfo.mobile == true) {
 				$panelHolder.find(".panel").addClass("tileV fullW");
+
+			} else if (panelLayout == "tileH" || panelData.length == 1) {
+				$panelHolder.find(".panel").addClass("tileH fullH");
 				
 			} else if (panelLayout == "grid") {
 				if (panelData.length > 2) {
@@ -675,7 +674,7 @@
 			    if (i == 0)
 					$('<div id="panelContent' + 0 + '" class="panelContent" />').appendTo($(this));
 			    else
-                    $('<div id="panelContent' + i + '" class="panelContent" style="height: 80%"/>').appendTo($(this));
+                    $('<div id="panelContent' + i + '" class="panelContent"/>').appendTo($(this));
 			});
 			
 			// _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
@@ -688,7 +687,9 @@
 			}
             this.initTracking();
 
-			$('.mainMedia').parents('.panel').addClass('mediaPanel');
+			$('.mainMedia').parents('.panel')
+				.addClass('mediaPanel')
+				.append('<div id="srInfo" class="sr-only" aria-live="assertive"></div>');
 			x_pageLoaded();
 		};
 
@@ -979,9 +980,9 @@
 						popcornInstance["sortholder"](pluginAttributes);
 					}
 
-					// pauses media at synch point if needed
-					if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
-						popcornInstance.cue(thisContent.start, function() {
+					popcornInstance.cue(thisContent.start, function() {
+						// pauses media at synch point if needed
+						if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
 							this.pause();
 							// Gray out the background and fix z-index if the media is paused on an overlay panel
 							if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "synchXot")
@@ -991,8 +992,17 @@
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 mediaLesson.exitFullScreen();
                             }
-						});
-					}
+						}
+
+						// try to get screen readers to notify user of panel contents change
+						if (thisContent.start != 0) {
+							const contentChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("mediaLesson")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("mediaLesson")[0], "prompt") : (x_params.language === "en-GB" ? "Content added" : undefined);
+							if (contentChgTxt !== undefined) {
+								$("#srInfo").html(contentChgTxt);
+								setTimeout(function() { $("#srInfo").html(''); }, 50);
+							}
+						}
+					});
 				}
 			}
 			x_pageContentsUpdated();

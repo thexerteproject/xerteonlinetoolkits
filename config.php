@@ -207,9 +207,9 @@ if (file_exists($root_file_path . 'import')) {
 }
 
 // Try to get site_url in the same way
-if (file_exists("reverse_proxy_conf.php"))
+if (file_exists(__DIR__ . "/reverse_proxy_conf.php"))
 {
-    require_once("reverse_proxy_conf.php");
+    require_once(__DIR__ . "/reverse_proxy_conf.php");
 }
 $host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
 $port = (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80);
@@ -317,5 +317,11 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
         ini_set('session.cookie_httponly', '1');
         session_start();
     }
+}
+
+// Check whether elevated rights are active
+if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
+{
+    $xerte_toolkits_site->rights = 'elevated';
 }
 

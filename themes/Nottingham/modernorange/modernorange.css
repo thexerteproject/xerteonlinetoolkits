@@ -43,9 +43,33 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #B45819;
 }
 
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #756867;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #d6c338;
+}
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #00700c;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #B45819;
+  color: #ffffff;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
 }
 
 .highlight {
@@ -746,6 +770,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #d6c338;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -762,8 +795,8 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -772,7 +805,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

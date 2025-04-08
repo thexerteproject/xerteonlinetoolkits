@@ -1,6 +1,6 @@
 #pageContents .tl-text,
 #pageContents .tl-text p,
-#pageContents .tl-timemarker-text h2,
+#pageContents .tl-timemarker-text,
 #pageContents .tl-text .tl-headline-date,
 #pageContents .tl-text h3.tl-headline-date
 #pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class^="tl-icon-"],
@@ -43,11 +43,13 @@
     font-size: 15px !important;
 }
 
-.tl-timemarker-text{
-    color: #808080 !important;
+.tl-timemarker-content [class^="tl-icon-"] {
+    color: #000 !important;
 }
-.tl-timemarker-text h2{
-    color: #808080 !important;
+.tl-timemarker-text p.tl-headline {
+    color: #000 !important;
+    font-size: 12px !important;
+    padding: 0;
 }
 
 .lightboxWrapper{
@@ -93,7 +95,7 @@ div.tl-media-vimeo.tl-media-shadow  {
     font-size: 1.6vw !important;
 }
 .tl-text-content-container h2{
-    font-size: 1.6vw !important;
+   font-size: 1.6vw !important;
 }
 
 .tl-headline

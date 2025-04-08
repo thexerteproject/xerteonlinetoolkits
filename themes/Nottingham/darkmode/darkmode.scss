@@ -1,0 +1,179 @@
+@import "scss/_allvariables"; /*start here and set the default values for all the variables*/
+@import "scss/_header";
+@import "scss/_pagetypes";
+@import "scss/_footer";
+@import "scss/editorstyles";
+@import "scss/_webkitCustoms";
+@import "scss/_sliders";
+/* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
+/*You should not edit the .css files directly or change values directly unless you wish to override something*/
+/*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
+
+body {
+	background:$bodybackgroundcolor;
+	color:$mainfontcolour;
+	font-family: $mainfonts;
+}
+
+.cke_editable {
+	background: $bodybackgroundcolor;
+}
+/******Fonts******/
+.ui-button .ui-button-text {
+	font-family: $mainfonts;
+}
+/*Note: these font-sizes will be ignored when responsive text is on*/
+p{
+	font-size:1.1em;
+	color:$mainfontcolour;
+}
+h1 {
+	font-size:	1em;
+	margin:		0;
+}
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0 0 0;
+}
+h3 {
+	font-size:	1.2em;
+	margin:		0;
+}
+
+a, .ui-widget-content a {color:$linkcolor;}
+a:visited, .ui-widget-content a:visited {color:$linkvisited;}
+a:hover, .ui-widget-content a:hover {color:$linkhover;}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br, .ui-corner-top, .ui-corner-left, .ui-corner-bl {
+	border-radius: $smallroundedcorners;
+}
+
+input, select, textarea {
+	background: $lighterpanel;
+	border: 1px solid $dark5;
+	caret-color: $whiteorlightest;
+	color: $mainfontcolour;
+}
+
+table.glossary tr {
+	background: $panelcolor;
+}
+table.glossary td {
+	background: $panelcolor;
+}
+table.glossary tr td, table.glossary tr.shaded td {
+	border: 1px solid $dark5 !important;
+}
+table.glossary tr.shaded td {
+	background: $dark1;
+}
+#x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited {
+	color: $linkcolor;
+}
+#x_pageDiv span.x_glossary:visited {
+	color: $linkvisited;
+}
+#x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
+	color: $linkhover;
+}
+#x_glossaryHover {
+	color: $fontcolorforlightestcolor;
+	background: $contrastcolor;
+	border-color: $contrastcolor;
+}
+
+#x_mainHolder{
+	background:$defaultpagebackground;
+	border-top-right-radius:$largeroundedcorners;
+	border-bottom-left-radius:$largeroundedcorners;
+	border: none !important;/*remove this to restore the default border*/
+}
+#x_pageDiv {
+	padding-top: $defaultpagepadding;
+	padding-left: $defaultpagepadding;
+	padding-right:$defaultpagepadding;
+	padding-bottom:$defaultpagepadding;
+}
+#infoHolder{
+	border-radius:$mediumroundedcorners;
+}
+.focusBorder {
+	border-color: $contrastcolor;
+}
+/*****panel all pages with a panel*****/
+.panel {
+	border-radius: $mediumroundedcorners;
+	background:$panelcolor;
+	box-shadow: none;
+	color:$mainfontcolour;
+	border-color: $panelcolor;
+}
+.panelPage{
+	padding:1%;
+	color:$mainfontcolour;
+}
+/*****all images*****/
+img {
+	border-radius: $imageroundedcorners;
+}
+.fa-x-cross:before {
+	color: $accent3;
+}
+.fa-x-tick:before {
+	color: $accent1;
+}
+.alertBorder {
+	border-color: $accent3;
+}
+/******lightboxes******/
+.featherlight .featherlight-content {
+	background-color: $panelcolor;
+}
+.featherlight .featherlight-close-icon {
+	background-color: $panelcolor;
+	color: $btntxtcolor;
+}
+.featherlight .featherlight-close-icon:hover, .featherlight .featherlight-close-icon:focus, .featherlight .featherlight-close-icon:active {
+	background: $dark3;
+}
+/*code snippet*/
+.hljs, .hljs-subst, .hljs-tag .hljs-title, .lisp .hljs-title, .clojure .hljs-built_in, .nginx .hljs-title {
+	color: $mainfontcolour;
+}
+.hljs {
+	background: $panelcolor;
+}
+.panel .hljs {
+	background: $lighterpanel;
+}
+/******@media changes******/
+@media (min-width: 1366px) {
+	/*tablet and above css below here*/
+	#x_mainHolder{
+		max-width:100%;
+		max-height:100%;
+		margin:auto;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+}
+
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+	#x_mainHolder{
+		max-width:100%;
+		max-height:100%;
+		margin:auto;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+}

@@ -43,9 +43,37 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #F9BA32;
 }
 
-.titlePageTxt {
-  width: 98% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #426E86;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #F9BA32;
+}
+
+/* page resources */
+#x_pageResourcesBtn:not(.ui-button-icon-only) {
+  border: 1px solid #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #F9BA32;
+  color: #2F3131;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #2F3131;
+  color: #ffffff;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
 }
 
 .highlight {
@@ -784,6 +812,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #F9BA32;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -800,8 +837,8 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -810,7 +847,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -324,8 +324,8 @@ if (!$export_offline) {
  * Theme support
  */
 $theme = $xml->getTheme();
-// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers, no special characters)
-if (!preg_match('/^[a-zA-Z0-9]+$/', $theme)) {
+// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers or '_' or '-', no other special characters)
+if (!preg_match('/^[a-zA-Z0-9_\-]+$/', $theme, $matches)) {
     die("Illegal theme name detected!");
 }
 
@@ -336,10 +336,15 @@ if ($theme == "")
 // Add selected theme
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
 copy_extra_files();
+
 // Add colourChanger themes
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/blackonyellow/');
 copy_extra_files();
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/highcontrast/');
+copy_extra_files();
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/darkmode/');
+copy_extra_files();
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/lightmode/');
 copy_extra_files();
 
 // Add default theme

@@ -186,11 +186,11 @@ function NoopTrackingState()
     }
 
     function getdScaledCompletionWeightedScore(){
-        return getdScaledScore() * (getCompletionPercentage() / 100.0);
+        return this.getdScaledScore() * (this.getCompletionPercentage() / 100.0);
     }
 
     function getScaledCompletionWeightedScore(){
-        return Math.round(getdScaledCompletionWeightedScore() * 100) / 100 + "";
+        return Math.round(this.getdScaledCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdRawScore()

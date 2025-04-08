@@ -49,6 +49,32 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #f86718;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #ebebeb;
+  background-color: #222222;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #2196F3;
+}
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #f86718;
+  color: #000000;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #bdbdbd;
+  color: #000000;
+}
+
 .x_columnPage_page #textHolder,
 .x_imageSequence_page #controlBar,
 .x_nav_page #pageContents.col #textHolder,
@@ -57,7 +83,6 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-bottom: 3px solid #ebebeb;
 }
 
-.x_crossword_page #attempt h3,
 .x_interactiveText_page #groupInfo h3,
 .x_interactiveText_page #questionHolder,
 .x_results_page #general_summary + #specific {
@@ -107,11 +132,6 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   height: 3px;
   background: #ffffff;
   border: 0;
-}
-
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
 }
 
 .highlight {
@@ -659,10 +679,6 @@ a.hotspot, a.hotspot.selected {
   border: 2px solid #bdbdbd;
 }
 
-.x_crossword_page #x_pageDiv #clues-container table th, .x_crossword_page #x_pageDiv #clues th {
-  border-bottom: 3px solid #000000;
-}
-
 .x_crossword_page #attempt, .x_crossword_page #attempt h3 {
   padding-top: 1em;
 }
@@ -958,7 +974,7 @@ table.glossary tr.shaded {
 }
 
 #x_sideBar {
-  background-color: #ebebeb;
+  background-color: #ffffff;
   color: #000000;
 }
 
@@ -997,6 +1013,15 @@ table.glossary tr.shaded {
   padding: 0.5em;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #ebebeb;
+}
+
+.pbBar {
+  background-color: #2196F3;
+}
+
 @media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block;
@@ -1014,7 +1039,6 @@ table.glossary tr.shaded {
   }
   #x_footerBlock button {
     font-size: 1.4rem;
-    width: 1em;
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
@@ -1028,7 +1052,6 @@ table.glossary tr.shaded {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -1059,7 +1082,6 @@ table.glossary tr.shaded {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

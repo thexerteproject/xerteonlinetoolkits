@@ -6,7 +6,6 @@
 .x_results_page #txtHolder {
   border-bottom: $hrLine solid $hrColour;
 }
-.x_crossword_page #attempt h3,
 .x_interactiveText_page #groupInfo h3,
 .x_interactiveText_page #questionHolder,
 .x_results_page #general_summary + #specific {
@@ -52,13 +51,6 @@
   height: $hrLine;
   background: $defaultpagebackground;
   border: 0;
-}
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:96% !important;
-  overflow: hidden;
 }
 //***********************************Media*************************************
 //default highlight if not overriden
@@ -543,9 +535,6 @@ a.hotspot, a.hotspot.selected {
   border: 2px solid $darkergrey;
 }
 //*****crossword*****/
-.x_crossword_page #x_pageDiv #clues-container table th, .x_crossword_page #x_pageDiv #clues th {
-  border-bottom: $hrLine solid $blackordarkest;
-}
 .x_crossword_page #attempt, .x_crossword_page #attempt h3 {
   padding-top: 1em;
 }

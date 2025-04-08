@@ -83,6 +83,14 @@
 		<toolbar type="ComboBox" width="80" options="yes,no" data="yes,no" label="Toolbar" optional="true" deprecated="This property is deprecated"/>
 		<resizable type="ComboBox" width="80" options="yes,no" data="yes,no" label="Resizable" optional="true" deprecated="This property is deprecated"/>
 
+	    <hideShow type="group" label="Hide/Show Link" optional="true" tooltip="Hide this link completely or hide/show the link between specified dates" info="Hide this link from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+        <hideContent label="Hide link" type="CheckBox" defaultValue="false" optional="true"/>
+        <hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        <hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        <hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        </hideShow>
+
 	</link>
 
 	<markup icon="icTag" type="html" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
@@ -91,6 +99,14 @@
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 		
 		<url type="Media" label="HTML File" optional="true" placeholder="Select a HTML File"/>
+
+		<hideShow type="group" label="Hide/Show HTML" optional="true" tooltip="Hide this HTML completely or hide/show the HTML between specified dates" info="Hide this HTML from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                                			<hideContent label="Hide HTML" type="CheckBox" defaultValue="false" optional="true"/>
+                                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                		</hideShow>
 
 	</markup>
 
@@ -102,6 +118,14 @@
 		
 		<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" optional="true"/>
 
+		<hideShow type="group" label="Hide/Show Text" optional="true" tooltip="Hide this text completely or hide/show the text between specified dates" info="Hide this text from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+        			<hideContent label="Hide text" type="CheckBox" defaultValue="false" optional="true"/>
+        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+        		</hideShow>
+
 	</text>
 	
 	<pdf icon="icPDF" menuItem="PDF File" remove="true">
@@ -111,6 +135,14 @@
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		<openPDF type="TextInput" label="Open PDF Label" defaultValue="Open PDF in new tab" wysiwyg="true" mandatory="true" language="true"/>
+
+		<hideShow type="group" label="Hide/Show PDF" optional="true" tooltip="Hide this PDF completely or hide/show the PDF between specified dates" info="Hide this text from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                			<hideContent label="Hide PDF" type="CheckBox" defaultValue="false" optional="true"/>
+                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                		</hideShow>
 
 	</pdf>
 
@@ -124,6 +156,14 @@
 		
 		<class type="TextInput" label="Class" optional="true" tooltip="The names of any CSS classes that will be assigned to the canvas element"/>
 		<style type="TextInput" label="Styles" optional="true" tooltip="CSS styles that will be applied inline to the canvas element"/>
+
+		<hideShow type="group" label="Hide/Show Canvas" optional="true" tooltip="Hide this canvas completely or hide/show the canvas between specified dates" info="Hide this canvas from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                			<hideContent label="Hide canvas" type="CheckBox" defaultValue="false" optional="true"/>
+                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                		</hideShow>
 
 	</canvas>
 
@@ -144,6 +184,14 @@
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		<caption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" optional="true" tooltip="Add a caption below the image"/>
 
+		<hideShow type="group" label="Hide/Show Image" optional="true" tooltip="Hide this image completely or hide/show the image between specified dates" info="Hide this image from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide image" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
+
 	</image>
 
 	<audio icon="icSound" height="250" menuItem="Audio" remove="true">
@@ -153,6 +201,14 @@
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		<transcript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>
+
+		<hideShow type="group" label="Hide/Show Audio" optional="true" tooltip="Hide this audio completely or hide/show the audio between specified dates" info="Hide this audio from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide audio" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
 
 	</audio>
 
@@ -164,6 +220,14 @@
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		
 		<iframeRatio label="iframe Aspect Ratio" type="TextInput" placeholder="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+
+		<hideShow type="group" label="Hide/Show Video" optional="true" tooltip="Hide this video completely or hide/show the video between specified dates" info="Hide this video from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide video" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
 
 	</video>
 
@@ -179,6 +243,13 @@
 			<autoPlay label="Auto-Play" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="type=='Carousel'"/>
 			<delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="20" step="1"  width="100" defaultValue="4" optional="true" condition="type=='Carousel'&amp;&amp;autoPlay=='true'"/>
 		</autoPlayCarousel>
+		<hideShow type="group" label="Hide/Show Navigator" optional="true" tooltip="Hide this navigator completely or hide/show the navigator between specified dates" info="Hide this navigator from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                        			<hideContent label="Hide navigator" type="CheckBox" defaultValue="false" optional="true"/>
+                        			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                        			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                        		</hideShow>
 
 		<newNodes>
 
@@ -231,6 +302,13 @@
 			<displayOptions label="Open in" type="ComboBox" data="newwindow,thiswindow,lightbox" options="New tab/window,This tab,Lightbox" defaultValue="newwindow" condition="showLink=='true'" optional="true"/>
 			<showEmbed label="Embed" type="CheckBox" defaultValue="true" condition="showLink=='true'" optional="true" tooltip="When a link is shown, this option can be used to remove the embedded Xerte project from the page. Both the embedded project and link can both be shown if necessary." />
 		</xotLinkGroup>
+		<hideShow type="group" label="Hide/Show XOT" optional="true" tooltip="Hide this XOT completely or hide/show the XOT between specified dates" info="Hide this XOT from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
+                                			<hideContent label="Hide XOT" type="CheckBox" defaultValue="false" optional="true"/>
+                                			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideOnTime label="From (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+                                			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
+                                		</hideShow>
 
 	</xot>
 

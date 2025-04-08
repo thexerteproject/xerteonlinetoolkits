@@ -481,12 +481,21 @@
                         || interaction.getAttribute("opinionClass") !== null))
             ) {
                 if (interaction.getAttribute("graph") === "true") {
-                    return (
-                        interaction.getAttribute("graphType") === "bar_answers" ||
-                        interaction.getAttribute("graphType") === "bar_marks" ||
-                        interaction.getAttribute("graphType") === "line_average_marks" ||
-                        interaction.getAttribute("graphType") === "bar_marks_score"
-                    );
+                    if (interaction.getAttribute("actualGraphType") != null) {
+                        return (
+                            interaction.getAttribute("actualGraphType") === "bar_answers" ||
+                            interaction.getAttribute("actualGraphType") === "bar_marks" ||
+                            interaction.getAttribute("actualGraphType") === "line_average_marks" ||
+                            interaction.getAttribute("actualGraphType") === "bar_marks_score"
+                        );
+                    } else {
+                        return (
+                            interaction.getAttribute("graphType") === "bar_answers" ||
+                            interaction.getAttribute("graphType") === "bar_marks" ||
+                            interaction.getAttribute("graphType") === "line_average_marks" ||
+                            interaction.getAttribute("graphType") === "bar_marks_score"
+                        );
+                    }
                 } else {
                     return false;
                 }
@@ -1696,7 +1705,33 @@
                 "</div><div class='score'></div><div class='message'></div>",
             );
             */
-      if (interactionType == "score") {
+        debugger
+
+        //establish needed graphType from [graphType,answerGraphType,groupGraphType]
+        // problem this breaks backwards compatibility.
+        // so check for deprecated combos in graphType/interactionType combos first
+        // if found use deprecated combos if not deprecated find new option
+        const score_deprecated_graph_types = ["bar_answers", "hor_bar_comb_marks", "hor_bar_comb_marks_avg", "pie_marks", "polar_area_per_category"];
+
+        if (interactionType == "answer"){
+            if (interaction.getAttribute("answerGraphType") != null) {
+                //only non deprecated answer interaction graph type.
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("answerGraphType"));
+            } else {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("graphType"));
+            }
+        }else if (interactionType == "grouping" || interactionType == "groupings" || interactionType == "opinionclasses") {
+            if ( interaction.getAttribute("groupGraphType") != null) {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("groupGraphType"));
+            } else {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("graphType"));
+            }
+        }else if (interactionType == "score") {
+                interaction.setAttribute("actualGraphType", interaction.getAttribute("graphType"));
+        }
+
+        debugger
+        if (interactionType == "score") {
         var verb = "http://adlnet.gov/expapi/verbs/scored";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -1945,10 +1980,6 @@
       }
       var ownstatements = filterOwnStatements(data, xertelo);
 
-      var xertelabel = interaction.getAttribute("label");
-      var name = interaction.getAttribute("name");
-      var interactionType = interaction.getAttribute("interactionType");
-      var opinionClass = interaction.getAttribute("opinionClass");
       var nrbars = interaction.getAttribute("graphNrDataPoints");
       if (nrbars == undefined) {
         nrbars = 10;
@@ -2282,14 +2313,14 @@
           );
           debugger
           if (
-              interaction.getAttribute("graphType") == "pie_marks" ||
-              interaction.getAttribute("graphType") == "bar_comb_marks" ||
-              interaction.getAttribute("graphType") == "polar_area_per_category" ||
-              interaction.getAttribute("graphType") == "bar_marks" ||
-              interaction.getAttribute("graphType") == "bar_marks_score" ||
-              interaction.getAttribute("graphType") == "bar_answers" ||
-              interaction.getAttribute("graphType") == "line_average_marks" ||
-              interaction.getAttribute("graphType") == "line_own_marks"
+              interaction.getAttribute("actualGraphType") == "pie_marks" ||
+              interaction.getAttribute("actualGraphType") == "bar_comb_marks" ||
+              interaction.getAttribute("actualGraphType") == "polar_area_per_category" ||
+              interaction.getAttribute("actualGraphType") == "bar_marks" ||
+              interaction.getAttribute("actualGraphType") == "bar_marks_score" ||
+              interaction.getAttribute("actualGraphType") == "bar_answers" ||
+              interaction.getAttribute("actualGraphType") == "line_average_marks" ||
+              interaction.getAttribute("actualGraphType") == "line_own_marks"
           ) {
               //functional
               let graphSpace = ""
@@ -2305,8 +2336,8 @@
 
               div.append(graphSpace);
           } else if (
-              interaction.getAttribute("graphType") == "hor_bar_comb_marks" ||
-              interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
+              interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks" ||
+              interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks_avg"
           ) {
               let graphSpace = "";
               for (let i = 0; i < periods.length; i++) {
@@ -2358,8 +2389,11 @@
               }
 
 
-          if (interaction.getAttribute("graphType") == "bar_answers") {
-              debugger
+          if (interaction.getAttribute("actualGraphType") == "bar_answers") {
+              //duplicate from interaction type answer
+              //no longer an option from score
+              //still here for backwards compatability
+              //use bar_answers in drawAnswer() for uptodate features
               let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
               var xAxisLabelBarAnswers = interaction.getAttribute(
                   "xAxisLabelBarAnswers"
@@ -2370,7 +2404,7 @@
               if (xAxisLabelBarAnswers == undefined)
                   xAxisLabelBarAnswers = "Answers given";
               if (yAxisLabelBarAnswers == undefined)
-                  yAxisLabelBarAnswers = "Number of answers";
+                  yAxisLabelBarAnswers = "Percentage of answers";
 
               //get labels and #
               let labels = {};
@@ -2485,7 +2519,7 @@
               //   },
               // });
               // chart.draw();
-          } else if (interaction.getAttribute("graphType") == "bar_marks") {
+          } else if (interaction.getAttribute("actualGraphType") == "bar_marks") {
               let xAxisLabelBarMarks =
                   interaction.getAttribute("xAxisLabelBarMarks");
               let yAxisLabelBarMarks =
@@ -2794,7 +2828,7 @@
               //   },
               // });
               // chart.draw();
-          } else if (interaction.getAttribute("graphType") == "bar_marks_score") {
+          } else if (interaction.getAttribute("actualGraphType") == "bar_marks_score") {
 
               let yAxisLabelBarScore =
                   interaction.getAttribute("yAxisLabelBarScore");
@@ -3003,7 +3037,7 @@
                   },
               });
 
-          } else if (interaction.getAttribute("graphType") == "bar_comb_marks") {
+          } else if (interaction.getAttribute("actualGraphType") == "bar_comb_marks") {
               let passingGrade = x_params.trackingPassed;
               if (passingGrade == null) {
                   passingGrade = "55";
@@ -3097,7 +3131,10 @@
                   options: options,
               });
 
-          } else if (interaction.getAttribute("graphType") == "pie_marks") {
+          } else if (interaction.getAttribute("actualGraphType") == "pie_marks") {
+              //only works via groupings
+              //no longer an option from score
+              //still here as grouping relies on score for features
               var correctLabel = interaction.getAttribute("correctLabel");
               var incorrectLabel = interaction.getAttribute("incorrectLabel");
               if (correctLabel == undefined) correctLabel = "Correct";
@@ -3167,7 +3204,7 @@
                   options: options,
               });
           } else if (
-              interaction.getAttribute("graphType") == "line_average_marks"
+              interaction.getAttribute("actualGraphType") == "line_average_marks"
           ) {
               debugger
               var xAxisLabelLineAvgMarks = interaction.getAttribute(
@@ -3286,7 +3323,7 @@
               //   },
               // });
               // chart.draw();
-          } else if (interaction.getAttribute("graphType") == "line_own_marks") {
+          } else if (interaction.getAttribute("actualGraphType") == "line_own_marks") {
               var xAxisLabelLineOwnMarks = interaction.getAttribute(
                   "xAxisLabelLineOwnMarks"
               );
@@ -3426,8 +3463,11 @@
               // });
               // chart.draw();
           } else if (
-              interaction.getAttribute("graphType") == "polar_area_per_category"
+              interaction.getAttribute("actualGraphType") == "polar_area_per_category"
           ) {
+              //only works via groupings
+              //no longer an option from score
+              //still here as grouping relies on score for features
               let backgroundColors = [
                   "#FF6384",
                   "#4BC0C0",
@@ -3439,9 +3479,11 @@
               //quick check if we use simple colors or specific color/group pairs
               // under the assumption that only one of the systems is used
               let namedBackgroundColors = false;
-              if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "" && !interaction.getAttribute("graphColorScale").includes(":")) {
+              if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute(
+                  "graphColorScale") != "" && !interaction.getAttribute("graphColorScale").includes(":")) {
                   backgroundColors = interaction.getAttribute("graphColorScale").split(",");
-              } else if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute("graphColorScale") != "") {
+              } else if (interaction.getAttribute("graphColorScale") != undefined && interaction.getAttribute(
+                  "graphColorScale") != "") {
                   backgroundColors = [];
                   let groupColorPairs = interaction.getAttribute("graphColorScale").split(",")
                   for (key of groupColorPairs) {
@@ -3567,8 +3609,11 @@
                   },
               });
           } else if (
-              interaction.getAttribute("graphType") == "hor_bar_comb_marks"
+              interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks"
           ) {
+              //only works via groupings
+              //no longer an option from score
+              //still here as grouping relies on score for features
               //todo this is the normal horizontal option
               let passingGrade = x_params.trackingPassed;
               if (passingGrade == null) {
@@ -3914,7 +3959,7 @@
                     "</div>"
                 );
             }
-        if (interaction.getAttribute("graphType") == "bar_answers") {
+        if (interaction.getAttribute("actualGraphType") == "bar_answers") {
 
             var xertelo = interaction.getAttribute("xertelo");
             if (xertelo == "") {
@@ -4114,7 +4159,11 @@
           //   },
           // });
           // chart.draw();
-        } else if (interaction.getAttribute("graphType") == "bar_marks") {
+        } else if (interaction.getAttribute("actualGraphType") == "bar_marks") {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
+
           //var dash = new ADL.XAPIDashboard();
           //dash.addStatements(data);
           var xAxisLabelBarMarks =
@@ -4221,8 +4270,12 @@
           // });
           // chart.draw();
         } else if (
-          interaction.getAttribute("graphType") == "line_average_marks"
+          interaction.getAttribute("actualGraphType") == "line_average_marks"
         ) {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
+
           //var dash = new ADL.XAPIDashboard();
           //dash.addStatements(data);
           var xAxisLabelLineAvgMarks = interaction.getAttribute(
@@ -4328,7 +4381,10 @@
           //   },
           // });
           // chart.draw();
-        } else if (interaction.getAttribute("graphType") == "line_own_marks") {
+        } else if (interaction.getAttribute("actualGraphType") == "line_own_marks") {
+            //worse duplicate from interaction type score
+            //no longer an option
+            //still here for backwards compatability
           var xAxisLabelLineOwnMarks = interaction.getAttribute(
             "xAxisLabelLineOwnMarks"
           );

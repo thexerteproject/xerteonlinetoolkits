@@ -153,6 +153,14 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 	color: $whiteorlightest;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: $bodybackgroundcolor;
+}
+.pbBar {
+  background-color: $contrastcolor;
+}
+
 //******** Smartphones 600px (portrait) change progress bar display-----------/
 @media only screen
 and (max-width:600px) {
@@ -173,13 +181,13 @@ and (max-width:600px) {
     font-size: 12px;
   }
   #x_footerBlock button{
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -188,7 +196,6 @@ and (max-width:600px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -226,7 +233,6 @@ and (max-width:320px) {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

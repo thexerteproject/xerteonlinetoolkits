@@ -18,6 +18,16 @@
  */
 
 /* redirect to a new page */
-function redirect(url) {
-    window.location.href = url;
+function redirect(url, newtab=false) {
+    if (newtab) {
+        window.open(url, '_blank');
+    } else {
+        window.location.href = url;
+    }
+}
+
+function elevate(url, newtab=false){
+    if (confirm(ELEVATED_RIGHTS)) {
+        redirect(url, newtab);
+    }
 }

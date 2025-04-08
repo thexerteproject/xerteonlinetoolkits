@@ -248,7 +248,7 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id, $trans
 }
 
 
-if(is_user_permitted("projectadmin"))
+if(is_user_permitted("projectadmin", "system"))
 {
     if (isset($_REQUEST['olduserid']) && isset($_REQUEST['newuserid']) && isset($_REQUEST['transfer_private']) && isset($_REQUEST['transfer_shared_folders']) && isset($_REQUEST['delete_user'])) {
 
@@ -260,7 +260,7 @@ if(is_user_permitted("projectadmin"))
 
         // Get username of olduserid
         $q = "select * from {$prefix}logindetails where login_id=?";
-        $params = array(olduserid);
+        $params = array($olduserid);
         $olduser_rec = db_query_one($q, $params);
 
         $olduser = $olduser_rec['username'];

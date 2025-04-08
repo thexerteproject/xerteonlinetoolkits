@@ -274,7 +274,8 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         }
         $theme_path = 'themes/' . $row['parent_template'] . '/' . $xmlFixer->getTheme();
         $page_content = process_logos($LO_icon_path, $theme_path, $template_path, $page_content);
-        
+        $page_content = process_sidebar_logo($theme_path, $page_content);
+
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
@@ -351,8 +352,17 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-                if (isset($_SESSION['XAPI_PROXY']) && $_SESSION['XAPI_PROXY']['db']) {
-                    $tracking .= "  var lrsUseDb = true;\n";
+                if (isset($_SESSION['XAPI_PROXY'])){
+                    if ($_SESSION['XAPI_PROXY']['db']) {
+                        $tracking .= "  var lrsUseDb = true;\n";
+                    }
+                    else
+                    {
+                        $tracking .= "  var lrsUseDb = false;\n";
+                    }
+                    if ($_SESSION['XAPI_PROXY']['extra_install'] && $_SESSION['XAPI_PROXY']['extra_install'] != "") {
+                        $tracking .= "  var lrsExtraInstall = " . json_encode($_SESSION['XAPI_PROXY']['extra_install']) . ";\n";
+                    }
                 }
                 else
                 {
@@ -443,7 +453,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             else{
                 $embedsupport = "    var x_embed = true;\n";
                 $embedsupport .= "    var x_embed_activated = false;\n";
-                $embedsupport .= "    var x_embed_activation_url = '" . x_clean_input($_SERVER['REQUEST_URI']) . "&activated=true';\n";
+                $embedsupport .= "    var x_embed_activation_url = '" . $_SERVER['REQUEST_URI'] . "&activated=true';\n";
             }
         }
 		else

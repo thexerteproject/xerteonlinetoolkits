@@ -1,4 +1,7 @@
 <commonNodes>
+
+	<resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content"/>
+
 	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
@@ -28,7 +31,7 @@
 		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPage=='true'" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing this page. This may be desirable when viewing the page in a lightbox."/>
 		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPage=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing this page. This is likely to be desirable when viewing the page in a lightbox."/>
-		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup>
 	
 	<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
@@ -105,5 +108,7 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup>
+
+	<milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar"/>
 	
 </commonNodes>

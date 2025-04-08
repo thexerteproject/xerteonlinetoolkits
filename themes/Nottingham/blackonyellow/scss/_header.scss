@@ -1,32 +1,90 @@
 /******Header******/
 #x_headerBlock {
-  color:			$lightestcolor;
+  color: $headerfontcolor;
   background-repeat:no-repeat;
   background-position:right;
   background-image:	none;
   width: 100%;
   border-top-right-radius: $largeroundedcorners;
-  ///*border-bottom-right-radius: $largeroundedcorners;*/
-  //*margin-top: 5px;*/
-  background: $blackordarkest !important;
+  background: $headerbackgroundcolor;
   box-shadow: $interfaceboxshadow;
 }
 
-
 #x_headerBlock #x_pageIntroBtn {
-	color: $lightestcolor;
+	color: $headerfontcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg {
-	color: $blackordarkest;
-	background-color: $lightestcolor;
+	color: $headerbackgroundcolor;
+	background-color: $headerfontcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
-	color: yellow;
+	color: $headerhoverfontcolor;
 }
 
 #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
-	color: $blackordarkest;
-	background-color: yellow;
+	color: $headerbackgroundcolor;
+	background-color: $headerhoverfontcolor;
+}
+
+#x_headerProgress .pbContainer {
+  background-color: $progressBarColor;
+  border: none;
+}
+#x_headerProgress .pbBar {
+  background-color: $progressBarColorHeader;
+  border: none;
+}
+#x_headerProgress .progressMarker {
+  border-color: $progressBarColor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $progressBarColorHeader;
+}
+
+/* -- page resource button & lightbox (might be on side bar instead of header bar) -- */
+#x_pageResourcesBtn:hover, #x_pageResourcesBtn:focus, #x_pageResourcesBtn:active {
+  border-color: $headerfontcolor;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: $headerfontcolor;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $darkyellow;
+  color: $headerbackgroundcolor;
+}
+
+#x_resourceTable tr {
+  border-color: $bordercolor;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+#x_resourceTable thead tr {
+  border-top: none !important;
+}
+
+#x_resourceTable tbody tr:last-of-type {
+  border-bottom: none !important;
+}
+
+.resourceIcon {
+  border: none;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: $btntxtcolor;
+}
+
+table#x_resourceTable {
+  border: none !important;
+}
+
+#suppressWarningBtnHolder, #x_resourceTable {
+  margin-bottom: 1em;
 }

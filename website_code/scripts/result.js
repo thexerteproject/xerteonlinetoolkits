@@ -636,8 +636,8 @@ function XTResults(fullcompletion, trackingState) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-												matchSub.judge = trackingState.interactions[i].result.judge ?? true;
-												judge &= matchSub.judge;
+                        matchSub.judge = (trackingState.interactions[i].result != undefined && trackingState.interactions[i].result.judge != undefined ? trackingState.interactions[i].result.judge : true);
+                        judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;

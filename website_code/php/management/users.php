@@ -27,40 +27,107 @@ require("management_library.php");
 require("get_user_roles.php");
 
 if(is_user_permitted("useradmin")){
-    global $authmech;
+    global $authmech, $xerte_toolkits_site;;
     if (!isset($authmech))
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if ($xerte_toolkits_site->altauthentication != "" && isset($_SESSION['altauth']))
+    if ($authmech->check() && $authmech->canManageUser($jsscript))
     {
-        $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+        $authmech_can_manage_users = true;
     }
-	
+    else
+    {
+        $authmech_can_manage_users = false;
+    }
+
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+        if ($altauthmech->check() && $altauthmech->canManageUser($jsscript))
+        {
+            $altauthmech_can_manage_users = true;
+        }
+        else
+        {
+            $altauthmech_can_manage_users = false;
+        }
+    }
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 	echo "<h2>" . MANAGEMENT_MENUBAR_USERS . "</h2>";
 	echo "<div class=\"admin_block\">";
 
-    if ($authmech->check() && $authmech->canManageUser($jsscript))
+    if ($authmech_can_manage_users || $altauthmech_can_manage_users)
     {
         echo "<h2>" . USERS_MANAGE_AUTH . "</h2>";
         echo "<div id=\"manage_auth_users\">";
-        $authmech->getUserList(false, "");
+        if ($authmech_can_manage_users) {
+            $authmech->getUserList(true, "");
+        }
+        else if ($altauthmech_can_manage_users) {
+            $altauthmech->getUserList(true, "");
+        }
         echo "</div>";
-		echo "<div id=\"manage_user_roles\">";
-		get_user_roles();
-		echo "</div>";
-        echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
     }
+    echo "<div id=\"manage_user_roles\">";
+    x_get_user_roles();
+    echo "</div>";
+    $query = "SELECT ld.*, r.name FROM {$prefix}logindetails ld, {$prefix}role r, {$prefix}logindetailsrole ldr WHERE ld.login_id = ldr.userid AND r.roleid = ldr.roleid ORDER BY ld.surname, ld.firstname, ld.username, r.roleid";
+    $result = db_query($query);
+    echo "<h3>" . USERS_MANAGE_ROLES_OVERVIEW . "</h3>";
+    echo "  <div id=\"manage_user_roles_overview\"></div>";
+    $prevuser = -1;
+    echo "  <table class='user-role-overview'>";
+    echo "    <thead>";
+    echo "      <tr>";
+    echo "          <th>" . USERS_MANAGE_ROLES_OVERVIEW_USERNAME . "</th>";
+    echo "          <th>" . USERS_MANAGE_ROLES_OVERVIEW_ASSIGNED_ROLES . "</th>";
+    echo "          <th></th>";
+    echo "      </tr>";
+    echo "    </thead>";
+    echo "    <tbody>";
+    foreach($result as $row)
+    {
+        if ($prevuser != $row['login_id'])
+        {
+            if ($prevuser != -1) {
+                echo "</td>";
+                // select button
+                echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+                echo "</tr>";
+            }
+            echo "<tr><td class=\"user-roles-username\">";
+            echo $row['surname'] . ", " . $row['firstname'] . " (" . $row['username'] . ")";
+            echo "</td>";
+        }
+        if ($prevuser != $row['login_id'])
+        {
+            echo "<td class=\"user-roles-roles\">";
+            echo constant("USERS_ROLE_".strtoupper($row["name"]));
+        }
+        else{
+            echo ", " . constant("USERS_ROLE_".strtoupper($row["name"]));
+        }
+        $prevuser = $row['login_id'];
+    }
+    echo "</td>";
+    // select button
+    echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+    echo "</tr>";
+    echo "    </tbody>";
+    echo "  </table>";
+    echo "  </div>";
+    echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
 
     $database_id = database_connect("templates list connected","template list failed");
 
-    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails";
+    $query="select * from {$prefix}logindetails order by surname,firstname,username";
 
 	$query_response = db_query($query);
 
     foreach($query_response as $row) { 
-        echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
+        echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['surname'] . ", " . $row['firstname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
         echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
         echo "<p>" . USERS_FIRST . "<form><textarea id=\"firstname" . $row['login_id'] .  "\">" . $row['firstname'] . "</textarea></form></p>";

@@ -17,23 +17,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var categories = new function() {
-		var labelTxt1,
-			labelTxt2,
-			labelTxt3,
-			targetTxt1,
-			targetTxt2,
-            checked,
-            total_options;
+		let checked,
+			totaloptions,
+			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected"),
+			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select"),
+			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for"),
+			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#dragDropHolder .label").remove();
-			$("#feedback").hide();
-			this.createLabels();
+			checked = $("#pageContents").data("checked");
+			totaloptions = $("#pageContents").data("totaloptions");
 		}
 		
 		// function called every time the size of the LO is changed
@@ -47,18 +44,19 @@
 			});
 			
 			$("#initHolder").height(tallestLabel);
-			
-			var $category = $("#categoryHolder .category"),
-				$categoryTitle = $("#categoryHolder .categoryTitle");
-			$category.css("min-height", $categoryTitle.height() + 100);
+			$("#categoryHolder .category").css("min-height", $("#categoryHolder .categoryTitle").height() + 100);
 		}
 
         this.leavePage = function()
         {
-            if (!this.checked)
-            {
+            if (!checked && $("#categoryHolder .label").length > 0) {
                 this.showFeedBackandTrackScore();
             }
+
+			$("#pageContents").data({
+				"checked": checked,
+				"totaloptions": totaloptions
+			});
         }
 
         this.showFeedBackandTrackScore = function()
@@ -74,118 +72,121 @@
 				l_judge = false;
 			}
 
-            $("#dragDropHolder .tick").remove();
-			
-            $("#categoryHolder .category .label").each(function() {
-                var $this = $(this);
-                var l_answer, l_option = {};
-                l_option.source = $this.data("name");
-                //l_option.target = $this.data("category").data("name");
-				l_option.target = $this.parent().data("name");
-                l_answer = $this.data("name") + "-->" + $this.parent().data("name");
-                l_answers.push(l_answer);
+			if ((l_judge == true && XTGetMode() == "normal" && $("#initHolder .label").length > 0) || $("#categoryHolder .category .label").length == 0) {
+				// exercise is being tracked & is not complete or not tracked but no labels placed - prompt to complete before marking
+				$("#feedback").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("incomplete") != undefined && x_currentPageXML.getAttribute("incomplete") != "" ? x_currentPageXML.getAttribute("incomplete") : "Please complete the exercise.") + '</p>');
 
-                l_total++;
-                if ($this.data("category").is($this.parent()) || !l_judge) {
-					if(l_judge) {
-						$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
+			} else {
+				$("#dragDropHolder .label:not(.disabled) .tick").remove();
+
+				$("#categoryHolder .category .label").each(function() {
+					var $this = $(this);
+					var l_answer, l_option = {};
+					l_option.source = $this.data("name");
+					l_option.target = $this.parent().data("name");
+					l_answer = $this.data("name") + "-->" + $this.parent().data("name");
+					l_answers.push(l_answer);
+
+					l_total++;
+					if ($this.data("category").is($this.parent()) || !l_judge) {
+						// marking is on so add tick & disable correctly placed label
+						if (l_judge) {
+							$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
+							$this.addClass("disabled");
+						}
+						l_feedback.push("correct");
+						l_option.result = true;
+						l_correct++;
 					}
-                    l_feedback.push("correct");
-					l_option.result = true;
-                    l_correct++;
-                }
-                else {
-					$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
-					l_feedback.push("incorrect");
-					l_option.result = false;
-                }
-				l_options.push(l_option);
-            });
-			if(l_judge) {
-				$("#scoreTxt").html(l_correct);
-				$("#totalTxt").html(this.totaloptions);
-			}
-			$("#feedback").show();
+					else {
+						$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
+						l_feedback.push("incorrect");
+						l_option.result = false;
 
-			var result = {
-			    success: (l_correct == this.totaloptions),
-			    score: (l_correct * 100.0)/this.totaloptions,
-				judge: l_judge
+						// disable label as tracked & only allowed one attempt
+						if (XTGetMode() == "normal") {
+							$this.addClass("disabled");
+						}
+					}
+
+					// remove keyboard controls from disabled labels
+					if ($this.hasClass("disabled")) {
+						$this.off("click keypress focusin focusout");
+					}
+
+					l_options.push(l_option);
+				});
+
+				// disabled targets if all labels are disabled
+				if ($("#initHolder .label").length == 0 && $("#categoryHolder .category .label:not(.disabled)").length == 0) {
+					$("#categoryHolder .category")
+						.sortable("disable")
+						.off("click keypress focusin focusout");
+
+					$("#button").hide();
+				}
+
+				// add feedback text
+				const $feedback= $("#feedback");
+				$feedback.empty();
+				if (x_currentPageXML.getAttribute("feedbackScore") != undefined && x_currentPageXML.getAttribute("feedbackScore") != "") {
+					if (l_judge) {
+						$feedback.html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedbackScore").replace("{i}", '<span id="scoreTxt"></span>').replace("{n}", '<span id="totalTxt"></span>')) + '</p>');
+						$("#scoreTxt").html(l_correct);
+						$("#totalTxt").html(totaloptions);
+					}
+				}
+				if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
+					$feedback.append(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+				}
+
+				var result = {
+					success: (l_correct == totaloptions),
+					score: (l_correct * 100.0)/totaloptions,
+					judge: l_judge
+				}
+				XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedback);
+				XTSetPageScore(x_currentPage, (l_correct * 100.0)/totaloptions);
+				checked = true;
 			}
-            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedback);
-            XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
-            this.checked = true;
         }
 
 		this.init = function() {
-            this.checked = false;
-            this.totaloptions = 0;
+            checked = false;
+            totaloptions = 0;
             var correctOptions = [],
                 correctAnswer = [],
                 correctFeedback = [];
-			let judge = true;
 
-			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
-				judge = false;
-			}
-
-            this.checked = false;
-            // Track the quiz page
-            this.weighting = 1.0;
+            // Track the page
+            let weighting = 1.0;
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
             {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+                weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
 			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
-				this.weighting= 0.0;
+				weighting= 0.0;
 			}
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-
-
-
-			// store strings used to give titles to labels and categories when keyboard is being used (for screen readers)
-			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
-			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
-			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
-			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
-			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
+            XTSetPageType(x_currentPage, 'numeric', 1, weighting);
 
             $("#textHolder")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
 				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
-			var $feedback= $("#feedback");
-			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
-				$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-			}
-			if (x_currentPageXML.getAttribute("feedbackScore") != undefined && x_currentPageXML.getAttribute("feedbackScore") != "") {
-				if(judge) {
-					$feedback.append('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedbackScore").replace("{i}", '<span id="scoreTxt"></span>').replace("{n}", '<span id="totalTxt"></span>')) + '</p>');
-				}
-			} else if ($feedback.html().length == 0) {
-				$feedback.remove();
-			}
-			$feedback.hide();
-			
-			// buttonWidth attribute not used as button will be sized automatically
-			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
-			if (buttonLabel == undefined) {
-				buttonLabel = "Check Answers";
-			}
-			
-			var $button = $("#button")
+			$("#button")
 				.button({
-					label:	buttonLabel
+					label:	x_currentPageXML.getAttribute("buttonLabel") != undefined ? x_currentPageXML.getAttribute("buttonLabel") : "Check Answers"
 				})
 				.click(function() { // mark labels and show feedback
                     categories.showFeedBackandTrackScore();
-                    categories.checked = true;
+                    checked = true;
 				});
 			
 			// create categories
 			var $categoryHolder = $("#categoryHolder"),
 				$firstCategory = $categoryHolder.find(".category"),
 				labels = [];
+
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisCategory,
@@ -209,7 +210,7 @@
                         correctOptions.push(correctOption);
                         correctAnswer.push(itemName + "-->" + catName);
                         correctFeedback.push("Correct");
-                        categories.totaloptions++;
+                        totaloptions++;
 					});
 				});
 
@@ -249,9 +250,7 @@
 					}
 					})
 				.focusout(function() {
-					var $pageContents = $("#pageContents");
 					var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
-
 					$(this)
 						.removeClass("highlightDark")
 						.attr("title", targetTxt1 + " " + categoryTitle);
@@ -274,11 +273,11 @@
 						}
 						$selectedLabel
 							.removeClass("selected")
-							.attr("title", labelTxt1)
+							.removeAttr("title")
 							.appendTo($(this));
+
 						$pageContents.data("selectedLabel", "");
 						var categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
-
 						$(this).attr("title", targetTxt1 + " " + categoryTitle);
 					}
 				});
@@ -309,7 +308,7 @@
 				tempLabels.splice(labelNum, 1);
 			}
 			for (i=0; i<labels.length; i++) {
-				$("#initHolder").append('<li class="label panel" id="label' + i + '" tabindex="0" title="' + labelTxt1 + '"><p>' + labels[i].name + '</p></li>');
+				$("#initHolder").append('<li class="label panel" id="label' + i + '" tabindex="0"><span class="sr-only">' + x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item") + '</span>' + labels[i].name + '</li>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("category", labels[i].correct);
                 $thisLabel.data("name", labels[i].name);
@@ -323,6 +322,7 @@
 				connectWith:	"#categoryHolder .category",
 				items:			".label",
 				containment:	"#dragDropHolder",
+				cancel:			".disabled",
 				stop:	function(event, ui) {
 					if (ui.item.parent().is($("#initHolder")) == false) {
 						// show next label if it came from initHolder
@@ -335,9 +335,9 @@
 					// remove any focus/selection highlights made by tabbing to labels/targets
 					var $pageContents = $("#pageContents");
 					if ($("#dragDropHolder .label.focus").length > 0) {
-						$("#dragDropHolder .label.focus").attr("title", labelTxt1);
+						$("#dragDropHolder .label.focus").removeAttr("title");
 					} else if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-						$pageContents.data("selectedLabel").attr("title", labelTxt1);
+						$pageContents.data("selectedLabel").removeAttr("title");
 						$pageContents.data("selectedLabel", "");
 					}
 					var targetInFocus = $("#dragDropHolder .category.highlightDark");
@@ -349,8 +349,8 @@
 					$("#dragDropHolder .focus").removeClass("focus");
 					$("#dragDropHolder .highlightDark").removeClass("highlightDark");
 					
-					$("#feedback").hide();
-					$("#dragDropHolder .tick").remove();
+					$("#feedback").empty();
+					$("#dragDropHolder .label:not(.disabled) .tick").remove();
 				}
 			}).disableSelection();
 			
@@ -362,14 +362,14 @@
 					if ($this.is($pageContents.data("selectedLabel")) == false) {
 						$this
 							.addClass("focus")
-							.attr("title", labelTxt1 + " - " + labelTxt3);
+							.attr("title", labelTxt3);
 					}
 					})
 				.focusout(function() {
 					var $this = $(this);
 					$this.removeClass("focus");
 					if ($this.is($pageContents.data("selectedLabel")) == false) {
-						$this.attr("title", labelTxt1);
+						$this.removeAttr("title");
 					}
 					})
 				.keypress(function(e) {
@@ -383,17 +383,17 @@
 					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 						$pageContents.data("selectedLabel")
 							.removeClass("selected")
-							.attr("title", labelTxt1);
+							.removeAttr("title");
 					}
 					var $this = $(this);
 					$this
 						.removeClass("focus")
 						.addClass("selected")
-						.attr("title", labelTxt1 + ' - ' + labelTxt2);
+						.attr("title", labelTxt2);
 					$pageContents.data("selectedLabel", $this);
 
-					$("#feedback").hide();
-					$("#dragDropHolder .tick").remove();
+					$("#feedback").empty();
+					$("#dragDropHolder .label:not(.disabled) .tick").remove();
 
 					e.stopPropagation();
 				});
@@ -421,6 +421,6 @@
 	
 	<button id="button"></button>
 	
-	<div id="feedback"></div>
+	<div id="feedback" aria-live="polite"></div>
 	
 </div>

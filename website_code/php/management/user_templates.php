@@ -48,9 +48,11 @@ if(is_user_permitted("projectadmin")){
 
     echo "</select>";
 
-    //}
-
-    echo "<button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_VIEW . "</button> <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:transfer_user_templates('list_user')\">" . USERS_MANAGEMENT_TEMPLATE_TRANSFER . "</button> </form>";
+    echo "<button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_VIEW . "</button>";
+    if (is_user_permitted('system')) {
+        echo "<button type = \"button\" class=\"xerte_button\" onclick=\"javascript:transfer_user_templates('list_user')\">" . USERS_MANAGEMENT_TEMPLATE_TRANSFER . "</button>";
+    }
+    echo "</form>";
 
     echo "<div id=\"transferownership\" style=\"display:none;\"></div>";
     echo "<div id=\"usertemplatelist\"></div>";

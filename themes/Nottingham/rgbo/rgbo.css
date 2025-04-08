@@ -54,9 +54,33 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #117BAD;
 }
 
-.titlePageTxt {
-  width: 96% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #BFBFBF;
+  background-color: #000000;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #117BAD;
+}
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #117BAD;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: orange;
+  color: #ffffff;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:hover, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
 }
 
 .highlight {
@@ -890,6 +914,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #BFBFBF;
+}
+
+.pbBar {
+  background-color: #117BAD;
+}
+
 @media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block;
@@ -906,13 +939,13 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -921,7 +954,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -952,7 +984,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

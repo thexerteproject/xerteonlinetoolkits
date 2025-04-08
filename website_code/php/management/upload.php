@@ -42,6 +42,11 @@ if (!is_user_permitted("templateadmin"))
     die("Session is invalid or expired");
 }
 
+if (!isset($_FILES['fileToUpload']))
+{
+    exit(TEMPLATE_UPLOAD_NO_FILE_SELECTED);
+}
+
 if($_FILES['fileToUpload']['error'] == 4)
 {
     exit(TEMPLATE_UPLOAD_NO_FILE_SELECTED);

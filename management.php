@@ -145,7 +145,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 						<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
 					</p>
 					<div class="footerlogos">
-						<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.1AA-blue-v.png" border="0" alt="<?php echo MANAGEMENT_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_XERTE_LOGO_ALT; ?>"></a>
+						<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo MANAGEMENT_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_XERTE_LOGO_ALT; ?>"></a>
 					</div>
 				</footer>
 			</div>
@@ -164,17 +164,16 @@ if(isset($_SESSION['toolkits_logon_id'])) {
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+    }
+
     $regenerate_session_id = true;
     if ($xerte_toolkits_site->authentication_method == "Moodle")
     {
         $regenerate_session_id = false;
     }
-    if (isset($_GET['altauth']))
-    {
-        $xerte_toolkits_site->authentication_method = 'Db';
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-    }
-	//	$dbloggedin = false;
 
     $msg = "Admin user: " . $_SESSION['toolkits_logon_username'] ." logged in successfully from " . $_SERVER['REMOTE_ADDR'];
     receive_message("", "SYSTEM", "MGMT", "Successful login", $msg);
@@ -184,6 +183,19 @@ if(isset($_SESSION['toolkits_logon_id'])) {
     /*
      * Password and username provided, so try to authenticate
      */
+    // If user has admin rights, enable elevated
+    if (userHasAdminRights())
+    {
+        $_SESSION['elevated'] = true;
+        $xerte_toolkits_site->rights = 'elevated';
+    }
+    if (is_user_admin())
+    {
+        // Ensure user can open Tsugi Admin Panel
+        $_SESSION['admin'] = true;
+    }
+    $version = getVersion();
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -191,14 +203,14 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
 
-        <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-        <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
-        <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
+        <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
+        <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
+        <link href="website_code/styles/management.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
         <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 
-        <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css">
+        <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css?version=<?php echo $version;?>">
         <?php
         if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
         {
@@ -217,13 +229,6 @@ if(isset($_SESSION['toolkits_logon_id'])) {
          echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
 
          echo "var site_apache = \"" . $xerte_toolkits_site->apache . "\";\n";
-         if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
-         {
-             $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
-             $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-             $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
-         }
-
          echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
          ?></script>
 
@@ -238,19 +243,26 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 		<?php
         echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "editor/js/vendor/jquery-1.9.1.min.js\"></script>";
         _include_javascript_file("editor/js/vendor/jquery-1.9.1.min.js");
-        _include_javascript_file("website_code/scripts/file_system.js");
-        _include_javascript_file("website_code/scripts/screen_display.js");
-        _include_javascript_file("website_code/scripts/ajax_management.js");
-        _include_javascript_file("website_code/scripts/management.js");
-        _include_javascript_file("website_code/scripts/import.js");
-        _include_javascript_file("website_code/scripts/template_management.js");
-        _include_javascript_file("website_code/scripts/logout.js");
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js\"></script>";
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/functions.js\"></script>";
+        _include_javascript_file("website_code/scripts/file_system.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/screen_display.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/ajax_management.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/management.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/import.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/template_management.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
+        _include_javascript_file("website_code/scripts/functions.js?version=" . $version);
+        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js?version={$version}>\"></script>";
 
-        if ($authmech->canManageUser($jsscript))
+        if ($authmech->canManageUser($jsscript) || (isset($altauthmech) && $altauthmech->canManageUser($altjsscript)))
         {
-            _include_javascript_file($jsscript);
+            if ($authmech->canManageUser($jsscript))
+            {
+                _include_javascript_file($jsscript . "?version=" . $version);
+            }
+            if (isset($altauthmech) && $altauthmech->canManageUser($altjsscript) && $xerte_toolkits_site->authentication_method != $xerte_toolkits_site->altauthentication)
+            {
+                _include_javascript_file($altjsscript . "?version=" . $version);
+            }
         }
         ?>
         <style>
@@ -327,6 +339,16 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                     }
                     else
                     {
+                        // Place a button to TSUGI (if you have the rights)
+                        if (is_user_admin() && file_exists($xerte_toolkits_site->tsugi_dir)) {
+                            ?>
+                            <button title="<?php echo MANAGEMENT_TO_TSUGI_ADMIN; ?>"
+                                    type="button" class="xerte_button_c_no_width"
+                                    onclick="javascript:redirect('tsugi/admin', true)" style="margin-bottom: 8px;">
+                                <i class="fa xerte-icon">次</i> <?php echo MANAGEMENT_TO_TSUGI_ADMIN; ?>
+                            </button>
+                           <?php
+                        }
                         // Place button with link to index.php
                     ?>
                         <button title="<?php echo MANAGEMENT_TOWORKSPACE; ?>"
@@ -365,59 +387,59 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                         <div class="admin_mgt_area_middle_button_left">
                             <?php
                             $firsttab = null;
-                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'site_list()'; ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab : 'site_list()'; ?>
                             <button type="button" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
                             <?php
                             }
-                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab ?? 'templates_list()'?>
+                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab != null ? $firsttab :  'templates_list()'?>
                             <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab ?? 'themes_list()'?>
+                            if (is_user_permitted("templateadmin")) { $firsttab = $firsttab != null ? $firsttab :  'themes_list()'?>
                                 <button type="button" class="xerte_button" onclick="javascript:themes_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_THEMES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("useradmin")) {  $firsttab = $firsttab ?? 'users_list()' ?>
+                            if (is_user_permitted("useradmin")) {  $firsttab = $firsttab != null ? $firsttab :  'users_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users-cog"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("useradmin")) { $firsttab = $firsttab ?? 'user_groups_list()' ?>
+                            if (is_user_permitted("useradmin")) { $firsttab = $firsttab != null ? $firsttab :  'user_groups_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:user_groups_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USER_GROUPS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("projectadmin")) { $firsttab = $firsttab ?? 'user_templates_list()' ?>
+                            if (is_user_permitted("projectadmin")) { $firsttab = $firsttab != null ? $firsttab :  'user_templates_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><i class="far fa-file-alt"></i> <?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'errors_list()' ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'errors_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle"></i> <?PHP echo MANAGEMENT_MENUBAR_LOGS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'play_security_list()' ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'play_security_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'categories_list()' ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab != null ? $firsttab :  'categories_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'educationlevel_list()' ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab != null ? $firsttab :  'educationlevel_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:educationlevel_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_EDUCATION; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'grouping_list()' ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab != null ? $firsttab :  'grouping_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:grouping_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_GROUPINGS; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab ?? 'course_list()' ?>
+                            if (is_user_permitted("metaadmin")) { $firsttab = $firsttab != null ? $firsttab :  'course_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:course_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_COURSES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'licenses_list()' ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'licenses_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
                                 <?php
                             }
-                            if (is_user_permitted("system")) { $firsttab = $firsttab ?? 'feeds_list()' ?>
+                            if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'feeds_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button> <!--style="margin-right:10px;"-->
                             <?php
                             }

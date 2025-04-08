@@ -31,6 +31,8 @@ body {
   margin: 2px;
   background-color: none;
   border-radius: 14px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -371,4 +373,24 @@ h3 {
 
 #x_introStartBtn {
   background-color: white;
-}/*# sourceMappingURL=sketch.css.map */
+}
+
+/* progress bar */
+.pbContainer {
+  background-color: #D3D7CF;
+}
+
+.pbBar {
+  background-color: black;
+}
+
+#x_headerProgress .progressMarker {
+  border-color: #D3D7CF;
+  background-color: white;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: black;
+}
+
+/*# sourceMappingURL=sketch.css.map */

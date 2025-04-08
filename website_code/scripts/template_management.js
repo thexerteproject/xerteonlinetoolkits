@@ -724,7 +724,7 @@ function getProjectInformation(user_id, template_id) {
             x_Dashboard.getStatements(q, false, function() {
                 $("#graph_" + info.template_id).html("");
                 x_Dashboard.drawActivityChart("", $("#graph_" + info.template_id), startstartofday, todayendofday);
-            });
+            }, true);
         }
     })
     .fail(function(jqXHR, textStatus, errorThrown)

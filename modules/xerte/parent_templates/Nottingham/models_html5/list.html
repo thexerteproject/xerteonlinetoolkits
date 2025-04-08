@@ -37,16 +37,12 @@
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#infoHolder").hide();
-			$(".listItem.highlight").removeClass("highlight");
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
 			var $infoHolder = $("#infoHolder");
-			if (x_browserInfo.mobile == false) {
-				$infoHolder.height($x_pageHolder.height() - $("#pageContents .splitScreen").position().top - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($infoHolder.css("padding-top")) * 2);
-			}
+			$infoHolder.height(x_getAvailableHeight([$infoHolder], [$("#textHolder")]));
 			
 			if (firstLoad != true) {
 				this.scaleImages();
@@ -71,14 +67,7 @@
 			
 			list.sizeChanged(true);
 			$infoHolder.hide();
-			
-			var instruction = x_getLangInfo(x_languageData.find("screenReaderInfo").find("list")[0], "click", "");
-			if (instruction == null) {
-				instruction = "";
-			} else if (instruction != "") {
-				instruction = " " + instruction;
-			}
-			
+
 			var $listItem = $(".listItem:first");
 			
 			$(x_currentPageXML).children()
@@ -91,10 +80,7 @@
 					}
 					
 					$thisItem
-						.attr({
-							"href": "#",
-							"aria-label": x_getAriaText(this.getAttribute("name") + instruction)
-							})
+						.attr("href", "#")
 						.html(this.getAttribute("name"))
 						.data({
 							"name"	:this.getAttribute("name"),
@@ -107,79 +93,87 @@
 							"built"	:false
 							})
 						.on("click", function(e) {
-							
 							e.preventDefault();
 							
 							var $this = $(this);
-							if ($this != $(".listItem.highlight")) {
-								var infoString = "<h3>" + $this.data("name") + "</h3>" + "<p>" + x_addLineBreaks($this.data("text")) + "</p>";
-								var url = $this.data("url");
-								if (url != undefined && url != "") {
-									if (url.split('.').pop().slice(0, -1) == "swf") {
-										infoString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="paneSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
-										
-									} else if (url.split('.').pop().slice(0, -1) == "html") {
-										if ($this.data("built") == false) {
-											// sets up savedData for current page as an array so it can contain the initObject and any additionally saved data for this customHTML file
-											if (x_pageInfo[x_currentPage].savedData == undefined) {
-												x_pageInfo[x_currentPage].savedData = [];
-											}
-											x_pageInfo[x_currentPage].savedData.push(new Object());
-											$this.data("savedDataIndex", x_pageInfo[x_currentPage].savedData.length - 1);
-											
-											if ($this.data("obj") != undefined && $this.data("obj") != "") {
-												x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject($this.data("obj"));
-											}
+							$("#infoHolderTitle").html($this.data("name"));
+							var infoString = x_addLineBreaks($this.data("text"));
+							var url = $this.data("url");
+							if (url != undefined && url != "") {
+								if (url.split('.').pop().slice(0, -1) == "swf") {
+									infoString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="paneSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
+
+								} else if (url.split('.').pop().slice(0, -1) == "html") {
+									if ($this.data("built") == false) {
+										// sets up savedData for current page as an array so it can contain the initObject and any additionally saved data for this customHTML file
+										if (x_pageInfo[x_currentPage].savedData == undefined) {
+											x_pageInfo[x_currentPage].savedData = [];
 										}
-										
-										infoString += '<div class="jsHolder"></div>';
-										
-									} else {
-										infoString += '<div class="paneImg">';
-										if ($this.data("caption") != undefined && $this.data("caption") != "") {
-											infoString += '<figure>';
+										x_pageInfo[x_currentPage].savedData.push(new Object());
+										$this.data("savedDataIndex", x_pageInfo[x_currentPage].savedData.length - 1);
+
+										if ($this.data("obj") != undefined && $this.data("obj") != "") {
+											x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject($this.data("obj"));
 										}
-										infoString += '<img ';
-										if ($this.data("tip") != undefined && $this.data("tip") != "") {
-											infoString += 'alt="' + $this.data("tip") + '" ';
-										}
-										infoString += ' />';
-										if ($this.data("caption") != undefined && $this.data("caption") != "") {
-											infoString += '<figcaption>' + $this.data("caption") + '</figcaption></figure>';
-										}
-										infoString += '</div>';
 									}
+
+									infoString += '<div class="jsHolder"></div>';
+
+								} else {
+									infoString += '<div class="paneImg">';
+									if ($this.data("caption") != undefined && $this.data("caption") != "") {
+										infoString += '<figure>';
+									}
+									infoString += '<img ';
+									if ($this.data("tip") != undefined && $this.data("tip") != "") {
+										infoString += 'alt="' + $this.data("tip") + '" ';
+									}
+									infoString += ' />';
+									if ($this.data("caption") != undefined && $this.data("caption") != "") {
+										infoString += '<figcaption>' + $this.data("caption") + '</figcaption></figure>';
+									}
+									infoString += '</div>';
 								}
-								
-								$(".listItem.highlight").removeClass("highlight");
-								$this.addClass("highlight");
-								
-								// remove any custom HTML so on previous pane so it can be added back in again later
-								$(".customHTMLHolder").detach();
-								
-								var $infoHolder = $("#infoHolder");
-								
-								$infoHolder
-									.html(infoString)
-									.scrollTop(0);
-								
-								// first click on a link - show panel
-								if ($("#infoHolder:visible").length == 0) {
-									var thisItem = this;
-									$infoHolder.fadeIn(function() {
-										$(this).html(infoString); // reloaded so aria-live works after fade
-										list.mediaLoad($infoHolder, thisItem, url);
-										
-										x_pageContentsUpdated();
-									});
-								}
-								
-								$infoHolder.focus();
-								
-								list.mediaLoad($infoHolder, this, url);
-								
-								x_pageContentsUpdated();
 							}
+
+							$(".listItem.highlight")
+								.removeClass("highlight")
+								.removeAttr("aria-current");
+
+							$this
+								.addClass("highlight")
+								.attr("aria-current", "true");
+
+							// remove any custom HTML so on previous pane so it can be added back in again later
+							$(".customHTMLHolder").detach();
+
+							var $infoHolder = $("#infoHolder");
+
+							$infoHolder.find("#infoHolderContent").html(infoString);
+							$infoHolder.scrollTop(0);
+
+							// first click on a link - show panel
+							if ($("#infoHolder:visible").length == 0) {
+								var thisItem = this;
+								$infoHolder.fadeIn(function() {
+									if (!$infoHolder.hasClass("first")) {
+										$(this).focus(); // reloaded so aria-live works after fade
+									} else {
+										$infoHolder.removeClass("first");
+									}
+									list.mediaLoad($infoHolder, thisItem, url);
+
+									x_pageContentsUpdated();
+								});
+							} else {
+								$infoHolder.focus();
+							}
+
+							$infoHolder.focus();
+
+							list.mediaLoad($infoHolder, this, url);
+
+							x_pageContentsUpdated();
 						});
 				});
 			
@@ -218,6 +212,7 @@
 			}
 			
 			if (x_currentPageXML.getAttribute('openFirst') == "true") {
+				$infoHolder.addClass("first");
 				$(".listItem:first").click();
 			}
 			
@@ -303,12 +298,14 @@
 	
 	<div class="splitScreen small">
 		
-		<div id="listHolder" class="left">
-			<a class="listItem"></a>
+		<div id="listHolder" class="left" role="list">
+			<a class="listItem" role="listitem"></a>
 		</div>
 		
 		<div class="right">
-			<div id="infoHolder" class="panel" aria-live="polite">
+			<div id="infoHolder" class="panel" tabindex="0" role="region" aria-labelledby="infoHolderTitle">
+				<h3 id="infoHolderTitle"></h3>
+				<div id="infoHolderContent"></div>
 			</div>
 		</div>
 		

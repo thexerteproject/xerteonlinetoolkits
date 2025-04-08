@@ -18,8 +18,13 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 #x_pageNo {
   background:	none;
 }
+
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
 .pbBar {
-  background-color: $progressBarColor;
+  background-color: $fontcolorforlightestcolor;
 }
 /* these buttons will use font awesome icons instead of pngs */
 .ui-button .ui-icon.x_help { background-image: none; }
@@ -173,8 +178,8 @@ and (max-width :500px) {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -183,7 +188,6 @@ and (max-width :500px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }

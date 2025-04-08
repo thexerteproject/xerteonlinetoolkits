@@ -50,15 +50,17 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var imageSize = x_currentPageXML.getAttribute("imagesize");
-			if (imageSize != undefined) {
-				var maxWH = this.getMaxDimensions();
-				x_scaleImg($pageImg, maxWH[0], maxWH[1]);
-				$cropImg
-					.width($pageImg.width())
-					.height($pageImg.height());
-				$pageImg.data("scaledSize", [$pageImg.width(), $pageImg.height()]);
-				$resetBtn.trigger("click");
+			if ($pageImg.data("origSize") !== undefined) {
+				var imageSize = x_currentPageXML.getAttribute("imagesize");
+				if (imageSize != undefined) {
+					var maxWH = this.getMaxDimensions();
+					x_scaleImg($pageImg, maxWH[0], maxWH[1]);
+					$cropImg
+							.width($pageImg.width())
+							.height($pageImg.height());
+					$pageImg.data("scaledSize", [$pageImg.width(), $pageImg.height()]);
+					$resetBtn.trigger("click");
+				}
 			}
 		}
 		
@@ -525,18 +527,19 @@
 			
 			if (imageSize != undefined) {
 				imgMaxW = $x_pageDiv.width();
-				imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
-				
-				if (imageSize == "small") {
-					imgMaxW = imgMaxW * 0.4;
-				} else if (imageSize == "medium") {
-					imgMaxW = imgMaxW * 0.6;
-				} else {
-					imgMaxW = imgMaxW * 0.8;
+				imgMaxH = x_getAvailableHeight([], [$("#mainPanel").outerHeight() - $("#mainPanel").height()], true);
+
+				if (x_browserInfo.mobile === false) {
+					if (imageSize == "small") {
+						imgMaxW = imgMaxW * 0.4;
+					} else if (imageSize == "medium") {
+						imgMaxW = imgMaxW * 0.6;
+					} else {
+						imgMaxW = imgMaxW * 0.8;
+					}
 				}
-				
-				imgMaxW -= ($("#mainPanel").outerWidth() - $("#mainPanel").width());
-				imgMaxH -= ($("#mainPanel").outerHeight() - $("#mainPanel").height());
+
+				imgMaxW -= ($("#mainPanel").outerWidth(true) - $("#mainPanel").width());
 				
 			} else { // fixed (this isn't an option now but was default before imagesize added to xwd)
 				imgMaxW = 500; // desktop / tablet
@@ -566,8 +569,7 @@
 		
 		this.setFullScreenWH = function() {
 			var $panel = $("#mainPanel");
-			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			
+			$panel.height(x_getAvailableHeight([$panel], [], true));
 			$pageImg.width($panel.width());
 			
 			// is $panel too tall now $pageImg has been scaled to fill its width?

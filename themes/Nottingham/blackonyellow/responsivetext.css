@@ -165,6 +165,9 @@
   #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3 {
     font-size: 1.5vmin;
   }
+  tick, img.result {
+    width: 2.5vmin;
+  }
 }
 @media only screen and (max-width: 500px) {
   #x_pageNo {
@@ -182,8 +185,6 @@
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
     margin-left: 5px;
   }
   .pbContainer {
@@ -193,4 +194,6 @@
     font-size: 6px;
     text-align: center;
   }
-}/*# sourceMappingURL=responsivetext.css.map */
+}
+
+/*# sourceMappingURL=responsivetext.css.map */
