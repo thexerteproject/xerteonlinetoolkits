@@ -568,7 +568,8 @@
     }
 
     //retrieves the period start and end dates from the interaction
-    function getPeriods(){
+    function getPeriods(MultiPeriod){
+        if (MultiPeriod === 'off') {return [["01-01-0000","05-05-2000"]]}
         let periods = [];
         let period0 = x_currentPageXML.getAttribute("period0");
         let period1 = x_currentPageXML.getAttribute("period1");
@@ -2008,7 +2009,7 @@
       if (MultiPeriod == undefined) {
           MultiPeriod = "off";
       }
-      var periods = getPeriods();
+      var periods = getPeriods(MultiPeriod);
 
       var barName = [];
       var barNameValue = [];
@@ -3838,7 +3839,7 @@
             MultiPeriod = "off";
         }
 
-        var periods = getPeriods();
+        var periods = getPeriods(MultiPeriod);
 
         var statements = data;
 
@@ -4566,7 +4567,7 @@
           MultiPeriod = "off";
       }
 
-      var periods = getPeriods();
+      var periods = getPeriods(MultiPeriod);
       var statements = data;
       //split statements into periods if needed
 
@@ -4700,7 +4701,7 @@
       }
 
       var statements = data;
-      var periods = getPeriods();
+      var periods = getPeriods(MultiPeriod);
       var periodStatements = splitStatementsPerPeriod(statements, periods, MultiPeriod);
 
       moment.locale(x_params.language);
