@@ -7,6 +7,8 @@
 		width: 100%;
 		padding-top:	1em;
 		padding-bottom:	1em;
+		box-sizing: border-box;
+		word-break: break-word;
 	}
 
 	#resultsHolder div p, #resultsHolder div a {
