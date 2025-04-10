@@ -58,8 +58,8 @@
 		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'" tooltip="Tick pages on the table of contents / page menu when they have been viewed"/>
 		<pageTickPostion label="Tick Position" type="ComboBox" data="before,after" options="Before Page Name,After Page Name" defaultValue="after" condition="navigation!='Historic'&amp;&amp;pageTick=='true'" optional="true"/>
 		<tocNumberGroup label="Numbering" type="group" optional="true" tooltip="Number pages and chapters on the table of contents / page menu">
-			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'"/>
-			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'&amp;&amp;tocNumbers=='true'"/>
+			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
+			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="false" condition="navigation!='Historic'"/>
 		</tocNumberGroup>
 		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
 			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
@@ -82,6 +82,7 @@
 	    <progressBarSubGroup label="Progress Markers" type="group" optional="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" tooltip="Add progress marks to the progress bar, based either on reaching the end of a chapter or viewing a milestone page">
 			<progressSub label="Type" type="ComboBox" options="None,Pages,Chapters,Milestones" data="false,pages,chapters,milestones" defaultValue="false" conditionTrigger="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" optional="true"/>
 			<progressBarSpacing label="Space Evenly" type="CheckBox" defaultValue="false" condition="progressSub!='false'&amp;&amp;progressSub!='pages'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Space progress markers evenly, even if the numbers of pages between them varies. When using chapters as milestones, this will only work if all of the pages within the project are in a chapter."/>
+			<progressBarSubLink label="Navigate on Click" type="CheckBox" defaultValue="true" condition="progressSub!='false'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Determines whether progress markers are links that jump to the specified page / beginning of chapter"/>
 		</progressBarSubGroup>
 	</progressBarGroup>
 
@@ -148,12 +149,33 @@
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
 
+    <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
+	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
+	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
+	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceCompletionGroup label="Completion" type="group" optional="true">
+	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+        <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
+	    <resourceWarningGroup label="Warning" type="group" condition="resourceCompletion=='true'" optional="true">
+			<resourceCompletionWarning label="Warn if incomplete" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="resourceCompletion=='true'" optional="true"/>
+			<resourceCompletionWarningTitle label="Title" type="TextInput" defaultValue="Incomplete Resources" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true"/>
+			<resourceCompletionWarningTxt label="Text" type="TextArea" height="100" defaultValue="You haven't completed all the supplementary resources. Would you like to proceed or review them first?" placeholder="" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true"/>
+		</resourceWarningGroup>
+	  </resourceCompletionGroup>
+	  <resourceAppearanceGroup label="Button" type="group" optional="true">
+	    <resourceBtn label="Appearance" type="ComboBox" defaultValue="icon" options="Icon only,Icon and text" data="icon,text" optional="true"/>
+	    <resourceIc type="CheckBox" label="Customise Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Resources button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<resourceIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-folder-open" condition="resourceIc=='true'" optional="true"/>
+	  </resourceAppearanceGroup>
+	</resourceGroup>
+
 	<splashScreenGroup label="Video Splash Screen" type="group" optional="true" tooltip="Add a short, full screen 'splash' video that is shown and auto-played when the project first loads">
 	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file"/>
 	  <splashShow label="Show" type="ComboBox" defaultValue="first" options="When project loads on first page only,When project loads on any page" data="first,always" optional="true" tooltip="Determines whether the splash screen is shown everytime the project loads (even if the first page shown is not page one) or only when the first page shown is page one."/>
 	  <splashBg type="ColourPicker" label="Background Colour" defaultValue="" optional="true"/>
 	</splashScreenGroup>
-
+	
 	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing either the table of contents or the buttons which would normally be found on the footer bar.">
 		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
@@ -165,7 +187,8 @@
 			<sbToC label="Table of Contents" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbProjectHelp label="Project Help" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbProjectIntro label="Project Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
-			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageResources label="Page Resources" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 		</sideBarBtns>
 		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
 		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
@@ -223,7 +246,7 @@
 			<saveSessionIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-save" condition="hideSaveSession!='true'&amp;&amp;saveSessionIc=='true'" optional="true"/>
 		</saveSessionGroup>
 	</tracking>
-
+	
 	<meta type="group" label="Metadata" optional="true" tooltip="The metadata for this project used, for example, when shared using oai-pmh">
 		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
 		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this project is part of"/>
@@ -267,18 +290,18 @@
 	</lightboxGroup>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true">
-        <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
-        <subject label="Subject" type="text" tooltip="The subject on which a learning object should be generated. When using files, videos or other sources, please ensure that the subject references information available in these sources. An subject which does not obviously reference the sources may increase likelihood of model hallucination." wysiwyg="false" optional="true"/>
-        <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true"/>
-        <headers label="Audience" type="TextInput" tooltip="The audience defines for whom the course is intended. For example, 'teachers', 'high-school students', 'people with intermediate technological skills' and so on. This will help keep the content curated and at the intended level." wysiwyg="false" optional="true"/>
-        <goals label="Goals" type="text" tooltip="The goals of the learning object. What should the (audience) walk away with at the end of the course? For example, if the audience is teachers, one goal could be 'Teachers learn about different data analysis techniques'. Another, 'Teachers learn about different free tools to use for data analysis.' This helps ensure all relevant aspects are covered, as well as aiding in sectioning the content into parts." wysiwyg="false" optional="true"/>
-        <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
-        <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
-        <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
-        <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." condition="uploadPrompt=='true'" optional="true"/>
-        <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" condition="uploadPrompt=='true'" optional="true"/>
-        <aiButton type="aibutton" optional="true"/>
-        <aiContentWarning label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+	<aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
+	<subject label="Subject" type="text" tooltip="The subject on which a learning object should be generated. When using files, videos or other sources, please ensure that the subject references information available in these sources. An subject which does not obviously reference the sources may increase likelihood of model hallucination." wysiwyg="false" optional="true"/>
+	<useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional="true"/>
+	<headers label="Audience" type="TextInput" tooltip="The audience defines for whom the course is intended. For example, 'teachers', 'high-school students', 'people with intermediate technological skills' and so on. This will help keep the content curated and at the intended level." wysiwyg="false" optional="true"/>
+	<goals label="Goals" type="text" tooltip="The goals of the learning object. What should the (audience) walk away with at the end of the course? For example, if the audience is teachers, one goal could be 'Teachers learn about different data analysis techniques'. Another, 'Teachers learn about different free tools to use for data analysis.' This helps ensure all relevant aspects are covered, as well as aiding in sectioning the content into parts." wysiwyg="false" optional="true"/>
+	<ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+	<voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+	<uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
+	<file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." condition="uploadPrompt=='true'" optional="true"/>
+	<fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" condition="uploadPrompt=='true'" optional="true"/>
+	<aiButton type="aibutton" optional="true"/>
+	<aiContentWarning label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
     <autoTranslateGroup type="group" label="Translate Learning Object (AI)" tooltip="A tool to automatically translate the learning object using AI." optional="true">
@@ -502,7 +525,7 @@
 	
     <align label="Align Text" options="Left,Right,Hide Text" type="ComboBox" data="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
     
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -621,7 +644,7 @@
             <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
         </newNodes>
 
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -773,7 +796,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -953,7 +976,7 @@
         ><interactionBlock adaptiveContent="" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
       </newNodes>
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1196,7 +1219,7 @@
 	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1345,7 +1368,7 @@
       <nestedAudio><![CDATA[<nestedAudio name="Title" text="" feedback="" feedbackAfter="1" clipName="false"/>]]></nestedAudio>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1489,7 +1512,7 @@
       <synchPoint><![CDATA[<synchPoint name="Enter Slide Title" text="" align="Top" synch="0"/>]]></synchPoint>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1648,7 +1671,7 @@
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
     
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1769,7 +1792,7 @@
 		<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Full" width="100"/>
 	</panel>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1874,7 +1897,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -1993,7 +2016,7 @@
         <aiButton type="aibutton" optional="true"/>
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2119,7 +2142,7 @@
       <button><![CDATA[<button name="Show More" text=""/>]]></button>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2232,7 +2255,7 @@
       <cOption><![CDATA[<cOption name="Answer" text="" destination="" />]]></cOption>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2334,7 +2357,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Captivate SWF File" type="media"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2466,7 +2489,7 @@
             <aiButton type="aibutton" optional="true"/>
             <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
       </AIGroup>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2588,7 +2611,7 @@
       <reqProgressChapter label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPageChapter=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include pages within this chapter in project progress calculations."/>
     </linkGroupChapter>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2695,7 +2718,7 @@
       <series><![CDATA[<series name="Enter Series Name" data="label|data" colour="0xFF0000"/>]]></series>
     </newNodes>	
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2825,7 +2848,7 @@
      	<explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
    </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -2995,7 +3018,7 @@
       <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" disableTooltip="false" iconCode="fas fa-info" windowType="dialog" hotspotHover='false' destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3175,7 +3198,7 @@
       <cMenuListedPage><![CDATA[<cMenuListedPage name="Enter Item Title" pageID=""/>]]></cMenuListedPage>
     </newNodes>	
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3320,7 +3343,7 @@
     <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Label" text="" wordAnswer=""/>]]></wordAndHint>
     </newNodes>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3462,7 +3485,7 @@
 	
     <pinAlt label="Pin Description" type="TextInput" language="true" tooltip="A description of the draggable pin image used by screenreaders" mandatory="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3609,7 +3632,7 @@
 		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="" format="radio"/>]]></mcqStep>
 	</newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3782,7 +3805,7 @@
 	
 	<headerTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3917,7 +3940,7 @@
       <dialogStep><![CDATA[<dialogStep name="Question" question="" answer="" hint=""/>]]></dialogStep>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4050,7 +4073,7 @@
       <nestedDictation><![CDATA[<nestedDictation name="Sentence" prompt="" audio="" answer=""/>]]></nestedDictation>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4188,7 +4211,7 @@
       <page><![CDATA[<page name="Enter Nested Page Title" text="" />]]></page>
 	</newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4543,7 +4566,7 @@
 	  <hotspot><![CDATA[<hotspot name="Enter Label Title" text="" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4647,7 +4670,7 @@
 		<windowWidth label="Width" options="Small,Medium,Large" type="ComboBox" data="Large,Medium,Small" defaultValue="Medium" width="100" optional="true"/>
 	</textInfo>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4798,7 +4821,7 @@
       <card><![CDATA[<card name="Enter Title Here" side1="" side2="" textalign="left" contentalign="flex-start"/>]]></card>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -4945,7 +4968,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Flash Paper SWF File" type="media"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5069,7 +5092,7 @@
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5238,7 +5261,7 @@
 	
 	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" condition="interactivity=='Fill in Blank'" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5338,7 +5361,7 @@
 	
 	<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5479,7 +5502,7 @@
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5598,7 +5621,7 @@
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5740,7 +5763,7 @@
 	  <QHotSpot><![CDATA[<QHotSpot name="Enter Hotspot Title" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5876,7 +5899,7 @@
 	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -5982,7 +6005,7 @@
     <url label="ISpring Movie" type="Media"/>
     <version label="Version" options="Free,Pro" type="ComboBox" data="Free,Pro" defaultValue="Free" width="100"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6096,7 +6119,7 @@
 
 	<sliderPosition label="Slider Position" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6256,7 +6279,7 @@
          <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6461,7 +6484,7 @@
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6613,7 +6636,7 @@
       <tableCell><![CDATA[<tableCell name="Cell" fieldPos="" cellType="question" text="" showIn="cell" replace="end" required="false" answer="" type="text" qShowIn="cell" qText="" qAfter="true" qAfterInfo="submitted" />]]></tableCell>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6811,7 +6834,7 @@
 		<group><![CDATA[<group name="Enter Group Name" delimiter="" text="" textColour="0xFFFFFF" bgColour="0xFF0000" />]]></group>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6923,7 +6946,7 @@
 		<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 		<trackVideo label="Track Video Progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
 
-	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+	<resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7261,7 +7284,7 @@
       <invClassFeedback><![CDATA[<invClassFeedback name="Enter Feedback Title" class="0" minScore="0" maxScore="50" feedbackTxt="" />]]></invClassFeedback>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7391,7 +7414,7 @@
 
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7516,7 +7539,7 @@
       <jmolOption><![CDATA[<jmolOption name="Enter option label here" script="Enter Jmol script here"/>]]></jmolOption>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7630,7 +7653,7 @@
       <link><![CDATA[<link name="Link Title" text="" url="" urlTxt="" target="new"/>]]></link>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7751,7 +7774,7 @@
       <listItem><![CDATA[<listItem name="Enter Item Title" text=""/>]]></listItem>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7866,7 +7889,7 @@
     <tooltip label="Map Description" type="TextInput"/>
     <link label="Link to Map" type="checkbox" defaultValue="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -7973,7 +7996,7 @@
       <overlay><![CDATA[<overlay name="Enter Name" url="entr a kml or geoRSS url"/>]]></overlay>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8120,7 +8143,7 @@
       <option><![CDATA[<option name="Answer" text="" feedback="" correct="false"/>]]></option>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8271,7 +8294,7 @@
 	  <file360><![CDATA[<file360 name="Enter Scene Title" file="" tip="" title="false"/>]]></file360>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8505,7 +8528,7 @@
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
 
-	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+	<resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -8921,7 +8944,7 @@
       <matchItem><![CDATA[<matchItem name="Enter Card Label" url=""/>]]></matchItem>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9061,7 +9084,7 @@
       <aiEvaluation label="AI evaluation" type="checkbox" optional="true" tooltip="Enable this if you want the AI to generate feedback based on the model and user answers. Please note that as this feedback is generated after a user answers the question no validation is possible."/>
     </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9163,7 +9186,7 @@
 	<copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<copypasteinfo label="Copy and Paste Info" type="TextArea" height="50" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9298,7 +9321,7 @@
     <feedbackBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9430,7 +9453,7 @@
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9567,7 +9590,7 @@
       <navPage><![CDATA[<navPage name="Enter Title Here" text=""/>]]></navPage>
     </newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9716,7 +9739,7 @@
     <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
     <htm label="HTML" type="textArea" height="150" optional="true" tooltip="Create your own content to open in the new window"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -9878,7 +9901,7 @@
         <opinionClass><![CDATA[<opinionClass title="Class title" name="Class"/>]]></opinionClass>
       </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10056,7 +10079,7 @@
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
      </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10163,7 +10186,7 @@
 
 	<open label="Open PDF in new tab" type="TextInput" wysiwyg="true" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10297,7 +10320,7 @@
 	  <mpText><![CDATA[<mpText txt="" name="Text" src="" tooltip=""></mpText>]]></mpText>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10598,7 +10621,7 @@
       <question><![CDATA[<question prompt="" name="Question" type="Single Answer" />]]></question>
 	</newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10725,7 +10748,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Raptivity SWF File" type="media"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -10892,7 +10915,7 @@
           <feedback><![CDATA[<feedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></feedback>
         </newNodes>
 
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11011,7 +11034,7 @@
 	
 	<appearance label="Feed View" options="Title Only,Title &amp; Snippet" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11125,7 +11148,7 @@
         <feedheader label="RSS Feed Header" type="CheckBox" defaultValue="false" optional="true"/>
     </rssDLLinks>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11258,7 +11281,7 @@
 		<propList><![CDATA[<propList name="List of props in scenario" />]]></propList>
 	</newNodes>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11495,7 +11518,7 @@
     <AvgLabel label="Average Graph Label" type="TextInput" wysiwyg="true" language="true"/>
     <PersonalLastLabel label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true"/>
     <PersonalAvgLabel label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true"/>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11600,7 +11623,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11701,7 +11724,7 @@
     <textAfter label="Text after pressing button" type="textarea" wysiwyg="true"/>
     <buttonLbl label="Button label" language="true" type="TextInput" wysiwyg="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11832,7 +11855,7 @@
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -11938,7 +11961,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -12065,7 +12088,7 @@
       <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text=""/></nestedTab></topic>]]></topic>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -12199,7 +12222,7 @@
 
     <loadingPrompt label="Loading Message" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -12338,7 +12361,7 @@
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -12479,7 +12502,7 @@
             <aiButton type="aibutton" optional="true"/>
             <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
         </AIGroup>
-    <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -12579,7 +12602,7 @@
     <align label="Alignment" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="100"/>
     <interactivity label="Interactivity" options="Off,On" type="ComboBox" data="off,on" defaultValue="off" width="100"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -12718,7 +12741,7 @@
          <aiButton type="aibutton" optional="true"/>
          <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -12897,7 +12920,7 @@
     <suggestedTxtLabel label="Suggested Text Label" type="TextInput" language="true"/>
     <notesTxtLabel label="Notes Text Label" type="TextInput" language="true"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13038,7 +13061,7 @@
       <sentence><![CDATA[<sentence p1="" p2="" hint="" name="Sentence" />]]></sentence>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13155,7 +13178,7 @@
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13272,7 +13295,7 @@
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13382,7 +13405,7 @@
       <thumbnailImage><![CDATA[<thumbnailImage name="Image" text="" align="Top" url="" linktarget="none" link="" tip=""/>]]></thumbnailImage>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13534,7 +13557,7 @@
       <timelinedate><![CDATA[<timelinedate name="Enter Item Name" text=""/>]]></timelinedate>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13671,7 +13694,7 @@
 
     <startBtnTxt label="Start Button Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Start" mandatory="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13815,7 +13838,7 @@
     <newNodes>
         <optionXQ><![CDATA[<optionXQ answer="" name="Answer" feedback="Feedback for this option" correct="false"/>]]></optionXQ>
     </newNodes>
-<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+<resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -13929,7 +13952,7 @@
       <nestedSynch><![CDATA[<nestedSynch text="" synch="0" name="Synch Point" />]]></nestedSynch>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -14043,7 +14066,7 @@
       <videoSynchPoint><![CDATA[<videoSynchPoint name="Enter Title Here" text="Content for the pane" align="Top" synch="0"/>]]></videoSynchPoint>
     </newNodes>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -14157,7 +14180,7 @@
     <url label="Article URL" type="textInput"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -14288,7 +14311,7 @@
 	<retryBtnTxt label="Retry Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<fillChars label="Alternative Fill Characters" type="TextInput" wysiwyg="false" language="true"/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -14389,7 +14412,7 @@
     <initObject type="TextInput" label="InitObject" optional="true" flashonly="true"/>
 	<errorTxt label="Error Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -14494,7 +14517,7 @@
     <launchvideo label="Launch Video Link" type="textInput" divider="true" language="true" deprecated="This property is no longer required"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -14598,7 +14621,7 @@
 	<resultsTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
     <apiErrorMesg label="Google Youtube API error message" type="textInput" language="true"/>
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
