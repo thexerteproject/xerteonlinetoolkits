@@ -57,8 +57,8 @@
 		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'" tooltip="Tick pages on the table of contents / page menu when they have been viewed"/>
 		<pageTickPostion label="Tick Position" type="ComboBox" data="before,after" options="Before Page Name,After Page Name" defaultValue="after" condition="navigation!='Historic'&amp;&amp;pageTick=='true'" optional="true"/>
 		<tocNumberGroup label="Numbering" type="group" optional="true" tooltip="Number pages and chapters on the table of contents / page menu">
-			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'"/>
-			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="true" conditionTrigger="true" condition="navigation!='Historic'&amp;&amp;tocNumbers=='true'"/>
+			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
+			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="false" condition="navigation!='Historic'"/>
 		</tocNumberGroup>
 		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
 			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
@@ -81,6 +81,7 @@
 	    <progressBarSubGroup label="Progress Markers" type="group" optional="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" tooltip="Add progress marks to the progress bar, based either on reaching the end of a chapter or viewing a milestone page">
 			<progressSub label="Type" type="ComboBox" options="None,Pages,Chapters,Milestones" data="false,pages,chapters,milestones" defaultValue="false" conditionTrigger="true" condition="progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3'" optional="true"/>
 			<progressBarSpacing label="Space Evenly" type="CheckBox" defaultValue="false" condition="progressSub!='false'&amp;&amp;progressSub!='pages'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Space progress markers evenly, even if the numbers of pages between them varies. When using chapters as milestones, this will only work if all of the pages within the project are in a chapter."/>
+			<progressBarSubLink label="Navigate on Click" type="CheckBox" defaultValue="true" condition="progressSub!='false'&amp;&amp;(progressBarType=='header1'||progressBarType=='header2'||progressBarType=='header3')" optional="true" tooltip="Determines whether progress markers are links that jump to the specified page / beginning of chapter" />
 		</progressBarSubGroup>
 	</progressBarGroup>
 
@@ -147,12 +148,33 @@
 		<pageIntroIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="pageIntroIc=='true'" optional="true"/>
 	</pageIntroGroup>
 
+    <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
+	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
+	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
+	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceCompletionGroup label="Completion" type="group" optional="true">
+	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+        <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
+	    <resourceWarningGroup label="Warning" type="group" condition="resourceCompletion=='true'" optional="true">
+			<resourceCompletionWarning label="Warn if incomplete" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="resourceCompletion=='true'" optional="true"/>
+			<resourceCompletionWarningTitle label="Title" type="TextInput" defaultValue="Incomplete Resources" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true" />
+			<resourceCompletionWarningTxt label="Text" type="TextArea" height="100" defaultValue="You haven't completed all the supplementary resources. Would you like to proceed or review them first?" placeholder="" condition="resourceCompletion=='true'&amp;&amp;resourceCompletionWarning=='true'" optional="true"/>
+		</resourceWarningGroup>
+	  </resourceCompletionGroup>
+	  <resourceAppearanceGroup label="Button" type="group" optional="true">
+	    <resourceBtn label="Appearance" type="ComboBox" defaultValue="icon" options="Icon only,Icon and text" data="icon,text" optional="true"/>
+	    <resourceIc type="CheckBox" label="Customise Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Resources button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+		<resourceIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-folder-open" condition="resourceIc=='true'" optional="true"/>
+	  </resourceAppearanceGroup>
+	</resourceGroup>
+
 	<splashScreenGroup label="Video Splash Screen" type="group" optional="true" tooltip="Add a short, full screen 'splash' video that is shown and auto-played when the project first loads">
 	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file"/>
 	  <splashShow label="Show" type="ComboBox" defaultValue="first" options="When project loads on first page only,When project loads on any page" data="first,always" optional="true" tooltip="Determines whether the splash screen is shown everytime the project loads (even if the first page shown is not page one) or only when the first page shown is page one."/>
 	  <splashBg type="ColourPicker" label="Background Colour" defaultValue="" optional="true"/>
 	</splashScreenGroup>
-
+	
 	<sideBarGroup type="group" label="Side Bar" optional="true" tooltip="Add a collapsible side bar to the project interface containing either the table of contents or the buttons which would normally be found on the footer bar.">
 		<sideBar type="CheckBox" label="Create Side Bar" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<sideBarPosition type="ComboBox" label="Position" defaultValue="left" options="Left,Right" data="left,right" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
@@ -164,7 +186,8 @@
 			<sbToC label="Table of Contents" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbProjectHelp label="Project Help" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbProjectIntro label="Project Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
-			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+			<sbPageResources label="Page Resources" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 		</sideBarBtns>
 		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
 		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
@@ -222,7 +245,7 @@
 			<saveSessionIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-save" condition="hideSaveSession!='true'&amp;&amp;saveSessionIc=='true'" optional="true"/>
 		</saveSessionGroup>
 	</tracking>
-
+	
 	<meta type="group" label="Metadata" optional="true" tooltip="The metadata for this project used, for example, when shared using oai-pmh">
 		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
 		<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="The course this project is part of"/>
@@ -266,18 +289,18 @@
 	</lightboxGroup>
 
     <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
-        <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
-        <subject label="Subject" type="text" tooltip = "The subject on which a learning object should be generated. When using files, videos or other sources, please ensure that the subject references information available in these sources. An subject which does not obviously reference the sources may increase likelihood of model hallucination." wysiwyg="false" optional="true"/>
-        <useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional ="true"/>
-        <headers label="Audience"  type="TextInput" tooltip = "The audience defines for whom the course is intended. For example, 'teachers', 'high-school students', 'people with intermediate technological skills' and so on. This will help keep the content curated and at the intended level." wysiwyg="false" optional="true"/>
-        <goals label="Goals"  type="text" tooltip = "The goals of the learning object. What should the (audience) walk away with at the end of the course? For example, if the audience is teachers, one goal could be 'Teachers learn about different data analysis techniques'. Another, 'Teachers learn about different free tools to use for data analysis.' This helps ensure all relevant aspects are covered, as well as aiding in sectioning the content into parts." wysiwyg="false" optional="true"/>
-        <ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
-        <voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
-        <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional ="true"/>
-        <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." condition="uploadPrompt=='true'" optional="true"/>
-        <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" condition="uploadPrompt=='true'" optional ="true"/>
-        <aiButton type="aibutton" optional="true"/>
-        <aiContentWarning label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+	<aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
+	<subject label="Subject" type="text" tooltip = "The subject on which a learning object should be generated. When using files, videos or other sources, please ensure that the subject references information available in these sources. An subject which does not obviously reference the sources may increase likelihood of model hallucination." wysiwyg="false" optional="true"/>
+	<useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional ="true"/>
+	<headers label="Audience"  type="TextInput" tooltip = "The audience defines for whom the course is intended. For example, 'teachers', 'high-school students', 'people with intermediate technological skills' and so on. This will help keep the content curated and at the intended level." wysiwyg="false" optional="true"/>
+	<goals label="Goals"  type="text" tooltip = "The goals of the learning object. What should the (audience) walk away with at the end of the course? For example, if the audience is teachers, one goal could be 'Teachers learn about different data analysis techniques'. Another, 'Teachers learn about different free tools to use for data analysis.' This helps ensure all relevant aspects are covered, as well as aiding in sectioning the content into parts." wysiwyg="false" optional="true"/>
+	<ageRange label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the content. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." wysiwyg="true" optional="true"/>
+	<voiceSelector label="Tone and Style" type="TextInput" wysiwyg="true" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." optional="true"/>
+	<uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional ="true"/>
+	<file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." condition="uploadPrompt=='true'" optional="true"/>
+	<fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" condition="uploadPrompt=='true'" optional ="true"/>
+	<aiButton type="aibutton" optional="true"/>
+	<aiContentWarning label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
     <autoTranslateGroup type="group" label="Translate Learning Object (AI)" tooltip="A tool to automatically translate the learning object using AI." optional="true">
