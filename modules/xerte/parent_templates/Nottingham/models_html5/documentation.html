@@ -30,7 +30,11 @@
 			required = [];
 		
 		this.pageChanged = function() {
-			
+			currentPage = $("#pageContents").data("currentPage");
+		}
+
+		this.leavePage = function() {
+			$("#pageContents").data("currentPage", currentPage);
 		}
 		
 		this.sizeChanged = function() {
