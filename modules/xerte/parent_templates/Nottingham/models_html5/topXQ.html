@@ -309,6 +309,7 @@
 					})
 					.click(function () {
 						if ($('#OptionHolder .input-answer').length == $('#OptionHolder .input-answer').filter(function(){ return !$(this).val(); }).length) {
+                            $("#attempts").find(".noAttempt").remove();
                             $("#attempts").append('<p class="noAttempt">' + (x_currentPageXML.getAttribute("noAttemptTxt") != undefined ? x_currentPageXML.getAttribute("noAttemptTxt") : "Please attempt the activity") + '</p>');
 							
 						} else {
