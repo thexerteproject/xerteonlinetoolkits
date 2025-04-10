@@ -4475,20 +4475,20 @@
         if (opinionClass == undefined) {
           opinionClass = null;
         }
-        group = interaction.getAttribute("groupFromUrl");
-        if (group == undefined) {
-          group = "";
-        } else {
-          if (group == "true") {
-            if (x_urlParams["group"] != undefined) {
-              group = decodeURIComponent(x_urlParams["group"]);
+        var group = interaction.getAttribute("groupFromUrl");
+        if (group != undefined && group == "true") {
+          if (x_urlParams["group"] != undefined) {
+            group = decodeURIComponent(x_urlParams["group"]);
+          } else {
+            if (interaction.getAttribute("groupName") != undefined) {
+              group = interaction.getAttribute("groupName");
             } else {
-              if (interaction.getAttribute("groupName") != undefined) {
-                group = interaction.getAttribute("groupName");
-              } else {
-                group = "";
-              }
+              group = "";
             }
+          }
+        } else {
+          if (interaction.getAttribute("groupName") != undefined) {
+            group = interaction.getAttribute("groupName");
           } else {
             group = "";
           }
@@ -4512,7 +4512,7 @@
               interactionType,
               hasToRetrieveAll(interaction),
               interactionIndex,
-              this.group,
+              group,
               filter_context_id,
               false,
               function (
