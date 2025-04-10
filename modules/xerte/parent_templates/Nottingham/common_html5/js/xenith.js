@@ -3159,6 +3159,10 @@ function x_focusPageContents(firstLoad) {
 	if (self == top || !firstLoad) {
 		//focus pageContents after page load (if not shown in iframe) and after page change (always - even if in iframe)
 		$('#pageContents').attr('tabIndex', 0).focus();
+
+		// ensure page is still scrolled to the top
+		$x_pageDiv.parent().scrollTop(0);
+
 		//#pageContents:focus is set to none in default theme
 		//uncomment the line below to see the focus outline
 		//or use a theme where this isn't hidden
