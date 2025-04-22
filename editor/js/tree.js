@@ -869,7 +869,7 @@ var EDITOR = (function ($, parent) {
 			
             // If the main node has a label, display the node item second (unconditionaly)
             if (node_label.length > 0 && !node_options['cdata']) {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, false, node_label);
             }
 
 			getGroups(node_options['normal']);
@@ -1350,38 +1350,45 @@ var EDITOR = (function ($, parent) {
 
 		// group children aren't sorted into alphabetical order - they appear in order taken from xml
 		var groupChildren = group.value.children;
-		
-		for (var j = 0; j < groupChildren.length; j++) {
-			
-			// set up a nested group
-			if (groupChildren[j].value.type == 'group') {
-				var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
-				if ($.inArray(true, foundGroup) > -1) {
-					groupChildren[j].found = true;
-				}
-				
-				var visible = true;
-				if (typeof groupChildren[j].value.condition != "undefined") {
-					visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
-				}
-				groupChildren[j].visible = visible;
-				groupSetUp(groupChildren[j], attributes, node_options, key);
-				
-			// display a parameter within this group
-			} else {
-				var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
-				
-				if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
-					toolbox.displayParameter(
-						'#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-						groupChildren,
-						groupChildren[j].name,
-						(toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
-						key
-					);
-				}
-			}
-		}
+
+        if (group.value.lightbox === 'form') {
+
+            toolbox.lightboxSetUp(group, attributes, node_options, key);
+
+        } else {
+
+            for (var j = 0; j < groupChildren.length; j++) {
+
+                // set up a nested group
+                if (groupChildren[j].value.type == 'group') {
+                    var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
+                    if ($.inArray(true, foundGroup) > -1) {
+                        groupChildren[j].found = true;
+                    }
+
+                    var visible = true;
+                    if (typeof groupChildren[j].value.condition != "undefined") {
+                        visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
+                    }
+                    groupChildren[j].visible = visible;
+                    groupSetUp(groupChildren[j], attributes, node_options, key);
+
+                    // display a parameter within this group
+                } else {
+                    var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
+
+                    if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
+                        toolbox.displayParameter(
+                            '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+                            groupChildren,
+                            groupChildren[j].name,
+                            (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
+                            key
+                        );
+                    }
+                }
+            }
+        }
 	},
 	
 	checkGroupFound = function(group, attributes, node_options, key)

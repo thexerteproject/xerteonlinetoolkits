@@ -639,12 +639,12 @@ var EDITOR = (function ($, parent) {
         return (result == null ? false : result);
     },
 
-    displayParameter = function (id, all_options, name, value, key, nodelabel)
+    displayParameter = function (id, all_options, name, value, key, lightboxMode=["", "none"], nodelabel)
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
-        var deprecated = false,
-			groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
+        var deprecated = false;
+		var	groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
 
         if (options != null)
         {
@@ -673,7 +673,7 @@ var EDITOR = (function ($, parent) {
                         .height(14)
                         .addClass("deprecated deprecatedIcon"));
 
-                if (options.optional == 'true' && groupChild == false) {
+                if (options.optional == 'true' && groupChild == false && lightboxMode[0] == "") {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
                         .addClass('fa-trash')
@@ -694,7 +694,7 @@ var EDITOR = (function ($, parent) {
                     .append(td);
                 deprecated = true;
             }
-            else if (options.optional == 'true' && groupChild == false) {
+            else if (options.optional == 'true' && groupChild == false && lightboxMode[0] == "") {
                 var td = $('<td>')
                     .addClass("wizardoptional")
                     .append($('<i>')
@@ -744,20 +744,22 @@ var EDITOR = (function ($, parent) {
 			if (options.type.toLowerCase() === "info") {
                 tdlabel.attr("colspan", "2");
 			    tr.append(tdlabel)
-            }
-			else
-            {
+            } else {
                 tr.append(tdlabel)
                     .append($('<td>')
                         .addClass("wizardvalue")
                         .append($('<div>')
                             .addClass("wizardvalue_inner")
-                            .append(displayDataType(value, options, name, key, label))));
+                            .append(displayDataType(value, options, name, key, label,  lightboxMode[1]))));
             }
 
 
-            $(id).append(tr);
-            if (options.optional == 'true' && groupChild == false) {
+            if (lightboxMode[0] === "") {
+                $(id).append(tr);
+            } else {
+                lightboxMode[0].append(tr);
+            }
+            if (options.optional == 'true' && groupChild == false && lightboxMode[0] == "") {
                 $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
                     removeOptionalProperty(this_name);
@@ -4011,7 +4013,80 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key, true);
     };
 
-    displayDataType = function (value, options, name, key, label) {
+    lightboxSetUp = function(group, attributes, node_options, key, formState="") {
+        let mode = "initialize";
+        if (formState !== "") {
+            mode = "rebuild";
+        }
+
+        let groupChildren = group.value.children;
+        var lightboxHtml = $("<form id='lightbox_" + group.name + "'></form>");
+        let lightboxId = "#lightbox_" + group.name;
+
+        //build lightbox form content input by input
+        for (var j = 0; j < groupChildren.length; j++) {
+            var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
+
+            if (mode == "initialize" && (getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated)) {
+                displayParameter(
+                    lightboxId,
+                    groupChildren,
+                    groupChildren[j].name,
+                    (getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
+                    key,
+                    [lightboxHtml, group.value.lightbox]
+                );
+            } else {
+                //rebuild form
+                displayParameter(
+                    lightboxId,
+                    groupChildren,
+                    groupChildren[j].name,
+                    formState.hasOwnProperty(groupChildren[j].name) === true ? formState[groupChildren[j].name] : "",
+                    key,
+                    [lightboxHtml, group.value.lightbox]
+                );
+            }
+        }
+        if (mode == "initialize") {
+            //create editor button to open lightbox manually
+            displayParameter(
+                '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+                [{name: group.name, value: {type: "lightboxbutton", label: "lightbox label idk"}}],
+                group.name,
+                "",
+                key
+            );
+        }
+        $('#lightboxbutton_' + group.name).on("click", function() {
+            $.featherlight(lightboxHtml);
+        })
+        //todo trigger button at final step not like this :(
+        $.featherlight(lightboxHtml);
+
+    },
+
+    triggerRedrawForm = function (event) {
+        let groupName = event.data.group;
+        //store current form state for rebuild
+        let formState = {};
+        //seperate sets as the labels and values are disconected.
+        let formInputValues = $('#lightbox_' + groupName + ' :input');
+        for (let input = 0; input < formInputValues.length; input++) {
+            formState[formInputValues[input].name] = formInputValues[input].value;
+        }
+
+
+        //remove current form and button handler
+        $('#lightbox_' + groupName).remove();
+        $('#lightboxbutton_' + groupName).off("click");
+        let currentNodeType = lo_data[event.data.key]['attributes'].nodeName;
+        let group = wizard_data[currentNodeType].node_options.all.find((option) => option.name == "AIGroup");
+        $.featherlight.close();
+        lightboxSetUp(group, "", "", event.data.key, formState);
+    };
+
+    displayDataType = function (value, options, name, key, label, mode) {
 		var html;
 
 		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
@@ -4022,10 +4097,11 @@ var EDITOR = (function ($, parent) {
 				form_id_offset++;
 				html = $('<input>')
 					.attr('id', id)
+                    .attr('name', name)
 					.attr('type',  "checkbox")
-					.prop('checked', value && (value == 'true' || value == '1'))
+					.prop('checked', value && (value == 'true' || value == '1' || value == 'on'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
-						cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+                        cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
 						if (event.data.trigger)
                         {
                             triggerRedrawPage(event.data.key);
@@ -4064,16 +4140,26 @@ var EDITOR = (function ($, parent) {
 				}
 				html = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
+                    .attr('name', name)
+					.change({id:id, key:key, name:name, group:options.group ,trigger:conditionTrigger}, function(event)
 					{
-						selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        //store data in xml
+                        if (mode === "attribute" || mode === "none") {
+                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        }
                         if (event.data.trigger)
                         {
-                            triggerRedrawPage(event.data.key);
+                            //no lightbox so redraw entire page
+                            if (mode === "none") {
+                                triggerRedrawPage(event.data.key);
+                            }  else {
+                                //lightbox so redraw only the lightbox form.
+                                triggerRedrawForm(event);
+                            }
                         }
 					});
 
-				if (value == '') {
+                if (value == '') {
 					html.append($('<option>').attr('value', '').prop('selected', true));
 				}
 
@@ -5148,8 +5234,19 @@ var EDITOR = (function ($, parent) {
 				break;
             case 'info':
                 break;
-			case 'webpage':  //Not used??
-			case 'xerteurl':
+            case 'lightboxbutton':
+                //identifier of button is linked to group name instead of identifier.
+                //this button is generated based on lightbox=='true' in a group
+                var id = 'lightboxbutton_' + name;
+
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('class', 'lightboxbutton')
+                    .text('Generate');
+
+                break;
+            case 'webpage':  //Not used??
+            case 'xerteurl':
 			case 'xertelo':
 			default:
 				var id = 'textinput_' + form_id_offset;
@@ -5158,6 +5255,7 @@ var EDITOR = (function ($, parent) {
 				{
 					html = $('<div>')
 						.attr('id', id)
+                        .attr('name', name)
 						.addClass('inlinewysiwyg')
 						.attr('contenteditable', 'true');
 
@@ -5185,6 +5283,7 @@ var EDITOR = (function ($, parent) {
 						.addClass('inputtext')
 						.attr('id', id)
 						.attr('placeholder', options.placeholder)
+                        .attr('name', name)
 						.keyup({name: name, key: key, options: options}, function()
 						{
 							if (name == 'name') {
@@ -5242,6 +5341,7 @@ var EDITOR = (function ($, parent) {
     my.insertOptionalProperty = insertOptionalProperty;
     my.getPageList = getPageList;
     my.hideInlineEditor = hideInlineEditor;
+    my.lightboxSetUp = lightboxSetUp;
 
     return parent;
 
