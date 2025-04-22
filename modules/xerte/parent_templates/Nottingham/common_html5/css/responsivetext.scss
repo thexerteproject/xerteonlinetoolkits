@@ -173,7 +173,7 @@ h1#x_introH1 {
 }
 .ui-tabs .ui-tabs-nav li a {
     font-size: $pagecontentslarge;
-    //*reduce padding in tabnave buttons*/
+    //*reduce padding in tab nav buttons*/
     padding: .4em .4em;
 }
 .ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
@@ -211,7 +211,7 @@ table {
 	font-size: $pagecontentslarge;
 }
 .titlePageTxt,  .titlePageTxt p {
-	font-size: $pagecontentstitlesize;
+	//font-size: $pagecontentstitlesize;
 }
 .paneList a, .paneList {
 	font-size: $pagecontentsmedium !important;
@@ -254,6 +254,16 @@ table {
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button, #x_sideBar.sideBarSmall #x_sideBarTocHolder button {
   font-size: $pagecontentsmedium;
+}
+
+#x_resources .resourceLink,
+#x_resources h1#x_resourceHeader {
+  font-size: $pagecontentslarge;
+}
+
+#x_resources input {
+  width: $pagecontentslarge;
+  height: $pagecontentslarge;
 }
 
   //--end of text size changes-----------------------------------------

@@ -57,6 +57,29 @@
   border-color: #2196F3;
 }
 
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: #84849a;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #4078C0;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover, #x_pageResourcesBtn.ui-button-icon-only:active, #x_pageResourcesBtn.ui-button-icon-only:focus {
+  color: #000000;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus {
+  color: #000000;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
+}
+
 .highlight {
   background: #F4F4F6;
 }

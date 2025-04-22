@@ -43,3 +43,32 @@
 #x_headerProgress .progressMarker.complete {
   border-color: $contrastcolor;
 }
+
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  border: none;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover, #x_pageResourcesBtn.ui-button-icon-only:active, #x_pageResourcesBtn.ui-button-icon-only:focus {
+  color: $contrastcolor;
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $contrastcolor;
+  color: $lightbtntxt;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: $lightbtncolor;
+  color: $lightbtntxt;
+}
+
+#x_resourceTable tr {
+  border-color: $mainfontcolour;
+}
+
+.resourceIcon {
+  border: none;
+}

@@ -212,11 +212,11 @@
 									});
 								}
 							});
-							
+
 							mediaElement.addEventListener("loadedmetadata", function() {
 								if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
 									mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]);
-								} else if (opts.pageName == "introVideo" || opts.pageName == "splashVideo") { // it's a video from project/page intro or a splash video
+								} else if (opts.pageName == "introVideo" || opts.pageName == "splashVideo" || opts.pageName == "resourceVideo") { // it's a video from project/page intro, page resource or a splash video
 									if (mimeType.toLowerCase() === 'video/mp4') {
 										x_introMediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')])
 									}

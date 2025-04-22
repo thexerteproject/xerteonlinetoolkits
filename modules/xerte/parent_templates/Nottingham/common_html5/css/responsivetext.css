@@ -193,9 +193,6 @@
   table {
     font-size: 2.5vmin;
   }
-  .titlePageTxt, .titlePageTxt p {
-    font-size: 7vmin;
-  }
   .paneList a, .paneList {
     font-size: 2vmin !important;
   }
@@ -235,6 +232,14 @@
   }
   #x_sideBar.sideBarSmall #x_sideBarBtnHolder button, #x_sideBar.sideBarSmall #x_sideBarTocHolder button {
     font-size: 2vmin;
+  }
+  #x_resources .resourceLink,
+  #x_resources h1#x_resourceHeader {
+    font-size: 2.5vmin;
+  }
+  #x_resources input {
+    width: 2.5vmin;
+    height: 2.5vmin;
   }
 }
 @media only screen and (max-width: 500px) {

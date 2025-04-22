@@ -141,7 +141,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("textTitle"), pageText: x_currentPageXML.getAttribute("text") };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("textTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("text") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -151,7 +151,7 @@
 			index++;
 			
 			if (x_currentPageXML.getAttribute('download') == 'true') {
-				var txtInfo = { pageName: x_currentPageXML.getAttribute("initialTitle"), pageText: x_currentPageXML.getAttribute("initialText") };
+				var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("initialTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("initialText") };
 				docData.pages.push(txtInfo);
 			}
 			
@@ -161,7 +161,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("notesTitle"), pageText: x_currentPageXML.getAttribute("notesText") != undefined ? x_currentPageXML.getAttribute("notesText") : '' };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("notesTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("notesText") != undefined ? x_currentPageXML.getAttribute("notesText") : '' };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -173,7 +173,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("feedbackTitle"), pageText: x_currentPageXML.getAttribute("feedback") };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("feedbackTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("feedback") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -184,7 +184,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("suggestedTitle"), pageText: x_currentPageXML.getAttribute("suggestedText") };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("suggestedTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("suggestedText") };
 					docData.pages.push(txtInfo);
 				}
 			}

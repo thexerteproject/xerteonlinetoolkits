@@ -528,6 +528,19 @@ var EDITOR = (function ($, parent) {
         }
     },
 
+    expandTree = function(){
+        if ($('#expand_tree').prop('checked')) {
+            // expand page tree items
+            const tree = $.jstree.reference("#treeview");
+            $("#treeview").jstree("open_all");
+        } else {
+            // collapse page tree items
+            $("#treeview #treeroot li.jstree-open").each(function() {
+                $("#treeview").jstree().close_node({ "id": this.id });
+            });
+        }
+    },
+
     duplicateNodes = function(tree, id, parent_id, pos, select)
     {
         var current_node = tree.get_node(id, false);
@@ -1991,7 +2004,14 @@ var EDITOR = (function ($, parent) {
             .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
         buttons.append(button);
         });
+
         $('.ui-layout-west .footer').append(buttons);
+
+        // add a checkbox that expands / collapses all pages / nested items in the tree
+        $('<span id="tree_checks"><input id="expand_tree" type="checkbox" title="' + language.chkExpandTree.$tooltip + '"><label id="expand_tree_label" for="expand_tree" class="enabled">' + language.chkExpandTree.$label + '</label></span>').prependTo(buttons);
+        $('#expand_tree').on("change", function() {
+            expandTree();
+        });
     };
 
     my.setup = setup;

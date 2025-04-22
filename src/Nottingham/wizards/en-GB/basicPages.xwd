@@ -1,7 +1,7 @@
 <commonNodes>
 
 	<resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content"/>
-	
+
 	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
@@ -57,7 +57,7 @@
          <noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings=='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" optional="true"/>
          <ishButton type="imgsearchandhelpbutton" optional="true"/>
      </imgSearchAndHelpGroup>
-	
+
 	<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>

@@ -22,7 +22,7 @@
   
   <pageIntroButton label="Page Introduction"/>
   
-  <progressBar label="COMPLETE"/>
+  <progressBar label="COMPLETE" title="Progress bar" markers="Buttons navigate directly to pages or chapters marked on the progress bar" chapter="Chapter" page="Page" milestone="Milestone" complete="Complete" incomplete="Incomplete"/>
   
   <footerTools hide="Hide footer tools" show="Show footer tools"/>
   
@@ -150,15 +150,25 @@
 	  <responsiveTxt label="Responsive text" tip="When responsive text is turned on, the text size will adapt to the size of the screen you are viewing this project on. If you use the browser zoom to increase the text size then you may get a better experience if you turn responsive text off."/>
   </colourChanger>
 
+  <resources label="Resources" text="{x} Resources Available" completeText="{y}/{x} Resources Complete">
+	  <table title="Title" description="Description" actions="Actions" complete="Mark as complete" downloadBtn="Download resource" viewBtn="Open resource"/>
+	  <warning suppress="Don't show this message again" continue="Continue anyway" review="Review the resources"/>
+  </resources>
+
   <screenReaderInfo label="Screen Reader Information" newWindow="opens in a new window" shortNewWindow="opens in a new window" thisWindow="opens in this window" dialog="opens in a dialog window">
-	  <buttonNav description="This page contains a series of buttons where each one reveals some related information." click="Click to reveal information"/>
-	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
+	  <buttonNav description="This page contains a series of tabs where each one reveals some related information. Use the tab key to select the current tab and the arrow keys to move between tabs. When a tab is selected, using the tab key again will move you to the content on that tab." click="Click to reveal information"/>
+	  <tabNav description="This page contains a series of tabs where each one reveals some related information. Use the tab key to select the current tab and the arrow keys to move between tabs. When a tab is selected, using the tab key again will move you to the content on that tab."/>
+	  <accNav description="This page contains a series of tabs where each one reveals some related information. Use the tab key to select the current tab and the arrow keys to move between tabs. When a tab is selected, using the tab key again will move you to the content on that tab."/>
+	  <slideshow description="This page contains sub-pages where clicking the next and previous buttons changes the information presented."/>
 	  <audioSlideshow description="This page displays content in sync with an audio file. New content is added to the page as the audio plays." prompt="Slide changed"/>
-	  <videoSynch description="This page displays content in sync with a video. New content is added to the page as the video plays."/>
-	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
+	  <videoSynch description="This page displays content in sync with a video. New content is added to the page as the video plays." prompt="Content changed"/>
+	  <mediaLesson description="This page displays content in sync with a video or a piece of audio. New content is added to the page as the media plays." prompt="Content added"/>
+	  <interactiveVideo description="This page displays content in sync with a video. New content is added to the page as the video plays." prompt="Content added"/>
+	  <list description="This page contains a list of links where each one reveals some related information." click="Click to reveal information"/>
 	  <modelAnswerResults selected="Text selected"/>
-	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
-	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
+	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
+	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
+	  <crossword description="This page contains a crossword. Tab to the across and down clues and use the space bar or enter key to select a clue to complete. You will be moved to the puzzle grid where you can type in your answer."/>
 	  <imageCompare slideHint="Image slider"/>
   </screenReaderInfo>
 

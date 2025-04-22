@@ -687,7 +687,9 @@
 			}
             this.initTracking();
 
-			$('.mainMedia').parents('.panel').addClass('mediaPanel');
+			$('.mainMedia').parents('.panel')
+				.addClass('mediaPanel')
+				.append('<div id="srInfo" class="sr-only" aria-live="assertive"></div>');
 			x_pageLoaded();
 		};
 
@@ -978,9 +980,9 @@
 						popcornInstance["sortholder"](pluginAttributes);
 					}
 
-					// pauses media at synch point if needed
-					if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
-						popcornInstance.cue(thisContent.start, function() {
+					popcornInstance.cue(thisContent.start, function() {
+						// pauses media at synch point if needed
+						if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
 							this.pause();
 							// Gray out the background and fix z-index if the media is paused on an overlay panel
 							if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "synchXot")
@@ -990,8 +992,17 @@
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 mediaLesson.exitFullScreen();
                             }
-						});
-					}
+						}
+
+						// try to get screen readers to notify user of panel contents change
+						if (thisContent.start != 0) {
+							const contentChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("mediaLesson")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("mediaLesson")[0], "prompt") : (x_params.language === "en-GB" ? "Content added" : undefined);
+							if (contentChgTxt !== undefined) {
+								$("#srInfo").html(contentChgTxt);
+								setTimeout(function() { $("#srInfo").html(''); }, 50);
+							}
+						}
+					});
 				}
 			}
 			x_pageContentsUpdated();

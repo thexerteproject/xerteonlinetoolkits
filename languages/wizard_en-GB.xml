@@ -35,6 +35,7 @@
 	<btnAdvanced label_on="Toggle to advanced mode" tooltip_on="Toggle advanced mode" label_off="Switch off advanced mode" tooltip_off="Toggle off advanced mode"/>
 	<btnMoveUp tooltip="Move Up"/>
 	<btnMoveDown tooltip="Move Down"/>
+	<chkExpandTree label="Expand Pages" tooltip="Expand all pages by default"/>
 	<btnNext tooltip="Next Item"/>
 	<btnPreview label="Play" tooltip="Preview"/>
 	<btnPrev tooltip="Previous Item"/>
@@ -49,6 +50,7 @@
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
 	<calendar tooltip="Select Date"/>
+	<chapter title="CHAPTER"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
 	<hideContent tooltip="This content is hidden"/>
 	<standalonePage tooltip="This is a stand-alone page"/>
