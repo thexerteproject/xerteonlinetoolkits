@@ -42,3 +42,49 @@
 #x_headerProgress .progressMarker.complete {
   border-color: $progressBarColorHeader;
 }
+
+/* -- page resource button & lightbox (might be on side bar instead of header bar) -- */
+#x_pageResourcesBtn:hover, #x_pageResourcesBtn:focus, #x_pageResourcesBtn:active {
+  border-color: $headerfontcolor;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: $headerfontcolor;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $darkyellow;
+  color: $headerbackgroundcolor;
+}
+
+#x_resourceTable tr {
+  border-color: $bordercolor;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+#x_resourceTable thead tr {
+  border-top: none !important;
+}
+
+#x_resourceTable tbody tr:last-of-type {
+  border-bottom: none !important;
+}
+
+.resourceIcon {
+  border: none;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: $btntxtcolor;
+}
+
+table#x_resourceTable {
+  border: none !important;
+}
+
+#suppressWarningBtnHolder, #x_resourceTable {
+  margin-bottom: 1em;
+}

@@ -1331,10 +1331,90 @@ var EDITOR = (function ($, parent) {
 		// can set different wysiwyg setting for each field by having list e.g. 'false,full,full' - otherwise all fields will have same setting
 		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
 
+        // if cellType is media or pageList then we will do something different
+		const cellType = options.cellType != undefined ? options.cellType.split(',') : 'false';
+
 		$('#' + ids[0].id + ' textarea:visible, #' + ids[0].id + ' input:visible').each(function(i) {
 			var col_id = this.id;
 
-			if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
+            if (cellType != 'false' && i <= cellType.length-1 && (cellType[i] == "media" || cellType[i] == "pageList")) {
+                if (cellType[i] == "media") {
+                    // allow file upload - add the upload & preview buttons
+                    if (!$(this).hasClass("media")) {
+                        $(this)
+                            .addClass("media")
+                            .width("auto");
+
+                        // add a button that opens media browser when clicked
+                        $(this).parent().append('<button id="' + 'browse_' + col_id + '" title="' + language.compMedia.$tooltip + '" class="xerte_button media_browse"></button>');
+                        $(this).parent().find("#browse_" + col_id)
+                            .click(function () {
+                                browseFile(col_id);
+                            })
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon'));
+
+                        // add a button that shows preview of file when clicked
+                        $(this).parent().append('<button id="' + 'preview_' + col_id + '" title="' + language.compPreview.$tooltip + '" class="xerte_button"></button>');
+                        $(this).parent().find("#preview_" + col_id)
+                            .click(function () {
+                                previewFile($(this).parents("tr").find(".CaptionTD").html(), $(this).parents("tr").find(".media")[0].value);
+                            })
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon'));
+                    }
+
+                } else {
+                    // allow Xerte page to be selected from a drop-down menu
+                    $(this).parents("tr").find(".CaptionTD").attr("id", "label_" + col_id);
+
+                    if (!$(this).hasClass("pageList")) {
+                        $(this).addClass("pageList")
+
+                        // add a select field containing all pages
+                        const $pageSelect = $("<select id='" + col_id + "_pageBrowse' aria-labelledby='label_" + col_id + "' class='page_browse'>")
+                            .change(function() {
+                                // add info about what's been selected to the input field as this is where the saved data for this cell is
+                                // saved in odd format as we want the page name, not the page ID to be visible in the datagrid
+                                $("#" + col_id).val('<span data-pageID="' + this.value + '">' + $(this).find("option:eq(" + this.selectedIndex + ")").text() + '</span>');
+                            });
+
+                        // add empty entry
+                        let $option = $('<option>').attr('value', "");
+                        $option.append("&nbsp;");
+                        $pageSelect.append($option);
+
+                        $.each(getPageList(), function (page) {
+                            $option = $('<option>').attr('value', this[1]);
+                            $option.append(this[0]);
+                            $pageSelect.append($option);
+                        });
+
+                        $(this).before($pageSelect);
+
+                        // hide the normal input field but don't remove it
+                        // not just using $(this).hide() as it then doesn't always show the correct info when editing multiple datagrid lines
+                        $(this)
+                            .attr({
+                                "tabindex": "-1",
+                                "aria-hidden": "true"
+                            })
+                            .css({
+                                "visibility": "hidden",
+                                "width": "0"
+                            });
+                    }
+
+                    // ensure the correct, current item is selected
+                    const thisValue = $(this.value).length > 0 && $(this.value).attr("data-pageID") != undefined ? $(this.value).attr("data-pageID") : "";
+                    $("#" + col_id + "_pageBrowse option").each(function(i) {
+                        if ((i==0 && thisValue == "") || $(this).attr("value") == thisValue) {
+                            $(this).prop('selected', true);
+                        } else {
+                            $(this).prop('selected', false);
+                        }
+                    });
+                }
+
+            } else if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
 				// destroy editor for all columns
 				var myCkOptions = ckoptions;
 
@@ -1371,6 +1451,11 @@ var EDITOR = (function ($, parent) {
 			}
 
 		});
+
+        // there is some text to display when editing the grid - insert above the table
+        if (options.gridTxt !== undefined && options.gridTxt != "" && $(".gridTxt").length == 0) {
+            $("form.FormGrid table.EditTable").before('<div class="gridTxt">' + options.gridTxt + '<hr/></div>');
+        }
 
 		// resize the dialog to make sure they fit on screen once ckeditor has loaded
 		setTimeout(function(){
@@ -1767,6 +1852,16 @@ var EDITOR = (function ($, parent) {
             {
                 colWidths = gridoptions.colWidths.split(',');
             }
+            let cellType;
+            if (gridoptions.cellType)
+            {
+                cellType = gridoptions.cellType.split(',');
+            }
+            let gridTxt;
+            if (gridoptions.gridTxt)
+            {
+                gridTxt = gridoptions.gridTxt;
+            }
 
             // set up the jqGrid column model
             // Add unique hidden column as key for records
@@ -1803,6 +1898,10 @@ var EDITOR = (function ($, parent) {
                     col['width'] = (colWidths[i] ? colWidths[i] : Math.round(parseInt(gridoptions.width) / nrCols));
                 }
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
+
+                col['cellType'] = (cellType !== undefined && cellType[i] !== undefined ? cellType[i] : null);
+                col['gridTxt'] = gridTxt;
+
                 if (i==0) {
                     col['sortable'] = true;
                 } else {col['sortable'] = false;}
@@ -2336,18 +2435,20 @@ var EDITOR = (function ($, parent) {
 
     browseFile = function (id, key, name, value, obj)
     {
-        //console.log('Browse file: ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
-
         window.elFinder = {};
         window.elFinder.callBack = function(file) {
             // Actions with url parameter here
             var url = decodeURIComponent(file.url);
-            //console.log('Browse file: url=' + url);
             pos = url.indexOf(rlourlvariable);
-            if (pos >=0)
+            if (pos >=0) {
                 url = "FileLocation + '" + url.substr(rlourlvariable.length + 1) + "'";
+            }
             $('#' + id).attr("value", url);
-            setAttributeValue(key, [name], [url]);
+
+            // if this field is in a datagrid then we don't set attribute value immediately
+            if (key !== undefined && name !== undefined) {
+                setAttributeValue(key, [name], [url]);
+            }
             window.elFinder = null;
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
@@ -2455,6 +2556,7 @@ var EDITOR = (function ($, parent) {
 		// list of everything at same level or everything at parent's level
 		if (thisTarget != undefined) {
 			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+            // for example, this is used on decision tree page where answers can link to other steps on the same page but not other pages in the project
 			// * makes it include all the children too
 			var children = false;
 			if (thisTarget.indexOf('*') != -1) {
@@ -2518,7 +2620,9 @@ var EDITOR = (function ($, parent) {
                         // Also make sure we only take the text from the name, and not the full HTML
                         const page = [];
                         const prependTxt = child ? "&nbsp;- " : "";
-                        page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(prependTxt + name.value));
+                        let extraTxt = hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '';
+                        extraTxt += lo_data[key].attributes.nodeName == 'chapter' ? "[" + language.chapter.$title + "] " : ''; // **
+                        page.push(extraTxt + getTextFromHTML(prependTxt + name.value));
                         page.push(linkID.value);
                         pages.push(page);
 
@@ -2532,14 +2636,14 @@ var EDITOR = (function ($, parent) {
                     }
                 }
 
-                // get pages inside a chapter (don't list chapters)
+                checkNode(key, true);
+
+                // list pages inside a chapter too
                 if (lo_data[key].attributes.nodeName == "chapter") {
                     const childNode = tree.get_node(key, false);
                     $.each(childNode.children, function(j, key) {
                         checkNode(key, true);
                     });
-                } else {
-                    checkNode(key, true);
                 }
 			});
 		}

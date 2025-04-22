@@ -653,3 +653,10 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 .x_results_page .blue {
   color: $blue;
 }
+
+//*****hotspot image connector*****/
+#hotspot_bubble {
+  color: $mainfontcolour;
+  background: $panelcolor;
+  border-color: $bordercolor;
+}

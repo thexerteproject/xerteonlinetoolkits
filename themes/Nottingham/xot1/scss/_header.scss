@@ -40,3 +40,19 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 #x_headerProgress .progressMarker.complete {
   border-color: $progressBarColor;
 }
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: $whiteorlightest
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $lightestcolor2;
+  color: $blackordarkest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: $darkergrey;
+  color: $blackordarkest;
+}

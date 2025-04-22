@@ -361,6 +361,11 @@ a:-webkit-any-link {
   border-color: #A40000;
 }
 
+/* page resources */
+.resourceDownloadBtn, .resourceDownloadBtn:-webkit-any-link, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #555 !important;
+}
+
 #x_pageHolder h1 {
   font-size: 1em;
   margin: 0px;
