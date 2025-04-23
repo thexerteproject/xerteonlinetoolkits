@@ -5,6 +5,10 @@
 	}
 
 	.x_responsive .titlePageTxt p {
+		font-size: 7vmin;
+	}
+
+	.x_responsive #txtHolder.smallerTitle .titlePageTxt p {
 		font-size: min(3em, 7vmin);
 	}
 
