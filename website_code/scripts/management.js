@@ -419,7 +419,6 @@ function themes_list(){
 
 function update_template(){
 	//bababoeie
-	debugger
 	// Get selected pages of the active_section
 	// 1. First get non-selected boxes
 	var disable_advanced_cb = $("#sub_page_select_disable_advanced_" + active_section + ":checked");

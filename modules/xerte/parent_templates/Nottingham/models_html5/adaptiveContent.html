@@ -170,7 +170,6 @@
 
             return "rgba(" + r + ", " + g + ", " + b + ", " + opa + ")";
         }
-        //todo change
         var ctx = $('#' + identifier);
         var bgColourIn = "0xff0000";
         if (interaction.getAttribute("colour") != null) {
@@ -346,7 +345,6 @@
                     passingGrade = parseFloat(passingGrade) * 100.0 + "";
                 }
             }
-            //todo change
             let ctx = "#" + identifier;
 
             let labelCounter = 0;
@@ -833,7 +831,6 @@
                 } else if (type == "last") {
                     statements.push(groupedData[user].attempts[attempt].statements[0])
                 } else if (type == 'best') {
-                    //todo check if correct
                     var bestAttempt = null;
                     for (var i = 0; i < groupedData[user].attempts[attempt].statements.length; i++) {
                         if (bestAttempt != null) {
@@ -853,7 +850,6 @@
 
     //stores the static periods if a form we can use in the acp.
     function StorePeriodDates(x_currentPageXML) {
-        debugger
         x_currentPageXML.setAttribute('period0', [x_currentPageXML.getAttribute('period0Date'), x_currentPageXML.getAttribute('period0UntilDate')]);
         if (typeof(x_currentPageXML.getAttribute('period1')) !== 'undefined' && x_currentPageXML.getAttribute('period1') === 'true') {
             x_currentPageXML.setAttribute('period1', [x_currentPageXML.getAttribute('period1Date'), x_currentPageXML.getAttribute('period1UntilDate')]);
@@ -924,8 +920,6 @@
             for (let i = 0; i < periods.length; i++) {
                 x_currentPageXML.setAttribute(`period${i}`, periods[i]);
             }
-            //todo need alternative method to do this for dynamic acp.
-            //prob new mode that reinitiates the blocks?
             currentPage.setupAcpInteractions(interactions);
         }
     }
@@ -1054,7 +1048,6 @@
       } else {
           q["filter_current_users"] = 'false';
       }
-      //debugger
     /*
         queryStatements(
             lrsEndpoint + '/api/connection/statement',
@@ -1474,8 +1467,6 @@
     this.setupAcpInteractions = function (
         interactions,
     ) {
-        //todo remove existing blocks if they exists.
-        debugger
         $('#adaptiveContent').empty();
         for (
             var interactionIndex = 0;
@@ -1575,7 +1566,6 @@
           MultiPeriod = "off";
       }
       var nrPeriods = 1;
-      //todo also use for dynamic/static for static store in below attributes, should work
       if (MultiPeriod === "dynamic_always" || MultiPeriod === "static") {
           nrPeriods = 0;
           if (x_currentPageXML.getAttribute("period0") !== null) nrPeriods += 1;
@@ -1636,7 +1626,6 @@
           interactionType === "open"
         ) {
           summaryDiv = '<div class="summary">' + summaryText
-          debugger
           for (let i = 0; i < nrPeriods; i++) {
               let specificationDiv = '';
               if (interaction.getAttribute("showSpecification") === "true") {
@@ -1704,13 +1693,6 @@
                 "</div><div class='score'></div><div class='message'></div>",
             );
             */
-        debugger
-
-        //establish needed graphType from [graphType,answerGraphType,groupGraphType]
-        // problem this breaks backwards compatibility.
-        // so check for deprecated combos in graphType/interactionType combos first
-        // if found use deprecated combos if not deprecated find new option
-        const score_deprecated_graph_types = ["bar_answers", "hor_bar_comb_marks", "hor_bar_comb_marks_avg", "pie_marks", "polar_area_per_category"];
 
         if (interactionType == "answer"){
             if (interaction.getAttribute("answerGraphType") != null) {
@@ -1729,7 +1711,6 @@
                 interaction.setAttribute("actualGraphType", interaction.getAttribute("graphType"));
         }
 
-        debugger
         if (interactionType == "score") {
         var verb = "http://adlnet.gov/expapi/verbs/scored";
         if (interaction.data != null) {
@@ -2038,7 +2019,6 @@
       var periodStatements = splitStatementsPerPeriod(statements, periods, MultiPeriod);
 
       //build own statements for all periods for later use
-        //todo rework
         if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
             var ownstatementsPeriods = [];
             for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
@@ -2048,7 +2028,6 @@
 
         for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
             score = 0;
-            //todo rework
             if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                 statements = periodStatements[currentPeriod];
                 ownstatements = ownstatementsPeriods[currentPeriod];
@@ -2214,7 +2193,6 @@
         // so statements contains the data from the last period and
         // score contains the score for the last attempt
 
-        //todo change to show block of avg in dashboardmode?
         if (statements.length > 0) {
             if (adaptiveContent.dashboardMode == "false") {
                 for (
@@ -2264,7 +2242,6 @@
             }
         }
         //maintain proper statements state
-        //todo rework
         if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
             statements = periodStatements[0];
         }
@@ -2310,7 +2287,6 @@
           div = $(
               "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
           );
-          debugger
           if (
               interaction.getAttribute("actualGraphType") == "pie_marks" ||
               interaction.getAttribute("actualGraphType") == "bar_comb_marks" ||
@@ -2321,7 +2297,6 @@
               interaction.getAttribute("actualGraphType") == "line_average_marks" ||
               interaction.getAttribute("actualGraphType") == "line_own_marks"
           ) {
-              //functional
               let graphSpace = ""
               for (let i = 0; i < periods.length; i++) {
                   //add period labels above graph if needed
@@ -2380,7 +2355,6 @@
               );
           }
 
-          //todo bad indent to prevent huge git change. add indent when done
           for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
               if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always'){
                   statements = periodStatements[currentPeriod];
@@ -3178,7 +3152,6 @@
                   }
               }
               let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
-              debugger
               let options = {
                   maintainAspectRatio: false,
               };
@@ -3205,7 +3178,6 @@
           } else if (
               interaction.getAttribute("actualGraphType") == "line_average_marks"
           ) {
-              debugger
               var xAxisLabelLineAvgMarks = interaction.getAttribute(
                   "xAxisLabelLineAvgMarks"
               );
@@ -3613,7 +3585,6 @@
               //only works via groupings
               //no longer an option from score
               //still here as grouping relies on score for features
-              //todo this is the normal horizontal option
               let passingGrade = x_params.trackingPassed;
               if (passingGrade == null) {
                   passingGrade = "55";
@@ -3720,7 +3691,6 @@
               interaction.getAttribute("graphType") == "hor_bar_comb_marks_avg"
           ) {
 
-              //todo do stuff here
               let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
 
               let labelCounter = 0;
@@ -3947,7 +3917,6 @@
             }
 
             div.append(graphSpace);
-            //todo add to all ??
             if (showExplanation == "true" && Explanation != "") {
                 var textSize = Math.round(interaction.getAttribute("labelFontSize"));
                 if (textSize == null || textSize == 0) textSize = 12;
@@ -4028,7 +3997,6 @@
                 let labels = {};
                 let barBorderColor = barColors.slice();
                 if (!multipleAnswers) {
-                    //todo fix
                     for (let i = 0; i < answer_dataset.length; i++) {
                         if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
                             labels[answer_dataset[i].result.response] = 1;
@@ -5324,7 +5292,6 @@
     };
 
     this.setUpUnlisted = function () {
-        debugger
       if (x_currentPageXML.getAttribute('disableprinting') !== 'true' || x_currentPageXML.getAttribute('multiPeriodVersion') === 'dynamic') {
         $("#adaptiveContentMain").append(
             '<div id="button-placeholder"><button id="periodBtn" hidden></button><button id="printBtn" hidden></button></div>'
