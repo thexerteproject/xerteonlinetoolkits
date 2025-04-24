@@ -31,7 +31,7 @@
      </periodGroup>
 
       <newNodes>
-        <interaction ><![CDATA[<interaction name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        <interaction ><![CDATA[<interaction acpWarning="" name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         xAxisLabelBarAnswers = "Answers given"
         yAxisLabelBarAnswers = "Percentage of answers"
         xAxisLabelBarMarks = "Score Range [%]"
@@ -63,7 +63,7 @@
         PassingGrade = "75"
 
 
-        ><interactionBlock adaptiveContent="" conScoreBetween="0,100"></interactionBlock></interaction>]]>
+        />]]>
         </interaction>
       </newNodes>
     </adaptiveContent>
@@ -79,6 +79,7 @@
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used" />
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="" placeholder="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interaction type is based on score and the score comes from an opinion class" />
         <sessionStatementUsed label="Which answer(s) to use within session" condition="interactionType!='opinionclasses'&amp;&amp;interactionType!='groupings'&amp;&amp;interactionType!='grouping'" type="combobox" data="first,last,best,all" options="First,Last,Best,All" defaultValue="all" optional="true" tooltip="Which answer should be used if within a session the answer is given more than one time."/>
+        <acpWarning label="Please note: The Adaptive Content page does not function when using the previeuw/play link. To properly inspect the page, use the xAPI/LTI URL provided in the Xerte workspace. If no URL is available, the setup may be incomplete. In that case, please refer to the Adaptive Content manual or Wiki for setup instructions." type="info" />
         <graphgroup type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show Graph" type="checkbox" defaultValue="false" optional="true"/>
 
