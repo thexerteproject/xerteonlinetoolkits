@@ -1489,7 +1489,7 @@
             interactionType,
             hasToRetrieveAll(interaction),
             interactionIndex,
-            group,
+            this.group,
             filter_context_id,
             fullWidth,
             this.drawScore
@@ -1517,7 +1517,7 @@
             interactionType,
             hasToRetrieveAll(interaction),
             interactionIndex,
-            group,
+            this.group,
             filter_context_id,
             fullWidth,
             this.drawAnswer
@@ -1545,7 +1545,7 @@
             interactionType,
             hasToRetrieveAll(interaction),
             interactionIndex,
-            group,
+            this.group,
             filter_context_id,
             fullWidth,
             this.drawOpinion
@@ -1574,7 +1574,7 @@
             interactionType,
             hasToRetrieveAll(interaction),
             interactionIndex,
-            group,
+            this.group,
             filter_context_id,
             fullWidth,
             this.drawOpen
@@ -1603,7 +1603,7 @@
             interactionType,
             hasToRetrieveAll(interaction),
             interactionIndex,
-            group,
+            this.group,
             filter_context_id,
             fullWidth,
             this.drawGroupedScore
@@ -1632,7 +1632,7 @@
             interactionType,
             hasToRetrieveAll(interaction),
             interactionIndex,
-            group,
+            this.group,
             filter_context_id,
             fullWidth,
             this.drawGroupedScores
@@ -1661,7 +1661,7 @@
             interactionType,
             hasToRetrieveAll(interaction),
             interactionIndex,
-            group,
+            this.group,
             filter_context_id,
             fullWidth,
             this.drawGroupedScores
@@ -4531,20 +4531,20 @@
         if (opinionClass == undefined) {
           opinionClass = null;
         }
-        group = interaction.getAttribute("groupFromUrl");
-        if (group == undefined) {
-          group = "";
-        } else {
-          if (group == "true") {
-            if (x_urlParams["group"] != undefined) {
-              group = decodeURIComponent(x_urlParams["group"]);
+        var group = interaction.getAttribute("groupFromUrl");
+        if (group != undefined && group == "true") {
+          if (x_urlParams["group"] != undefined) {
+            group = decodeURIComponent(x_urlParams["group"]);
+          } else {
+            if (interaction.getAttribute("groupName") != undefined) {
+              group = interaction.getAttribute("groupName");
             } else {
-              if (interaction.getAttribute("groupName") != undefined) {
-                group = interaction.getAttribute("groupName");
-              } else {
-                group = "";
-              }
+              group = "";
             }
+          }
+        } else {
+          if (interaction.getAttribute("groupName") != undefined) {
+            group = interaction.getAttribute("groupName");
           } else {
             group = "";
           }
@@ -5015,21 +5015,21 @@
           opinionClass = "";
         }
         var group = interaction.getAttribute("groupFromUrl");
-        if (group == undefined) {
-          group = "";
-        } else {
-          if (group == "true") {
-            if (x_urlParams["group"] != undefined) {
-              group = decodeURIComponent(x_urlParams["group"]);
-            } else {
-              if (interaction.getAttribute("groupName") != undefined) {
-                group = interaction.getAttribute("groupName");
-              } else {
-                group = "";
-              }
-            }
+        if (group != undefined && group == "true") {
+          if (x_urlParams["group"] != undefined) {
+            this.group = decodeURIComponent(x_urlParams["group"]);
           } else {
-            group = "";
+            if (interaction.getAttribute("groupName") != undefined) {
+              this.group = interaction.getAttribute("groupName");
+            } else {
+                this.group = "";
+            }
+          }
+        } else {
+          if (interaction.getAttribute("groupName") != undefined) {
+              this.group = interaction.getAttribute("groupName");
+          } else {
+              this.group = "";
           }
         }
         filter_context_id = (interaction.getAttribute("contextFilter") == 'true'? true : false);

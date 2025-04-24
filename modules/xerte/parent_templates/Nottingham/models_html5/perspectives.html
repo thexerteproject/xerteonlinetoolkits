@@ -215,7 +215,8 @@
 				$thumbHolder.append($thisThumb);
 				$thisThumb
 					.addClass("playAll")
-					.find(".thumbTitle").html(x_currentPageXML.getAttribute("playTip") == undefined ? "Play All" : x_currentPageXML.getAttribute("playTip"));
+					.attr("title", x_currentPageXML.getAttribute("playTip") == undefined ? "Play All" : x_currentPageXML.getAttribute("playTip"))
+					.find(".thumbTitle").html("<i class='fa fa-play'></i><span class='sr-only'>" + (x_currentPageXML.getAttribute("playTip") == undefined ? "Play All" : x_currentPageXML.getAttribute("playTip")) + "</span>");
 				
 				$thisThumb.find(".thumbMedia").remove();
 				
@@ -275,15 +276,18 @@
 						if (this.nodeName == "image" || this.nodeName == "sound" || this.nodeName == "mpText") {
 							var	imgSrc,
 								imgTip;
+
+							let fontAwesome = false;
 							
 							if (this.nodeName == "image" || this.nodeName == "mpText") {
 								imgSrc = x_evalURL(this.getAttribute("src"));
 								imgTip = this.getAttribute("tooltip");
 								
 							} else { // sound - use default image / tip if none added
-								imgSrc = x_templateLocation + "common_html5/sound.jpg";
 								if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
 									imgSrc = x_evalURL(this.getAttribute("img"));
+								} else {
+									fontAwesome = "<i class='fa fa-volume-high'></i>";
 								}
 								
 								if (this.getAttribute("tooltip") != undefined) {
@@ -292,14 +296,19 @@
 									imgTip = x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
 								}
 							}
-							
-							// add img and scale it on load
-							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre x_noLightBox" />');
-							perspectives.loadImage($thisThumb.find("img"), maxImgSize, imgSrc);
+
+							if (fontAwesome !== false) {
+								$thisThumbMedia.html(fontAwesome).addClass("faIcon");
+							} else {
+								// add img and scale it on load
+								$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre x_noLightBox" />');
+								perspectives.loadImage($thisThumb.find("img"), maxImgSize, imgSrc);
+							}
 							
 						} else if (this.nodeName == "movie") {
 							var videoTip = this.getAttribute("tooltip") != undefined ? this.getAttribute("tooltip") : x_currentPageXML.getAttribute("videoTip") == undefined ? "Video Clip" : x_currentPageXML.getAttribute("videoTip");
 							$thisThumbMedia.data("videoTip", videoTip);
+							let fontAwesome = false;
 							
 							// defaults to use video.jpg as thumbnail unless an img is uploaded
 							// or the useVidThumb optional property is set so 1st frame in video shows (not default any more as often takes too long for them all to load)
@@ -319,12 +328,19 @@
 								perspectives.loadVideo($thisVideo, $thisVideo);
 								videos++;
 							} else {
-								imgSrc = x_templateLocation + "common_html5/video.jpg";
 								if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
 									imgSrc = x_evalURL(this.getAttribute("img"));
+								} else {
+									fontAwesome = "<i class='fa fa-video'></i>";
 								}
-								$thisThumbMedia.html('<img alt="' + videoTip + '" class="centre" />');
-								perspectives.loadImage($thisThumbMedia.find("img"), maxImgSize, imgSrc);
+
+								if (fontAwesome !== false) {
+									$thisThumbMedia.html(fontAwesome).addClass("faIcon");
+								} else {
+									// add img and scale it on load
+									$thisThumbMedia.html('<img alt="' + videoTip + '" class="centre" />');
+									perspectives.loadImage($thisThumbMedia.find("img"), maxImgSize, imgSrc);
+								}
 							}
 						}
 					
