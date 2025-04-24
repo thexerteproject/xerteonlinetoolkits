@@ -29,6 +29,7 @@
 			<headerTitleAlign type="ComboBox" optional="true" label="Title Position" data="left,center,right" options="Left,Center,Right" defaultValue="center" tooltip="The horizontal alignment of the title"/>
 			<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
 			<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
+			
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
 			<logoRAlt label="Logo Right Alt text" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true" mandatory="true"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
@@ -155,7 +156,10 @@
 		<headerBanner type="ComboBox" label="Banner" conditionTrigger="true" data="fullscreen,fixedheight" options="Full screen,Fixed height" optional="true" defaultValue="fixedheight" width="175" tooltip="Choose whether the banner needs to be full screen or fixed height when opening page"/>
 		<headerTopMargin type="NumericStepper" label="Title top margin [%]" condition="headerBanner=='fullscreen'" min="2" max="60" step="1" defaultValue="20" optional="true" tooltip="The position of the titles as a percentage from the top of the banner when using a fullscreen banner"/>
 		<bannerCollapse type="CheckBox" conditionTrigger="true" condition="headerBanner=='fullscreen'" label="Collapse banner" optional="true" defaultValue="true" tooltip="Whether to collapse the full screen banner when scrolling down"/>
-		<bannerFixedHeight type="CheckBox" conditionTrigger="true" condition="headerBanner=='fixedheight' || bannerCollapse=='true'" label="Fixed height" optional="true" defaultValue="false" tooltip="Whether the 'Fixed height' banner is just the height needed for the titles, or actually a given set height."/>
+		
+		<fixedheader type="Checkbox" defaultValue="false" conditionTrigger="true" condition="headerBanner=='fullscreen'&amp;&amp;headerBanner=='fixedheight'" optional="true" label="Fixed nav"/>
+
+		<bannerFixedHeight type="CheckBox" conditionTrigger="true" condition="fixedheight=='true' || bannerCollapse=='true'" label="Fixed height" optional="true" defaultValue="false" tooltip="Whether the 'Fixed height' banner is just the height needed for the titles, or actually a given set height."/>
 		<bannerHeight type="NumericStepper" condition="bannerFixedHeight=='true' &amp;&amp; (headerBanner=='fixedheight' || bannerCollapse=='true')" label="Banner height" min="10" max="100" step="1" width="100" optional="true" defaultValue="20" tooltip="The height (in %) of the fixed height banner or the collapsed full height banner"/>
 		<bannerFullScrolldownInfo type="CheckBox" condition="headerBanner=='fullscreen'" label="Enable scroll down info" optional="true" defaultValue="true" tooltip="Show an arrow and a help text to scroll down when the banner is full screen"/>
 		<bannerFullScrolldownText type="TextInput" wysiwyg="true" condition="headerBanner=='fullscreen'&amp;&amp;bannerFullScrolldownInfo=='true'" label="Scroll down text" optional="true" defaultValue="" tooltip="Leave blank to use the default scroll down text or add your own text here to replace it"/>

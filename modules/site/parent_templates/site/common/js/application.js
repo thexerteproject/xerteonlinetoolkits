@@ -39,6 +39,7 @@ var urlParams = {};
 var categories;
 var validPages = [];
 var collapseBanner = false;
+var fixedheader = false;
 var collapseHeight = -1;
 var fullscreenBannerTitleMargin=10;
 
@@ -1483,6 +1484,7 @@ function x_CheckBanner(index){
 		$(".x_scale").height(viewHeight);
 		// check collapse
 		const collapse = $(data).find('page').eq(index).attr('bannerCollapse');
+		const fixedheight = $(data).find('page').eq(index).attr('fixedheader');
 		if (collapse != undefined && collapse=="true")
 		{
 			collapseBanner = true;
@@ -1498,6 +1500,9 @@ function x_CheckBanner(index){
 		{
 			collapseBanner = false;
 		}
+
+		
+		
 		// check info
 		const checkinfo = $(data).find('page').eq(index).attr('bannerFullScrolldownInfo');
 		if (checkinfo != undefined && checkinfo=="true")
@@ -1547,7 +1552,25 @@ function x_CheckBanner(index){
 		$("#x_clickableWrapper").remove();
 	}
 }
-
+debugger
+if (fixedheader=="true")
+	{
+		debugger
+		fixedheader = true;
+		// let height=-1;
+		if ($(data).find('page').eq(index).attr('fixedheader') === 'true')
+		{
+			debugger
+			//sectie menu onder menu balk en menu balk sticky
+			$(".navbar-fixed-top").css("position", "sticky");
+			
+		}
+		// fixedheight = height;
+	}
+	else
+	{
+		// fixedheight = false;
+	}
 //this is the main scroll function
 $(window).scroll(function () {
 	if ($(document).scrollTop() > 20) {
