@@ -19,7 +19,7 @@
      </listedModeOptions>
 
       <newNodes>
-        <interaction ><![CDATA[<interaction name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        <interaction ><![CDATA[<interaction acpWarning="" name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         xAxisLabelBarAnswers = "Answers given"
         yAxisLabelBarAnswers = "Percentage of answers"
         xAxisLabelBarMarks = "Score Range [%]"
@@ -56,7 +56,6 @@
       </newNodes>
     </adaptiveContent>
     <interaction menuItem="Source Interaction">
-        <acpWarning label="Please note: The adaptive content page does not function when using the 'Play' feature to preview. To properly inspect the page, use the xAPI/LTI URL provided in the Xerte workspace. If no URL is available, the setup may be incorrect. In that case, please refer to the Adaptive Content Manual or Wiki for setup instructions." type="info" />
         <name label="Title" type="textinput" wysiwyg="true" />
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true" placeholder="Enter introduction here"/>
         <interactionType label="Interaction Type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping,groupings,opinionclasses" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping,Based on all groupings,Based on all classes" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
@@ -68,6 +67,7 @@
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used" />
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="" placeholder="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interaction type is based on score and the score comes from an opinion class" />
         <sessionStatementUsed label="Which answer(s) to use within session" condition="interactionType!='opinionclasses'&amp;&amp;interactionType!='groupings'&amp;&amp;interactionType!='grouping'" type="combobox" data="first,last,best,all" options="First,Last,Best,All" defaultValue="all" optional="true" tooltip="Which answer should be used if within a session the answer is given more than one time."/>
+        <acpWarning label="Please note: The Adaptive Content page does not function when using the previeuw/play link. To properly inspect the page, use the xAPI/LTI URL provided in the Xerte workspace. If no URL is available, the setup may be incomplete. In that case, please refer to the Adaptive Content manual or Wiki for setup instructions." type="info" />
         <graphgroup type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show Graph" type="checkbox" defaultValue="false" optional="true"/>
 
