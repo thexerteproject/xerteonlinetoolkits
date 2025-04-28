@@ -26,3 +26,8 @@ tsugi/
 
 #ignore lrsdb_config.php
 lrsdb_config.php
+
+#ignore openai_config.php
+/openai_config.php
+/ai_config.php
+/imgsh_config.php

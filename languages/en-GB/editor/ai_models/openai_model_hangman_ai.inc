@@ -1,0 +1,5 @@
+<?php
+
+    define("LEARNING_PROMPT_HANGMAN", "Generate ten words on the subject of: baked goods in an xml format for a 'hangman' word game!");
+    define("DEFAULT_PROMPT_HANGMAN", "Using the exact same xml layout and structure generate ,nrw, words for a 'hangman' word game! The words should be about the following subject/category: ,subject, . In terms of complexity of language and content, adapt the words (their complexity,how common they are, etc) to people of the following age range/education level/language proficiency: ,range, . In terms of difficulty of the content, please try as much as possible to use words which are appropriately CHALLENGING for people with the following background/education level: ,eduLevel, . If there is an uploaded file you can access, you ,access, explicit permission to use the content outside of the uploaded file. The returned xml must be one line with no characters denoting new lines or paragraphs. Each word must end with &#10; . The returned xml must be one line with no characters denoting new lines or paragraphs.");
+    define("LEARNING_RESULT_HANGMAN", "<hangman words=\"Apple&#10;Pear&#10;Banana&#10;Orange\"/>");

@@ -88,9 +88,8 @@
 			
 			$("#pageContents").data({
 				"dataString"	:'<p class="pageBlock">' + instructA + ' ' + pageNo + ' ' + instructB + '</p>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '<p><br/>' + x_addLineBreaks(responseTxt) + '</p><p>' + '{A}' + '</p><p><br/>' + x_addLineBreaks(exampleTxt) + '</p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
-				"noAnswerTxt"	:'<p>' + noAnswerTxt + '</p>'
+				"noAnswerTxt"	:'<p>' + noAnswerTxt + '</p>',
 			});
-
             var label = $('<div>').html(pageTitle).text();
             if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
@@ -229,7 +228,7 @@
 			}
 			
 			$("#pageContents").data("feedback", x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-			
+
 			var btnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
 			if (btnTxt == undefined || btnTxt == "") {
 				btnTxt = "Feedback";
@@ -243,9 +242,20 @@
 				.click(function() {
 					var $this = $(this);
 					$this.hide();
-					$("#fbTxt")
-						.empty()
-						.html($("#pageContents").data("feedback"));
+					//do ai evaluation here if enabled
+					//todo make api = "openai" dynamic
+					if (x_currentPageXML.getAttribute("aiEvaluation") == "true" ) {
+						ai_request_runtime({"answer": $("#answerTxt").val(),"model": x_currentPageXML.getAttribute("feedback"), "question": x_currentPageXML.getAttribute("prompt")}, "modelanswer", "openai", function (result){
+							$("#fbTxt")
+								.empty()
+								.html(result.childNodes[0]);})
+						//debugger
+					} else {
+						$("#fbTxt")
+								.empty()
+								.html($("#pageContents").data("feedback"));
+					}
+
 					
 					$("#copyBtn, #copyTxt").show();
 

@@ -1622,3 +1622,28 @@ function upgrade_50()
 
     return $message;
 }
+
+function upgrade_51()
+{
+    // add ai settings table
+    if (! _db_field_exists('sitedetails', 'openai_settings')) {
+        $error1 = _db_add_field('sitedetails', 'openai', 'char(255)', 'false', 'globalsocialauth');
+        $error1_returned = true;
+    }
+    if (! _db_field_exists('sitedetails', 'anthropic_settings')) {
+        $error2 = _db_add_field('sitedetails', 'anthropic', 'char(255)', 'false', 'globalsocialauth');
+        $error2_returned = true;
+    }
+
+    if (($error1 === false)) {
+        $error1_returned = false;
+        // echo "creating LRS_Endpoint field FAILED";
+    }
+
+    if (($error2 === false)) {
+        $error2_returned = false;
+        // echo "creating LRS_Key field FAILED";
+    }
+
+    return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned? 'true' : 'false'). "<br>";
+}

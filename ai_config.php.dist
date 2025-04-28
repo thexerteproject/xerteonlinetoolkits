@@ -1,0 +1,6 @@
+<?php
+
+$xerte_toolkits_site->openAI_key = '';
+$xerte_toolkits_site->copilot_key = '';
+$xerte_toolkits_site->anthropic_key = '';
+$xerte_toolkits_site->mistralai_key = '';

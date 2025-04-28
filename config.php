@@ -40,7 +40,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = false;
+$development = true;
 
 ini_set('error_reporting', 0);
 ini_set('display_errors', 0);
@@ -323,5 +323,15 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
 if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
 {
     $xerte_toolkits_site->rights = 'elevated';
+}
+
+if (file_exists(dirname(__FILE__) . '/ai_config.php'))
+{
+    require_once(dirname(__FILE__) . '/ai_config.php');
+}
+
+if (file_exists(dirname(__FILE__) . '/imgsh_config.php'))
+{
+    require_once(dirname(__FILE__) . '/imgsh_config.php');
 }
 

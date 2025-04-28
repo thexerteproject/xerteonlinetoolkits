@@ -435,6 +435,10 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                             <button type="button" class="xerte_button" onclick="javascript:course_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_COURSES; ?>	</button>
                                 <?php
                             }
+                            if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'course_list()' ?>
+                                <button type="button" class="xerte_button" onclick="javascript:ai_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_AI; ?>    </button>
+                            <?php
+                            }
                             if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'licenses_list()' ?>
                             <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
                                 <?php

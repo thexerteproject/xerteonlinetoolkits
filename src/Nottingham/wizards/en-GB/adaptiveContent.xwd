@@ -18,6 +18,12 @@
          <sortOrder label="Sort Order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list according to this criteria. Only has meaning for 'Listed' display mode" />
      </listedModeOptions>
 
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfInteraction label="Number of Source Interactions" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfInteractionBlock label="Number of Interaction Blocks per Source Interaction" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
       <newNodes>
         <interaction ><![CDATA[<interaction name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         xAxisLabelBarAnswers = "Answers given"

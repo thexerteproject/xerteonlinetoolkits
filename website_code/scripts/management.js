@@ -417,6 +417,48 @@ function themes_list(){
 //
 // remove a share, and check who did it
 
+function ai_list(){
+	function_to_use="ai";
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/ai.php",
+		data: {no_id: 1},
+	})
+		.done(function(response){
+			management_stateChanged(response);
+		});
+}
+
+// Function update ai
+//
+// remove a share, and check who did it
+
+function update_ai(){
+	openai = document.getElementById("allow_openai")
+	antrophic = document.getElementById("allow_anthropic")
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/ai_management.php",
+		data: {
+			openai_allow: openai ? document.getElementById("allow_openai").checked : "",
+			openai_whisper: openai ? document.getElementById("openai_whisper").checked : "",
+			openai_dali: openai ? document.getElementById("openai_dali").checked: "",
+			openai_upload: openai ? document.getElementById("openai_upload").checked : "",
+			anthropic_allow: antrophic ? document.getElementById("allow_anthropic").checked : "",
+			anthropic_whisper: antrophic ? document.getElementById("anthropic_whisper").checked : "",
+			anthropic_dali: antrophic ? document.getElementById("anthropic_dali").checked : "",
+			anthropic_upload: antrophic ? document.getElementById("anthropic_upload").checked : "",
+		},
+	})
+		.done(function (response) {
+			management_alert_stateChanged(response);
+		});
+}
+
+// Function delete sharing template
+//
+// remove a share, and check who did it
+
 function update_template(){
 	//bababoeie
 	debugger
@@ -1154,6 +1196,7 @@ function save_changes(){
 			  break;
 		case "course": update_course();
 			break;
+		case "ai": update_ai();
 		default: break;
 
 

@@ -1414,11 +1414,96 @@ var EDITOR = (function ($, parent) {
         return found;
 	}
 
-    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
+    addAINodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren = false) {
+        try {
+            //Immediately return when root node is CDATA
+            if(xmlData.nodeType === Node.CDATA_SECTION_NODE){
+                return;
+            }
+
+            var lkey = parent.tree.generate_lo_key();
+            var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
+            var extranodes = addChildren;
+
+            $(xmlData.attributes).each(function() {
+                attributes[this.name] = this.value;
+            });
+            lo_data[lkey] = {};
+            lo_data[lkey]['attributes'] = attributes;
+
+            // Handling node data for text and CDATA sections
+            if (xmlData.firstChild) {
+                if (xmlData.firstChild.nodeType === 3 || xmlData.firstChild.nodeType === 4) { // Text or CDATA Section
+                    lo_data[lkey]['data'] = xmlData.firstChild.data;
+                } else if (xmlData.firstChild.nodeType === 1) { // Element Node
+                    extranodes = true;
+                }
+            }
+
+            // Build the JSON object for the treeview
+            var treeLabel = nodeName;
+            if (xmlData.attributes['name']) {
+                treeLabel = xmlData.attributes['name'].value;
+            } else {
+                if (wizard_data[treeLabel] && wizard_data[treeLabel].menu_options && wizard_data[treeLabel].menu_options.menuItem) {
+                    treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+                }
+            }
+
+
+            // Add icons to the node, all should be switched off
+            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+            var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
+            var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
+            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+            var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
+
+            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+            var this_json = {
+                id: lkey,
+                text: treeLabel,
+                type: nodeName,
+                state: {
+                    opened: true
+                }
+            };
+
+            // Add a safety check before calling validateInsert
+            if (wizard_data[nodeName] && wizard_data[nodeName]['menu_options']) {
+                // add nodes, skip validation for CDATA nodes
+                if (validateInsert(key, nodeName, tree)) {
+                    var newkey = tree.create_node(key, this_json, pos, function () {
+                        if (select) {
+                            tree.deselect_all();
+                            tree.select_node(lkey);
+                        }
+                    });
+                }
+            } else {
+                console.log("Invalid wizard data for node:", nodeName);
+                throw new Error ("Invalid wizard data for node: " + nodeName);
+            }
+
+            // Any children to add
+            if (extranodes) {
+                $.each(xmlData.childNodes, function(nr, child) {
+                    if (child.nodeType == 1) { // Element Nodes
+                        addAINodeToTree(lkey, 'last', child.nodeName, child, tree, false, addChildren);
+                    }
+                });
+            }
+        } catch (error) {
+            console.log('Error occurred:', error);
+            throw error;
+        }
+
+    },
+
+    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren =  false)
     {
         var lkey = parent.tree.generate_lo_key();
         var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        var extranodes = false;
+        var extranodes = addChildren;
         $(xmlData.attributes).each(function() {
             attributes[this.name] = this.value;
         });
@@ -1482,7 +1567,7 @@ var EDITOR = (function ($, parent) {
             $.each(xmlData.childNodes, function(nr, child) {   // Was children
                 if (child.nodeType == 1)
                 {
-                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false);
+                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false, addChildren);
                 }
             });
         }
@@ -1557,6 +1642,153 @@ var EDITOR = (function ($, parent) {
 
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
+
+    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, textSnippet, sourceContext, assistantPrompt, baseUrl, useContext, contextScope, modelTemplate) {
+        return new Promise((resolve, reject) => {
+            try {
+                // Call aiAPI.php via jQuery's AJAX method
+                var tree = $.jstree.reference("#treeview");
+                // Show wait icon
+                $('body').css("cursor", "wait");
+                console.log("Start OpenAI API request, please wait...");
+                console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", event.data.key);
+
+                $.ajax({
+                    url: "editor/ai/aiAPI.php",
+                    type: "POST",
+                    data: {
+                        type: node_type,
+                        prompt: p,
+                        api: api_choice,
+                        url: fileUrl,
+                        textSnippet:  textSnippet,
+                        context: sourceContext,
+                        assistantPrompt: assistantPrompt,
+                        baseUrl: baseUrl,
+                        useContext: useContext,
+                        contextScope: contextScope,
+                        modelTemplate: modelTemplate,
+                    },
+                    success: function(data) {
+                        try {
+                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                        } catch (error) {
+                            console.log('Error occurred in success callback:', error);
+                            reject(error);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors from the AJAX request and reject the promise
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
+                    }
+                });
+            } catch (error) {
+                console.error("Error occurred in ai_content_generator:", error);
+                reject(error); // Reject the promise with the caught error
+            }
+        });
+    };
+
+    auto_translate = function(event, api, baseUrl, targetLanguage) {
+        return new Promise((resolve, reject) => {
+            try {
+                // Call aiAPI.php via jQuery's AJAX method
+                var tree = $.jstree.reference("#treeview");
+                // Show wait icon
+                $('body').css("cursor", "wait");
+                console.log("Start OpenAI API request, please wait...");
+                console.log(targetLanguage, "+", api, "+", baseUrl);
+
+                $.ajax({
+                    url: "editor/ai/autotranslate/autotranslateAPI.php",
+                    type: "POST",
+                    data: {
+                        api: api,
+                        baseUrl: baseUrl,
+                        targetLanguage: targetLanguage,
+                    },
+                    success: function(data) {
+                        try {
+                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                        } catch (error) {
+                            console.log('Error occurred in success callback:', error);
+                            reject(error);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors from the AJAX request and reject the promise
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
+                    }
+                });
+            } catch (error) {
+                console.error("Error occurred in auto_translate:", error);
+                reject(error); // Reject the promise with the caught error
+            }
+        });
+    };
+
+    quick_fill = function(event, node_type, parameters) {
+        return new Promise((resolve, reject) => {
+            try {
+                // Call aiAPI.php via jQuery's AJAX method
+                var tree = $.jstree.reference("#treeview");
+                // Show wait icon
+                $('body').css("cursor", "wait");
+                console.log("Start Quick Fill process, please wait...");
+
+                $.ajax({
+                    url: "editor/quickfill/quickfillAPI.php",
+                    type: "POST",
+                    data: {
+                        type: node_type,
+                        parameters: parameters,
+                    },
+                    success: function(data) {
+                        try {
+                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                        } catch (error) {
+                            console.log('Error occurred in success callback:', error);
+                            reject(error);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors from the AJAX request and reject the promise
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
+                    }
+                });
+            } catch (error) {
+                console.error("Error occurred in quick_fill:", error);
+                reject(error); // Reject the promise with the caught error
+            }
+        });
+    };
+
+    img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings){
+        $('body').css("cursor", "wait");
+        console.log("start pexels api request please wait");
+        alert("Fetching images. Please wait.");
+        $.ajax({
+            url: "editor/imagesearchandhelp/imgSHAPI.php",
+            type: "POST",
+            data: {query: query, api: api, target: url, interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings},
+            success: function(data) {
+                console.log("The image results have successfully been retrieved:", data);
+                alert("Images have successfully been downloaded. Please check the media folder to preview and use them.");
+            },
+            error: function(xhr, status, error) {
+                console.error("Error retrieving image results:", error);
+            },
+            complete: function() {
+                // This function runs after the AJAX request completes (whether success or error)
+                $('body').css("cursor", "default");
+                console.log("Image API request completed.");
+            }
+        });
+        },
+
 
     validateInsert = function(key, newNode, tree)
     {

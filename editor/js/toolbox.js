@@ -5256,6 +5256,1101 @@ var EDITOR = (function ($, parent) {
 				break;
             case 'info':
                 break;
+            case 'quickfillbutton':
+                var qf_button_id = 'qfButton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', qf_button_id)
+                    .attr('class', 'quickfill_button')
+                    .text('Quick Fill')
+                    .click({key: key}, async function(event) {
+                        $(this).prop('disabled', true);
+                        // Build the parameters object based on type. The nodes must match the actual node names of the xml in question.
+                        var parameters;
+                        var type = lo_data[key].attributes.nodeName;
+                        console.log(type);
+                        switch (type) {
+                            case 'quiz':
+                                parameters = {
+                                    "question": lo_data[key].attributes["numberOfQuestions"] || "3",
+                                    "option": lo_data[key].attributes["numberOfAnswers"] || "4",
+                                }
+                                break;
+                            case 'tabNavExtra':
+                                parameters = {
+                                    "topic": lo_data[key].attributes["qfTopic"] || "3",
+                                    "nestedTab": lo_data[key].attributes["qfNestedTab"] || "3",
+                                    "nestedPage": lo_data[key].attributes["qfNestedPage"] || "5",
+                                }
+                                break;
+                            case 'columnPage':
+                                parameters = {
+                                    "nestedColumnPage": lo_data[key].attributes["qfNestedColumnPage"] || "3",
+                                }
+                                break;
+                            case 'audioSlideshow':
+                                parameters = {
+                                    "synchPoint": lo_data[key].attributes["qfSynchPoint"] || "3",
+                                }
+                                break;
+                            case 'imageSequence':
+                                parameters = {
+                                    "case": lo_data[key].attributes["qfCase"] || "3",
+                                    "imgSeries": lo_data[key].attributes["qfImgSeries"] || "3",
+                                    "singleImg": lo_data[key].attributes["qfSingleImg"] || "5",
+                                }
+                                break;
+                            case 'thumbnailViewer':
+                                parameters = {
+                                    "thumbnailImage": lo_data[key].attributes["qfThumbnailImage"] || "5",
+                                }
+                                break;
+                            case 'SictTimeline':
+                                parameters = {
+                                    "timeLineText": lo_data[key].attributes["qfTimeLineText"] || "1",
+                                    "timelineimage": lo_data[key].attributes["qfTimelineimage"] || "1",
+                                    "timelinevideo ": lo_data[key].attributes["qfTimelinevideo"] || "1",
+                                    "timeLineAudio": lo_data[key].attributes["qfTimeLineAudio"] || "1",
+                                }
+                                break;
+                            case 'transcriptReader':
+                                parameters = {
+                                    "nestedSynch": lo_data[key].attributes["qfNestedSynch"] || "3",
+                                }
+                                break;
+                            case 'flashCards':
+                                parameters = {
+                                    "card": lo_data[key].attributes["qfCard"] || "5",
+                                }
+                                break;
+                            case 'list':
+                                parameters = {
+                                    "listItem": lo_data[key].attributes["qfListItem"] || "5",
+                                }
+                                break;
+                            case 'nav':
+                                parameters = {
+                                    "navPage": lo_data[key].attributes["qfNavPage"] || "3",
+                                }
+                                break;
+                            case 'perspectives':
+                                parameters = {
+                                    "movie": lo_data[key].attributes["qfMovie"] || "1",
+                                    "sound": lo_data[key].attributes["qfSound"] || "1",
+                                    "image": lo_data[key].attributes["qfImage"] || "1",
+                                    "mpText": lo_data[key].attributes["qfMpText"] || "1",
+                                }
+                                break;
+                            case 'annotatedDiagram':
+                                parameters = {
+                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
+                                }
+                                break;
+                            case 'hotspotGroup':
+                                parameters = {
+                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
+                                }
+                                break;
+                            case 'topXQ':
+                                parameters = {
+                                    "optionXQ": lo_data[key].attributes["qfOptionXQ"] || "5",
+                                }
+                                break;
+                            case 'buttonSequence':
+                                parameters = {
+                                    "button": lo_data[key].attributes["qfButton"] || "5",
+                                }
+                                break;
+                            case 'categories':
+                                parameters = {
+                                    "category": lo_data[key].attributes["qfCategory"] || "3",
+                                    "item": lo_data[key].attributes["qfItem"] || "5",
+                                }
+                                break;
+                            case 'decision':
+                                parameters = {
+                                    "resultStep": lo_data[key].attributes["qfResultStep"] || "1",
+                                    "infoStep": lo_data[key].attributes["qfInfoStep"] || "1",
+                                    "sliderStep": lo_data[key].attributes["qfSliderStep"] || "1",
+                                    "sliderStepOption": lo_data[key].attributes["qfSliderStepOption"] || "4",
+                                    "mcqStep": lo_data[key].attributes["qfMcqStep"] || "1",
+                                    "mcqStepOption": lo_data[key].attributes["qfMcqStepOption"] || "4",
+                                }
+                                break;
+                            case 'dialog':
+                                parameters = {
+                                    "dialogStep": lo_data[key].attributes["qfDialogStep"] || "5",
+                                }
+                                break;
+                            case 'dictation':
+                                parameters = {
+                                    "nestedDictation": lo_data[key].attributes["qfNestedDictation"] || "3",
+                                }
+                                break;
+                            case 'documentation':
+                                parameters = {
+                                    "page": lo_data[key].attributes["qfPage"] || "1",
+                                }
+                                break;
+                            case 'page': //of documentation
+                                parameters = {
+                                    "media": lo_data[key].attributes["qfMedia"] || "1",
+                                    "selectlist": lo_data[key].attributes["qfSelectlist"] || "1",
+                                    "selectitem": lo_data[key].attributes["qfSelectitem"] || "5",
+                                    "description": lo_data[key].attributes["qfDescription"] || "1",
+                                    "tableDoc": lo_data[key].attributes["qfTableDoc"] || "1",
+                                    "checkbox": lo_data[key].attributes["qfCheckbox"] || "1",
+                                    "textArea": lo_data[key].attributes["qfTextArea"] || "1",
+                                    "textBox": lo_data[key].attributes["qfTextBox"] || "1",
+                                }
+                                break;
+                            case 'section': //of documentation
+                                parameters = {
+                                    "media": lo_data[key].attributes["qfMedia"] || "1",
+                                    "selectlist": lo_data[key].attributes["qfSelectlist"] || "1",
+                                    "selectitem": lo_data[key].attributes["qfSelectitem"] || "5",
+                                    "description": lo_data[key].attributes["qfDescription"] || "1",
+                                    "tableDoc": lo_data[key].attributes["qfTableDoc"] || "1",
+                                    "checkbox": lo_data[key].attributes["qfCheckbox"] || "1",
+                                    "textArea": lo_data[key].attributes["qfTextArea"] || "1",
+                                    "textBox": lo_data[key].attributes["qfTextBox"] || "1",
+                                }
+                                break;
+                            case 'dragDropLabel':
+                                parameters = {
+                                    "hotspot": lo_data[key].attributes["qfHotspot"] || "3",
+                                }
+                                break;
+                            case 'hotspotImage':
+                                parameters = {
+                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
+                                }
+                                break;
+                            case 'hotSpotQuestion':
+                                parameters = {
+                                    "QHotSpot": lo_data[key].attributes["qfQHotSpot"] || "3",
+                                }
+                                break;
+                            case 'interactiveText':
+                                parameters = {
+                                    "group": lo_data[key].attributes["qfGroup"] || "5",
+                                }
+                                break;
+                            case 'ivOverlayPanel': //of interactiveVideo
+                                parameters = {
+                                    "ivSynchTextPlus": lo_data[key].attributes["qfIvSynchTextPlus"] || "3",
+                                    "ivSynchMCQ": lo_data[key].attributes["qfIvSynchMCQ"] || "1",
+                                    "ivSynchMCQOption": lo_data[key].attributes["qfIvSynchMCQOption"] || "4",
+                                    "ivSynchXot": lo_data[key].attributes["qfIvSynchXot"] || "1",
+                                    "ivSynchXotChange": lo_data[key].attributes["qfIvSynchXotChange"] || "3",
+                                }
+                                break;
+                            case 'inventory':
+                                parameters = {
+                                    "invQuestion": lo_data[key].attributes["qfInvQuestion"] || "3",
+                                    "invOption": lo_data[key].attributes["qfInvOption"] || "4",
+                                }
+                                break;
+                            case 'textMatch':
+                                parameters = {
+                                    "sentence": lo_data[key].attributes["qfSentence"] || "3",
+                                }
+                                break;
+                            case 'mcq':
+                                parameters = {
+                                    "option": lo_data[key].attributes["qfOption"] || "4",
+                                }
+                                break;
+                            case 'opinion':
+                                parameters = {
+                                    "opinionClass": lo_data[key].attributes["qfOpinionClass"] || "3",
+                                    "opinionQuestion": lo_data[key].attributes["qfOpinionQuestion"] || "3",
+                                    "opinionOption": lo_data[key].attributes["qfOpinionOption"] || "4",
+                                }
+                                break;
+                            case 'timeline':
+                                parameters = {
+                                    "timelinedate": lo_data[key].attributes["qfTimelinedate"] || "6",
+                                }
+                                break;
+                            case 'memory':
+                                parameters = {
+                                    "matchItem": lo_data[key].attributes["qfMatchItem"] || "6",
+                                }
+                                break;
+                            case 'crossword':
+                                parameters = {
+                                    "wordAndHint": lo_data[key].attributes["qfWordAndHint"] || "6",
+                                }
+                                break;
+                            case 'links':
+                                parameters = {
+                                    "link": lo_data[key].attributes["qfLink"] || "3",
+                                }
+                                break;
+                            case 'adaptiveContent':
+                                parameters = {
+                                    "interaction": lo_data[key].attributes["qfInteraction"] || "3",
+                                    "interactionBlock": lo_data[key].attributes["qfInteractionBlock"] || "3",
+                                }
+                                break;
+                            case 'mediaLesson':
+                                parameters = {
+                                    "panel": lo_data[key].attributes["qfPanel"] || "3",
+                                }
+                                break;
+                            case 'mediaPanel': //of mediaLesson
+                                parameters = {
+                                    "synchXot": lo_data[key].attributes["qfSynchXot"] || "1",
+                                    "synchXotChange": lo_data[key].attributes["qfSynchXotChange"] || "3",
+                                    "synchWebpage": lo_data[key].attributes["qfSynchWebpage"] || "3",
+                                    "synchMCQ": lo_data[key].attributes["qfSynchMCQ"] || "1",
+                                    "synchMCQOption": lo_data[key].attributes["qfSynchMCQOption"] || "4",
+                                    "synchSlides": lo_data[key].attributes["qfSynchSlides"] || "1",
+                                    "synchSlide": lo_data[key].attributes["qfSynchSlide"] || "6",
+                                    "synchTextPlus": lo_data[key].attributes["qfSynchTextPlus"] || "3",
+                                    "synchEmpty": lo_data[key].attributes["qfSynchEmpty"] || "3",
+                                    "synchCue": lo_data[key].attributes["qfSynchCue"] || "3",
+                                };
+                                break;
+                            case 'panel': //of mediaLesson
+                                parameters = {
+                                    "synchXot": lo_data[key].attributes["qfSynchXot"] || "1",
+                                    "synchXotChange": lo_data[key].attributes["qfSynchXotChange"] || "3",
+                                    "synchWebpage": lo_data[key].attributes["qfSynchWebpage"] || "3",
+                                    "synchMCQ": lo_data[key].attributes["qfSynchMCQ"] || "1",
+                                    "synchMCQOption": lo_data[key].attributes["qfSynchMCQOption"] || "4",
+                                    "synchSlides": lo_data[key].attributes["qfSynchSlides"] || "1",
+                                    "synchSlide": lo_data[key].attributes["qfSynchSlide"] || "6",
+                                    "synchTextPlus": lo_data[key].attributes["qfSynchTextPlus"] || "3",
+                                    "synchEmpty": lo_data[key].attributes["qfSynchEmpty"] || "3",
+                                    "synchMediaPlus": lo_data[key].attributes["qfSynchMediaPlus"] || "3",
+                                    "synchCue": lo_data[key].attributes["qfSynchCue"] || "3",
+                                };
+                                break;
+                        }
+                        // Show a confirm dialog with a custom message
+                        if (confirm("The specified nodes will be automatically generated with their default values. Proceed?")) {
+                            // User clicked "OK"
+                            try {
+                                await quick_fill(event, type, parameters);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try using the quick fill feature again.");
+                                html.prop('disabled', false);
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            // User clicked "Cancel"
+                            console.log("Quick fill canceled by the user.");
+                            html.prop('disabled', false);
+                        }
+
+                    });
+                break;
+            case 'autotranslatebutton':
+                var atr_button_id = 'atrButton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', atr_button_id)
+                    .attr('class', 'autotranslate_button')
+                    .text('translate')
+                    .click({key: key}, async function(event) {
+                        $(this).prop('disabled', true);
+                        var api = lo_data[key].attributes['translateApi'] || 'openai';
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var targetLanguage = lo_data[key].attributes["targetLanguage"];
+                        // Show a confirm dialog with a custom message
+                        if (confirm("Depending on the size of the learning object, translation may take several minutes. Start translation?")) {
+                            // User clicked "OK"
+                            try {
+                                await auto_translate(event, api, baseUrl, targetLanguage);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try using the translate feature again.");
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            // User clicked "Cancel"
+                            console.log("Translation canceled by the user.");
+                            html.prop('disabled', false);
+                        }
+
+                    });
+                break;
+            case 'imgsearchandhelpbutton':
+                var ish_id = 'ishButton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', ish_id)
+                    .attr('class', 'imgsh_button')
+                    .text('Query')
+                    .click({key: key}, function(event) {
+                        var api = lo_data[key].attributes['imgApi'] || "pexels";
+                        var query;
+                        var querySelect = lo_data[key].attributes["imgQuerySelect"] || 'custom'; //query select option for specific pages
+                        switch (querySelect) {
+                            case 'custom':
+                                //general default option
+                                query = lo_data[key].attributes["imgQuery"];
+                                if (!query || query.trim() === ""){
+                                    query = null;
+                                }
+                                break;
+                            case 'side1':
+                                query = lo_data[key].attributes["side1"];
+                                if (query === "Content for side one of the card" || !query || query.trim() === ""){
+                                    query = null;
+                                }
+                                break;
+                            case 'side2':
+                                query = lo_data[key].attributes["side2"];
+                                if (query === "Content for side two of the card" || !query || query.trim() === ""){
+                                    query = null;
+                                }
+                                break;
+                        }
+                        var interpretPrompt = lo_data[key].attributes["useAiInterpret"];
+                        var aiSettingsOverride = lo_data[key].attributes["overrideAiSettings"];
+                        if (aiSettingsOverride === "true") {
+                            switch (api){
+                                case 'pexels':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                        "color": lo_data[key].attributes["pexelsColor"],
+                                        "size": lo_data[key].attributes["pexelsSize"],
+                                        "orientation": lo_data[key].attributes["pexelsOrientation"],
+                                    }
+                                    break;
+                                case 'pixabay':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                        "color": lo_data[key].attributes["pixabayColors"],
+                                        "type": lo_data[key].attributes["pixabayType"],
+                                        "orientation": lo_data[key].attributes["pixabayOrientation"],
+                                    }
+                                    break;
+                                case 'wikimedia':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                        "width": lo_data[key].attributes["wikimediaWidth"],
+                                        "height": lo_data[key].attributes["wikimediaHeight"],
+                                    }
+                                    break;
+                                case 'unsplash':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                        "color": lo_data[key].attributes["unsplashColors"],
+                                        "orientation": lo_data[key].attributes["unsplashOrientation"],
+                                    }
+                                    break;
+                                case 'dalle2':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                    }
+                                    break;
+                                default:
+                                    constructorObject = {};
+                            }
+                        } else {
+                            switch (api){
+                                case 'pexels':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                    }
+                                    break;
+                                case 'pixabay':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                    }
+                                    break;
+                                case 'dalle2':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                    }
+                                    break;
+                                case 'unsplash':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
+                                    }
+                                    break;
+                                case 'wikimedia':
+                                    constructorObject = {
+                                        "nri": lo_data[key].attributes["nrImages"],
+                                    }
+                                    break;
+                                default:
+                                    constructorObject = {};
+                            }
+                        }
+                        if (query === null) {
+                            alert("Your query could not be found! Please double-check all relevant fields and try again.");
+                        } else {
+                            img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
+                        }
+                    });
+                break;
+            case 'generatesuggestionbutton':
+                var id = 'generatesuggestionbutton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('class', 'generate_suggestion_button')
+                    .text('Suggest')
+                    .click({key: key}, async function(event) {
+                        // Disable the button to prevent multiple clicks
+                        html.prop('disabled', true);
+                        var type = lo_data[key].attributes.nodeName; //get the node-type
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var contextScope = lo_data[key].attributes.linkID; //ensures suggestions are made based on the active node where suggestion request comes from
+                        var modelTemplate = "suggestion" //use suggestion to signal we want to use the suggestion prompt for this page
+                        const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
+                            (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
+                        // Build the constructor object based on the type
+                        var constructorObject = {
+                            "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
+                        };
+                        console.log(type);
+                        if (confirm("Generated suggestions will override any existing suggestions. Generate anyway?")){
+                            try {
+                                    await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, lo_data[key].attributes.linkID, modelTemplate);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try making another AI request.");
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            html.prop('disabled', false);
+                        }
+
+                    });
+                break;
+            case 'applysuggestionbutton':
+                var id = 'applysuggestionbutton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('class', 'apply_suggestion_button')
+                    .text('Apply suggestion')
+                    .click({key: key}, async function(event) {
+                        // Disable the button to prevent multiple clicks
+                        html.prop('disabled', true);
+                        var type = lo_data[key].attributes.nodeName; //get the node-type
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var contextScope = "local";
+                        var modelTemplate = "construct" //use construct to signal we want a 2 part prompt which doesn't use user parameters
+                        const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
+                            (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
+                        // Build the constructor object based on the type
+                        var suggestionKey = lo_data[key].attributes["suggestSelect"];
+                        var constructorObject = {
+                            suggestion: suggestionKey && lo_data[key].attributes[suggestionKey] ? lo_data[key].attributes[suggestionKey] : null,
+                        };
+
+                        //adjust scope as needed per interactivity
+                        switch (type) {
+                            //for decision trees, we want to use only the decision tree itself as context
+                            case 'decision':
+                                contextScope = lo_data[key].attributes.linkID;
+                                break;
+                        }
+                        console.log(type);
+                        if (confirm("The selected suggestion will be processed and used to alter the contents of this page or generate a new page. Proceed?")){
+                            try {
+                                await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, contextScope, modelTemplate);
+                            } catch (error) {
+                                console.log('Error occurred:', error);
+                                alert("Something went wrong. Please try making another AI request.");
+                            } finally {
+                                // Re-enable the button after the function completes (success or failure)
+                                html.prop('disabled', false);
+                            }
+                        } else {
+                            html.prop('disabled', false);
+                        }
+
+                    });
+                break;
+            case 'aibutton':
+                var id = 'aibutton_' + form_id_offset;
+                form_id_offset++;
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('class', 'ai_button')
+                    .text('Generate')
+                    .click({key: key}, async function(event) {
+                        // Disable the button to prevent multiple clicks
+                        html.prop('disabled', true);
+                        var type = lo_data[key].attributes.nodeName; //get the node-type
+                        var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        var fileUrl = lo_data[key].attributes["file"];
+                        var textSnippet = lo_data[key].attributes["textSnippet"];
+                        var modelTemplate = "standard";
+                        var modelSelection = lo_data[key].attributes["aiSelector"];
+                        var contextScope = "full"; //Currently supported: "full" for the entire learning object, OR the linkID value for the current node
+                        var useContext = lo_data[key].attributes["useContext"];
+                        // Check if fileUrl is "Upload a file", empty, or just whitespace
+                        if (fileUrl === "Upload a file or enter a video link here..." || !fileUrl || fileUrl.trim() === "") {
+                            fileUrl = null;
+                        }
+                        if (textSnippet === "Paste or write your snippet here..." || !textSnippet || textSnippet.trim() === "") {
+                            textSnippet = null;
+                        }
+                        var infoPrompt = lo_data[key].attributes["fileAccessPrompt"];
+                        var uploadPrompt;
+                        if (modelSelection==='openai'){
+                            uploadPrompt = lo_data[key].attributes["uploadPrompt"];
+                        }else{
+                            uploadPrompt = 'false';
+                        }
+                        var assisstantPrompt = lo_data[key].attributes["assistantPrompt"] || false;
+                        var requestTemplate = lo_data[key].attributes["template"] || 'custom';
+                        const sourceContext = (moduleurlvariable === "modules/site/") ? "bootstrap" :
+                            (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
+
+                        // Function to validate the constructor object
+                        function validateConstructorObject(constructorObject, type) {
+                            // Helper function to check if a field is empty or contains only spaces
+                            function isEmptyField(value) {
+                                return !value || value.trim() === "";
+                            }
+
+                            // Helper function to validate if the value contains at least two words separated by a comma
+                            function isValidCommaSeparatedList(value) {
+                                const regex = /^(\s*[^,]+\s*,\s*)+[^,]+\s*$/; // Checks for two or more items separated by a comma
+                                return regex.test(value);
+                            }
+
+                            // Helper function to check if a string value represents a valid integer
+                            function isNumeric(value) {
+                                return /^\d+$/.test(value); // Checks if the string contains only digits
+                            }
+
+                            // Helper function to check if values are equal to default values
+                            function isNotDefault(value, caseType) {
+                                const defaultValues = [
+                                    { case: "mcq", default: "Enter a Prompt" },
+                                    {
+                                        case: "interactiveText",
+                                        default: "<p>Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.</p><p>For example:</p><p>The |quick| |brown| #fox# *jumped* over the |lazy| #dog#</p><p>Where | are adjectives, * are verbs and # are nouns.</p>"
+                                    },
+                                    { case: "modify", default: "Provide initial text here" },
+                                    {
+                                        case: "gapFill",
+                                        default: "Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu."
+                                    }
+                                ];
+
+                                const defaultValue = defaultValues.find((item) => item.case === caseType)?.default;
+                                return defaultValue ? value !== defaultValue : true;
+                            }
+
+                            // Check the 'subject' field if applicable
+                            if (constructorObject.hasOwnProperty("subject") && isEmptyField(constructorObject["subject"])) {
+                                alert("Please make sure to fill out the subject field!");
+                                return false;
+                            }
+
+                            // Check the 'sentence' constructor field, applicable for gapfill and interactive text as passage, for mcq as prompt and for modifytext as text or initialtext...
+                            if (constructorObject.hasOwnProperty("sentence")) {
+                                if (isEmptyField(constructorObject["sentence"])) {
+                                    alert("Please make sure to fill out the respective interactive text field of this interactivity. Note: this field may not be in the AI optional property, but in the main fields of the interactivity.");
+                                    return false;
+                                }
+                                // Ensure the passage is not the default value
+                                if (!isNotDefault(constructorObject["sentence"], type)) {
+                                    alert("Please make sure to customize the respective interactive text field of this interactivity. Note: this field may not be in the AI optional property, but in the main fields of the interactivity.");
+                                    return false;
+                                }
+                            }
+
+                            // Fields that require at least two words separated by a comma, constructor vs how they appear to users
+                            const commaSeparatedFields = [
+                                { backend: "categories", frontend: "Categories" },
+                                { backend: "classlist", frontend: "Classes" },
+                                { backend: "columns", frontend: "Columns" },
+                                { backend: "subjects", frontend: "Subjects" }
+                            ];
+
+                            for (const field of commaSeparatedFields) {
+                                if (constructorObject.hasOwnProperty(field.backend)) {
+                                    if (isEmptyField(constructorObject[field.backend])) {
+                                        alert(`Please make sure to fill out the ${field.frontend} field by including at least two words separated by a comma!`);
+                                        return false;
+                                    }
+                                    if (!isValidCommaSeparatedList(constructorObject[field.backend])) {
+                                        alert(`Please make sure that the ${field.frontend} field includes at least two words separated by a comma!`);
+                                        return false;
+                                    }
+                                }
+                            }
+                            // Fields that must be numeric
+                            const numericFields = [
+                                "nrq", "nra", "length", "nrs", "rows", "nrw", "nro", "nrt", "nrc", "nrb", "wpc", "numberOfQuestions", "aoa"
+                            ];
+
+                            //fields which may have additional qualifier requirements, i.e. length fields must always specify that they refer to 'words' for better accuracy.
+                            const unitQualifiers = [
+                                { field: "length", qualifier: "words" }
+                            ];
+
+                            for (const field of numericFields) {
+                                if (constructorObject.hasOwnProperty(field)) {
+                                    if (!isNumeric(constructorObject[field])) {
+                                        alert(`Please make sure all numeric fields contain a valid integer value!`);
+                                        return false;
+                                    }else {
+                                        // Check and append unit qualifiers if applicable
+                                        const qualifier = unitQualifiers.find(q => q.field === field)?.qualifier;
+                                        if (qualifier && !constructorObject[field].includes(`${qualifier}`)) {
+                                            constructorObject[field] += ` ${qualifier}`;
+                                        }
+                                    }
+
+                                }
+                            }
+
+                            // All validations passed
+                            return true;
+                        }
+
+                        // Build the constructor object based on the type
+                        var constructorObject;
+                        console.log(type);
+                        if (sourceContext === "standard"){
+                            switch (type) {
+                                case 'quiz':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrq": lo_data[key].attributes["amountOfQuestions"] || "3",
+                                        "nra": lo_data[key].attributes["amountOfAnswers"] || "4",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'inventory':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrq": lo_data[key].attributes["amountOfQuestions"] || "5",
+                                        "nra": lo_data[key].attributes["amountOfAnswers"] || "4",
+                                        "classlist":lo_data[key].attributes["classlist"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'gapFill':
+                                    constructorObject = {
+                                        "tasknr": lo_data[key].attributes["taskType"],
+                                    }
+                                    if (constructorObject["tasknr"]=="task1"){
+                                        constructorObject["subject"] = lo_data[key].attributes["subject"];
+                                        constructorObject["length"] = lo_data[key].attributes["sentenceLength"] || "50";
+                                        constructorObject["tone"] = lo_data[key].attributes["voiceSelector"];
+                                        constructorObject["range"] = lo_data[key].attributes["ageRange"];
+                                        constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"];
+                                    }
+                                    if (constructorObject["tasknr"]=="task2"){
+                                        constructorObject["target"] = lo_data[key].attributes["targetWords"] || "Nouns";
+                                        constructorObject["sentence"] = lo_data[key].attributes['passage'];
+                                        uploadPrompt = 'false';
+                                    }
+                                    break;
+                                case 'textMatch':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "length": lo_data[key].attributes["sentenceLength"] || "20",
+                                        "nrs": lo_data[key].attributes["numberOfSentences"] || "3",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'textHighlight':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "length": lo_data[key].attributes["paragraphLength"] || "50",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'summary':
+                                    constructorObject = {
+                                        "template": lo_data[key].attributes["template"],
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    if (constructorObject["template"]=="lo"){
+                                        useContext = "true";
+                                    }else if (constructorObject["template"]=="file"){
+                                        uploadPrompt = 'true'
+                                        constructorObject["summaryObject"] = "the uploaded file";
+                                    } else if (constructorObject["template"]=="text"){
+                                        constructorObject["summaryObject"] = "the following text: " + lo_data[key].attributes["sourceText"];
+                                    }
+                                    break;
+
+                                case 'orient':
+                                    constructorObject = {
+                                        "instruction": lo_data[key].attributes["instruction"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    uploadPrompt = 'false';
+                                    useContext = true;
+                                    break;
+                                case 'textCorrection':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "mistakeType": lo_data[key].attributes["mistakeType"] || "spelling mistakes",
+                                        "length": lo_data[key].attributes["paragraphLength"] || "50",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'modify':
+                                    constructorObject = {
+                                        "tasknr": lo_data[key].attributes["taskType"],
+                                        "textInstructions": lo_data[key].attributes["textInstructions"] || 'write the text in present tense',
+                                    }
+                                    if (constructorObject["tasknr"]=="task1"){
+                                        constructorObject["subject"] = lo_data[key].attributes["subject"];
+                                        constructorObject["length"] = lo_data[key].attributes["sentenceLength"] || "50";
+                                        constructorObject["tone"] = lo_data[key].attributes["voiceSelector"];
+                                        constructorObject["range"] = lo_data[key].attributes["ageRange"];
+                                        constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"];
+
+                                    }
+                                    if (constructorObject["tasknr"]=="task2"){
+                                        constructorObject["sentence"] = lo_data[key].attributes["text"];
+                                        uploadPrompt = 'false';
+                                    }
+                                    break;
+                                case 'grid':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "columns": lo_data[key].attributes["columns"],
+                                        "rows": lo_data[key].attributes["rows"] || "5",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'tableDoc': //documentation subpage
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "columns": lo_data[key].attributes["columns"],
+                                        "rows": lo_data[key].attributes["rows"] || "5",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'buttonQuestion':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'timeline':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrs": lo_data[key].attributes["timelineSteps"] || "5",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    if (lo_data[key].attributes["interactivity"]==="Timeline"){
+                                        constructorObject["interactivityDetails"] = "In this case specifically, the value of each 'name' attribute should be a number numbers.";
+                                    }else{
+                                        constructorObject["interactivityDetails"] = "";
+                                    }
+                                    break;
+                                case 'dialog':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrs": lo_data[key].attributes["numberOfSentences"] || "5",
+                                        "delim": lo_data[key].attributes["answerDelimeter"] || ',',
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'crossword':
+                                case 'wordsearch':
+                                case 'hangman':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrw": lo_data[key].attributes["numberOfWords"] || "10",
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'interactiveText':
+                                    constructorObject = {
+                                        "tasknr": lo_data[key].attributes["taskType"],
+                                    }
+                                    if (constructorObject["tasknr"]=="task1"){
+                                        constructorObject["subject"] = lo_data[key].attributes["subject"];
+                                        constructorObject["length"] = lo_data[key].attributes["sentenceLength"] || "50";
+                                        constructorObject["tone"] = lo_data[key].attributes["voiceSelector"];
+                                        constructorObject["range"] = lo_data[key].attributes["ageRange"];
+                                        constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"];
+                                    }
+                                    if (constructorObject["tasknr"]=="task2"){
+                                        constructorObject["target"] = lo_data[key].attributes["targetWords"] || "Nouns";
+                                        constructorObject["sentence"] = lo_data[key].attributes['passage'];
+                                        uploadPrompt = 'false';
+                                    }
+                                    break;
+                                case 'morphImages':
+                                case 'imageViewer':
+                                case 'imageSequence':
+                                case 'singleImg': //subpage of image sequence
+                                case 'imgSeries': //subpage of image sequence
+                                case 'textGraphics':
+                                case 'flickr':
+                                case 'audioSlideshow':
+                                case 'bleedingImage':
+                                case 'media360':
+                                case 'image': //perspectives subpage
+                                case 'text':
+                                    switch (requestTemplate){
+                                        case 'custom':
+                                            constructorObject = {
+                                                "subject": lo_data[key].attributes["subject"],
+                                                "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || "",
+                                                "exampleContent": lo_data[key].attributes["exampleContent"],
+                                                "tone": lo_data[key].attributes["voiceSelector"],
+                                                "range": lo_data[key].attributes["ageRange"],
+                                                "eduLevel": lo_data[key].attributes["eduLevel"],
+                                            }
+                                            break;
+                                        case 'altText':
+                                            constructorObject = {
+                                                "subject": 'Short alt text of image',
+                                                "tone": 'any',
+                                                "range": 'any',
+                                                "eduLevel":'any',
+                                                "additionalInstructions": 'Generate an image alt text ONLY, based on the provided image description. It should be no more than 7 words. Do NOT return anything except the alt text. Return the XML WITHOUT the name attribute.',
+                                                "exampleContent": 'Suburban house with two stories'
+                                            }
+                                            uploadPrompt = 'true';
+                                            break;
+                                    }
+                                    break;
+                                case 'selectlist':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nro": lo_data[key].attributes["numberOptions"] || "3",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+
+                                    }
+                                    break;
+                                case 'bullets':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nro": lo_data[key].attributes["numberOptions"] || "3",
+                                        "additionalInstructions": lo_data[key].attributes["Instructions"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'learningObject':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "headers": lo_data[key].attributes["headers"],
+                                        "goals": lo_data[key].attributes["goals"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"]
+                                    }
+                                    assisstantPrompt = true;
+                                    break;
+                                case 'ivOverlayPanel':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrq": lo_data[key].attributes["nrq"] || "3",
+                                        "nra": lo_data[key].attributes["nra"] || "4",
+                                        "nrt": lo_data[key].attributes["nrt"] || "3",
+                                        "subtype": lo_data[key].attributes["subtype"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                    }
+                                    fileUrl = lo_data[key].attributes["file"];
+                                    uploadPrompt = 'true';
+                                    break;
+                                case 'flashCards':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrc": lo_data[key].attributes["amountOfCards"] || "5",
+                                        "hintMode": lo_data[key].attributes["hintMode"],
+                                        "languageMode": lo_data[key].attributes["languageMode"],
+                                        "reverseMode": lo_data[key].attributes["reverseMode"],
+                                        "language": lo_data[key].attributes["languageChoice"] || "Dutch",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'topXQ':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nro": lo_data[key].attributes["numberOfOptions"] || "5",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    };
+                                    break;
+                                case 'buttonSequence':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "nrb": lo_data[key].attributes["amountOfButtons"] || "5",
+                                        "length": lo_data[key].attributes["sequenceLength"] || "20",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    };
+                                    break;
+                                case 'categories':
+                                    constructorObject = {
+                                        "categories": lo_data[key].attributes["subject"],
+                                        "wpc": lo_data[key].attributes["wordsPerCategory"] || "5",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    };
+                                    break;
+                                case 'decision':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "depth": lo_data[key].attributes["depth"],
+                                        "nor": lo_data[key].attributes["numberOfResults"],
+                                        "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
+                                    };
+                                    break;
+                                case 'opinion':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "categories": lo_data[key].attributes["categories"],
+                                        "numberOfQuestions": lo_data[key].attributes["numberOfQuestions"] || "3",
+                                        "targetDemographic": lo_data[key].attributes["targetDemographic"] || "Base it on the subject.",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    };
+                                    break;
+                                case 'mcq':
+                                    constructorObject = {
+                                        //"subject": lo_data[key].attributes["subject"],
+                                        "sentence": lo_data[key].attributes['prompt'],
+                                        "aoa": lo_data[key].attributes["amountOfAnswers"] || "4",
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'nestedTab': //tabnavextra+ mainpage
+                                case 'nav': //multinav mainpage
+                                case 'columnPage': //columns mainpage
+                                    constructorObject = {
+                                        "subjects": lo_data[key].attributes["subjects"], //note the plural-for tavbnavextra main page, nav main page, column main page
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || " ",
+                                        "exampleContent": lo_data[key].attributes["exampleContent"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                case 'nestedColumnPage':
+                                case 'nestedPage': //tabnavextra /tabnav+ subpage
+                                case 'navPage':
+                                case 'movie':
+                                case 'sound':
+                                case 'textbox': //documentation subpage
+                                case 'textarea': //documentation subpage
+                                case 'description': //documentation subpage
+                                case 'mpText':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                        "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || " ",
+                                        "exampleContent": lo_data[key].attributes["exampleContent"],
+                                        "tone": lo_data[key].attributes["voiceSelector"],
+                                        "range": lo_data[key].attributes["ageRange"],
+                                        "eduLevel": lo_data[key].attributes["eduLevel"],
+                                    }
+                                    break;
+                                // Add more cases as needed for different types
+                                default:
+                                    constructorObject = {};
+                                    break;
+                            }
+                        }
+                        else if (sourceContext === "bootstrap"){
+                            switch (type) {
+                                case 'learningObject':
+                                    constructorObject = {
+                                        "subject": lo_data[key].attributes["subject"],
+                                    }
+                                    break;
+                            }
+                        }
+                        //constructor defaults
+                        constructorObject["tone"] = lo_data[key].attributes["voiceSelector"] || "semi-formal";
+                        constructorObject["range"] = lo_data[key].attributes["ageRange"] || "Intermediate English B2";
+                        constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"] || "University";
+                        if (infoPrompt === 'true'){
+                            constructorObject["access"] = "HAVE";
+                        }else{
+                            constructorObject["access"] = "DON'T HAVE";
+                        }
+                        if (validateConstructorObject(constructorObject, type))
+                        {
+                            if (confirm("Generated AI content will override most content on this page. Generate anyway?")) {
+                                try {
+                                    // Check if file upload is selected
+                                    if (fileUrl != null && uploadPrompt === 'true') {
+                                        var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
+                                        var fullUrl = baseUrl + cleanFileUrl;
+                                        await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], fullUrl, null, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
+                                    } else if (fileUrl === null && uploadPrompt === 'true') {
+                                        alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link.");
+                                    } else if (textSnippet != null && uploadPrompt === 'trueText') {
+                                        await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, textSnippet, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
+                                    } else if (textSnippet === null && uploadPrompt === 'trueText') {
+                                        alert("You've selected the 'Submit Snippet' option but haven't included any text.");
+                                    } else {
+                                        await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
+                                    }
+                                } catch (error) {
+                                    console.log('Error occurred:', error);
+                                    alert("Something went wrong. Please try making another AI request.");
+                                } finally {
+                                    // Re-enable the button after the function completes (success or failure)
+                                    html.prop('disabled', false);
+                                }
+                            } else {
+                                html.prop('disabled', false);
+                            }
+                        }else{
+                            html.prop('disabled', false);
+                        }
+                    });
+                break;
             case 'lightboxbutton':
                 //identifier of button is linked to group name instead of identifier.
                 //this button is generated based on lightbox=='true' in a group

@@ -26,6 +26,10 @@
 	<link label="Hide list" type="Checkbox" optional="true" defaultValue="false" tooltip="Enable or disable the list" />
 
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="320,240" optional="true" deprecated="This property is deprecated."/>
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <hotspotGroup><![CDATA[<hotspotGroup name="Enter Hotspot Group Title" text=""/>]]></hotspotGroup>
@@ -39,6 +43,11 @@
 
     <name label="Group Title" type="TextInput" wysiwyg="true" />
     <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot" />
+
+    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
 	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
