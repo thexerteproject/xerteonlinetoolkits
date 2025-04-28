@@ -84,34 +84,34 @@
     <newNodes>
       <question><![CDATA[<question prompt="" name="Question" type="Single Answer" />]]></question>
 	</newNodes>
-	
+
   </quiz>
 
   <question menuItem="Question" icon="icComment">
-  
+
     <prompt label="Question" type="TextArea"  height="100" placeholder="Enter question text here"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
-	
+
 	<feedbackGroup type="group" label="Feedback" optional="true">
     	<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
     	<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>
     	<feedbackPos label="Feedback Order" options="General > Answer > Correct/Incorrect,General > Correct/Incorrect > Answer,Answer > Correct/Incorrect > General,Answer > General > Correct/Incorrect,Correct/Incorrect > General > Answer,Correct/Incorrect > Answer > General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback > Answer feedback > Correct/Incorrect feedback"/>
     </feedbackGroup>
-	
+
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" defaultValue="" placeholder="Select an image" optional="true" />
 		<tip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
-	
+
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
 		<sound label="File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>
-	
+
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-		
+
     <newNodes>
       <option><![CDATA[<option text="" name="Answer" feedback="" correct="false"/>]]></option>
     </newNodes>

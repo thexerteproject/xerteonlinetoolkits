@@ -72,7 +72,7 @@ var EDITOR = (function ($, parent) {
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
 					pos = label.indexOf('{i}');
-				
+
 				label = pos >= 0 ? label.substr(0, pos) + itemData.name + label.substr(pos + 3) : label;
 
 				$insertInfo.find(".insert_buttons").append('<div>' + label + '</div>');
@@ -134,7 +134,7 @@ var EDITOR = (function ($, parent) {
 
                     $menu.find(".insert_buttons").append(button);
             });
-            
+
 		if (typeof insert_menu_object !== 'undefined')
         {
             // menu is aleready set once
@@ -211,7 +211,7 @@ var EDITOR = (function ($, parent) {
 				// if deprecatedLevel is low the appearance is slightly different
 				var isDeprecated = enabled[0],
 					deprecatedLevel = enabled[1];
-				
+
                 if (isDeprecated) {
                     return '<i class="deprecatedIcon iconEnabled fa ' + (deprecatedLevel == 'low' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + (deprecatedLevel == 'low' ? 'deprecatedLevel_low' : '') + '" id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
                 }
@@ -510,30 +510,30 @@ var EDITOR = (function ($, parent) {
         return {found : true, value: attribute_value};
     },
 
-    evaluateConditionExpression = function(ctree, key) {
+    evaluateConditionExpression = function(ctree, key, formState, source = 'attribute') {
         switch (ctree.type) {
             case "Literal":
                 return ctree.value;
             case "LogicalExpression":
                 if (ctree.operator == "&&") {
-                    return evaluateConditionExpression(ctree.left, key) && evaluateConditionExpression(ctree.right, key);
+                    return evaluateConditionExpression(ctree.left, key, formState, source) && evaluateConditionExpression(ctree.right, key, formState, source);
                 } else {
-                    return evaluateConditionExpression(ctree.left, key) || evaluateConditionExpression(ctree.right, key);
+                    return evaluateConditionExpression(ctree.left, key, formState, source) || evaluateConditionExpression(ctree.right, key, formState, source);
                 }
             case "BinaryExpression":
                 switch (ctree.operator) {
                     case "==":
-                        return evaluateConditionExpression(ctree.left, key) == evaluateConditionExpression(ctree.right, key);
+                        return evaluateConditionExpression(ctree.left, key, formState, source) == evaluateConditionExpression(ctree.right, key, formState, source);
                     case "!=":
-                        return evaluateConditionExpression(ctree.left, key) != evaluateConditionExpression(ctree.right, key);
+                        return evaluateConditionExpression(ctree.left, key, formState, source) != evaluateConditionExpression(ctree.right, key, formState, source);
                     case "<":
-                        return evaluateConditionExpression(ctree.left, key) < evaluateConditionExpression(ctree.right, key);
+                        return evaluateConditionExpression(ctree.left, key, formState, source) < evaluateConditionExpression(ctree.right, key, formState, source);
                     case "<=":
-                        return evaluateConditionExpression(ctree.left, key) <= evaluateConditionExpression(ctree.right, key);
+                        return evaluateConditionExpression(ctree.left, key, formState, source) <= evaluateConditionExpression(ctree.right, key, formState, source);
                     case ">":
-                        return evaluateConditionExpression(ctree.left, key) > evaluateConditionExpression(ctree.right, key);
+                        return evaluateConditionExpression(ctree.left, key, formState, source) > evaluateConditionExpression(ctree.right, key, formState, source);
                     case ">=":
-                        return evaluateConditionExpression(ctree.left, key) >= evaluateConditionExpression(ctree.right, key);
+                        return evaluateConditionExpression(ctree.left, key, formState, source) >= evaluateConditionExpression(ctree.right, key, formState, source);
                     default:
                         return null;
                 }
@@ -541,7 +541,7 @@ var EDITOR = (function ($, parent) {
                 if (ctree.object.name == 'parent') {
                     var tree = $.jstree.reference("#treeview");
                     var parent = tree.get_parent(key);
-                    return evaluateConditionExpression(ctree.property, parent)
+                    return evaluateConditionExpression(ctree.property, parent, formState, source)
                 } else if (ctree.object.object.name == 'theme_list') {
 					return theme_list[currtheme][ctree.property.name];
 				} else {
@@ -575,7 +575,7 @@ var EDITOR = (function ($, parent) {
                                 }
                                 break;
                             default:
-                                func += evaluateConditionExpression(ctree.arguments[i], key);
+                                func += evaluateConditionExpression(ctree.arguments[i], key, formState, source);
                                 break;
                         }
                     }
@@ -589,20 +589,28 @@ var EDITOR = (function ($, parent) {
                 }
                 break;
             case "Identifier":
-                var attrs = lo_data[key]['attributes'];
-                if (typeof attrs[ctree.name] != "undefined") {
-                    return attrs[ctree.name];
-                } else {
-                    try {
-                        var value = eval(ctree.name);
-                        return value;
+                if (source === 'attribute') {
+                    var attrs = lo_data[key]['attributes'];
+                    if (typeof attrs[ctree.name] != "undefined") {
+                        return attrs[ctree.name];
+                    } else {
+                        try {
+                            var value = eval(ctree.name);
+                            return value;
+                        } catch (e) {};
+                        return null;
                     }
-                    catch (e){};
-                    return null;
+                } else {
+                    //get current data from lightbox form.
+                    if (typeof formState[ctree.name] != 'undefined') {
+                        return formState[ctree.name];
+                    } else {
+                        return null;
+                    }
                 }
             case "UnaryExpression":
                 if (ctree.operator == '!') {
-                    return !evaluateConditionExpression(ctree.argument, key);
+                    return !evaluateConditionExpression(ctree.argument, key, formState, source);
                 } else {
                     return null;
                 }
@@ -632,19 +640,28 @@ var EDITOR = (function ($, parent) {
         return false;
     },
 
-    evaluateCondition = function(condition, key)
+    evaluateCondition = function(condition, key, formState, mode)
     {
         var tree = jsep(condition);
-        var result = evaluateConditionExpression(tree, key);
+        var result = evaluateConditionExpression(tree, key, formState, mode);
         return (result == null ? false : result);
     },
 
-    displayParameter = function (id, all_options, name, value, key, lightboxMode=["", "none"], nodelabel)
+    displayParameter = function (id, all_options, name, value, key, lightbox = "", lightboxMode= "none", nodelabel)
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
         var deprecated = false;
 		var	groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
+        //get input field value from value.
+        let fieldValue = "";
+        let formState = {};
+        if (typeof value === 'object' && value !== null) {
+            formState = value;
+            fieldValue = formState.hasOwnProperty(name) === true ? formState[name] : "";
+        } else {
+            fieldValue = value;
+        }
 
         if (options != null)
         {
@@ -654,7 +671,9 @@ var EDITOR = (function ($, parent) {
 
             if (options.condition)
             {
-                var visible = evaluateCondition(options.condition, key);
+
+                var visible = evaluateCondition(options.condition, key, formState,
+                    lightboxMode === "form" ? "form" : "attribute");
                 if (!visible)
                 {
                     return;
@@ -673,7 +692,7 @@ var EDITOR = (function ($, parent) {
                         .height(14)
                         .addClass("deprecated deprecatedIcon"));
 
-                if (options.optional == 'true' && groupChild == false && lightboxMode[0] == "") {
+                if (options.optional == 'true' && groupChild == false && lightbox == "") {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
                         .addClass('fa-trash')
@@ -694,7 +713,7 @@ var EDITOR = (function ($, parent) {
                     .append(td);
                 deprecated = true;
             }
-            else if (options.optional == 'true' && groupChild == false && lightboxMode[0] == "") {
+            else if (options.optional == 'true' && groupChild == false && lightbox == "") {
                 var td = $('<td>')
                     .addClass("wizardoptional")
                     .append($('<i>')
@@ -750,16 +769,16 @@ var EDITOR = (function ($, parent) {
                         .addClass("wizardvalue")
                         .append($('<div>')
                             .addClass("wizardvalue_inner")
-                            .append(displayDataType(value, options, name, key, label,  lightboxMode[1]))));
+                            .append(displayDataType(fieldValue, options, name, key, label,  lightboxMode))));
             }
 
 
-            if (lightboxMode[0] === "") {
+            if (lightbox === "") {
                 $(id).append(tr);
             } else {
-                lightboxMode[0].append(tr);
+                lightbox.append(tr);
             }
-            if (options.optional == 'true' && groupChild == false && lightboxMode[0] == "") {
+            if (options.optional == 'true' && groupChild == false && lightbox == "") {
                 $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
                     removeOptionalProperty(this_name);
@@ -767,7 +786,6 @@ var EDITOR = (function ($, parent) {
             }
         }
     },
-
 
 	displayGroup = function (id, name, options, key)
     {
@@ -787,7 +805,7 @@ var EDITOR = (function ($, parent) {
 				.attr('title', options.deprecated)
 				.height(14)
 				.addClass("deprecated deprecatedIcon"));
-			
+
 			if (options.optional == 'true') {
 				group.addClass("wizardoptional");
 			}
@@ -813,9 +831,9 @@ var EDITOR = (function ($, parent) {
 				.addClass("wizarddeprecated")
 
 		} else if (options.optional == 'true') {
-			
+
 			group.addClass("wizardoptional")
-			
+
 			if (options.group == undefined) { // nested groups don't have delete btn
 				legend
 					.addClass('noindent')
@@ -852,7 +870,7 @@ var EDITOR = (function ($, parent) {
 
 		if (options.group == undefined) { // nested groups aren't collapsible
 			$('<i class="minMaxIcon fa fa-caret-down"></i>').appendTo(legend.find('.legend_label'));
-			
+
 			legend.find('.legend_label').click(function() {
 				var $icon = $(this).find('i.minMaxIcon');
 				var $fieldset = $(this).parents('fieldset');
@@ -897,7 +915,7 @@ var EDITOR = (function ($, parent) {
 					.append(group_table)
 			);
 		}
-		
+
 		if (options.group == undefined) {
 			$(id).append(tr);
 
@@ -936,7 +954,6 @@ var EDITOR = (function ($, parent) {
     },
 
     removeOptionalProperty = function (name, children) {
-		
         if (!confirm('Are you sure?')) {
             return;
         }
@@ -1771,7 +1788,7 @@ var EDITOR = (function ($, parent) {
 			}
         });
     },
-	
+
 	convertIconPickers = function ()
     {
         $.each(iconpickers, function (i, options){
@@ -1783,7 +1800,7 @@ var EDITOR = (function ($, parent) {
 				noResultsFound: language.fontawesome.noResult,
 				borderRadius: '0px'
 			});
-			
+
 			IconPicker.Run('#' + options.id, function(e){
 				// manually trigger input change after new icon selected - even though input changes it doesn't get triggered without this as element is hidden & not in focus
 				$('#' + options.id).data('input').change();
@@ -2126,7 +2143,7 @@ var EDITOR = (function ($, parent) {
 				$(window).on("resizeEnd", function() {
                     resizeDataGrids();
 				});
-				
+
 				// make sure datagrid is correct width when first loaded
                 resizeDataGrids();
 
@@ -4013,11 +4030,7 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key, true);
     };
 
-    lightboxSetUp = function(group, attributes, node_options, key, formState="") {
-        let mode = "initialize";
-        if (formState !== "") {
-            mode = "rebuild";
-        }
+    lightboxSetUp = function(group, attributes, node_options, key, formState="", mode) {
 
         let groupChildren = group.value.children;
         var lightboxHtml = $("<form id='lightbox_" + group.name + "'></form>");
@@ -4027,27 +4040,18 @@ var EDITOR = (function ($, parent) {
         for (var j = 0; j < groupChildren.length; j++) {
             var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
 
-            if (mode == "initialize" && (getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated)) {
-                displayParameter(
-                    lightboxId,
-                    groupChildren,
-                    groupChildren[j].name,
-                    (getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
-                    key,
-                    [lightboxHtml, group.value.lightbox]
-                );
-            } else {
-                //rebuild form
-                displayParameter(
-                    lightboxId,
-                    groupChildren,
-                    groupChildren[j].name,
-                    formState.hasOwnProperty(groupChildren[j].name) === true ? formState[groupChildren[j].name] : "",
-                    key,
-                    [lightboxHtml, group.value.lightbox]
-                );
-            }
+            //rebuild form
+            displayParameter(
+                lightboxId,
+                groupChildren,
+                groupChildren[j].name,
+                formState,
+                key,
+                lightboxHtml,
+                group.value.lightbox
+            );
         }
+
         if (mode == "initialize") {
             //create editor button to open lightbox manually
             displayParameter(
@@ -4059,36 +4063,40 @@ var EDITOR = (function ($, parent) {
             );
         }
         $('#lightboxbutton_' + group.name).on("click", function() {
-            $.featherlight(lightboxHtml);
+            $.featherlight(lightboxHtml, {persist: true});
         })
-        //todo trigger button at final step not like this :(
-        $.featherlight(lightboxHtml);
+        //todo change this to not trigger on page load.
+        $.featherlight(lightboxHtml, {persist: true});
 
     },
 
-    triggerRedrawForm = function (event) {
-        let groupName = event.data.group;
+    triggerRedrawForm = function (group, key, groupChildren="", mode) {
         //store current form state for rebuild
         let formState = {};
-        //seperate sets as the labels and values are disconected.
-        let formInputValues = $('#lightbox_' + groupName + ' :input');
-        for (let input = 0; input < formInputValues.length; input++) {
-            formState[formInputValues[input].name] = formInputValues[input].value;
+        let formInputValues = $('#lightbox_' + group + ' :input');
+        if (mode === 'initialize') {
+            //get default values for form
+            for (let input = 0; input < groupChildren.length; input++) {
+                formState[groupChildren[input].name] = groupChildren[input].value.defaultValue;
+            }
+        } else {
+            //get current form values
+            for (let input = 0; input < formInputValues.length; input++) {
+                formState[formInputValues[input].name] = formInputValues[input].value;
+            }
         }
 
-
         //remove current form and button handler
-        $('#lightbox_' + groupName).remove();
-        $('#lightboxbutton_' + groupName).off("click");
-        let currentNodeType = lo_data[event.data.key]['attributes'].nodeName;
-        let group = wizard_data[currentNodeType].node_options.all.find((option) => option.name == "AIGroup");
+        $('#lightbox_' + group).remove();
+        $('#lightboxbutton_' + group).off("click");
+        let currentNodeType = lo_data[key]['attributes'].nodeName;
+        let groupId = wizard_data[currentNodeType].node_options.all.find((option) => option.name == group);
         $.featherlight.close();
-        lightboxSetUp(group, "", "", event.data.key, formState);
+        lightboxSetUp(groupId, "", "", key, formState, mode);
     };
 
     displayDataType = function (value, options, name, key, label, mode) {
 		var html;
-
 		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
 		switch(options.type.toLowerCase())
 		{
@@ -4101,10 +4109,16 @@ var EDITOR = (function ($, parent) {
 					.attr('type',  "checkbox")
 					.prop('checked', value && (value == 'true' || value == '1' || value == 'on'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
-                        cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
-						if (event.data.trigger)
+                        if (mode === 'none') {
+                            cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+                        }
+                        if (event.data.trigger)
                         {
-                            triggerRedrawPage(event.data.key);
+                            if (mode === 'none') {
+                                triggerRedrawPage(event.data.key);
+                            } else {
+                                triggerRedrawForm(event.data.group, event.data.key, "", "redraw")
+                            }
                         }
 					});
 				if (options.extraCheckBoxLabel !== undefined && options.extraCheckBoxLabel.length > 0)
@@ -4122,7 +4136,7 @@ var EDITOR = (function ($, parent) {
                     html = div;
                 }
 				break;
-			case 'combobox':
+            case 'combobox':
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
 				var s_options = options.options.split(',');
@@ -4144,7 +4158,7 @@ var EDITOR = (function ($, parent) {
 					.change({id:id, key:key, name:name, group:options.group ,trigger:conditionTrigger}, function(event)
 					{
                         //store data in xml
-                        if (mode === "attribute" || mode === "none") {
+                        if (mode === "none") {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         }
                         if (event.data.trigger)
@@ -4152,9 +4166,9 @@ var EDITOR = (function ($, parent) {
                             //no lightbox so redraw entire page
                             if (mode === "none") {
                                 triggerRedrawPage(event.data.key);
-                            }  else {
+                            } else {
                                 //lightbox so redraw only the lightbox form.
-                                triggerRedrawForm(event);
+                                triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
                             }
                         }
 					});
@@ -4162,7 +4176,6 @@ var EDITOR = (function ($, parent) {
                 if (value == '') {
 					html.append($('<option>').attr('value', '').prop('selected', true));
 				}
-
 				for (var i=0; i<s_options.length; i++) {
 					var option = $('<option>')
 						.attr('value', s_data[i]);
@@ -4984,7 +4997,7 @@ var EDITOR = (function ($, parent) {
 				}
 
 				break;
-				
+
 			case 'media':
 				var id = 'media_' + form_id_offset;
 				form_id_offset++;
@@ -4997,10 +5010,18 @@ var EDITOR = (function ($, parent) {
 						.addClass('media')
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
-							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (mode === "none") {
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            }
                             if (event.data.trigger)
                             {
-                                triggerRedrawPage(event.data.key);
+                                //no lightbox so redraw entire page
+                                if (mode === "none") {
+                                    triggerRedrawPage(event.data.key);
+                                } else {
+                                    //lightbox so redraw only the lightbox form.
+                                    triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
+                                }
                             }
 						})
 						.attr('value', value));
@@ -5014,6 +5035,7 @@ var EDITOR = (function ($, parent) {
 					.addClass("media_browse")
 					.click({id:id, key:key, name:name}, function(event)
 					{
+                        //todo check for page refresh
 						browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
@@ -5271,12 +5293,16 @@ var EDITOR = (function ($, parent) {
 					if (options.type.toLowerCase() == 'xerteurl' && value.length==0)
 					{
 						value=baseUrl();
-						setAttributeValue(key, [name], [value]);
+                        if (mode === "none") {
+                            setAttributeValue(key, [name], [value]);
+                        }
 					}
 					if (options.type.toLowerCase() == 'xertelo' && value.length==0)
 					{
 						value=template_id;
-						setAttributeValue(key, [name], [value]);
+                        if (mode === "none") {
+                            setAttributeValue(key, [name], [value]);
+                        }
 					}
 					html = $('<input>')
 						.attr('type', "text")
@@ -5294,10 +5320,18 @@ var EDITOR = (function ($, parent) {
 						})
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
-							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (mode === "none") {
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            }
                             if (event.data.trigger)
                             {
-                                triggerRedrawPage(event.data.key);
+                                //no lightbox so redraw entire page
+                                if (mode === "none") {
+                                    triggerRedrawPage(event.data.key);
+                                }  else {
+                                    //lightbox so redraw only the lightbox form.
+                                    triggerRedrawForm(event);
+                                }
                             }
 						})
 						.attr('value', value);
@@ -5341,7 +5375,7 @@ var EDITOR = (function ($, parent) {
     my.insertOptionalProperty = insertOptionalProperty;
     my.getPageList = getPageList;
     my.hideInlineEditor = hideInlineEditor;
-    my.lightboxSetUp = lightboxSetUp;
+    my.triggerRedrawForm = triggerRedrawForm;
 
     return parent;
 

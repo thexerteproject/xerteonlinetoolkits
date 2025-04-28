@@ -700,6 +700,7 @@ var EDITOR = (function ($, parent) {
                 expandedGroups.push($(this).parents('.wizardattribute').attr('id'));
             }
         });
+
         if (scrollToId !== undefined) {
             expandedGroups.push(scrollToId);
         }
@@ -720,7 +721,7 @@ var EDITOR = (function ($, parent) {
         {
             CKEDITOR.instances[name].destroy(true);
         }
-
+        //todo use this to gather xwd data for lightbox group
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name
@@ -1096,6 +1097,7 @@ var EDITOR = (function ($, parent) {
             // Add optional property values to main panel in the order they have in the xwd
             for (var i = 0; i < node_options['optional'].length; i++)
             {
+
                 attribute_name = node_options['optional'][i].name;
                 attribute_label = node_options['optional'][i].value.label;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
@@ -1328,6 +1330,10 @@ var EDITOR = (function ($, parent) {
         else {
             setTimeout( function(){
                 $("#" + scrollToId)[0].scrollIntoView();
+                //if ($('.featherlight').length >= 1){
+                    //todo wrong, find refocu method
+
+                //}
             });
         }
 
@@ -1344,7 +1350,7 @@ var EDITOR = (function ($, parent) {
 			}
 		});
     },
-	
+
 	groupSetUp = function(group, attributes, node_options, key) {
 		toolbox.displayGroup('#mainPanel .wizard', group.name, group.value, key);
 
@@ -1352,13 +1358,13 @@ var EDITOR = (function ($, parent) {
 		var groupChildren = group.value.children;
 
         if (group.value.lightbox === 'form') {
-
-            toolbox.lightboxSetUp(group, attributes, node_options, key);
-
+            //todo clean
+            //toolbox.lightboxSetUp(group, attributes, node_options, key, group.value.lightbox);
+            //no lightbox + attribute support atm
+            toolbox.triggerRedrawForm(group.name, key, groupChildren, 'initialize');
         } else {
 
             for (var j = 0; j < groupChildren.length; j++) {
-
                 // set up a nested group
                 if (groupChildren[j].value.type == 'group') {
                     var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
