@@ -2036,6 +2036,9 @@
       for (let i = 0; i < interaction.children.length; i++) {
             if (interaction.childNodes[i].getAttribute("blockName") != null && interaction.childNodes[i].getAttribute("blockName") != "") {
                 barName.push(interaction.childNodes[i].getAttribute("blockName"));
+            } else {
+              // Add an undefined so that the positions stays correct if not all have a barName
+              barName.push(undefined);
             }
 
             barNameValue.push(interaction.childNodes[i].getAttribute("conScoreBetween"));
@@ -2567,14 +2570,18 @@
               }
 
               let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
-              let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph-2" + currentPeriod;
+              let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod + "-2";
+
+              console.log('ownScoreX', graphFitInfoInBar, graphFitInfoInBar == 'true')
 
 		      const graph = new DashboardGraphs.BarGraphReceivedMarks({
                 statements: statements,
                 options: {
-		          //barColors: barColors.slice(),
+		          barColors: [...barColors],
                   averageScoreBarLabel: interaction.getAttribute("avgScoreLabelBarMarks"),
                   ctx: ctx2,
+                  blockNames: barName,
+                  blockRanges: barNameValue,
                   followBlock: followBlock == 'true',
                   graphFitInfoInBar: graphFitInfoInBar == 'true',
                   groupScoreLabel: interaction.getAttribute("groupScore"),
@@ -2593,7 +2600,7 @@
                   y2AxisLabel: interaction.getAttribute("y2AxisLabelBarMarks"),
                   yAxisLabel: interaction.getAttribute("yAxisLabelBarMarks"),                }
               });
-            graph.draw();
+              graph.draw();
 
               //create labels
               let labels = [];
@@ -2608,7 +2615,9 @@
                   }
               }
               for (let i = 0; i < barName.length; i++) {
+                if (barName[i] !== undefined) {
                   labels[i] = [barName[i]];
+                }
               }
 
               //calculate to what group the answers belong
@@ -2888,6 +2897,27 @@
               }
 
               let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
+		      let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod + "-2";
+
+              const graph = new DashboardGraphs.BarGraphAverageScore({
+                statements: statements,
+                options: {
+                  barColors: [...barColors],
+                  blockRanges: barNameValue,
+                  blockNames: barName,
+                  ctx: ctx2,
+                  followBlock: followBlock == 'true',
+                  groupScoreLabel: interaction.getAttribute("groupScore"),
+                  groupUserLabel,
+                  nrOfBars: nrbars,
+                  showNumberOfParticipants: interaction.getAttribute("showNrOfParticipants") == 'true',
+                  userScoreLabel: userScore,
+                  userStatement: ownstatements[0],
+                  yAxisLabel: interaction.getAttribute("yAxisLabelBarScore"),
+                }
+              });
+              graph.draw();
+
               //create labels
               let labels = [];
               if (followBlock == "true") {
@@ -2902,7 +2932,9 @@
               }
 
               for (let i = 0; i < barName.length; i++) {
+                if (barName[i] !== undefined) {
                   labels[i] = [barName[i]];
+                }
               }
 
               //calculate to what group the answers belong
@@ -2976,6 +3008,7 @@
 
               const newShade = (hexColor, magnitude) => {
                   hexColor = hexColor.replace(`#`, ``);
+
                   if (hexColor.length === 6) {
                       const decimalColor = parseInt(hexColor, 16);
                       let r = (decimalColor >> 16) + magnitude;
@@ -2995,7 +3028,7 @@
               let offBarColors = barColors.slice();
               for (let i = 0; i < barOwnScore.length; i++) {
                   if (barOwnScore[i] != 0) {
-                      offBarColors = newShade(barColors[i], 40)
+                    offBarColors = newShade(barColors[i % barColors.length], 40)
                   }
               }
               //add block avg to labels
@@ -4067,7 +4100,7 @@
                 const graph = new DashboardGraphs.BarGraphGivenAnswers({
                   statements: data,
                   options: {
-                    //barColors: barColors.slice(),
+                    barColors: [...barColors],
                     ctx: ctx2,
                     userAnswer: givenAnswer,
                     xAxisLabel: interaction.getAttribute("xAxisLabelBarAnswers"),
@@ -4129,7 +4162,7 @@
                 }
 
                 let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
-                let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph-2" + currentPeriod;
+                let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod + "-2";
 
                 let labelsNoUnderscore = xDomain.map(label => label.replace(/_/g, ' '));
 
