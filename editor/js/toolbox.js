@@ -6416,7 +6416,12 @@ var EDITOR = (function ($, parent) {
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
                             if (mode === "none") {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                let fieldValue = this.value;
+                                if (fieldValue !== "" && options.defaultValuePH !== undefined) {
+                                    fieldValue = options.defaultValuePH;
+                                }
+
+                                inputChanged(event.data.id, event.data.key, event.data.name, fieldValue, this);
                             }
                             if (event.data.trigger)
                             {
