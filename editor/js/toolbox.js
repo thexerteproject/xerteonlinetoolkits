@@ -6428,13 +6428,21 @@ var EDITOR = (function ($, parent) {
                                 //no lightbox so redraw entire page
                                 if (mode === "none") {
                                     triggerRedrawPage(event.data.key);
-                                }  else {
+                                } else {
                                     //lightbox so redraw only the lightbox form.
                                     triggerRedrawForm(event);
                                 }
                             }
 						})
 						.attr('value', value);
+                    //adds regex used for validation of the lightbox form input field.
+                    if (options.verification !== undefined && options.verification !== ""){
+                        html.attr('pattern', options.verification)
+                    }
+
+                    if (options.defaultValuePH !== undefined && options.defaultValuePH !== "") {
+                        html.attr('defaultvalueph', options.defaultValuePH)
+                    }
 				}
 		}
 		return html;
