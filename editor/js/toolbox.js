@@ -4068,6 +4068,10 @@ var EDITOR = (function ($, parent) {
             $.featherlight(lightboxHtml, {persist: true});
         })
 
+        if (mode === "redraw") {
+            $('#lightboxbutton_' + group.name).trigger('click');
+        }
+
     }
 
     triggerRedrawForm = function (group, key, groupChildren="", mode) {
@@ -5041,11 +5045,11 @@ var EDITOR = (function ($, parent) {
 				btnHolder.append($('<button>')
 					.attr('id', 'browse_' + id)
 					.attr('title', language.compMedia.$tooltip)
+                    .attr('type', 'button')
 					.addClass("xerte_button")
 					.addClass("media_browse")
 					.click({id:id, key:key, name:name}, function(event)
 					{
-                        //todo check for page refresh
 						browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
@@ -5053,6 +5057,7 @@ var EDITOR = (function ($, parent) {
 				btnHolder.append($('<button>')
 					.attr('id', 'preview_' + id)
 					.attr('title', language.compPreview.$tooltip)
+                    .attr('type', 'button')
 					.addClass("xerte_button")
 					.click({id:id, key:key, name:name}, function(event)
 					{
