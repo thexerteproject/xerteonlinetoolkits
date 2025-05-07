@@ -692,7 +692,7 @@ var EDITOR = (function ($, parent) {
      *
      */
 
-    showNodeData = function(key, keepScrollPos, scrollToId) {
+    showNodeData = function(key, keepScrollPos, scrollToId, lightboxGroup) {
         // any expanded optional property groups will be kept expanded on wizard reload
         const expandedGroups = [];
         $('#mainPanel .wizard fieldset.wizardgroup').each(function() {
@@ -710,12 +710,12 @@ var EDITOR = (function ($, parent) {
             if (keepScrollPos != null && keepScrollPos == true) {
                 scrollPos = $("#content").scrollTop();
             }
-            buildPage(key, scrollPos, scrollToId, expandedGroups);
+            buildPage(key, scrollPos, scrollToId, expandedGroups, lightboxGroup);
         }, 350);
     },
 
     // Refresh the page when a new node is selected
-    buildPage = function (key, scrollPos, scrollToId, expandedGroups) {
+    buildPage = function (key, scrollPos, scrollToId, expandedGroups, lightboxGroup) {
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
@@ -1000,7 +1000,7 @@ var EDITOR = (function ($, parent) {
 													
 													checkForOptGroup(temp);
 												} else {
-													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""));
+													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""), (load ? data.attribute : ""));
 												}
 											}
 										}
@@ -1321,6 +1321,11 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        if (lightboxGroup !== undefined && lightboxGroup !== "") {
+            $('#lightboxbutton_' + lightboxGroup).trigger("click");
+            $('.featherlight').css('background', 'rgba(0,0,0,.8)')
+        }
+
         // And finally, scroll to the scrollPos, or place scrollToId (if defined) into view
         if (scrollToId === undefined) {
             setTimeout(function () {
@@ -1330,10 +1335,6 @@ var EDITOR = (function ($, parent) {
         else {
             setTimeout( function(){
                 $("#" + scrollToId)[0].scrollIntoView();
-                //if ($('.featherlight').length >= 1){
-                    //todo wrong, find refocu method
-
-                //}
             });
         }
 
@@ -1649,10 +1650,11 @@ var EDITOR = (function ($, parent) {
                 // Call aiAPI.php via jQuery's AJAX method
                 var tree = $.jstree.reference("#treeview");
                 // Show wait icon
-                $('body').css("cursor", "wait");
-                console.log("Start OpenAI API request, please wait...");
-                console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", event.data.key);
-
+                $('body').css("cursor", "wait")
+                $('.featherlight').css("cursor", "wait")
+                $('.featherlight-content').css("cursor", "wait")
+                //console.log("Start OpenAI API request, please wait...");
+                //console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", node_key);
                 $.ajax({
                     url: "editor/ai/aiAPI.php",
                     type: "POST",

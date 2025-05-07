@@ -67,6 +67,8 @@ function build_xerte_xml(xml_tree, parent_name, parser){
 function xml_to_xerte_content(data, key, pos, tree, realParent) {
     try {
         $('body').css("cursor", "default");
+        $('.featherlight').css("cursor", "default")
+        $('.featherlight-content').css("cursor", "default")
         var parser = new DOMParser();
         var result = JSON.parse(data);
         if (result.status == 'success') {
