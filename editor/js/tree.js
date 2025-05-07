@@ -1644,7 +1644,7 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, textSnippet, sourceContext, assistantPrompt, baseUrl, useContext, contextScope, modelTemplate) {
+    ai_content_generator = function(aiSettings, constructorObject) {
         return new Promise((resolve, reject) => {
             try {
                 // Call aiAPI.php via jQuery's AJAX method
@@ -1659,21 +1659,21 @@ var EDITOR = (function ($, parent) {
                     url: "editor/ai/aiAPI.php",
                     type: "POST",
                     data: {
-                        type: node_type,
-                        prompt: p,
-                        api: api_choice,
-                        url: fileUrl,
-                        textSnippet:  textSnippet,
-                        context: sourceContext,
-                        assistantPrompt: assistantPrompt,
-                        baseUrl: baseUrl,
-                        useContext: useContext,
-                        contextScope: contextScope,
-                        modelTemplate: modelTemplate,
+                        type: aiSettings['type'],
+                        prompt: constructorObject,
+                        api: aiSettings['modelSelection'],
+                        url: aiSettings['fullUrl'],
+                        textSnippet: aiSettings['textSnippet'],
+                        context: aiSettings['sourceContext'],
+                        assistantPrompt: aiSettings['assisstantPrompt'],
+                        baseUrl: aiSettings['baseUrl'],
+                        useContext: aiSettings['useContext'],
+                        contextScope: aiSettings['contextScope'],
+                        modelTemplate: aiSettings['modelTemplate'],
                     },
                     success: function(data) {
                         try {
-                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
