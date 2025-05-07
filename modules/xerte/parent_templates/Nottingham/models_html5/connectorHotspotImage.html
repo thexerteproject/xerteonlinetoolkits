@@ -388,7 +388,6 @@
 						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
 						var icon = this.getAttribute('shape') != undefined && this.getAttribute('shape') != '' ? JSON.parse(this.getAttribute('shape')) : {centerX:0, CenterY:0, radius:0, angle:0}
 						var size = (icon.radius*2)/100 * $('#imageHolder').width()
-//todo make unique
 						var _this = this;
 
 						var $hotspotHolder = $('<div id="hotspotHolder" class="hotspotIconHolder"</div>')

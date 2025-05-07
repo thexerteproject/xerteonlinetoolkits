@@ -563,7 +563,7 @@
 
             // Build trackbar structure hierarchy and add it to the media panel.
             var $trackBarHolder = $('<div id="trackBarHolder"></div>')
-                .appendTo($('#' + interactiveVideo.panelbaseid + mediaPanelIndex)[0]);
+                .insertAfter($('#' + interactiveVideo.panelbaseid + mediaPanelIndex).find(".popcornMedia")[0]);
             var $playButton = $('<div id="playButton" class="trackBarButton fa fa-fw fa-x-pause" tabindex="0"/>')
                 .appendTo($trackBarHolder);2
             var $trackBarTime = $('<div id="trackBarCurrentTime" class="trackBarTime">00:00:00</div>')

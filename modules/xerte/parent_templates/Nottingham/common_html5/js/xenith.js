@@ -3159,6 +3159,10 @@ function x_focusPageContents(firstLoad) {
 	if (self == top || !firstLoad) {
 		//focus pageContents after page load (if not shown in iframe) and after page change (always - even if in iframe)
 		$('#pageContents').attr('tabIndex', 0).focus();
+
+		// ensure page is still scrolled to the top
+		$x_pageDiv.parent().scrollTop(0);
+
 		//#pageContents:focus is set to none in default theme
 		//uncomment the line below to see the focus outline
 		//or use a theme where this isn't hidden
@@ -5692,6 +5696,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 
 
 // ***** SIDE BAR *****
+// Side bar can contain the table of contents or the interface buttons (normally on footer bar)
 var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	// declare global variables
 	let sideBarType; // what should the sidebar contain? (toc or btns)
@@ -5898,11 +5903,13 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					$x_sideBarToggleBtn.addClass("customIconBtn");
 				}
 
-				// add a logo to the top of the side bar
-				if (x_params.sideBarLogo !== undefined && x_params.sideBarLogo !== "") {
-					$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_params.sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
-				} else if (x_sideBarLogo !== "") {
-					$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+				// add a logo to the top of the side bar, unless the interface buttons are small with no text (not enough space)
+				if (sideBarType == "toc" || (x_params.sideBarSize == 'large' || x_params.sideBarBtnTxt == 'true')) {
+					if (x_params.sideBarLogo !== undefined && x_params.sideBarLogo !== "") {
+						$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_params.sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+					} else if (x_sideBarLogo !== "") {
+						$x_sideBarHolder.prepend('<div id="x_sideBarLogo"><img src="' + x_sideBarLogo + '" alt="' + (x_params.sideBarTip !== undefined && x_params.sideBarTip !== "" ? x_params.sideBarTip : '') + '"></div>');
+					}
 				}
 
 				// add content to sidebar
@@ -6004,10 +6011,6 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				});
 
 				maxW = Math.min(widestBtn + ($x_sideBarHolder.outerWidth(true) - $x_sideBarHolder.width()) + (x_params.sideBarBtnPosition === "side" ? $x_sideBarToggleBtn.outerWidth(true) : 0) + 5, Math.min(absoluteMaxW, $x_window.width() / 2));
-
-				if (XENITH.SIDEBAR.sideBarType == "btns") {
-					$x_sideBarHolder.find('button').width('90%');
-				}
 			}
 
 			if (overlay) {
@@ -6016,12 +6019,13 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				$x_sideBar.width(maxW);
 				XENITH.SIDEBAR.resize(maxW);
 			} else {
-				$x_sideBar.width(maxW + 'px');
-				XENITH.SIDEBAR.resize(maxW);
+				const tempW = maxW + ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width()) + (XENITH.SIDEBAR.sideBarType == "btns" ? $x_sideBarHolder.find("button").outerWidth() - $x_sideBarHolder.find("button").width() : 0);
+
+				$x_sideBar.width(tempW + 'px');
+				XENITH.SIDEBAR.resize(tempW);
 
 				// the text may overlap sidebar - make sure sidebar expands but without text forced to be on a single line
 				if ((x_params.sideBarBtnTxt == 'true' && x_params.sideBarSize == 'large') || XENITH.SIDEBAR.sideBarType == "toc") {
-
 					let widestBtn = 0;
 					$x_sideBarHolder.find('button').each(function () {
 						widestBtn = Math.max(widestBtn, $(this).outerWidth());
@@ -6030,7 +6034,8 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 					if ($x_sideBarHolder.width() < widestBtn) {
 						$x_sideBar.width('min-content');
 						maxW = Math.min(Math.min(absoluteMaxW, $x_window.width() / 2), $x_sideBar.width());
-						XENITH.SIDEBAR.resize(maxW);
+						const tempW = maxW + ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width()) + (XENITH.SIDEBAR.sideBarType == "btns" ? $x_sideBarHolder.find("button").outerWidth() - $x_sideBarHolder.find("button").width() : 0);
+						XENITH.SIDEBAR.resize(tempW);
 					}
 				}
 			}
@@ -6041,8 +6046,6 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 			}
 
 		} else if (resize) {
-			// the sidebar is closed - delay resizing until it later opens
-			$x_sideBar.data('recalculateW', true);
 			XENITH.SIDEBAR.resize();
 		}
 	}
@@ -6056,14 +6059,10 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	function open() {
 		if ($x_sideBar.data('state') == 'closed') {
 			$x_sideBar.data('state', 'open');
-
-			XENITH.SIDEBAR.resize(maxW, true, function () {
+			const tempW = maxW + (!overlay ? ($x_sideBarHolder.outerWidth() - $x_sideBarHolder.width()) + (XENITH.SIDEBAR.sideBarType == "btns" ? $x_sideBarHolder.find("button").outerWidth() - $x_sideBarHolder.find("button").width() : 0) : "");
+			XENITH.SIDEBAR.resize(tempW, true, function () {
 				if (!overlay) {
-					if ($x_sideBar.data('recalculateW') === true) {
-						// the screen was resized when the sidebar was closed - resizing to an appropriate size is delayed until now
-						$x_sideBar.data('recalculateW', false);
-						XENITH.SIDEBAR.setWidth(true);
-					}
+					XENITH.SIDEBAR.setWidth(true);
 					x_updateCss(true, false);
 				}
 			});
@@ -6136,7 +6135,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 				XENITH.PAGEMENU.tickViewed();
 			}
 		}
-	};
+	}
 
 	// make some public methods
 	self.sideBarType = sideBarType;
@@ -6252,7 +6251,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbHolder = $('<div id="x_headerProgress">');
 
 			if (progressBarPosition == "header1") {
-				$pbHolder.prependTo($x_headerBlock);
+				$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
 				$x_headerBlock.addClass('pbAbove');
 			} else if (progressBarPosition == "header2") {
 				$pbHolder.appendTo($x_headerBlock);
@@ -6279,7 +6278,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
 					"margin-left": -$pbTxt.outerWidth(true)
 				});
-				$pbHolder.css("padding-left", $pbTxt.outerWidth());
+				$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_icon").width()));
+			} else if (progressBarPosition != "footer") {
+				$pbHolder.css("padding-left", Math.round($("#x_headerBlock .x_icon").width()) + 10);
 			}
 		}
 
@@ -6501,14 +6502,14 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 						// create a progress marker at each milestone page (the final page in the array)
 						const $progressMarker = $('<' + progressMarkerElement + ' class="progressMarker"></' + progressMarkerElement + '>');
-						let left2 = "calc(" +  ((i+1)/milestones.length*100) +  "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+						let left2 = (i+1)/milestones.length*100;
 						if (progressBarSpacing == "false") {
-							left2 = "calc(" +  (100 / totalPages * count) + "% - " + ($progressMarker.outerWidth() / 2) + "px)";
+							left2 = 100 / totalPages * count;
 						}
 						$progressMarker
 							.data("title", milestoneTitles[i])
 							.appendTo($pbMarkerContainer)
-							.css("left", left2);
+							.css("left", "calc(" +  left2 +  "% - " + ($progressMarker.outerWidth() / 2) + "px)");
 					}
 
 					if (extraPages.length > 0) {
@@ -6537,7 +6538,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 				// add explanation for screen readers of what the progress markers do
 				$pbBarContainer.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "markers", "Buttons navigate directly to pages or chapters marked on the progress bar") + "</span>");
-				$pbTxt.before("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "title", "Progress bar") + "</span>");
+				$("#x_headerProgress").prepend("<span class='sr-only'>" + x_getLangInfo(x_languageData.find("progressBar")[0], "title", "Progress bar") + "</span>");
 
 				// describe what the progress marker is for
 				const progressSubType = (progressSub == "pages" ? x_getLangInfo(x_languageData.find("progressBar")[0], "page", "Page") : progressSub == "chapters" ? x_getLangInfo(x_languageData.find("progressBar")[0], "chapter", "Chapter") : x_getLangInfo(x_languageData.find("progressBar")[0], "milestone", "Milestone")) + ": ";
@@ -7118,6 +7119,14 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			if (!(XENITH.PAGEMENU.menuPage && i==0) && x_pages[i].getAttribute("resources") != undefined) {
 				if (x_pages[i].getAttribute("resources").replace(/[|]/g,"").trim() != "") {
 
+					// list of file types that will not be available to view in browser - only download button available
+					let fileExtensions = [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx"];
+					if (x_params.resourceFileExtensions != undefined && x_params.resourceFileExtensions != "") {
+						let tempArray = x_params.resourceFileExtensions.split(",");
+						tempArray = tempArray.map(i => "." + i);
+						fileExtensions = fileExtensions.concat(tempArray);
+					}
+
 					// returns resource type
 					function getResourceType(resource) {
 						if (resource.trim() == "") {
@@ -7125,15 +7134,20 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 							return "page";
 						} else {
 							resource = resource.toLowerCase();
+
+							for (let k=0; k<fileExtensions.length; k++) {
+								if (resource.endsWith(fileExtensions[k])) {
+									// word /excel / ppt doc
+									return "file";
+								}
+							}
+
 							if (resource.endsWith(".mp3")) {
 								// audio
 								return "audio";
 							} else if (resource.endsWith(".png") || resource.endsWith(".jpg") || resource.endsWith(".jpeg") || resource.endsWith(".gif") || resource.endsWith(".svg")) {
 								// image
 								return "image";
-							} else if (resource.endsWith(".doc") || resource.endsWith(".docx")) {
-								// word doc
-								return "file";
 							} else if (resource.endsWith(".pdf")) {
 								// pdf
 								return "filePdf";
@@ -7146,6 +7160,8 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 							} else if (resource.startsWith("http")) {
 								// URL
 								return "url";
+							} else if (resource.startsWith("<iframe")) {
+								return "iframe";
 							} else {
 								return "other";
 							}
@@ -7263,7 +7279,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 				return "fa-file-lines";
 			} else if (type == "video" || type == "videoEmbed") {
 				return "fa-film";
-			} else if (type == "url") {
+			} else if (type == "url" || type == "iframe") {
 				return "fa-globe";
 			} else {
 				return "fa-file";
@@ -7275,20 +7291,24 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 		for (let i=0; i<pageResources.length; i++) {
 			const thisResource = pageResources[i];
 			// download button is only needed for files uploaded (not URLs or XOT page links)
-			const thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" ? downloadBtn : "";
+			let thisDownloadBtn = thisResource.type !== "page" && thisResource.type !== "url" && thisResource.type !== "other" && thisResource.type !== "videoEmbed" && thisResource.type !== "iframe" ? downloadBtn : "";
 
 			// there are different ways the resource may open - this window, new window, lightbox
-			let target = thisResource.type == "page" ? null : downloadBtn === "" ? (x_params.resourceShowIn != undefined ? x_params.resourceShowIn : "_blank") : (x_params.resourceShowFileIn != undefined ? x_params.resourceShowFileIn : "lightbox");
+			let target = thisResource.type == "page" ? null : thisResource.type == "iframe" ? "lightbox" : thisDownloadBtn === "" ? (x_params.resourceShowIn != undefined ? x_params.resourceShowIn : "_blank") : (x_params.resourceShowFileIn != undefined ? x_params.resourceShowFileIn : "lightbox");
 			let thisViewBtn = viewBtn;
 			if (thisResource.type == "file") { // word doc - can't preview so only have download btn
 				target = null;
 				thisViewBtn = "";
 			}
 
-			const resourceIcon = getResourceIcon(thisResource.type);
+			// author has turned off download file button - only do this if a view file button is available
+			if (thisViewBtn !== "" && x_params.resourceDownload == "false") {
+				thisDownloadBtn = "";
+			}
 
-			const linkElement = target == "_blank" || target == "_self" ? "a" : "button";
-			const $resourceRow = $("<tr class='resourceRow'><td class='titleCell'><div class='resourceLinkHolder'><i aria-hidden='true' class='resourceIcon fa fa-fw " + resourceIcon + "'></i><" + linkElement + " class='resourceLink'>" + thisResource.title + "</" + linkElement + "></div></td><td class='descriptionCell'>" + thisResource.description + "</td><td class='actionCell'><div class='actionBtnHolder'>" + thisViewBtn + thisDownloadBtn + "</div></td></tr>").appendTo($tableBody);
+			const resourceIcon = x_params.resourceIcons !== "false" ? "<i aria-hidden='true' class='resourceIcon fa fa-fw " + getResourceIcon(thisResource.type) + "'></i>" : "";
+			const linkElement = target == "_blank" || target == "_self" || thisResource.type == "file" ? "a" : "button";
+			const $resourceRow = $("<tr class='resourceRow'><td class='titleCell'><div class='resourceLinkHolder'>" + resourceIcon + "<" + linkElement + " class='resourceLink'>" + thisResource.title + "</" + linkElement + "></div></td><td class='descriptionCell'>" + thisResource.description + "</td><td class='actionCell'><div class='actionBtnHolder'>" + thisViewBtn + thisDownloadBtn + "</div></td></tr>").appendTo($tableBody);
 			$resourceRow.find(".resourceDownloadBtn").attr("href", thisResource.link);
 			if (trackCompletion) {
 				$resourceRow.append("<td class='completeCell'><input id='resourceComplete" + i + "' name='resourceComplete" + i + "' aria-labelledby='completeCheckLabel' class='resourceComplete' type='checkbox' " + (thisResource.complete ? "checked" : "") + " /></td>");
@@ -7309,7 +7329,12 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			} else if (target == "lightbox") {
 				// opens in a lightbox
 				$resourceRow.find(".resourceLink").click(function() {
-					if ((thisResource.type !== "videoEmbed" && thisDownloadBtn === "") || thisResource.type == "filePdf") {
+					if (thisResource.type == "iframe") {
+						const $iframe = $('<div id="resourceIFrame">' + thisResource.link + '</div>');
+						$iframe.find("iframe").width($x_mainHolder.width()*0.8).height($x_mainHolder.height()*0.8)
+						$.featherlight($iframe);
+
+					} else if ((thisResource.type !== "videoEmbed" && thisDownloadBtn === "") || thisResource.type == "filePdf") {
 						// url or file
 						$.featherlight({iframe: thisResource.link, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
 
@@ -7358,7 +7383,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 				// add a warning about opening in lightbox
 				.append("<span class='sr-only'> " + x_params.dialogTxt + "</span>");
 
-			} else {
+			} else if (thisResource.type == "page") {
 				// XOT page link
 				// this will open in same window by default - unless it's a standalone page & it's been set to open in lightbox or new window
 				$resourceRow.find(".resourceLink").click(function() {
@@ -7369,6 +7394,15 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 					$.featherlight.current().close();
 					x_navigateToPage(false,{type: 'linkID',ID: $(thisResource.link).attr("data-pageID")});
 				});
+
+			} else if (thisResource.type == "file") {
+				// download file
+				$resourceRow.find(".resourceLink")
+					.attr({
+						"href": thisResource.link,
+						"download": ""
+					})
+					.prepend("<span class='sr-only'> " + x_getLangInfo(x_languageData.find("resources").find("table")[0], "downloadBtn", "Download resource") + " </span>");
 			}
 		}
 

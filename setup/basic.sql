@@ -393,4 +393,6 @@ insert into `$role`(`roleid`, `name`) values
   (3, 'templateadmin'),
   (4, 'metaadmin'),
   (5, 'useradmin'),
-  (6, 'projectadmin');
+  (6, 'projectadmin'),
+  (7, 'harvestadmin'),
+  (8, 'aiuser');

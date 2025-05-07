@@ -18,7 +18,6 @@
             var url = "deltion.mediamission.nl"
 
             iframe.contentWindow.postMessage(data, url);
-            debugger;
         }
 
         var methods = ("play pause stop seekTo getCurrentTime getCurrentChapter getCurrentSlide getCurrentCaption getChapters getTimedEvents"
@@ -28,7 +27,6 @@
             // All current methods take 0 or 1 args, always send arg0
             self[ method ] = function( arg0 ) {
                 sendMessage( method, arg0 );
-                debugger;
             };
         });
     }
@@ -148,7 +146,6 @@
                     player.play();
                     break;
                 case "pause":
-                    debugger;
             }
         }
 
@@ -164,10 +161,7 @@
             elem = document.createElement( "iframe" );
         }
 
-        function onStateChange( event )
-        {
-            debugger;
-        }
+        function onStateChange( event ) {}
 
         self.play = function() {
             impl.paused = false;
