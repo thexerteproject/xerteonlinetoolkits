@@ -1622,3 +1622,14 @@ function upgrade_50()
 
     return $message;
 }
+
+function upgrade_51()
+{
+    $roleTable = table_by_key("role");
+
+    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
+    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
