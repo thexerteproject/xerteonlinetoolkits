@@ -356,6 +356,18 @@ function x_clean_input($input, $expected_type = null)
     return $sanitized;
 }
 
+function x_clean_input_json($input)
+{
+    $sanitized = trim($input);
+    $sanitized = stripslashes($sanitized);
+    $sanitized = htmlspecialchars($sanitized,  ENT_NOQUOTES);
+    if (!is_string($sanitized)) {
+        die("Expected string, got " . htmlspecialchars($sanitized,  ENT_NOQUOTES));
+    }
+    return $sanitized;
+}
+
+
 function x_check_zip($zip)
 {
     // Iterate over files in ZipArchive object to check for any files that are not allowed

@@ -30,7 +30,7 @@ if ($_FILES["file"]["error"] > 0) {
 
     //if $merge is set then we want to keep the old grid
     if ($merge){
-        $old_grid = json_decode(x_clean_input($_POST['old_data']), true);
+        $old_grid = json_decode(x_clean_input_json($_POST['old_data']), true);
         //drop row indicator
         foreach ($old_grid as $key => $row){
             array_shift($old_grid[$key]);
