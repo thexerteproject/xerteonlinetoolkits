@@ -144,7 +144,7 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
             console.log(result.message);
         }
     }   catch (error) {
-        console.log('Error:', error); //log the error for debugging
+        console.log('Error:', error, 'Data:', data); //log the error for debugging
         throw error;
     }
 }
