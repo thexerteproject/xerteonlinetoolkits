@@ -151,8 +151,15 @@
     <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
 	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
 	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
-	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
-	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceFilesGroup label="Files" type="group" optional="true">
+	  	<resourceShowFileIn label="Open in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  	<resourceDownload label="Always Allow Download" type="CheckBox" defaultValue="true" optional="true" tooltip="Determines whether the download file button is shown for some file types. If the file type can not open in the browser then the download button will always show, even if allow download is off"/>
+	  	<resourceFileExtensions label="File Extensions for Download Only" type="TextInput" optional="true" placeholder="e.g. doc,docx" tooltip="Some files that cannot be viewed in the browser will only have a download option. Add a comma-separated list of additional file types that should always be available for download here (by default, doc, docx, xls, xlsx, ppt, pptx files are already only available for download)"/>
+	  </resourceFilesGroup>
+	  <resourceURLGroup label="URLs" type="group" optional="true">
+		<resourceShowIn label="Open in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  </resourceURLGroup>
+	  <resourceIcons label="Resource Icons" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include an icon next to each resource title to illustrate the type of resource"/>
 	  <resourceCompletionGroup label="Completion" type="group" optional="true">
 	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
         <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
@@ -189,8 +196,8 @@
 			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbPageResources label="Page Resources" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 		</sideBarBtns>
-		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
-		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" conditionTrigger="true" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
+		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" conditionTrigger="true" optional="true"/>
 		<sideBarHideShowGroup type="group" label="Show / Hide Side Bar Buttons" optional="true" condition="sideBar!='false'">
 			<sideBarBtnPosition label="Position" type="ComboBox" options="Top,Side" data="top,side" defaultValue="side" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
 			<sideBarBtnIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="sideBar!='false'" optional="true" tooltip="Override the default icons used on the show / hide side bar button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
@@ -206,8 +213,8 @@
 			</sideBarShowGroup>
 		</sideBarHideShowGroup>
 		<sideBarLogoGroup type="group" label="Optional: Logo" optional="true" tooltip="Add a logo image to the top of the side bar">
-			<sideBarLogo optional="true" type="media" label="Image" condition="sideBar!='false'" defaultValue="" tooltip="Upload an image to use as the side bar logo" placeholder="Select an image"/>
-			<sideBarTip optional="true" type="TextInput" label="Description" condition="sideBar!='false'" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
+			<sideBarLogo optional="true" type="media" label="Image" condition="sideBar!='false'&amp;&amp;(sideBarTocList=='toc'||(sideBarBtnTxt=='true'||sideBarSize=='large'))" defaultValue="" tooltip="Upload an image to use as the side bar logo" placeholder="Select an image"/>
+			<sideBarTip optional="true" type="TextInput" label="Description" condition="sideBar!='false'&amp;&amp;(sideBarTocList=='toc'||(sideBarBtnTxt=='true'||sideBarSize=='large'))" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
 		</sideBarLogoGroup>
 	</sideBarGroup>
 	

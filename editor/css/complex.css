@@ -236,7 +236,7 @@ input.media, input.date
 	position: relative;
 }
 
-.ui-layout-center .content
+.ui-layout-center .content, .featherlight-content .content
 {
     background : #eee;
 }
@@ -685,7 +685,7 @@ select, input, textarea
     padding: 4px;
 }
 
-#mainPanel select,  #mainPanel textarea {
+#mainPanel select,  #mainPanel textarea, #lightboxPanel select,  #lightboxPanel textarea {
     background: #fff;
     border: 1px solid #cdcdcd;
     width: 100%;
@@ -737,16 +737,16 @@ form.csvUpload input[name=merge] {
 	font-size: 0.8em;
 }
 
-#mainPanel select.deprecated {
+#mainPanel select.deprecated, #lightboxPanel select.deprecated{
 	width: 95%;
 }
 
-#mainPanel select.deprecated_option_selected {
+#mainPanel select.deprecated_option_selected, #lightboxPanel select.deprecated_option_selected{
 	color:red;
 }
 
 
-#mainPanel input
+#mainPanel input, #lightboxPanel input
 {
     background: #fff;
     /*border-radius: 4px;*/
@@ -1052,7 +1052,7 @@ div.hotspotEditor {
 
 
 
-table.wizard td {
+table.wizard td, table.content td {
     vertical-align: middle;
     height: 40px;
 }
@@ -1143,8 +1143,8 @@ button.hseditModeButton:hover:enabled {background: #f86718; color: #000000; curs
 button.hseditModeButton:hover {cursor: default;}
 
 
-#mainPanel .xerte_button { color: #000; }
-#mainPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
+#mainPanel .xerte_button,  #lightboxPanel .xerte_button{ color: #000; }
+#mainPanel .xerte_button.disabled, #lightboxPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
 
 div#save_buttons button {font-size: 1.3em; padding-top: 0px!important; height: 40px!important;}
 div#save_buttons button img {height: 1em!important; margin-right: 10px!important;}

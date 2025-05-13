@@ -152,8 +152,15 @@
     <resourceGroup type="group" label="Page Resources" optional="true" tooltip="An extra button will appear in the interface if you have added supplementary resources to any of your pages. These properties control the button's appearance and the contents of the resources lightbox that it opens">
 	  <resourceTitle label="Title" type="TextInput" defaultValue="Resources" optional="true"/>
 	  <resourceText label="Text" type="TextArea" height="100" defaultValue="" placeholder="" optional="true"/>
-	  <resourceShowIn label="Open URLs in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
-	  <resourceShowFileIn label="Open Files in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  <resourceFilesGroup label="Files" type="group" optional="true">
+	  	<resourceShowFileIn label="Open in" type="ComboBox" defaultValue="lightbox" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  	<resourceDownload label="Always Allow Download" type="CheckBox" defaultValue="true" optional="true" tooltip="Determines whether the download file button is shown for some file types. If the file type can not open in the browser then the download button will always show, even if allow download is off"/>
+	  	<resourceFileExtensions label="File Extensions for Download Only" type="TextInput" optional="true" placeholder="e.g. doc,docx" tooltip="Some files that cannot be viewed in the browser will only have a download option. Add a comma-separated list of additional file types that should always be available for download here (by default, doc, docx, xls, xlsx, ppt, pptx files are already only available for download)"/>
+	  </resourceFilesGroup>
+	  <resourceURLGroup label="URLs" type="group" optional="true">
+		<resourceShowIn label="Open in" type="ComboBox" defaultValue="_blank" options="This window,New window,Lightbox" data="_self,_blank,lightbox" optional="true"/>
+	  </resourceURLGroup>
+	  <resourceIcons label="Resource Icons" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include an icon next to each resource title to illustrate the type of resource"/>
 	  <resourceCompletionGroup label="Completion" type="group" optional="true">
 	    <resourceCompletion label="Track completion" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
         <resourceCompletionTxt label="Percentage text" type="TextInput" defaultValue="{x}% complete" condition="resourceCompletion=='true'" optional="true"/>
@@ -190,8 +197,8 @@
 			<sbPageIntro label="Page Introduction" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 			<sbPageResources label="Page Resources" type="Checkbox" defaultValue="false" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
 		</sideBarBtns>
-		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
-		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" optional="true"/>
+		<sideBarBtnTxt type="CheckBox" label="Button Title" defaultValue="true" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" conditionTrigger="true" optional="true" tooltip="Buttons on the side bar can be shown as either icon only or with visible title text. The title text will match the button tooltip text."/>
+		<sideBarSize type="ComboBox" label="Button Size" defaultValue="small" options="Small,Large" data="small,large" condition="sideBar!='false'&amp;&amp;sideBarTocList=='btns'" conditionTrigger="true" optional="true"/>
 		<sideBarHideShowGroup type="group" label="Show / Hide Side Bar Buttons" optional="true" condition="sideBar!='false'">
 			<sideBarBtnPosition label="Position" type="ComboBox" options="Top,Side" data="top,side" defaultValue="side" conditionTrigger="true" condition="sideBar!='false'" optional="true"/>
 			<sideBarBtnIcons type="CheckBox" label="Customise Button Icons" defaultValue="false" conditionTrigger="true" condition="sideBar!='false'" optional="true" tooltip="Override the default icons used on the show / hide side bar button. When checked, you will see further options allowing you to select the icons used. When left unchecked, the images/icons will be those specified by the theme."/>
@@ -207,8 +214,8 @@
 			</sideBarShowGroup>
 		</sideBarHideShowGroup>
 		<sideBarLogoGroup type="group" label="Optional: Logo" optional="true" tooltip="Add a logo image to the top of the side bar">
-			<sideBarLogo optional="true" type="media" label="Image" condition="sideBar!='false'" defaultValue="" tooltip="Upload an image to use as the side bar logo" placeholder="Select an image"/>
-			<sideBarTip optional="true" type="TextInput" label="Description" condition="sideBar!='false'" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
+			<sideBarLogo optional="true" type="media" label="Image" condition="sideBar!='false'&amp;&amp;(sideBarTocList=='toc'||(sideBarBtnTxt=='true'||sideBarSize=='large'))" defaultValue="" tooltip="Upload an image to use as the side bar logo" placeholder="Select an image"/>
+			<sideBarTip optional="true" type="TextInput" label="Description" condition="sideBar!='false'&amp;&amp;(sideBarTocList=='toc'||(sideBarBtnTxt=='true'||sideBarSize=='large'))" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
 		</sideBarLogoGroup>
 	</sideBarGroup>
 	
@@ -452,7 +459,7 @@
 	  />]]></opinion><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals=""
 	  audienceHeader="Target Audience" audience=""
 	  prereqHeader="Pre-requisites" prereq=""
-	  howtoHeader="How to use this resource" howto=""/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="" judge="true" showfeedback="true" feedback=""
+	  howtoHeader="How to use this resource" howto=""/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" thumbH="small" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="" judge="true" showfeedback="true" feedback=""
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers"
 	  multiWrong="You have not selected the correct combination of answers"
@@ -495,7 +502,7 @@
 		initTxtLabel2="Initial text - select text before clicking highlight button"
 		suggestedTxtLabel="A suggested answer"
 		notesTxtLabel="Notes"
-	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
+	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" titleVAlign="200" titleHAlign="center" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
 			 attemptLabel="Attempts remaining"
 			 correctAnswersLabel="Correct answers"
@@ -941,7 +948,7 @@
     </QFGroup>
 
       <newNodes>
-        <interaction><![CDATA[<interaction name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        <interaction><![CDATA[<interaction acpWarning="" name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         xAxisLabelBarAnswers = "Answers given"
         yAxisLabelBarAnswers = "Percentage of answers"
         xAxisLabelBarMarks = "Score Range [%]"
@@ -973,7 +980,7 @@
         PassingGrade = "75"
 
 
-        ><interactionBlock adaptiveContent="" conScoreBetween="0,100"></interactionBlock></interaction>]]>
+        />]]>
         </interaction>
       </newNodes>
     <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -1081,6 +1088,7 @@
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used"/>
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="" placeholder="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interaction type is based on score and the score comes from an opinion class"/>
         <sessionStatementUsed label="Which answer(s) to use within session" condition="interactionType!='opinionclasses'&amp;&amp;interactionType!='groupings'&amp;&amp;interactionType!='grouping'" type="combobox" data="first,last,best,all" options="First,Last,Best,All" defaultValue="all" optional="true" tooltip="Which answer should be used if within a session the answer is given more than one time."/>
+        <acpWarning label="Please note: The Adaptive Content page does not function when using the previeuw/play link. To properly inspect the page, use the xAPI/LTI URL provided in the Xerte workspace. If no URL is available, the setup may be incomplete. In that case, please refer to the Adaptive Content manual or Wiki for setup instructions." type="info"/>
         <graphgroup type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show Graph" type="checkbox" defaultValue="false" optional="true"/>
 
@@ -10282,6 +10290,7 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></pdf><perspectives menu="Navigators" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips alongside related text." icon="icUser" thumb="thumbs/perspectives.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multipleperspectives" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_multiple_perpectives_page" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <thumbH label="Thumbnail Size" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" mandatory="true"/>
 
     <backBtnTip label="Scroll Back Tip" type="TextInput" language="true"/>
     <nextBtnTip label="Scroll Forward Tip" type="TextInput" language="true"/>
@@ -10293,7 +10302,6 @@
 	<thumbs type="group" label="Thumbnail Bar" optional="true">
 		<thumbPos label="Position" type="ComboBox" options="Top,Bottom,Grid" data="top,bottom,grid" conditionTrigger="true" defaultValue="top" width="200" optional="true"/>
 		<target label="Display In" type="ComboBox" data="page,lightbox" options="Page,Lightbox" defaultValue="page" conditionTrigger="true" condition="thumbPos=='grid'" optional="true" mandatory="true" tooltip="When the thumbnails are shown in a grid, select whether the information is shown in the main page or in a lightbox"/>
-		<thumbH label="Height" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" width="200" optional="true"/>
 		<thumbType label="Type" type="ComboBox" options="Image and Caption,Image and Number,Image Only" data="both,imgNum,image" defaultValue="both" width="200" optional="true"/>
 		<thumbBorder label="Border" type="Checkbox" defaultValue="true" optional="true"/>
 		<highlight label="Highlight Current" type="Checkbox" defaultValue="false" optional="true"/>
@@ -13662,6 +13670,11 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100" condition="parent.responsive != 'true'" tooltip="Set the size of the title text. This will only be used when responsive text is turned off."/>
 
+    <align type="group" label="Title Alignment" tooltip="The position of the title and any additional text on the page">
+		<titleVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="20,200,400" defaultValue="200" mandatory="true"/>
+		<titleHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" mandatory="true"/>
+  	</align>
+
     <additionalTxt label="Additional Text" type="TextArea" height="100" optional="true" placeholder="Enter text for the page here" tooltip="Add additional text below the title text"/>
 	<startBtn label="Start Button" type="CheckBox" defaultValue="true" optional="true" mandatory="true" tooltip="Include a 'start' button below the title text that moves the project to the next page"/>
 
@@ -13681,11 +13694,6 @@
 		<bgImageVConstrain label="Max Height" type="NumericStepper" min="0" max="500" step="10" defaultValue="" optional="true"/>
 		<bgImageHConstrain label="Max Width" type="NumericStepper" min="0" max="800" step="10" defaultValue="" optional="true"/>
 	</background>
-	
-	<align type="group" label="Title Alignment" optional="true" tooltip="The position of the title on the page">
-		<titleVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="20,200,400" defaultValue="200" optional="true"/>
-		<titleHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
-	</align>
 	
     <titleTextColour label="Title Text Colour" type="ColourPicker" defaultValue="0x016A71" optional="true" deprecated="This property is deprecated. You can change the title's colour in the text toolbar."/>
 	

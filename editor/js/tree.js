@@ -692,7 +692,7 @@ var EDITOR = (function ($, parent) {
      *
      */
 
-    showNodeData = function(key, keepScrollPos, scrollToId) {
+    showNodeData = function(key, keepScrollPos, scrollToId, lightboxGroup) {
         // any expanded optional property groups will be kept expanded on wizard reload
         const expandedGroups = [];
         $('#mainPanel .wizard fieldset.wizardgroup').each(function() {
@@ -700,6 +700,7 @@ var EDITOR = (function ($, parent) {
                 expandedGroups.push($(this).parents('.wizardattribute').attr('id'));
             }
         });
+
         if (scrollToId !== undefined) {
             expandedGroups.push(scrollToId);
         }
@@ -709,18 +710,18 @@ var EDITOR = (function ($, parent) {
             if (keepScrollPos != null && keepScrollPos == true) {
                 scrollPos = $("#content").scrollTop();
             }
-            buildPage(key, scrollPos, scrollToId, expandedGroups);
+            buildPage(key, scrollPos, scrollToId, expandedGroups, lightboxGroup);
         }, 350);
     },
 
     // Refresh the page when a new node is selected
-    buildPage = function (key, scrollPos, scrollToId, expandedGroups) {
+    buildPage = function (key, scrollPos, scrollToId, expandedGroups, lightboxGroup) {
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
             CKEDITOR.instances[name].destroy(true);
         }
-
+        //todo use this to gather xwd data for lightbox group
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name
@@ -869,7 +870,7 @@ var EDITOR = (function ($, parent) {
 			
             // If the main node has a label, display the node item second (unconditionaly)
             if (node_label.length > 0 && !node_options['cdata']) {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, false, node_label);
             }
 
 			getGroups(node_options['normal']);
@@ -999,7 +1000,7 @@ var EDITOR = (function ($, parent) {
 													
 													checkForOptGroup(temp);
 												} else {
-													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""));
+													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""), (load ? data.attribute : ""));
 												}
 											}
 										}
@@ -1096,6 +1097,7 @@ var EDITOR = (function ($, parent) {
             // Add optional property values to main panel in the order they have in the xwd
             for (var i = 0; i < node_options['optional'].length; i++)
             {
+
                 attribute_name = node_options['optional'][i].name;
                 attribute_label = node_options['optional'][i].value.label;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
@@ -1319,6 +1321,11 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        if (lightboxGroup !== undefined && lightboxGroup !== "") {
+            $('#lightboxbutton_' + lightboxGroup).trigger("click");
+            $('.featherlight').css('background', 'rgba(0,0,0,.8)')
+        }
+
         // And finally, scroll to the scrollPos, or place scrollToId (if defined) into view
         if (scrollToId === undefined) {
             setTimeout(function () {
@@ -1344,44 +1351,51 @@ var EDITOR = (function ($, parent) {
 			}
 		});
     },
-	
+
 	groupSetUp = function(group, attributes, node_options, key) {
 		toolbox.displayGroup('#mainPanel .wizard', group.name, group.value, key);
 
 		// group children aren't sorted into alphabetical order - they appear in order taken from xml
 		var groupChildren = group.value.children;
-		
-		for (var j = 0; j < groupChildren.length; j++) {
-			
-			// set up a nested group
-			if (groupChildren[j].value.type == 'group') {
-				var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
-				if ($.inArray(true, foundGroup) > -1) {
-					groupChildren[j].found = true;
-				}
-				
-				var visible = true;
-				if (typeof groupChildren[j].value.condition != "undefined") {
-					visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
-				}
-				groupChildren[j].visible = visible;
-				groupSetUp(groupChildren[j], attributes, node_options, key);
-				
-			// display a parameter within this group
-			} else {
-				var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
-				
-				if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
-					toolbox.displayParameter(
-						'#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-						groupChildren,
-						groupChildren[j].name,
-						(toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
-						key
-					);
-				}
-			}
-		}
+
+        if (group.value.lightbox === 'form') {
+            //todo clean
+            //toolbox.lightboxSetUp(group, attributes, node_options, key, group.value.lightbox);
+            //no lightbox + attribute support atm
+            toolbox.triggerRedrawForm(group.name, key, groupChildren, 'initialize');
+        } else {
+
+            for (var j = 0; j < groupChildren.length; j++) {
+                // set up a nested group
+                if (groupChildren[j].value.type == 'group') {
+                    var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
+                    if ($.inArray(true, foundGroup) > -1) {
+                        groupChildren[j].found = true;
+                    }
+
+                    var visible = true;
+                    if (typeof groupChildren[j].value.condition != "undefined") {
+                        visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
+                    }
+                    groupChildren[j].visible = visible;
+                    groupSetUp(groupChildren[j], attributes, node_options, key);
+
+                    // display a parameter within this group
+                } else {
+                    var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
+
+                    if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
+                        toolbox.displayParameter(
+                            '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+                            groupChildren,
+                            groupChildren[j].name,
+                            (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
+                            key
+                        );
+                    }
+                }
+            }
+        }
 	},
 	
 	checkGroupFound = function(group, attributes, node_options, key)
@@ -1630,35 +1644,36 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, textSnippet, sourceContext, assistantPrompt, baseUrl, useContext, contextScope, modelTemplate) {
+    ai_content_generator = function(aiSettings, constructorObject) {
         return new Promise((resolve, reject) => {
             try {
                 // Call aiAPI.php via jQuery's AJAX method
                 var tree = $.jstree.reference("#treeview");
                 // Show wait icon
-                $('body').css("cursor", "wait");
-                console.log("Start OpenAI API request, please wait...");
-                console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", event.data.key);
-
+                $('body').css("cursor", "wait")
+                $('.featherlight').css("cursor", "wait")
+                $('.featherlight-content').css("cursor", "wait")
+                //console.log("Start OpenAI API request, please wait...");
+                //console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", node_key);
                 $.ajax({
                     url: "editor/ai/aiAPI.php",
                     type: "POST",
                     data: {
-                        type: node_type,
-                        prompt: p,
-                        api: api_choice,
-                        url: fileUrl,
-                        textSnippet:  textSnippet,
-                        context: sourceContext,
-                        assistantPrompt: assistantPrompt,
-                        baseUrl: baseUrl,
-                        useContext: useContext,
-                        contextScope: contextScope,
-                        modelTemplate: modelTemplate,
+                        type: aiSettings['type'],
+                        prompt: constructorObject,
+                        api: aiSettings['modelSelection'],
+                        url: aiSettings['fullUrl'],
+                        textSnippet: aiSettings['textSnippet'],
+                        context: aiSettings['sourceContext'],
+                        assistantPrompt: aiSettings['assisstantPrompt'],
+                        baseUrl: aiSettings['baseUrl'],
+                        useContext: aiSettings['useContext'],
+                        contextScope: aiSettings['contextScope'],
+                        modelTemplate: aiSettings['modelTemplate'],
                     },
                     success: function(data) {
                         try {
-                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);

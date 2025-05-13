@@ -411,6 +411,11 @@
 
         this.drawTargets = function() {
 			const $targetHolder = $("#targetHolder");
+            $targetHolder.css({
+                "margin-top": $("#mainPanel").css("padding-top"),
+                "margin-left": $("#mainPanel").css("padding-left")
+            });
+
 			var $image = $("#image");
 			var scale = $image.width() / $image.prop("naturalWidth");
 

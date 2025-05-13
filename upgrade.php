@@ -1625,6 +1625,18 @@ function upgrade_50()
 
 function upgrade_51()
 {
+    $roleTable = table_by_key("role");
+
+    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
+    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+
+
+function upgrade_52()
+{
     // add ai settings table
     if (! _db_field_exists('sitedetails', 'openai_settings')) {
         $error1 = _db_add_field('sitedetails', 'openai', 'char(255)', 'false', 'globalsocialauth');

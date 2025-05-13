@@ -5142,7 +5142,6 @@
     //Called when the player script has loaded
     function onReady()
     {
-      debugger;
       player = new YujaPlayer(elem);
 
       player.getDuration();

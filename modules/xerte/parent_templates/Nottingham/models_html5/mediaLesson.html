@@ -235,71 +235,73 @@
 
 		this.leavePage = function () {
 
-			$this = this;
-			$(".embed").each(function() {
-				$(this).data("popcornInstance").pause();
-			});
-			// Finish tracking of video
-			// This will also account for last video segment, so there might be race conditions
-			// Also we do let popcorn handle the destruction (doNotCloseTracking parameter in loadMedia) of popcorn, so we need to do that here at the end
-			document.dispatchEvent(new Event('leavepage'));
-			// Calculate page score
-			var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
-			var numOfQuestions = questions.length;
-			var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
-					x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
-					x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
+			if ($(x_currentPageXML).children("mediaPanel").attr("media") != undefined && $(x_currentPageXML).children("mediaPanel").attr("media") != "") {
+				$this = this;
+				$(".embed").each(function() {
+					$(this).data("popcornInstance").pause();
+				});
+				// Finish tracking of video
+				// This will also account for last video segment, so there might be race conditions
+				// Also we do let popcorn handle the destruction (doNotCloseTracking parameter in loadMedia) of popcorn, so we need to do that here at the end
+				document.dispatchEvent(new Event('leavepage'));
+				// Calculate page score
+				var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+				var numOfQuestions = questions.length;
+				var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
+						x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
+						x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
 
-			score = 0;
-			for (var i = 0; i < numOfQuestions; i++) {
-				if ($this.questions[i]) {
-					score++;
+				score = 0;
+				for (var i = 0; i < numOfQuestions; i++) {
+					if ($this.questions[i]) {
+						score++;
+					}
 				}
-			}
-			mcqScore = score / numOfQuestions;
+				mcqScore = score / numOfQuestions;
 
-			let videoState = $this.popcornInstance.videoState;
-			let progress = 0;
-			if (videoState != undefined && trackVideo) {
-				// Calculate progress
-				progress = XThelperDetermineProgress(videoState);
-			}
-			let trackVideoSetting = 'no_mcqs';
-			if (x_currentPageXML.getAttribute('trackVideo') != undefined)
-			{
-				trackVideoSetting = x_currentPageXML.getAttribute('trackVideo');
-			}
-			switch (trackVideoSetting) {
-				case 'yes':
-					totalScore = (mcqScore + progress) / 2;
-					break;
-				case 'only_video':
-					totalScore = progress;
-					break;
-				case 'no_mcqs':
-					if (numOfQuestions == 0) {
+				let videoState = $this.popcornInstance.videoState;
+				let progress = 0;
+				if (videoState != undefined && trackVideo) {
+					// Calculate progress
+					progress = XThelperDetermineProgress(videoState);
+				}
+				let trackVideoSetting = 'no_mcqs';
+				if (x_currentPageXML.getAttribute('trackVideo') != undefined)
+				{
+					trackVideoSetting = x_currentPageXML.getAttribute('trackVideo');
+				}
+				switch (trackVideoSetting) {
+					case 'yes':
+						totalScore = (mcqScore + progress) / 2;
+						break;
+					case 'only_video':
 						totalScore = progress;
-					} else {
-						totalScore = mcqScore;
-					}
-					break;
-				case 'no':
-					if (numOfQuestions == 0) {
-						// count as page with no interactions
-						totalScore = 1;
-					} else {
-						totalScore = mcqScore;
-					}
-			}
-			totalScore = Math.round(totalScore * 10000.0) / 100.0;
-			XTSetPageScore(x_currentPage, totalScore);
+						break;
+					case 'no_mcqs':
+						if (numOfQuestions == 0) {
+							totalScore = progress;
+						} else {
+							totalScore = mcqScore;
+						}
+						break;
+					case 'no':
+						if (numOfQuestions == 0) {
+							// count as page with no interactions
+							totalScore = 1;
+						} else {
+							totalScore = mcqScore;
+						}
+				}
+				totalScore = Math.round(totalScore * 10000.0) / 100.0;
+				XTSetPageScore(x_currentPage, totalScore);
 
-			//Destroy popcornInstance
-			if ($this.popcornInstance) {
-				removeEvents($this.popcornInstance);
-				$this.popcornInstance.destroy();
+				//Destroy popcornInstance
+				if ($this.popcornInstance) {
+					removeEvents($this.popcornInstance);
+					$this.popcornInstance.destroy();
+				}
+				$("div.popcornMedia").remove();
 			}
-			$("div.popcornMedia").remove();
 		};
 
 		this.loadMedia = function($holder, type, data) {

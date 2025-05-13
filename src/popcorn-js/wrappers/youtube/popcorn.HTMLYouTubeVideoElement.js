@@ -342,7 +342,6 @@
         return;
       }
 
-      debugger;
 
       impl.src = aSrc;
 
