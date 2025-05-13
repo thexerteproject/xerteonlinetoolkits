@@ -163,7 +163,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + array($node['category_id'] => $node);
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -171,7 +171,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_categories = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = array('name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id'));
             $parsed_categories[] = $node;
@@ -190,7 +190,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + [$node['educationlevel_id'] => $node];
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -198,7 +198,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_educationlevels = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = ['name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
             $parsed_educationlevels[] = $node;
@@ -441,9 +441,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
+    //todo use roles to hide ui elemnts
     echo "roles=" . json_encode($user_roles) . ";\n";
     echo "theme=\"" . $theme . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    //todo store what ai models are enabled from server
+    //echo "allowed_ai_api=" . "" . ";\n";
     ?>
 
     function bunload(){

@@ -143,7 +143,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + array($node['category_id'] => $node);
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -151,7 +151,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_categories = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = array('name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id'));
             $parsed_categories[] = $node;
@@ -170,7 +170,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + array($node['educationlevel_id'] => $node);
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -178,7 +178,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_educationlevels = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = array('name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id'));
             $parsed_educationlevels[] = $node;
