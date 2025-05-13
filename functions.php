@@ -370,6 +370,13 @@ function x_check_zip($zip)
     }
 }
 
+function x_check_zip_file($file){
+    $zip = new ZipArchive();
+    $x = $zip->open($file);
+
+    x_check_zip($zip);
+}
+
 function x_check_path_traversal($path, $expected_path=null, $message=null)
 {
     $mesg = ($message != null ? $message : "Path traversal detected!");
